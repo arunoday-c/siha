@@ -175,8 +175,129 @@ export default function ManualAttendanceEvents() {
           break;
         case "LO":
           getLoanMasterData($this);
+          leave_dynamic_date = [
+            {
+              fieldName: "employee_code",
+              label: <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />,
+              disabled: true,
+              editorTemplate: row => {
+                return row.employee_code;
+              },
+              others: {
+                maxWidth: 105,
+                fixed: "left"
+              }
+            },
+            {
+              fieldName: "full_name",
+              label: <AlgaehLabel label={{ forceLabel: "Employee Name" }} />,
+              editorTemplate: row => {
+                return row.full_name;
+              },
+              disabled: true,
+              others: {
+                minWidth: 200,
+                fixed: "left"
+              }
+            },
+            {
+              fieldName: "loan_description",
+              label: <AlgaehLabel label={{ forceLabel: "Loan" }} />,
+              editorTemplate: row => {
+                return row.loan_description;
+              },
+              disabled: true,
+              others: {
+                filterable: false
+              }
+            },
+            {
+              fieldName: "pending_loan",
+              label: <AlgaehLabel label={{ forceLabel: "Pending Loan" }} />,
+              others: {
+                filterable: false
+              },
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    textBox={{
+                      number: {
+                        allowNegative: false,
+                        thousandSeparator: ","
+                      },
+                      dontAllowKeys: ["-", "e"],
+                      className: "txt-fld",
+                      name: "pending_loan",
+                      value: row.pending_loan,
+                      events: {
+                        onChange: changeGridEditors.bind($this, $this, row)
+                      }
+                    }}
+                  />
+                );
+              }
+            },
+            {
+              fieldName: "installment_amount",
+              label: (
+                <AlgaehLabel label={{ forceLabel: "Installment Amount" }} />
+              ),
+              others: {
+                filterable: false
+              },
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    textBox={{
+                      number: {
+                        allowNegative: false,
+                        thousandSeparator: ","
+                      },
+                      dontAllowKeys: ["-", "e"],
+                      className: "txt-fld",
+                      name: "installment_amount",
+                      value: row.installment_amount,
+                      events: {
+                        onChange: changeGridEditors.bind($this, $this, row)
+                      }
+                    }}
+                  />
+                );
+              }
+            },
+            {
+              fieldName: "pending_tenure",
+              label: <AlgaehLabel label={{ forceLabel: "Pending Amount" }} />,
+              others: {
+                filterable: false
+              },
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    textBox={{
+                      number: {
+                        allowNegative: false,
+                        thousandSeparator: ","
+                      },
+                      dontAllowKeys: ["-", "e"],
+                      className: "txt-fld",
+                      name: "pending_tenure",
+                      value: row.pending_tenure,
+                      events: {
+                        onChange: changeGridEditors.bind($this, $this, row)
+                      }
+                    }}
+                  />
+                );
+              }
+            }
+          ];
           $this.setState({
             selected_type: "LO",
+            leave_dynamic_date: leave_dynamic_date,
             leave_balance: []
           });
           break;
@@ -469,7 +590,11 @@ export default function ManualAttendanceEvents() {
       } else if ($this.state.selected_type === "GR") {
         selected_uri = "/employee/UpdateOpeningBalanceGratuity";
         inputData = row;
+      } else if ($this.state.selected_type === "LO") {
+        selected_uri = "/employee/UpdateOpeningBalanceLoan";
+        inputData = row;
       }
+      debugger;
 
       algaehApiCall({
         uri: selected_uri,
@@ -645,39 +770,40 @@ function getLoanMasterData($this) {
     onSuccess: res => {
       if (res.data.success) {
         if (res.data.records.length > 0) {
-          let employee_data = [
-            {
-              fieldName: "employee_code",
-              label: <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />,
-              others: {
-                maxWidth: 105,
-                fixed: "left"
-              }
-            },
-            {
-              fieldName: "full_name",
-              label: <AlgaehLabel label={{ forceLabel: "Employee Name" }} />,
-              others: {
-                minWidth: 200,
-                fixed: "left"
-              }
-            }
-          ];
-          let leave_dynamic_date = res.data.records.map((item, index) => {
-            return {
-              fieldName: "close_balance",
-              label: (
-                <AlgaehLabel label={{ forceLabel: item.loan_description }} />
-              ),
-              others: {
-                filterable: false
-              }
-            };
-          });
-
-          leave_dynamic_date = employee_data.concat(leave_dynamic_date);
+          // let employee_data = [
+          //   {
+          //     fieldName: "employee_code",
+          //     label: <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />,
+          //     others: {
+          //       maxWidth: 105,
+          //       fixed: "left"
+          //     }
+          //   },
+          //   {
+          //     fieldName: "full_name",
+          //     label: <AlgaehLabel label={{ forceLabel: "Employee Name" }} />,
+          //     others: {
+          //       minWidth: 200,
+          //       fixed: "left"
+          //     }
+          //   }
+          // ];
+          // let leave_dynamic_date = res.data.records.map((item, index) => {
+          //   return {
+          //     fieldName: "close_balance",
+          //     label: (
+          //       <AlgaehLabel label={{ forceLabel: item.loan_description }} />
+          //     ),
+          //     others: {
+          //       filterable: false
+          //     }
+          //   };
+          // });
+          //
+          // leave_dynamic_date = employee_data.concat(leave_dynamic_date);
           $this.setState({
-            leave_dynamic_date: leave_dynamic_date
+            // leave_dynamic_date: leave_dynamic_date,
+            loan_master: res.data.records
           });
         }
       }

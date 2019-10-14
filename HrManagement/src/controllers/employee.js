@@ -49,7 +49,9 @@ const {
   getBulkEmployeeGratuity,
   getEmployeeGratuity,
   InsertOpeningBalanceGratuity,
-  UpdateOpeningBalanceGratuity
+  UpdateOpeningBalanceGratuity,
+  InsertOpeningBalanceLoan,
+  UpdateOpeningBalanceLoan
 } = empModels;
 
 export default () => {
@@ -336,6 +338,17 @@ export default () => {
   );
 
   api.put(
+    "/UpdateOpeningBalanceLoan",
+    UpdateOpeningBalanceLoan,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.put(
     "/UpdateOpeningBalanceGratuity",
     UpdateOpeningBalanceGratuity,
     (req, res, next) => {
@@ -360,6 +373,17 @@ export default () => {
   api.post(
     "/InsertOpeningBalanceGratuity",
     InsertOpeningBalanceGratuity,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.post(
+    "/InsertOpeningBalanceLoan",
+    InsertOpeningBalanceLoan,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
