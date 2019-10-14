@@ -14,6 +14,7 @@ export default {
     return new Promise((resolve, reject) => {
       try {
         const utilities = new algaehUtilities();
+        const decimal_places = req.userIdentity.decimal_places;
 
         utilities.logger().log("newProcessSalary: ");
         const input = req.query;
@@ -282,19 +283,19 @@ export default {
                         return f.employee_id == empResult[i]["employee_id"];
                       });
 
-                      utilities
-                        .logger()
-                        .log(
-                          "hrms_option.salary_calendar: ",
-                          results[8][0].salary_calendar
-                        );
+                      // utilities
+                      //   .logger()
+                      //   .log(
+                      //     "hrms_option.salary_calendar: ",
+                      //     results[8][0].salary_calendar
+                      //   );
                       if (results[8][0].salary_calendar == "F") {
-                        utilities
-                          .logger()
-                          .log(
-                            "in_salary_calendar: ",
-                            results[8][0].salary_calendar
-                          );
+                        // utilities
+                        //   .logger()
+                        //   .log(
+                        //     "in_salary_calendar: ",
+                        //     results[8][0].salary_calendar
+                        //   );
 
                         empResult[i]["total_days"] =
                           results[8][0].salary_calendar_fixed_days;
@@ -312,7 +313,8 @@ export default {
                         input: input,
                         _LeaveRule: _LeaveRule,
                         hrms_option: results[8],
-                        next: next
+                        next: next,
+                        decimal_places: req.userIdentity.decimal_places
                       })
                         .then(earningOutput => {
                           current_earning_amt_array =
@@ -333,7 +335,8 @@ export default {
                             empResult: empResult[i],
                             leave_salary: req.query.leave_salary,
                             hrms_option: results[8],
-                            next: next
+                            next: next,
+                            decimal_places: req.userIdentity.decimal_places
                           }).then(deductionOutput => {
                             current_deduction_amt_array =
                               deductionOutput.current_deduction_amt_array;
@@ -351,7 +354,8 @@ export default {
                               empResult: empResult[i],
                               leave_salary: req.query.leave_salary,
                               hrms_option: results[8],
-                              next: next
+                              next: next,
+                              decimal_places: req.userIdentity.decimal_places
                             }).then(contributionOutput => {
                               current_contribution_amt_array =
                                 contributionOutput.current_contribution_amt_array;
@@ -373,7 +377,8 @@ export default {
                               getLoanDueandPayable({
                                 loan: _loan,
                                 loanPayable: _loanPayable,
-                                next: next
+                                next: next,
+                                decimal_places: req.userIdentity.decimal_places
                               }).then(loanOutput => {
                                 total_loan_due_amount =
                                   loanOutput.total_loan_due_amount;
@@ -392,7 +397,9 @@ export default {
                                 getAdvanceDue({
                                   advance: _advance,
                                   dedcomponent: results[7],
-                                  next: next
+                                  next: next,
+                                  decimal_places:
+                                    req.userIdentity.decimal_places
                                 }).then(advanceOutput => {
                                   advance_due_amount =
                                     advanceOutput.advance_due_amount;
@@ -431,25 +438,13 @@ export default {
                                     over_time_comp: results[9],
                                     over_time: _over_time,
                                     leave_salary: req.query.leave_salary,
-                                    next: next
+                                    next: next,
+                                    decimal_places:
+                                      req.userIdentity.decimal_places
                                   }).then(OTManagement => {
                                     final_earning_amount =
                                       final_earning_amount +
                                       OTManagement.final_earning_amount;
-
-                                    utilities
-                                      .logger()
-                                      .log(
-                                        "OTManagement.current_ot_amt_array : ",
-                                        OTManagement.current_ot_amt_array
-                                      );
-
-                                    utilities
-                                      .logger()
-                                      .log(
-                                        "OTManagement : ",
-                                        final_earning_amount
-                                      );
 
                                     current_earning_amt_array = current_earning_amt_array.concat(
                                       OTManagement.current_ot_amt_array
@@ -462,11 +457,10 @@ export default {
                                       shortage_comp: results[11],
                                       hrms_option: results[8],
                                       leave_salary: req.query.leave_salary,
-                                      next: next
+                                      next: next,
+                                      decimal_places:
+                                        req.userIdentity.decimal_places
                                     }).then(ShortAge => {
-                                      utilities
-                                        .logger()
-                                        .log("ShortAge", ShortAge);
                                       final_deduction_amount =
                                         final_deduction_amount +
                                         ShortAge.final_deduction_amount;
@@ -486,7 +480,9 @@ export default {
                                       );
                                       getMiscellaneous({
                                         miscellaneous: _miscellaneous,
-                                        next: next
+                                        next: next,
+                                        decimal_places:
+                                          req.userIdentity.decimal_places
                                       }).then(miscellaneousOutput => {
                                         current_earning_amt_array = current_earning_amt_array.concat(
                                           miscellaneousOutput.current_earn_compoment
@@ -498,12 +494,6 @@ export default {
                                           final_earning_amount +
                                           miscellaneousOutput.final_earning_amount;
 
-                                        utilities
-                                          .logger()
-                                          .log(
-                                            "miscellaneousOutput : ",
-                                            final_earning_amount
-                                          );
                                         final_deduction_amount =
                                           final_deduction_amount +
                                           miscellaneousOutput.final_deduction_amount;
@@ -3830,6 +3820,7 @@ function getEarningComponents(options) {
       let leave_salary_days = 0;
 
       let accrual_amount = 0;
+      let decimal_places = options.decimal_places;
 
       let total_days = empResult["total_days"];
 
@@ -3860,42 +3851,47 @@ function getEarningComponents(options) {
             current_earning_per_day_salary = 0;
           }
 
+          current_earning_amt = utilities.decimalPoints(
+            current_earning_amt,
+            decimal_places
+          );
+
           current_earning_amt_array.push({
             earnings_id: obj.earnings_id,
             amount: current_earning_amt,
             per_day_salary: current_earning_per_day_salary
           });
         } else if (obj["calculation_type"] == "V") {
-          utilities
-            .logger()
-            .log("from_normal_salary: ", empResult["from_normal_salary"]);
-
-          utilities
-            .logger()
-            .log("annual_salary_comp: ", obj.annual_salary_comp);
+          // utilities
+          //   .logger()
+          //   .log("from_normal_salary: ", empResult["from_normal_salary"]);
+          //
+          // utilities
+          //   .logger()
+          //   .log("annual_salary_comp: ", obj.annual_salary_comp);
 
           let leave_period =
             empResult["total_applied_days"] === null
               ? 0
               : parseFloat(empResult["total_applied_days"]);
 
-          utilities.logger().log("leave_period: ", leave_period);
+          // utilities.logger().log("leave_period: ", leave_period);
           let annual_per_day_sal = 0;
 
-          utilities.logger().log("annual_per_day_sal: ", annual_per_day_sal);
+          // utilities.logger().log("annual_per_day_sal: ", annual_per_day_sal);
 
           if (leave_salary == null || leave_salary == undefined) {
-            utilities
-              .logger()
-              .log("salary_calendar: ", hrms_option[0].salary_calendar);
-
-            utilities.logger().log("amount: ", obj["amount"]);
-            utilities
-              .logger()
-              .log(
-                "salary_calendar_fixed_days: ",
-                hrms_option[0].salary_calendar_fixed_days
-              );
+            // utilities
+            //   .logger()
+            //   .log("salary_calendar: ", hrms_option[0].salary_calendar);
+            //
+            // utilities.logger().log("amount: ", obj["amount"]);
+            // utilities
+            //   .logger()
+            //   .log(
+            //     "salary_calendar_fixed_days: ",
+            //     hrms_option[0].salary_calendar_fixed_days
+            //   );
 
             if (hrms_option[0].salary_calendar == "F") {
               current_earning_per_day_salary = parseFloat(
@@ -3976,7 +3972,11 @@ function getEarningComponents(options) {
             current_earning_amt = 0;
           }
 
-          utilities.logger().log("current_earning_amt: ", current_earning_amt);
+          current_earning_amt = utilities.decimalPoints(
+            current_earning_amt,
+            decimal_places
+          );
+          // utilities.logger().log("current_earning_amt: ", current_earning_amt);
           //Apply Leave Rule
           accrual_amount = accrual_amount + annual_per_day_sal;
           if (leave_salary != "Y") {
@@ -4000,16 +4000,9 @@ function getEarningComponents(options) {
                 }
 
                 //Slab
-                utilities.logger().log("leaves_till_date: ", leaves_till_date);
-                utilities.logger().log("current_leave: ", current_leave);
                 if (_LeaveRule[i].calculation_type == "SL") {
                   if (_LeaveRule[i].value_type == "RA") {
                     let leave_rule_days = _LeaveRule[i].total_days;
-
-                    utilities.logger().log("previous_leave: ", current_leave);
-                    utilities
-                      .logger()
-                      .log("leave_rule_days: ", leave_rule_days);
 
                     if (leaves_till_date < leave_rule_days) {
                       balance_days = leaves_till_date;
@@ -4028,18 +4021,13 @@ function getEarningComponents(options) {
 
                       utilities.logger().log("x: ", x);
                       if (leave_rule_days > 0) {
-                        utilities
-                          .logger()
-                          .log("leave_rule_days: ", leave_rule_days);
                         balance_days = leave_rule_days;
                       } else {
                         utilities.logger().log("else: ", x);
                         balance_days = x;
                       }
                       leaves_till_date = x;
-                      utilities
-                        .logger()
-                        .log("leaves_till_date: ", leaves_till_date);
+
                       if (leaves_till_date > current_leave) {
                         utilities.logger().log("if: ");
                         balance_days = 0;
@@ -4048,24 +4036,24 @@ function getEarningComponents(options) {
                         if (y > current_leave) {
                           y = y - current_leave;
                           balance_days = balance_days - y;
-                          utilities
-                            .logger()
-                            .log("balance_days: ", balance_days);
+                          // utilities
+                          //   .logger()
+                          //   .log("balance_days: ", balance_days);
                         }
                       }
                     }
 
-                    utilities
-                      .logger()
-                      .log("leaves_till_date: ", leaves_till_date);
+                    // utilities
+                    //   .logger()
+                    //   .log("leaves_till_date: ", leaves_till_date);
 
                     if (balance_days > 0) {
-                      utilities
-                        .logger()
-                        .log("current_earning_amt: ", current_earning_amt);
+                      // utilities
+                      //   .logger()
+                      //   .log("current_earning_amt: ", current_earning_amt);
                       let split_sal = 0;
 
-                      utilities.logger().log("paytype: ", paytype);
+                      // utilities.logger().log("paytype: ", paytype);
                       if (paytype == "NO") {
                       } else if (paytype == "FD") {
                         current_earning_amt = current_earning_amt;
@@ -4093,9 +4081,13 @@ function getEarningComponents(options) {
                     previous_leave = leaves_till_date - current_leave;
                     previous_leave = previous_leave - leave_rule_days;
 
-                    utilities
-                      .logger()
-                      .log("current_earning_amt: ", current_earning_amt);
+                    current_earning_amt = utilities.decimalPoints(
+                      current_earning_amt,
+                      decimal_places
+                    );
+                    // utilities
+                    //   .logger()
+                    //   .log("current_earning_amt: ", current_earning_amt);
                   }
                 }
               }
@@ -4120,6 +4112,11 @@ function getEarningComponents(options) {
         return parseFloat(s.amount);
       });
 
+      final_earning_amount = utilities.decimalPoints(
+        final_earning_amount,
+        decimal_places
+      );
+
       resolve({
         current_earning_amt_array,
         final_earning_amount,
@@ -4136,10 +4133,12 @@ function getEarningComponents(options) {
 function getDeductionComponents(options) {
   return new Promise((resolve, reject) => {
     try {
+      const utilities = new algaehUtilities();
       const _deduction = options.deduction;
       const empResult = options.empResult;
       const leave_salary = options.leave_salary;
       const hrms_option = options.hrms_option;
+      const decimal_places = options.decimal_places;
 
       let current_deduction_amt = 0;
       let current_deduction_per_day_salary = 0;
@@ -4211,6 +4210,11 @@ function getDeductionComponents(options) {
           }
         }
 
+        current_deduction_amt = utilities.decimalPoints(
+          current_deduction_amt,
+          decimal_places
+        );
+
         current_deduction_amt_array.push({
           deductions_id: obj.deductions_id,
           amount: current_deduction_amt,
@@ -4221,6 +4225,11 @@ function getDeductionComponents(options) {
       final_deduction_amount = _.sumBy(current_deduction_amt_array, s => {
         return parseFloat(s.amount);
       });
+
+      final_deduction_amount = utilities.decimalPoints(
+        final_deduction_amount,
+        decimal_places
+      );
 
       resolve({ current_deduction_amt_array, final_deduction_amount });
     } catch (e) {
@@ -4234,10 +4243,12 @@ function getDeductionComponents(options) {
 function getContrubutionsComponents(options) {
   return new Promise((resolve, reject) => {
     try {
+      const utilities = new algaehUtilities();
       const _contrubutions = options.contribution;
       const empResult = options.empResult;
       const leave_salary = options.leave_salary;
       const hrms_option = options.hrms_option;
+      const decimal_places = options.decimal_places;
 
       let current_contribution_amt = 0;
       let current_contribution_per_day_salary = 0;
@@ -4310,12 +4321,21 @@ function getContrubutionsComponents(options) {
           }
         }
 
+        current_contribution_amt = utilities.decimalPoints(
+          current_contribution_amt,
+          decimal_places
+        );
         current_contribution_amt_array.push({
           contributions_id: obj.contributions_id,
           amount: current_contribution_amt
           // per_day_salary: current_contribution_per_day_salary
         });
       });
+
+      final_contribution_amount = utilities.decimalPoints(
+        final_contribution_amount,
+        decimal_places
+      );
 
       final_contribution_amount = _.sumBy(current_contribution_amt_array, s => {
         return parseFloat(s.amount);
