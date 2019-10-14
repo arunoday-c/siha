@@ -469,7 +469,7 @@ class OfficalDetails extends Component {
                         <span>
                           <AlgaehLabel
                             label={{
-                              forceLabel: "OT Entitle"
+                              forceLabel: "Entitle for OverTime"
                             }}
                           />
                         </span>
@@ -478,11 +478,11 @@ class OfficalDetails extends Component {
                         {this.state.entitled_daily_ot === "Y" ? (
                           <AlagehAutoComplete
                             div={{ className: "col mandatory form-group" }}
-                            label={
-                              {
-                                //forceLabel: "Overtime Group",
-                              }
-                            }
+                            // label={
+                            //   {
+                            //     //forceLabel: "Overtime Group",
+                            //   }
+                            // }
                             selector={{
                               name: "overtime_group_id",
                               className: "select-fld",

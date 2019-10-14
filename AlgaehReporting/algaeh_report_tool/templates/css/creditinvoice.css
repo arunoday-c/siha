@@ -251,7 +251,10 @@ body {
 .txtFld {
   text-align: left !important;
 }
-
+.numberFldTotal {
+  background: #f2f2f2;
+  font-weight: bold;
+}
 .tableForPharmacy {
   width: 100%;
   border-collapse: collapse;
