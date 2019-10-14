@@ -2068,14 +2068,14 @@ export default {
                 const total_leave_salary = _.sumBy(
                   leave_salary_accrual_detail,
                   s => {
-                    return s.leave_salary;
+                    return parseFloat(s.leave_salary);
                   }
                 );
 
                 const total_airfare_amount = _.sumBy(
                   leave_salary_accrual_detail,
                   s => {
-                    return s.airfare_amount;
+                    return parseFloat(s.airfare_amount);
                   }
                 );
 

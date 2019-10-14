@@ -20,6 +20,7 @@ import {
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import AddEmployeeBalanceEvent from "./AddEmployeeBalanceEvent";
 import GlobalVariables from "../../../../../utils/GlobalVariables.json";
+import { getYears } from "../../../../../utils/GlobalFunctions";
 
 const all_functions = AddEmployeeBalanceEvent();
 
@@ -35,7 +36,14 @@ class AddEmployeeOpenBalance extends PureComponent {
       leave_salary_amount: null,
       airfare_months: null,
       month: moment(new Date()).format("M"),
-      gratuity_amount: null
+      gratuity_amount: null,
+      loan_id: null,
+      pending_loan: null,
+      installment_amount: null,
+      pending_tenure: null,
+      loan_application_date: null,
+      start_year: parseInt(moment().year(), 10),
+      start_month: null
     };
   }
 
@@ -50,7 +58,14 @@ class AddEmployeeOpenBalance extends PureComponent {
         leave_salary_amount: null,
         airfare_months: null,
         month: moment(new Date()).format("M"),
-        gratuity_amount: null
+        gratuity_amount: null,
+        loan_id: null,
+        pending_loan: null,
+        installment_amount: null,
+        pending_tenure: null,
+        loan_application_date: null,
+        start_year: parseInt(moment().year(), 10),
+        start_month: null
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -71,6 +86,7 @@ class AddEmployeeOpenBalance extends PureComponent {
   }
 
   render() {
+    let allYears = getYears();
     return (
       <div>
         <AlgaehModalPopUp
@@ -238,6 +254,173 @@ class AddEmployeeOpenBalance extends PureComponent {
                     },
                     others: {
                       placeholder: "0.00"
+                    }
+                  }}
+                />
+              </div>
+            ) : this.props.selected_type === "LO" ? (
+              <div className="row">
+                <AlagehAutoComplete
+                  div={{ className: "col-6  form-group mandatory" }}
+                  label={{
+                    forceLabel: "Select Loan.",
+                    isImp: true
+                  }}
+                  selector={{
+                    sort: "off",
+                    name: "loan_id",
+                    className: "select-fld",
+                    value: this.state.loan_id,
+                    dataSource: {
+                      textField: "loan_description",
+                      valueField: "hims_d_loan_id",
+                      data: this.props.loan_master
+                    },
+                    onChange: this.texthandle.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        loan_id: null
+                      });
+                    }
+                  }}
+                />
+                <AlagehAutoComplete
+                  div={{ className: "col-6" }}
+                  label={{
+                    forceLabel: "Start Year.",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "start_year",
+                    className: "select-fld",
+                    value: this.state.start_year,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: allYears
+                    },
+                    onChange: this.texthandle.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        start_year: null
+                      });
+                    }
+                  }}
+                />
+
+                <AlagehAutoComplete
+                  div={{ className: "col-6" }}
+                  label={{
+                    forceLabel: "Start Month",
+                    isImp: true
+                  }}
+                  selector={{
+                    sort: "off",
+                    name: "start_month",
+                    className: "select-fld",
+                    value: this.state.start_month,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.MONTHS
+                    },
+                    onChange: this.texthandle.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        start_month: null
+                      });
+                    }
+                  }}
+                />
+
+                <AlgaehDateHandler
+                  div={{ className: "col-6" }}
+                  label={{
+                    forceLabel: "Loan Applied",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "loan_application_date"
+                  }}
+                  maxDate={new Date()}
+                  events={{
+                    onChange: (ctrl, e) => {
+                      debugger;
+                      this.setState({
+                        [e]: moment(ctrl)._d
+                      });
+                    }
+                  }}
+                  value={this.state.loan_application_date}
+                />
+
+                <AlagehFormGroup
+                  div={{ className: "col-6  form-group mandatory" }}
+                  label={{
+                    forceLabel: "Pending Loan",
+                    isImp: true
+                  }}
+                  textBox={{
+                    number: {
+                      allowNegative: false,
+                      thousandSeparator: ","
+                    },
+                    dontAllowKeys: ["-", "e"],
+                    value: this.state.pending_loan,
+                    className: "txt-fld",
+                    name: "pending_loan",
+                    events: {
+                      onChange: this.texthandle.bind(this)
+                    },
+                    others: {
+                      placeholder: "0.00"
+                    }
+                  }}
+                />
+                <AlagehFormGroup
+                  div={{ className: "col-6  form-group mandatory" }}
+                  label={{
+                    forceLabel: "Installment Amount",
+                    isImp: true
+                  }}
+                  textBox={{
+                    number: {
+                      allowNegative: false,
+                      thousandSeparator: ","
+                    },
+                    dontAllowKeys: ["-", "e"],
+                    value: this.state.installment_amount,
+                    className: "txt-fld",
+                    name: "installment_amount",
+                    events: {
+                      onChange: this.texthandle.bind(this)
+                    },
+                    others: {
+                      placeholder: "0.00"
+                    }
+                  }}
+                />
+                <AlagehFormGroup
+                  div={{ className: "col-6  form-group mandatory" }}
+                  label={{
+                    forceLabel: "Pending Tenure",
+                    isImp: true
+                  }}
+                  textBox={{
+                    number: {
+                      allowNegative: false,
+                      thousandSeparator: ","
+                    },
+                    dontAllowKeys: ["-", "e"],
+                    value: this.state.pending_tenure,
+                    className: "txt-fld",
+                    name: "pending_tenure",
+                    events: {
+                      onChange: this.texthandle.bind(this)
+                    },
+                    others: {
+                      placeholder: "0"
                     }
                   }}
                 />

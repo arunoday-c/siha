@@ -44,7 +44,9 @@ class OpeningBalance extends Component {
       openModal: false,
       application_leave: [],
       leave_id: null,
-      error_upload: null
+      error_upload: null,
+      loan_master: [],
+      download_enable: false
     };
     all_functions.getLeaveMaster(this);
   }
@@ -311,6 +313,7 @@ class OpeningBalance extends Component {
               onClick={this.downloadExcel.bind(this)}
               style={{ marginLeft: 10 }}
               className="btn btn-default btn-with-icon"
+              disabled={this.state.download_enable}
             >
               <i className="fas fa-file-download"></i> Download
             </button>
@@ -386,6 +389,18 @@ class OpeningBalance extends Component {
                       Opening balance for - Loan
                     </h3>
                   </div>
+                  <div className="actions">
+                    <button
+                      className="btn btn-primary"
+                      style={{ color: "#fff" }}
+                      onClick={this.showModal.bind(
+                        this,
+                        "Employee Loan Opening Balance"
+                      )}
+                    >
+                      Add Opening Balance
+                    </button>
+                  </div>
                 </div>
                 <div className="portlet-body">
                   <div className="row">
@@ -402,8 +417,7 @@ class OpeningBalance extends Component {
                         forceRender={true}
                         events={{
                           onEdit: () => {},
-                          onDelete: () => {},
-                          onDone: () => {}
+                          onDone: this.updateEmployeeOpeningBalance.bind(this)
                         }}
                         actions={{
                           allowDelete: false
@@ -557,6 +571,7 @@ class OpeningBalance extends Component {
           selected_type={this.state.selected_type}
           year={this.state.year}
           hospital_id={this.state.hospital_id}
+          loan_master={this.state.loan_master}
         />
         {/* </div> */}
         <div className="hptl-phase1-footer">

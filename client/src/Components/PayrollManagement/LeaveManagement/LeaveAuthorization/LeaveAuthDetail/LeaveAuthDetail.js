@@ -60,6 +60,13 @@ class LeaveAuthDetail extends Component {
   }
 
   authorizeLeave(type) {
+    if (this.state.remarks === "") {
+      swalMessage({
+        title: "Remarks is Mandatory.",
+        type: "warning"
+      });
+      return;
+    }
     let send_data = {
       total_approved_days: this.state.data.total_approved_days,
       authorized_comment: this.state.remarks,
@@ -104,6 +111,11 @@ class LeaveAuthDetail extends Component {
           });
 
           document.getElementById("lvAuthLd").click();
+        } else {
+          swalMessage({
+            title: res.data.records.message,
+            type: "error"
+          });
         }
       },
       onFailure: err => {
@@ -328,7 +340,6 @@ class LeaveAuthDetail extends Component {
                       </div>
                       <div className="col-7">
                         <div className="row">
-                          {" "}
                           <div className="col-12">
                             <AlgaehLabel
                               label={{ forceLabel: "Remarks", isImp: true }}

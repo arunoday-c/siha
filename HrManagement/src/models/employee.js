@@ -1606,6 +1606,61 @@ export default {
         next(e);
       });
   },
+
+  InsertOpeningBalanceLoan: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+
+    _mysql
+      .generateRunningNumber({
+        modules: ["EMPLOYEE_LOAN"],
+        tableName: "hims_f_app_numgen",
+        identity: {
+          algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+          hospital_id: req.userIdentity.hospital_id
+        }
+      })
+      .then(numGenLeave => {
+        _mysql
+          .executeQuery({
+            query:
+              "INSERT INTO `hims_f_loan_application` (loan_application_number, loan_application_date, employee_id, \
+                loan_id, loan_authorized, pending_tenure, installment_amount, pending_loan, start_year, start_month)\
+          VALUE(?,?,?,?,?,?,?,?,?,?)",
+            values: [
+              numGenLeave[0],
+              input.loan_application_date,
+              input.employee_id,
+              input.loan_id,
+              "APR",
+              input.pending_tenure,
+              input.installment_amount,
+              input.pending_loan,
+              input.start_year,
+              input.start_month
+            ],
+            printQuery: true
+          })
+          .then(result => {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            });
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+      })
+      .catch(e => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
+  },
+
   UpdateOpeningBalanceGratuity: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
@@ -1619,6 +1674,34 @@ export default {
           input.month,
           input.gratuity_amount,
           input.hims_f_gratuity_provision_id
+        ],
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  UpdateOpeningBalanceLoan: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE hims_f_loan_application set pending_tenure=?,installment_amount=?, pending_loan=? \
+          WHERE hims_f_loan_application_id = ?",
+        values: [
+          input.pending_tenure,
+          input.installment_amount,
+          input.pending_loan,
+          input.hims_f_loan_application_id
         ],
         printQuery: true
       })
