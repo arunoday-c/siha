@@ -45,7 +45,8 @@ class OpeningBalance extends Component {
       application_leave: [],
       leave_id: null,
       error_upload: null,
-      loan_master: []
+      loan_master: [],
+      download_enable: false
     };
     all_functions.getLeaveMaster(this);
   }
@@ -312,6 +313,7 @@ class OpeningBalance extends Component {
               onClick={this.downloadExcel.bind(this)}
               style={{ marginLeft: 10 }}
               className="btn btn-default btn-with-icon"
+              disabled={this.state.download_enable}
             >
               <i className="fas fa-file-download"></i> Download
             </button>

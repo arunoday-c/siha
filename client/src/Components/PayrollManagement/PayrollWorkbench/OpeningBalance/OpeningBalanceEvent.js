@@ -18,6 +18,9 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 export default function ManualAttendanceEvents() {
   return {
     downloadExcel: $this => {
+      //  if ($this.state.selected_type === "LO") {
+      //   selected_uri = "/loan/getEmployeeLoanOpenBal";
+      // }
       AlgaehLoader({ show: true });
 
       if ($this.state.hospital_id === null) {
@@ -58,8 +61,6 @@ export default function ManualAttendanceEvents() {
         fileName = `EmployeeLeave-${moment(new Date()).format(
           "YYYY-MM-DD"
         )}.xlsx`;
-      } else if ($this.state.selected_type === "LO") {
-        selected_uri = "/loan/getEmployeeLoanOpenBal";
       } else if ($this.state.selected_type === "GR") {
         inputObj.selected_type = $this.state.selected_type;
         selected_uri = "/employee/getBulkEmployeeGratuity";
@@ -99,7 +100,7 @@ export default function ManualAttendanceEvents() {
           reader.onload = function() {
             AlgaehLoader({ show: false });
             const parse = JSON.parse(reader.result);
-            debugger;
+
             swalMessage({
               type: "error",
               title: parse !== undefined ? parse.result.message : parse
@@ -170,7 +171,8 @@ export default function ManualAttendanceEvents() {
           getLeaveMasterData($this);
           $this.setState({
             selected_type: "LE",
-            leave_balance: []
+            leave_balance: [],
+            download_enable: false
           });
           break;
         case "LO":
@@ -298,7 +300,8 @@ export default function ManualAttendanceEvents() {
           $this.setState({
             selected_type: "LO",
             leave_dynamic_date: leave_dynamic_date,
-            leave_balance: []
+            leave_balance: [],
+            download_enable: true
           });
           break;
         case "GR":
@@ -414,7 +417,8 @@ export default function ManualAttendanceEvents() {
           $this.setState({
             selected_type: "GR",
             leave_dynamic_date: leave_dynamic_date,
-            leave_balance: []
+            leave_balance: [],
+            download_enable: false
           });
           break;
         case "LS":
@@ -558,7 +562,8 @@ export default function ManualAttendanceEvents() {
           $this.setState({
             selected_type: "LS",
             leave_dynamic_date: leave_dynamic_date,
-            leave_balance: []
+            leave_balance: [],
+            download_enable: false
           });
           break;
         default:
@@ -594,7 +599,6 @@ export default function ManualAttendanceEvents() {
         selected_uri = "/employee/UpdateOpeningBalanceLoan";
         inputData = row;
       }
-      debugger;
 
       algaehApiCall({
         uri: selected_uri,
