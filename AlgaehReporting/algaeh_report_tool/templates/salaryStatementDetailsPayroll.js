@@ -19,7 +19,7 @@ const executePDF = function executePDFMethod(options) {
         { name: "November", value: "11" },
         { name: "December", value: "12" }
       ];
-      // const utilities = new algaehUtilities();
+      const utilities = options.utilitites();
       let input = {};
 
       const params = options.args.reportParams;
@@ -28,8 +28,6 @@ const executePDF = function executePDFMethod(options) {
       params.forEach(para => {
         input[para["name"]] = para["value"];
       });
-
-      // utilities.logger().log("input: ", input);
 
       let outputArray = [];
 
@@ -64,7 +62,7 @@ const executePDF = function executePDFMethod(options) {
             input.month,
             input.year
           ],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           const components = result[0];
@@ -195,49 +193,75 @@ const executePDF = function executePDFMethod(options) {
                     ot_hours + "." + (parseInt(ot_min) % parseInt(60));
                   //EN-complete OVER-Time  calculation
 
-                  let employee_earning = earnings
-                    .filter(
-                      item =>
-                        item.salary_header_id == salary[i]["hims_f_salary_id"]
-                    )
-                    .map(s => {
-                      return {
-                        hims_f_salary_earnings_id: s.hims_f_salary_earnings_id,
-                        earnings_id: s.earnings_id,
-                        amount: s.amount,
-                        nationality_id: s.nationality_id
-                      };
+                  const earning_obj = earnings.filter(
+                    item =>
+                      item.salary_header_id == salary[i]["hims_f_salary_id"]
+                  );
+
+                  let employee_earning = earning_component.map(m => {
+                    const obj = earning_obj.find(f => {
+                      return f.earnings_id == m.hims_d_earning_deduction_id;
                     });
 
-                  const employee_deduction = deductions
-                    .filter(
-                      item =>
-                        item.salary_header_id == salary[i]["hims_f_salary_id"]
-                    )
-                    .map(s => {
+                    if (obj) {
+                      return obj;
+                    } else {
                       return {
-                        hims_f_salary_deductions_id:
-                          s.hims_f_salary_deductions_id,
-                        deductions_id: s.deductions_id,
-                        amount: s.amount,
-                        nationality_id: s.nationality_id
+                        hims_f_salary_earnings_id: null,
+                        earnings_id: m.hims_d_earning_deduction_id,
+                        amount: "-",
+                        nationality_id: null
                       };
+                    }
+                  });
+
+                  const deduction_obj = deductions.filter(
+                    item =>
+                      item.salary_header_id == salary[i]["hims_f_salary_id"]
+                  );
+
+                  const employee_deduction = deduction_component.map(m => {
+                    const obj = deduction_obj.find(f => {
+                      return f.deductions_id == m.hims_d_earning_deduction_id;
                     });
 
-                  const employee_contributions = contributions
-                    .filter(
-                      item =>
-                        item.salary_header_id == salary[i]["hims_f_salary_id"]
-                    )
-                    .map(s => {
+                    if (obj) {
+                      return obj;
+                    } else {
                       return {
-                        hims_f_salary_contributions_id:
-                          s.hims_f_salary_contributions_id,
-                        contributions_id: s.contributions_id,
-                        amount: s.amount,
-                        nationality_id: s.nationality_id
+                        hims_f_salary_deductions_id: null,
+                        deductions_id: m.hims_d_earning_deduction_id,
+                        amount: "-",
+                        nationality_id: null
                       };
-                    });
+                    }
+                  });
+
+                  const contributions_obj = contributions.filter(
+                    item =>
+                      item.salary_header_id == salary[i]["hims_f_salary_id"]
+                  );
+
+                  const employee_contributions = contributions_component.map(
+                    m => {
+                      const obj = contributions_obj.find(f => {
+                        return (
+                          f.contributions_id == m.hims_d_earning_deduction_id
+                        );
+                      });
+
+                      if (obj) {
+                        return obj;
+                      } else {
+                        return {
+                          hims_f_salary_earnings_id: null,
+                          contributions_id: m.hims_d_earning_deduction_id,
+                          amount: "-",
+                          nationality_id: null
+                        };
+                      }
+                    }
+                  );
 
                   //ST------ calculating employee_pasi plus employer_pasi
                   let employe_plus_employr = 0;
@@ -331,7 +355,7 @@ const executePDF = function executePDFMethod(options) {
                   sum_leave_salary: sum_leave_salary,
                   sum_airfare_amount: sum_airfare_amount
                 };
-                //utilities.logger().log("result: ", result);
+                utilities.logger().log("outputArray: ", outputArray);
                 resolve(result);
               })
               .catch(e => {
