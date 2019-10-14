@@ -135,7 +135,7 @@ const ClearData = $this => {
 
 const FinalizeSalary = $this => {
   swal({
-    title: "Are you sure want to Finalize the Salary ?",
+    title: "Are you sure, You want to Finalize the Salary?",
     type: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes",

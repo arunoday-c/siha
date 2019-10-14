@@ -117,7 +117,7 @@ class YearlyLeaveDetail extends Component {
                         <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
                       ),
                       others: {
-                        maxWidth: 250
+                        maxWidth: 120
                       }
                     },
                     {
@@ -132,17 +132,52 @@ class YearlyLeaveDetail extends Component {
                       fieldName: "total_eligible",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Total Eligible" }} />
-                      ),
-                      others: {
-                        maxWidth: 100
-                      }
+                      )
+                    },
+                    {
+                      fieldName: "sub_department_name",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Avail Till Date" }}
+                        />
+                      )
+                    },
+                    {
+                      fieldName: "sub_department_name",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Projected Leave" }}
+                        />
+                      )
+                    },
+                    {
+                      fieldName: "leave_description",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Carry Forwaded Leave" }}
+                        />
+                      )
+                    },
+                    {
+                      fieldName: "leave_description",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Closing Balance" }}
+                        />
+                      )
+                    },
+                    {
+                      fieldName: "sub_department_name",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Leave Closed" }} />
+                      )
                     }
                   ]}
                   keyId="hims_f_employee_monthly_leave_id"
                   dataSource={{ data: this.state.leave_data }}
                   isEditable={false}
                   loading={this.state.loading}
-                  paging={{ page: 0, rowsPerPage: 10 }}
+                  paging={{ page: 0, rowsPerPage: 15 }}
                   events={{}}
                   others={{}}
                 />

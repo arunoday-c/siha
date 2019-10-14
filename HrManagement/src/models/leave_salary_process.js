@@ -902,7 +902,8 @@ function InsertEmployeeLeaveSalary(options) {
                 airticket_amount, balance_leave_days, balance_leave_salary_amount, balance_airticket_amount, \
                 airfare_months, utilized_leave_days,  utilized_leave_salary_amount, utilized_airticket_amount \
                 from hims_f_employee_leave_salary_header where employee_id = ?;\
-                select hims_f_employee_monthly_leave_id, close_balance from hims_f_employee_monthly_leave where year = ? and employee_id = ? and leave_id=?;",
+                select hims_f_employee_monthly_leave_id, close_balance, accumulated_leaves, projected_applied_leaves\
+                from hims_f_employee_monthly_leave where year = ? and employee_id = ? and leave_id=?;",
           values: [
             leave_salary_accrual_detail.employee_id,
             leave_salary_accrual_detail.year,
@@ -960,9 +961,7 @@ function InsertEmployeeLeaveSalary(options) {
             let airfare_months =
               parseFloat(employee_leave_salary_header[0].airfare_months) + 1;
 
-            let monthly_close_balance =
-              parseFloat(monthly_leave.close_balance) +
-              parseFloat(leave_salary_accrual_detail.leave_days);
+            let monthly_close_balance = parseFloat(monthly_leave.close_balance);
 
             leave_salary_amount = utilities.decimalPoints(
               leave_salary_amount,
@@ -988,6 +987,37 @@ function InsertEmployeeLeaveSalary(options) {
               utilized_airticket_amount,
               decimal_places
             );
+
+            let projected_applied_leaves = parseFloat(
+              monthly_leave.projected_applied_leaves
+            );
+            let accumulated_leaves = parseFloat(
+              monthly_leave.accumulated_leaves
+            );
+            let monthly_accruval_leave = parseFloat(
+              leave_salary_accrual_detail[i].leave_days
+            );
+            if (projected_applied_leaves > 0) {
+              if (projected_applied_leaves > monthly_accruval_leave) {
+                projected_applied_leaves =
+                  projected_applied_leaves - monthly_accruval_leave;
+                accumulated_leaves =
+                  accumulated_leaves + monthly_accruval_leave;
+              } else {
+                projected_applied_leaves =
+                  monthly_accruval_leave - projected_applied_leaves;
+                monthly_close_balance =
+                  monthly_close_balance + projected_applied_leaves;
+                accumulated_leaves =
+                  accumulated_leaves +
+                  monthly_accruval_leave -
+                  projected_applied_leaves;
+              }
+            } else {
+              monthly_close_balance =
+                monthly_close_balance + monthly_accruval_leave;
+            }
+
             _mysql
               .executeQuery({
                 query:
@@ -995,7 +1025,8 @@ function InsertEmployeeLeaveSalary(options) {
                   `airticket_amount`=?,`balance_leave_days`=?,`balance_leave_salary_amount`=?,\
                   `balance_airticket_amount`=?,`airfare_months`=?, `utilized_leave_days`=?, \
                   `utilized_leave_salary_amount` = ?, `utilized_airticket_amount` = ? where  hims_f_employee_leave_salary_header_id=?;\
-                  UPDATE hims_f_employee_monthly_leave set close_balance=? where hims_f_employee_monthly_leave_id=?;\
+                  UPDATE hims_f_employee_monthly_leave set close_balance=?, projected_applied_leaves=?, accumulated_leaves=? \
+                  where hims_f_employee_monthly_leave_id=?;\
                   INSERT INTO `hims_f_employee_leave_salary_detail`(employee_leave_salary_header_id,leave_days,\
                     leave_salary_amount,airticket_amount, year, month) VALUE(?,?,?,?,?,?)",
                 values: [
@@ -1012,6 +1043,8 @@ function InsertEmployeeLeaveSalary(options) {
                   employee_leave_salary_header[0]
                     .hims_f_employee_leave_salary_header_id,
                   monthly_close_balance,
+                  projected_applied_leaves,
+                  accumulated_leaves,
                   monthly_leave.hims_f_employee_monthly_leave_id,
                   employee_leave_salary_header[0]
                     .hims_f_employee_leave_salary_header_id,
@@ -1089,19 +1122,52 @@ function InsertEmployeeLeaveSalary(options) {
                     printQuery: true
                   })
                   .then(leave_detail => {
-                    let monthly_close_balance =
-                      parseFloat(monthly_leave.close_balance) +
-                      parseFloat(leave_salary_accrual_detail.leave_days);
+                    let monthly_close_balance = parseFloat(
+                      monthly_leave.close_balance
+                    );
 
-                    utilities
-                      .logger()
-                      .log("monthly_close_balance: ", monthly_close_balance);
+                    let projected_applied_leaves = parseFloat(
+                      monthly_leave.projected_applied_leaves
+                    );
+                    let accumulated_leaves = parseFloat(
+                      monthly_leave.accumulated_leaves
+                    );
+                    let monthly_accruval_leave = parseFloat(
+                      leave_salary_accrual_detail[i].leave_days
+                    );
+                    if (projected_applied_leaves > 0) {
+                      if (projected_applied_leaves > monthly_accruval_leave) {
+                        projected_applied_leaves =
+                          projected_applied_leaves - monthly_accruval_leave;
+                        accumulated_leaves =
+                          accumulated_leaves + monthly_accruval_leave;
+                      } else {
+                        projected_applied_leaves =
+                          monthly_accruval_leave - projected_applied_leaves;
+                        monthly_close_balance =
+                          monthly_close_balance + projected_applied_leaves;
+                        accumulated_leaves =
+                          accumulated_leaves +
+                          monthly_accruval_leave -
+                          projected_applied_leaves;
+                      }
+                    } else {
+                      monthly_close_balance =
+                        monthly_close_balance + monthly_accruval_leave;
+                    }
+
+                    // utilities
+                    //   .logger()
+                    //   .log("monthly_close_balance: ", monthly_close_balance);
                     _mysql
                       .executeQuery({
                         query:
-                          "UPDATE hims_f_employee_monthly_leave set close_balance=? where hims_f_employee_monthly_leave_id=?;",
+                          "UPDATE hims_f_employee_monthly_leave set close_balance=?,  projected_applied_leaves=?, \
+                          accumulated_leaves=? where hims_f_employee_monthly_leave_id=?;",
                         values: [
                           monthly_close_balance,
+                          projected_applied_leaves,
+                          accumulated_leaves,
                           monthly_leave.hims_f_employee_monthly_leave_id
                         ],
 
