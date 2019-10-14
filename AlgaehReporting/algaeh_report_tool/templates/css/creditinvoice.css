@@ -255,6 +255,10 @@ body {
   background: #f2f2f2;
   font-weight: bold;
 }
+.numberFldTotalBottom {
+  background: #ffc7a6;
+  font-weight: bold;
+}
 .tableForPharmacy {
   width: 100%;
   border-collapse: collapse;

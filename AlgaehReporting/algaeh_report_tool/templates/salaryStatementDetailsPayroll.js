@@ -335,7 +335,9 @@ const executePDF = function executePDFMethod(options) {
                     employee_earning: employee_earning,
                     employee_deduction: employee_deduction,
                     employee_contributions: employee_contributions,
-                    employe_plus_employr: employe_plus_employr,
+                    employe_plus_employr: employe_plus_employr.toFixed(
+                      decimal_places
+                    ),
                     complete_ot: complete_ot
                   });
                 }
@@ -355,7 +357,10 @@ const executePDF = function executePDFMethod(options) {
                   sum_employe_plus_emplyr: sum_employe_plus_emplyr,
                   sum_gratuity: sum_gratuity,
                   sum_leave_salary: sum_leave_salary,
-                  sum_airfare_amount: sum_airfare_amount
+                  sum_airfare_amount: sum_airfare_amount,
+                  span_earning: earning_component.length,
+                  span_deduction: deduction_component.length,
+                  span_contribution: contributions_component.length
                 };
                 utilities.logger().log("outputArray: ", outputArray);
                 resolve(result);
