@@ -47,6 +47,7 @@ export default function Filter(props) {
   const [toMax, setToMax] = useState(new Date());
   const [loadingPriew, setLoadingPriew] = useState(false);
   const [onlyExcel, setOnlyExcel] = useState("");
+  const [upload, setUpload] = useState("Y");
   const dateCalcl = (starttDt, enddtDt) => {
     starttDt = starttDt || startDt;
     enddtDt = enddtDt || endDt;
@@ -344,6 +345,36 @@ export default function Filter(props) {
           }
         }}
       /> */}
+      {/* <div className="col">
+        <input
+          type="radio"
+          id="directEntry"
+          name="previewType"
+          checked={upload === "N" ? true : false}
+          onChange={e => {
+            if (e.target.checked) {
+              setUpload("N");
+            } else {
+              setUpload("Y");
+            }
+          }}
+        />
+        <label htmlFor="directEntry">Direct Entry Preview</label>
+        <input
+          type="radio"
+          id="uploadedPreview"
+          name="previewType"
+          checked={upload === "Y" ? true : false}
+          onChange={e => {
+            if (e.target.checked) {
+              setUpload("Y");
+            } else {
+              setUpload("N");
+            }
+          }}
+        />
+        <label htmlFor="uploadedPreview">Uploaded Preview</label>
+      </div> */}
       <div className="col-5" style={{ paddingTop: 19 }}>
         <div className="uploadManualDiv   btn-with-icon">
           <input
@@ -407,7 +438,8 @@ export default function Filter(props) {
                 employee_id: employeeID,
                 employee_group_id: empGroupId,
                 month: month,
-                year: moment().format("YYYY")
+                year: moment().format("YYYY"),
+                upload: upload
               },
               props
             );

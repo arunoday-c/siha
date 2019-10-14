@@ -99,6 +99,7 @@ export default function ManualAttendanceEvents() {
           reader.onload = function() {
             AlgaehLoader({ show: false });
             const parse = JSON.parse(reader.result);
+            debugger;
             swalMessage({
               type: "error",
               title: parse !== undefined ? parse.result.message : parse

@@ -62,8 +62,10 @@ export default ({ config, db }) => {
           const { loginDateTime, user_display_name, identity } = result;
           res.status(httpStatus.ok).json({
             success: false,
-            message: ` '${user_display_name}' already login from identity ${identity} on ${loginDateTime},
-            it will truncate all transactions from current using session.`
+            // '${identity}'
+            //'${user_display_name}'
+            message: `Your are already logged in another machine on ${loginDateTime},
+            Please Re-enter password to continue here.`
           });
         }
       });

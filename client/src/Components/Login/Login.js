@@ -52,16 +52,18 @@ export default function() {
   function popUpMessage(message) {
     //const { value: password } =
     Swal.fire({
-      title: "Alert !",
+      title: "Already Logged In!",
       text: message,
       input: "password",
-      inputPlaceholder: "Re-enter your password",
+      confirmButtonText: "Login",
+      showCancelButton: true,
+      inputPlaceholder: "Re-enter password",
       inputAttributes: {
         autocapitalize: "off",
         autocorrect: "off"
       }
     }).then(({ value }) => {
-      if (value !== "") {
+      if (value !== undefined && value !== "") {
         const { username, item_id } = login;
         getLocalIP(identity => {
           const dataSent = encrypter(

@@ -131,9 +131,9 @@ class LeaveEncashmentAuth extends Component {
             /> */}
 
             <AlagehAutoComplete
-              div={{ className: "col" }}
+              div={{ className: "col-1 form-group mandatory" }}
               label={{
-                forceLabel: "Select a Year.",
+                forceLabel: "Year.",
                 isImp: true
               }}
               selector={{
@@ -155,9 +155,9 @@ class LeaveEncashmentAuth extends Component {
               }}
             />
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col-2 form-group mandatory" }}
               label={{
-                forceLabel: "Authorization Level",
+                forceLabel: "Auth. Level",
                 isImp: true
               }}
               selector={{
@@ -174,10 +174,10 @@ class LeaveEncashmentAuth extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col" }}
+              div={{ className: "col-2 form-group mandatory" }}
               label={{
-                forceLabel: "Select a Branch.",
-                isImp: false
+                forceLabel: "Branch.",
+                isImp: true
               }}
               selector={{
                 name: "hospital_id",
@@ -197,10 +197,10 @@ class LeaveEncashmentAuth extends Component {
               }}
             />
 
-            <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+            {/* <AlagehAutoComplete
+              div={{ className: "col-2 form-group" }}
               label={{
-                forceLabel: "Filter by Sub Dept.",
+                forceLabel: "Sub Dept.",
                 isImp: false
               }}
               selector={{
@@ -219,7 +219,7 @@ class LeaveEncashmentAuth extends Component {
                   });
                 }
               }}
-            />
+            /> */}
 
             <div className="col-2 globalSearchCntr">
               <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
@@ -267,18 +267,18 @@ class LeaveEncashmentAuth extends Component {
 
             <div className="col form-group">
               <button
-                style={{ marginTop: 21 }}
+                //  onClick={this.clearState.bind(this)}
+                style={{ marginTop: 19 }}
+                className="btn btn-default"
+              >
+                Clear
+              </button>{" "}
+              <button
+                style={{ marginTop: 19, marginLeft: 5 }}
                 className="btn btn-primary"
                 onClick={LoadEncashment.bind(this, this)}
               >
                 Load
-              </button>
-              <button
-                //  onClick={this.clearState.bind(this)}
-                style={{ marginTop: 21, marginLeft: 5 }}
-                className="btn btn-default"
-              >
-                Clear
               </button>
             </div>
           </div>

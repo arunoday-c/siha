@@ -628,13 +628,13 @@ class PersistentDrawer extends React.Component {
               className="dropdown-menu animated fadeIn faster"
               aria-labelledby="dropdownMenuButton"
             >
-              <a className="dropdown-item">
+              {/* <a className="dropdown-item">
                 <i className="fas fa-user" /> User Profile
               </a>
               <a className="dropdown-item">
                 <i className="fas fa-cog" /> Preference
               </a>
-              <div className="dropdown-divider" />
+              <div className="dropdown-divider" /> */}
               <a
                 className="dropdown-item"
                 onClick={this.handleClose.bind(this, "en")}

@@ -475,3 +475,9 @@ body {
 .analyteResult [data-value="CH"] {
   color: red;
 }
+.textTruncate {
+  overflow: hidden;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

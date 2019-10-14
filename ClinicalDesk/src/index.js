@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import exxpress from "express";
 import keys from "algaeh-keys";
 import algaehUtilities from "algaeh-utilities/utilities";
+import { userSecurity } from "algaeh-utilities/checksecurity";
 import routes from "./routes";
 import compression from "compression";
 const app = exxpress();
@@ -31,6 +32,20 @@ app.use((req, res, next) => {
       header = utilities.decryption(header);
       req.userIdentity = header;
       let reqUser = utilities.getTokenData(_token).id;
+      const { username } = req.userIdentity;
+      userSecurity(reqH["x-client-ip"], username)
+        .then(() => {
+          res.setHeader("connection", "keep-alive");
+          next();
+        })
+        .catch(error => {
+          res.status(423).json({
+            success: false,
+            message: error,
+            username: error === "false" ? undefined : username
+          });
+          return;
+        });
       utilities.logger("res-tracking").log(
         "",
         {
@@ -52,9 +67,6 @@ app.use((req, res, next) => {
         "info"
       );
     }
-
-    res.setHeader("connection", "keep-alive");
-    next();
   } else {
     res.status(utilities.httpStatus().unAuthorized).json({
       success: false,

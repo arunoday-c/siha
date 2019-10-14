@@ -43,7 +43,7 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select hims_d_earning_deduction_id,earning_deduction_description,component_category, print_order_by, \
+          query: `select hims_d_earning_deduction_id,earning_deduction_description,short_desc,component_category, print_order_by, \
 				nationality_id from hims_d_earning_deduction where record_status='A' and print_report='Y' order by print_order_by ;\
 				select E.employee_code,E.full_name,E.employee_designation_id,S.employee_id,E.sub_department_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
 				E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
@@ -286,7 +286,7 @@ const executePDF = function executePDFMethod(options) {
 
                   let emp_gratuity = grat
                     ? parseFloat(grat.gratuity_amount)
-                    : parseFloat(0);
+                    : "-";
 
                   let emp_accural = accu
                     ? {
@@ -302,6 +302,8 @@ const executePDF = function executePDFMethod(options) {
 
                   //  utilities.logger().log("salary[i]: ", salary[i]);
 
+                  //console.log("outputArray: ", outputArray);
+
                   outputArray.push({
                     ...salary[i],
                     gratuity_amount: emp_gratuity,
@@ -313,14 +315,14 @@ const executePDF = function executePDFMethod(options) {
                     complete_ot: complete_ot
                   });
                 }
-
+                console.log("outputArray: ", outputArray);
                 const result = {
                   ...input,
                   components: components,
                   earning_component: earning_component,
                   deduction_component: deduction_component,
                   contributions_component: contributions_component,
-                  employees: outputArray,
+                  employees: _.sortBy(outputArray, s => s.employee_code),
                   sum_basic: sum_basic,
                   sum_earnings: sum_earnings.toFixed(decimal_places),
                   sum_deductions: sum_deductions.toFixed(decimal_places),

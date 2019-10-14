@@ -74,15 +74,16 @@ class AddEmployeeOpenBalance extends PureComponent {
     return (
       <div>
         <AlgaehModalPopUp
+          class="addOpenBaln"
           events={{
             onClose: this.onClose.bind(this)
           }}
           title={this.props.HeaderCaption}
           openPopup={this.props.show}
         >
-          <div className="col-lg-12 popupInner">
+          <div className="col-lg-12 popupInner" style={{ paddingTop: 15 }}>
             <div className="row">
-              <div className="col-4 globalSearchCntr">
+              <div className="col-12  globalSearchCntr form-group">
                 <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
                 <h6 onClick={this.employeeSearch.bind(this)}>
                   {this.state.employee_name
@@ -95,7 +96,7 @@ class AddEmployeeOpenBalance extends PureComponent {
             {this.props.selected_type === "LS" ? (
               <div className="row">
                 <AlagehFormGroup
-                  div={{ className: "col-3" }}
+                  div={{ className: "col-6  form-group mandatory" }}
                   label={{
                     forceLabel: "Leave Balance",
                     isImp: true
@@ -119,7 +120,7 @@ class AddEmployeeOpenBalance extends PureComponent {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-3" }}
+                  div={{ className: "col-6  form-group mandatory" }}
                   label={{
                     forceLabel: "Leave Amount",
                     isImp: true
@@ -143,7 +144,7 @@ class AddEmployeeOpenBalance extends PureComponent {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-3" }}
+                  div={{ className: "col-6  form-group" }}
                   label={{
                     forceLabel: "Airticket Amount"
                   }}
@@ -165,7 +166,7 @@ class AddEmployeeOpenBalance extends PureComponent {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col-3" }}
+                  div={{ className: "col-6  form-group" }}
                   label={{
                     forceLabel: "Airfare Months"
                   }}
@@ -189,12 +190,12 @@ class AddEmployeeOpenBalance extends PureComponent {
               </div>
             ) : this.props.selected_type === "GR" ? (
               <div className="row">
-                <div className="col">
+                <div className="col-12  form-group">
                   <AlgaehLabel label={{ forceLabel: "Gratuity Till Year" }} />
                   <h6>{this.props.year ? this.props.year : "----------"}</h6>
                 </div>
                 <AlagehAutoComplete
-                  div={{ className: "col-2" }}
+                  div={{ className: "col-7  form-group mandatory" }}
                   label={{
                     forceLabel: "Gratuity Till Month.",
                     isImp: true
@@ -218,7 +219,7 @@ class AddEmployeeOpenBalance extends PureComponent {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col-3" }}
+                  div={{ className: "col-5  form-group mandatory" }}
                   label={{
                     forceLabel: "Gratuity Amount",
                     isImp: true
@@ -243,27 +244,25 @@ class AddEmployeeOpenBalance extends PureComponent {
               </div>
             ) : null}
           </div>
-          <div className=" popupFooter">
-            <div className="col-lg-12">
-              <div className="row">
-                <div className="col-lg-12">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={this.SaveData.bind(this)}
-                  >
-                    Save
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    onClick={e => {
-                      this.onClose(e);
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </div>
+          <div className="col-12 popupFooter">
+            <div className="row">
+              <div className="col-lg-12">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.SaveData.bind(this)}
+                >
+                  Save
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={e => {
+                    this.onClose(e);
+                  }}
+                >
+                  Cancel
+                </button>
               </div>
             </div>
           </div>

@@ -76,9 +76,9 @@ class LeaveEncashmentProcess extends Component {
         <div className="col-12">
           <div className="row inner-top-search" data-validate="loadEncash">
             <AlagehAutoComplete
-              div={{ className: "col" }}
+              div={{ className: "col-1 form-group mandatory" }}
               label={{
-                forceLabel: "Select a Year.",
+                forceLabel: "Year.",
                 isImp: true
               }}
               selector={{
@@ -155,21 +155,11 @@ class LeaveEncashmentProcess extends Component {
               </span>
             </div> */}
 
-            <div className="col-2 globalSearchCntr">
-              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
-              <h6 onClick={employeeSearch.bind(this, this)}>
-                {this.state.employee_name
-                  ? this.state.employee_name
-                  : "Search Employee"}
-                <i className="fas fa-search fa-lg"></i>
-              </h6>
-            </div>
-
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col-2 form-group mandatory" }}
               label={{
                 forceLabel: "Encashment Type",
-                isImp: false
+                isImp: true
               }}
               selector={{
                 name: "encash_type",
@@ -189,18 +179,18 @@ class LeaveEncashmentProcess extends Component {
                 }
               }}
             />
-
+            <div className="col globalSearchCntr">
+              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <h6 onClick={employeeSearch.bind(this, this)}>
+                {this.state.employee_name
+                  ? this.state.employee_name
+                  : "Search Employee"}
+                <i className="fas fa-search fa-lg"></i>
+              </h6>
+            </div>
             <div className="col form-group">
               <button
-                style={{ marginTop: 21 }}
-                className="btn btn-primary"
-                onClick={LoadEncashment.bind(this, this)}
-              >
-                Load
-              </button>
-
-              <button
-                style={{ marginTop: 21, marginLeft: 5 }}
+                style={{ marginTop: 19 }}
                 type="button"
                 className="btn btn-default"
                 onClick={ClearData.bind(this, this)}
@@ -208,6 +198,13 @@ class LeaveEncashmentProcess extends Component {
                 <AlgaehLabel
                   label={{ forceLabel: "Clear", returnText: true }}
                 />
+              </button>{" "}
+              <button
+                style={{ marginTop: 19, marginLeft: 5 }}
+                className="btn btn-primary"
+                onClick={LoadEncashment.bind(this, this)}
+              >
+                Load
               </button>
             </div>
 

@@ -37,7 +37,17 @@ export default class GratuityAccrual extends Component {
       <div className="row GratuityAccrualScreen">
         <div className="col-12" data-validate="loadLeaveAccrual">
           <div className="row inner-top-search">
-            <div className="col-3" style={{ marginTop: 10 }}>
+            <div className="col-2 globalSearchCntr">
+              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <h6
+              //onClick={employeeSearch.bind(this, this)}
+              >
+                {this.state.employee_name ? this.state.employee_name : "------"}
+                <i className="fas fa-search fa-lg" />
+              </h6>
+            </div>
+
+            {/* <div className="col-3" style={{ marginTop: 10 }}>
               <div
                 className="row"
                 style={{
@@ -69,7 +79,7 @@ export default class GratuityAccrual extends Component {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
 
             <AlagehAutoComplete
               div={{ className: "col form-group" }}

@@ -13,35 +13,36 @@
                 <thead>
                     <tr>
                         <th>Sl No.</th>
-                        <th>Employee Code</th>
-                        <th>Employee Name</th>
+                        <th>Emp. Code</th>
+                        <th>Emp. Name</th>
                         <th>Desgnation</th>
                         <th>Nationality</th>
                         {{!-- <th>Dep.</th> --}}
                         {{!-- <th>Working Days</th> --}}
-                        <th>Present Days</th>
+                        <th>PR Days</th>
                         {{#hasElement earning_component}}
                         {{#each earning_component}}
-                        <th>{{earning_deduction_description}}</th>
+                        <th>{{short_desc}}</th>
                         {{/each }}
                         {{/hasElement}}
                         <th>Total Earnings</th>
                         {{#hasElement deduction_component}}
                         {{#each deduction_component}}
-                        <th>{{earning_deduction_description}}</th>
+                        <th>{{short_desc}}</th>
                         {{/each }}
                         {{/hasElement}}
                         <th>Total Deduction </th>
+                        <th>Net Salary</th>
                         {{#hasElement contributions_component}}
                         {{#each contributions_component}}
-                        <th>{{earning_deduction_description}}</th>
+                        <th>{{short_desc}}</th>
                         {{/each }}
-                        {{/hasElement}}<th>Net Salary</th>
+                        {{/hasElement}}
                         <th>Total Contribution</th>
                         <th>Overtime</th>
                         <th>Employee + Employer</th>
-                        <th>Leave Provision</th>
-                        <th>Airfrare Amount</th>
+                        {{!-- <th>Leave Provision</th>
+                        <th>Airfrare Amount</th> --}}
                         <th>Gratuity Provision</th>
                         <th>
                             Mode Of Payment
@@ -57,8 +58,8 @@
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
-                        <td>{{full_name}}</td>
-                        <td>{{designation}}</td>
+                        <td class="txtFld"><span class="textTruncate" style="width: 200px;">{{full_name}}</span></td>
+                        <td class="txtFld"><span class="textTruncate" style="width: 100px;">{{designation}}</span></td>
                         <td>{{nationality}}</td>
                         {{!-- <td>{{sub_department_name}}</td> --}}
                         {{!-- <td>{{total_days}}</td> --}}
@@ -70,7 +71,7 @@
                         </td>
                         {{/each }}
                         {{else}}
-                        <td>NA</td>
+                        <td class="numberFld">-</td>
                         {{/hasElement }}
                         {{/hasElement }}
                         <td class="numberFld">{{total_earnings}}</td>
@@ -81,10 +82,11 @@
                         </td>
                         {{/each }}
                         {{else}}
-                        <td>NA</td>
+                        <td class="numberFld">-</td>
                         {{/hasElement }}
                         {{/hasElement }}
                         <td class="numberFld">{{total_deductions}}</td>
+                        <td class="numberFld">{{net_salary}}</td>
                         {{#hasElement ../contributions_component}}
                         {{#hasElement employee_contributions}}
                         {{#each ../contributions_component}}
@@ -92,16 +94,15 @@
                             {{dynamicSalary hims_d_earning_deduction_id ../employee_contributions "C"}}</td>
                         {{/each }}
                         {{else}}
-                        <td>NA</td>
+                        <td class="numberFld">-</td>
                         {{/hasElement }}
                         {{/hasElement }}
 
-                        <td class="numberFld">{{net_salary}}</td>
                         <td class="numberFld">{{total_contributions}}</td>
-                        <td>{{complete_ot}}</td>
-                        <td>{{employe_plus_employr}}</td>
-                        <td class="numberFld">{{leave_salary}}</td>
-                        <td class="numberFld">{{airfare_amount}}</td>
+                        <td class="numberFld">{{complete_ot}}</td>
+                        <td class="numberFld">{{employe_plus_employr}}</td>
+                        {{!-- <td class="numberFld">{{leave_salary}}</td>
+                        <td class="numberFld">{{airfare_amount}}</td> --}}
                         <td class="numberFld">{{gratuity_amount}}</td>
                         <td>
                             {{mode_of_payment}}
