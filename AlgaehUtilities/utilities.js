@@ -114,8 +114,20 @@ algaehUtilities.prototype.logger = function(reqTracker) {
     format: winston.format.combine(
       winston.format.timestamp(),
       winston.format.prettyPrint(),
+      winston.format.printf(msg => {
+        const message = `"${(msg.message !== "" && msg.message !== undefined
+          ? msg.message
+          : "input"
+        )
+          .replace(/\:/g, "")
+          .replace(/\ /g, "")}":`;
+        return `{"level":"${msg.level}", "datetime":"${new Date(
+          msg.timestamp
+        ).toLocaleString()}",
+       "message":{${message}${msg.data}}}`;
+      })
       // winston.format.colorize(),
-      winston.format.json()
+      // winston.format.json()
       // winston.format.printf(msg => {
       //   var _data = colorizer.colorize(
       //     msg.level,

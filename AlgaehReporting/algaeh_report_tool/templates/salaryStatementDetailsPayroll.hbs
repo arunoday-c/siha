@@ -64,6 +64,8 @@
                         {{!-- <td>{{sub_department_name}}</td> --}}
                         {{!-- <td>{{total_days}}</td> --}}
                         <td>{{display_present_days}}</td>
+
+
                         {{#hasElement ../earning_component}}
                         {{#hasElement employee_earning}}
                         {{#each ../earning_component}}
@@ -71,10 +73,14 @@
                         </td>
                         {{/each }}
                         {{else}}
-                        <td class="numberFld">-</td>
+                        <td class="numberFld">NA</td>
                         {{/hasElement }}
                         {{/hasElement }}
                         <td class="numberFld">{{total_earnings}}</td>
+
+
+
+
                         {{#hasElement ../deduction_component}}
                         {{#hasElement employee_deduction}}
                         {{#each ../deduction_component}}
@@ -82,7 +88,7 @@
                         </td>
                         {{/each }}
                         {{else}}
-                        <td class="numberFld">-</td>
+                        <td class="numberFld">NA</td>
                         {{/hasElement }}
                         {{/hasElement }}
                         <td class="numberFld">{{total_deductions}}</td>
@@ -94,7 +100,7 @@
                             {{dynamicSalary hims_d_earning_deduction_id ../employee_contributions "C"}}</td>
                         {{/each }}
                         {{else}}
-                        <td class="numberFld">-</td>
+                        <td class="numberFld">NA</td>
                         {{/hasElement }}
                         {{/hasElement }}
 
