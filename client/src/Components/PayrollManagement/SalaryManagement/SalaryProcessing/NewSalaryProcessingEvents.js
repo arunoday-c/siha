@@ -1,6 +1,9 @@
 import Enumerable from "linq";
 import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  AlgaehOpenContainer
+} from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import _ from "lodash";
@@ -167,11 +170,28 @@ const FinalizeSalary = $this => {
         return f.leave_salary_accrual_amount > 0;
       });
 
-      const salary_date =
-        "01-" + $this.state.inputs.month + "-" + $this.state.inputs.year;
-      const salary_end_date = moment(salary_date)
+      let hrms_options = JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
+      );
+      let salary_end_date = moment(salary_date)
         .endOf("month")
         .format("YYYY-MM-DD");
+      let salary_date =
+        "01-" + $this.state.inputs.month + "-" + $this.state.inputs.year;
+      if (hrms_options.attendance_starts === "PM") {
+        salary_date =
+          hrms_options.at_st_date +
+          "-" +
+          $this.state.inputs.month +
+          "-" +
+          $this.state.inputs.year;
+        salary_end_date =
+          hrms_options.at_end_date +
+          "-" +
+          $this.state.inputs.month +
+          "-" +
+          $this.state.inputs.year;
+      }
 
       let inputObj = {
         fron_salary: "Y",

@@ -82,6 +82,7 @@ export default {
                   }
                 } else {
                   from_date_month = parseFloat(from_date_month);
+                  to_date_month = parseFloat(to_date_month);
                 }
 
                 let leave_start_date = moment(

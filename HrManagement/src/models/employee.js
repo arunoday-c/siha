@@ -1530,13 +1530,21 @@ export default {
       strQry += " and E.hims_d_employee_id=" + input.hims_d_employee_id;
     }
 
+    if (input.year !== null) {
+      strQry += " and GP.year=" + input.year;
+    }
+    if (input.month !== null) {
+      strQry += " and GP.month=" + input.month;
+    }
     _mysql
       .executeQuery({
         query:
           "select E.employee_code, E.full_name, E.hims_d_employee_id, GP.year, GP.month, GP.gratuity_amount, \
           GP.hims_f_gratuity_provision_id from hims_d_employee E inner join hims_f_gratuity_provision GP  on \
-          E.hims_d_employee_id = GP.employee_id where E.hospital_id=? order by E.hims_d_employee_id" +
-          strQry,
+          E.hims_d_employee_id = GP.employee_id where E.hospital_id=? " +
+          strQry +
+          " order by E.hims_d_employee_id;",
+
         values: [input.hospital_id],
         printQuery: true
       })
