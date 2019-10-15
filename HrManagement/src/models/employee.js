@@ -1388,7 +1388,12 @@ export default {
 
               const utilities = new algaehUtilities();
 
-              req.records = { leaves: result[1], employee_leaves: outputArray };
+              let final_result = _.sortBy(outputArray, s => s.employee_code);
+
+              req.records = {
+                leaves: result[1],
+                employee_leaves: final_result
+              };
               next();
             } else {
               req.records = {
@@ -1476,7 +1481,7 @@ export default {
               LS.balance_airticket_amount, LS.airfare_months, LS.utilized_leave_days, LS.utilized_leave_salary_amount, \
               LS.utilized_airticket_amount, E.hims_d_employee_id as employee_id from hims_d_employee E \
               left join hims_f_employee_leave_salary_header LS on E.hims_d_employee_id=LS.employee_id \
-              where E.leave_salary_process = 'Y' and E.record_status = 'A' and E.hospital_id=? order by E.hims_d_employee_id" +
+              where E.leave_salary_process = 'Y' and E.record_status = 'A' and E.hospital_id=?" +
               strQry,
             values: [input.hospital_id],
             printQuery: true
@@ -1485,7 +1490,8 @@ export default {
             _mysql.releaseConnection();
 
             if (result.length > 0) {
-              req.records = result;
+              let final_result = _.sortBy(result, s => s.employee_code);
+              req.records = final_result;
               next();
             } else {
               req.records = {
@@ -1570,9 +1576,8 @@ export default {
       })
       .then(result => {
         _mysql.releaseConnection();
-        let final_result = result.sort((a, b) => {
-          return a.employee_code - b.employee_code;
-        });
+
+        let final_result = _.sortBy(result, s => s.employee_code);
         req.records = final_result;
         next();
       })

@@ -23,6 +23,11 @@ import EmployeeSearch from "../../../common/EmployeeSearch";
 import OpeningBalanceEvent from "./OpeningBalanceEvent";
 import moment from "moment";
 import AddEmployeeOpenBalance from "./SubModals/AddEmployeeOpenBalance";
+import EmployeeLeaveOpenBal from "./EmployeeLeaveOpenBal";
+import EmployeeLoanOpenBal from "./EmployeeLoanOpenBal";
+import EmployeeGratuityOpenBal from "./EmployeeGratuityOpenBal";
+import EmployeeLeaveSalaryOpenBal from "./EmployeeLeaveSalaryOpenBal";
+
 const all_functions = OpeningBalanceEvent();
 
 class OpeningBalance extends Component {
@@ -46,7 +51,11 @@ class OpeningBalance extends Component {
       leave_id: null,
       error_upload: null,
       loan_master: [],
-      download_enable: false
+      download_enable: false,
+      loan_dynamic_date: [],
+      gratuity_dynamic_date: [],
+      leave_salary_columns: [],
+      props_enable: false
     };
     all_functions.getLeaveMaster(this);
   }
@@ -273,27 +282,6 @@ class OpeningBalance extends Component {
             </h6>
           </div>
 
-          {/* {this.state.selected_type === "LE" ? (
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Select Leave",
-                isImp: true
-              }}
-              selector={{
-                name: "leave_id",
-                className: "select-fld",
-                value: this.state.leave_id,
-                dataSource: {
-                  textField: "leave_description",
-                  valueField: "hims_d_leave_id",
-                  data: this.state.application_leave
-                },
-                onChange: this.texthandle.bind(this)
-              }}
-            />
-          ) : null} */}
-
           <div className="col-12 form-group" style={{ textAlign: "right" }}>
             <button
               onClick={this.clearState.bind(this)}
@@ -333,237 +321,44 @@ class OpeningBalance extends Component {
                 <i className="fas fa-file-upload"></i> Upload
               </label>
             </div>
-            {/* <button
-              onClick={this.clearState.bind(this)}
-              style={{ marginLeft: 10 }}
-              className="btn btn-primary btn-with-icon"
-            >
-              <i className="fas fa-file-upload"></i> Upload
-            </button> */}
           </div>
         </div>
         <div className="row">
           {this.state.error_upload ? this.state.error_upload : ""}
           {this.state.selected_type === "LE" ? (
-            <div className="col-12">
-              <div className="portlet portlet-bordered margin-bottom-15">
-                <div className="portlet-title">
-                  <div className="caption">
-                    <h3 className="caption-subject">
-                      Opening balance for - Leave
-                    </h3>
-                  </div>
-                </div>
-                <div className="portlet-body">
-                  <div className="row">
-                    <div className="col-12" id="Opening_balance_Cntr">
-                      <AlgaehDataGrid
-                        id="leave_opening_balance"
-                        columns={this.state.leave_dynamic_date}
-                        keyId="leave_opening"
-                        dataSource={{
-                          data: this.state.leave_balance
-                        }}
-                        isEditable={true}
-                        filter={true}
-                        forceRender={true}
-                        events={{
-                          onEdit: () => {},
-                          onDone: this.updateEmployeeOpeningBalance.bind(this)
-                        }}
-                        actions={{
-                          allowDelete: false
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <EmployeeLeaveOpenBal
+              leave_dynamic_date={this.state.leave_dynamic_date}
+              leave_balance={this.state.leave_balance}
+              year={this.state.year}
+              hospital_id={this.state.hospital_id}
+            />
           ) : this.state.selected_type === "LO" ? (
-            <div className="col-12">
-              <div className="portlet portlet-bordered margin-bottom-15">
-                <div className="portlet-title">
-                  <div className="caption">
-                    <h3 className="caption-subject">
-                      Opening balance for - Loan
-                    </h3>
-                  </div>
-                  <div className="actions">
-                    <button
-                      className="btn btn-primary"
-                      style={{ color: "#fff" }}
-                      onClick={this.showModal.bind(
-                        this,
-                        "Employee Loan Opening Balance"
-                      )}
-                    >
-                      Add Opening Balance
-                    </button>
-                  </div>
-                </div>
-                <div className="portlet-body">
-                  <div className="row">
-                    <div className="col-12" id="Opening_balance_Cntr">
-                      <AlgaehDataGrid
-                        id="loan_opening_balance"
-                        columns={this.state.leave_dynamic_date}
-                        keyId="loan_opening"
-                        dataSource={{
-                          data: this.state.leave_balance
-                        }}
-                        isEditable={true}
-                        filter={true}
-                        forceRender={true}
-                        events={{
-                          onEdit: () => {},
-                          onDone: this.updateEmployeeOpeningBalance.bind(this)
-                        }}
-                        actions={{
-                          allowDelete: false
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <EmployeeLoanOpenBal
+              loan_dynamic_date={this.state.loan_dynamic_date}
+              leave_balance={this.state.leave_balance}
+              year={this.state.year}
+              hospital_id={this.state.hospital_id}
+              loan_master={this.state.loan_master}
+            />
           ) : this.state.selected_type === "GR" ? (
-            <div className="col-12">
-              <div className="portlet portlet-bordered margin-bottom-15">
-                <div className="portlet-title">
-                  <div className="caption">
-                    <h3 className="caption-subject">
-                      Opening balance for - Gratuity
-                    </h3>
-                  </div>
-                  <div className="actions">
-                    <button
-                      className="btn btn-primary"
-                      style={{ color: "#fff" }}
-                      onClick={this.showModal.bind(
-                        this,
-                        "Employee Gratuity Opening Balance"
-                      )}
-                    >
-                      Add Opening Balance
-                    </button>
-                  </div>
-                </div>
-                <div className="portlet-body">
-                  <div className="row">
-                    <div className="col-12" id="Opening_balance_Cntr">
-                      <AlgaehDataGrid
-                        id="gratuity_opening_balance"
-                        columns={this.state.leave_dynamic_date}
-                        keyId="gratuity_opening"
-                        dataSource={{
-                          data: this.state.leave_balance
-                        }}
-                        isEditable={true}
-                        paging={{ page: 0, rowsPerPage: 20 }}
-                        forceRender={true}
-                        filter={true}
-                        events={{
-                          onEdit: () => {},
-                          onDone: this.updateEmployeeOpeningBalance.bind(this)
-                        }}
-                        actions={{
-                          allowDelete: false
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <EmployeeGratuityOpenBal
+              gratuity_dynamic_date={this.state.gratuity_dynamic_date}
+              leave_balance={this.state.leave_balance}
+              year={this.state.year}
+              hospital_id={this.state.hospital_id}
+              loan_master={this.state.loan_master}
+            />
           ) : this.state.selected_type === "LS" ? (
-            <div className="col-12">
-              <div className="portlet portlet-bordered margin-bottom-15">
-                <div className="portlet-title">
-                  <div className="caption">
-                    <h3 className="caption-subject">
-                      Opening balance for - Leave Salary
-                    </h3>
-                  </div>
-                  <div className="actions">
-                    <button
-                      className="btn btn-primary"
-                      style={{ color: "#fff" }}
-                      onClick={this.showModal.bind(
-                        this,
-                        "Employee Leave Salary Opening Balance"
-                      )}
-                    >
-                      Add Opening Balance
-                    </button>
-                    {/* <button
-                      className="btn btn-primary btn-circle active"
-
-                    >
-                      <i className="fas fa-plus" />
-                    </button> */}
-                  </div>
-                </div>
-                <div className="portlet-body">
-                  <div className="row">
-                    <div className="col-12" id="Opening_balance_Cntr">
-                      <AlgaehDataGrid
-                        id="leave_salary_opening_balance"
-                        columns={this.state.leave_dynamic_date}
-                        keyId="leave_salary_opening"
-                        dataSource={{
-                          data: this.state.leave_balance
-                        }}
-                        isEditable={true}
-                        paging={{ page: 0, rowsPerPage: 20 }}
-                        forceRender={true}
-                        filter={true}
-                        events={{
-                          onEdit: () => {},
-                          onDone: this.updateEmployeeOpeningBalance.bind(this)
-                        }}
-                        actions={{
-                          allowDelete: false
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <EmployeeLeaveSalaryOpenBal
+              leave_salary_columns={this.state.leave_salary_columns}
+              leave_balance={this.state.leave_balance}
+              year={this.state.year}
+              hospital_id={this.state.hospital_id}
+              loan_master={this.state.loan_master}
+            />
           ) : null}
         </div>
-        {/* <div className="col-12">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">
-                    Opening balance for - leave
-                  </h3>
-                </div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  {this.state.selected_type === "LE" ? (
-                    <div className="col-12" id="Opening_balance_Cntr">
 
-                    </div>
-                  ) : this.state.selected_type === "LO" ? (
-
-                  ) : this.state.selected_type === "GR" ? (
-                    <div className="col-12" id="Opening_balance_Cntr">
-
-                    </div>
-                  ) : this.state.selected_type === "LS" ? (
-                    <div className="col-12" id="Opening_balance_Cntr">
-
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            </div>
-          </div> */}
         <AddEmployeeOpenBalance
           show={this.state.openModal}
           onClose={this.CloseModal.bind(this)}
@@ -577,10 +372,6 @@ class OpeningBalance extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
-              {/* <button type="button" className="btn btn-primary" onClick="">
-                <AlgaehLabel label={{ forceLabel: "Save", returnText: true }} />
-              </button> */}
-
               <button type="button" className="btn btn-other">
                 <AlgaehLabel
                   label={{ forceLabel: "Download Report", returnText: true }}

@@ -177,7 +177,7 @@ export default function ManualAttendanceEvents() {
           break;
         case "LO":
           getLoanMasterData($this);
-          leave_dynamic_date = [
+          let loan_dynamic_date = [
             {
               fieldName: "employee_code",
               label: <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />,
@@ -299,13 +299,17 @@ export default function ManualAttendanceEvents() {
           ];
           $this.setState({
             selected_type: "LO",
-            leave_dynamic_date: leave_dynamic_date,
+            loan_dynamic_date: loan_dynamic_date,
             leave_balance: [],
-            download_enable: true
+            download_enable: true,
+            leave_dynamic_date: [],
+            leave_salary_columns: [],
+            props_enable: !$this.state.props_enable
           });
           break;
         case "GR":
-          leave_dynamic_date = [
+          getLoanMasterData($this);
+          let gratuity_dynamic_date = [
             {
               fieldName: "employee_code",
               label: <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />,
@@ -416,13 +420,17 @@ export default function ManualAttendanceEvents() {
 
           $this.setState({
             selected_type: "GR",
-            leave_dynamic_date: leave_dynamic_date,
+            gratuity_dynamic_date: gratuity_dynamic_date,
             leave_balance: [],
-            download_enable: false
+            download_enable: false,
+            loan_dynamic_date: [],
+            leave_dynamic_date: [],
+            leave_salary_columns: []
           });
           break;
         case "LS":
-          leave_dynamic_date = [
+          getLoanMasterData($this);
+          let leave_salary_columns = [
             {
               fieldName: "employee_code",
               label: <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />,
@@ -561,20 +569,22 @@ export default function ManualAttendanceEvents() {
           ];
           $this.setState({
             selected_type: "LS",
-            leave_dynamic_date: leave_dynamic_date,
+            leave_salary_columns: leave_salary_columns,
+            leave_dynamic_date: [],
             leave_balance: [],
-            download_enable: false
+            download_enable: false,
+            loan_dynamic_date: []
           });
           break;
         default:
           break;
       }
     },
-    updateEmployeeOpeningBalance: ($this, row) => {
+    updateEmployeeOpeningBalance: ($this, row, selected_type) => {
       let selected_uri = "";
       let employee_Leave_Update = [];
       let inputData = "";
-      if ($this.state.selected_type === "LE") {
+      if (selected_type === "LE") {
         var result = Object.keys(row).map(function(key) {
           if (row[key] !== "N" && isNaN(Number(key)) === false) {
             return {
@@ -589,13 +599,13 @@ export default function ManualAttendanceEvents() {
           return f !== undefined;
         });
         selected_uri = "/leave/updateEmployeeLeave";
-      } else if ($this.state.selected_type === "LS") {
+      } else if (selected_type === "LS") {
         selected_uri = "/employeepayments/updateEmployeeLeaveSalary";
         inputData = row;
-      } else if ($this.state.selected_type === "GR") {
+      } else if (selected_type === "GR") {
         selected_uri = "/employee/UpdateOpeningBalanceGratuity";
         inputData = row;
-      } else if ($this.state.selected_type === "LO") {
+      } else if (selected_type === "LO") {
         selected_uri = "/employee/UpdateOpeningBalanceLoan";
         inputData = row;
       }
@@ -606,7 +616,15 @@ export default function ManualAttendanceEvents() {
         data: inputData,
         method: "PUT",
         onSuccess: response => {
-          PreviewDataFull($this);
+          $this.setState(
+            {
+              selected_type: selected_type
+            },
+            () => {
+              PreviewDataFull($this);
+            }
+          );
+
           swalMessage({
             title: "Updated Succesfully..",
             type: "success"
@@ -752,7 +770,10 @@ function getLeaveMasterData($this) {
           leave_dynamic_date = employee_data.concat(leave_dynamic_date);
           $this.setState({
             leave_dynamic_date: leave_dynamic_date,
-            leaves_data: res.data.records
+            leaves_data: res.data.records,
+            gratuity_dynamic_date: [],
+            loan_dynamic_date: [],
+            leave_salary_columns: []
           });
         }
       }
@@ -774,39 +795,7 @@ function getLoanMasterData($this) {
     onSuccess: res => {
       if (res.data.success) {
         if (res.data.records.length > 0) {
-          // let employee_data = [
-          //   {
-          //     fieldName: "employee_code",
-          //     label: <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />,
-          //     others: {
-          //       maxWidth: 105,
-          //       fixed: "left"
-          //     }
-          //   },
-          //   {
-          //     fieldName: "full_name",
-          //     label: <AlgaehLabel label={{ forceLabel: "Employee Name" }} />,
-          //     others: {
-          //       minWidth: 200,
-          //       fixed: "left"
-          //     }
-          //   }
-          // ];
-          // let leave_dynamic_date = res.data.records.map((item, index) => {
-          //   return {
-          //     fieldName: "close_balance",
-          //     label: (
-          //       <AlgaehLabel label={{ forceLabel: item.loan_description }} />
-          //     ),
-          //     others: {
-          //       filterable: false
-          //     }
-          //   };
-          // });
-          //
-          // leave_dynamic_date = employee_data.concat(leave_dynamic_date);
           $this.setState({
-            // leave_dynamic_date: leave_dynamic_date,
             loan_master: res.data.records
           });
         }
@@ -867,6 +856,7 @@ function setGratuityData($this) {
 }
 
 function PreviewDataFull($this) {
+  debugger;
   let inputObj = {
     year: $this.state.year,
     hospital_id: $this.state.hospital_id
