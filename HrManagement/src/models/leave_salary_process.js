@@ -347,7 +347,12 @@ export default {
                     )._d;
                   }
 
+                  utilities.logger().log("end_date_month: ", end_date_month);
+                  utilities.logger().log("date_month: ", date_month);
+                  utilities.logger().log("intValue: ", intValue);
+
                   if (end_date_month == date_month && intValue > 0) {
+                    utilities.logger().log("intValue_inside: ", intValue);
                     req.query.leave_end_date = end_date;
                     req.query.leave_salary = "Y";
                   }
@@ -995,7 +1000,7 @@ function InsertEmployeeLeaveSalary(options) {
               monthly_leave.accumulated_leaves
             );
             let monthly_accruval_leave = parseFloat(
-              leave_salary_accrual_detail[i].leave_days
+              leave_salary_accrual_detail.leave_days
             );
             if (projected_applied_leaves > 0) {
               if (projected_applied_leaves > monthly_accruval_leave) {
@@ -1133,7 +1138,7 @@ function InsertEmployeeLeaveSalary(options) {
                       monthly_leave.accumulated_leaves
                     );
                     let monthly_accruval_leave = parseFloat(
-                      leave_salary_accrual_detail[i].leave_days
+                      leave_salary_accrual_detail.leave_days
                     );
                     if (projected_applied_leaves > 0) {
                       if (projected_applied_leaves > monthly_accruval_leave) {
