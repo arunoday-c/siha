@@ -962,8 +962,7 @@ function InsertEmployeeLeaveSalary(options) {
           query:
             "select hims_f_employee_leave_salary_header_id,employee_id,leave_days,leave_salary_amount, \
                 airticket_amount, balance_leave_days, balance_leave_salary_amount, balance_airticket_amount, \
-                airfare_months, utilized_leave_days,  utilized_leave_salary_amount, utilized_airticket_amount \
-                from hims_f_employee_leave_salary_header where employee_id = ?;\
+                airfare_months from hims_f_employee_leave_salary_header where employee_id = ?;\
                 select hims_f_employee_monthly_leave_id, close_balance, accumulated_leaves, projected_applied_leaves\
                 from hims_f_employee_monthly_leave where year = ? and employee_id = ? and leave_id=?;",
           values: [
@@ -1008,18 +1007,6 @@ function InsertEmployeeLeaveSalary(options) {
                 employee_leave_salary_header[0].balance_airticket_amount
               ) + parseFloat(leave_salary_accrual_detail.airfare_amount);
 
-            let utilized_leave_days =
-              parseFloat(employee_leave_salary_header[0].utilized_leave_days) +
-              parseFloat(leave_salary_accrual_detail.leave_days);
-            let utilized_leave_salary_amount =
-              parseFloat(
-                employee_leave_salary_header[0].utilized_leave_salary_amount
-              ) + parseFloat(leave_salary_accrual_detail.leave_salary);
-            let utilized_airticket_amount =
-              parseFloat(
-                employee_leave_salary_header[0].utilized_airticket_amount
-              ) + parseFloat(leave_salary_accrual_detail.airfare_amount);
-
             let airfare_months =
               parseFloat(employee_leave_salary_header[0].airfare_months) + 1;
 
@@ -1041,14 +1028,14 @@ function InsertEmployeeLeaveSalary(options) {
               balance_airticket_amount,
               decimal_places
             );
-            utilized_leave_salary_amount = utilities.decimalPoints(
-              utilized_leave_salary_amount,
-              decimal_places
-            );
-            utilized_airticket_amount = utilities.decimalPoints(
-              utilized_airticket_amount,
-              decimal_places
-            );
+            // utilized_leave_salary_amount = utilities.decimalPoints(
+            //   utilized_leave_salary_amount,
+            //   decimal_places
+            // );
+            // utilized_airticket_amount = utilities.decimalPoints(
+            //   utilized_airticket_amount,
+            //   decimal_places
+            // );
 
             let projected_applied_leaves = parseFloat(
               monthly_leave.projected_applied_leaves
@@ -1085,8 +1072,7 @@ function InsertEmployeeLeaveSalary(options) {
                 query:
                   "UPDATE `hims_f_employee_leave_salary_header` SET leave_days=?,`leave_salary_amount`=?,\
                   `airticket_amount`=?,`balance_leave_days`=?,`balance_leave_salary_amount`=?,\
-                  `balance_airticket_amount`=?,`airfare_months`=?, `utilized_leave_days`=?, \
-                  `utilized_leave_salary_amount` = ?, `utilized_airticket_amount` = ? where  hims_f_employee_leave_salary_header_id=?;\
+                  `balance_airticket_amount`=?,`airfare_months`=? where  hims_f_employee_leave_salary_header_id=?;\
                   UPDATE hims_f_employee_monthly_leave set close_balance=?, projected_applied_leaves=?, accumulated_leaves=? \
                   where hims_f_employee_monthly_leave_id=?;\
                   INSERT INTO `hims_f_employee_leave_salary_detail`(employee_leave_salary_header_id,leave_days,\
@@ -1099,9 +1085,6 @@ function InsertEmployeeLeaveSalary(options) {
                   balance_leave_salary_amount,
                   balance_airticket_amount,
                   airfare_months,
-                  utilized_leave_days,
-                  utilized_leave_salary_amount,
-                  utilized_airticket_amount,
                   employee_leave_salary_header[0]
                     .hims_f_employee_leave_salary_header_id,
                   monthly_close_balance,
