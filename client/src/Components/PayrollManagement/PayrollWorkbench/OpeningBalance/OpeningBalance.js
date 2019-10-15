@@ -155,7 +155,7 @@ class OpeningBalance extends Component {
 
     return (
       <div className="openingBalanceScreen">
-        <div className="row  inner-top-search">
+        <div className="row inner-top-search">
           <div className="col-4 form-group">
             <label className="label">Enter Opening Balance For</label>
             <div className="customRadio">
@@ -203,9 +203,9 @@ class OpeningBalance extends Component {
           </div>
 
           <AlagehAutoComplete
-            div={{ className: "col-2 mandatory" }}
+            div={{ className: "col-1 mandatory" }}
             label={{
-              forceLabel: "Select a Year.",
+              forceLabel: "Year.",
               isImp: true
             }}
             selector={{
@@ -229,7 +229,7 @@ class OpeningBalance extends Component {
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory" }}
             label={{
-              forceLabel: "Select a Branch.",
+              forceLabel: "Branch",
               isImp: true
             }}
             selector={{
@@ -272,7 +272,7 @@ class OpeningBalance extends Component {
               }
             }}
           />
-          <div className="col-2 globalSearchCntr">
+          <div className="col globalSearchCntr">
             <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
             <h6 onClick={this.employeeSearch.bind(this)}>
               {this.state.employee_name
@@ -324,39 +324,41 @@ class OpeningBalance extends Component {
           </div>
         </div>
         <div className="row">
-          {this.state.error_upload ? this.state.error_upload : ""}
-          {this.state.selected_type === "LE" ? (
-            <EmployeeLeaveOpenBal
-              leave_dynamic_date={this.state.leave_dynamic_date}
-              leave_balance={this.state.leave_balance}
-              year={this.state.year}
-              hospital_id={this.state.hospital_id}
-            />
-          ) : this.state.selected_type === "LO" ? (
-            <EmployeeLoanOpenBal
-              loan_dynamic_date={this.state.loan_dynamic_date}
-              leave_balance={this.state.leave_balance}
-              year={this.state.year}
-              hospital_id={this.state.hospital_id}
-              loan_master={this.state.loan_master}
-            />
-          ) : this.state.selected_type === "GR" ? (
-            <EmployeeGratuityOpenBal
-              gratuity_dynamic_date={this.state.gratuity_dynamic_date}
-              leave_balance={this.state.leave_balance}
-              year={this.state.year}
-              hospital_id={this.state.hospital_id}
-              loan_master={this.state.loan_master}
-            />
-          ) : this.state.selected_type === "LS" ? (
-            <EmployeeLeaveSalaryOpenBal
-              leave_salary_columns={this.state.leave_salary_columns}
-              leave_balance={this.state.leave_balance}
-              year={this.state.year}
-              hospital_id={this.state.hospital_id}
-              loan_master={this.state.loan_master}
-            />
-          ) : null}
+          <div className="col-12">
+            {this.state.error_upload ? this.state.error_upload : ""}
+            {this.state.selected_type === "LE" ? (
+              <EmployeeLeaveOpenBal
+                leave_dynamic_date={this.state.leave_dynamic_date}
+                leave_balance={this.state.leave_balance}
+                year={this.state.year}
+                hospital_id={this.state.hospital_id}
+              />
+            ) : this.state.selected_type === "LO" ? (
+              <EmployeeLoanOpenBal
+                loan_dynamic_date={this.state.loan_dynamic_date}
+                leave_balance={this.state.leave_balance}
+                year={this.state.year}
+                hospital_id={this.state.hospital_id}
+                loan_master={this.state.loan_master}
+              />
+            ) : this.state.selected_type === "GR" ? (
+              <EmployeeGratuityOpenBal
+                gratuity_dynamic_date={this.state.gratuity_dynamic_date}
+                leave_balance={this.state.leave_balance}
+                year={this.state.year}
+                hospital_id={this.state.hospital_id}
+                loan_master={this.state.loan_master}
+              />
+            ) : this.state.selected_type === "LS" ? (
+              <EmployeeLeaveSalaryOpenBal
+                leave_salary_columns={this.state.leave_salary_columns}
+                leave_balance={this.state.leave_balance}
+                year={this.state.year}
+                hospital_id={this.state.hospital_id}
+                loan_master={this.state.loan_master}
+              />
+            ) : null}
+          </div>
         </div>
 
         <AddEmployeeOpenBalance

@@ -975,7 +975,7 @@ export default class EmployeeShiftRostering extends Component {
           <div className="col form-group">
             <button
               onClick={this.getEmployeesForShiftRoster.bind(this)}
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19 }}
               className="btn btn-primary"
               disabled={this.state.loading}
             >

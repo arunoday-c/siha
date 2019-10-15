@@ -452,7 +452,7 @@ class Shift extends Component {
           <div className="col form-group">
             <button
               type="submit"
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19 }}
               onClick={this.addShift.bind(this)}
               className="btn btn-primary"
             >

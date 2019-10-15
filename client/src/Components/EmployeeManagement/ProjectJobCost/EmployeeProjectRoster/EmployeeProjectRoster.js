@@ -933,7 +933,7 @@ class EmployeeProjectRoster extends Component {
           <div className="col-3 form-group">
             <button
               onClick={this.getEmployeesForProjectRoster.bind(this)}
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19 }}
               className="btn btn-primary"
             >
               {!this.state.loading ? (

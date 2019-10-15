@@ -142,7 +142,7 @@ export default class Appointment extends Component {
                 }}
               />
 
-              <div className="col-lg-2" style={{ marginTop: 21 }}>
+              <div className="col-lg-2" style={{ marginTop: 19 }}>
                 <input
                   name="all_docs"
                   checked={this.state.all_docs}
@@ -368,7 +368,7 @@ export default class Appointment extends Component {
                 }}
               />
 
-              <div className="col-lg-2" style={{ marginTop: 21 }}>
+              <div className="col-lg-2" style={{ marginTop: 19 }}>
                 <input
                   name="all_depts"
                   checked={this.state.all_depts}
@@ -401,7 +401,7 @@ export default class Appointment extends Component {
                 }}
               />
 
-              <div className="col-lg-2" style={{ marginTop: 21 }}>
+              <div className="col-lg-2" style={{ marginTop: 19 }}>
                 <input
                   name="all_docs"
                   checked={this.state.all_docs}
@@ -532,7 +532,7 @@ export default class Appointment extends Component {
                   onChange: this.dropDownHandle.bind(this)
                 }}
               />
-              <div className="col-lg-2" style={{ marginTop: 21 }}>
+              <div className="col-lg-2" style={{ marginTop: 19 }}>
                 <input
                   name="all_depts"
                   checked={this.state.all_depts}
@@ -564,7 +564,7 @@ export default class Appointment extends Component {
                   }
                 }}
               />
-              <div className="col-lg-2" style={{ marginTop: 21 }}>
+              <div className="col-lg-2" style={{ marginTop: 19 }}>
                 <input
                   name="all_docs"
                   checked={this.state.all_docs}
@@ -716,7 +716,7 @@ export default class Appointment extends Component {
                 }}
               />
 
-              <div className="col-lg-2" style={{ marginTop: 21 }}>
+              <div className="col-lg-2" style={{ marginTop: 19 }}>
                 <input
                   name="all_depts"
                   checked={this.state.all_depts}
@@ -749,7 +749,7 @@ export default class Appointment extends Component {
                 }}
               />
 
-              <div className="col-lg-2" style={{ marginTop: 21 }}>
+              <div className="col-lg-2" style={{ marginTop: 19 }}>
                 <input
                   name="all_docs"
                   checked={this.state.all_docs}
@@ -862,7 +862,7 @@ export default class Appointment extends Component {
                 value={this.state.to_date}
               />
 
-              <div className="col-lg-2" style={{ marginTop: 21 }}>
+              <div className="col-lg-2" style={{ marginTop: 19 }}>
                 <input
                   name="all_depts"
                   checked={this.state.all_depts}
@@ -895,7 +895,7 @@ export default class Appointment extends Component {
                 }}
               />
 
-              <div className="col-lg-2" style={{ marginTop: 21 }}>
+              <div className="col-lg-2" style={{ marginTop: 19 }}>
                 <input
                   name="all_docs"
                   checked={this.state.all_docs}

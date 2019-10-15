@@ -283,7 +283,7 @@ class LoanAuthorization extends Component {
             <div className="col form-group">
               <button
                 onClick={this.getLoanApplications.bind(this)}
-                style={{ marginTop: 21 }}
+                style={{ marginTop: 19 }}
                 className="btn btn-primary"
               >
                 {!this.state.loading ? (

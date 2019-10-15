@@ -122,7 +122,7 @@ export default class LeaveSalaryAccural extends Component {
             <div className="col-3">
               <button
                 className="btn btn-primary"
-                style={{ marginTop: 21 }}
+                style={{ marginTop: 19 }}
                 onClick={LoadLeaveAccrual.bind(this, this)}
               >
                 Load

@@ -217,7 +217,7 @@ class OrderProcedureItems extends Component {
                           {/* <label>Working Days</label> */}
                           <div
                             className="customRadio"
-                            style={{ marginTop: 21 }}
+                            style={{ marginTop: 19 }}
                           >
                             <label className="radio inline">
                               <input

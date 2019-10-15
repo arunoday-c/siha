@@ -68,7 +68,7 @@ function LeaveRules(props) {
                 <button
                   onClick={myParent.addLeaveRules.bind(myParent)}
                   className="btn btn-primary"
-                  style={{ marginTop: 21 }}
+                  style={{ marginTop: 19 }}
                 >
                   Add to List
                 </button>
@@ -336,7 +336,7 @@ function LeaveRules(props) {
                 <button
                   onClick={myParent.addLeaveRules.bind(myParent)}
                   className="btn btn-primary"
-                  style={{ marginTop: 21 }}
+                  style={{ marginTop: 19 }}
                 >
                   Add to List
                 </button>

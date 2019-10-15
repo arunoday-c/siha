@@ -20,7 +20,7 @@ export default {
         const input = req.query;
         const month_number = input.month;
         const year = input.year;
-        let inputValues = [];
+        let inputValues = [input.year, input.month];
         let _stringData = "";
 
         // utilities.logger().log("_stringData: ", input.leave_salary);
@@ -71,8 +71,8 @@ export default {
             _stringData +
             " and (hims_f_employee_annual_leave_id is null OR from_normal_salary='Y') and (S.salary_processed is null or  S.salary_processed='N');";
         } else {
-          inputValues.push(input.year);
-          inputValues.push(input.month);
+          // inputValues.push(input.year);
+          // inputValues.push(input.month);
           inputValues.push(input.hospital_id);
 
           if (input.leave_salary === "Y") {
@@ -1914,6 +1914,11 @@ export default {
       _stringData +=
         inputParam.group_id != null ? " and emp.employee_group_id=? " : "";
 
+      _stringData +=
+        inputParam.salary_type != null
+          ? "and salary_type = '" + inputParam.salary_type + "'"
+          : "and salary_type='NS'";
+
       _mysql
         .executeQuery({
           query:
@@ -1922,7 +1927,7 @@ export default {
             leave_salary_accrual_amount, leave_salary_days, emp.employee_code, emp.full_name from hims_f_salary S, \
             hims_d_employee emp, hims_d_sub_department SD where S.employee_id = emp.hims_d_employee_id and \
             emp.sub_department_id=SD.hims_d_sub_department_id \
-            and salary_type = 'NS' and `year` = ? and `month` = ? and emp.hospital_id=? " +
+             and `year` = ? and `month` = ? and emp.hospital_id=? " +
             _stringData,
           values: _.valuesIn(inputParam),
           printQuery: true

@@ -500,7 +500,7 @@ class InvInitialStock extends Component {
                   <div className="col-lg-3">
                     <button
                       className="btn btn-primary"
-                      style={{ marginTop: 21 }}
+                      style={{ marginTop: 19 }}
                       onClick={AddItems.bind(this, this)}
                       disabled={this.state.dataExitst}
                     >

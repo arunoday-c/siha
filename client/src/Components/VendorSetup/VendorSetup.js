@@ -522,7 +522,7 @@ class VendorSetup extends Component {
                       }
                     }}
                   />
-                  <div className="col-2" style={{ marginTop: 21 }}>
+                  <div className="col-2" style={{ marginTop: 19 }}>
                     <input
                       name="vat_applicable"
                       checked={this.state.vat_applicable}

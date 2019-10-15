@@ -306,7 +306,7 @@ class AttendanceRegularization extends Component {
                   <button
                     type="button"
                     className="btn btn-primary"
-                    style={{ marginTop: 21 }}
+                    style={{ marginTop: 19 }}
                     onClick={this.requestRegularization.bind(this)}
                   >
                     {this.state.hims_f_attendance_regularize_id

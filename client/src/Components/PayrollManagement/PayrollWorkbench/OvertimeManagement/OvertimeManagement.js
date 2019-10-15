@@ -135,7 +135,7 @@ class OvertimeManagement extends Component {
 
           <div className="col form-group" style={{ paddingLeft: 0 }}>
             <button
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19 }}
               className="btn btn-primary"
               onClick={getOvertimeGroups.bind(this, this)}
             >

@@ -339,7 +339,7 @@ export default {
                     let selected_day = moment(start_date).format("DD");
 
                     if (
-                      parseFloat(selected_day) ===
+                      parseFloat(selected_day) >=
                       parseFloat(hrms_options[0].at_st_date)
                     ) {
                       start_date = moment(start_date)
@@ -431,6 +431,17 @@ export default {
                     let selected_year = moment(start_date).year();
                     let selected_month = moment(start_date).format("M");
                     // let selected_day = moment(from_date).format("DD");
+
+                    // if (
+                    //   parseFloat(selected_day) >=
+                    //   parseFloat(hrms_options[0].at_st_date)
+                    // ) {
+                    //   start_date = moment(start_date)
+                    //     .add(1, "M")
+                    //     .format("YYYYMMDD");
+                    //   selected_month = parseFloat(selected_month) + 1;
+                    //   selected_month = String(selected_month).toString();
+                    // }
 
                     fromDate_lastDate = moment(
                       selected_year +
