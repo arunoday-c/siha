@@ -84,15 +84,21 @@ const employeeSearch = $this => {
       callBack(text);
     },
     onRowSelect: row => {
-      $this.setState(
-        {
-          employee_name: row.full_name,
-          employee_id: row.hims_d_employee_id
-        },
-        () => {
-          getLeaveSalaryProcess($this);
-        }
-      );
+      let IOputs = LeaveSalaryProcessIOputs.inputParam();
+      IOputs.employee_name = row.full_name;
+      IOputs.employee_id = row.hims_d_employee_id;
+      $this.setState(IOputs, () => {
+        getLeaveSalaryProcess($this);
+      });
+      // $this.setState(
+      //   {
+      //     employee_name: row.full_name,
+      //     employee_id: row.hims_d_employee_id
+      //   },
+      //   () => {
+      //     getLeaveSalaryProcess($this);
+      //   }
+      // );
     }
   });
 };
