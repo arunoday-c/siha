@@ -55,16 +55,13 @@ export default {
                   "M"
                 );
 
-                to_date_month = parseFloat(to_date_month);
-
                 let from_date_month = moment(
                   annul_leave_app[0].from_date
                 ).format("M");
 
                 if (hrms_options.attendance_starts === "PM") {
-                  let from_selected_year = moment(from_date).year();
-                  let from_selected_month = moment(from_date).format("M");
                   let from_selected_day = moment(from_date).format("DD");
+                  let to_selected_day = moment(to_date).format("DD");
 
                   if (
                     parseFloat(from_selected_day) >=
@@ -74,6 +71,15 @@ export default {
                   } else {
                     from_date_month = parseFloat(from_date_month);
                   }
+
+                  if (
+                    parseFloat(to_selected_day) >=
+                    parseFloat(hrms_options.at_st_date)
+                  ) {
+                    to_date_month = parseFloat(to_date_month) + 1;
+                  } else {
+                    to_date_month = parseFloat(to_date_month);
+                  }
                 } else {
                   from_date_month = parseFloat(from_date_month);
                 }
@@ -81,13 +87,11 @@ export default {
                 let leave_start_date = moment(
                   annul_leave_app[0].from_date
                 ).format("YYYY-MM-DD");
-                // console.log("from_date", from_date);
-                // console.log("to_date", to_date);
+                console.log("from_date", from_date);
+                console.log("to_date", to_date);
 
                 while (from_date <= to_date) {
-                  // console.log("from_date", from_date);
-                  // console.log("to_date", to_date);
-                  // console.log("to_date_month", to_date_month);
+                  console.log("to_date_month", to_date_month);
 
                   let fromDate_firstDate = null;
                   let fromDate_lastDate = null;
@@ -107,21 +111,21 @@ export default {
                     let selected_year = moment(from_date).year();
                     let selected_month = moment(from_date).format("M");
                     let selected_day = moment(from_date).format("DD");
-                    // console.log("selected_day", selected_day);
-                    // console.log("at_st_date", hrms_options.at_st_date);
+                    console.log("selected_day", selected_day);
+                    console.log("at_st_date", hrms_options.at_st_date);
 
                     if (
                       parseFloat(selected_day) >=
                       parseFloat(hrms_options.at_st_date)
                     ) {
                       date_month = date_month + 1;
-                      // console.log("date_month in if con:", date_month);
+                      console.log("date_month in if con:", date_month);
                     }
 
-                    // console.log("date_month", date_month);
+                    console.log("date_month", date_month);
 
                     if (to_date_month === date_month) {
-                      // console.log("Im here");
+                      console.log("Im here");
                       fromDate_firstDate = moment(
                         selected_year +
                           "-" +
@@ -169,8 +173,8 @@ export default {
                       .format("YYYY-MM-DD");
                   }
 
-                  // console.log("fromDate_firstDate", fromDate_firstDate);
-                  // console.log("fromDate_lastDate", fromDate_lastDate);
+                  console.log("fromDate_firstDate", fromDate_firstDate);
+                  console.log("fromDate_lastDate", fromDate_lastDate);
                   if (to_date_month == date_month) {
                     // console.log("Im here 1");
                     // console.log("from_date_month", from_date_month);
