@@ -129,9 +129,11 @@ class YearlyLeaveDetail extends Component {
                       )
                     },
                     {
-                      fieldName: "total_eligible",
+                      fieldName: "leave_description",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Total Eligible" }} />
+                        <AlgaehLabel
+                          label={{ forceLabel: "Closing Balance" }}
+                        />
                       )
                     },
                     {
@@ -154,18 +156,17 @@ class YearlyLeaveDetail extends Component {
                       fieldName: "leave_description",
                       label: (
                         <AlgaehLabel
-                          label={{ forceLabel: "Carry Forwaded Leave" }}
+                          label={{ forceLabel: "Carry Forwaded %" }}
                         />
                       )
                     },
                     {
-                      fieldName: "leave_description",
+                      fieldName: "sub_department_name",
                       label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "Closing Balance" }}
-                        />
+                        <AlgaehLabel label={{ forceLabel: "Encashment %" }} />
                       )
                     },
+
                     {
                       fieldName: "sub_department_name",
                       label: (
