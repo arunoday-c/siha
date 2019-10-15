@@ -1476,7 +1476,7 @@ export default {
               LS.balance_airticket_amount, LS.airfare_months, LS.utilized_leave_days, LS.utilized_leave_salary_amount, \
               LS.utilized_airticket_amount, E.hims_d_employee_id as employee_id from hims_d_employee E \
               left join hims_f_employee_leave_salary_header LS on E.hims_d_employee_id=LS.employee_id \
-              where E.leave_salary_process = 'Y' and E.record_status = 'A' and E.hospital_id=? " +
+              where E.leave_salary_process = 'Y' and E.record_status = 'A' and E.hospital_id=? order by E.hims_d_employee_id" +
               strQry,
             values: [input.hospital_id],
             printQuery: true
@@ -1529,7 +1529,7 @@ export default {
         query:
           "select E.employee_code, E.full_name, E.hims_d_employee_id, GP.year, GP.month, GP.gratuity_amount, \
           GP.hims_f_gratuity_provision_id from hims_d_employee E inner join hims_f_gratuity_provision GP  on \
-          E.hims_d_employee_id = GP.employee_id where E.hospital_id=? " +
+          E.hims_d_employee_id = GP.employee_id where E.hospital_id=? order by E.hims_d_employee_id" +
           strQry,
         values: [input.hospital_id],
         printQuery: true
@@ -1563,14 +1563,17 @@ export default {
           "select E.employee_code, E.full_name, E.hims_d_employee_id, GP.year, GP.month, GP.gratuity_amount, \
           GP.hims_f_gratuity_provision_id, E.hims_d_employee_id as employee_id from hims_d_employee E \
           left join hims_f_gratuity_provision GP  on E.hims_d_employee_id = GP.employee_id \
-          where E.record_status = 'A' and E.hospital_id=? " +
+          where E.record_status = 'A' and E.hospital_id=? order by E.employee_code" +
           strQry,
         values: [input.hospital_id],
         printQuery: true
       })
       .then(result => {
         _mysql.releaseConnection();
-        req.records = result;
+        let final_result = result.sort((a, b) => {
+          return a.employee_code - b.employee_code;
+        });
+        req.records = final_result;
         next();
       })
       .catch(e => {
