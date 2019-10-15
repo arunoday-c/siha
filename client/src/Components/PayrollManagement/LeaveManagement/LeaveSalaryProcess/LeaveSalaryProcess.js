@@ -198,7 +198,7 @@ class LeaveSalaryProcess extends Component {
 
             <div className="col form-group">
               <button
-                style={{ marginTop: 21 }}
+                style={{ marginTop: 19 }}
                 className="btn btn-primary"
                 disabled={this.state.ProcessBtn}
                 onClick={LeaveSalProcess.bind(this, this)}

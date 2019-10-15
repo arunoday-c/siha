@@ -71,56 +71,48 @@ export default class EmployeeLoanOpenBal extends Component {
   }
   render() {
     return (
-      <div className="openingBalanceScreen">
-        <div className="row">
-          <div className="col-12">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">
-                    Opening balance for - Loan
-                  </h3>
-                </div>
-                <div className="actions">
-                  <button
-                    className="btn btn-primary"
-                    style={{ color: "#fff" }}
-                    onClick={this.showModal.bind(
-                      this,
-                      "Employee Loan Opening Balance"
-                    )}
-                  >
-                    Add Opening Balance
-                  </button>
-                </div>
+      <div className="portlet portlet-bordered margin-bottom-15">
+        <div className="portlet-title">
+          <div className="caption">
+            <h3 className="caption-subject">Opening balance for - Loan</h3>
+          </div>
+          <div className="actions">
+            <button
+              className="btn btn-primary"
+              style={{ color: "#fff" }}
+              onClick={this.showModal.bind(
+                this,
+                "Employee Loan Opening Balance"
+              )}
+            >
+              Add Opening Balance
+            </button>
+          </div>
+        </div>
+        <div className="portlet-body">
+          <div className="row">
+            {this.state.loan_dynamic_date.length > 0 ? (
+              <div className="col-12">
+                <AlgaehDataGrid
+                  id="loan_opening_balance"
+                  columns={this.state.loan_dynamic_date}
+                  keyId="loan_opening"
+                  dataSource={{
+                    data: this.state.leave_balance
+                  }}
+                  isEditable={true}
+                  filter={true}
+                  paging={{ page: 0, rowsPerPage: 20 }}
+                  events={{
+                    onEdit: () => {},
+                    onDone: this.updateEmployeeOpeningBalance.bind(this)
+                  }}
+                  actions={{
+                    allowDelete: false
+                  }}
+                />
               </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-12" id="Opening_balance_Cntr">
-                    {this.state.loan_dynamic_date.length > 0 ? (
-                      <AlgaehDataGrid
-                        id="loan_opening_balance"
-                        columns={this.state.loan_dynamic_date}
-                        keyId="loan_opening"
-                        dataSource={{
-                          data: this.state.leave_balance
-                        }}
-                        isEditable={true}
-                        filter={true}
-                        paging={{ page: 0, rowsPerPage: 20 }}
-                        events={{
-                          onEdit: () => {},
-                          onDone: this.updateEmployeeOpeningBalance.bind(this)
-                        }}
-                        actions={{
-                          allowDelete: false
-                        }}
-                      />
-                    ) : null}
-                  </div>
-                </div>
-              </div>
-            </div>
+            ) : null}
           </div>
         </div>
 
