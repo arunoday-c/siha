@@ -1000,7 +1000,7 @@ function InsertEmployeeLeaveSalary(options) {
               monthly_leave.accumulated_leaves
             );
             let monthly_accruval_leave = parseFloat(
-              leave_salary_accrual_detail[i].leave_days
+              leave_salary_accrual_detail.leave_days
             );
             if (projected_applied_leaves > 0) {
               if (projected_applied_leaves > monthly_accruval_leave) {
@@ -1138,7 +1138,7 @@ function InsertEmployeeLeaveSalary(options) {
                       monthly_leave.accumulated_leaves
                     );
                     let monthly_accruval_leave = parseFloat(
-                      leave_salary_accrual_detail[i].leave_days
+                      leave_salary_accrual_detail.leave_days
                     );
                     if (projected_applied_leaves > 0) {
                       if (projected_applied_leaves > monthly_accruval_leave) {
