@@ -322,10 +322,22 @@ export default {
             req.query.hospital_id = employee_result[0].hospital_id;
             req.query.employee_id = req.query.hims_d_employee_id;
 
+            if (hrms_options[0].attendance_starts === "PM") {
+              let end_selected_day = moment(end_date).format("DD");
+              console.log("end_selected_day: ", end_selected_day);
+              if (
+                parseFloat(end_selected_day) >=
+                parseFloat(hrms_options[0].at_end_date)
+              ) {
+                end_date_month = parseFloat(end_date_month) + 1;
+                end_date_month = String(end_date_month).toString();
+              }
+            }
+            console.log("end_date_month: ", end_date_month);
             const syscCall = async function() {
               while (start_date <= end_date) {
-                utilities.logger().log("start start_date: ", start_date);
-                utilities.logger().log("start end_date: ", end_date);
+                console.log("start_date: ", start_date);
+                console.log("end_date: ", end_date);
                 try {
                   let fromDate_lastDate = null;
 
@@ -338,6 +350,8 @@ export default {
                     let selected_month = moment(start_date).format("M");
                     let selected_day = moment(start_date).format("DD");
 
+                    console.log("selected_day: ", selected_day);
+                    console.log("selected_month: ", selected_month);
                     if (
                       parseFloat(selected_day) >=
                       parseFloat(hrms_options[0].at_st_date)
@@ -345,9 +359,17 @@ export default {
                       start_date = moment(start_date)
                         .add(1, "M")
                         .format("YYYYMMDD");
+                      console.log("inside start_date: ", start_date);
+                      // if (
+                      //   parseFloat(end_selected_day) <=
+                      //   parseFloat(hrms_options[0].at_end_date)
+                      // ) {
+                      // }
                       selected_month = parseFloat(selected_month) + 1;
                       selected_month = String(selected_month).toString();
                     }
+
+                    console.log("selected_month: ", selected_month);
 
                     req.query.year = selected_year;
                     req.query.month = selected_month;
@@ -428,8 +450,12 @@ export default {
                     .logger()
                     .log("Promise at_end_date: ", hrms_options[0].at_end_date);
                   if (hrms_options[0].attendance_starts === "PM") {
-                    let selected_year = moment(start_date).year();
-                    let selected_month = moment(start_date).format("M");
+                    let _selected_year = moment(start_date).year();
+                    let _selected_month = moment(start_date).format("M");
+
+                    console.log("_selected_year: ", _selected_year);
+                    console.log("selected_month: ", _selected_month);
+
                     // let selected_day = moment(from_date).format("DD");
 
                     // if (
@@ -444,9 +470,9 @@ export default {
                     // }
 
                     fromDate_lastDate = moment(
-                      selected_year +
+                      _selected_year +
                         "-" +
-                        selected_month +
+                        _selected_month +
                         "-" +
                         hrms_options[0].at_end_date
                     ).format("YYYY-MM-DD");
@@ -455,14 +481,12 @@ export default {
                       .endOf("month")
                       .format("YYYY-MM-DD");
                   }
-                  utilities
-                    .logger()
-                    .log("Promise fromDate_lastDate: ", fromDate_lastDate);
 
+                  console.log("Promise fromDate_lastDate: ", fromDate_lastDate);
                   start_date = moment(fromDate_lastDate)
                     .add(1, "days")
                     .format("YYYYMMDD");
-                  utilities.logger().log("Promise start_date: ", start_date);
+                  console.log("Promise start_date: ", start_date);
                   // });
                 } catch (e) {
                   _mysql.rollBackTransaction(() => {

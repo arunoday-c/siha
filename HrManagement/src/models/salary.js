@@ -81,9 +81,9 @@ export default {
               inputValues.push(input.employee_id);
             }
             strQuery =
-              "select S.employee_id, E.employee_code, E.gross_salary, 0 as total_days,0 as absent_days, 0 as unpaid_leave, \
-              S.hims_f_salary_id from hims_d_employee E left join hims_f_salary as S on  E.hims_d_employee_id = S.employee_id \
-              where record_status='A' and S.`year`=? and S.`month` = ? and  E.hospital_id=?" +
+              "select E.hims_d_employee_id as employee_id, E.employee_code, E.gross_salary, 0 as total_days,0 as absent_days, \
+              0 as unpaid_leave, S.hims_f_salary_id from hims_d_employee E left join hims_f_salary as S on  \
+              E.hims_d_employee_id = S.employee_id and S.`year`=? and S.`month` = ? where record_status='A' and E.hospital_id=?" +
               _stringData;
           } else {
             if (input.employee_id != null) {
