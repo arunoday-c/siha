@@ -238,7 +238,7 @@ class EmployeeDocuments extends Component {
               }}
             />
             <div className="col form-group">
-              <button style={{ marginTop: 21 }} className="btn btn-default">
+              <button style={{ marginTop: 19 }} className="btn btn-default">
                 Load
               </button>
             </div>

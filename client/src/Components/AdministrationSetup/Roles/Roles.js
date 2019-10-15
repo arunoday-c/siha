@@ -401,7 +401,7 @@ class Roles extends Component {
               <div className="col">
                 <button
                   type="submit"
-                  style={{ marginTop: 21 }}
+                  style={{ marginTop: 19 }}
                   onClick={this.addRoles.bind(this)}
                   className="btn btn-primary"
                 >

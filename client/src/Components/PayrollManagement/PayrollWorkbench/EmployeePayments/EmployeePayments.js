@@ -235,7 +235,7 @@ class EmployeePayment extends Component {
               <button
                 type="button"
                 className="btn btn-primary"
-                style={{ marginTop: 21 }}
+                style={{ marginTop: 19 }}
                 onClick={LoadData.bind(this, this)}
               >
                 Load

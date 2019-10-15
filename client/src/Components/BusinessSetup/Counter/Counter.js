@@ -234,7 +234,7 @@ class Counter extends Component {
             <div className="col-lg-3">
               <button
                 onClick={this.addCounter.bind(this)}
-                style={{ marginTop: 21 }}
+                style={{ marginTop: 19 }}
                 className="btn btn-primary"
               >
                 Add to List

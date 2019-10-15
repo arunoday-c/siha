@@ -344,7 +344,7 @@ class CategorySpeciality extends Component {
           <div className="col">
             <button
               onClick={this.addCategorySpecialityMappings.bind(this)}
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19 }}
               className="btn btn-primary"
             >
               Add to list

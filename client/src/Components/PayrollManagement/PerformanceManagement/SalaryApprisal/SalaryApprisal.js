@@ -82,7 +82,7 @@ class SalaryApprisal extends Component {
           {/* Employee Global Search End here */}
 
           <div className="col form-group">
-            <button style={{ marginTop: 21 }} className="btn btn-primary">
+            <button style={{ marginTop: 19 }} className="btn btn-primary">
               Load
             </button>{" "}
             <button
@@ -302,7 +302,7 @@ class SalaryApprisal extends Component {
                         <div className="col-3">
                           <button
                             className="btn btn-primary"
-                            style={{ marginTop: 21 }}
+                            style={{ marginTop: 19 }}
                           >
                             Apply
                           </button>
