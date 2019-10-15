@@ -17,7 +17,7 @@ export default {
 
       const utilities = new algaehUtilities();
 
-      utilities.logger().log("getLeaveSalaryProcess: ");
+      // utilities.logger().log("getLeaveSalaryProcess: ");
       _mysql
         .executeQuery({
           query:
@@ -39,12 +39,8 @@ export default {
               printQuery: true
             })
             .then(annul_leave => {
-              utilities.logger().log("annul_leave: ", annul_leave);
-
               let annul_leave_app = annul_leave[0];
               let hrms_options = annul_leave[1][0];
-
-              utilities.logger().log("hrms_options: ", hrms_options);
 
               if (annul_leave_app.length > 0) {
                 let leave_salary_detail = [];
@@ -65,16 +61,33 @@ export default {
                   annul_leave_app[0].from_date
                 ).format("M");
 
-                from_date_month = parseFloat(from_date_month);
+                if (hrms_options.attendance_starts === "PM") {
+                  let from_selected_year = moment(from_date).year();
+                  let from_selected_month = moment(from_date).format("M");
+                  let from_selected_day = moment(from_date).format("DD");
+
+                  if (
+                    parseFloat(from_selected_day) >=
+                    parseFloat(hrms_options.at_st_date)
+                  ) {
+                    from_date_month = parseFloat(from_date_month) + 1;
+                  } else {
+                    from_date_month = parseFloat(from_date_month);
+                  }
+                } else {
+                  from_date_month = parseFloat(from_date_month);
+                }
 
                 let leave_start_date = moment(
                   annul_leave_app[0].from_date
                 ).format("YYYY-MM-DD");
+                // console.log("from_date", from_date);
+                // console.log("to_date", to_date);
 
                 while (from_date <= to_date) {
-                  console.log("from_date", from_date);
-                  console.log("to_date", to_date);
-                  console.log("to_date_month", to_date_month);
+                  // console.log("from_date", from_date);
+                  // console.log("to_date", to_date);
+                  // console.log("to_date_month", to_date_month);
 
                   let fromDate_firstDate = null;
                   let fromDate_lastDate = null;
@@ -83,33 +96,32 @@ export default {
                   let date_month = moment(from_date).format("M");
 
                   date_month = parseFloat(date_month);
-                  utilities.logger().log("from_date: ", from_date);
-                  utilities.logger().log("to_date: ", to_date);
+                  // utilities.logger().log("from_date: ", from_date);
+                  // utilities.logger().log("to_date: ", to_date);
 
                   let start_date = moment(from_date).add(-1, "days");
-                  utilities.logger().log("first start_date: ", start_date);
+
                   let no_of_days = 0;
 
                   if (hrms_options.attendance_starts === "PM") {
                     let selected_year = moment(from_date).year();
                     let selected_month = moment(from_date).format("M");
                     let selected_day = moment(from_date).format("DD");
-                    console.log("selected_day", selected_day);
-                    console.log("at_st_date", hrms_options.at_st_date);
+                    // console.log("selected_day", selected_day);
+                    // console.log("at_st_date", hrms_options.at_st_date);
 
                     if (
-                      parseFloat(selected_day) ===
+                      parseFloat(selected_day) >=
                       parseFloat(hrms_options.at_st_date)
                     ) {
                       date_month = date_month + 1;
-                      console.log("date_month in if con:", date_month);
+                      // console.log("date_month in if con:", date_month);
                     }
 
-                    console.log("date_month", date_month);
-                    console.log("fromDate_firstDate", fromDate_firstDate);
-                    console.log("fromDate_lastDate", fromDate_lastDate);
+                    // console.log("date_month", date_month);
 
                     if (to_date_month === date_month) {
+                      // console.log("Im here");
                       fromDate_firstDate = moment(
                         selected_year +
                           "-" +
@@ -157,7 +169,12 @@ export default {
                       .format("YYYY-MM-DD");
                   }
 
+                  // console.log("fromDate_firstDate", fromDate_firstDate);
+                  // console.log("fromDate_lastDate", fromDate_lastDate);
                   if (to_date_month == date_month) {
+                    // console.log("Im here 1");
+                    // console.log("from_date_month", from_date_month);
+                    // console.log("date_month", date_month);
                     if (from_date_month == date_month) {
                       start_date = moment(from_date).add(-1, "days");
                       no_of_days = moment(to_date).diff(
@@ -1062,12 +1079,12 @@ function InsertEmployeeLeaveSalary(options) {
                 printQuery: true
               })
               .then(update_employee_leave => {
-                console.log("apple");
+                // console.log("apple");
                 utilities.logger().log("Done : ", update_employee_leave);
                 resolve();
               })
               .catch(e => {
-                console.log("bottle");
+                // console.log("bottle");
                 utilities.logger().log("reject: ", e);
                 reject(e);
               });
