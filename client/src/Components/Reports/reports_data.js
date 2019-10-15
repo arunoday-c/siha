@@ -2230,7 +2230,7 @@ const HR_Payroll_Reports = [
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2 mandatory",
+            className: "col-2 mandatory form-group",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -2280,10 +2280,11 @@ const HR_Payroll_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
+            isImp: true,
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
@@ -2344,6 +2345,19 @@ const HR_Payroll_Reports = [
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
               data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "is_local",
+            initialLoad: true,
+            // isImp: true,
+            label: "Employee Type",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: LOCAL_TYPE
             }
           }
         ]

@@ -1,0 +1,99 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+        {{!-- <section>
+            <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span></td>
+                    <td><label class="textEnLft">Department</label>:<span
+                            class="valueText">{{sub_department_name}}</span></td>
+                    <td><label class="textEnLft">year</label>:<span class="valueText">{{year}}</span></td>
+                    <td><label class="textEnLft">month</label>:<span class="valueText">{{month}}</span></td>
+                </tr>
+            </table>
+
+
+        </section> --}}
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th excelwidth="6">Sl No.</th>
+                        <th excelwidth="18">Employee Code</th>
+                        <th excelwidth="50">Employee Name</th>
+                        <th excelwidth="18">Salary No.</th>
+                        <th excelwidth="18">Nationality</th>
+                        <th excelwidth="18">Working Days</th>
+                        <th excelwidth="18">Present Days</th>
+                        <th excelwidth="18">Advance Due</th>
+                        <th excelwidth="18">Loan Due Amt</th>
+                        <th excelwidth="18">Total Earnings</th>
+                        <th excelwidth="18">Total Deductions</th>
+                        <th excelwidth="18">Net Salary</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+
+                    {{#hasElement details}}
+                    {{#each details}}
+                    <tr style="border-top:2px dashed #000">
+                        <td colspan="7" excelcellmerge="A:F" excelfonts='{"bold":true}'
+                            excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"e8feff"},"bgColor":{"argb":"000000"}}'
+                            class="tableSubHdg">Department: {{department_name}}
+                        </td>
+                        <td colspan="5" excelcellmerge="G:K"
+                            excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"e8feff"},"bgColor":{"argb":"000000"}}'
+                            class="tableSubHdg"><span class="textFloatRight">Total No
+                                Employees:
+                                <b>{{dep_no_employee}}</b></span></td>
+                    </tr>
+
+                    {{#each sub_dept}}
+                    <tr style="border-top:2px dashed #000">
+                        <td colspan="7" excelcellmerge="A:F" excelfonts='{"bold":true}'
+                            excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"fffff5"},"bgColor":{"argb":"000000"}}'
+                            class="tableSubHdg2">Sub Department:
+                            {{sub_department_name}}
+                        </td>
+                        <td colspan="5" excelcellmerge="G:K"
+                            excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"fffff5"},"bgColor":{"argb":"000000"}}'
+                            class="tableSubHdg2"><span class="textFloatRight">Total No
+                                Employees:
+                                <b>{{sub_no_employee}}</b></span></td>
+                    </tr>
+
+                    {{#each employees}}
+                    <tr>
+                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{inc @index}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{employee_code}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"left"}'>{{employee_name}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{salary_number}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{nationality}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{total_days}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{display_present_days}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{advance_due}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{loan_due_amount}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{total_earnings}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{total_deductions}}</td>
+                        <td excelfonts='{"bold":true}' excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{net_salary}}</td>
+                    </tr>
+                    {{/each }}{{/each }}{{/each }}
+
+
+                    {{else}}
+                    <tr>
+                        <td colspan="12" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
+
+
+                    {{!-- excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"FF0000"},"bgColor":{"argb":"cccccc"}}' --}}
+
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>
