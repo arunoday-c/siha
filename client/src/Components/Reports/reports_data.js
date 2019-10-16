@@ -533,6 +533,109 @@ const Hims_Reports = [
         ]
       }
     ]
+  },
+  {
+    name: "VAT Reports",
+    submenu: [
+      {
+        subitem: "Details VAT Report",
+        template_name: "PatientReports/PatOutstandingSum",
+        reportQuery: "patOutstandingSum",
+        reportParameters: [
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2 mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            className: "col-2 mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "nationality_id",
+            initialLoad: true,
+            isImp: false,
+            label: "nationality",
+            link: {
+              uri: "/masters/get/nationality"
+            },
+            dataSource: {
+              textField: "nationality",
+              valueField: "hims_d_nationality_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "",
+            initialLoad: true,
+            isImp: false,
+            label: "Company",
+            link: {
+              uri: "/insurance/getInsuranceProviders"
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/pharmacy/getPharmacyLocation",
+                  module: "pharmacy",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      location_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: []
+                });
+              }
+            },
+            dataSource: {
+              textField: "insurance_provider_name",
+              valueField: "hims_d_insurance_provider_id"
+            }
+          }
+        ]
+      }
+    ]
   }
 ];
 
@@ -4077,6 +4180,7 @@ const insurance_reports = [
             }
           },
           {
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "",
             initialLoad: true,
