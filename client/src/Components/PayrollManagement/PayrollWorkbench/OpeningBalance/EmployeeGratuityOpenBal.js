@@ -103,6 +103,7 @@ export default class EmployeeGratuityOpenBal extends Component {
                     data: this.state.leave_balance
                   }}
                   isEditable={true}
+                  filter={true}
                   paging={{ page: 0, rowsPerPage: 20 }}
                   events={{
                     onEdit: () => {},

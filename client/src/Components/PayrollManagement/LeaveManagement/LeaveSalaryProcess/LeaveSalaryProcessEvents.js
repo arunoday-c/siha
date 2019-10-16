@@ -336,7 +336,8 @@ const openSalaryComponents = ($this, row) => {
     year: row.year,
     month: row.month,
     hospital_id: $this.state.hospital_id,
-    employee_id: $this.state.employee_id
+    employee_id: $this.state.employee_id,
+    salary_type: "LS"
   };
   algaehApiCall({
     uri: "/salary/getSalaryProcess",

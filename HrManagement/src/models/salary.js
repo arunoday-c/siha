@@ -20,7 +20,7 @@ export default {
         const input = req.query;
         const month_number = input.month;
         const year = input.year;
-        let inputValues = [];
+        let inputValues = [input.year, input.month];
         let _stringData = "";
 
         // utilities.logger().log("_stringData: ", input.leave_salary);
@@ -71,8 +71,8 @@ export default {
             _stringData +
             " and (hims_f_employee_annual_leave_id is null OR from_normal_salary='Y') and (S.salary_processed is null or  S.salary_processed='N');";
         } else {
-          inputValues.push(input.year);
-          inputValues.push(input.month);
+          // inputValues.push(input.year);
+          // inputValues.push(input.month);
           inputValues.push(input.hospital_id);
 
           if (input.leave_salary === "Y") {
@@ -81,9 +81,9 @@ export default {
               inputValues.push(input.employee_id);
             }
             strQuery =
-              "select S.employee_id, E.employee_code, E.gross_salary, 0 as total_days,0 as absent_days, 0 as unpaid_leave, \
-              S.hims_f_salary_id from hims_d_employee E left join hims_f_salary as S on  E.hims_d_employee_id = S.employee_id \
-              where record_status='A' and S.`year`=? and S.`month` = ? and  E.hospital_id=?" +
+              "select E.hims_d_employee_id as employee_id, E.employee_code, E.gross_salary, 0 as total_days,0 as absent_days, \
+              0 as unpaid_leave, S.hims_f_salary_id from hims_d_employee E left join hims_f_salary as S on  \
+              E.hims_d_employee_id = S.employee_id and S.`year`=? and S.`month` = ? where record_status='A' and E.hospital_id=?" +
               _stringData;
           } else {
             if (input.employee_id != null) {
@@ -1914,6 +1914,11 @@ export default {
       _stringData +=
         inputParam.group_id != null ? " and emp.employee_group_id=? " : "";
 
+      _stringData +=
+        inputParam.salary_type != null
+          ? "and salary_type = '" + inputParam.salary_type + "'"
+          : "and salary_type='NS'";
+
       _mysql
         .executeQuery({
           query:
@@ -1922,7 +1927,7 @@ export default {
             leave_salary_accrual_amount, leave_salary_days, emp.employee_code, emp.full_name from hims_f_salary S, \
             hims_d_employee emp, hims_d_sub_department SD where S.employee_id = emp.hims_d_employee_id and \
             emp.sub_department_id=SD.hims_d_sub_department_id \
-            and salary_type = 'NS' and `year` = ? and `month` = ? and emp.hospital_id=? " +
+             and `year` = ? and `month` = ? and emp.hospital_id=? " +
             _stringData,
           values: _.valuesIn(inputParam),
           printQuery: true
@@ -3315,18 +3320,18 @@ function InsertEmployeeLeaveSalary(options) {
                 monthly_leave.close_balance
               );
 
-              let utilized_leave_days =
-                parseFloat(
-                  employee_leave_salary_header[0].utilized_leave_days
-                ) + parseFloat(leave_salary_accrual_detail[i].leave_days);
-              let utilized_leave_salary_amount =
-                parseFloat(
-                  employee_leave_salary_header[0].utilized_leave_salary_amount
-                ) + parseFloat(leave_salary_accrual_detail[i].leave_salary);
-              let utilized_airticket_amount =
-                parseFloat(
-                  employee_leave_salary_header[0].utilized_airticket_amount
-                ) + parseFloat(leave_salary_accrual_detail[i].airfare_amount);
+              // let utilized_leave_days =
+              //   parseFloat(
+              //     employee_leave_salary_header[0].utilized_leave_days
+              //   ) + parseFloat(leave_salary_accrual_detail[i].leave_days);
+              // let utilized_leave_salary_amount =
+              //   parseFloat(
+              //     employee_leave_salary_header[0].utilized_leave_salary_amount
+              //   ) + parseFloat(leave_salary_accrual_detail[i].leave_salary);
+              // let utilized_airticket_amount =
+              //   parseFloat(
+              //     employee_leave_salary_header[0].utilized_airticket_amount
+              //   ) + parseFloat(leave_salary_accrual_detail[i].airfare_amount);
 
               let projected_applied_leaves = parseFloat(
                 monthly_leave.projected_applied_leaves
@@ -3373,20 +3378,19 @@ function InsertEmployeeLeaveSalary(options) {
                 balance_airticket_amount,
                 decimal_places
               );
-              utilized_leave_salary_amount = utilities.decimalPoints(
-                utilized_leave_salary_amount,
-                decimal_places
-              );
-              utilized_airticket_amount = utilities.decimalPoints(
-                utilized_airticket_amount,
-                decimal_places
-              );
+              // utilized_leave_salary_amount = utilities.decimalPoints(
+              //   utilized_leave_salary_amount,
+              //   decimal_places
+              // );
+              // utilized_airticket_amount = utilities.decimalPoints(
+              //   utilized_airticket_amount,
+              //   decimal_places
+              // );
 
               strQry += mysql.format(
                 "UPDATE `hims_f_employee_leave_salary_header` SET leave_days=?,`leave_salary_amount`=?,\
                   `airticket_amount`=?,`balance_leave_days`=?,`balance_leave_salary_amount`=?,\
-                  `balance_airticket_amount`=?,`airfare_months`=?, `utilized_leave_days`=?, \
-                  `utilized_leave_salary_amount` = ?, `utilized_airticket_amount` = ? where  hims_f_employee_leave_salary_header_id=?;\
+                  `balance_airticket_amount`=?,`airfare_months`=? where  hims_f_employee_leave_salary_header_id=?;\
                   UPDATE hims_f_employee_monthly_leave set close_balance=?, projected_applied_leaves=?, accumulated_leaves=? \
                   where hims_f_employee_monthly_leave_id=?;\
                   INSERT INTO `hims_f_employee_leave_salary_detail`(employee_leave_salary_header_id,leave_days,\
@@ -3399,9 +3403,6 @@ function InsertEmployeeLeaveSalary(options) {
                   balance_leave_salary_amount,
                   balance_airticket_amount,
                   airfare_months,
-                  utilized_leave_days,
-                  utilized_leave_salary_amount,
-                  utilized_airticket_amount,
                   employee_leave_salary_header[0]
                     .hims_f_employee_leave_salary_header_id,
                   monthly_close_balance,

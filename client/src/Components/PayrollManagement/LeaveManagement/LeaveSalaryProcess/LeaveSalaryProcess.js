@@ -89,39 +89,6 @@ class LeaveSalaryProcess extends Component {
       <div className="leave_en_auth row">
         <div className="col-12">
           <div className="row inner-top-search">
-            {/* <div className="col" style={{ marginTop: 10 }}>
-              <div
-                className="row"
-                style={{
-                  border: " 1px solid #ced4d9",
-                  borderRadius: 5,
-                  marginLeft: 0
-                }}
-              >
-                <div className="col">
-                  <AlgaehLabel label={{ forceLabel: "Leave Salary No." }} />
-                  <h6>
-                    {this.state.leave_salary_number
-                      ? this.state.leave_salary_number
-                      : "----------"}
-                  </h6>
-                </div>
-                <div
-                  className="col-lg-3"
-                  style={{ borderLeft: "1px solid #ced4d8" }}
-                >
-                  <i
-                    className="fas fa-search fa-lg"
-                    style={{
-                      paddingTop: 17,
-                      paddingLeft: 3,
-                      cursor: "pointer"
-                    }}
-                    onClick={LoadLeaveSalary.bind(this, this)}
-                  />
-                </div>
-              </div>
-            </div> */}
             <div className="col-2 globalSearchCntr">
               <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
               <h6 onClick={employeeSearch.bind(this, this)}>
@@ -156,46 +123,6 @@ class LeaveSalaryProcess extends Component {
               </h6>
             </div>
 
-            {/* <div className="col" style={{ marginTop: 10 }}>
-              <div
-                className="row"
-                style={{
-                  border: " 1px solid #ced4d9",
-                  borderRadius: 5,
-                  marginLeft: 0
-                }}
-              >
-                <div className="col">
-                  <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
-                  <h6>
-                    {this.state.employee_name
-                      ? this.state.employee_name
-                      : "------"}
-                  </h6>
-                </div>
-                <div
-                  className="col-lg-3"
-                  style={{ borderLeft: "1px solid #ced4d8" }}
-                >
-                  <i
-                    className="fas fa-search fa-lg"
-                    style={{
-                      paddingTop: 17,
-                      paddingLeft: 3,
-                      cursor: "pointer",
-                      pointerEvents:
-                        this.state.hims_f_leave_salary_header_id !== null
-                          ? "none"
-                          : this.state.employee_id !== null
-                          ? "none"
-                          : ""
-                    }}
-                    onClick={employeeSearch.bind(this, this)}
-                  />
-                </div>
-              </div>
-            </div> */}
-
             <div className="col form-group">
               <button
                 style={{ marginTop: 19 }}
@@ -215,11 +142,7 @@ class LeaveSalaryProcess extends Component {
               <div className="caption">
                 <h3 className="caption-subject">Leave Salary Details</h3>
               </div>
-              <div className="actions">
-                {/* <a className="btn btn-primary btn-circle active">
-                  <i className="fas fa-pen" />
-                </a> */}
-              </div>
+              <div className="actions"></div>
             </div>
             <div className="portlet-body">
               <div className="row">

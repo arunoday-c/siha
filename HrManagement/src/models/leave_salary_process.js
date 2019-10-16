@@ -82,6 +82,7 @@ export default {
                   }
                 } else {
                   from_date_month = parseFloat(from_date_month);
+                  to_date_month = parseFloat(to_date_month);
                 }
 
                 let leave_start_date = moment(
@@ -321,10 +322,22 @@ export default {
             req.query.hospital_id = employee_result[0].hospital_id;
             req.query.employee_id = req.query.hims_d_employee_id;
 
+            if (hrms_options[0].attendance_starts === "PM") {
+              let end_selected_day = moment(end_date).format("DD");
+              console.log("end_selected_day: ", end_selected_day);
+              if (
+                parseFloat(end_selected_day) >=
+                parseFloat(hrms_options[0].at_end_date)
+              ) {
+                end_date_month = parseFloat(end_date_month) + 1;
+                end_date_month = String(end_date_month).toString();
+              }
+            }
+            console.log("end_date_month: ", end_date_month);
             const syscCall = async function() {
               while (start_date <= end_date) {
-                utilities.logger().log("start start_date: ", start_date);
-                utilities.logger().log("start end_date: ", end_date);
+                console.log("start_date: ", start_date);
+                console.log("end_date: ", end_date);
                 try {
                   let fromDate_lastDate = null;
 
@@ -337,16 +350,26 @@ export default {
                     let selected_month = moment(start_date).format("M");
                     let selected_day = moment(start_date).format("DD");
 
+                    console.log("selected_day: ", selected_day);
+                    console.log("selected_month: ", selected_month);
                     if (
-                      parseFloat(selected_day) ===
+                      parseFloat(selected_day) >=
                       parseFloat(hrms_options[0].at_st_date)
                     ) {
                       start_date = moment(start_date)
                         .add(1, "M")
                         .format("YYYYMMDD");
+                      console.log("inside start_date: ", start_date);
+                      // if (
+                      //   parseFloat(end_selected_day) <=
+                      //   parseFloat(hrms_options[0].at_end_date)
+                      // ) {
+                      // }
                       selected_month = parseFloat(selected_month) + 1;
                       selected_month = String(selected_month).toString();
                     }
+
+                    console.log("selected_month: ", selected_month);
 
                     req.query.year = selected_year;
                     req.query.month = selected_month;
@@ -427,14 +450,29 @@ export default {
                     .logger()
                     .log("Promise at_end_date: ", hrms_options[0].at_end_date);
                   if (hrms_options[0].attendance_starts === "PM") {
-                    let selected_year = moment(start_date).year();
-                    let selected_month = moment(start_date).format("M");
+                    let _selected_year = moment(start_date).year();
+                    let _selected_month = moment(start_date).format("M");
+
+                    console.log("_selected_year: ", _selected_year);
+                    console.log("selected_month: ", _selected_month);
+
                     // let selected_day = moment(from_date).format("DD");
 
+                    // if (
+                    //   parseFloat(selected_day) >=
+                    //   parseFloat(hrms_options[0].at_st_date)
+                    // ) {
+                    //   start_date = moment(start_date)
+                    //     .add(1, "M")
+                    //     .format("YYYYMMDD");
+                    //   selected_month = parseFloat(selected_month) + 1;
+                    //   selected_month = String(selected_month).toString();
+                    // }
+
                     fromDate_lastDate = moment(
-                      selected_year +
+                      _selected_year +
                         "-" +
-                        selected_month +
+                        _selected_month +
                         "-" +
                         hrms_options[0].at_end_date
                     ).format("YYYY-MM-DD");
@@ -443,14 +481,12 @@ export default {
                       .endOf("month")
                       .format("YYYY-MM-DD");
                   }
-                  utilities
-                    .logger()
-                    .log("Promise fromDate_lastDate: ", fromDate_lastDate);
 
+                  console.log("Promise fromDate_lastDate: ", fromDate_lastDate);
                   start_date = moment(fromDate_lastDate)
                     .add(1, "days")
                     .format("YYYYMMDD");
-                  utilities.logger().log("Promise start_date: ", start_date);
+                  console.log("Promise start_date: ", start_date);
                   // });
                 } catch (e) {
                   _mysql.rollBackTransaction(() => {
@@ -926,8 +962,7 @@ function InsertEmployeeLeaveSalary(options) {
           query:
             "select hims_f_employee_leave_salary_header_id,employee_id,leave_days,leave_salary_amount, \
                 airticket_amount, balance_leave_days, balance_leave_salary_amount, balance_airticket_amount, \
-                airfare_months, utilized_leave_days,  utilized_leave_salary_amount, utilized_airticket_amount \
-                from hims_f_employee_leave_salary_header where employee_id = ?;\
+                airfare_months from hims_f_employee_leave_salary_header where employee_id = ?;\
                 select hims_f_employee_monthly_leave_id, close_balance, accumulated_leaves, projected_applied_leaves\
                 from hims_f_employee_monthly_leave where year = ? and employee_id = ? and leave_id=?;",
           values: [
@@ -972,18 +1007,6 @@ function InsertEmployeeLeaveSalary(options) {
                 employee_leave_salary_header[0].balance_airticket_amount
               ) + parseFloat(leave_salary_accrual_detail.airfare_amount);
 
-            let utilized_leave_days =
-              parseFloat(employee_leave_salary_header[0].utilized_leave_days) +
-              parseFloat(leave_salary_accrual_detail.leave_days);
-            let utilized_leave_salary_amount =
-              parseFloat(
-                employee_leave_salary_header[0].utilized_leave_salary_amount
-              ) + parseFloat(leave_salary_accrual_detail.leave_salary);
-            let utilized_airticket_amount =
-              parseFloat(
-                employee_leave_salary_header[0].utilized_airticket_amount
-              ) + parseFloat(leave_salary_accrual_detail.airfare_amount);
-
             let airfare_months =
               parseFloat(employee_leave_salary_header[0].airfare_months) + 1;
 
@@ -1005,14 +1028,14 @@ function InsertEmployeeLeaveSalary(options) {
               balance_airticket_amount,
               decimal_places
             );
-            utilized_leave_salary_amount = utilities.decimalPoints(
-              utilized_leave_salary_amount,
-              decimal_places
-            );
-            utilized_airticket_amount = utilities.decimalPoints(
-              utilized_airticket_amount,
-              decimal_places
-            );
+            // utilized_leave_salary_amount = utilities.decimalPoints(
+            //   utilized_leave_salary_amount,
+            //   decimal_places
+            // );
+            // utilized_airticket_amount = utilities.decimalPoints(
+            //   utilized_airticket_amount,
+            //   decimal_places
+            // );
 
             let projected_applied_leaves = parseFloat(
               monthly_leave.projected_applied_leaves
@@ -1049,8 +1072,7 @@ function InsertEmployeeLeaveSalary(options) {
                 query:
                   "UPDATE `hims_f_employee_leave_salary_header` SET leave_days=?,`leave_salary_amount`=?,\
                   `airticket_amount`=?,`balance_leave_days`=?,`balance_leave_salary_amount`=?,\
-                  `balance_airticket_amount`=?,`airfare_months`=?, `utilized_leave_days`=?, \
-                  `utilized_leave_salary_amount` = ?, `utilized_airticket_amount` = ? where  hims_f_employee_leave_salary_header_id=?;\
+                  `balance_airticket_amount`=?,`airfare_months`=? where  hims_f_employee_leave_salary_header_id=?;\
                   UPDATE hims_f_employee_monthly_leave set close_balance=?, projected_applied_leaves=?, accumulated_leaves=? \
                   where hims_f_employee_monthly_leave_id=?;\
                   INSERT INTO `hims_f_employee_leave_salary_detail`(employee_leave_salary_header_id,leave_days,\
@@ -1063,9 +1085,6 @@ function InsertEmployeeLeaveSalary(options) {
                   balance_leave_salary_amount,
                   balance_airticket_amount,
                   airfare_months,
-                  utilized_leave_days,
-                  utilized_leave_salary_amount,
-                  utilized_airticket_amount,
                   employee_leave_salary_header[0]
                     .hims_f_employee_leave_salary_header_id,
                   monthly_close_balance,

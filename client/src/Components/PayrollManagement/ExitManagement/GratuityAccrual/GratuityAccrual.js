@@ -10,12 +10,12 @@ import {
 import { getYears, getAmountFormart } from "../../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import moment from "moment";
-// import {
-//   texthandle,
-//   LoadLeaveAccrual,
-//   employeeSearch,
-//   ClearData
-// } from "./LeaveSalaryAccuralEvent";
+import {
+  texthandle,
+  LoadGratuityAccrual,
+  employeeSearch,
+  ClearData
+} from "./GratuityAccrualEvent";
 
 export default class GratuityAccrual extends Component {
   constructor(props) {
@@ -23,11 +23,10 @@ export default class GratuityAccrual extends Component {
     this.state = {
       year: moment().year(),
       month: moment(new Date()).format("M"),
-      employee_id: null,
+      hims_d_employee_id: null,
       employee_name: null,
-      leave_salary_accrual: [],
-      leave_salary: null,
-      airfair_amount: null
+      gratuity_details: [],
+      total_gratuity_amount: null
     };
   }
 
@@ -35,51 +34,15 @@ export default class GratuityAccrual extends Component {
     let allYears = getYears();
     return (
       <div className="row GratuityAccrualScreen">
-        <div className="col-12" data-validate="loadLeaveAccrual">
+        <div className="col-12" data-validate="loadGratuityAccrual">
           <div className="row inner-top-search">
             <div className="col-2 globalSearchCntr">
               <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
-              <h6
-              //onClick={employeeSearch.bind(this, this)}
-              >
+              <h6 onClick={employeeSearch.bind(this, this)}>
                 {this.state.employee_name ? this.state.employee_name : "------"}
                 <i className="fas fa-search fa-lg" />
               </h6>
             </div>
-
-            {/* <div className="col-3" style={{ marginTop: 10 }}>
-              <div
-                className="row"
-                style={{
-                  border: " 1px solid #ced4d9",
-                  borderRadius: 5,
-                  marginLeft: 0
-                }}
-              >
-                <div className="col">
-                  <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
-                  <h6>
-                    {this.state.employee_name
-                      ? this.state.employee_name
-                      : "------"}
-                  </h6>
-                </div>
-                <div
-                  className="col-lg-3"
-                  style={{ borderLeft: "1px solid #ced4d8" }}
-                >
-                  <i
-                    className="fas fa-search fa-lg"
-                    style={{
-                      paddingTop: 17,
-                      paddingLeft: 3,
-                      cursor: "pointer"
-                    }}
-                    //  onClick={employeeSearch.bind(this, this)}
-                  />
-                </div>
-              </div>
-            </div> */}
 
             <AlagehAutoComplete
               div={{ className: "col form-group" }}
@@ -96,7 +59,7 @@ export default class GratuityAccrual extends Component {
                   valueField: "value",
                   data: allYears
                 },
-                //   onChange: texthandle.bind(this, this),
+                onChange: texthandle.bind(this, this),
                 onClear: () => {
                   this.setState({
                     year: null
@@ -121,7 +84,7 @@ export default class GratuityAccrual extends Component {
                   valueField: "value",
                   data: GlobalVariables.MONTHS
                 },
-                //   onChange: texthandle.bind(this, this),
+                onChange: texthandle.bind(this, this),
                 onClear: () => {
                   this.setState({
                     month: null
@@ -134,7 +97,7 @@ export default class GratuityAccrual extends Component {
               <button
                 className="btn btn-primary"
                 style={{ marginTop: 19 }}
-                //     onClick={LoadLeaveAccrual.bind(this, this)}
+                onClick={LoadGratuityAccrual.bind(this, this)}
               >
                 Load
               </button>
@@ -173,34 +136,20 @@ export default class GratuityAccrual extends Component {
                         )
                       },
                       {
-                        fieldName: "leave_salary_number",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Accural No." }} />
-                        )
-                      },
-                      {
-                        fieldName: "leave_salary",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Leave Salary" }} />
-                        )
-                      },
-                      {
-                        fieldName: "leave_days",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Leave Days" }} />
-                        )
-                      },
-                      {
-                        fieldName: "airfare_amount",
+                        fieldName: "gratuity_amount",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Airfare Amount" }}
+                            label={{ forceLabel: "Gratuity Amount" }}
                           />
-                        )
+                        ),
+                        others: {
+                          filterable: false
+                        }
                       }
                     ]}
                     keyId=""
-                    dataSource={{ data: this.state.leave_salary_accrual }}
+                    filter={true}
+                    dataSource={{ data: this.state.gratuity_details }}
                     paging={{ page: 0, rowsPerPage: 10 }}
                   />
                 </div>
@@ -216,18 +165,10 @@ export default class GratuityAccrual extends Component {
                 <div className="col-3">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Leave Salary"
+                      forceLabel: "Total Gratuity Amount"
                     }}
                   />
-                  <h6>{getAmountFormart(this.state.leave_salary)}</h6>
-                </div>
-                <div className="col-3">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Airfare Amount"
-                    }}
-                  />
-                  <h6>{getAmountFormart(this.state.airfair_amount)}</h6>
+                  <h6>{getAmountFormart(this.state.total_gratuity_amount)}</h6>
                 </div>
               </div>
             </div>
@@ -240,7 +181,7 @@ export default class GratuityAccrual extends Component {
               <button
                 type="button"
                 className="btn btn-default"
-                //  onClick={ClearData.bind(this, this)}
+                onClick={ClearData.bind(this, this)}
               >
                 <AlgaehLabel
                   label={{ forceLabel: "Clear", returnText: true }}
