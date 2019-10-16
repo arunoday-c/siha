@@ -653,8 +653,16 @@ class ApplyLeave extends Component {
                         forceLabel: "Available Balance"
                       }}
                     />
-                    <h6>{this.state.available_balance} days</h6>
-                  </div>
+                    <h6>{this.state.available_balance} day(s)</h6>
+                  </div>{" "}
+                  <div className="col-12 margin-bottom-15">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Projected Leaves"
+                      }}
+                    />
+                    <h6>{this.state.total_applied_days} day(s)</h6>
+                  </div>{" "}
                   <AlgaehDateHandler
                     div={{ className: "col-6 margin-bottom-15" }}
                     label={{
@@ -803,11 +811,11 @@ class ApplyLeave extends Component {
                         });
                       }
                     }}
-                  />
+                  />{" "}
                   <div className="col-12 margin-bottom-15">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "No. of Days"
+                        forceLabel: "Appliying for"
                       }}
                     />
                     <h6>{this.state.total_applied_days} day(s)</h6>
