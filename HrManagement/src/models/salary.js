@@ -3320,18 +3320,18 @@ function InsertEmployeeLeaveSalary(options) {
                 monthly_leave.close_balance
               );
 
-              let utilized_leave_days =
-                parseFloat(
-                  employee_leave_salary_header[0].utilized_leave_days
-                ) + parseFloat(leave_salary_accrual_detail[i].leave_days);
-              let utilized_leave_salary_amount =
-                parseFloat(
-                  employee_leave_salary_header[0].utilized_leave_salary_amount
-                ) + parseFloat(leave_salary_accrual_detail[i].leave_salary);
-              let utilized_airticket_amount =
-                parseFloat(
-                  employee_leave_salary_header[0].utilized_airticket_amount
-                ) + parseFloat(leave_salary_accrual_detail[i].airfare_amount);
+              // let utilized_leave_days =
+              //   parseFloat(
+              //     employee_leave_salary_header[0].utilized_leave_days
+              //   ) + parseFloat(leave_salary_accrual_detail[i].leave_days);
+              // let utilized_leave_salary_amount =
+              //   parseFloat(
+              //     employee_leave_salary_header[0].utilized_leave_salary_amount
+              //   ) + parseFloat(leave_salary_accrual_detail[i].leave_salary);
+              // let utilized_airticket_amount =
+              //   parseFloat(
+              //     employee_leave_salary_header[0].utilized_airticket_amount
+              //   ) + parseFloat(leave_salary_accrual_detail[i].airfare_amount);
 
               let projected_applied_leaves = parseFloat(
                 monthly_leave.projected_applied_leaves
@@ -3378,20 +3378,19 @@ function InsertEmployeeLeaveSalary(options) {
                 balance_airticket_amount,
                 decimal_places
               );
-              utilized_leave_salary_amount = utilities.decimalPoints(
-                utilized_leave_salary_amount,
-                decimal_places
-              );
-              utilized_airticket_amount = utilities.decimalPoints(
-                utilized_airticket_amount,
-                decimal_places
-              );
+              // utilized_leave_salary_amount = utilities.decimalPoints(
+              //   utilized_leave_salary_amount,
+              //   decimal_places
+              // );
+              // utilized_airticket_amount = utilities.decimalPoints(
+              //   utilized_airticket_amount,
+              //   decimal_places
+              // );
 
               strQry += mysql.format(
                 "UPDATE `hims_f_employee_leave_salary_header` SET leave_days=?,`leave_salary_amount`=?,\
                   `airticket_amount`=?,`balance_leave_days`=?,`balance_leave_salary_amount`=?,\
-                  `balance_airticket_amount`=?,`airfare_months`=?, `utilized_leave_days`=?, \
-                  `utilized_leave_salary_amount` = ?, `utilized_airticket_amount` = ? where  hims_f_employee_leave_salary_header_id=?;\
+                  `balance_airticket_amount`=?,`airfare_months`=? where  hims_f_employee_leave_salary_header_id=?;\
                   UPDATE hims_f_employee_monthly_leave set close_balance=?, projected_applied_leaves=?, accumulated_leaves=? \
                   where hims_f_employee_monthly_leave_id=?;\
                   INSERT INTO `hims_f_employee_leave_salary_detail`(employee_leave_salary_header_id,leave_days,\
@@ -3404,9 +3403,6 @@ function InsertEmployeeLeaveSalary(options) {
                   balance_leave_salary_amount,
                   balance_airticket_amount,
                   airfare_months,
-                  utilized_leave_days,
-                  utilized_leave_salary_amount,
-                  utilized_airticket_amount,
                   employee_leave_salary_header[0]
                     .hims_f_employee_leave_salary_header_id,
                   monthly_close_balance,
