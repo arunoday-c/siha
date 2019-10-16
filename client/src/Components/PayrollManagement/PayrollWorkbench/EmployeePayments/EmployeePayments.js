@@ -14,7 +14,7 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import {
   texthandle,
   LoadData,
-  // RequestPaySearch,
+  branchHandelEvent,
   getPaymentDetails,
   Paymenttexthandle,
   ProessEmpPayment,
@@ -126,7 +126,7 @@ class EmployeePayment extends Component {
                   valueField: "hims_d_hospital_id",
                   data: this.props.organizations
                 },
-                onChange: texthandle.bind(this, this),
+                onChange: branchHandelEvent.bind(this, this),
                 onClear: () => {
                   this.setState({
                     hospital_id: null

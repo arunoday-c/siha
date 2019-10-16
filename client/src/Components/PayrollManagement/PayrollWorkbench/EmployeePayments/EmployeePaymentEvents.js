@@ -19,13 +19,21 @@ const texthandle = ($this, e) => {
   });
 };
 
+const branchHandelEvent = ($this, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let IOputs = EmployeePaymentIOputs.inputParam();
+
+  $this.setState({
+    ...IOputs,
+    [name]: value
+  });
+};
 const Paymenttexthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let IOputs = EmployeePaymentIOputs.inputParam();
-  IOputs.hospital_id = JSON.parse(
-    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-  ).hims_d_hospital_id;
+  IOputs.hospital_id = $this.state.hospital_id;
   $this.setState({
     ...IOputs,
     [name]: value
@@ -34,9 +42,7 @@ const Paymenttexthandle = ($this, e) => {
 
 const PaymentOnClear = ($this, e) => {
   let IOputs = EmployeePaymentIOputs.inputParam();
-  IOputs.hospital_id = JSON.parse(
-    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-  ).hims_d_hospital_id;
+  IOputs.hospital_id = $this.state.hospital_id;
   $this.setState({
     ...IOputs,
     [e]: null
@@ -477,5 +483,6 @@ export {
   employeeSearch,
   getEmployeePayments,
   ClearData,
-  PaymentOnClear
+  PaymentOnClear,
+  branchHandelEvent
 };
