@@ -18,6 +18,7 @@ import {
 } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import swal from "sweetalert2";
+import AlgaehSearch from "../../../Wrapper/globalSearch";
 
 class ApplyLeave extends Component {
   constructor(props) {
@@ -33,13 +34,15 @@ class ApplyLeave extends Component {
       to_date: props.leave.to_date ? props.leave.to_date : null,
       from_leave_session: props.leave.from_session
         ? props.leave.from_session
-        : null,
-      to_leave_session: props.leave.to_session ? props.leave.to_session : null,
+        : "FD",
+      to_leave_session: props.leave.to_session ? props.leave.to_session : "FD",
       absent_id: props.leave.absent_id ? props.leave.absent_id : null,
       leave_from: props.leave.leave_from ? props.leave.leave_from : null,
       hospital_id: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id
+      ).hims_d_hospital_id,
+      projected_leave_enable: false,
+      Request_enable: true
     };
     this.getLeaveTypes();
   }
@@ -85,6 +88,29 @@ class ApplyLeave extends Component {
   //     });
   //   }
   // }
+
+  employeeSearch() {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.Employee_details.employee
+      },
+      searchName: "employee",
+      uri: "/gloabelSearch/get",
+
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        this.setState(
+          {
+            employee_name: row.full_name,
+            employee_id: row.hims_d_employee_id
+          },
+          () => this.getEmployees()
+        );
+      }
+    });
+  }
 
   deleteLeaveApplication(data) {
     swal({
@@ -165,35 +191,24 @@ class ApplyLeave extends Component {
             to_leave_session: null
           });
         } else if (from_leave_session === "FH" && to_leave_session === "SH") {
-          this.setState(
-            {
-              from_leave_session: "FD",
-              to_leave_session: "FD"
-            },
-            () => {
-              // this.getAppliedDays();
-            }
-          );
+          this.setState({
+            from_leave_session: "FD",
+            to_leave_session: "FD"
+          });
         } else if (from_leave_session === "SH" && to_leave_session === "FD") {
           swalMessage({
             title: "Please Select a proper range",
             type: "warning"
           });
-          this.setState(
-            {
-              from_leave_session: null,
-              to_leave_session: null
-            },
-            () => {}
-          );
+          this.setState({
+            from_leave_session: null,
+            to_leave_session: null
+          });
         } else if (from_leave_session === "FD" || to_leave_session === "FD") {
-          this.setState(
-            {
-              to_leave_session: "FD",
-              from_leave_session: "FD"
-            },
-            () => {}
-          );
+          this.setState({
+            to_leave_session: "FD",
+            from_leave_session: "FD"
+          });
         }
 
         this.getAppliedDays();
@@ -202,12 +217,9 @@ class ApplyLeave extends Component {
         moment(to_date).format("YYYYMMDD")
       ) {
         if (from_leave_session === "FH" && to_leave_session === "FH") {
-          this.setState(
-            {
-              from_leave_session: "FD"
-            },
-            () => {}
-          );
+          this.setState({
+            from_leave_session: "FD"
+          });
         } else if (to_leave_session === "SH") {
           this.setState(
             {
@@ -216,38 +228,20 @@ class ApplyLeave extends Component {
             () => {}
           );
         } else if (from_leave_session === "FH" && to_leave_session === "SH") {
-          this.setState(
-            {
-              from_leave_session: "FD",
-              to_leave_session: "FD"
-            },
-            () => {
-              //  this.getAppliedDays();
-            }
-          );
+          this.setState({
+            from_leave_session: "FD",
+            to_leave_session: "FD"
+          });
         } else if (from_leave_session === "FH" && to_leave_session === "FD") {
-          this.setState(
-            {
-              from_leave_session: "FD",
-              to_leave_session: "FD"
-            },
-            () => {
-              //  this.getAppliedDays();
-            }
-          );
+          this.setState({
+            from_leave_session: "FD",
+            to_leave_session: "FD"
+          });
         } else if (from_leave_session === "SH" && to_leave_session === "SH") {
-          this.setState(
-            {
-              to_leave_session: "FD"
-            },
-            () => {
-              // this.getAppliedDays();
-            }
-          );
+          this.setState({
+            to_leave_session: "FD"
+          });
         }
-        //  else if (from_leave_session === "SH" && to_leave_session === "FH") {
-        //   this.getAppliedDays();
-        // }
 
         this.getAppliedDays();
       }
@@ -277,32 +271,23 @@ class ApplyLeave extends Component {
       },
       onSuccess: res => {
         if (res.data.success) {
-          this.setState(
-            {
-              total_applied_days: res.data.records.calculatedLeaveDays,
-              extra: {
-                holiday_included: res.data.records.include_holidays,
-                holidays: res.data.records.total_holiday,
-                weekoff_included: res.data.records.include_week_offs,
-                weekoff_days: res.data.records.total_weekOff
-              }
-            },
-            () => {
-              console.log("Extra:", this.state.extra);
+          this.setState({
+            total_applied_days: res.data.records.calculatedLeaveDays,
+            Request_enable: false,
+            extra: {
+              holiday_included: res.data.records.include_holidays,
+              holidays: res.data.records.total_holiday,
+              weekoff_included: res.data.records.include_week_offs,
+              weekoff_days: res.data.records.total_weekOff
             }
-          );
+          });
         } else if (!res.data.success) {
           swalMessage({
             title: res.data.records.message,
             type: "warning"
           });
           this.setState({
-            leave_id: null,
-            from_leave_session: null,
-            to_leave_session: null,
-            from_date: null,
-            to_date: null,
-            available_balance: 0,
+            Request_enable: true,
             total_applied_days: 0
           });
         }
@@ -387,7 +372,12 @@ class ApplyLeave extends Component {
 
             this.setState({
               available_balance: value.selected.close_balance,
-              leave_type: myObj !== undefined ? myObj.leave_type : null
+              leave_type: myObj !== undefined ? myObj.leave_type : null,
+              projected_leave_enable:
+                myObj.leave_category === "A" &&
+                myObj.avail_if_no_balance === "Y"
+                  ? true
+                  : false
             });
 
             this.validate();
@@ -418,7 +408,9 @@ class ApplyLeave extends Component {
       to_leave_session: null,
       remarks: null,
       total_applied_days: 0.0,
-      available_balance: 0.0
+      available_balance: 0.0,
+      employee_name: null,
+      full_name: null
     });
   }
 
@@ -592,7 +584,7 @@ class ApplyLeave extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <AlgaehAutoSearch
+                  {/* <AlgaehAutoSearch
                     div={{ className: "col-12 form-group" }}
                     label={{
                       forceLabel: "Employee",
@@ -619,7 +611,16 @@ class ApplyLeave extends Component {
                     value={this.state.full_name}
                     searchName="employee"
                     onClick={this.searchSelect.bind(this)}
-                  />
+                  /> */}
+                  <div className="col-12 globalSearchCntr">
+                    <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+                    <h6 onClick={this.employeeSearch.bind(this)}>
+                      {this.state.employee_name
+                        ? this.state.employee_name
+                        : "Search Employee"}
+                      <i className="fas fa-search fa-lg" />
+                    </h6>
+                  </div>
                   {/* <AlagehAutoComplete
                     div={{ className: "col-12 margin-bottom-15" }}
                     label={{
@@ -674,15 +675,17 @@ class ApplyLeave extends Component {
                       }}
                     />
                     <h6>{this.state.available_balance} days(s)</h6>
-                  </div>{" "}
-                  <div className="col-12 margin-bottom-15">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Projected Leaves"
-                      }}
-                    />
-                    <h6>{this.state.total_applied_days} day(s)</h6>
-                  </div>{" "}
+                  </div>
+                  {this.state.projected_leave_enable === true ? (
+                    <div className="col-12 margin-bottom-15">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Projected Leaves"
+                        }}
+                      />
+                      <h6>{this.state.total_applied_days} day(s)</h6>
+                    </div>
+                  ) : null}
                   <AlgaehDateHandler
                     div={{ className: "col-6 margin-bottom-15" }}
                     label={{
@@ -860,6 +863,7 @@ class ApplyLeave extends Component {
                       onClick={this.applyLeave.bind(this)}
                       type="button"
                       className="btn btn-primary"
+                      disabled={this.state.Request_enable}
                     >
                       Request
                     </button>

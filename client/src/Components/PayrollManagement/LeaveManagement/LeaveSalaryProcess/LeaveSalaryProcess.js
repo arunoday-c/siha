@@ -360,6 +360,18 @@ class LeaveSalaryProcess extends Component {
                   : this.state.dis_airfare_amount}
               </h6>
             </div>
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Airfare Months"
+                }}
+              />
+              <h6>
+                {this.state.airfare_months === null
+                  ? 0
+                  : this.state.airfare_months}
+              </h6>
+            </div>
 
             <div className="col">
               <AlgaehLabel

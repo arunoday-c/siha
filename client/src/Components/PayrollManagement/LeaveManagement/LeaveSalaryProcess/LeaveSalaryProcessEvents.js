@@ -151,6 +151,7 @@ const LeaveSalProcess = $this => {
               salaryObj[0].hims_f_salary_id;
           }
 
+          debugger;
           let leave_amount = getAmountFormart(
             response.data.result[1][0].leave_amount
           );
@@ -192,6 +193,7 @@ const LeaveSalProcess = $this => {
             SaveBtn: false,
             ProcessBtn: true,
             dis_salary_amount: getAmountFormart(salary_amount),
+            airfare_months: response.data.result[1][0].airfare_months,
             dis_leave_amount: getAmountFormart(
               response.data.result[1][0].leave_amount
             ),

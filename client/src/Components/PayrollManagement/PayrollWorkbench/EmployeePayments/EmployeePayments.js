@@ -22,6 +22,7 @@ import {
   ClearData,
   PaymentOnClear
 } from "./EmployeePaymentEvents.js";
+import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Enumerable from "linq";
 import EmployeePaymentIOputs from "../../../../Models/EmployeePayment";
@@ -36,6 +37,9 @@ class EmployeePayment extends Component {
 
   componentWillMount() {
     let IOputs = EmployeePaymentIOputs.inputParam();
+    IOputs.hospital_id = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    ).hims_d_hospital_id;
     this.setState(IOputs);
   }
 
@@ -110,8 +114,31 @@ class EmployeePayment extends Component {
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
+                forceLabel: "Select a Branch.",
+                isImp: true
+              }}
+              selector={{
+                name: "hospital_id",
+                className: "select-fld",
+                value: this.state.hospital_id,
+                dataSource: {
+                  textField: "hospital_name",
+                  valueField: "hims_d_hospital_id",
+                  data: this.props.organizations
+                },
+                onChange: texthandle.bind(this, this),
+                onClear: () => {
+                  this.setState({
+                    hospital_id: null
+                  });
+                }
+              }}
+            />
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{
                 forceLabel: "Payment Type",
-                isImp: false
+                isImp: true
               }}
               selector={{
                 name: "sel_payment_type",
@@ -127,12 +154,6 @@ class EmployeePayment extends Component {
                   tabIndex: "2"
                 },
                 onClear: PaymentOnClear.bind(this, this)
-
-                // () => {
-                //   this.setState({
-                //     sel_payment_type: null
-                //   });
-                // }
               }}
             />
 
@@ -172,30 +193,6 @@ class EmployeePayment extends Component {
                 <i className="fas fa-search" />
               </span>
             </div> */}
-
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Select a Branch.",
-                isImp: false
-              }}
-              selector={{
-                name: "hospital_id",
-                className: "select-fld",
-                value: this.state.hospital_id,
-                dataSource: {
-                  textField: "hospital_name",
-                  valueField: "hims_d_hospital_id",
-                  data: this.props.organizations
-                },
-                onChange: texthandle.bind(this, this),
-                onClear: () => {
-                  this.setState({
-                    hospital_id: null
-                  });
-                }
-              }}
-            />
 
             <div className="col-3" style={{ marginTop: 10 }}>
               <div
@@ -263,7 +260,7 @@ class EmployeePayment extends Component {
                       </div>
                       <div className="actions">
                         {/*    <a className="btn btn-primary btn-circle active">
-                       <i className="fas fa-calculator" /> 
+                       <i className="fas fa-calculator" />
                       </a>*/}
                       </div>
                     </div>
@@ -366,7 +363,7 @@ class EmployeePayment extends Component {
                           </span>
                         )}
                         {/* <a className="btn btn-primary btn-circle active">
-                        <i className="fas fa-calculator" /> 
+                        <i className="fas fa-calculator" />
                       </a>*/}
                       </div>
                     </div>
@@ -575,7 +572,7 @@ class EmployeePayment extends Component {
                   </div>
                   <div className="actions">
                     {/*    <a className="btn btn-primary btn-circle active">
-                       <i className="fas fa-calculator" /> 
+                       <i className="fas fa-calculator" />
                       </a>*/}
                   </div>
                 </div>

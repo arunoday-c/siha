@@ -2,7 +2,10 @@
 import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  AlgaehOpenContainer
+} from "../../../../utils/GlobalFunctions";
 import EmployeePaymentIOputs from "../../../../Models/EmployeePayment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 // import swal from "sweetalert2";
@@ -20,7 +23,9 @@ const Paymenttexthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let IOputs = EmployeePaymentIOputs.inputParam();
-
+  IOputs.hospital_id = JSON.parse(
+    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+  ).hims_d_hospital_id;
   $this.setState({
     ...IOputs,
     [name]: value
@@ -29,7 +34,9 @@ const Paymenttexthandle = ($this, e) => {
 
 const PaymentOnClear = ($this, e) => {
   let IOputs = EmployeePaymentIOputs.inputParam();
-
+  IOputs.hospital_id = JSON.parse(
+    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+  ).hims_d_hospital_id;
   $this.setState({
     ...IOputs,
     [e]: null
@@ -172,6 +179,7 @@ const LoadData = ($this, e) => {
           }
         });
       } else if ($this.state.sel_payment_type === "LS") {
+        debugger;
         if ($this.state.document_num !== null) {
           inputObj.leave_salary_number = $this.state.document_num;
         }
@@ -453,6 +461,9 @@ const getEmployeePayments = $this => {
 
 const ClearData = $this => {
   let IOputs = EmployeePaymentIOputs.inputParam();
+  IOputs.hospital_id = JSON.parse(
+    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+  ).hims_d_hospital_id;
   $this.setState(IOputs);
 };
 

@@ -271,7 +271,8 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select hospital_id,airfare_process from hims_d_employee where hims_d_employee_id=?;\
+            "select hospital_id, airfare_process, EG.airfare_eligibility, EG.airfare_amount  from hims_d_employee E \
+            left join hims_d_employee_group EG on E.employee_group_id= EG.hims_d_employee_group_id where E.hims_d_employee_id=?;\
           SELECT balance_leave_days,balance_leave_salary_amount,balance_airticket_amount,airfare_months FROM \
           hims_f_employee_leave_salary_header where employee_id=?; \
           SELECT EE.employee_id,EE.earnings_id,EE.amount FROM hims_d_earning_deduction ED, \
@@ -304,250 +305,263 @@ export default {
             parseFloat(employee_leave_salary.balance_leave_days) -
             parseFloat(req.query.leave_period);
           let leave_amount = 0;
-          let airfare_amount =
-            employee_result[0].airfare_process === "N"
-              ? 0
-              : employee_leave_salary.balance_airticket_amount;
+          let airfare_amount = 0;
+          let airfare_months = 0;
+
           let intValue = 0;
-          if (balance_leave_days > 0) {
-            for (let k = 0; k < annual_leave_result.length; k++) {
-              let per_day_sal = 0;
-              per_day_sal = parseFloat(annual_leave_result[k].amount) * 12;
-              per_day_sal = per_day_sal / 365;
-              per_day_sal = per_day_sal * req.query.leave_period;
-
-              leave_amount = leave_amount + per_day_sal;
+          // if (balance_leave_days > 0) {
+          if (employee_result[0].airfare_process === "Y") {
+            if (hrms_options[0].airfare_factor === "PB") {
+              const basic_component = _.find(
+                annual_leave_result,
+                f => f.earnings_id == hrms_options[0].basic_earning_component
+              );
+              airfare_amount =
+                (parseFloat(basic_component.amount) / 100) *
+                parseFloat(hrms_options[0].airfare_percentage);
+              airfare_amount =
+                airfare_amount *
+                parseFloat(employee_result[0].airfare_eligibility);
+            } else {
+              airfare_amount = employee_result[0].airfare_amount;
             }
+          }
+          for (let k = 0; k < annual_leave_result.length; k++) {
+            let per_day_sal = 0;
+            per_day_sal = parseFloat(annual_leave_result[k].amount) * 12;
+            per_day_sal = per_day_sal / 365;
+            per_day_sal = per_day_sal * req.query.leave_period;
 
-            req.query.hospital_id = employee_result[0].hospital_id;
-            req.query.employee_id = req.query.hims_d_employee_id;
+            leave_amount = leave_amount + per_day_sal;
+          }
 
-            if (hrms_options[0].attendance_starts === "PM") {
-              let end_selected_day = moment(end_date).format("DD");
-              console.log("end_selected_day: ", end_selected_day);
-              if (
-                parseFloat(end_selected_day) >=
-                parseFloat(hrms_options[0].at_end_date)
-              ) {
-                end_date_month = parseFloat(end_date_month) + 1;
-                end_date_month = String(end_date_month).toString();
-              }
+          req.query.hospital_id = employee_result[0].hospital_id;
+          req.query.employee_id = req.query.hims_d_employee_id;
+
+          if (hrms_options[0].attendance_starts === "PM") {
+            let end_selected_day = moment(end_date).format("DD");
+            console.log("end_selected_day: ", end_selected_day);
+            if (
+              parseFloat(end_selected_day) >=
+              parseFloat(hrms_options[0].at_end_date)
+            ) {
+              end_date_month = parseFloat(end_date_month) + 1;
+              end_date_month = String(end_date_month).toString();
             }
-            console.log("end_date_month: ", end_date_month);
-            const syscCall = async function() {
-              while (start_date <= end_date) {
-                console.log("start_date: ", start_date);
-                console.log("end_date: ", end_date);
-                try {
-                  let fromDate_lastDate = null;
+          }
+          console.log("end_date_month: ", end_date_month);
+          const syscCall = async function() {
+            while (start_date <= end_date) {
+              console.log("start_date: ", start_date);
+              console.log("end_date: ", end_date);
+              try {
+                let fromDate_lastDate = null;
 
-                  req.query.leave_salary = "N";
-                  let date_year = moment(start_date).year();
-                  let date_month = moment(start_date).format("M");
+                req.query.leave_salary = "N";
+                let date_year = moment(start_date).year();
+                let date_month = moment(start_date).format("M");
 
-                  if (hrms_options[0].attendance_starts === "PM") {
-                    let selected_year = moment(start_date).year();
-                    let selected_month = moment(start_date).format("M");
-                    let selected_day = moment(start_date).format("DD");
+                if (hrms_options[0].attendance_starts === "PM") {
+                  let selected_year = moment(start_date).year();
+                  let selected_month = moment(start_date).format("M");
+                  let selected_day = moment(start_date).format("DD");
 
-                    console.log("selected_day: ", selected_day);
-                    console.log("selected_month: ", selected_month);
-                    if (
-                      parseFloat(selected_day) >=
-                      parseFloat(hrms_options[0].at_st_date)
-                    ) {
-                      start_date = moment(start_date)
-                        .add(1, "M")
-                        .format("YYYYMMDD");
-                      console.log("inside start_date: ", start_date);
-                      // if (
-                      //   parseFloat(end_selected_day) <=
-                      //   parseFloat(hrms_options[0].at_end_date)
-                      // ) {
-                      // }
-                      selected_month = parseFloat(selected_month) + 1;
-                      selected_month = String(selected_month).toString();
-                    }
-
-                    console.log("selected_month: ", selected_month);
-
-                    req.query.year = selected_year;
-                    req.query.month = selected_month;
-                    date_month = selected_month;
-                    req.query.yearAndMonth = moment(
-                      selected_year +
-                        "-" +
-                        selected_month +
-                        hrms_options[0].at_st_date,
-                      "YYYY-MM-DD"
-                    )._d;
-                  } else {
-                    req.query.year = date_year;
-                    req.query.month = date_month;
-
-                    req.query.yearAndMonth = moment(
-                      date_year + "-" + date_month + "-01",
-                      "YYYY-MM-DD"
-                    )._d;
-                  }
-
-                  utilities.logger().log("end_date_month: ", end_date_month);
-                  utilities.logger().log("date_month: ", date_month);
-                  utilities.logger().log("intValue: ", intValue);
-
-                  if (end_date_month == date_month && intValue > 0) {
-                    utilities.logger().log("intValue_inside: ", intValue);
-                    req.query.leave_end_date = end_date;
-                    req.query.leave_salary = "Y";
-                  }
-
-                  let _attandance = null;
-                  let _sarary = null;
-                  req.connection = {
-                    connection: _mysql.connection,
-                    isTransactionConnection: _mysql.isTransactionConnection,
-                    pool: _mysql.pool
-                  };
-                  if (hrms_options[0].attendance_type === "M") {
-                    _attandance = await processAttendance(req, res, next);
-                    _sarary = await newProcessSalary(req, res, next);
-                  } else {
-                    utilities.logger().log("attendance_type else: ", intValue);
-                    _sarary = await newProcessSalary(req, res, next);
-                    _attandance = Promise.resolve();
-                  }
-
-                  // let _sarary = await newProcessSalary(req, res, next);
-                  utilities.logger().log("_sarary before:  ", _sarary);
-                  if (_sarary === undefined) {
-                    utilities.logger().log("Salary Inside: ");
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.flag = 1;
-                      req.records = {
-                        message: "Please Process Attandance"
-                      };
-                      next();
-                      return;
-                    });
-                  }
-                  // _sarary = _sarary !== null ? parseFloat(_sarary) + 1 : "";
-
-                  // Promise.all([_attandance, _sarary]).then(rse => {
-                  // utilities.logger().log("Promise: ", rse);
-                  strGetdataQry +=
-                    "select hims_f_salary_id,salary_number,month,year,employee_id,salary_date,gross_salary,net_salary from hims_f_salary where hims_f_salary_id=" +
-                    _sarary +
-                    "; ";
-
-                  utilities
-                    .logger()
-                    .log(
-                      "Promise attendance_starts: ",
-                      hrms_options[0].attendance_starts
-                    );
-                  utilities
-                    .logger()
-                    .log("Promise at_end_date: ", hrms_options[0].at_end_date);
-                  if (hrms_options[0].attendance_starts === "PM") {
-                    let _selected_year = moment(start_date).year();
-                    let _selected_month = moment(start_date).format("M");
-
-                    console.log("_selected_year: ", _selected_year);
-                    console.log("selected_month: ", _selected_month);
-
-                    // let selected_day = moment(from_date).format("DD");
-
+                  console.log("selected_day: ", selected_day);
+                  console.log("selected_month: ", selected_month);
+                  if (
+                    parseFloat(selected_day) >=
+                    parseFloat(hrms_options[0].at_st_date)
+                  ) {
+                    start_date = moment(start_date)
+                      .add(1, "M")
+                      .format("YYYYMMDD");
+                    console.log("inside start_date: ", start_date);
                     // if (
-                    //   parseFloat(selected_day) >=
-                    //   parseFloat(hrms_options[0].at_st_date)
+                    //   parseFloat(end_selected_day) <=
+                    //   parseFloat(hrms_options[0].at_end_date)
                     // ) {
-                    //   start_date = moment(start_date)
-                    //     .add(1, "M")
-                    //     .format("YYYYMMDD");
-                    //   selected_month = parseFloat(selected_month) + 1;
-                    //   selected_month = String(selected_month).toString();
                     // }
-
-                    fromDate_lastDate = moment(
-                      _selected_year +
-                        "-" +
-                        _selected_month +
-                        "-" +
-                        hrms_options[0].at_end_date
-                    ).format("YYYY-MM-DD");
-                  } else {
-                    fromDate_lastDate = moment(start_date)
-                      .endOf("month")
-                      .format("YYYY-MM-DD");
+                    selected_month = parseFloat(selected_month) + 1;
+                    selected_month = String(selected_month).toString();
                   }
 
-                  console.log("Promise fromDate_lastDate: ", fromDate_lastDate);
-                  start_date = moment(fromDate_lastDate)
-                    .add(1, "days")
-                    .format("YYYYMMDD");
-                  console.log("Promise start_date: ", start_date);
-                  // });
-                } catch (e) {
-                  _mysql.rollBackTransaction(() => {
-                    next(e);
+                  console.log("selected_month: ", selected_month);
+
+                  req.query.year = selected_year;
+                  req.query.month = selected_month;
+                  date_month = selected_month;
+                  req.query.yearAndMonth = moment(
+                    selected_year +
+                      "-" +
+                      selected_month +
+                      hrms_options[0].at_st_date,
+                    "YYYY-MM-DD"
+                  )._d;
+                } else {
+                  req.query.year = date_year;
+                  req.query.month = date_month;
+
+                  req.query.yearAndMonth = moment(
+                    date_year + "-" + date_month + "-01",
+                    "YYYY-MM-DD"
+                  )._d;
+                }
+
+                utilities.logger().log("end_date_month: ", end_date_month);
+                utilities.logger().log("date_month: ", date_month);
+                utilities.logger().log("intValue: ", intValue);
+
+                if (end_date_month == date_month && intValue > 0) {
+                  utilities.logger().log("intValue_inside: ", intValue);
+                  req.query.leave_end_date = end_date;
+                  req.query.leave_salary = "Y";
+                }
+
+                let _attandance = null;
+                let _sarary = null;
+                req.connection = {
+                  connection: _mysql.connection,
+                  isTransactionConnection: _mysql.isTransactionConnection,
+                  pool: _mysql.pool
+                };
+                if (hrms_options[0].attendance_type === "M") {
+                  _attandance = await processAttendance(req, res, next);
+                  _sarary = await newProcessSalary(req, res, next);
+                } else {
+                  utilities.logger().log("attendance_type else: ", intValue);
+                  _sarary = await newProcessSalary(req, res, next);
+                  _attandance = Promise.resolve();
+                }
+
+                // let _sarary = await newProcessSalary(req, res, next);
+                utilities.logger().log("_sarary before:  ", _sarary);
+                if (_sarary === undefined) {
+                  utilities.logger().log("Salary Inside: ");
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.flag = 1;
+                    req.records = {
+                      message: "Please Process Attandance"
+                    };
+                    next();
+                    return;
                   });
                 }
-                intValue++;
-              }
+                // _sarary = _sarary !== null ? parseFloat(_sarary) + 1 : "";
 
-              utilities.logger().log("strGetdataQry: ", strGetdataQry);
+                // Promise.all([_attandance, _sarary]).then(rse => {
+                // utilities.logger().log("Promise: ", rse);
+                strGetdataQry +=
+                  "select hims_f_salary_id,salary_number,month,year,employee_id,salary_date,gross_salary,net_salary from hims_f_salary where hims_f_salary_id=" +
+                  _sarary +
+                  "; ";
 
-              _mysql
-                .executeQuery({
-                  query: strGetdataQry,
-                  printQuery: true
-                })
-                .then(Salary_result => {
-                  utilities.logger().log("Salary_result: ", Salary_result);
-                  _mysql.commitTransaction(() => {
-                    let result_data = [];
-                    let final_result = [];
+                utilities
+                  .logger()
+                  .log(
+                    "Promise attendance_starts: ",
+                    hrms_options[0].attendance_starts
+                  );
+                utilities
+                  .logger()
+                  .log("Promise at_end_date: ", hrms_options[0].at_end_date);
+                if (hrms_options[0].attendance_starts === "PM") {
+                  let _selected_year = moment(start_date).year();
+                  let _selected_month = moment(start_date).format("M");
 
-                    for (let i = 0; i < Salary_result.length; i++) {
-                      if (Array.isArray(Salary_result[i])) {
-                        Array.prototype.push.apply(
-                          result_data,
-                          Salary_result[i]
-                        );
-                      } else {
-                        result_data.push(Salary_result[i]);
-                      }
-                    }
+                  console.log("_selected_year: ", _selected_year);
+                  console.log("selected_month: ", _selected_month);
 
-                    let amount_data = [];
-                    amount_data.push({
-                      leave_amount: leave_amount,
-                      airfare_amount: airfare_amount
-                    });
-                    _mysql.releaseConnection();
-                    final_result.push(result_data, amount_data);
-                    delete req.connection;
-                    req.records = final_result;
-                    next();
-                  });
-                })
-                .catch(e => {
-                  _mysql.releaseConnection();
+                  // let selected_day = moment(from_date).format("DD");
+
+                  // if (
+                  //   parseFloat(selected_day) >=
+                  //   parseFloat(hrms_options[0].at_st_date)
+                  // ) {
+                  //   start_date = moment(start_date)
+                  //     .add(1, "M")
+                  //     .format("YYYYMMDD");
+                  //   selected_month = parseFloat(selected_month) + 1;
+                  //   selected_month = String(selected_month).toString();
+                  // }
+
+                  fromDate_lastDate = moment(
+                    _selected_year +
+                      "-" +
+                      _selected_month +
+                      "-" +
+                      hrms_options[0].at_end_date
+                  ).format("YYYY-MM-DD");
+                } else {
+                  fromDate_lastDate = moment(start_date)
+                    .endOf("month")
+                    .format("YYYY-MM-DD");
+                }
+
+                console.log("Promise fromDate_lastDate: ", fromDate_lastDate);
+                start_date = moment(fromDate_lastDate)
+                  .add(1, "days")
+                  .format("YYYYMMDD");
+                console.log("Promise start_date: ", start_date);
+                // });
+              } catch (e) {
+                _mysql.rollBackTransaction(() => {
                   next(e);
-                  reject(e);
                 });
-            };
+              }
+              intValue++;
+            }
 
-            syscCall();
-          } else {
-            // _mysql.commitTransaction(() => {
-            _mysql.releaseConnection();
-            req.records = { message: "Dont have enough leaves" };
-            req.flag = 1;
-            next();
-            // });
-          }
+            utilities.logger().log("strGetdataQry: ", strGetdataQry);
+
+            _mysql
+              .executeQuery({
+                query: strGetdataQry,
+                printQuery: true
+              })
+              .then(Salary_result => {
+                utilities.logger().log("Salary_result: ", Salary_result);
+                _mysql.commitTransaction(() => {
+                  let result_data = [];
+                  let final_result = [];
+
+                  for (let i = 0; i < Salary_result.length; i++) {
+                    if (Array.isArray(Salary_result[i])) {
+                      Array.prototype.push.apply(result_data, Salary_result[i]);
+                    } else {
+                      result_data.push(Salary_result[i]);
+                    }
+                  }
+
+                  let amount_data = [];
+                  amount_data.push({
+                    leave_amount: leave_amount,
+                    airfare_amount: airfare_amount,
+                    airfare_months: employee_result[0].airfare_eligibility
+                  });
+                  _mysql.releaseConnection();
+                  final_result.push(result_data, amount_data);
+                  delete req.connection;
+                  req.records = final_result;
+                  next();
+                });
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+                reject(e);
+              });
+          };
+
+          syscCall();
+          // } else {
+          //   // _mysql.commitTransaction(() => {
+          //   _mysql.releaseConnection();
+          //   req.records = { message: "Dont have enough leaves" };
+          //   req.flag = 1;
+          //   next();
+          //   // });
+          // }
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {
@@ -597,8 +611,8 @@ export default {
                   query:
                     "INSERT INTO `hims_f_leave_salary_header` (leave_salary_number, leave_salary_date, employee_id, \
                       year, month, leave_start_date, leave_end_date, salary_amount, leave_amount,\
-                      airfare_amount,total_amount,leave_period,status,created_date,created_by,hospital_id)\
-                      VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                      airfare_amount,total_amount,leave_period,status,airfare_months,created_date,created_by,hospital_id)\
+                      VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                   values: [
                     generatedNumbers[0],
                     moment(inputParam.leave_salary_date).format("YYYY-MM-DD"),
@@ -613,6 +627,7 @@ export default {
                     inputParam.total_amount,
                     inputParam.leave_period,
                     inputParam.status,
+                    inputParam.airfare_months,
                     new Date(),
                     req.userIdentity.algaeh_d_app_user_id,
                     req.userIdentity.hospital_id
