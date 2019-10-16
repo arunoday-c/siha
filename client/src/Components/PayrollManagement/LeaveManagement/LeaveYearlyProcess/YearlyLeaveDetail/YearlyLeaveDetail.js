@@ -129,7 +129,7 @@ class YearlyLeaveDetail extends Component {
                       )
                     },
                     {
-                      fieldName: "leave_description",
+                      fieldName: "close_balance",
                       label: (
                         <AlgaehLabel
                           label={{ forceLabel: "Closing Balance" }}
@@ -137,7 +137,7 @@ class YearlyLeaveDetail extends Component {
                       )
                     },
                     {
-                      fieldName: "sub_department_name",
+                      fieldName: "availed_till_date",
                       label: (
                         <AlgaehLabel
                           label={{ forceLabel: "Avail Till Date" }}
@@ -145,33 +145,22 @@ class YearlyLeaveDetail extends Component {
                       )
                     },
                     {
-                      fieldName: "sub_department_name",
+                      fieldName: "projected_applied_leaves",
                       label: (
                         <AlgaehLabel
                           label={{ forceLabel: "Projected Leave" }}
                         />
                       )
                     },
-                    {
-                      fieldName: "leave_description",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "Carry Forwaded %" }}
-                        />
-                      )
-                    },
-                    {
-                      fieldName: "sub_department_name",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Encashment %" }} />
-                      )
-                    },
 
                     {
-                      fieldName: "sub_department_name",
+                      fieldName: "processed",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Leave Closed" }} />
-                      )
+                      ),
+                      displayTemplate: row => {
+                        return row.processed === "Y" ? "Yes" : "No";
+                      }
                     }
                   ]}
                   keyId="hims_f_employee_monthly_leave_id"

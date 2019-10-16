@@ -5,7 +5,6 @@ import moment from "moment";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid,
   AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 import _ from "lodash";
@@ -165,7 +164,7 @@ export default function ManualAttendanceEvents() {
       });
     },
     changeChecks: ($this, e) => {
-      let leave_dynamic_date = [];
+      // let leave_dynamic_date = [];
       switch (e.target.value) {
         case "LE":
           getLeaveMasterData($this);
@@ -582,7 +581,7 @@ export default function ManualAttendanceEvents() {
     },
     updateEmployeeOpeningBalance: ($this, row, selected_type) => {
       let selected_uri = "";
-      let employee_Leave_Update = [];
+      // let employee_Leave_Update = [];
       let inputData = "";
       if (selected_type === "LE") {
         var result = Object.keys(row).map(function(key) {
@@ -810,50 +809,50 @@ function getLoanMasterData($this) {
   });
 }
 
-function setGratuityData($this) {
-  let leave_dynamic_date = [
-    {
-      fieldName: "employee_code",
-      label: <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />,
-      others: {
-        maxWidth: 105,
-        fixed: "left"
-      }
-    },
-    {
-      fieldName: "full_name",
-      label: <AlgaehLabel label={{ forceLabel: "Employee Name" }} />,
-      others: {
-        minWidth: 200,
-        fixed: "left"
-      }
-    },
-    {
-      fieldName: "year",
-      label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
-      others: {
-        filterable: false
-      }
-    },
-    {
-      fieldName: "month",
-      label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
-      others: {
-        filterable: false
-      }
-    },
-    {
-      fieldName: "gratuity_amount",
-      label: <AlgaehLabel label={{ forceLabel: "Gratuity Amount" }} />,
-      others: {
-        filterable: false
-      }
-    }
-  ];
-  $this.setState({
-    leave_dynamic_date: leave_dynamic_date
-  });
-}
+// function setGratuityData($this) {
+//   let leave_dynamic_date = [
+//     {
+//       fieldName: "employee_code",
+//       label: <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />,
+//       others: {
+//         maxWidth: 105,
+//         fixed: "left"
+//       }
+//     },
+//     {
+//       fieldName: "full_name",
+//       label: <AlgaehLabel label={{ forceLabel: "Employee Name" }} />,
+//       others: {
+//         minWidth: 200,
+//         fixed: "left"
+//       }
+//     },
+//     {
+//       fieldName: "year",
+//       label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
+//       others: {
+//         filterable: false
+//       }
+//     },
+//     {
+//       fieldName: "month",
+//       label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
+//       others: {
+//         filterable: false
+//       }
+//     },
+//     {
+//       fieldName: "gratuity_amount",
+//       label: <AlgaehLabel label={{ forceLabel: "Gratuity Amount" }} />,
+//       others: {
+//         filterable: false
+//       }
+//     }
+//   ];
+//   $this.setState({
+//     leave_dynamic_date: leave_dynamic_date
+//   });
+// }
 
 function PreviewDataFull($this) {
   debugger;
