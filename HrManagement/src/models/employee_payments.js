@@ -973,16 +973,16 @@ export default {
                     parseFloat(leave_salary.airfare_amount);
 
                   utilized_leave_days =
-                    parseFloat(leave_salary_header.utilized_leave_days) +
+                    parseFloat(leave_salary_header.utilized_leave_days) -
                     parseFloat(leave_salary.leave_period);
 
                   utilized_leave_salary_amount =
                     parseFloat(
                       leave_salary_header.utilized_leave_salary_amount
-                    ) + parseFloat(leave_salary.leave_amount);
+                    ) - parseFloat(leave_salary.leave_amount);
 
                   utilized_airticket_amount =
-                    parseFloat(leave_salary_header.utilized_airticket_amount) +
+                    parseFloat(leave_salary_header.utilized_airticket_amount) -
                     parseFloat(leave_salary.airfare_amount);
 
                   airfare_months =
@@ -1056,16 +1056,16 @@ export default {
                     parseFloat(leave_salary.airfare_amount);
 
                   utilized_leave_days =
-                    parseFloat(leave_salary_header.utilized_leave_days) +
+                    parseFloat(leave_salary_header.utilized_leave_days) -
                     parseFloat(no_of_days);
 
                   utilized_leave_salary_amount =
                     parseFloat(
                       leave_salary_header.utilized_leave_salary_amount
-                    ) + parseFloat(leave_salary.leave_amount);
+                    ) - parseFloat(leave_salary.leave_amount);
 
                   utilized_airticket_amount =
-                    parseFloat(leave_salary_header.utilized_airticket_amount) +
+                    parseFloat(leave_salary_header.utilized_airticket_amount) -
                     parseFloat(leave_salary.airfare_amount);
 
                   airfare_months =
@@ -1105,16 +1105,16 @@ export default {
                     parseFloat(leave_salary.airfare_amount);
 
                   utilized_leave_days =
-                    parseFloat(leave_salary_header.utilized_leave_days) +
+                    parseFloat(leave_salary_header.utilized_leave_days) -
                     parseFloat(no_of_days);
 
                   utilized_leave_salary_amount =
                     parseFloat(
                       leave_salary_header.utilized_leave_salary_amount
-                    ) + parseFloat(leave_salary.leave_amount);
+                    ) - parseFloat(leave_salary.leave_amount);
 
                   utilized_airticket_amount =
-                    parseFloat(leave_salary_header.utilized_airticket_amount) +
+                    parseFloat(leave_salary_header.utilized_airticket_amount) -
                     parseFloat(leave_salary.airfare_amount);
 
                   airfare_months =
