@@ -19,7 +19,7 @@ export default {
       airfare_amount: null,
       total_amount: null,
       leave_period: null,
-      status: "PEN",
+      status: undefined, //"PEN",
       leave_application_id: null,
 
       employee_name: null,

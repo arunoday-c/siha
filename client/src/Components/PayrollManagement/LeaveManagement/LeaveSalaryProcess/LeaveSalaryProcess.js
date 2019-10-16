@@ -140,7 +140,18 @@ class LeaveSalaryProcess extends Component {
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Leave Salary Details</h3>
+                <h3 className="caption-subject">
+                  Leave Salary Details -{" "}
+                  {this.state.status === "PEN" ? (
+                    <span class="badge badge-info">Salary Pending</span>
+                  ) : this.state.status === "PRO" ? (
+                    <span class="badge badge-success">Salary Processed</span>
+                  ) : this.state.status === "CAN" ? (
+                    <span class="badge badge-danger">Cancelled</span>
+                  ) : (
+                    ""
+                  )}
+                </h3>
               </div>
               <div className="actions"></div>
             </div>
