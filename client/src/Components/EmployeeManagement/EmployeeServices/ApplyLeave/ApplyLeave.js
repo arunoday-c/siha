@@ -612,7 +612,7 @@ class ApplyLeave extends Component {
                     searchName="employee"
                     onClick={this.searchSelect.bind(this)}
                   /> */}
-                  <div className="col-12 globalSearchCntr">
+                  <div className="col-12 globalSearchCntr form-group">
                     <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
                     <h6 onClick={this.employeeSearch.bind(this)}>
                       {this.state.employee_name
@@ -643,7 +643,7 @@ class ApplyLeave extends Component {
                     }}
                   /> */}
                   <AlagehAutoComplete
-                    div={{ className: "col-6 margin-bottom-15" }}
+                    div={{ className: "col-6 margin-bottom-15 form-group" }}
                     label={{
                       forceLabel: "Leave Type",
                       isImp: true
@@ -668,7 +668,7 @@ class ApplyLeave extends Component {
                       }
                     }}
                   />
-                  <div className="col-6 margin-bottom-15">
+                  <div className="col-6 margin-bottom-15 form-group">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Available Balance"
