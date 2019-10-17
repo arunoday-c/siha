@@ -30,13 +30,24 @@ const executePDF = function executePDFMethod(options) {
       });
 
       let outputArray = [];
-
+      let str = "";
       let is_local = "";
 
       if (input.is_local === "Y") {
         is_local = " and H.default_nationality=E.nationality ";
       } else if (input.is_local === "N") {
         is_local = " and H.default_nationality<>E.nationality ";
+      }
+
+      if (input.employee_group_id > 0) {
+        str += ` and E.employee_group_id= ${input.employee_group_id}`;
+      }
+      if (input.sub_department_id > 0) {
+        str += ` and E.sub_department_id= ${input.sub_department_id}`;
+      }
+
+      if (input.department_id > 0) {
+        str += ` and SD.department_id=${input.department_id}`;
       }
 
       options.mysql
@@ -55,7 +66,7 @@ const executePDF = function executePDFMethod(options) {
 				left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id\
 				left join hims_d_nationality N on E.nationality=N.hims_d_nationality_id\
 				left join  hims_f_salary S on E.hims_d_employee_id=S.employee_id\
-				where E.hospital_id=? and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=?  ${is_local}`,
+				where E.hospital_id=? and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=?  ${is_local} ${str}`,
           values: [
             input.hospital_id,
             input.employee_group_id,

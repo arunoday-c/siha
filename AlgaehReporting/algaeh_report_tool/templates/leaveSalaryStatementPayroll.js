@@ -12,6 +12,10 @@ const executePDF = function executePDFMethod(options) {
 
       let strData = "";
 
+      if (input.employee_group_id > 0) {
+        strData += ` and E.employee_group_id= ${input.employee_group_id}`;
+      }
+
       if (input.department_id > 0) {
         strData += " and SD.department_id=" + input.department_id;
       }
