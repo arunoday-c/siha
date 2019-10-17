@@ -19,7 +19,8 @@ import {
   checkBoxEvent,
   getRequisitionDetails,
   generateMaterialTransInv,
-  AcknowledgeTransferEntry
+  AcknowledgeTransferEntry,
+  ReturnCheckboxEvent
 } from "./InvTransferEntryEvents";
 import "./InvTransferEntry.scss";
 import "../../../styles/site.scss";
@@ -226,46 +227,6 @@ class InvTransferEntry extends Component {
                   }
                 : ""
             }
-            // printArea={
-
-            //   this.state.transfer_number !== null
-            //     ? {
-            //         menuitems: [
-            //           {
-            //             label: "Print Report",
-            //             events: {
-            //               onClick: () => {
-            //                 AlgaehReport({
-            //                   report: {
-            //                     fileName: "Inventory/TransferEntry"
-            //                   },
-            //                   data: {
-            //                     transfer_number: this.state.transfer_number,
-            //                     transfer_date: moment(
-            //                       this.state.transfer_date
-            //                     ).format(Options.datetimeFormat),
-            //                     requisition_number: this.state
-            //                       .material_requisition_number,
-            //                     from_location:
-            //                       from_location_name.length > 0
-            //                         ? from_location_name[0].location_description
-            //                         : "",
-            //                     to_location:
-            //                       display.length > 0
-            //                         ? display[0].location_description
-            //                         : "",
-            //                     inventoryitemuom: this.props.inventoryitemuom,
-            //                     inventory_stock_detail: this.state
-            //                       .inventory_stock_detail
-            //                   }
-            //                 });
-            //               }
-            //             }
-            //           }
-            //         ]
-            //       }
-            //     : ""
-            // }
             selectedLang={this.state.selectedLang}
           />
 
@@ -473,6 +434,41 @@ class InvTransferEntry extends Component {
                             : "To Location Type"}
                         </h6>
                       </div>
+
+                      <div
+                        className="col customCheckbox"
+                        style={{ borderBottom: 0, marginTop: 15 }}
+                      >
+                        <label
+                          className="checkbox"
+                          style={{ color: "#212529" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="return_type"
+                            checked={
+                              this.state.return_type === "Y" ? true : false
+                            }
+                            onChange={ReturnCheckboxEvent.bind(this, this)}
+                            disabled={this.state.dataExists}
+                          />
+                          <span>Return Item</span>
+                        </label>
+                      </div>
+
+                      {/* <div className="customCheckbox">
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="return_type"
+                            checked={
+                              this.state.return_type === "Y" ? true : false
+                            }
+                            onChange={ReturnCheckboxEvent.bind(this, this)}
+                          />
+                          <span></span>
+                        </label>
+                      </div> */}
                     </div>
                   )}
                 </div>
