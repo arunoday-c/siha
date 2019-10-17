@@ -2060,6 +2060,18 @@ const HR_Payroll_Reports = [
             }
           },
           {
+            className: "col-2 mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true
+          },
+          {
+            className: "col-2 mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true
+          },
+          {
             className: "col-2",
             type: "dropdown",
             name: "employee_group_id",
@@ -2117,18 +2129,6 @@ const HR_Payroll_Reports = [
               valueField: "hims_d_sub_department_id",
               data: undefined
             }
-          },
-          {
-            className: "col-2",
-            type: "date",
-            name: "from_date",
-            isImp: true
-          },
-          {
-            className: "col-2",
-            type: "date",
-            name: "to_date",
-            isImp: true
           },
           {
             className: "col-2",
