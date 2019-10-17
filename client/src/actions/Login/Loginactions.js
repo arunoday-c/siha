@@ -24,15 +24,19 @@ export function getTokenDetals(options) {
     });
   }).then(myIP => {
     const _myRoute = config.routersAndPorts.default;
+    const isProxy = window.location.port === "";
     const _localaddress =
-      window.location.protocol + "//" + window.location.hostname + ":";
-    const _routingUrl =
-      _myRoute.url === undefined || _myRoute.url === ""
-        ? _localaddress
-        : _myRoute.url;
+      window.location.protocol + "//" + window.location.hostname;
+    // const _routingUrl =
+    //   _myRoute.url === undefined || _myRoute.url === ""
+    //     ? _localaddress
+    //     : _myRoute.url;
+    const final_url = `${_localaddress}${
+      isProxy ? _myRoute.path : `:${_myRoute.port}`
+    }${auth_url}`;
     axios({
       method: "GET",
-      url: _routingUrl + _myRoute.port + auth_url,
+      url: final_url,
       headers: {
         Authorization: basicAuth,
         "x-client-ip": myIP
