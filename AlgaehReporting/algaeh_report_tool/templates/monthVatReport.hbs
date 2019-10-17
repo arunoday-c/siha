@@ -1,0 +1,34 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.<small>م</small></th>
+                        <th>Date<small>التاريخ</small></th>
+                        <th>MRN No.<small>اسم المريض</small></th>
+                        <th>Total Before VAT<small>الايراد قبل الضريبة</small></th>
+                        <th>Total After VAT<small>الايراد بعد الضريبة</small></th>
+                        <th>Patient VAT Amount<small>ضريبة القيمة المضافة علي المريض</small></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each details}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{invoice_date}}</td>
+                        <td>{{before_vat}}</td>
+                        <td>{{after_vat}}</td>
+                        <td>{{patient_vat}}</td>
+                    </tr>
+                    {{/each }}
+
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>
