@@ -578,7 +578,7 @@ class ApplyLeave extends Component {
                     }}
                   /> */}
                   <AlagehAutoComplete
-                    div={{ className: "col-6 margin-bottom-15" }}
+                    div={{ className: "col-6 margin-bottom-15 form-group" }}
                     label={{
                       forceLabel: "Leave Type",
                       isImp: true
@@ -610,7 +610,7 @@ class ApplyLeave extends Component {
                       }
                     }}
                   />
-                  <div className="col-6 margin-bottom-15">
+                  <div className="col-6 margin-bottom-15 form-group">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Available Balance"

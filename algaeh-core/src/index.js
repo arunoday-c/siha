@@ -25,7 +25,9 @@ const { decryption } = cryptoUtils;
 app.use(compression());
 if (process.env.NODE_ENV === "production") {
   console.log("Running prod...." + _port);
-  app.use(express.static("dist"));
+  const dist = path.resolve("./", "client", "build");
+  console.log(dist);
+  app.use(express.static(dist));
 }
 
 app.use(

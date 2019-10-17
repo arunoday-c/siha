@@ -1,3 +1,23 @@
 {
- "run":["algaeh-core","Billing","DocumentManagement","FrontDesk","Inventory","Laboratory","MasterSettings","Pharmacy","Procurement","Radiology","MRD","Insurance","AlgaehReporting"]
+  "run": [
+    "algaeh-core",
+    "algaeh-finance",
+    "AlgaehReporting",
+    "AlgaehUtilities",
+    "Billing",
+    "client",
+    "ClinicalDesk",
+    "DocumentManagement",
+    "FrontDesk",
+    "General",
+    "HrManagement",
+    "Insurance",
+    "Inventory",
+    "Laboratory",
+    "MasterSettings",
+    "MRD",
+    "Pharmacy",
+    "Procurement",
+    "Radiology"
+  ]
 }

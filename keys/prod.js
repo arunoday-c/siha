@@ -6,11 +6,11 @@ exports.default = {
 
   mysqlDb: {
     connectionLimit: 20,
-    host: "49.206.18.38",
-    port: 3306,
-    user: "algaeh_root",
-    password: "alg_hea2018",
-    database: "hims_test_db",
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
     multipleStatements: true,
     acquireTimeout: 20000,
     dateStrings: true,
@@ -21,7 +21,7 @@ exports.default = {
     bigNumberStrings: true
   },
   mongoDb: {
-    connectionURI: ""
+    connectionURI: process.env.MONGO_URI
   },
   redis: {
     host: "127.0.0.1",
