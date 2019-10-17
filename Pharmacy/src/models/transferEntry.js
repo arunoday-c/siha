@@ -392,11 +392,11 @@ export default {
             .executeQueryWithTransaction({
               query:
                 "INSERT INTO `hims_f_pharmacy_transfer_header` (transfer_number,transfer_date,`year`,period,\
-                    hims_f_pharamcy_material_header_id,from_location_type,from_location_id, material_requisition_number, to_location_id, \
-                    to_location_type, description, completed, completed_date, completed_lines, \
+                    hims_f_pharamcy_material_header_id,from_location_type,from_location_id, material_requisition_number, \
+                    to_location_id, to_location_type, description, completed, completed_date, completed_lines, \
                     transfer_quantity,requested_quantity,recieved_quantity,outstanding_quantity, direct_transfer,\
-                    cancelled, cancelled_by,cancelled_date,hospital_id) \
-                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    return_type, cancelled, cancelled_by,cancelled_date,hospital_id) \
+                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 transfer_number,
                 today,
@@ -417,6 +417,7 @@ export default {
                 input.recieved_quantity,
                 input.outstanding_quantity,
                 input.direct_transfer,
+                input.return_type,
                 input.cancelled,
                 input.cancelled_by,
                 input.cancelled_date,

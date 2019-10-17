@@ -540,6 +540,11 @@ const checkBoxEvent = ($this, e) => {
   IOputs.direct_transfer = $this.state.direct_transfer === "Y" ? "N" : "Y";
   $this.setState(IOputs);
 };
+const ReturnCheckboxEvent = ($this, e) => {
+  $this.setState({
+    [e.target.name]: e.target.checked === true ? "Y" : "N"
+  });
+};
 
 export {
   changeTexts,
@@ -552,5 +557,6 @@ export {
   checkBoxEvent,
   getRequisitionDetails,
   generateMaterialTransPhar,
-  AcknowledgeTransferEntry
+  AcknowledgeTransferEntry,
+  ReturnCheckboxEvent
 };

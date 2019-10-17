@@ -19,7 +19,8 @@ import {
   checkBoxEvent,
   getRequisitionDetails,
   generateMaterialTransPhar,
-  AcknowledgeTransferEntry
+  AcknowledgeTransferEntry,
+  ReturnCheckboxEvent
 } from "./TransferEntryEvents";
 import "./TransferEntry.scss";
 import "../../../styles/site.scss";
@@ -413,6 +414,27 @@ class TransferEntry extends Component {
                               : "Sub Store"
                             : "To Location Type"}
                         </h6>
+                      </div>
+
+                      <div
+                        className="col customCheckbox"
+                        style={{ borderBottom: 0, marginTop: 15 }}
+                      >
+                        <label
+                          className="checkbox"
+                          style={{ color: "#212529" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="return_type"
+                            checked={
+                              this.state.return_type === "Y" ? true : false
+                            }
+                            onChange={ReturnCheckboxEvent.bind(this, this)}
+                            disabled={this.state.dataExists}
+                          />
+                          <span>Return Item</span>
+                        </label>
                       </div>
                     </div>
                   )}

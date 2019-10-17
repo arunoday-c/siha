@@ -544,6 +544,12 @@ const AcknowledgeTransferEntry = $this => {
   });
 };
 
+const ReturnCheckboxEvent = ($this, e) => {
+  $this.setState({
+    [e.target.name]: e.target.checked === true ? "Y" : "N"
+  });
+};
+
 export {
   changeTexts,
   getCtrlCode,
@@ -555,5 +561,6 @@ export {
   checkBoxEvent,
   getRequisitionDetails,
   generateMaterialTransInv,
-  AcknowledgeTransferEntry
+  AcknowledgeTransferEntry,
+  ReturnCheckboxEvent
 };
