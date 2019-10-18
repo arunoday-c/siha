@@ -402,6 +402,28 @@ const getCtrlCode = ($this, patcode, row) => {
       if (response.data.success) {
         let data = response.data.records;
 
+        let hospital_id = JSON.parse(
+          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+        ).hims_d_hospital_id;
+        // let hospitaldetails = Enumerable.from($this.props.hospitaldetails)
+        //   .where(w => w.hims_d_hospital_id === hospital_id)
+        //   .firstOrDefault();
+        debugger;
+        let hospitaldetails = _.find(
+          $this.props.hospitaldetails,
+          f => f.hims_d_hospital_id === hospital_id
+        );
+
+        data.patientRegistration.vat_applicable = "Y";
+
+        if (
+          hospitaldetails.local_vat_applicable === "N" &&
+          hospitaldetails.default_nationality ===
+            data.patientRegistration.nationality_id
+        ) {
+          data.patientRegistration.vat_applicable = "N";
+        }
+
         data.patientRegistration.visitDetails = data.visitDetails;
         data.patientRegistration.patient_id =
           data.patientRegistration.hims_d_patient_id;

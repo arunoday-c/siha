@@ -8,6 +8,7 @@
                 <thead>
                     <tr>
                         <th>Sl No.<small>م</small></th>
+                        <th>Data From<small>التاريخ</small></th>
                         <th>Date<small>التاريخ</small></th>
                         <th>MRN No.<small>اسم المريض</small></th>
                         <th>Patient Name<small>الجنسية</small></th>
@@ -23,13 +24,16 @@
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{invoice_date}}</td>
+                        <td>{{data_from}}</td>
+                        <td>{{visit_date}}</td>
                         <td>{{patient_code}}</td>
+                        <td>{{full_name}}</td>
                         <td>{{nationality}}</td>
-                        <td>{{before_vat}}</td>
-                        <td>{{after_vat}}</td>
-                        <td>{{patient_vat}}</td>
-                        <td>{{insurance_vat}}</td>
+                        <td>{{insurance_yesno}}</td>
+                        <td>{{total_before_vat}}</td>
+                        <td>{{total_after_vat}}</td>
+                        <td>{{patient_tax}}</td>
+                        <td>{{company_tax}}</td>
                     </tr>
                     {{/each }}
 

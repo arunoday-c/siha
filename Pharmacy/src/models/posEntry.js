@@ -1,12 +1,12 @@
 import algaehMysql from "algaeh-mysql";
 import moment from "moment";
-import billModels from "algaeh-billing/src/models/billing"
+import billModels from "algaeh-billing/src/models/billing";
 import algaehUtilities from "algaeh-utilities/utilities";
 import { LINQ } from "node-linq";
 import _ from "lodash";
 import mysql from "mysql";
 
-const { getBillDetailsFunction } = billModels
+const { getBillDetailsFunction } = billModels;
 export default {
   getPosEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -158,9 +158,9 @@ export default {
                 secondary_card_number, secondary_effective_start_date, secondary_effective_end_date, secondary_insurance_provider_id,\
                 secondary_network_id, secondary_network_type, secondary_sub_insurance_provider_id, secondary_network_office_id, \
                  pos_customer_type,patient_name,referal_doctor,mobile_number,nationality_id,receipt_header_id,posted,\
-                 insurance_yesno,created_date,\
+                 insurance_yesno,s_patient_tax,created_date,\
                  created_by,updated_date,updated_by,hospital_id) \
-                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 pos_number,
                 today,
@@ -220,6 +220,7 @@ export default {
                 receipt_header_id,
                 input.posted,
                 input.insurance_yesno,
+                input.s_patient_tax,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
@@ -256,6 +257,7 @@ export default {
                 "copay_amount",
                 "patient_responsibility",
                 "patient_tax",
+                "s_patient_tax",
                 "patient_payable",
                 "company_responsibility",
                 "company_tax",

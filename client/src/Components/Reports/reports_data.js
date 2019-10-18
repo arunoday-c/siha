@@ -596,44 +596,6 @@ const Hims_Reports = [
               valueField: "hims_d_nationality_id",
               data: undefined
             }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "",
-            initialLoad: true,
-            isImp: false,
-            label: "Company",
-            link: {
-              uri: "/insurance/getInsuranceProviders"
-            },
-            events: {
-              onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/pharmacy/getPharmacyLocation",
-                  module: "pharmacy",
-                  method: "GET",
-                  data: { hospital_id: currentEvent.value },
-
-                  onSuccess: result => {
-                    reportState.setState({
-                      location_id_list: result.data.records
-                    });
-                  }
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  location_id_list: []
-                });
-              }
-            },
-            dataSource: {
-              textField: "insurance_provider_name",
-              valueField: "hims_d_insurance_provider_id"
-            }
           }
         ]
       },
@@ -662,77 +624,33 @@ const Hims_Reports = [
             }
           },
           {
-            className: "col-2 mandatory",
-            type: "date",
-            name: "from_date",
+            className: "col-2",
+            type: "dropdown",
+            name: "year",
             isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            className: "col-2 mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
+            initialLoad: true,
+            value: moment().year(),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
             }
           },
           {
             className: "col-2",
             type: "dropdown",
-            name: "nationality_id",
-            initialLoad: true,
+            sort: "off",
+            name: "month",
             isImp: false,
-            label: "nationality",
-            link: {
-              uri: "/masters/get/nationality"
-            },
-            dataSource: {
-              textField: "nationality",
-              valueField: "hims_d_nationality_id",
-              data: undefined
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "",
             initialLoad: true,
-            isImp: false,
-            label: "Company",
-            link: {
-              uri: "/insurance/getInsuranceProviders"
-            },
-            events: {
-              onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/pharmacy/getPharmacyLocation",
-                  module: "pharmacy",
-                  method: "GET",
-                  data: { hospital_id: currentEvent.value },
-
-                  onSuccess: result => {
-                    reportState.setState({
-                      location_id_list: result.data.records
-                    });
-                  }
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  location_id_list: []
-                });
-              }
-            },
+            value: moment().format("M"),
             dataSource: {
-              textField: "insurance_provider_name",
-              valueField: "hims_d_insurance_provider_id"
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
             }
           }
         ]
@@ -3313,6 +3231,105 @@ const Inventory_Reports = [
     name: "Inventory",
     submenu: [
       {
+        subitem: "Current Stock List",
+        reportName: "currentStockInventory",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getInventoryLocation",
+                  module: "inventory",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      location_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: []
+                });
+              }
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Location",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_inventory_location_id",
+              data: []
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "item_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Item",
+
+            link: {
+              uri: "/inventory/getItemMaster",
+              module: "inventory"
+            },
+            dataSource: {
+              textField: "item_description",
+              valueField: "hims_d_item_master_id",
+              data: undefined
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "item_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Show for Last (month's)",
+
+            link: {
+              uri: "/inventory/getItemMaster",
+              module: "inventory"
+            },
+            dataSource: {
+              textField: "item_description",
+              valueField: "hims_d_item_master_id",
+              data: undefined
+            }
+          }
+        ]
+      },
+      {
         subitem: "Items Consumption Report",
         reportName: "itemsConsumptionInventory",
         requireIframe: true,
@@ -3432,13 +3449,11 @@ const Inventory_Reports = [
         subitem: "Items Issued Report",
         template_name: "asset_war_exp",
         reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Items Received Report",
         template_name: "asset_war_exp",
         reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Item Expiry Report",
@@ -4230,9 +4245,27 @@ const Pharmacy_Reports = [
               valueField: "hims_d_item_master_id",
               data: undefined
             }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "item_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Show for Last (month's)",
+
+            link: {
+              uri: "/pharmacy/getItemMaster",
+              module: "pharmacy"
+            },
+            dataSource: {
+              textField: "item_description",
+              valueField: "hims_d_item_master_id",
+              data: undefined
+            }
           }
         ]
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Items Stock Register - Category wise",
@@ -4370,7 +4403,6 @@ const Pharmacy_Reports = [
             }
           }
         ]
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Items Stock Register - Date wise",
@@ -4472,7 +4504,6 @@ const Pharmacy_Reports = [
             }
           }
         ]
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
         subitem: "GP Statement - Bill Wise",

@@ -10,10 +10,11 @@
                         <th>Sl No.</th>
                         <th>Item Code</th>
                         <th>Item Name</th>
+                        <th>Batch No.</th>
                         <th>UOM</th>
                         <th>Avg. Public Price</th>
                         <th>Expiry Date</th>
-                        <th>3 Month Consumption</th>
+                        <th>Sold Till</th>
 
                     </tr>
                 </thead>
@@ -21,31 +22,21 @@
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{transaction_date}}</td>
-                        <td>{{stock_in}}</td>
-                        <td>{{stock_out}}</td>
+                        <td>{{item_code}}</td>
+                        <td>{{item_id}}</td>
+                        <td>{{batchno}}</td>
+                        <td>{{sales_uom}}</td>
+                        <td>{{sale_price}}</td>
+                        <td>{{expirydt}}</td>
+                        <td>-</td>
 
                     </tr>
                     {{/each }}
-                    <tr class="tableSubTotal">
-                        <td colspan="2">Total</td>
-                        <td>{{total_in}}</td>
-                        <td>{{total_out}}</td>
 
-                    </tr>
 
                 </tbody>
             </table>
 
-
-            <table class="tableTotal">
-                <tr class="bold">
-                    <td>PRESENT QTY IN HAND.</td>
-                    <td>{{qtyInHand}}</td>
-                    <td>الأسهم الحالية في متناول اليد</td>
-                </tr>
-
-            </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
     </div>
