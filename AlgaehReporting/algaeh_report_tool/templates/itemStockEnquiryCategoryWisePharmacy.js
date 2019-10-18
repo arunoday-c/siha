@@ -31,7 +31,7 @@ const executePDF = function executePDFMethod(options) {
             on TS.item_code_id=IM.hims_d_item_master_id
             where TS.record_status='A'  and PL.hospital_id=? and  TS.from_location_id=?
              and IM.category_id=? ${str1} and transaction_type in( 'ST', 'CS', 'POS','SRT' 'INT','DNA')
-            and date(transaction_date) = date(?))
+            and date(transaction_date) between date(?) and date(?))
             select hims_f_pharmacy_trans_history_id,location_description,item_code_id,item_description,
             sum(transaction_qty) as transaction_qty,transaction_date ,stock_status
             from CTE group by item_code_id,stock_status;
@@ -48,6 +48,7 @@ const executePDF = function executePDFMethod(options) {
             input.hospital_id,
             input.location_id,
             input.category_id,
+            input.from_date,
             input.to_date,
             input.hospital_id,
             input.location_id,

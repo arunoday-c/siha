@@ -1,0 +1,38 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>SL No.</th>
+                        <th>Item Code</th>
+                        <th>Batch No.</th>
+                        <th>Item Name</th>
+                        <th>Qty in Hand</th>
+                        <th>expiry on</th>
+                        <th>location</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+
+                    {{#each details }}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{item_code}}</td>
+                        <td>{{batchno}}</td>
+                        <td>{{item_description}}</td>
+                        <td>{{qtyhand}}</td>
+                        <td>{{expirydt}}</td>
+                        <td>{{pharmacy_location}}</td>
+                    </tr>
+                    {{/each }}
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

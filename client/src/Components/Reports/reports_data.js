@@ -3441,10 +3441,191 @@ const Inventory_Reports = [
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "Items Expiry Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
+        subitem: "Item Expiry Report",
+        reportName: "itemExpiryInventory",
+        requireIframe: true,
+        pageSize: "A4",
+        pageOrentation: "landscape", //"portrait",
+        reportParameters: [
+          {
+            className: "col-2 mandatory form-group",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getInventoryLocation",
+                  module: "inventory",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      location_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: []
+                });
+              }
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "expiry_status",
+            initialLoad: true,
+            isImp: true,
+            label: "Expiry Status",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: EXPIRY_STATUS
+            }
+          },
+          {
+            className: "col-2 mandatory  form-group",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+
+          {
+            className: "col-2 mandatory  form-group",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Location",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_inventory_location_id",
+              data: []
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "group_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Group",
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_item_group_id",
+              data: []
+            },
+            link: {
+              uri: "/inventory/getItemGroup",
+              module: "inventory"
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getItemCategory",
+                  module: "inventory",
+                  method: "GET",
+                  data: { hims_d_item_category_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      category_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  category_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "category_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Category",
+            dataSource: {
+              textField: "category_desc",
+              valueField: "hims_d_inventory_location_id",
+              data: []
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getItemMaster",
+                  module: "inventory",
+                  method: "GET",
+                  data: { category_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      item_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  item_id_list: []
+                });
+              }
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "item_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Item",
+            dataSource: {
+              textField: "item_description",
+              valueField: "hims_d_item_master_id",
+              data: []
+            }
+          }
+        ]
       }
     ]
   }
@@ -3830,6 +4011,41 @@ const Pharmacy_Reports = [
               data: undefined
             }
           },
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "expiry_status",
+            initialLoad: true,
+            isImp: true,
+            label: "Expiry Status",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: EXPIRY_STATUS
+            }
+          },
+
+          {
+            className: "col-2 mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+
+          {
+            className: "col-2 mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
 
           {
             className: "col-2",
@@ -3934,60 +4150,14 @@ const Pharmacy_Reports = [
               valueField: "hims_d_item_master_id",
               data: []
             }
-          },
-          {
-            className: "col-2 mandatory",
-            type: "dropdown",
-            name: "expiry_status",
-            initialLoad: true,
-            isImp: true,
-            label: "Expiry Status",
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: EXPIRY_STATUS
-            }
-          },
-
-          {
-            className: "col-2 mandatory",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-
-          {
-            className: "col-2 mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
           }
         ]
       },
       {
-        subitem: "Items Stock Register - Category wise",
-        reportName: "itemStockEnquiryCategoryWisePharmacy",
+        subitem: "Current Stock List",
+        reportName: "currentStockPharmacy",
         requireIframe: true,
         reportParameters: [
-          {
-            className: "col-2 mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            label: "a Date",
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
           {
             className: "col-2 mandatory",
             type: "dropdown",
@@ -4034,7 +4204,7 @@ const Pharmacy_Reports = [
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
-            isImp: false,
+            isImp: true,
             label: "Location",
             dataSource: {
               textField: "location_description",
@@ -4044,12 +4214,113 @@ const Pharmacy_Reports = [
           },
 
           {
+            className: "col-2",
+            type: "dropdown",
+            name: "item_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Item",
+
+            link: {
+              uri: "/pharmacy/getItemMaster",
+              module: "pharmacy"
+            },
+            dataSource: {
+              textField: "item_description",
+              valueField: "hims_d_item_master_id",
+              data: undefined
+            }
+          }
+        ]
+        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Items Stock Register - Category wise",
+        reportName: "itemStockEnquiryCategoryWisePharmacy",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/pharmacy/getPharmacyLocation",
+                  module: "pharmacy",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      location_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: []
+                });
+              }
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2 mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            label: "From Date",
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            className: "col-2 mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            label: "To Date",
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Location",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_pharmacy_location_id",
+              data: []
+            }
+          },
+          {
             className: "col-2 mandatory",
             type: "dropdown",
             name: "category_id",
             initialLoad: true,
             isImp: true,
-            label: "a Category",
+            label: "Category",
 
             link: {
               uri: "/pharmacy/getItemCategory",
@@ -4148,11 +4419,32 @@ const Pharmacy_Reports = [
           },
 
           {
-            className: "col-2",
+            className: "col-2 mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            className: "col-2 mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+
+          {
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
-            isImp: false,
+            isImp: true,
             label: "Location",
             dataSource: {
               textField: "location_description",
@@ -4177,27 +4469,6 @@ const Pharmacy_Reports = [
               textField: "item_description",
               valueField: "hims_d_item_master_id",
               data: undefined
-            }
-          },
-
-          {
-            className: "col-2 mandatory",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            className: "col-2 mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
             }
           }
         ]
