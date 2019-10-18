@@ -7,7 +7,7 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import {
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete,
+  // AlagehAutoComplete,
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
@@ -15,27 +15,27 @@ import moment from "moment";
 import ReceiptItemList from "./ReceiptItemList/ReceiptItemList";
 
 import {
-  vendortexthandle,
-  loctexthandle,
-  texthandle,
-  poforhandle,
+  // vendortexthandle,
+  // loctexthandle,
+  // texthandle,
+  // poforhandle,
   ClearData,
   SaveReceiptEnrty,
-  DeliverySearch,
+  // DeliverySearch,
   getCtrlCode,
-  PostReceiptEntry,
+  // PostReceiptEntry,
   PurchaseOrderSearch,
   dateValidate,
   datehandle,
   textEventhandle,
   generateReceiptEntryReport
 } from "./ReceiptEntryEvent";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
+// import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
 import ReceiptEntryInp from "../../../Models/ReceiptEntry";
 import MyContext from "../../../utils/MyContext";
-import AlgaehReport from "../../Wrapper/printReports";
+// import AlgaehReport from "../../Wrapper/printReports";
 import _ from "lodash";
 
 class ReceiptEntry extends Component {
@@ -74,27 +74,27 @@ class ReceiptEntry extends Component {
       .where(w => w.location_type === "WH")
       .toArray();
 
-    const Location_data =
-      this.state.grn_from === "PHR"
-        ? this.state.pharmcy_location_id !== null
-          ? _.filter(_mainStore, f => {
-              return (
-                f.hims_d_pharmacy_location_id === this.state.pharmcy_location_id
-              );
-            })
-          : []
-        : this.state.inventory_location_id !== null
-        ? _.filter(_mainStore, f => {
-            return (
-              f.hims_d_inventory_location_id ===
-              this.state.inventory_location_id
-            );
-          })
-        : [];
-
-    const Vendor_data = _.filter(this.props.receiptvendors, f => {
-      return f.hims_d_vendor_id === this.state.vendor_id;
-    });
+    // const Location_data =
+    //   this.state.grn_from === "PHR"
+    //     ? this.state.pharmcy_location_id !== null
+    //       ? _.filter(_mainStore, f => {
+    //           return (
+    //             f.hims_d_pharmacy_location_id === this.state.pharmcy_location_id
+    //           );
+    //         })
+    //       : []
+    //     : this.state.inventory_location_id !== null
+    //     ? _.filter(_mainStore, f => {
+    //         return (
+    //           f.hims_d_inventory_location_id ===
+    //           this.state.inventory_location_id
+    //         );
+    //       })
+    //     : [];
+    //
+    // const Vendor_data = _.filter(this.props.receiptvendors, f => {
+    //   return f.hims_d_vendor_id === this.state.vendor_id;
+    // });
     return (
       <div>
         <BreadCrumb

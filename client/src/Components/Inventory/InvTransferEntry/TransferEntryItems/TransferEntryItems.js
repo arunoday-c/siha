@@ -8,9 +8,9 @@ import "./../../../../styles/site.scss";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehDateHandler
+  AlagehFormGroup
+  // AlagehAutoComplete,
+  // AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 

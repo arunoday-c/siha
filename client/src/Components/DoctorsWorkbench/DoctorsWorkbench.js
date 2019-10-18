@@ -105,7 +105,7 @@ class DoctorsWorkbench extends Component {
     const patient_encounter_id = e.currentTarget.getAttribute(
       "data-encounterid"
     );
-    const patient_id = e.currentTarget.getAttribute("data-patientid");
+    // const patient_id = e.currentTarget.getAttribute("data-patientid");
 
     algaehApiCall({
       uri: "/doctorsWorkBench/updatdePatEncntrStatus",

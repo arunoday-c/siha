@@ -119,7 +119,7 @@ export default class DateHandler extends PureComponent {
   };
 
   onBlur = e => {
-    if (this.props.events != undefined) {
+    if (this.props.events !== undefined) {
       const configType =
         this.props.type !== undefined && this.props.type === "time"
           ? config.formators.time

@@ -113,10 +113,10 @@ class DNItemList extends Component {
       this.state.item_details === null
         ? null
         : this.state.item_details.po_quantity;
-    let unit_cost =
-      this.state.item_details === null
-        ? null
-        : this.state.item_details.unit_cost;
+    // let unit_cost =
+    //   this.state.item_details === null
+    //     ? null
+    //     : this.state.item_details.unit_cost;
     let required_batchno =
       this.state.item_details === null
         ? "Y"
@@ -296,7 +296,10 @@ class DNItemList extends Component {
                         div={{ className: "col" }}
                         label={{
                           forceLabel:
-                            "Sales Price " + "(" + stock_uom_description + ")",
+                            "Sales Price " +
+                            "(" +
+                            stock_uom_description.toString() +
+                            ")",
                           isImp: true
                         }}
                         textBox={{
