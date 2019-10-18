@@ -512,7 +512,7 @@ class VitalsMaster extends Component {
                     }
                   }}
                 />
-                <div className="col" style={{ marginTop: 21 }}>
+                <div className="col" style={{ marginTop: 19 }}>
                   <input
                     name="general"
                     checked={this.state.general}
@@ -522,7 +522,7 @@ class VitalsMaster extends Component {
                   />
                   <label>General</label>
                 </div>
-                <div className="col" style={{ marginTop: 21 }}>
+                <div className="col" style={{ marginTop: 19 }}>
                   <input
                     name="display"
                     checked={this.state.display}
@@ -535,7 +535,7 @@ class VitalsMaster extends Component {
 
                 <div className="col">
                   <button
-                    style={{ marginTop: 21 }}
+                    style={{ marginTop: 19 }}
                     onClick={this.addVitalMasterHeader.bind(this)}
                     type="button"
                     className="btn btn-primary"
@@ -883,7 +883,7 @@ class VitalsMaster extends Component {
 
                     <div className="col">
                       <button
-                        style={{ marginTop: 21 }}
+                        style={{ marginTop: 19 }}
                         onClick={this.addVitalMasterDetail.bind(this)}
                         type="button"
                         className="btn btn-primary"

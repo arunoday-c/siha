@@ -167,7 +167,7 @@ class Components extends Component {
             <div className="col-lg-3">
               <button
                 type="submit"
-                style={{ marginTop: 21 }}
+                style={{ marginTop: 19 }}
                 onClick={this.addComponents.bind(this)}
                 className="btn btn-primary"
               >

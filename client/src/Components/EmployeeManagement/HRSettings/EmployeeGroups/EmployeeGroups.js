@@ -270,7 +270,7 @@ class EmployeeGroups extends Component {
 
             <div className="col form-group">
               <button
-                style={{ marginTop: 21 }}
+                style={{ marginTop: 19 }}
                 className="btn btn-primary"
                 id="srch-sch"
                 onClick={this.addEmployeeGroups.bind(this)}

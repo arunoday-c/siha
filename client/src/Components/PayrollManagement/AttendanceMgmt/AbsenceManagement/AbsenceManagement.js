@@ -415,7 +415,7 @@ export default class AbsenceManagement extends Component {
           <div className="col form-group">
             <button
               onClick={this.addAbsentRecord.bind(this)}
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19 }}
               className="btn btn-primary"
             >
               Add

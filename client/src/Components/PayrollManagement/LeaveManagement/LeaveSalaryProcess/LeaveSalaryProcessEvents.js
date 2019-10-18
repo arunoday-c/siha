@@ -84,15 +84,21 @@ const employeeSearch = $this => {
       callBack(text);
     },
     onRowSelect: row => {
-      $this.setState(
-        {
-          employee_name: row.full_name,
-          employee_id: row.hims_d_employee_id
-        },
-        () => {
-          getLeaveSalaryProcess($this);
-        }
-      );
+      let IOputs = LeaveSalaryProcessIOputs.inputParam();
+      IOputs.employee_name = row.full_name;
+      IOputs.employee_id = row.hims_d_employee_id;
+      $this.setState(IOputs, () => {
+        getLeaveSalaryProcess($this);
+      });
+      // $this.setState(
+      //   {
+      //     employee_name: row.full_name,
+      //     employee_id: row.hims_d_employee_id
+      //   },
+      //   () => {
+      //     getLeaveSalaryProcess($this);
+      //   }
+      // );
     }
   });
 };
@@ -145,6 +151,7 @@ const LeaveSalProcess = $this => {
               salaryObj[0].hims_f_salary_id;
           }
 
+          debugger;
           let leave_amount = getAmountFormart(
             response.data.result[1][0].leave_amount
           );
@@ -186,6 +193,7 @@ const LeaveSalProcess = $this => {
             SaveBtn: false,
             ProcessBtn: true,
             dis_salary_amount: getAmountFormart(salary_amount),
+            airfare_months: response.data.result[1][0].airfare_months,
             dis_leave_amount: getAmountFormart(
               response.data.result[1][0].leave_amount
             ),
@@ -330,7 +338,8 @@ const openSalaryComponents = ($this, row) => {
     year: row.year,
     month: row.month,
     hospital_id: $this.state.hospital_id,
-    employee_id: $this.state.employee_id
+    employee_id: $this.state.employee_id,
+    salary_type: "LS"
   };
   algaehApiCall({
     uri: "/salary/getSalaryProcess",

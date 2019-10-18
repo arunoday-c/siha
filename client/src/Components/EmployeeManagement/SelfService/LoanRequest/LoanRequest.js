@@ -114,7 +114,7 @@ class LoanRequest extends Component {
   }
 
   applyAdvance() {
-    const { full_name, reporting_to_id } = this.props.empData;
+    // const { full_name, reporting_to_id } = this.props.empData;
     const { deducting_month, deducting_year } = this.state;
     const current_month = parseInt(moment().format("M"), 10);
     const current_year = parseInt(moment().format("M"), 10);
@@ -542,7 +542,7 @@ class LoanRequest extends Component {
                       <button
                         type="button"
                         className="btn btn-primary"
-                        style={{ marginTop: 21 }}
+                        style={{ marginTop: 19 }}
                         onClick={this.applyLoan.bind(this)}
                       >
                         Request
@@ -632,7 +632,7 @@ class LoanRequest extends Component {
                       <button
                         type="button"
                         className="btn btn-primary"
-                        style={{ marginTop: 21 }}
+                        style={{ marginTop: 19 }}
                         onClick={this.applyAdvance.bind(this)}
                       >
                         Request

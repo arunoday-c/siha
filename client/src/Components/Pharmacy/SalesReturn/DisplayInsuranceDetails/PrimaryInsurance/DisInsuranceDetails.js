@@ -7,7 +7,7 @@ import {
 } from "../../../../Wrapper/algaehWrapper";
 import moment from "moment";
 import Options from "../../../../../Options.json";
-import { swalMessage, algaehApiCall } from "../../../../../utils/algaehApiCall";
+// import { swalMessage, algaehApiCall } from "../../../../../utils/algaehApiCall";
 
 export default class AddInsuranceForm extends Component {
   constructor(props) {

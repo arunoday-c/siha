@@ -43,7 +43,9 @@ class ApplyLeave extends Component {
       absent_id: props.leave.absent_id ? props.leave.absent_id : null,
       leave_from: props.leave.leave_from ? props.leave.leave_from : null,
       hospital_id: obritery.hims_d_hospital_id,
-      employee_branch: orbKeyData.employee_branch
+      employee_branch: orbKeyData.employee_branch,
+      projected_leave_enable: false,
+      Request_enable: true
     };
     this.leaveSocket = Socket;
     this.getLeaveTypes();
@@ -171,35 +173,24 @@ class ApplyLeave extends Component {
             to_leave_session: null
           });
         } else if (from_leave_session === "FH" && to_leave_session === "SH") {
-          this.setState(
-            {
-              from_leave_session: "FD",
-              to_leave_session: "FD"
-            },
-            () => {
-              // this.getAppliedDays();
-            }
-          );
+          this.setState({
+            from_leave_session: "FD",
+            to_leave_session: "FD"
+          });
         } else if (from_leave_session === "SH" && to_leave_session === "FD") {
           swalMessage({
             title: "Please Select a proper range",
             type: "warning"
           });
-          this.setState(
-            {
-              from_leave_session: null,
-              to_leave_session: null
-            },
-            () => {}
-          );
+          this.setState({
+            from_leave_session: null,
+            to_leave_session: null
+          });
         } else if (from_leave_session === "FD" || to_leave_session === "FD") {
-          this.setState(
-            {
-              to_leave_session: "FD",
-              from_leave_session: "FD"
-            },
-            () => {}
-          );
+          this.setState({
+            to_leave_session: "FD",
+            from_leave_session: "FD"
+          });
         }
 
         this.getAppliedDays();
@@ -208,52 +199,28 @@ class ApplyLeave extends Component {
         moment(to_date).format("YYYYMMDD")
       ) {
         if (from_leave_session === "FH" && to_leave_session === "FH") {
-          this.setState(
-            {
-              from_leave_session: "FD"
-            },
-            () => {}
-          );
+          this.setState({
+            from_leave_session: "FD"
+          });
         } else if (to_leave_session === "SH") {
-          this.setState(
-            {
-              to_leave_session: "FD"
-            },
-            () => {}
-          );
+          this.setState({
+            to_leave_session: "FD"
+          });
         } else if (from_leave_session === "FH" && to_leave_session === "SH") {
-          this.setState(
-            {
-              from_leave_session: "FD",
-              to_leave_session: "FD"
-            },
-            () => {
-              //  this.getAppliedDays();
-            }
-          );
+          this.setState({
+            from_leave_session: "FD",
+            to_leave_session: "FD"
+          });
         } else if (from_leave_session === "FH" && to_leave_session === "FD") {
-          this.setState(
-            {
-              from_leave_session: "FD",
-              to_leave_session: "FD"
-            },
-            () => {
-              //  this.getAppliedDays();
-            }
-          );
+          this.setState({
+            from_leave_session: "FD",
+            to_leave_session: "FD"
+          });
         } else if (from_leave_session === "SH" && to_leave_session === "SH") {
-          this.setState(
-            {
-              to_leave_session: "FD"
-            },
-            () => {
-              // this.getAppliedDays();
-            }
-          );
+          this.setState({
+            to_leave_session: "FD"
+          });
         }
-        //  else if (from_leave_session === "SH" && to_leave_session === "FH") {
-        //   this.getAppliedDays();
-        // }
 
         this.getAppliedDays();
       }
@@ -285,32 +252,23 @@ class ApplyLeave extends Component {
       },
       onSuccess: res => {
         if (res.data.success) {
-          this.setState(
-            {
-              total_applied_days: res.data.records.calculatedLeaveDays,
-              extra: {
-                holiday_included: res.data.records.include_holidays,
-                holidays: res.data.records.total_holiday,
-                weekoff_included: res.data.records.include_week_offs,
-                weekoff_days: res.data.records.total_weekOff
-              }
+          this.setState({
+            total_applied_days: res.data.records.calculatedLeaveDays,
+            Request_enable: false,
+            extra: {
+              holiday_included: res.data.records.include_holidays,
+              holidays: res.data.records.total_holiday,
+              weekoff_included: res.data.records.include_week_offs,
+              weekoff_days: res.data.records.total_weekOff
             }
-            // () => {
-            //   console.log("Extra:", this.state.extra);
-            // }
-          );
+          });
         } else if (!res.data.success) {
           swalMessage({
             title: res.data.records.message,
             type: "warning"
           });
           this.setState({
-            leave_id: null,
-            from_leave_session: null,
-            to_leave_session: null,
-            from_date: null,
-            to_date: null,
-            available_balance: 0,
+            Request_enable: true,
             total_applied_days: 0
           });
         }
@@ -395,7 +353,12 @@ class ApplyLeave extends Component {
 
             this.setState({
               available_balance: value.selected.close_balance,
-              leave_type: myObj !== undefined ? myObj.leave_type : null
+              leave_type: myObj !== undefined ? myObj.leave_type : null,
+              projected_leave_enable:
+                myObj.leave_category === "A" &&
+                myObj.avail_if_no_balance === "Y"
+                  ? true
+                  : false
             });
 
             this.validate();
@@ -615,7 +578,7 @@ class ApplyLeave extends Component {
                     }}
                   /> */}
                   <AlagehAutoComplete
-                    div={{ className: "col-6 margin-bottom-15" }}
+                    div={{ className: "col-6 margin-bottom-15 form-group" }}
                     label={{
                       forceLabel: "Leave Type",
                       isImp: true
@@ -647,14 +610,24 @@ class ApplyLeave extends Component {
                       }
                     }}
                   />
-                  <div className="col-6 margin-bottom-15">
+                  <div className="col-6 margin-bottom-15 form-group">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Available Balance"
                       }}
                     />
-                    <h6>{this.state.available_balance} days</h6>
+                    <h6>{this.state.available_balance} day(s)</h6>
                   </div>
+                  {this.state.projected_leave_enable === true ? (
+                    <div className="col-12 margin-bottom-15">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Projected Leaves"
+                        }}
+                      />
+                      <h6>{this.state.total_applied_days} day(s)</h6>
+                    </div>
+                  ) : null}
                   <AlgaehDateHandler
                     div={{ className: "col-6 margin-bottom-15" }}
                     label={{
@@ -803,11 +776,11 @@ class ApplyLeave extends Component {
                         });
                       }
                     }}
-                  />
+                  />{" "}
                   <div className="col-12 margin-bottom-15">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "No. of Days"
+                        forceLabel: "Appliying for"
                       }}
                     />
                     <h6>{this.state.total_applied_days} day(s)</h6>
@@ -832,6 +805,7 @@ class ApplyLeave extends Component {
                       onClick={this.applyLeave.bind(this)}
                       type="button"
                       className="btn btn-primary"
+                      disabled={this.state.Request_enable}
                     >
                       Request
                     </button>

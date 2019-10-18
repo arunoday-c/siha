@@ -1348,7 +1348,7 @@ export default {
             query: `select E.hims_d_employee_id,E.employee_code,E.full_name,ML.leave_id ,ML.total_eligible,\
                 ML.availed_till_date,ML.close_balance, ML.year from hims_d_employee E \
                 inner join  hims_f_employee_monthly_leave ML on ML.employee_id=E.hims_d_employee_id and ML.year=?\
-                where  E.hospital_id=? and  E.record_status='A' ${strQry} order by hims_d_employee_id;\
+                where  E.hospital_id=? and  E.record_status='A' ${strQry} order by cast(E.employee_code as unsigned);\
                 select hims_d_leave_id, leave_code, leave_description from hims_d_leave \
                 where record_status='A';`,
             values: [input.year, input.hospital_id],
@@ -1386,9 +1386,10 @@ export default {
                 })
                 .value();
 
-              const utilities = new algaehUtilities();
-
-              req.records = { leaves: result[1], employee_leaves: outputArray };
+              req.records = {
+                leaves: result[1],
+                employee_leaves: outputArray
+              };
               next();
             } else {
               req.records = {
@@ -1476,7 +1477,7 @@ export default {
               LS.balance_airticket_amount, LS.airfare_months, LS.utilized_leave_days, LS.utilized_leave_salary_amount, \
               LS.utilized_airticket_amount, E.hims_d_employee_id as employee_id from hims_d_employee E \
               left join hims_f_employee_leave_salary_header LS on E.hims_d_employee_id=LS.employee_id \
-              where E.leave_salary_process = 'Y' and E.record_status = 'A' and E.hospital_id=? " +
+              where E.leave_salary_process = 'Y' and E.record_status = 'A' and E.hospital_id=? order by cast(E.employee_code as unsigned)" +
               strQry,
             values: [input.hospital_id],
             printQuery: true
@@ -1485,6 +1486,7 @@ export default {
             _mysql.releaseConnection();
 
             if (result.length > 0) {
+              // let final_result = _.sortBy(result, s => s.employee_code);
               req.records = result;
               next();
             } else {
@@ -1524,13 +1526,21 @@ export default {
       strQry += " and E.hims_d_employee_id=" + input.hims_d_employee_id;
     }
 
+    if (input.year !== null) {
+      strQry += " and GP.year=" + input.year;
+    }
+    if (input.month !== null) {
+      strQry += " and GP.month=" + input.month;
+    }
     _mysql
       .executeQuery({
         query:
           "select E.employee_code, E.full_name, E.hims_d_employee_id, GP.year, GP.month, GP.gratuity_amount, \
           GP.hims_f_gratuity_provision_id from hims_d_employee E inner join hims_f_gratuity_provision GP  on \
           E.hims_d_employee_id = GP.employee_id where E.hospital_id=? " +
-          strQry,
+          strQry +
+          " order by E.hims_d_employee_id;",
+
         values: [input.hospital_id],
         printQuery: true
       })
@@ -1563,13 +1573,16 @@ export default {
           "select E.employee_code, E.full_name, E.hims_d_employee_id, GP.year, GP.month, GP.gratuity_amount, \
           GP.hims_f_gratuity_provision_id, E.hims_d_employee_id as employee_id from hims_d_employee E \
           left join hims_f_gratuity_provision GP  on E.hims_d_employee_id = GP.employee_id \
-          where E.record_status = 'A' and E.hospital_id=? " +
+          where E.record_status = 'A' and E.hospital_id=? order by cast(E.employee_code as unsigned)" +
           strQry,
         values: [input.hospital_id],
         printQuery: true
       })
       .then(result => {
         _mysql.releaseConnection();
+
+        // let final_result = _.sortBy(result, s => s.employee_code);
+        // let final_result = result;
         req.records = result;
         next();
       })

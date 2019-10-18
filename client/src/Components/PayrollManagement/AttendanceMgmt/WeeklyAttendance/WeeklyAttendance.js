@@ -944,7 +944,7 @@ export default class WeeklyAttendance extends Component {
             <button
               disabled={this.state.loader}
               onClick={this.getDailyTimeSheet.bind(this)}
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19 }}
               className="btn btn-primary"
             >
               {!this.state.loader ? (

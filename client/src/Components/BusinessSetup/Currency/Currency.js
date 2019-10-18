@@ -337,7 +337,7 @@ class Currency extends Component {
           <div className="col">
             <button
               onClick={this.addCurrencyCodes.bind(this)}
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19 }}
               className="btn btn-primary"
             >
               Add to List

@@ -185,7 +185,7 @@ class DayEndProcess extends Component {
                 }}
               />
               <div className="col">
-                <button className="btn btn-primary" style={{ marginTop: 21 }}>
+                <button className="btn btn-primary" style={{ marginTop: 19 }}>
                   Preview
                 </button>
               </div>

@@ -943,7 +943,7 @@ class LoanRequest extends Component {
                       <button
                         type="button"
                         className="btn btn-primary"
-                        style={{ marginTop: 21 }}
+                        style={{ marginTop: 19 }}
                         onClick={this.applyLoan.bind(this)}
                       >
                         Request
@@ -1033,7 +1033,7 @@ class LoanRequest extends Component {
                       <button
                         type="button"
                         className="btn btn-primary"
-                        style={{ marginTop: 21 }}
+                        style={{ marginTop: 19 }}
                         onClick={this.applyAdvance.bind(this)}
                       >
                         Request

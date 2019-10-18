@@ -28,6 +28,10 @@ const executePDF = function executePDFMethod(options) {
         str += ` and E.employee_group_id= ${input.employee_group_id}`;
       }
 
+      if (input.department_id > 0) {
+        str += ` and SD.department_id=${input.department_id}`;
+      }
+
       // 	const month_number =
       // 	req.query.yearAndMonth === undefined ? req.query.month : moment(req.query.yearAndMonth).format('M');
       // const year =
@@ -43,6 +47,7 @@ const executePDF = function executePDFMethod(options) {
 					total_leave,paid_leave,unpaid_leave,total_paid_days ,pending_unpaid_leave,total_hours,total_working_hours,\
 					shortage_hours,ot_work_hours,ot_weekoff_hours,ot_holiday_hours from hims_f_attendance_monthly AM \
 					inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
+          left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id \
 					where AM.record_status='A' and AM.year= ? and AM.month=? ${str} `,
           values: [input.year, input.month],
           printQuery: true

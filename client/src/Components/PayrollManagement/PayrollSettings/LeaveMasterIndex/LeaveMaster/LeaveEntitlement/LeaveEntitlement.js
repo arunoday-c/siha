@@ -401,10 +401,10 @@ function LeaveEntitlement(props) {
                 <label className="checkbox inline">
                   <input
                     type="checkbox"
-                    name="proportionate_leave"
+                    name="avail_if_no_balance"
                     checked={
-                      myParent.state.proportionate_leave === "Y" ||
-                      myParent.state.proportionate_leave === true
+                      myParent.state.avail_if_no_balance === "Y" ||
+                      myParent.state.avail_if_no_balance === true
                     }
                     onChange={e => myParent.changeChecks(e)}
                   />

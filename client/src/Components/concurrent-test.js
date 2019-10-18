@@ -218,7 +218,7 @@ class ConcurrentTest extends Component {
               <div className="col">
                 <button
                   className="btn btn-primary"
-                  style={{ marginTop: 21 }}
+                  style={{ marginTop: 19 }}
                   disabled={this.state.FireDisabled}
                   onClick={this.runApiCalls.bind(this)}
                 >

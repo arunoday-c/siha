@@ -294,7 +294,7 @@ class BankMaster extends Component {
 
           <div className="col">
             <button
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19 }}
               className="btn btn-primary"
               onClick={this.addBank.bind(this)}
             >

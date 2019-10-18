@@ -63,6 +63,9 @@ body {
   font-weight: bold;
   text-transform: uppercase;
 }
+.print-body .tableForData thead th small {
+  display: block;
+}
 
 .print-body .tableForData tbody {
   margin: 0;

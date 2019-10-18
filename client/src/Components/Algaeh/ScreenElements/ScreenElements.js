@@ -169,7 +169,7 @@ class ScreenElements extends Component {
             <div className="col-lg-3">
               <button
                 type="submit"
-                style={{ marginTop: 21 }}
+                style={{ marginTop: 19 }}
                 onClick={this.addScreenElements.bind(this)}
                 className="btn btn-primary"
               >

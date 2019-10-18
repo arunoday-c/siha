@@ -162,7 +162,7 @@ class FamilyAndIdentification extends Component {
                   <button
                     type="button"
                     className="btn btn-primary"
-                    style={{ marginTop: 21 }}
+                    style={{ marginTop: 19 }}
                     onClick={AddEmpId.bind(this, this)}
                   >
                     Add
@@ -392,7 +392,7 @@ class FamilyAndIdentification extends Component {
                   <button
                     type="button"
                     className="btn btn-primary"
-                    style={{ marginTop: 21 }}
+                    style={{ marginTop: 19 }}
                     onClick={addDependentType.bind(this, this)}
                   >
                     Add

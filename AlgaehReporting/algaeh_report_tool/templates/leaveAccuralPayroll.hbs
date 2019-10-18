@@ -10,7 +10,9 @@
                         <th>Sl No.</th>
                         <th>Employee Code</th>
                         <th>Employee Name</th>
+                        <th>Employee Group</th>
                         <th>Department</th>
+                        <th>Sub Department</th>
                         <th>Leave Days</th>
                         <th>Leave Salary</th>
                         <th>Airfare Amt.</th>
@@ -22,6 +24,8 @@
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
                         <td>{{full_name}}</td>
+                        <td>{{group_description}}</td>
+                        <td>{{department_name}}</td>
                         <td>{{sub_department_name}}</td>
                         <td>{{leave_days}}</td>
                         <td>{{leave_salary}}</td>
@@ -30,7 +34,7 @@
                     {{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="7" class="noResultTextReport">No Records Found</td>
+                        <td colspan="9" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
 
                 </tbody>

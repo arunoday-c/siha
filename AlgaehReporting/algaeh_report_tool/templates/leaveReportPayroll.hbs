@@ -11,6 +11,9 @@
                         <th>Application No.</th>
                         <th>Employee Code</th>
                         <th>Employee Name</th>
+                        <th>Employee Group</th>
+                        <th>Department</th>
+                        <th>Sub Department</th>
                         <th>Leave Type</th>
                         <th>From Date</th>
                         <th>To Date</th>
@@ -29,6 +32,9 @@
                         <td>{{leave_application_code}}</td>
                         <td>{{employee_code}}</td>
                         <td>{{employee_name}}</td>
+                        <td>{{group_description}}</td>
+                        <td>{{department_name}}</td>
+                        <td>{{sub_department_name}}</td>
                         <td>{{leave_description}}</td>
                         <td>{{from_date}}</td>
                         <td>{{to_date}}</td>
@@ -38,7 +44,7 @@
                     {{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="8" class="noResultTextReport">No Records Found</td>
+                        <td colspan="11" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
             </table>

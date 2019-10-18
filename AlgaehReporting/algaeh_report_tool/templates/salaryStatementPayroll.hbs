@@ -2,98 +2,124 @@
 
 <body>
     <div class="print-body">
-        {{!-- <section>
-            <table class="tableForLabel" cell-padding="0">
-                <tr>
-                    <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span></td>
-                    <td><label class="textEnLft">Department</label>:<span
-                            class="valueText">{{sub_department_name}}</span></td>
-                    <td><label class="textEnLft">year</label>:<span class="valueText">{{year}}</span></td>
-                    <td><label class="textEnLft">month</label>:<span class="valueText">{{month}}</span></td>
-                </tr>
-            </table>
+        {{#hasElement employees}}
 
 
-        </section> --}}
         <section>
+
+
+
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
-                        <th excelwidth="6">Sl No.</th>
-                        <th excelwidth="18">Employee Code</th>
-                        <th excelwidth="50">Employee Name</th>
-                        <th excelwidth="18">Salary No.</th>
-                        <th excelwidth="18">Nationality</th>
-                        <th excelwidth="18">Working Days</th>
-                        <th excelwidth="18">Present Days</th>
-                        <th excelwidth="18">Advance Due</th>
-                        <th excelwidth="18">Loan Due Amt</th>
-                        <th excelwidth="18">Total Earnings</th>
-                        <th excelwidth="18">Total Deductions</th>
-                        <th excelwidth="18">Net Salary</th>
+                        <th>Sl No.</th>
+                        <th>Emp. Code</th>
+                        <th>Emp. Name</th>
+                        <th>Desgnation</th>
+                        <th>Nationality</th>
+                        {{!-- <th>Dep.</th> --}}
+                        {{!-- <th>Working Days</th> --}}
+                        <th>PR Days</th>
+
+                        <th>Total Earnings</th>
+
+                        <th>Total Deduction </th>
+                        <th>Net Salary</th>
+
+                        <th>Total Contribution</th>
+                        <th>
+                            Mode Of Payment
+                        </th>
+                        <th>
+                            Salary Payed Date
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
-
-
-                    {{#hasElement details}}
-                    {{#each details}}
-                    <tr style="border-top:2px dashed #000">
-                        <td colspan="7" excelcellmerge="A:F" excelfonts='{"bold":true}'
-                            excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"e8feff"},"bgColor":{"argb":"000000"}}'
-                            class="tableSubHdg">Department: {{department_name}}
-                        </td>
-                        <td colspan="5" excelcellmerge="G:K"
-                            excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"e8feff"},"bgColor":{"argb":"000000"}}'
-                            class="tableSubHdg"><span class="textFloatRight">Total No
-                                Employees:
-                                <b>{{dep_no_employee}}</b></span></td>
+                    <tr class="numberFld numberFldTotalBottom">
+                        <td class="numberFld" colspan="6"></td>
+                        <td class="numberFld">{{sum_earnings}}</td>
+                        <td class="numberFld">{{sum_deductions}}</td>
+                        <td class="numberFld">{{sum_net_salary}}</td>
+                        <td class="numberFld">{{sum_contributions}}</td>
+                        <td colspan="5"></td>
                     </tr>
-
-                    {{#each sub_dept}}
-                    <tr style="border-top:2px dashed #000">
-                        <td colspan="7" excelcellmerge="A:F" excelfonts='{"bold":true}'
-                            excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"fffff5"},"bgColor":{"argb":"000000"}}'
-                            class="tableSubHdg2">Sub Department:
-                            {{sub_department_name}}
-                        </td>
-                        <td colspan="5" excelcellmerge="G:K"
-                            excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"fffff5"},"bgColor":{"argb":"000000"}}'
-                            class="tableSubHdg2"><span class="textFloatRight">Total No
-                                Employees:
-                                <b>{{sub_no_employee}}</b></span></td>
-                    </tr>
-
                     {{#each employees}}
                     <tr>
-                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{inc @index}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{employee_code}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"left"}'>{{employee_name}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{salary_number}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{nationality}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{total_days}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{display_present_days}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{advance_due}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{loan_due_amount}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{total_earnings}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{total_deductions}}</td>
-                        <td excelfonts='{"bold":true}' excelalignment='{"vertical":"middle","horizontal":"right"}'>
-                            {{net_salary}}</td>
+                        <td>{{inc @index}}</td>
+                        <td>{{employee_code}}</td>
+                        <td class="txtFld"><span class="textTruncate" style="width: 200px;">{{full_name}}</span></td>
+                        <td class="txtFld"><span class="textTruncate" style="width: 100px;">{{designation}}</span></td>
+                        <td>{{nationality}}</td>
+                        <td>{{display_present_days}}</td>
+
+
+                        <td class="numberFld numberFldTotal">{{total_earnings}}</td>
+
+
+
+
+
+                        <td class="numberFld numberFldTotal">{{total_deductions}}</td>
+                        <td class="numberFld numberFldTotal">{{net_salary}}</td>
+
+                        <td class="numberFld numberFldTotal">{{total_contributions}}</td>
+                        <td>
+                            {{mode_of_payment}}
+                        </td>
+                        <td>
+                            {{salary_paid_date}}
+                        </td>
                     </tr>
-                    {{/each }}{{/each }}{{/each }}
-
-
-                    {{else}}
+                    {{/each }}{{else}}
                     <tr>
-                        <td colspan="12" class="noResultTextReport">No Records Found</td>
-                    </tr>{{/hasElement }}
-
-
-                    {{!-- excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"FF0000"},"bgColor":{"argb":"cccccc"}}' --}}
-
+                        <td class="noResultTextReport">No Records Found</td>
+                    </tr>
                 </tbody>
             </table>
+
+
         </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+        {{/hasElement }}
+
+
+
+
+        {{!-- <table class="tableTotal">
+            <tr>
+                <td>
+                    Grand Total Earnings
+                </td>
+                <td>
+                    {{sum_earnings}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Grand Total Deduction
+                </td>
+                <td>
+                    {{sum_deductions}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Grand Total Contribution
+                </td>
+                <td>
+                    {{sum_contributions}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Grand Net Salary
+                </td>
+                <td>
+                    {{sum_net_salary}}
+                </td>
+            </tr>
+        </table> --}}
     </div>
+
 </body>

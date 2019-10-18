@@ -367,7 +367,7 @@ class AppointmentClinics extends Component {
 
             <div className="col-lg-2">
               <button
-                style={{ marginTop: 21 }}
+                style={{ marginTop: 19 }}
                 onClick={this.addAppointmentClinics.bind(this)}
                 type="button"
                 className="btn btn-primary"

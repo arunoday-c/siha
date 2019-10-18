@@ -534,7 +534,7 @@ class FinalSettlement extends Component {
           <div className="col form-group">
             <button
               onClick={this.loadFinalSettlement.bind(this)}
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19 }}
               className="btn btn-primary"
             >
               Load
@@ -641,7 +641,7 @@ class FinalSettlement extends Component {
                             <button
                               onClick={this.addEarning.bind(this)}
                               className="btn btn-primary"
-                              style={{ marginTop: 21 }}
+                              style={{ marginTop: 19 }}
                               disabled={this.state.disableSave}
                             >
                               Add
@@ -799,7 +799,7 @@ class FinalSettlement extends Component {
                             <button
                               onClick={this.addDeduction.bind(this)}
                               className="btn btn-primary"
-                              style={{ marginTop: 21 }}
+                              style={{ marginTop: 19 }}
                               disabled={this.state.disableSave}
                             >
                               Add

@@ -1,4 +1,9 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AlgaehActions } from "../../../../actions/algaehActions";
+
 import "./LeaveYearlyProcess.scss";
 import moment from "moment";
 import {
@@ -10,109 +15,179 @@ import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import { getYears } from "../../../../utils/GlobalFunctions";
+import {
+  getYears,
+  AlgaehOpenContainer
+} from "../../../../utils/GlobalFunctions";
 import YearlyLeaveDetail from "./YearlyLeaveDetail/YearlyLeaveDetail";
 
-export default class LeaveYearlyProcess extends Component {
+class LeaveYearlyProcess extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hospital_id: null,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
       year: moment().year(),
       leaves: [],
       leave_data: [],
       loading: false,
-      open: false
+      open: false,
+      employee_name: null,
+      hims_d_employee_id: null,
+      employee_group_id: null
     };
     this.getLeaveMaster();
   }
 
   componentDidMount() {
     this.getLeaveData();
+    if (
+      this.props.organizations === undefined ||
+      this.props.organizations.length === 0
+    ) {
+      this.props.getOrganizations({
+        uri: "/organization/getOrganization",
+        method: "GET",
+        redux: {
+          type: "ORGS_GET_DATA",
+          mappingName: "organizations"
+        }
+      });
+    }
+    if (
+      this.props.emp_groups === undefined ||
+      this.props.emp_groups.length === 0
+    ) {
+      this.props.getEmpGroups({
+        uri: "/hrsettings/getEmployeeGroups",
+        module: "hrManagement",
+        method: "GET",
+        data: { record_status: "A" },
+        redux: {
+          type: "EMP_GROUP_GET",
+          mappingName: "emp_groups"
+        }
+      });
+    }
   }
 
   getLeaveData() {
-    this.setState({
-      loading: true
-    });
-    algaehApiCall({
-      uri: "/leave/getYearlyLeaveData",
-      method: "GET",
-      module: "hrManagement",
-      data: {
-        year: this.state.year
+    this.setState(
+      {
+        loading: true
       },
-      onSuccess: res => {
-        if (res.data.success) {
-          this.setState({
-            leave_data: res.data.records,
-            loading: false
-          });
+      () => {
+        debugger;
+        let inputObj = {
+          year: this.state.year,
+          hospital_id: this.state.hospital_id
+        };
+        if (this.state.employee_group_id !== null) {
+          inputObj.employee_group_id = this.state.employee_group_id;
         }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
-        });
-        this.setState({
-          loading: false
+
+        if (this.state.hims_d_employee_id !== null) {
+          inputObj.employee_id = this.state.hims_d_employee_id;
+        }
+        algaehApiCall({
+          uri: "/leave/getYearlyLeaveData",
+          method: "GET",
+          module: "hrManagement",
+          data: inputObj,
+          onSuccess: res => {
+            if (res.data.success) {
+              this.setState({
+                leave_data: res.data.records,
+                loading: false
+              });
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+            this.setState({
+              loading: false
+            });
+          }
         });
       }
-    });
+    );
   }
 
   processYearlyLeave() {
-    this.setState({
-      loading: true
-    });
-    algaehApiCall({
-      uri: "/leave/processYearlyLeave",
-      method: "GET",
-      module: "hrManagement",
-      data: {
-        year: this.state.year,
-        employee_id: this.state.hims_d_employee_id
+    this.setState(
+      {
+        loading: true
       },
-      onSuccess: res => {
-        if (res.data.success) {
-          swalMessage({
-            title: "Leaves processed successfully",
-            type: "success"
-          });
-          this.getLeaveData();
-          this.setState({
-            loading: false
-          });
-        } else if (!res.data.success) {
-          swalMessage({
-            title: res.data.records.message,
-            type: "warning"
-          });
-          this.setState({
-            loading: false
-          });
+      () => {
+        let inputObj = {
+          year: this.state.year,
+          hospital_id: this.state.hospital_id
+        };
+        if (this.state.employee_group_id !== null) {
+          inputObj.employee_group_id = this.state.employee_group_id;
         }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
-        });
-        this.setState({
-          loading: false
+
+        if (this.state.hims_d_employee_id !== null) {
+          inputObj.employee_id = this.state.hims_d_employee_id;
+        }
+
+        if (this.state.leave_id !== null) {
+          inputObj.leave_id = this.state.leave_id;
+        }
+        algaehApiCall({
+          uri: "/leave/processYearlyLeave",
+          method: "GET",
+          module: "hrManagement",
+          data: inputObj,
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Leaves processed successfully",
+                type: "success"
+              });
+              this.getLeaveData();
+              this.setState({
+                loading: false
+              });
+            } else if (!res.data.success) {
+              swalMessage({
+                title: res.data.records.message,
+                type: "warning"
+              });
+              this.setState({
+                loading: false
+              });
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+            this.setState({
+              loading: false
+            });
+          }
         });
       }
-    });
+    );
   }
 
   clearState() {
     this.setState(
       {
+        hospital_id: JSON.parse(
+          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+        ).hims_d_hospital_id,
         hims_d_employee_id: null,
         employee_name: null,
         year: moment().year(),
-        leave_id: null
+        leave_id: null,
+        employee_group_id: null
       },
       () => {
         this.getLeaveData();
@@ -203,6 +278,7 @@ export default class LeaveYearlyProcess extends Component {
 
   render() {
     let allYears = getYears();
+    debugger;
     return (
       <div className="leave_en_auth row">
         <YearlyLeaveDetail
@@ -268,20 +344,18 @@ export default class LeaveYearlyProcess extends Component {
                 isImp: false
               }}
               selector={{
-                name: "hospital_id",
+                name: "employee_group_id",
                 className: "select-fld",
-                value: this.state.hospital_id,
+                value: this.state.employee_group_id,
                 dataSource: {
-                  textField: "hospital_name",
-                  valueField: "hims_d_hospital_id",
-                  data: this.props.organizations
+                  textField: "group_description",
+                  valueField: "hims_d_employee_group_id",
+                  data: this.props.emp_groups
                 },
-                //onChange: texthandler.bind(this, this),
                 onChange: this.dropDownHandler.bind(this),
-
                 onClear: () => {
                   this.setState({
-                    hospital_id: null
+                    employee_group_id: null
                   });
                 }
               }}
@@ -302,9 +376,9 @@ export default class LeaveYearlyProcess extends Component {
                 className="btn btn-default"
               >
                 CLEAR
-              </button>{" "}
+              </button>
               <button
-                //onClick={this.processYearlyLeave.bind(this)}
+                onClick={this.getLeaveData.bind(this)}
                 style={{ marginTop: 19, marginLeft: 5 }}
                 className="btn btn-default"
               >
@@ -416,7 +490,7 @@ export default class LeaveYearlyProcess extends Component {
                         }
                       },
                       {
-                        fieldName: "employee_name",
+                        fieldName: "group_description",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Employee Group" }}
@@ -427,14 +501,14 @@ export default class LeaveYearlyProcess extends Component {
                         }
                       },
                       {
-                        forceLabel: "sub_department_name",
+                        fieldName: "department_name",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Department Name" }}
                           />
                         ),
                         others: {
-                          maxWidth: 250
+                          style: { textAlign: "left" }
                         }
                       },
                       {
@@ -467,3 +541,27 @@ export default class LeaveYearlyProcess extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    organizations: state.organizations,
+    emp_groups: state.emp_groups
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getOrganizations: AlgaehActions,
+      getEmpGroups: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(LeaveYearlyProcess)
+);
