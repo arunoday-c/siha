@@ -1364,7 +1364,7 @@ export default {
 
                             const cur_year_leaveData=leaveData.filter(f=>f.year==deductionResult.from_year);
                             const next_year_leaveData=leaveData.filter(f=>f.year==deductionResult.to_year);
-                             acrossYearAuthorize(deductionResult,cur_year_leaveData,next_year_leaveData,input,req).then(resu=>{
+                             acrossYearAuthorize(month_number,deductionResult,cur_year_leaveData,next_year_leaveData,input,req).then(resu=>{
 
                             console.log("resu: ", resu);
 
@@ -1405,7 +1405,7 @@ export default {
 
                           }else{
 
-                          singleYearAuthorize(deductionResult,leaveData,input,req).then(resul=>{  
+                          singleYearAuthorize(month_number,deductionResult,leaveData,input,req).then(resul=>{  
                             
                             console.log("RESSSSS-----:",resul)
                             _mysql
@@ -7246,6 +7246,9 @@ function calculateNoLeaveDays(inputs,_mysql) {
                             );
 
                             if (max_available_leave >= calculatedLeaveDays||input.cancel == "Y") {
+                              let projected_applied_leaves =
+                              parseFloat(calculatedLeaveDays) -
+                              parseFloat(currentClosingBal);
                               resolve({
                                 leave_applied_days: leave_applied_days,
                                 calculatedLeaveDays: calculatedLeaveDays,
@@ -7253,7 +7256,11 @@ function calculateNoLeaveDays(inputs,_mysql) {
                                 include_holidays: include_holidays,
                                 total_holiday: total_holiday,
                                 include_week_offs: include_week_offs,
-                                total_weekOff: total_weekOff
+                                total_weekOff: total_weekOff,
+                                projected_applied_leaves: projected_applied_leaves,
+                                annual_leave: "Y",
+                                is_projected_leave:"Y",
+                                max_available_leave:max_available_leave
                               });
                             } else {
                               reject({
@@ -7374,6 +7381,11 @@ function calculateNoLeaveDays(inputs,_mysql) {
                             );
 
                             if (max_available_leave >= calculatedLeaveDays ||input.cancel == "Y") {
+                             
+                              let projected_applied_leaves =
+                              parseFloat(calculatedLeaveDays) -
+                              parseFloat(currentClosingBal);
+
                               resolve({
                                 leave_applied_days: leave_applied_days,
                                 calculatedLeaveDays: calculatedLeaveDays,
@@ -7381,7 +7393,11 @@ function calculateNoLeaveDays(inputs,_mysql) {
                                 include_holidays: include_holidays,
                                 total_holiday: total_holiday,
                                 include_week_offs: include_week_offs,
-                                total_weekOff: total_weekOff
+                                total_weekOff: total_weekOff,
+                                projected_applied_leaves: projected_applied_leaves,
+                                annual_leave: "Y",
+                                is_projected_leave:"Y",
+                                max_available_leave:max_available_leave
                               });
                               // next();
                             } else {
@@ -7813,12 +7829,13 @@ function leaveSessionValidate(result,_mysql , req, next, input) {
 
 }
 
-function singleYearAuthorize(deductionResult,leaveData,input,req){
+function singleYearAuthorize(month_number,deductionResult,leaveData,input,req){
   return new Promise((resolve, reject) => {
     try {
      
 
       console.log("SINGLE YEAR: ",input);
+      console.log("deductionResult PROJECTED: ",deductionResult);
     
       let monthArray = deductionResult.monthWiseCalculatedLeaveDeduction;
       const month_name = moment(input.from_date).format("MMMM");
@@ -7828,7 +7845,7 @@ function singleYearAuthorize(deductionResult,leaveData,input,req){
            
             
             if (leaveData.length > 0 &&(parseFloat(deductionResult.calculatedLeaveDays) <=parseFloat(leaveData[0]["close_balance"])
-             ||deductionResult.annual_leave == "Y")) {     
+             ||deductionResult.is_projected_leave == "Y")) {     
 
                   let newCloseBal = "";
                   let actualClosingBal = 0;
@@ -7838,7 +7855,7 @@ function singleYearAuthorize(deductionResult,leaveData,input,req){
                     parseFloat(deductionResult.calculatedLeaveDays);
 
 
-                  if (deductionResult.annual_leave == "Y") {
+                  if (deductionResult.is_projected_leave == "Y") {
                     newCloseBal =
                       deductionResult.currentClosingBal;
                     actualClosingBal =
@@ -7972,7 +7989,7 @@ function singleYearAuthorize(deductionResult,leaveData,input,req){
 }
 
 
-function acrossYearAuthorize(deductionResult,cur_year_leaveData,next_year_leaveData,input,req){
+function acrossYearAuthorize(month_number,deductionResult,cur_year_leaveData,next_year_leaveData,input,req){
   console.log("INSIDE acrossYearAuthorize")
     return new Promise((resolve, reject) => {
       try {
@@ -7985,7 +8002,7 @@ function acrossYearAuthorize(deductionResult,cur_year_leaveData,next_year_leaveD
           if (monthArray.length > 0) {
             
             if (cur_year_leaveData.length > 0 &&(parseFloat(deductionResult.from_year_calculatedLeaveDays) <=parseFloat(cur_year_leaveData[0]["close_balance"])
-            ||deductionResult.annual_leave == "Y")) {     
+            ||deductionResult.is_projected_leave == "Y")) {     
             
                 let newCloseBal = "";
                 let actualClosingBal = 0;
@@ -7995,7 +8012,7 @@ function acrossYearAuthorize(deductionResult,cur_year_leaveData,next_year_leaveD
                   parseFloat(deductionResult.from_year_calculatedLeaveDays);
             
             
-                if (deductionResult.annual_leave == "Y") {
+                if (deductionResult.is_projected_leave == "Y") {
                   newCloseBal =
                     deductionResult.currentClosingBal;
                   actualClosingBal =
@@ -8330,7 +8347,7 @@ function acrossYearCancel(deductionResult,cur_year_leaveData,next_year_leaveData
                   parseFloat(deductionResult.from_year_calculatedLeaveDays);
             
             
-                if (deductionResult.annual_leave == "Y") {
+                if (deductionResult.is_projected_leave == "Y") {
                  
                   newCloseBal =
                     deductionResult.currentClosingBal;
