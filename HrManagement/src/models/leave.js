@@ -2149,7 +2149,9 @@ export default {
           console.log("DONE-calculateLeaveDays ONLY--");
         })
         .catch(e => {
-          _mysql.rollBackTransaction(() => {});
+          _mysql.rollBackTransaction(() => {
+            _mysql.releaseConnection();
+          });
           req.records = e;
           next();
         });
@@ -2703,7 +2705,10 @@ export default {
   applyEmployeeLeave: (req, res, next) => {
     try {
       let input = req.body;
+     input["from_session"]=input["from_leave_session"];
+     input["to_session"]=input["to_leave_session"];
       console.log("DED:", req.body);
+
       const m_fromDate = moment(input.from_date).format("YYYY-MM-DD");
       const m_toDate = moment(input.to_date).format("YYYY-MM-DD");
       const from_year = moment(input.from_date).format("YYYY");
@@ -2765,7 +2770,7 @@ export default {
               // req.body["my_sql"]=_mysql;
           
 
-              validateLeaveApplictn(req.body, _mysql, req)
+              validateLeaveApplictn(input, _mysql, req)
                 .then(result => {
                   if (result.calculatedLeaveDays > 0) {
 
@@ -4869,7 +4874,7 @@ export default {
                                 _mysql.releaseConnection();
                                 req.records = {
                                   invalid_input:true,
-                                  message:`Please Cancel ${acrossYearSecondLeave[0]["leave_application_code"]} leave first `
+                                  message:`Please Cancel (${acrossYearSecondLeave[0]["leave_application_code"]}) application First `
                                 };
                                 next();
 
@@ -8334,7 +8339,7 @@ function acrossYearCancel(deductionResult,cur_year_leaveData,next_year_leaveData
                   projected_applied_leaves =
                     deductionResult.projected_applied_leaves;
                 } else {
-                  newCloseBal =parseFloat(cur_year_leaveData[0]["close_balance"])+parseFloat(deductionResult.calculatedLeaveDays);
+                  newCloseBal =parseFloat(cur_year_leaveData[0]["close_balance"])+parseFloat(deductionResult.from_year_calculatedLeaveDays);
                 }
             
             
