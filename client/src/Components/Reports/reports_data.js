@@ -596,44 +596,6 @@ const Hims_Reports = [
               valueField: "hims_d_nationality_id",
               data: undefined
             }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "",
-            initialLoad: true,
-            isImp: false,
-            label: "Company",
-            link: {
-              uri: "/insurance/getInsuranceProviders"
-            },
-            events: {
-              onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/pharmacy/getPharmacyLocation",
-                  module: "pharmacy",
-                  method: "GET",
-                  data: { hospital_id: currentEvent.value },
-
-                  onSuccess: result => {
-                    reportState.setState({
-                      location_id_list: result.data.records
-                    });
-                  }
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  location_id_list: []
-                });
-              }
-            },
-            dataSource: {
-              textField: "insurance_provider_name",
-              valueField: "hims_d_insurance_provider_id"
-            }
           }
         ]
       },
@@ -662,77 +624,33 @@ const Hims_Reports = [
             }
           },
           {
-            className: "col-2 mandatory",
-            type: "date",
-            name: "from_date",
+            className: "col-2",
+            type: "dropdown",
+            name: "year",
             isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            className: "col-2 mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
+            initialLoad: true,
+            value: moment().year(),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
             }
           },
           {
             className: "col-2",
             type: "dropdown",
-            name: "nationality_id",
-            initialLoad: true,
+            sort: "off",
+            name: "month",
             isImp: false,
-            label: "nationality",
-            link: {
-              uri: "/masters/get/nationality"
-            },
-            dataSource: {
-              textField: "nationality",
-              valueField: "hims_d_nationality_id",
-              data: undefined
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "",
             initialLoad: true,
-            isImp: false,
-            label: "Company",
-            link: {
-              uri: "/insurance/getInsuranceProviders"
-            },
-            events: {
-              onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/pharmacy/getPharmacyLocation",
-                  module: "pharmacy",
-                  method: "GET",
-                  data: { hospital_id: currentEvent.value },
-
-                  onSuccess: result => {
-                    reportState.setState({
-                      location_id_list: result.data.records
-                    });
-                  }
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  location_id_list: []
-                });
-              }
-            },
+            value: moment().format("M"),
             dataSource: {
-              textField: "insurance_provider_name",
-              valueField: "hims_d_insurance_provider_id"
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
             }
           }
         ]

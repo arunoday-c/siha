@@ -141,10 +141,10 @@ export default {
               incharge_or_provider, bill_date, advance_amount,advance_adjust, discount_amount, sub_total_amount \
               , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount, net_total \
               , company_res, sec_company_res, patient_res, patient_payable, company_payable, sec_company_payable \
-              , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount,\
+              , patient_tax, s_patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount,\
               balance_credit , created_by, created_date, updated_by, updated_date, copay_amount,\
               deductable_amount,hospital_id)\
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             inputParam.patient_id,
             inputParam.visit_id,
@@ -171,6 +171,7 @@ export default {
             inputParam.company_payable,
             inputParam.sec_company_payable,
             inputParam.patient_tax,
+            inputParam.s_patient_tax,
             inputParam.company_tax,
             inputParam.sec_company_tax,
             inputParam.net_tax,
@@ -253,6 +254,7 @@ export default {
             "deductable_percentage",
             "tax_inclusive",
             "patient_tax",
+            "s_patient_tax",
             "company_tax",
             "total_tax",
             "patient_resp",
@@ -295,6 +297,7 @@ export default {
                 deductable_percentage: s.deductable_percentage,
                 tax_inclusive: s.tax_inclusive == 0 ? "N" : s.tax_inclusive,
                 patient_tax: s.patient_tax,
+                s_patient_tax: s.s_patient_tax,
                 company_tax: s.company_tax,
                 total_tax: s.total_tax,
                 patient_resp: s.patient_resp,
@@ -435,6 +438,10 @@ export default {
           parseFloat(d.patient_tax)
         );
 
+        sendingObject.s_patient_tax = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.s_patient_tax)
+        );
+
         sendingObject.company_tax = new LINQ(inputParam).Sum(d =>
           parseFloat(d.company_tax)
         );
@@ -487,6 +494,12 @@ export default {
           sendingObject.patient_tax,
           decimal_places
         );
+
+        sendingObject.s_patient_tax = utilities.decimalPoints(
+          sendingObject.s_patient_tax,
+          decimal_places
+        );
+
         sendingObject.company_tax = utilities.decimalPoints(
           sendingObject.company_tax,
           decimal_places
@@ -2191,16 +2204,12 @@ export default {
 
             strQuery = `select hims_d_insurance_network_office_id,price_from ,copay_consultation,copay_percent,copay_percent_rad,copay_percent_trt,\
                  copay_percent_dental,copay_medicine, preapp_limit, deductible, deductible_lab,deductible_rad, \
-               deductible_trt, deductible_medicine from hims_d_insurance_network_office where hospital_id=${
-                 req.userIdentity.hospital_id
-               }\
+               deductible_trt, deductible_medicine from hims_d_insurance_network_office where hospital_id=${req.userIdentity.hospital_id}\
                and hims_d_insurance_network_office_id in (${network_office_ids});\
                select SI.insurance_id ,SI.services_id,IP.company_service_price_type,copay_status,copay_amt,deductable_status,\
                deductable_amt,pre_approval,covered,net_amount,gross_amt, cpt_code \
                from hims_d_services_insurance SI inner join hims_d_insurance_provider IP on\
-               IP.hims_d_insurance_provider_id=SI.insurance_id where SI.hospital_id=${
-                 req.userIdentity.hospital_id
-               }\
+               IP.hims_d_insurance_provider_id=SI.insurance_id where SI.hospital_id=${req.userIdentity.hospital_id}\
                and SI.insurance_id in (${insurance_provider_ids}) and\
                SI.services_id in (${service_ids})  and SI.record_status='A' and IP.record_status='A';\
                select SIN.network_id ,SIN.services_id,IP.insurance_provider_name, IP.company_service_price_type, NET.network_type,\
@@ -2208,9 +2217,7 @@ export default {
                net_amount,gross_amt from  hims_d_services_insurance_network SIN\
                inner join hims_d_insurance_network NET on NET.hims_d_insurance_network_id=SIN.network_id\
                inner join hims_d_insurance_provider IP on SIN.insurance_id=IP.hims_d_insurance_provider_id \
-               where   SIN.hospital_id=${
-                 req.userIdentity.hospital_id
-               } and SIN.network_id in (${network_ids})\
+               where   SIN.hospital_id=${req.userIdentity.hospital_id} and SIN.network_id in (${network_ids})\
                AND SIN.services_id in (${service_ids}) and SIN.record_status='A' and NET.record_status='A';`;
           }
 
@@ -2275,7 +2282,8 @@ export default {
                 let patient_tax = 0,
                   company_tax = 0,
                   sec_company_tax = 0,
-                  total_tax = 0;
+                  total_tax = 0,
+                  s_patient_tax = 0;
 
                 let after_dect_amout = 0,
                   deductable_percentage = 0,
@@ -2596,6 +2604,17 @@ export default {
                       decimal_places
                     );
                   }
+                  utilities
+                    .logger()
+                    .log("vat_applicable: ", records.vat_applicable);
+                  if (records.vat_applicable == "Y") {
+                    s_patient_tax = (patient_resp * records.vat_percent) / 100;
+
+                    s_patient_tax = utilities.decimalPoints(
+                      patient_tax,
+                      decimal_places
+                    );
+                  }
 
                   if (records.vat_applicable == "Y") {
                     company_tax = (comapany_resp * records.vat_percent) / 100;
@@ -2702,6 +2721,10 @@ export default {
                   net_amout = gross_amount - discount_amout;
                   patient_resp = net_amout;
 
+                  utilities
+                    .logger()
+                    .log("pat_vat_applicable: ", vat_applicable);
+
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
                     patient_tax = (patient_resp * records.vat_percent) / 100;
 
@@ -2710,6 +2733,18 @@ export default {
                       decimal_places
                     );
                     total_tax = patient_tax;
+                  }
+
+                  if (records.vat_applicable === "Y") {
+                    utilities
+                      .logger()
+                      .log("vat_applicable: ", records.vat_applicable);
+                    s_patient_tax = (patient_resp * records.vat_percent) / 100;
+
+                    s_patient_tax = utilities.decimalPoints(
+                      s_patient_tax,
+                      decimal_places
+                    );
                   }
 
                   // patient_payable = net_amout + patient_tax;
@@ -2738,6 +2773,7 @@ export default {
                     deductable_percentage: 0,
                     tax_inclusive: "N",
                     patient_tax: 0,
+                    s_patient_tax: 0,
                     company_tax: 0,
                     total_tax: 0,
                     patient_resp: 0,
@@ -2772,6 +2808,7 @@ export default {
                     comapany_resp: comapany_resp,
                     company_payble: company_payble,
                     patient_tax: patient_tax,
+                    s_patient_tax: s_patient_tax,
                     company_tax: company_tax,
                     sec_company_tax: sec_company_tax,
                     total_tax: total_tax,

@@ -8,21 +8,50 @@
                 <thead>
                     <tr>
                         <th>Sl No.<small>م</small></th>
-                        <th>Date<small>التاريخ</small></th>
-                        <th>MRN No.<small>اسم المريض</small></th>
+                        <th>Data From<small>التاريخ</small></th>
+                        <th>Month<small>التاريخ</small></th>
                         <th>Total Before VAT<small>الايراد قبل الضريبة</small></th>
                         <th>Total After VAT<small>الايراد بعد الضريبة</small></th>
                         <th>Patient VAT Amount<small>ضريبة القيمة المضافة علي المريض</small></th>
+                        <th>Company VAT Amount<small>ضريبة القيمة المضافة علي المريض</small></th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{invoice_date}}</td>
-                        <td>{{before_vat}}</td>
-                        <td>{{after_vat}}</td>
-                        <td>{{patient_vat}}</td>
+                        <td>{{data_from}}</td>
+                        <td>
+                            {{#if month_name "01"}}
+                            <span>January</span>
+                            {{/if}}   {{#if month_name "02"}}
+                            <span>February</span>
+                            {{/if}} {{#if month_name "03"}}
+                            <span>March</span>
+                            {{/if}}  {{#if month_name "04"}}
+                            <span>April</span>
+                            {{/if}}  {{#if month_name "05"}}
+                            <span>May</span>
+                            {{/if}}  {{#if month_name "06"}}
+                            <span>June</span>
+                            {{/if}}  {{#if month_name "07"}}
+                            <span>July</span>
+                            {{/if}}  {{#if month_name "08"}}
+                            <span>August</span>
+                            {{/if}}  {{#if month_name "09"}}
+                            <span>September</span>
+                            {{/if}}  {{#if month_name "10"}}
+                            <span>October</span>
+                            {{/if}}  {{#if month_name "11"}}
+                            <span>November</span>
+                            {{/if}}  {{#if month_name "12"}}
+                            <span>December</span>
+                            {{/if}}
+                        </td>                        
+                        <td>{{total_before_vat}}</td>
+                        <td>{{total_after_vat}}</td>
+                        <td>{{patient_tax}}</td>
+                        <td>{{company_tax}}</td>
                     </tr>
                     {{/each }}
 
