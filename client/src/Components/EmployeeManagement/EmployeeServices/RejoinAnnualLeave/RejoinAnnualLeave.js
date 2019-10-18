@@ -7,18 +7,18 @@ import "../../../../styles/site.scss";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlagehAutoComplete,
+  // AlagehAutoComplete,
   AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
-import AlgaehFile from "../../../Wrapper/algaehFileUpload";
+// import AlgaehFile from "../../../Wrapper/algaehFileUpload";
 // import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../../Options.json";
-import { getCookie } from "../../../../utils/algaehApiCall";
-import {
-  setGlobal,
-  AlgaehOpenContainer
-} from "../../../../utils/GlobalFunctions";
+// import { getCookie } from "../../../../utils/algaehApiCall";
+// import {
+//   setGlobal,
+//   AlgaehOpenContainer
+// } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 

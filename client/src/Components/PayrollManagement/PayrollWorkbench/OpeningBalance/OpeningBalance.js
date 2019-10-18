@@ -7,19 +7,19 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import "./OpeningBalance.scss";
 import {
   AlagehAutoComplete,
-  AlgaehLabel,
-  AlgaehDataGrid,
-  AlagehFormGroup
+  AlgaehLabel
+  // AlgaehDataGrid,
+  // AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
-import AlgaehSearch from "../../../Wrapper/globalSearch";
-import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+// import AlgaehSearch from "../../../Wrapper/globalSearch";
+// import spotlightSearch from "../../../../Search/spotlightSearch.json";
+// import GlobalVariables from "../../../../utils/GlobalVariables.json";
+// import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import {
   AlgaehOpenContainer,
   getYears
 } from "../../../../utils/GlobalFunctions";
-import EmployeeSearch from "../../../common/EmployeeSearch";
+// import EmployeeSearch from "../../../common/EmployeeSearch";
 import OpeningBalanceEvent from "./OpeningBalanceEvent";
 import moment from "moment";
 import AddEmployeeOpenBalance from "./SubModals/AddEmployeeOpenBalance";

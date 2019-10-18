@@ -106,16 +106,16 @@ export default class OcafEditor extends Component {
 
   render() {
     const _isPrimary = "primary";
-    const _hims_f_ocaf_header = this.props.dataProps.hims_f_ocaf_header[0];
-    const _insurnce = _.find(
-      this.props.dataProps.hims_f_ocaf_insurance_details,
-      f =>
-        f[
-          _isPrimary === "primary"
-            ? "primary_insurance_company_name"
-            : "secondary_insurance_company_name"
-        ] !== undefined
-    );
+    // const _hims_f_ocaf_header = this.props.dataProps.hims_f_ocaf_header[0];
+    // const _insurnce = _.find(
+    //   this.props.dataProps.hims_f_ocaf_insurance_details,
+    //   f =>
+    //     f[
+    //       _isPrimary === "primary"
+    //         ? "primary_insurance_company_name"
+    //         : "secondary_insurance_company_name"
+    //     ] !== undefined
+    // );
 
     return (
       <div className="">
@@ -1046,7 +1046,7 @@ export default class OcafEditor extends Component {
                           </label>
                         </div>
                         <div className="col-4 customCheckbox">
-                          <h5 />
+                          {/* <h5 /> */}
                           <label className="checkbox block">
                             <input
                               type="checkbox"
@@ -1094,7 +1094,7 @@ export default class OcafEditor extends Component {
                           </label>
                         </div>
                         <div className="col-4 customCheckbox">
-                          <h5 />
+                          {/* <h5 /> */}
                           <label className="checkbox block">
                             <input
                               type="checkbox"

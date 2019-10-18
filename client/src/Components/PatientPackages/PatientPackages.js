@@ -9,7 +9,7 @@ import "./../../styles/site.scss";
 import { AlgaehDataGrid, AlgaehLabel } from "../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../actions/algaehActions";
-import _ from "lodash";
+// import _ from "lodash";
 import PatientPackagesEvent from "./PatientPackagesEvent";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
 import AddAdvanceModal from "../Advance/AdvanceModal";

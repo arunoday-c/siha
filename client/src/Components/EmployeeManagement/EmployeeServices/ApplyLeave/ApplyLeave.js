@@ -7,7 +7,7 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
-import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
+// import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
