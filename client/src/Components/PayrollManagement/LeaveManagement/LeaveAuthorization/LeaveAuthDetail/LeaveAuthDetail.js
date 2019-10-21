@@ -153,7 +153,8 @@ class LeaveAuthDetail extends Component {
       to_date: this.state.data.to_date,
       leave_category: this.state.data.leave_category,
       hospital_id: this.state.data.hospital_id,
-      leave_from: this.state.data.leave_from
+      leave_from: this.state.data.leave_from,
+      is_projected_leave: this.state.data.is_projected_leave
     };
 
     algaehApiCall({

@@ -1677,5 +1677,10 @@
     { "name": "Pending", "value": "P" },
     { "name": "In-Progress", "value": "I" },
     { "name": "Completed", "value": "C" }
+  ],
+  "LAB_AGE_TYPE": [
+    { "name": "Days", "value": "D" },
+    { "name": "Months", "value": "M" },
+    { "name": "Years", "value": "Y" }
   ]
 }

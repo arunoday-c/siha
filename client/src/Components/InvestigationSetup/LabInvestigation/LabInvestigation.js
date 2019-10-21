@@ -231,70 +231,14 @@ class LabInvestigation extends Component {
                 />
               </div>
 
-              {/*<div className="row">
-
-                <AlagehAutoComplete
-                  div={{ className: "col-3" }}
-                  label={{
-                    fieldName: "external_facility_required"
-                  }}
-                  selector={{
-                    name: "external_facility_required",
-                    className: "select-fld",
-                    value: this.state.external_facility_required,
-                    dataSource: {
-                      textField:
-                        this.state.selectedLang === "en"
-                          ? "name"
-                          : "arabic_name",
-                      valueField: "value",
-                      data: variableJson.FORMAT_YESNO
-                    },
-                    onChange: texthandle.bind(this, this, context)
-                  }}
-                />
-                 <AlagehAutoComplete
-                  div={{ className: "col-3" }}
-                  label={{
-                    fieldName: "priority"
-                  }}
-                  selector={{
-                    name: "priority",
-                    className: "select-fld",
-                    value: this.state.priority,
-                    dataSource: {
-                      textField:
-                        this.state.selectedLang === "en"
-                          ? "name"
-                          : "arabic_name",
-                      valueField: "value",
-                      data: variableJson.FORMAT_INVPRIORITY
-                    },
-                    onChange: texthandle.bind(this, this, context)
-                  }}
-                />
-                <AlagehFormGroup
-                  div={{ className: "col-3" }}
-                  label={{
-                    fieldName: "facility_description"
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "facility_description",
-                    value: this.state.facility_description,
-                    events: {
-                      onChange: texthandle.bind(this, this, context)
-                    }
-                  }}
-                />
-              </div>*/}
               {this.state.analytes_required === true ? (
                 <div className="Paper">
-                  <div className="row">
+                  <div className="row" data-validate="analyte_details">
                     <AlagehAutoComplete
                       div={{ className: "col-3" }}
                       label={{
-                        fieldName: "analyte_id"
+                        fieldName: "analyte_id",
+                        isImp: true
                       }}
                       selector={{
                         name: "analyte_id",
@@ -311,7 +255,8 @@ class LabInvestigation extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col" }}
                       label={{
-                        forceLabel: "Gender"
+                        forceLabel: "Gender",
+                        isImp: true
                       }}
                       selector={{
                         name: "gender",
@@ -328,7 +273,8 @@ class LabInvestigation extends Component {
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
-                        forceLabel: "Age From"
+                        forceLabel: "Age From",
+                        isImp: true
                       }}
                       textBox={{
                         className: "txt-fld",
@@ -345,7 +291,8 @@ class LabInvestigation extends Component {
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
-                        forceLabel: "Age To"
+                        forceLabel: "Age To",
+                        isImp: true
                       }}
                       textBox={{
                         className: "txt-fld",
@@ -357,6 +304,24 @@ class LabInvestigation extends Component {
                         events: {
                           onChange: texthandle.bind(this, this, context)
                         }
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Age Type",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "age_type",
+                        className: "select-fld",
+                        value: this.state.age_type,
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: variableJson.LAB_AGE_TYPE
+                        },
+                        onChange: e => this.genderHandle(context, e)
                       }}
                     />
                     <AlagehFormGroup
@@ -478,27 +443,7 @@ class LabInvestigation extends Component {
                                     : ""}
                                 </span>
                               );
-                              // return (
-                              //   <AlagehAutoComplete
-                              //     div={{}}
-                              //     selector={{
-                              //       name: "visit_status",
-                              //       className: "select-fld",
-                              //       value: row.analyte_id,
-                              //       dataSource: {
-                              //         textField: "description",
-                              //         valueField: "hims_d_lab_analytes_id",
-                              //         data: this.props.labanalytes
-                              //       },
-                              //       others: {
-                              //         disabled: true
-                              //       },
-                              //       onChange: null
-                              //     }}
-                              //   />
-                              // );
                             }
-                            // disabled: true
                           },
                           {
                             fieldName: "gender",
@@ -582,6 +527,47 @@ class LabInvestigation extends Component {
                                         row
                                       )
                                     }
+                                  }}
+                                />
+                              );
+                            }
+                          },
+                          {
+                            fieldName: "age_type",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Age Type" }} />
+                            ),
+                            displayTemplate: row => {
+                              let display = variableJson.LAB_AGE_TYPE.filter(
+                                f => f.value === row.age_type
+                              );
+
+                              return (
+                                <span>
+                                  {display !== null && display.length !== 0
+                                    ? display[0].name
+                                    : ""}
+                                </span>
+                              );
+                            },
+                            editorTemplate: row => {
+                              return (
+                                <AlagehAutoComplete
+                                  div={{}}
+                                  selector={{
+                                    name: "age_type",
+                                    className: "select-fld",
+                                    value: row.age_type,
+                                    dataSource: {
+                                      textField: "name",
+                                      valueField: "value",
+                                      data: variableJson.LAB_AGE_TYPE
+                                    },
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )
                                   }}
                                 />
                               );
