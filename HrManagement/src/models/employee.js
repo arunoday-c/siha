@@ -1529,9 +1529,9 @@ export default {
     if (input.year !== null) {
       strQry += " and GP.year=" + input.year;
     }
-    if (input.month !== null) {
-      strQry += " and GP.month=" + input.month;
-    }
+    // if (input.month !== null) {
+    //   strQry += " and GP.month=" + input.month;
+    // }
     _mysql
       .executeQuery({
         query:
