@@ -45,7 +45,9 @@ class ApplyLeave extends Component {
       hospital_id: obritery.hims_d_hospital_id,
       employee_branch: orbKeyData.employee_branch,
       projected_leave_enable: false,
-      Request_enable: true
+      Request_enable: true,
+      projected_applied_leaves: null,
+      is_projected_leave: "N"
     };
     this.leaveSocket = Socket;
     this.getLeaveTypes();
@@ -254,6 +256,11 @@ class ApplyLeave extends Component {
         if (res.data.success) {
           this.setState({
             total_applied_days: res.data.records.calculatedLeaveDays,
+            projected_applied_leaves: res.data.records.projected_applied_leaves,
+            is_projected_leave:
+              res.data.records.is_projected_leave === undefined
+                ? "N"
+                : res.data.records.is_projected_leave,
             Request_enable: false,
             extra: {
               holiday_included: res.data.records.include_holidays,
@@ -618,14 +625,15 @@ class ApplyLeave extends Component {
                     />
                     <h6>{this.state.available_balance} day(s)</h6>
                   </div>
-                  {this.state.projected_leave_enable === true ? (
+                  {this.state.projected_leave_enable === true &&
+                  this.state.is_projected_leave === "Y" ? (
                     <div className="col-12 margin-bottom-15">
                       <AlgaehLabel
                         label={{
                           forceLabel: "Projected Leaves"
                         }}
                       />
-                      <h6>{this.state.total_applied_days} day(s)</h6>
+                      <h6>{this.state.projected_applied_leaves} day(s)</h6>
                     </div>
                   ) : null}
                   <AlgaehDateHandler

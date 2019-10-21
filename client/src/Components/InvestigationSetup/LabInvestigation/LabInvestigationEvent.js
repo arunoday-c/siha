@@ -1,6 +1,6 @@
-import { successfulMessage } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const texthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
@@ -78,53 +78,60 @@ const analyteidhandle = ($this, context, ctrl, e) => {
 };
 
 const AddAnalytes = ($this, context) => {
-  if ($this.state.analyte_id !== null) {
-    let insert_analytes = $this.state.insert_analytes;
-    let analytes = $this.state.analytes;
-    let obj = {
-      analyte_id: $this.state.analyte_id,
-      analyte_type: $this.state.analyte_type,
-      result_unit: $this.state.result_unit,
-      gender: $this.state.gender,
-      from_age: $this.state.from_age,
-      to_age: $this.state.to_age,
-      critical_low: $this.state.critical_low,
-      critical_high: $this.state.critical_high,
-      normal_low: $this.state.normal_low,
-      normal_high: $this.state.normal_high
-    };
-
-    if ($this.state.hims_d_investigation_test_id !== null) {
-      let Insertobj = {
-        ...obj,
-        test_id: $this.state.hims_d_investigation_test_id
+  AlgaehValidation({
+    alertTypeIcon: "warning",
+    querySelector: "data-validate='analyte_details'",
+    onSuccess: () => {
+      debugger;
+      let insert_analytes = $this.state.insert_analytes;
+      let analytes = $this.state.analytes;
+      let obj = {
+        analyte_id: $this.state.analyte_id,
+        analyte_type: $this.state.analyte_type,
+        result_unit: $this.state.result_unit,
+        age_type: $this.state.age_type,
+        gender: $this.state.gender,
+        from_age: $this.state.from_age,
+        to_age: $this.state.to_age,
+        critical_low: $this.state.critical_low,
+        critical_high: $this.state.critical_high,
+        normal_low: $this.state.normal_low,
+        normal_high: $this.state.normal_high
       };
-      insert_analytes.push(Insertobj);
-    }
 
-    analytes.push(obj);
-    $this.setState(
-      {
-        analytes: analytes,
-        insert_analytes: insert_analytes,
-        analyte_id: null
-      },
-      () => $this.clearInputState()
-    );
-    if (context !== undefined) {
-      context.updateState({
-        analytes: analytes,
-        insert_analytes: insert_analytes,
-        analyte_id: null
-      });
+      if ($this.state.hims_d_investigation_test_id !== null) {
+        let Insertobj = {
+          ...obj,
+          test_id: $this.state.hims_d_investigation_test_id
+        };
+        insert_analytes.push(Insertobj);
+      }
+
+      analytes.push(obj);
+      $this.setState(
+        {
+          analytes: analytes,
+          insert_analytes: insert_analytes,
+          analyte_id: null
+        },
+        () => $this.clearInputState()
+      );
+      if (context !== undefined) {
+        context.updateState({
+          analytes: analytes,
+          insert_analytes: insert_analytes,
+          analyte_id: null
+        });
+      }
     }
-  } else {
-    successfulMessage({
-      message: "Please select analyte to add.",
-      title: "Warning",
-      icon: "warning"
-    });
-  }
+  });
+  // if ($this.state.analyte_id === null) {
+  //   swalMessage({
+  //     type: "warning",
+  //     title: "Please select analyte to add."
+  //   });
+  //   return;
+  // }
 };
 
 const updateLabInvestigation = ($this, context, row) => {
@@ -141,6 +148,7 @@ const updateLabInvestigation = ($this, context, row) => {
       gender: row.gender,
       from_age: row.from_age,
       to_age: row.to_age,
+      age_type: row.age_type,
       record_status: "A"
     };
     if (row.hims_m_lab_analyte_id !== undefined) {

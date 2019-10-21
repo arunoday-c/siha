@@ -42,7 +42,9 @@ class ApplyLeave extends Component {
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).hims_d_hospital_id,
       projected_leave_enable: false,
-      Request_enable: true
+      Request_enable: true,
+      projected_applied_leaves: null,
+      is_projected_leave: "N"
     };
     this.getLeaveTypes();
   }
@@ -273,7 +275,12 @@ class ApplyLeave extends Component {
         if (res.data.success) {
           this.setState({
             total_applied_days: res.data.records.calculatedLeaveDays,
-            Request_enable: false,
+            projected_applied_leaves: res.data.records.projected_applied_leaves,
+            is_projected_leave:
+              res.data.records.is_projected_leave === undefined
+                ? "N"
+                : res.data.records.is_projected_leave,
+
             extra: {
               holiday_included: res.data.records.include_holidays,
               holidays: res.data.records.total_holiday,
@@ -676,14 +683,15 @@ class ApplyLeave extends Component {
                     />
                     <h6>{this.state.available_balance} days(s)</h6>
                   </div>
-                  {this.state.projected_leave_enable === true ? (
+                  {this.state.projected_leave_enable === true &&
+                  this.state.is_projected_leave === "Y" ? (
                     <div className="col-12 margin-bottom-15">
                       <AlgaehLabel
                         label={{
                           forceLabel: "Projected Leaves"
                         }}
                       />
-                      <h6>{this.state.total_applied_days} day(s)</h6>
+                      <h6>{this.state.projected_applied_leaves} day(s)</h6>
                     </div>
                   ) : null}
                   <AlgaehDateHandler

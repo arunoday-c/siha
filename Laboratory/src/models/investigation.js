@@ -37,7 +37,8 @@ export default {
         .executeQuery({
           query:
             "select hims_d_investigation_test_id, T.description, services_id, R.hims_d_rad_template_detail_id, \
-             R.template_name, R.template_html, T.investigation_type, lab_section_id, send_out_test, available_in_house, restrict_order, restrict_by, external_facility_required, facility_description,  priority, cpt_id, category_id, film_category, screening_test, film_used, A.analyte_id,  A.hims_m_lab_analyte_id, A.critical_low, A.gender, A.from_age, A.to_age, A.critical_high,  TC.test_section, A.normal_low, A.normal_high, S.specimen_id, S.hims_m_lab_specimen_id, S.container_id from hims_d_investigation_test T \
+             R.template_name, R.template_html, T.investigation_type, lab_section_id, send_out_test, available_in_house, restrict_order, restrict_by, external_facility_required, facility_description,  priority, cpt_id, category_id, film_category, screening_test, film_used, A.analyte_id,  A.hims_m_lab_analyte_id, A.critical_low, A.gender, A.from_age, A.to_age, A.age_type, A.critical_high,  TC.test_section, A.normal_low, A.normal_high, \
+             S.specimen_id, S.hims_m_lab_specimen_id, S.container_id from hims_d_investigation_test T \
              left  join  hims_d_rad_template_detail R on T.hims_d_investigation_test_id = R.test_id \
              left join hims_m_lab_specimen S on S.test_id = T.hims_d_investigation_test_id  \
              left join hims_m_lab_analyte A on A.test_id=T.hims_d_investigation_test_id \
@@ -132,6 +133,7 @@ export default {
                       "analyte_id",
                       "analyte_type",
                       "result_unit",
+                      "age_type",
                       "gender",
                       "from_age",
                       "to_age",
@@ -327,6 +329,7 @@ export default {
                         "analyte_id",
                         "analyte_type",
                         "result_unit",
+                        "age_type",
                         "gender",
                         "from_age",
                         "to_age",
@@ -373,7 +376,7 @@ export default {
                         qry += mysql.format(
                           "UPDATE `hims_m_lab_analyte` SET record_status=?,\
                         `critical_low`=?, `critical_high`=?, `normal_low`=?, `normal_high`=?,\
-                          `from_age`=?, `to_age`=?,\
+                          `from_age`=?, `to_age`=?, `age_type`=?, \
                         updated_date=?, updated_by=? where hims_m_lab_analyte_id=?;",
                           [
                             update_analytes[i].record_status,
@@ -383,6 +386,7 @@ export default {
                             update_analytes[i].normal_high,
                             update_analytes[i].from_age,
                             update_analytes[i].to_age,
+                            update_analytes[i].age_type,
                             moment().format("YYYY-MM-DD HH:mm"),
                             req.userIdentity.algaeh_d_app_user_id,
                             update_analytes[i].hims_m_lab_analyte_id
