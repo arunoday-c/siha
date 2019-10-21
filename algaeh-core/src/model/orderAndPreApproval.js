@@ -458,8 +458,9 @@ let insertOrderedServices = (req, res, next) => {
             .executeQuery({
               query:
                 "SELECT OS.hims_f_ordered_services_id, OS.services_id, OS.created_date, OS.service_type_id, OS.test_type, \
-              S.physiotherapy_service from hims_f_ordered_services OS inner join hims_d_services S where \
-              S.hims_d_services_id = OS.services_id and `patient_id`=? and `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
+              S.physiotherapy_service, S.service_name from hims_f_ordered_services OS \
+              inner join hims_d_services S where S.hims_d_services_id = OS.services_id and `patient_id`=? and \
+              `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
               values: servicesForPreAproval,
               printQuery: true
             })
@@ -479,7 +480,9 @@ let insertOrderedServices = (req, res, next) => {
                   };
                 })
                 .ToArray();
+              console.log("length", detailsPush.length);
               if (detailsPush.length > 0) {
+                console.log("detailsPush", detailsPush);
                 const insurtCols = [
                   "hims_f_ordered_services_id",
                   "service_id",
@@ -1730,6 +1733,12 @@ let deleteOrderService = (req, res, next) => {
         .then(result => {
           let first_result = result[0][0];
 
+          if (req.body.pre_approval == "Y") {
+            strQry += _mysql.mysqlQueryFormat(
+              "DELETE FROM hims_f_service_approval where ordered_services_id=?;",
+              [req.body.hims_f_ordered_services_id]
+            );
+          }
           if (req.body.service_type == "LAB") {
             strQry += _mysql.mysqlQueryFormat(
               "DELETE FROM hims_f_ord_analytes where order_id=?; DELETE FROM hims_f_lab_sample where order_id=?;\
