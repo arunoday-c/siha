@@ -36,7 +36,7 @@ export default {
       normal_high: 0,
       critical_low: 0,
       critical_high: 0,
-      age_type: null,
+      age_type: "A",
 
       film_category: "NA",
       screening_test: "N",
