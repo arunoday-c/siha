@@ -646,11 +646,13 @@ export default function ManualAttendanceEvents() {
         const data = e.target.result.split(",")[1];
         let leaves_data = [];
         if ($this.state.selected_type === "LE") {
-          leaves_data = $this.state.leaves_data;
+          leaves_data = JSON.stringify($this.state.leaves_data);
+        } else {
+          leaves_data = JSON.stringify({});
         }
         algaehApiCall({
           uri: "/employee/excelEmployeeOpeningBalanceRead",
-          header: { leaves_data: JSON.stringify(leaves_data) },
+          header: { leaves_data: leaves_data },
           data:
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," +
             data,

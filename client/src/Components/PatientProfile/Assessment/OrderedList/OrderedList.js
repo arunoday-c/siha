@@ -403,7 +403,8 @@ class OrderedList extends PureComponent {
             hims_f_ordered_services_id: row.hims_f_ordered_services_id,
             service_type: service_type,
             trans_package_detail_id: row.trans_package_detail_id,
-            quantity: row.quantity
+            quantity: row.quantity,
+            pre_approval: row.pre_approval
           },
           onSuccess: response => {
             if (response.data.success === true) {

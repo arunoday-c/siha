@@ -2249,7 +2249,7 @@ export default {
                 let unit_cost =
                   servicesDetails.unit_cost == undefined
                     ? 0
-                    : servicesDetails.unit_cost;
+                    : parseFloat(servicesDetails.unit_cost);
 
                 let from_pos = servicesDetails.from_pos;
 
@@ -2299,17 +2299,17 @@ export default {
                 let quantity =
                   servicesDetails.quantity == undefined
                     ? 1
-                    : servicesDetails.quantity;
+                    : parseFloat(servicesDetails.quantity);
 
                 let discount_amout =
                   servicesDetails.discount_amout == undefined
                     ? 0
-                    : servicesDetails.discount_amout;
+                    : parseFloat(servicesDetails.discount_amout);
 
                 let discount_percentage =
                   servicesDetails.discount_percentage == undefined
                     ? 0
-                    : servicesDetails.discount_percentage;
+                    : parseFloat(servicesDetails.discount_percentage);
 
                 let insured =
                   servicesDetails.insured == undefined
@@ -2342,7 +2342,7 @@ export default {
                 let approved_amount =
                   servicesDetails.approved_amount == undefined
                     ? 0
-                    : servicesDetails.approved_amount;
+                    : parseFloat(servicesDetails.approved_amount);
 
                 let pre_approval =
                   servicesDetails.pre_approval == undefined
@@ -2432,10 +2432,14 @@ export default {
 
                   if (policydtls.company_service_price_type == "N") {
                     unit_cost =
-                      unit_cost != 0 ? unit_cost : policydtls.net_amount;
+                      unit_cost != 0
+                        ? unit_cost
+                        : parseFloat(policydtls.net_amount);
                   } else {
                     unit_cost =
-                      unit_cost != 0 ? unit_cost : policydtls.gross_amt;
+                      unit_cost != 0
+                        ? unit_cost
+                        : parseFloat(policydtls.gross_amt);
                   }
 
                   // if (conversion_factor != 0) {
@@ -2555,14 +2559,15 @@ export default {
                     }
 
                     deductable_amount =
-                      (net_amout * deductable_percentage) / 100;
+                      (net_amout * parseFloat(deductable_percentage)) / 100;
 
                     deductable_amount = utilities.decimalPoints(
                       deductable_amount,
                       decimal_places
                     );
                     after_dect_amout = net_amout - deductable_amount;
-                    copay_amount = (after_dect_amout * copay_percentage) / 100;
+                    copay_amount =
+                      (after_dect_amout * parseFloat(copay_percentage)) / 100;
                     copay_amount = utilities.decimalPoints(
                       copay_amount,
                       decimal_places
@@ -2592,12 +2597,10 @@ export default {
                     comapany_resp,
                     decimal_places
                   );
-                  utilities
-                    .logger()
-                    .log("service_type_id: ", typeof comapany_resp);
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                    patient_tax = (patient_resp * records.vat_percent) / 100;
+                    patient_tax =
+                      (patient_resp * parseFloat(records.vat_percent)) / 100;
 
                     patient_tax = utilities.decimalPoints(
                       patient_tax,
@@ -2608,7 +2611,8 @@ export default {
                     .logger()
                     .log("vat_applicable: ", records.vat_applicable);
                   if (records.vat_applicable == "Y") {
-                    s_patient_tax = (patient_resp * records.vat_percent) / 100;
+                    s_patient_tax =
+                      (patient_resp * parseFloat(records.vat_percent)) / 100;
 
                     s_patient_tax = utilities.decimalPoints(
                       patient_tax,
@@ -2617,7 +2621,8 @@ export default {
                   }
 
                   if (records.vat_applicable == "Y") {
-                    company_tax = (comapany_resp * records.vat_percent) / 100;
+                    company_tax =
+                      (comapany_resp * parseFloat(records.vat_percent)) / 100;
                     company_tax = utilities.decimalPoints(
                       company_tax,
                       decimal_places
@@ -2689,7 +2694,9 @@ export default {
                 } else {
                   if (FollowUp === true) {
                     unit_cost =
-                      unit_cost != 0 ? unit_cost : records.followup_free_fee;
+                      unit_cost != 0
+                        ? unit_cost
+                        : parseFloat(records.followup_free_fee);
                   } else {
                     unit_cost =
                       from_pos == "Y"
@@ -2702,8 +2709,10 @@ export default {
                   // if (conversion_factor != 0) {
                   //   unit_cost = unit_cost * conversion_factor;
                   // }
+                  console.log("unit_cost", unit_cost);
                   gross_amount = quantity * unit_cost;
-
+                  console.log("gross_amount", gross_amount);
+                  console.log("decimal_places", decimal_places);
                   gross_amount = utilities.decimalPoints(
                     gross_amount,
                     decimal_places
@@ -2726,7 +2735,8 @@ export default {
                     .log("pat_vat_applicable: ", vat_applicable);
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                    patient_tax = (patient_resp * records.vat_percent) / 100;
+                    patient_tax =
+                      (patient_resp * parseFloat(records.vat_percent)) / 100;
 
                     patient_tax = utilities.decimalPoints(
                       patient_tax,
@@ -2739,7 +2749,8 @@ export default {
                     utilities
                       .logger()
                       .log("vat_applicable: ", records.vat_applicable);
-                    s_patient_tax = (patient_resp * records.vat_percent) / 100;
+                    s_patient_tax =
+                      (patient_resp * parseFloat(records.vat_percent)) / 100;
 
                     s_patient_tax = utilities.decimalPoints(
                       s_patient_tax,
@@ -2792,6 +2803,7 @@ export default {
                   {
                     service_type_id: records.service_type_id,
                     service_name: records.service_name,
+                    insurance_service_name: records.service_name,
                     services_id: records.hims_d_services_id,
                     physiotherapy_service: records.physiotherapy_service,
                     quantity: quantity,

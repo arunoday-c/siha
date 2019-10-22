@@ -570,6 +570,7 @@ const SaveOrdersServices = ($this, e) => {
       loading_saveOrderService: true
     },
     () => {
+      debugger;
       let inputObj = {
         visit_id: $this.state.visit_id,
         patient_id: $this.state.patient_id,
@@ -856,6 +857,7 @@ const openViewFavouriteOrder = $this => {
 };
 
 const closeViewFavouriteOrder = ($this, e) => {
+  debugger;
   if (e.length > 0) {
     $this.setState(
       {
@@ -1042,7 +1044,9 @@ const ProcessFromFavourite = ($this, from) => {
                 confirmButtonText: "Yes!",
                 confirmButtonColor: "#",
                 cancelButtonColor: "#d33",
-                cancelButtonText: "No"
+                cancelButtonText: "No",
+                allowEscapeKey: false,
+                allowOutsideClick: false
               }).then(willProceed => {
                 if (willProceed.value) {
                   // preserviceInput.push(serviceInput[0]);
@@ -1082,8 +1086,8 @@ const ProcessFromFavourite = ($this, from) => {
                             $this.state.network_id;
                           Service_data.billdetails[i].policy_number =
                             $this.state.policy_number;
-                          Service_data.billdetails[i].insurance_service_name =
-                            $this.state.insurance_service_name;
+                          // Service_data.billdetails[i].insurance_service_name =
+                          //   $this.state.insurance_service_name;
                           Service_data.billdetails[i].sec_company =
                             $this.state.sec_insured;
                           // Service_data.billdetails[i].icd_code === Service_data.billdetails[0].icd_code;
@@ -1099,7 +1103,7 @@ const ProcessFromFavourite = ($this, from) => {
                           Service_data.billdetails[i].test_type =
                             $this.state.test_type;
                         }
-
+                        debugger;
                         $this.setState({
                           orderservicesdata: Service_data.billdetails,
                           approval_amt: approval_amt,
@@ -1171,6 +1175,11 @@ const ProcessFromFavourite = ($this, from) => {
                       );
                     }
                   });
+                } else {
+                  $this.setState({
+                    preserviceInput: [],
+                    loading_bulk_Service: false
+                  });
                 }
               });
             } else {
@@ -1187,8 +1196,8 @@ const ProcessFromFavourite = ($this, from) => {
                   $this.state.sub_insurance_provider_id;
                 data.billdetails[c].network_id = $this.state.network_id;
                 data.billdetails[c].policy_number = $this.state.policy_number;
-                data.billdetails[c].insurance_service_name =
-                  $this.state.insurance_service_name;
+                // data.billdetails[c].insurance_service_name =
+                //   $this.state.insurance_service_name;
                 // data.billdetails[c].icd_code = "1";
                 // data.billdetails[0].icd_code === ""
                 //   ? null
@@ -1233,6 +1242,7 @@ const ProcessFromFavourite = ($this, from) => {
                 // preserviceInput.push(serviceInput[c]);
               }
 
+              debugger;
               $this.setState({
                 orderservicesdata: existingservices,
                 approval_amt: approval_amt,

@@ -53,6 +53,7 @@ class ViewFavouriteOrder extends PureComponent {
   }
 
   AddFavouriteOrder() {
+    debugger;
     let listOfinclude = Enumerable.from(this.state.all_favourites)
       .where(w => w.select_to_process === "Y")
       .toArray();
@@ -66,7 +67,16 @@ class ViewFavouriteOrder extends PureComponent {
         });
       }
     }
-    this.props.onClose && this.props.onClose(selected_services);
+
+    this.setState(
+      {
+        all_favourites: [],
+        favourite_details: []
+      },
+      () => {
+        this.props.onClose && this.props.onClose(selected_services);
+      }
+    );
   }
   selectToProcess(row, e) {
     let all_favourites = this.state.all_favourites;
@@ -103,6 +113,7 @@ class ViewFavouriteOrder extends PureComponent {
     }
   }
   onClose = e => {
+    debugger;
     this.setState(
       {
         all_favourites: [],
