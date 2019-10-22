@@ -44,8 +44,8 @@ export default class PreApprovalStatus extends Component {
     let services_details =
       this.props.selected_services !== null
         ? _.filter(this.props.selected_services.services_details, f => {
-            return f.billing_updated === "N";
-          })
+          return f.billing_updated === "N";
+        })
         : [];
 
     let billing_Verefird = services_details.length > 0 ? false : true;
@@ -119,7 +119,7 @@ export default class PreApprovalStatus extends Component {
                         <h6>
                           {this.state.insurance_provider_name
                             ? this.state.insurance_provider_name
-                            : "Doctor Name"}
+                            : "Insurance Name"}
                         </h6>
                       </div>
 
