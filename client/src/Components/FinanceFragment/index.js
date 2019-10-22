@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { getCookie, getLocalIP, getToken } from "../../utils/algaehApiCall";
 
 export default function FinanceFragment(props) {
-  // const { hostname, protocol } = window.location;
-  console.log(props);
   const [Component, setComp] = useState(null);
   const [err, setErr] = useState(null);
-  const PREFIX = window.location.port ? "http://localhost:3007" : "/finance";
+  const PREFIX = window.location.port
+    ? "http://localhost:3007/finbuild"
+    : "/finance/finbuild";
 
   useEffect(() => {
     function loadManifest() {
-      return axios.get(`${PREFIX}/manifest.micro.json`);
+      return axios.get(`${PREFIX}/manifest.micro.json`, {});
     }
 
     loadManifest()

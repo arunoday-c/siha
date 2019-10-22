@@ -22,6 +22,11 @@ app.use(
 app.use(compression());
 
 app.use((req, res, next) => {
+  if (req.url.indexOf("/finbuild") > -1) {
+    next();
+    return;
+  }
+
   const reqH = req.headers;
   const _token = reqH["x-api-key"];
 
@@ -90,10 +95,10 @@ app.use((req, res, next) => {
 
 if (process.env.NODE_ENV === "production") {
   console.log(path.resolve("./", "client/build"), "prod");
-  app.use(express.static(path.resolve("./", "client/build")));
+  app.use("/finbuild/", express.static(path.resolve("./", "client/build")));
 } else {
   console.log(path.resolve("./", "client/dist"), "dev");
-  app.use(express.static(path.resolve("./", "client/dist")));
+  app.use("/finbuild/", express.static(path.resolve("./", "client/dist")));
 }
 
 app.use("/api/v1", routes);
