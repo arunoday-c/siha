@@ -59,7 +59,6 @@ export default class EmployeeGratuityOpenBal extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
     if (newProps.gratuity_dynamic_date.length > 0) {
       this.setState({
         gratuity_dynamic_date: newProps.gratuity_dynamic_date,
@@ -71,7 +70,6 @@ export default class EmployeeGratuityOpenBal extends Component {
     }
   }
   render() {
-    debugger;
     return (
       <div className="portlet portlet-bordered margin-bottom-15">
         <div className="portlet-title">

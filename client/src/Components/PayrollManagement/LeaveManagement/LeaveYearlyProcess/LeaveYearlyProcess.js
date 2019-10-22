@@ -78,7 +78,6 @@ class LeaveYearlyProcess extends Component {
         loading: true
       },
       () => {
-        debugger;
         let inputObj = {
           year: this.state.year,
           hospital_id: this.state.hospital_id
@@ -278,7 +277,7 @@ class LeaveYearlyProcess extends Component {
 
   render() {
     let allYears = getYears();
-    debugger;
+
     return (
       <div className="leave_en_auth row">
         <YearlyLeaveDetail
@@ -366,7 +365,7 @@ class LeaveYearlyProcess extends Component {
                 {this.state.employee_name
                   ? this.state.employee_name
                   : "--Select Employee--"}
-                <i className="fas fa-search fa-lg"></i>
+                <i className="fas fa-search fa-lg" />
               </h6>
             </div>
             <div className="col form-group">

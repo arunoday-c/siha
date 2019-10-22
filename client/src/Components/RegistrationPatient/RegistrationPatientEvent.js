@@ -408,7 +408,7 @@ const getCtrlCode = ($this, patcode, row) => {
         // let hospitaldetails = Enumerable.from($this.props.hospitaldetails)
         //   .where(w => w.hims_d_hospital_id === hospital_id)
         //   .firstOrDefault();
-        debugger;
+
         let hospitaldetails = _.find(
           $this.props.hospitaldetails,
           f => f.hims_d_hospital_id === hospital_id

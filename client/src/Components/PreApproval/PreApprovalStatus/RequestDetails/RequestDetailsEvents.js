@@ -1,33 +1,24 @@
 import moment from "moment";
-import { getCookie } from "../../../../utils/algaehApiCall.js";
 
-const texthandle = ($this, row, e) => {
+const texthandle = ($this, row, context, e) => {
+  let services_details = $this.state.services_details;
+  let _index = services_details.indexOf(row);
+
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
   row[name] = value;
-  $this.setState({ append: !$this.state.append });
-};
-
-const datehandle = ($this, row, ctrl, e) => {
-  row[e] = moment(ctrl)._d;
-  $this.setState({ append: !$this.state.append });
-};
-
-const updateServices = ($this, context, row) => {
-  let service_array = [];
   row.requested_date = moment(new Date())._d;
+  services_details[_index] = row;
+  $this.setState({
+    services_details: services_details
+  });
 
-  row.requested_by = getCookie("UserID");
-  row.submission_type = "S";
-  // row.apprv_date = 0;
-  service_array.push(row);
   if (context !== null) {
     context.updateState({
-      update_pre_approval_service: service_array
+      services_details: services_details
     });
   }
 };
-const deleteServices = $this => {};
 
-export { texthandle, datehandle, updateServices, deleteServices };
+export { texthandle };

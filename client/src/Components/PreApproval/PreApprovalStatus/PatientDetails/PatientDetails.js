@@ -27,24 +27,18 @@ class PatientDetails extends PureComponent {
     this.props.onClose && this.props.onClose(e);
   };
 
+  componentWillMount() {
+    let InputOutput = this.props.selected_services;
+    this.setState({ ...this.state, ...InputOutput });
+  }
+
   componentDidMount() {
     let InputOutput = this.props.selected_services;
     this.setState({ ...this.state, ...InputOutput });
+  }
 
-    if (
-      this.props.deptanddoctors === undefined ||
-      this.props.deptanddoctors.length === 0
-    ) {
-      this.props.getDepartmentsandDoctors({
-        uri: "/department/get/get_All_Doctors_DepartmentWise",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "DEPT_DOCTOR_GET_DATA",
-          mappingName: "deptanddoctors"
-        }
-      });
-    }
+  componentWillReceiveProps(newProps) {
+    this.setState(newProps.selected_services);
   }
 
   render() {
@@ -78,7 +72,20 @@ class PatientDetails extends PureComponent {
                   : "Created Date"}
               </h6>
             </div>
-            <AlagehAutoComplete
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  fieldName: "date"
+                }}
+              />
+              <h6>
+                {this.state.doctor_name
+                  ? this.state.doctor_name
+                  : "Doctor Name"}
+              </h6>
+            </div>
+
+            {/* <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
                 fieldName: "doctor_id"
@@ -100,7 +107,7 @@ class PatientDetails extends PureComponent {
                 },
                 onChange: null
               }}
-            />
+            /> */}
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{

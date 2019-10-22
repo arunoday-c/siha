@@ -58,7 +58,6 @@ export default class EmployeeLeaveSalaryOpenBal extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
     if (newProps.leave_salary_columns.length > 0) {
       this.setState({
         leave_salary_columns: newProps.leave_salary_columns,

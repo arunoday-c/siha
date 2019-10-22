@@ -151,7 +151,6 @@ const LeaveSalProcess = $this => {
               salaryObj[0].hims_f_salary_id;
           }
 
-          debugger;
           let leave_amount = getAmountFormart(
             response.data.result[1][0].leave_amount
           );

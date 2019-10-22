@@ -37,7 +37,7 @@ function BulkTimeSheet(props) {
       getProjects()
         .then(result => {
           // setProjects(result);
-          debugger;
+
           setProjectState({
             project_id: e.project_id,
             worked_hours: e.worked_hours,
@@ -183,7 +183,7 @@ function BulkTimeSheet(props) {
           {message !== "" ? (
             <div className="bulkUploadErrorMessage">
               <h5>Please validate below details in excel template</h5>
-              <ol dangerouslySetInnerHTML={{ __html: message }}></ol>
+              <ol dangerouslySetInnerHTML={{ __html: message }} />
             </div>
           ) : (
             <table id="bulkTimeSheetPreview">
@@ -287,7 +287,6 @@ function TableCells(props) {
         ? {
             style: { cursor: "pointer" },
             onDoubleClick: e => {
-              debugger;
               const element = e.target.offsetParent;
               const rowID = element.parentElement.sectionRowIndex;
               const cellID = element.cellIndex;

@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -16,15 +16,11 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
 import "./../../../../styles/site.scss";
 import "./RequestDetails.scss";
-import {
-  texthandle,
-  updateServices,
-  deleteServices
-} from "./RequestDetailsEvents";
+import { texthandle } from "./RequestDetailsEvents";
 import MyContext from "../../../../utils/MyContext.js";
 import Options from "../../../../Options.json";
 
-class PatientDetails extends PureComponent {
+class PatientDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -41,9 +37,12 @@ class PatientDetails extends PureComponent {
     this.props.onClose && this.props.onClose(e);
   };
 
-  componentDidMount() {
+  componentWillMount() {
     let InputOutput = this.props.selected_services;
     this.setState({ ...this.state, ...InputOutput });
+  }
+  componentWillReceiveProps(newProps) {
+    this.setState(newProps.selected_services);
   }
 
   changeDateFormat = date => {
@@ -105,16 +104,16 @@ class PatientDetails extends PureComponent {
                         label: (
                           <AlgaehLabel label={{ fieldName: "requestedmode" }} />
                         ),
+                        // displayTemplate: row => {
+                        //   return row.requested_mode === "O"
+                        //     ? "Online"
+                        //     : row.requested_mode === "E"
+                        //     ? "Email"
+                        //     : row.requested_mode === "T"
+                        //     ? "Telephone"
+                        //     : "Fax";
+                        // },
                         displayTemplate: row => {
-                          return row.requested_mode === "O"
-                            ? "Online"
-                            : row.requested_mode === "E"
-                            ? "Email"
-                            : row.requested_mode === "T"
-                            ? "Telephone"
-                            : "Fax";
-                        },
-                        editorTemplate: row => {
                           return (
                             <AlagehAutoComplete
                               div={{}}
@@ -127,7 +126,12 @@ class PatientDetails extends PureComponent {
                                   valueField: "value",
                                   data: GlobalVariables.FORMAT_REQMODE
                                 },
-                                onChange: texthandle.bind(this, this, row),
+                                onChange: texthandle.bind(
+                                  this,
+                                  this,
+                                  row,
+                                  context
+                                ),
                                 others: {
                                   disabled:
                                     row.billing_updated === "Y" ? true : false
@@ -142,7 +146,7 @@ class PatientDetails extends PureComponent {
                         label: (
                           <AlgaehLabel label={{ fieldName: "refereneceno" }} />
                         ),
-                        editorTemplate: row => {
+                        displayTemplate: row => {
                           return (
                             <AlagehFormGroup
                               div={{}}
@@ -151,7 +155,12 @@ class PatientDetails extends PureComponent {
                                 className: "txt-fld",
                                 name: "refer_no",
                                 events: {
-                                  onChange: texthandle.bind(this, this, row)
+                                  onChange: texthandle.bind(
+                                    this,
+                                    this,
+                                    row,
+                                    context
+                                  )
                                 },
                                 others: {
                                   disabled:
@@ -167,13 +176,12 @@ class PatientDetails extends PureComponent {
                     dataSource={{
                       data: this.state.services_details
                     }}
-                    isEditable={true}
+                    isEditable={false}
                     actions={{ allowDelete: false }}
                     paging={{ page: 0, rowsPerPage: 5 }}
                     events={{
-                      onDelete: deleteServices.bind(this, context),
                       onEdit: row => {},
-                      onDone: updateServices.bind(this, this, context)
+                      onDone: row => {}
                     }}
                   />
                 </div>

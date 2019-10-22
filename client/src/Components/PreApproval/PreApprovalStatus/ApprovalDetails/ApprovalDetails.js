@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -17,8 +17,6 @@ import {
 import {
   texthandle,
   datehandle,
-  updateServices,
-  deleteServices,
   numberhandle,
   dateValidate
 } from "./ApprovalDetailsEvents";
@@ -30,7 +28,7 @@ import MyContext from "../../../../utils/MyContext.js";
 import Options from "../../../../Options.json";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
-class PatientDetails extends PureComponent {
+class PatientDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -45,9 +43,12 @@ class PatientDetails extends PureComponent {
   onClose = e => {
     this.props.onClose && this.props.onClose(e);
   };
-  componentDidMount() {
+  componentWillMount() {
     let InputOutput = this.props.selected_services;
     this.setState({ ...this.state, ...InputOutput });
+  }
+  componentWillReceiveProps(newProps) {
+    this.setState(newProps.selected_services);
   }
 
   changeDateFormat = date => {
@@ -104,7 +105,7 @@ class PatientDetails extends PureComponent {
                         others: {
                           show: this.props.openFrom === "M" ? true : false
                         },
-                        editorTemplate: row => {
+                        displayTemplate: row => {
                           return (
                             <AlagehFormGroup
                               div={{}}
@@ -118,7 +119,12 @@ class PatientDetails extends PureComponent {
                                 },
                                 dontAllowKeys: ["-", "e", "."],
                                 events: {
-                                  onChange: numberhandle.bind(this, this, row)
+                                  onChange: numberhandle.bind(
+                                    this,
+                                    this,
+                                    row,
+                                    context
+                                  )
                                 },
                                 others: {
                                   disabled:
@@ -141,7 +147,7 @@ class PatientDetails extends PureComponent {
                         others: {
                           show: this.props.openFrom === "M" ? false : true
                         },
-                        editorTemplate: row => {
+                        displayTemplate: row => {
                           return (
                             <AlagehFormGroup
                               div={{}}
@@ -155,7 +161,12 @@ class PatientDetails extends PureComponent {
                                 },
                                 dontAllowKeys: ["-", "e", "."],
                                 events: {
-                                  onChange: numberhandle.bind(this, this, row)
+                                  onChange: numberhandle.bind(
+                                    this,
+                                    this,
+                                    row,
+                                    context
+                                  )
                                 },
                                 others: {
                                   disabled:
@@ -225,16 +236,16 @@ class PatientDetails extends PureComponent {
                         label: (
                           <AlgaehLabel label={{ fieldName: "dis_status" }} />
                         ),
+                        // displayTemplate: row => {
+                        //   return row.apprv_status === "NR"
+                        //     ? "Not Requested"
+                        //     : row.apprv_status === "AW"
+                        //     ? "Awaiting Approval"
+                        //     : row.apprv_status === "AP"
+                        //     ? "Approved"
+                        //     : "Rejected";
+                        // },
                         displayTemplate: row => {
-                          return row.apprv_status === "NR"
-                            ? "Not Requested"
-                            : row.apprv_status === "AW"
-                            ? "Awaiting Approval"
-                            : row.apprv_status === "AP"
-                            ? "Approved"
-                            : "Rejected";
-                        },
-                        editorTemplate: row => {
                           return (
                             <AlagehAutoComplete
                               div={{}}
@@ -247,7 +258,12 @@ class PatientDetails extends PureComponent {
                                   valueField: "value",
                                   data: GlobalVariables.FORMAT_APPSTATUS
                                 },
-                                onChange: texthandle.bind(this, this, row),
+                                onChange: texthandle.bind(
+                                  this,
+                                  this,
+                                  row,
+                                  context
+                                ),
                                 others: {
                                   disabled:
                                     row.billing_updated === "Y" ? true : false
@@ -262,16 +278,16 @@ class PatientDetails extends PureComponent {
                         label: (
                           <AlgaehLabel label={{ fieldName: "amount_app" }} />
                         ),
+                        // displayTemplate: row => {
+                        //   return (
+                        //     <span>
+                        //       {getAmountFormart(row.approved_amount, {
+                        //         appendSymbol: false
+                        //       })}
+                        //     </span>
+                        //   );
+                        // },
                         displayTemplate: row => {
-                          return (
-                            <span>
-                              {getAmountFormart(row.approved_amount, {
-                                appendSymbol: false
-                              })}
-                            </span>
-                          );
-                        },
-                        editorTemplate: row => {
                           return (
                             <AlagehFormGroup
                               div={{}}
@@ -281,7 +297,12 @@ class PatientDetails extends PureComponent {
                                 className: "txt-fld",
                                 name: "approved_amount",
                                 events: {
-                                  onChange: numberhandle.bind(this, this, row)
+                                  onChange: numberhandle.bind(
+                                    this,
+                                    this,
+                                    row,
+                                    context
+                                  )
                                 },
                                 others: {
                                   disabled:
@@ -295,7 +316,7 @@ class PatientDetails extends PureComponent {
                       {
                         fieldName: "approved_no",
                         label: <AlgaehLabel label={{ fieldName: "auth_no" }} />,
-                        editorTemplate: row => {
+                        displayTemplate: row => {
                           return (
                             <AlagehFormGroup
                               div={{}}
@@ -304,7 +325,12 @@ class PatientDetails extends PureComponent {
                                 className: "txt-fld",
                                 name: "approved_no",
                                 events: {
-                                  onChange: texthandle.bind(this, this, row)
+                                  onChange: texthandle.bind(
+                                    this,
+                                    this,
+                                    row,
+                                    context
+                                  )
                                 },
                                 others: {
                                   disabled:
@@ -336,12 +362,12 @@ class PatientDetails extends PureComponent {
                         label: (
                           <AlgaehLabel label={{ fieldName: "valid_upto" }} />
                         ),
+                        // displayTemplate: row => {
+                        //   return (
+                        //     <span>{this.changeDateFormat(row.valid_upto)}</span>
+                        //   );
+                        // },
                         displayTemplate: row => {
-                          return (
-                            <span>{this.changeDateFormat(row.valid_upto)}</span>
-                          );
-                        },
-                        editorTemplate: row => {
                           return (
                             <AlgaehDateHandler
                               div={{ className: "" }}
@@ -351,8 +377,18 @@ class PatientDetails extends PureComponent {
                               }}
                               minDate={new Date()}
                               events={{
-                                onChange: datehandle.bind(this, this, row),
-                                onBlur: dateValidate.bind(this, this, row)
+                                onChange: datehandle.bind(
+                                  this,
+                                  this,
+                                  row,
+                                  context
+                                ),
+                                onBlur: dateValidate.bind(
+                                  this,
+                                  this,
+                                  row,
+                                  context
+                                )
                               }}
                               value={row.valid_upto}
                               disabled={
@@ -366,7 +402,7 @@ class PatientDetails extends PureComponent {
                       {
                         fieldName: "apprv_remarks",
                         label: <AlgaehLabel label={{ fieldName: "remarks" }} />,
-                        editorTemplate: row => {
+                        displayTemplate: row => {
                           return (
                             <AlagehFormGroup
                               div={{}}
@@ -375,7 +411,12 @@ class PatientDetails extends PureComponent {
                                 className: "txt-fld",
                                 name: "apprv_remarks",
                                 events: {
-                                  onChange: texthandle.bind(this, this, row)
+                                  onChange: texthandle.bind(
+                                    this,
+                                    this,
+                                    row,
+                                    context
+                                  )
                                 },
                                 others: {
                                   disabled:
@@ -391,13 +432,12 @@ class PatientDetails extends PureComponent {
                     dataSource={{
                       data: this.state.services_details
                     }}
-                    isEditable={true}
+                    isEditable={false}
                     actions={{ allowDelete: false }}
                     paging={{ page: 0, rowsPerPage: 5 }}
                     events={{
-                      onDelete: deleteServices.bind(this, this, context),
                       onEdit: row => {},
-                      onDone: updateServices.bind(this, this, context)
+                      onDone: row => {}
                     }}
                   />
                 </div>

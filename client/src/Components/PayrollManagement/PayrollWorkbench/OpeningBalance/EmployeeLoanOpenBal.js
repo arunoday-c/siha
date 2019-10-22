@@ -58,7 +58,6 @@ export default class EmployeeLoanOpenBal extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
     if (newProps.loan_dynamic_date.length > 0) {
       this.setState({
         loan_dynamic_date: newProps.loan_dynamic_date,

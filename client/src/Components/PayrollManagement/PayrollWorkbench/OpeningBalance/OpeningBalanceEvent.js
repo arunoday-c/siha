@@ -811,53 +811,7 @@ function getLoanMasterData($this) {
   });
 }
 
-// function setGratuityData($this) {
-//   let leave_dynamic_date = [
-//     {
-//       fieldName: "employee_code",
-//       label: <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />,
-//       others: {
-//         maxWidth: 105,
-//         fixed: "left"
-//       }
-//     },
-//     {
-//       fieldName: "full_name",
-//       label: <AlgaehLabel label={{ forceLabel: "Employee Name" }} />,
-//       others: {
-//         minWidth: 200,
-//         fixed: "left"
-//       }
-//     },
-//     {
-//       fieldName: "year",
-//       label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
-//       others: {
-//         filterable: false
-//       }
-//     },
-//     {
-//       fieldName: "month",
-//       label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
-//       others: {
-//         filterable: false
-//       }
-//     },
-//     {
-//       fieldName: "gratuity_amount",
-//       label: <AlgaehLabel label={{ forceLabel: "Gratuity Amount" }} />,
-//       others: {
-//         filterable: false
-//       }
-//     }
-//   ];
-//   $this.setState({
-//     leave_dynamic_date: leave_dynamic_date
-//   });
-// }
-
 function PreviewDataFull($this) {
-  debugger;
   let inputObj = {
     year: $this.state.year,
     hospital_id: $this.state.hospital_id

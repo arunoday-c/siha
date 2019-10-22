@@ -570,7 +570,6 @@ const SaveOrdersServices = ($this, e) => {
       loading_saveOrderService: true
     },
     () => {
-      debugger;
       let inputObj = {
         visit_id: $this.state.visit_id,
         patient_id: $this.state.patient_id,
@@ -857,7 +856,6 @@ const openViewFavouriteOrder = $this => {
 };
 
 const closeViewFavouriteOrder = ($this, e) => {
-  debugger;
   if (e.length > 0) {
     $this.setState(
       {
@@ -1103,7 +1101,7 @@ const ProcessFromFavourite = ($this, from) => {
                           Service_data.billdetails[i].test_type =
                             $this.state.test_type;
                         }
-                        debugger;
+
                         $this.setState({
                           orderservicesdata: Service_data.billdetails,
                           approval_amt: approval_amt,
@@ -1242,7 +1240,6 @@ const ProcessFromFavourite = ($this, from) => {
                 // preserviceInput.push(serviceInput[c]);
               }
 
-              debugger;
               $this.setState({
                 orderservicesdata: existingservices,
                 approval_amt: approval_amt,

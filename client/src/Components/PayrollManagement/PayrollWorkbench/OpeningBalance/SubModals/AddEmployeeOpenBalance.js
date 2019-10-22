@@ -346,7 +346,6 @@ class AddEmployeeOpenBalance extends PureComponent {
                   maxDate={new Date()}
                   events={{
                     onChange: (ctrl, e) => {
-                      debugger;
                       this.setState({
                         [e]: moment(ctrl)._d
                       });

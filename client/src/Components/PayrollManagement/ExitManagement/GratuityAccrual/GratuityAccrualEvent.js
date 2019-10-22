@@ -62,7 +62,6 @@ const LoadGratuityAccrual = $this => {
         data: inputObj,
         method: "GET",
         onSuccess: response => {
-          debugger;
           if (response.data.success) {
             let total_gratuity_amount = Enumerable.from(
               response.data.records

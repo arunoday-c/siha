@@ -82,7 +82,6 @@ const AddAnalytes = ($this, context) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='analyte_details'",
     onSuccess: () => {
-      debugger;
       let insert_analytes = $this.state.insert_analytes;
       let analytes = $this.state.analytes;
       let obj = {

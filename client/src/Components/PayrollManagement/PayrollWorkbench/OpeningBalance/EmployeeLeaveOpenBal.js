@@ -40,7 +40,6 @@ class EmployeeLeaveOpenBal extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
     if (newProps.leave_dynamic_date.length > 0) {
       this.setState({
         leave_dynamic_date: newProps.leave_dynamic_date,

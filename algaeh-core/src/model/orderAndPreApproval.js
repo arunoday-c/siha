@@ -38,12 +38,14 @@ let getPreAprovalList = (req, res, next) => {
         PAT.patient_code,PAT.full_name, refer_no, gross_amt,billing_updated,\
         net_amount, approved_amount, approved_no, apprv_remarks, apprv_date, rejected_reason,\
         apprv_status,SA.created_date,SA.created_by, SD.chart_type, SD.sub_department_name, \
-        PI.primary_card_number as card_no \
-        from ((hims_f_service_approval SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) \
+        PI.primary_card_number as card_no, E.full_name as doctor_name, INS.insurance_provider_name \
+        from hims_f_service_approval SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id \
+        inner join hims_d_employee E on E.hims_d_employee_id = SA.doctor_id \
         inner join hims_d_services SR on SR.hims_d_services_id=SA.service_id \
         inner join hims_f_patient_visit V on V.hims_f_patient_visit_id=SA.visit_id \
         inner join hims_m_patient_insurance_mapping PI on PI.patient_visit_id=SA.visit_id \
-        inner join hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id) \
+        inner join hims_d_insurance_provider INS on INS.hims_d_insurance_provider_id=PI.primary_insurance_provider_id \
+        inner join hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id \
         WHERE SA.record_status='A' " +
           _stringData,
         printQuery: true
@@ -1626,7 +1628,9 @@ let getPatientPackage = (req, res, next) => {
       str += ` and H.patient_id=${req.query.patient_id} `;
     }
     if (req.query.hims_f_package_header_id > 0) {
-      str += ` and H.hims_f_package_header_id=${req.query.hims_f_package_header_id} `;
+      str += ` and H.hims_f_package_header_id=${
+        req.query.hims_f_package_header_id
+      } `;
     }
 
     if (req.query.visit_id > 0) {

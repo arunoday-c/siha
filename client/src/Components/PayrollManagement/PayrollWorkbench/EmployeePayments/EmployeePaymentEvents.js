@@ -185,7 +185,6 @@ const LoadData = ($this, e) => {
           }
         });
       } else if ($this.state.sel_payment_type === "LS") {
-        debugger;
         if ($this.state.document_num !== null) {
           inputObj.leave_salary_number = $this.state.document_num;
         }
