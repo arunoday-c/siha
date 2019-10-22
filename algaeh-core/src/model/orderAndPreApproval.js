@@ -63,58 +63,7 @@ let getPreAprovalList = (req, res, next) => {
     _mysql.releaseConnection();
     next(e);
   }
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-  //
-  //   req.query["date(SA.created_date)"] = req.query.created_date;
-  //   req.query["SA.doctor_id"] = req.query.doctor_id;
-  //   req.query["SA.patient_id"] = req.query.patient_id;
-  //   delete req.query.created_date;
-  //   delete req.query.doctor_id;
-  //   delete req.query.patient_id;
-  //
-  //   let where = whereCondition(extend(preAprovalWhere, req.query));
-  //
-  //   debugLog("where conditn:", where);
-  //   db.getConnection((error, connection) => {
-  //     if (error) {
-  //       next(error);
-  //     }
-  //     db.query(
-  //       "SELECT hims_f_service_approval_id,ordered_services_id,insurance_provider_id,network_id,\
-  //       insurance_network_office_id,valid_upto,\
-  //       service_id,SR.service_code, icd_code, requested_date, requested_by, requested_mode,\
-  //       requested_quantity, submission_type, insurance_service_name, SA.doctor_id, SA.patient_id,visit_id,\
-  //       PAT.patient_code,PAT.full_name, refer_no, gross_amt,billing_updated,\
-  //       net_amount, approved_amount, approved_no, apprv_remarks, apprv_date, rejected_reason,\
-  //       apprv_status,SA.created_date,SA.created_by, SD.chart_type, SD.sub_department_name, \
-  //       PI.primary_card_number as card_no \
-  //       from ((hims_f_service_approval SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) \
-  //       inner join hims_d_services SR on SR.hims_d_services_id=SA.service_id \
-  //       inner join hims_f_patient_visit V on V.hims_f_patient_visit_id=SA.visit_id \
-  //       inner join hims_m_patient_insurance_mapping PI on PI.patient_visit_id=SA.visit_id \
-  //       inner join hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id) \
-  //       WHERE SA.record_status='A' AND " +
-  //         where.condition,
-  //       where.values,
-  //
-  //       (error, result) => {
-  //         releaseDBConnection(db, connection);
-  //         if (error) {
-  //           next(error);
-  //         }
-  //
-  //         req.records = result;
-  //         next();
-  //       }
-  //     );
-  //   });
-  // } catch (e) {
-  //   next(e);
-  // }
+
 };
 
 //created by irfan: check pre-aproval status and get PreAproval List
@@ -123,6 +72,7 @@ let getMedicationAprovalList = (req, res, next) => {
   try {
     let _stringData = "";
     let inputValues = [];
+    console.log("req.query", req.query)
     if (req.query.created_date != null) {
       _stringData +=
         " and date(SA.created_date) between date('" +
@@ -154,13 +104,17 @@ let getMedicationAprovalList = (req, res, next) => {
         requested_quantity, submission_type, insurance_service_name, SA.doctor_id, SA.patient_id,visit_id,\
         PAT.patient_code,PAT.full_name, refer_no, gross_amt,\
         net_amount, approved_amount, approved_no, apprv_remarks, apprv_date, rejected_reason,\
-        apprv_status,SA.created_date,SA.created_by, SD.chart_type,billing_updated \
-        from ((hims_f_medication_approval SA left join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) \
-        inner join \
-        hims_d_services SR on SR.hims_d_services_id=SA.service_id left join \
-        hims_f_patient_visit V on V.hims_f_patient_visit_id=SA.visit_id left join \
-        hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id) WHERE SA.record_status='A' " +
+        apprv_status,SA.created_date,SA.created_by, SD.chart_type, billing_updated, SD.sub_department_name,  \
+        PI.primary_card_number as card_no, E.full_name as doctor_name, INS.insurance_provider_name \
+        from hims_f_medication_approval SA left join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id \
+        inner join hims_d_employee E on E.hims_d_employee_id = SA.doctor_id \
+        inner join hims_d_services SR on SR.hims_d_services_id=SA.service_id \
+        left join hims_f_patient_visit V on V.hims_f_patient_visit_id=SA.visit_id \
+        inner join hims_m_patient_insurance_mapping PI on PI.patient_visit_id=SA.visit_id \
+        inner join hims_d_insurance_provider INS on INS.hims_d_insurance_provider_id=PI.primary_insurance_provider_id \
+        left join hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id WHERE SA.record_status='A' " +
           _stringData,
+        values: inputValues,
         printQuery: true
       })
       .then(result => {
@@ -622,8 +576,8 @@ let insertOrderedServicesBackUp = (req, res, next) => {
 
       connection.query(
         "INSERT INTO hims_f_ordered_services(" +
-          insurtColumns.join(",") +
-          ",created_by,updated_by,hospital_id) VALUES ?",
+        insurtColumns.join(",") +
+        ",created_by,updated_by,hospital_id) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
@@ -709,8 +663,8 @@ let insertOrderedServicesBackUp = (req, res, next) => {
 
                   connection.query(
                     "INSERT INTO hims_f_service_approval(" +
-                      insurtCols.join(",") +
-                      ",created_by,updated_by) VALUES ?",
+                    insurtCols.join(",") +
+                    ",created_by,updated_by) VALUES ?",
                     [
                       jsonArrayToObject({
                         sampleInputObject: insurtCols,
@@ -1068,7 +1022,7 @@ let getOrderServices = (req, res, next) => {
       connection.query(
         "SELECT  * FROM `hims_f_ordered_services` \
        WHERE `record_status`='A' AND " +
-          where.condition,
+        where.condition,
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1630,7 +1584,7 @@ let getPatientPackage = (req, res, next) => {
     if (req.query.hims_f_package_header_id > 0) {
       str += ` and H.hims_f_package_header_id=${
         req.query.hims_f_package_header_id
-      } `;
+        } `;
     }
 
     if (req.query.visit_id > 0) {

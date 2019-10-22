@@ -296,61 +296,33 @@ class PreApproval extends Component {
                           }
                         },
                         {
-                          fieldName: "doctor_id",
+                          fieldName: "doctor_name",
                           label: (
                             <AlgaehLabel label={{ fieldName: "doctor_id" }} />
                           ),
-                          displayTemplate: row => {
-                            let display =
-                              this.props.deptanddoctors === undefined
-                                ? []
-                                : this.props.deptanddoctors.doctors.filter(
-                                    f => f.employee_id === row.doctor_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].full_name
-                                  : ""}
-                              </span>
-                            );
+                          others: {
+                            minWidth: 150
                           }
                         },
                         {
-                          fieldName: "insurance_provider_id",
+                          fieldName: "insurance_provider_name",
                           label: (
                             <AlgaehLabel
                               label={{ fieldName: "insurance_id" }}
                             />
                           ),
-                          displayTemplate: row => {
-                            let display =
-                              this.props.insurarProviders === undefined
-                                ? []
-                                : this.props.insurarProviders.filter(
-                                    f =>
-                                      f.hims_d_insurance_provider_id ===
-                                      row.insurance_provider_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].insurance_provider_name
-                                  : ""}
-                              </span>
-                            );
+                          others: {
+                            minWidth: 150
                           }
                         },
-                        {
-                          fieldName: "icd_code",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "insurance_code" }}
-                            />
-                          )
-                        },
+                        // {
+                        //   fieldName: "icd_code",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ fieldName: "insurance_code" }}
+                        //     />
+                        //   )
+                        // },
                         {
                           fieldName: "number_of_Services",
                           label: (
@@ -368,10 +340,10 @@ class PreApproval extends Component {
                             return row.apprv_status === "NR"
                               ? "Not Requested"
                               : row.apprv_status === "AW"
-                              ? "Awaiting Approval"
-                              : row.apprv_status === "AP"
-                              ? "Approved"
-                              : "Rejected";
+                                ? "Awaiting Approval"
+                                : row.apprv_status === "AP"
+                                  ? "Approved"
+                                  : "Rejected";
                           }
                         }
                       ]}
@@ -420,12 +392,12 @@ class PreApproval extends Component {
                                   style={{
                                     pointerEvents:
                                       row.apprv_status === "AP" ||
-                                      row.apprv_status === "RJ"
+                                        row.apprv_status === "RJ"
                                         ? ""
                                         : "none",
                                     opacity:
                                       row.apprv_status === "AP" ||
-                                      row.apprv_status === "RJ"
+                                        row.apprv_status === "RJ"
                                         ? ""
                                         : "0.1"
                                   }}
@@ -494,8 +466,8 @@ class PreApproval extends Component {
                               this.props.deptanddoctors === undefined
                                 ? []
                                 : this.props.deptanddoctors.doctors.filter(
-                                    f => f.employee_id === row.doctor_id
-                                  );
+                                  f => f.employee_id === row.doctor_id
+                                );
 
                             return (
                               <span>
@@ -518,10 +490,10 @@ class PreApproval extends Component {
                               this.props.insurarProviders === undefined
                                 ? []
                                 : this.props.insurarProviders.filter(
-                                    f =>
-                                      f.hims_d_insurance_provider_id ===
-                                      row.insurance_provider_id
-                                  );
+                                  f =>
+                                    f.hims_d_insurance_provider_id ===
+                                    row.insurance_provider_id
+                                );
 
                             return (
                               <span>
@@ -557,10 +529,10 @@ class PreApproval extends Component {
                             return row.apprv_status === "NR"
                               ? "Not Requested"
                               : row.apprv_status === "AW"
-                              ? "Awaiting Approval"
-                              : row.apprv_status === "AP"
-                              ? "Approved"
-                              : "Rejected";
+                                ? "Awaiting Approval"
+                                : row.apprv_status === "AP"
+                                  ? "Approved"
+                                  : "Rejected";
                           }
                         }
                       ]}
