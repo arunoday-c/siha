@@ -280,7 +280,7 @@ class ApplyLeave extends Component {
               res.data.records.is_projected_leave === undefined
                 ? "N"
                 : res.data.records.is_projected_leave,
-
+            Request_enable: false,
             extra: {
               holiday_included: res.data.records.include_holidays,
               holidays: res.data.records.total_holiday,
