@@ -13,14 +13,11 @@ startServer () {
   cd $1
   echo "starting server $2"
   tmux new-session -d -s $2 "npm run dev"
-  if [ $1 != "." ]
-  then
-    cd ..
-    echo "$2 started"
-  fi
+  cd ..
+  echo "$2 started"
 }
 
-startServer "." "core"
+startServer "./algaeh-core" "core"
 startServer "./DocumentManagement" "document_server" 
 startServer "./HrManagement" "hr_server" 
 startServer "./FrontDesk" "front_desk_server" 
@@ -35,6 +32,7 @@ startServer "./MRD" "mrd_server"
 startServer "./Procurement" "procurement_server"
 startServer "./AlgaehReporting" "report_server"
 startServer "./Sockets" "sockets"
+startServer "./client" "client"
 #add additional servers here if you want
 
 echo "HINT: use the command 'tmux ls' to view the running servers,

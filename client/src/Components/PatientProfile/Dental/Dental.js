@@ -430,7 +430,7 @@ class Dental extends Component {
             swalMessage({
               title:
                 String(surfaceType).toUpperCase() +
-                " - already added you con't add or remove from here need to delete first",
+                " - already added you can't add or remove from here need to delete first",
               type: "warning"
             });
             returnfunction = true;

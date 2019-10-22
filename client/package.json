@@ -50,6 +50,7 @@
     "build": "cross-env REACT_APP_CDN=production.min GENERATE_SOURCEMAP=false  npm run build-js",
     "test": "craco test --env=jsdom",
     "eject": "react-scripts eject",
+    "dev": "npm start",
     "start-server": "cross-env PORT=1414 REACT_APP_CDN=development npm run start-js",
     "postinstall": "npm i --no-save --no-optional fabric@^3.3.2"
   },

@@ -91,7 +91,7 @@ export default function SubjectiveHandler() {
                 insertFinalICDS($this, row);
               } else {
                 swalMessage({
-                  title: "Same diagnosis is alreday in use,con't add duplicate",
+                  title: "Same diagnosis is alreday in use,can't add duplicate",
                   type: "info"
                 });
               }
