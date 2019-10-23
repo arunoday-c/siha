@@ -562,7 +562,7 @@ class ApplyLeave extends Component {
                 </div>
               </div>
               <div className="portlet-body">
-                <div className="row">
+                <div className="row" style={{ minHeight: "62.5vh" }}>
                   {/* <AlagehAutoComplete
                     div={{ className: "col-12 margin-bottom-15" }}
                     label={{
@@ -823,7 +823,7 @@ class ApplyLeave extends Component {
             </div>
           </div>
 
-          <div className="col-9">
+          <div className="col-7">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -1062,7 +1062,7 @@ class ApplyLeave extends Component {
                         data: this.state.leave_his
                       }}
                       isEditable={false}
-                      paging={{ page: 0, rowsPerPage: 10 }}
+                      paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
                         onEdit: () => {},
                         onDelete: () => {},
@@ -1073,15 +1073,17 @@ class ApplyLeave extends Component {
                 </div>
               </div>
             </div>
+          </div>
 
+          <div className="col-2">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
                 <div className="row leaveBalanceCntr">
-                  {leaveData.length > 0 ? (
-                    leaveData.map((data, index) => (
+                  {this.state.emp_leaves_data.length > 0 ? (
+                    this.state.emp_leaves_data.map((data, index) => (
                       <div
                         key={data.hims_f_employee_monthly_leave_id}
-                        className="col-2"
+                        className="col-12"
                       >
                         <AlgaehLabel
                           label={{
@@ -1089,12 +1091,20 @@ class ApplyLeave extends Component {
                           }}
                         />
                         <h6>
-                          {data.availed_till_date}/{data.total_eligible} Day (s)
+                          <span>
+                            {data.availed_till_date}
+                            <small>Utilized</small>
+                          </span>
+
+                          <span>
+                            {data.close_balance}
+                            <small>Balance</small>
+                          </span>
                         </h6>
                       </div>
                     ))
                   ) : (
-                    <div className="col">Not Eligible for any Leaves . . </div>
+                    <div className="noResult">Not Eligible for any Leaves</div>
                   )}
                 </div>
               </div>
