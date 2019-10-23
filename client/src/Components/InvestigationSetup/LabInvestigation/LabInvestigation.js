@@ -413,10 +413,10 @@ class LabInvestigation extends Component {
                                 this.props.labanalytes === undefined
                                   ? []
                                   : this.props.labanalytes.filter(
-                                      f =>
-                                        f.hims_d_lab_analytes_id ===
-                                        row.analyte_id
-                                    );
+                                    f =>
+                                      f.hims_d_lab_analytes_id ===
+                                      row.analyte_id
+                                  );
 
                               return (
                                 <span>
@@ -431,10 +431,10 @@ class LabInvestigation extends Component {
                                 this.props.labanalytes === undefined
                                   ? []
                                   : this.props.labanalytes.filter(
-                                      f =>
-                                        f.hims_d_lab_analytes_id ===
-                                        row.analyte_id
-                                    );
+                                    f =>
+                                      f.hims_d_lab_analytes_id ===
+                                      row.analyte_id
+                                  );
 
                               return (
                                 <span>
@@ -461,7 +461,7 @@ class LabInvestigation extends Component {
                                     dataSource: {
                                       textField: "name",
                                       valueField: "value",
-                                      data: variableJson.FORMAT_GENDER
+                                      data: variableJson.EMP_FORMAT_GENDER
                                     },
                                     onChange: onchangegridcol.bind(
                                       this,
@@ -693,7 +693,7 @@ class LabInvestigation extends Component {
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
                           onDelete: deleteLabAnalyte.bind(this, this, context),
-                          onEdit: row => {},
+                          onEdit: row => { },
 
                           onDone: updateLabInvestigation.bind(
                             this,
