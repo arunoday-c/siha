@@ -655,8 +655,9 @@ class ApplyLeave extends Component {
                     />
                     <h6>{this.state.available_balance} days(s)</h6>
                   </div>
-                  {this.state.projected_leave_enable === true &&
-                  this.state.is_projected_leave === "Y" ? (
+                  {(this.state.projected_leave_enable === true &&
+                    this.state.is_projected_leave === "Y") ||
+                  parseFloat(this.state.projected_applied_leaves) > 0 ? (
                     <div className="col-12 margin-bottom-15">
                       <AlgaehLabel
                         label={{
