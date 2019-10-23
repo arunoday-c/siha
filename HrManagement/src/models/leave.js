@@ -7241,10 +7241,11 @@ function validateLeaveApplictn(inputs, my_sql,req) {
 
 
 
-        const attendance_starts =authResult["attendance_starts"];
-        const at_end_date =authResult["at_end_date"];
+        const attendance_starts =authResult[0]["attendance_starts"];
+        const at_end_date =authResult[0]["at_end_date"];
       
-
+        console.log("attendance_starts:",attendance_starts)
+        console.log("at_end_date:",at_end_date)
 
      
 
@@ -7339,15 +7340,16 @@ function validateLeaveApplictn(inputs, my_sql,req) {
         let next_year_from_date = "";
         let next_year_to_date = "";
 
-
+     
 
         if (attendance_starts == "PM" && at_end_date > 0) {
+          console.log("IN PM:")
           same_year_from_date = moment(input.from_date,"YYYY-MM-DD").format("YYYY-MM-DD");
         same_year_to_date = moment(from_year + "-" + 12 + "-" + at_end_date,"YYYY-MM-DD").format("YYYY-MM-DD");
            next_year_from_date = moment(from_year + "-" + 12 + "-" +( parseInt(at_end_date)+parseInt(1)),"YYYY-MM-DD").format("YYYY-MM-DD");
           next_year_to_date = moment(input.to_date, "YYYY-MM-DD").format("YYYY-MM-DD");
         }else{
-
+          console.log("IN AM:")
            same_year_from_date = moment(input.from_date,"YYYY-MM-DD").format("YYYY-MM-DD");
           same_year_to_date = moment(from_year + "-" + 12 + "-" + 31,"YYYY-MM-DD").format("YYYY-MM-DD");
            next_year_from_date = moment(to_year + "-" + 1 + "-" + 1,"YYYY-M-D").format("YYYY-MM-DD");
@@ -7654,16 +7656,16 @@ function calculateNoLeaveDays(inputs,_mysql) {
       let my_religion = input.religion_id;
       let from_month = moment(from_date).format("M");
       let to_month = moment(to_date).format("M");
-      let year = "";
+      let year = input.year;
       
 
-      if(input.is_across_year_leave=="Y"){
+      // if(input.is_across_year_leave=="Y"){
 
-        year=input.year;
-      }else{
+      //   year=input.year;
+      // }else{
 
-        year= moment(from_date).format("YYYY");
-      }
+      //   year= moment(from_date).format("YYYY");
+      // }
      
       console.log("YEAR----------------:",year)
 
