@@ -196,7 +196,7 @@ class PayRollDetails extends Component {
             </div>
             <div className="col-4 primary-details">
               <h5>
-                <span>Salary Earnings Breakup</span>
+                <span>Earnings Details</span>
               </h5>
               {/* <div className="row">
                 <div
@@ -410,7 +410,7 @@ class PayRollDetails extends Component {
             </div>
             <div className="col-4 primary-details">
               <h5>
-                <span>Salary Deduction Breakup</span>
+                <span>Deduction Details</span>
               </h5>
               <div
                 className="row padding-bottom-5"
@@ -578,7 +578,7 @@ class PayRollDetails extends Component {
             </div>
             <div className="col-4 secondary-details">
               <h5>
-                <span>Employee Contribution Breakup</span>
+                <span>Contribution Details</span>
               </h5>
               <div
                 className="row padding-bottom-5"
