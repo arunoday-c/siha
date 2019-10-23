@@ -143,6 +143,76 @@ export default {
         message: "Please provide Valid Input"
       };
     }
+  },
+
+  //created by irfan: to
+  addAccountHeads: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "select finance_account_head_id,account_code,account_name,\
+        account_level,hierarchy_path, concat(account_code,'.',(\
+        select SUBSTRING_INDEX(account_code, '.', -1)+1\
+        FROM finance_account_head where parent_acc_id=?)) as new_code\
+        FROM finance_account_head where finance_account_head_id=?;\
+        select (sort_order)as sort_order FROM finance_account_head where parent_acc_id=?;",
+        values: [
+          input.finance_account_head_id,
+          input.finance_account_head_id,
+          input.finance_account_head_id
+        ],
+        printQuery: false
+      })
+      .then(result => {
+        const data = result[0];
+        const sort_order = parseInt(result[1][0]["sort_order"]) + 1;
+        const account_code = data["new_code"];
+        const account_name = input["account_name"];
+        const account_parent = data["account_code"];
+        const group_type = "C";
+        const account_level = parseInt(data["account_level"]) + 1;
+        const created_from = "U";
+        const parent_acc_id = input.finance_account_head_id;
+        const hierarchy_path =
+          data["hierarchy_path"] + "," + input.finance_account_head_id;
+
+        _mysql
+          .executeQuery({
+            query:
+              "INSERT INTO `finance_account_head` (account_code,account_name,account_parent,\
+                group_type,account_level,created_from,sort_order,parent_acc_id,hierarchy_path)\
+        VALUE(?,?,?,?,?,?,?,?,?)",
+            values: [
+              account_code,
+              account_name,
+              account_parent,
+              group_type,
+              account_level,
+              created_from,
+              sort_order,
+              parent_acc_id,
+              hierarchy_path
+            ],
+            printQuery: true
+          })
+          .then(resul => {
+            _mysql.releaseConnection();
+            req.records = resul;
+            next();
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };
 
