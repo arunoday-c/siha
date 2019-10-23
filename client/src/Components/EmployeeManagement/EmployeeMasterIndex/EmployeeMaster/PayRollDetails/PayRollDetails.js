@@ -175,7 +175,7 @@ class PayRollDetails extends Component {
                   className="col"
                   style={{
                     border: "1px dashed #d3d3d3",
-                    background: " #f3f3f3"
+                    background: "rgb(194, 255, 249)"
                   }}
                 >
                   <AlgaehLabel
