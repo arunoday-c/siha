@@ -1699,7 +1699,7 @@ export default {
                   _mysql.releaseConnection();
                   req.records = {
                     invalid_input: true,
-                    message: `this leave has been closed you can apply for next year`
+                    message: `Year ${year} leave has been closed, Apply from Year ${parseInt(year)+1}`
                   };
                   next();
                   return;
@@ -5408,7 +5408,7 @@ function calc(db, body) {
                 if(closeBalanceResult[0].processed=="Y"){
                   resolve({
                     invalid_input: true,
-                    message: `this leave has been closed , apply for next year`
+                    message: `Year ${year} leave has been closed, Apply from Year ${parseInt(year)+1}`
                   });
                 }else{
                   currentClosingBal = closeBalanceResult[0].close_balance;
@@ -7873,7 +7873,7 @@ function calculateNoLeaveDays(inputs,_mysql) {
                  console.log("HELLO")
                   reject({
                     invalid_input: true,
-                    message: `this leave has been closed, you can apply for next year`
+                    message: `Year ${year} leave has been closed, Apply from Year ${parseInt(year)+1}`
                   });
                 } else {
                   console.log("HELLO@")
