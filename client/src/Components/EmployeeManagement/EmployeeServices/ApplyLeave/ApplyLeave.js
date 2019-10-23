@@ -591,7 +591,7 @@ class ApplyLeave extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row" style={{ minHeight: "70.6vh" }}>
-                  <div className="col-12 globalSearchCntr form-group">
+                  <div className="col-12 globalSearchCntr  form-group">
                     <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
                     <h6 onClick={this.employeeSearch.bind(this)}>
                       {this.state.employee_name
@@ -622,7 +622,7 @@ class ApplyLeave extends Component {
                     }}
                   /> */}
                   <AlagehAutoComplete
-                    div={{ className: "col-6 margin-bottom-15 form-group" }}
+                    div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "Leave Type",
                       isImp: true
@@ -647,7 +647,7 @@ class ApplyLeave extends Component {
                       }
                     }}
                   />
-                  <div className="col-6 margin-bottom-15 form-group">
+                  <div className="col-6 form-group">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Available Balance"
@@ -668,7 +668,7 @@ class ApplyLeave extends Component {
                     </div>
                   ) : null}
                   <AlgaehDateHandler
-                    div={{ className: "col-6 margin-bottom-15" }}
+                    div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "Date From",
                       isImp: true
@@ -710,7 +710,7 @@ class ApplyLeave extends Component {
                     value={this.state.from_date}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-6 margin-bottom-15" }}
+                    div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "From Session",
                       isImp: true
@@ -736,7 +736,7 @@ class ApplyLeave extends Component {
                     }}
                   />
                   <AlgaehDateHandler
-                    div={{ className: "col-6 margin-bottom-15" }}
+                    div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "Date To",
                       isImp: true
@@ -794,7 +794,7 @@ class ApplyLeave extends Component {
                     minDate={this.state.from_date}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-6 margin-bottom-15" }}
+                    div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "To Session",
                       isImp: true
@@ -816,7 +816,7 @@ class ApplyLeave extends Component {
                       }
                     }}
                   />
-                  <div className="col-12 margin-bottom-15">
+                  <div className="col-12">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Appliying for"
@@ -825,7 +825,7 @@ class ApplyLeave extends Component {
                     <h6>{this.state.total_applied_days} day(s)</h6>
                   </div>
                   <AlagehFormGroup
-                    div={{ className: "col-12 margin-bottom-15" }}
+                    div={{ className: "col-12 form-group mandatory" }}
                     label={{
                       forceLabel: "Reason for Leave",
                       isImp: true
