@@ -751,7 +751,7 @@ class LoanRequest extends Component {
             <div className="portlet-body" data-validate="loanApplyDiv">
               <div className="row">
                 <AlgaehAutoSearch
-                  div={{ className: "col-12 form-group" }}
+                  div={{ className: "col-12 form-group mandatory" }}
                   label={{
                     forceLabel: "Employee",
                     isImp: true
@@ -809,7 +809,7 @@ class LoanRequest extends Component {
                 {this.state.request_type === "LO" ? (
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Loan Type",
                         isImp: true
@@ -826,7 +826,7 @@ class LoanRequest extends Component {
                         onChange: this.dropDownHandler.bind(this)
                       }}
                     />
-                    <div className="col">
+                    <div className="col form-group">
                       <AlgaehLabel
                         label={{
                           forceLabel: "Max-Limit"
@@ -836,7 +836,7 @@ class LoanRequest extends Component {
                     </div>
 
                     <AlagehFormGroup
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Loan Amount",
                         isImp: true
@@ -853,7 +853,7 @@ class LoanRequest extends Component {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "No. of EMI",
                         isImp: true
@@ -872,7 +872,7 @@ class LoanRequest extends Component {
                       }}
                     />
 
-                    <div className="col-12">
+                    <div className="col-12 form-group ">
                       <AlgaehLabel
                         label={{
                           forceLabel: "Installment Amount"
@@ -882,7 +882,7 @@ class LoanRequest extends Component {
                     </div>
 
                     <AlagehAutoComplete
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Start Year.",
                         isImp: true
@@ -905,7 +905,7 @@ class LoanRequest extends Component {
                       }}
                     />
                     <AlagehAutoComplete
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Start Month",
                         isImp: true
@@ -925,7 +925,7 @@ class LoanRequest extends Component {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-12" }}
+                      div={{ className: "col-12 form-group" }}
                       label={{
                         forceLabel: "Reason for Loan",
                         isImp: false
@@ -953,7 +953,7 @@ class LoanRequest extends Component {
                 ) : this.state.request_type === "AD" ? (
                   <div className="row">
                     <AlagehFormGroup
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Advance Amount",
                         isImp: true
@@ -970,7 +970,7 @@ class LoanRequest extends Component {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Deducting Year",
                         isImp: true
@@ -994,7 +994,7 @@ class LoanRequest extends Component {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Deducting Month",
                         isImp: true
@@ -1014,7 +1014,7 @@ class LoanRequest extends Component {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-12" }}
+                      div={{ className: "col-12 form-group " }}
                       label={{
                         forceLabel: "Reason for Advance",
                         isImp: false
