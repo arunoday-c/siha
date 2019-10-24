@@ -104,7 +104,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select ins_services_amount from hims_f_patient_visit where hims_f_patient_visit_id=?",
+            "select ins_services_amount, approval_limit_yesno from hims_f_patient_visit where hims_f_patient_visit_id=?",
           values: [req.query.hims_f_patient_visit_id],
           printQuery: true
         })

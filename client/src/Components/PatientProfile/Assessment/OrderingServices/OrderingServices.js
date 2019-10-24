@@ -198,6 +198,12 @@ class OrderingServices extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    const orderservicesdata = _.filter(
+      nextProps.orderedList,
+      f => {
+        return f.trans_package_detail_id === null;
+      }
+    );
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
@@ -205,18 +211,20 @@ class OrderingServices extends Component {
       let output = nextProps.existinginsurance[0];
       output.insured = "Y";
       output.approval_amt = nextProps.approval_amt;
-      output.orderservicesdata = nextProps.orderedList
+      output.approval_limit_yesno = nextProps.approval_limit_yesno
+      output.orderservicesdata = orderservicesdata
       output.preserviceInput = nextProps.preserviceInput
 
 
       this.setState({ ...output });
     } else {
-      let approval_amt = nextProps.approval_amt
+
       this.setState({
         insured: "N",
-        approval_amt: approval_amt,
-        orderservicesdata: nextProps.orderedList,
-        preserviceInput: nextProps.preserviceInput
+        approval_amt: nextProps.approval_amt,
+        orderservicesdata: orderservicesdata,
+        preserviceInput: nextProps.preserviceInput,
+        approval_limit_yesno: nextProps.approval_limit_yesno
       });
     }
   }
@@ -260,7 +268,8 @@ class OrderingServices extends Component {
         sub_total_amount: null,
         discount_amount: null,
         net_total: null,
-        add_to_list: true
+        add_to_list: true,
+        deleteserviceInput: []
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -411,6 +420,11 @@ class OrderingServices extends Component {
                           return (
                             <span>
                               <i
+                                style={{
+                                  pointerEvents:
+                                    row.billed === "N" ? "" : "none",
+                                  opacity: row.billed === "N" ? "" : "0.1"
+                                }}
                                 onClick={deleteServices.bind(this, this, row)}
                                 className="fas fa-trash-alt"
                               />

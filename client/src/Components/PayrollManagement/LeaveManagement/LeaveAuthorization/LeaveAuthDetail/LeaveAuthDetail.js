@@ -60,13 +60,14 @@ class LeaveAuthDetail extends Component {
   }
 
   authorizeLeave(type) {
-    if (this.state.remarks === "") {
-      swalMessage({
-        title: "Remarks is Mandatory.",
-        type: "warning"
-      });
-      return;
-    }
+    debugger;
+    // if (this.state.remarks === "") {
+    //   swalMessage({
+    //     title: "Remarks is Mandatory.",
+    //     type: "warning"
+    //   });
+    //   return;
+    // }
     let send_data = {
       total_approved_days: this.state.data.total_approved_days,
       authorized_comment: this.state.remarks,
@@ -240,14 +241,14 @@ class LeaveAuthDetail extends Component {
                     />
                     <h6>{this.state.data.designation}</h6>
                   </div>{" "}
-                  <div className="col">
+                  {/* <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Sub Department"
                       }}
                     />
                     <h6>{this.state.data.sub_department_name}</h6>
-                  </div>{" "}
+                  </div>{" "} */}
                 </div>
               </div>
               <div className="col-5">
@@ -343,13 +344,20 @@ class LeaveAuthDetail extends Component {
                         <div className="row">
                           <div className="col-12">
                             <AlgaehLabel
-                              label={{ forceLabel: "Remarks", isImp: true }}
+                              label={{
+                                forceLabel: "Remarks",
+                                isImp: this.props.type === "C" ? true : false
+                              }}
                             />
                             <textarea
                               name="remarks"
                               value={this.state.remarks}
                               onChange={this.textHandler.bind(this)}
-                              className="textArea"
+                              className={
+                                this.props.type === "C"
+                                  ? "textAreaRed"
+                                  : "textArea"
+                              }
                             />
                           </div>
                           <div className="col-12 form-group">
