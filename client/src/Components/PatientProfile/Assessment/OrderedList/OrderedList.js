@@ -77,12 +77,15 @@ class OrderedList extends PureComponent {
                   orderedList[k].insurance_network_office_id,
                 primary_network_id: orderedList[k].network_id,
                 approval_amt: orderedList[k].approval_amt,
-                approval_limit_yesno: orderedList[k].approval_limit_yesno
+                approval_limit_yesno: orderedList[k].approval_limit_yesno,
+                hims_f_ordered_services_id: orderedList[k].hims_f_ordered_services_id,
+                billed: orderedList[k].billed
               })
             }
           }
           this.setState({
             approval_amt: response.data.records[0].ins_services_amount,
+            approval_limit_yesno: response.data.records[0].approval_limit_yesno,
             preserviceInput: preserviceInput,
             isOpen: !this.state.isOpen
           });
@@ -549,8 +552,8 @@ class OrderedList extends PureComponent {
                               <i
                                 style={{
                                   pointerEvents:
-                                    row.billed === "N" ? "" : "none",
-                                  opacity: row.billed === "N" ? "" : "0.1"
+                                    row.billed && row.trans_package_detail_id > 0 === "N" ? "" : "none",
+                                  opacity: row.billed && row.trans_package_detail_id > 0 === "N" ? "" : "0.1"
                                 }}
                                 className="fas fa-trash-alt"
                                 onClick={this.DeleteOrderService.bind(
@@ -1044,6 +1047,7 @@ class OrderedList extends PureComponent {
           onClose={this.CloseModel.bind(this)}
           vat_applicable={this.props.vat_applicable}
           approval_amt={this.state.approval_amt}
+          approval_limit_yesno={this.state.approval_limit_yesno}
           preserviceInput={this.state.preserviceInput}
           addNew={true}
         />

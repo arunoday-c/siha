@@ -374,8 +374,8 @@ let insertOrderedServices = (req, res, next) => {
     _mysql
       .executeQueryWithTransaction({
         query:
-          "update hims_f_patient_visit set ins_services_amount=? where hims_f_patient_visit_id=?;",
-        values: [input.approval_amt, input.visit_id],
+          "update hims_f_patient_visit set ins_services_amount=?, approval_limit_yesno=? where hims_f_patient_visit_id=?;",
+        values: [input.approval_amt, input.approval_limit_yesno, input.visit_id],
         printQuery: true
       })
       .then(visitUpdate => {
@@ -385,205 +385,257 @@ let insertOrderedServices = (req, res, next) => {
           pool: _mysql.pool,
           path: keyPath
         };
-        new Promise((resolve, reject) => {
-          try {
-            const insert_order_services = _.filter(input.billdetails, f => {
-              return f.hims_f_ordered_services_id === null || f.hims_f_ordered_services_id === undefined;
-            });
-
-            console.log("insert_order_services", insert_order_services)
-
-            // const update_Order_Service = _.filter(input.billdetails, f => {
-            //   return f.hims_f_ordered_services_id > 0;
-            // });
-            if (insert_order_services.length != 0) {
-              _mysql
-                .executeQuery({
-                  query: "INSERT INTO hims_f_ordered_services(??) VALUES ?",
-                  values: insert_order_services,
-                  includeValues: IncludeValues,
-                  extraValues: {
-                    created_by: req.userIdentity.algaeh_d_app_user_id,
-                    created_date: new Date(),
-                    updated_by: req.userIdentity.algaeh_d_app_user_id,
-                    updated_date: new Date(),
-                    hospital_id: req.userIdentity.hospital_id
-                  },
-                  bulkInsertOrUpdate: true,
-                  printQuery: true
-                })
-                .then(ordered_services => {
-                  resultOrder = ordered_services
-                  return resolve(ordered_services);
-                }).catch(error => {
-                  _mysql.rollBackTransaction(() => {
-                    next(error);
-                  });
-                });
-            } else {
-              return resolve();
-            }
-          } catch (e) {
-            reject(e);
-          }
+        deleteOrderServices({
+          delete_order_services: input.deleteserviceInput,
+          _mysql: _mysql,
+          next: next
         })
-          .then(result => {
-            // new Promise((resolve, reject) => {
-            //   try {
+          .then(deleteOrders => {
+            new Promise((resolve, reject) => {
+              try {
+                const insert_order_services = _.filter(input.billdetails, f => {
+                  return f.hims_f_ordered_services_id === null || f.hims_f_ordered_services_id === undefined;
+                });
 
-
-            //     const update_Order_Service = _.filter(input.billdetails, f => {
-            //       return f.hims_f_ordered_services_id > 0;
-            //     });
-
-            //     console.log("update_Order_Service", update_Order_Service)
-            //     if (update_Order_Service.length != 0) {
-            //       _mysql
-            //         .executeQuery({
-            //           query: "INSERT INTO hims_f_ordered_services(??) VALUES ?",
-            //           values: insert_order_services,
-            //           includeValues: IncludeValues,
-            //           extraValues: {
-            //             created_by: req.userIdentity.algaeh_d_app_user_id,
-            //             created_date: new Date(),
-            //             updated_by: req.userIdentity.algaeh_d_app_user_id,
-            //             updated_date: new Date(),
-            //             hospital_id: req.userIdentity.hospital_id
-            //           },
-            //           bulkInsertOrUpdate: true,
-            //           printQuery: true
-            //         })
-            //         .then(ordered_services => {
-            //           resultOrder = ordered_services
-            //           return resolve(ordered_services);
-            //         }).catch(error => {
-            //           _mysql.rollBackTransaction(() => {
-            //             next(error);
-            //           });
-            //         });
-            //     } else {
-            //       return resolve();
-            //     }
-            //   } catch (e) {
-            //     reject(e);
-            //   }
-            // })
-            //   .then(result => { })
-            //   .catch(e => {
-            //     _mysql.rollBackTransaction(() => {
-            //       next(e);
-            //     });
-            //   })
-
-            let servicesForPreAproval = [];
-            let patient_id;
-            let doctor_id;
-            let visit_id;
-
-            let services = new LINQ(req.body.billdetails)
-              .Select(s => {
-                patient_id = s.patient_id;
-                doctor_id = s.doctor_id;
-                visit_id = s.visit_id;
-                return s.services_id;
-              })
-              .ToArray();
-
-            if (services.length > 0) {
-              servicesForPreAproval.push(patient_id);
-              servicesForPreAproval.push(doctor_id);
-              servicesForPreAproval.push(visit_id);
-              servicesForPreAproval.push(services);
-
-              _mysql
-                .executeQuery({
-                  query:
-                    "SELECT OS.hims_f_ordered_services_id, OS.services_id, OS.created_date, OS.service_type_id, OS.test_type, \
-                        S.physiotherapy_service, S.service_name from hims_f_ordered_services OS \
-                        inner join hims_d_services S where S.hims_d_services_id = OS.services_id and `patient_id`=? and \
-                        `doctor_id`=? and `visit_id`=? and `services_id` in (?);",
-                  values: servicesForPreAproval,
-                  printQuery: true
-                })
-                .then(ResultOfFetchOrderIds => {
-                  let detailsPush = new LINQ(req.body.billdetails)
-                    .Where(g => g.pre_approval == "Y")
-                    .Select(s => {
-                      return {
-                        ...s,
-                        ...{
-                          hims_f_ordered_services_id: new LINQ(
-                            ResultOfFetchOrderIds
-                          )
-                            .Where(w => w.services_id == s.services_id)
-                            .FirstOrDefault().hims_f_ordered_services_id
-                        }
-                      };
+                console.log("insert_order_services", insert_order_services)
+                if (insert_order_services.length != 0) {
+                  _mysql
+                    .executeQuery({
+                      query: "INSERT INTO hims_f_ordered_services(??) VALUES ?",
+                      values: insert_order_services,
+                      includeValues: IncludeValues,
+                      extraValues: {
+                        created_by: req.userIdentity.algaeh_d_app_user_id,
+                        created_date: new Date(),
+                        updated_by: req.userIdentity.algaeh_d_app_user_id,
+                        updated_date: new Date(),
+                        hospital_id: req.userIdentity.hospital_id
+                      },
+                      bulkInsertOrUpdate: true,
+                      printQuery: true
                     })
-                    .ToArray();
-                  console.log("length", detailsPush.length);
-                  if (detailsPush.length > 0) {
-                    console.log("detailsPush", detailsPush);
-                    const insurtCols = [
-                      "hims_f_ordered_services_id",
-                      "service_id",
-                      "visit_id",
-                      "insurance_provider_id",
-                      "insurance_network_office_id",
-                      "network_id",
-                      "icd_code",
-                      "requested_quantity",
-                      "insurance_service_name",
-                      "doctor_id",
-                      "patient_id",
-                      "ser_gross_amt",
-                      "ser_net_amount",
-                      "services_id"
-                    ];
-
-                    _mysql
-                      .executeQuery({
-                        query: "INSERT INTO hims_f_service_approval(??) VALUES ?",
-                        values: detailsPush,
-                        includeValues: insurtCols,
-                        replcaeKeys: {
-                          services_id: "service_id",
-                          ser_gross_amt: "gross_amt",
-                          ser_net_amount: "net_amount",
-                          hims_f_ordered_services_id: "ordered_services_id"
-                        },
-                        extraValues: {
-                          created_by: req.userIdentity.algaeh_d_app_user_id,
-                          created_date: new Date(),
-                          updated_by: req.userIdentity.algaeh_d_app_user_id,
-                          updated_date: new Date()
-                        },
-                        bulkInsertOrUpdate: true,
-                        printQuery: true
-                      })
-                      .then(resultPreAprvl => {
-                        req.records = { resultPreAprvl, ResultOfFetchOrderIds };
-                        next();
-                      })
-                      .catch(error => {
-                        _mysql.rollBackTransaction(() => {
-                          next(error);
-                        });
+                    .then(ordered_services => {
+                      resultOrder = ordered_services
+                      return resolve(ordered_services);
+                    }).catch(error => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
                       });
-                  } else {
-                    req.records = { resultOrder, ResultOfFetchOrderIds };
-                    next();
+                    });
+                } else {
+                  return resolve();
+                }
+              } catch (e) {
+                reject(e);
+              }
+            })
+              .then(result => {
+                new Promise((resolve, reject) => {
+                  try {
+                    const update_Order_Service = _.filter(input.billdetails, f => {
+                      return f.hims_f_ordered_services_id > 0;
+                    });
+
+                    console.log("update_Order_Service", update_Order_Service)
+                    if (update_Order_Service.length != 0) {
+                      let strQry = ""
+                      const pre_approval = _.filter(update_Order_Service, f => {
+                        return f.pre_approval === "N";
+                      });
+
+                      if (pre_approval.length > 0) {
+                        let order_ids = _.map(pre_approval, o => {
+                          return o.hims_f_ordered_services_id;
+                        });
+
+                        strQry += mysql.format(
+                          "DELETE FROM hims_f_service_approval where ordered_services_id in (?);",
+                          [order_ids]
+                        );
+                      }
+
+                      for (let i = 0; i < update_Order_Service.length; i++) {
+                        strQry += mysql.format(
+                          "UPDATE `hims_f_ordered_services` SET pre_approval=?, quantity=?, \
+                          unit_cost=?, gross_amount=?, discount_amout=?, discount_percentage=?, net_amout=?, \
+                          copay_percentage=?, copay_amount=?, deductable_amount=?, deductable_percentage=?,tax_inclusive=?, \
+                          patient_tax=?, company_tax=?, total_tax=?, patient_resp=?, patient_payable=?, comapany_resp=?, \
+                          company_payble=?, teeth_number=?, d_treatment_id=?, updated_date=?,updated_by=? \
+                          where hims_f_ordered_services_id=?;",
+                          [
+                            update_Order_Service[i].pre_approval,
+                            update_Order_Service[i].quantity,
+                            update_Order_Service[i].unit_cost,
+                            update_Order_Service[i].gross_amount,
+                            update_Order_Service[i].discount_amout,
+                            update_Order_Service[i].discount_percentage,
+                            update_Order_Service[i].net_amout,
+                            update_Order_Service[i].copay_percentage,
+                            update_Order_Service[i].copay_amount,
+                            update_Order_Service[i].deductable_amount,
+                            update_Order_Service[i].deductable_percentage,
+                            update_Order_Service[i].tax_inclusive,
+                            update_Order_Service[i].patient_tax,
+                            update_Order_Service[i].company_tax,
+                            update_Order_Service[i].total_tax,
+                            update_Order_Service[i].patient_resp,
+                            update_Order_Service[i].patient_payable,
+                            update_Order_Service[i].comapany_resp,
+                            update_Order_Service[i].company_payble,
+                            update_Order_Service[i].teeth_number,
+                            update_Order_Service[i].d_treatment_id,
+                            moment().format("YYYY-MM-DD HH:mm"),
+                            req.userIdentity.algaeh_d_app_user_id,
+                            update_Order_Service[i].hims_f_ordered_services_id
+                          ]
+                        );
+                      }
+                      _mysql
+                        .executeQuery({
+                          query: strQry,
+                          printQuery: true,
+                        })
+                        .then(update_order_result => {
+                          console.log("result", update_order_result);
+                          return resolve(update_order_result);
+                        })
+                        .catch(error => {
+                          console.log("error", error);
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
+                        });
+                    } else {
+                      return resolve();
+                    }
+                  } catch (e) {
+                    reject(e);
                   }
                 })
-                .catch(error => {
-                  _mysql.rollBackTransaction(() => {
-                    next(error);
-                  });
+                  .then(result => {
+                    let servicesForPreAproval = [];
+                    let patient_id;
+                    let doctor_id;
+                    let visit_id;
+
+                    let services = new LINQ(req.body.billdetails)
+                      .Select(s => {
+                        patient_id = s.patient_id;
+                        doctor_id = s.doctor_id;
+                        visit_id = s.visit_id;
+                        return s.services_id;
+                      })
+                      .ToArray();
+
+                    if (services.length > 0) {
+                      servicesForPreAproval.push(patient_id);
+                      servicesForPreAproval.push(doctor_id);
+                      servicesForPreAproval.push(visit_id);
+                      servicesForPreAproval.push(services);
+
+                      _mysql
+                        .executeQuery({
+                          query:
+                            "SELECT OS.hims_f_ordered_services_id, OS.services_id, OS.created_date, OS.service_type_id, \
+                              OS.test_type, S.physiotherapy_service, S.service_name from hims_f_ordered_services OS \
+                              inner join hims_d_services S where S.hims_d_services_id = OS.services_id and `patient_id`=? and \
+                              `doctor_id`=? and `visit_id`=? and `services_id` in (?);",
+                          values: servicesForPreAproval,
+                          printQuery: true
+                        })
+                        .then(ResultOfFetchOrderIds => {
+                          let detailsPush = new LINQ(req.body.billdetails)
+                            .Where(g => g.pre_approval == "Y")
+                            .Select(s => {
+                              return {
+                                ...s,
+                                ...{
+                                  hims_f_ordered_services_id: new LINQ(
+                                    ResultOfFetchOrderIds
+                                  )
+                                    .Where(w => w.services_id == s.services_id)
+                                    .FirstOrDefault().hims_f_ordered_services_id
+                                }
+                              };
+                            })
+                            .ToArray();
+                          console.log("length", detailsPush.length);
+                          if (detailsPush.length > 0) {
+                            console.log("detailsPush", detailsPush);
+                            const insurtCols = [
+                              "hims_f_ordered_services_id",
+                              "service_id",
+                              "visit_id",
+                              "insurance_provider_id",
+                              "insurance_network_office_id",
+                              "network_id",
+                              "icd_code",
+                              "requested_quantity",
+                              "insurance_service_name",
+                              "doctor_id",
+                              "patient_id",
+                              "ser_gross_amt",
+                              "ser_net_amount",
+                              "services_id"
+                            ];
+
+                            _mysql
+                              .executeQuery({
+                                query: "INSERT INTO hims_f_service_approval(??) VALUES ?",
+                                values: detailsPush,
+                                includeValues: insurtCols,
+                                replcaeKeys: {
+                                  services_id: "service_id",
+                                  ser_gross_amt: "gross_amt",
+                                  ser_net_amount: "net_amount",
+                                  hims_f_ordered_services_id: "ordered_services_id"
+                                },
+                                extraValues: {
+                                  created_by: req.userIdentity.algaeh_d_app_user_id,
+                                  created_date: new Date(),
+                                  updated_by: req.userIdentity.algaeh_d_app_user_id,
+                                  updated_date: new Date()
+                                },
+                                bulkInsertOrUpdate: true,
+                                printQuery: true
+                              })
+                              .then(resultPreAprvl => {
+                                req.records = { resultPreAprvl, ResultOfFetchOrderIds };
+                                next();
+                              })
+                              .catch(error => {
+                                _mysql.rollBackTransaction(() => {
+                                  next(error);
+                                });
+                              });
+                          } else {
+                            req.records = { resultOrder, ResultOfFetchOrderIds };
+                            next();
+                          }
+                        })
+                        .catch(error => {
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
+                        });
+                    } else {
+                      req.records = { resultOrder, ResultOfFetchOrderIds };
+                      next();
+                    }
+                  })
+                  .catch(e => {
+                    _mysql.rollBackTransaction(() => {
+                      next(e);
+                    });
+                  })
+
+
+              })
+              .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
                 });
-            } else {
-              req.records = { resultOrder, ResultOfFetchOrderIds };
-              next();
-            }
+              });
           })
           .catch(e => {
             _mysql.rollBackTransaction(() => {
@@ -1929,6 +1981,114 @@ let insertPhysiotherapyServices = (req, res, next) => {
     });
   }
 };
+
+function deleteOrderServices(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      let delete_order_services = options.delete_order_services;
+      let _mysql = options._mysql;
+      console.log("delete_order_services", delete_order_services)
+      if (delete_order_services.length != 0) {
+
+        const lab_order_services = _.filter(delete_order_services, f => {
+          return f.service_type === "LAB";
+        });
+
+        const rad_order_services = _.filter(delete_order_services, f => {
+          return f.service_type === "RAD";
+        });
+
+        console.log("lab_order_services", lab_order_services.length)
+        console.log("rad_order_services", rad_order_services.length)
+        // let _salary_processed_emp = _.map(rad_order_services, o => {
+        //   return o.hims_f_ordered_services_id;
+        // });
+
+        let strQuery = "";
+
+        if (lab_order_services.length > 0) {
+          let lab_order_ids = _.map(lab_order_services, o => {
+            return o.hims_f_ordered_services_id;
+          });
+          strQuery += _mysql.mysqlQueryFormat(
+            "SELECT hims_f_lab_order_id from hims_f_lab_order where ordered_services_id in (?);",
+            [lab_order_ids]
+          );
+        } else {
+          strQuery += "SELECT 1;";
+        }
+
+        console.log("strQuery", strQuery)
+
+        _mysql
+          .executeQuery({
+            query: strQuery,
+            printQuery: true
+          })
+          .then(result => {
+            console.log("result", result[0])
+            let strQry = "";
+            let order_ids = _.map(delete_order_services, o => {
+              return o.hims_f_ordered_services_id;
+            });
+
+            let first_result = result[0];
+            console.log("order_ids", order_ids)
+            console.log("hims_f_lab_order_id:", first_result.hims_f_lab_order_id)
+            strQry += _mysql.mysqlQueryFormat(
+              "DELETE FROM hims_f_service_approval where ordered_services_id in (?);",
+              [order_ids]
+            );
+
+            if (lab_order_services.length > 0) {
+              strQry += _mysql.mysqlQueryFormat(
+                "DELETE FROM hims_f_ord_analytes where order_id in (?); DELETE FROM hims_f_lab_sample where order_id in (?);\
+                      DELETE FROM hims_f_lab_order where hims_f_lab_order_id in (?);",
+                [
+                  first_result.hims_f_lab_order_id,
+                  first_result.hims_f_lab_order_id,
+                  first_result.hims_f_lab_order_id
+                ]
+              );
+            }
+            if (rad_order_services.length > 0) {
+              strQry += _mysql.mysqlQueryFormat(
+                "DELETE FROM hims_f_rad_order where ordered_services_id in (?);",
+                [order_ids]
+              );
+            }
+            strQry += _mysql.mysqlQueryFormat(
+              "DELETE FROM hims_f_ordered_services where hims_f_ordered_services_id in (?);",
+              [order_ids,]
+            );
+            console.log("strQry", strQry)
+            _mysql
+              .executeQuery({
+                query: strQry,
+                printQuery: true
+              })
+              .then(delete_result => {
+                resolve();
+              })
+              .catch(error => {
+                options.next(e);
+              });
+          })
+          .catch(error => {
+            options.next(e);
+          });
+
+
+      } else {
+        resolve();
+      }
+    } catch (e) {
+      reject(e);
+    }
+  }).catch(e => {
+    options.next(e);
+  });
+}
 
 export default {
   insertOrderedServices,
