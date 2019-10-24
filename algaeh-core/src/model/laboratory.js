@@ -76,10 +76,10 @@ let getLabOrderedServices = (req, res, next) => {
       inner join hims_f_patient P on LO.patient_id=P.hims_d_patient_id and  P.record_status='A'\
       left outer join hims_f_lab_sample LS on  LO.hims_f_lab_order_id = LS.order_id  and LS.record_status='A' \
       left join hims_d_title as T on T.his_d_title_id = E.title_id   WHERE " +
-          whereOrder +
-          (where.condition == ""
-            ? "" + " order by hims_f_lab_order_id desc"
-            : " AND " + where.condition),
+        whereOrder +
+        (where.condition == ""
+          ? "" + " order by hims_f_lab_order_id desc"
+          : " AND " + where.condition),
         where.values
       );
 
@@ -155,7 +155,7 @@ let insertLadOrderedServices = (req, res, next) => {
     if (labServices.length > 0) {
       _mysql
         .executeQuery({
-          query: "INSERT INTO hims_f_lab_order(??) VALUES ?",
+          query: "INSERT IGNORE INTO hims_f_lab_order(??) VALUES ?",
           values: labServices,
           includeValues: IncludeValues,
           extraValues: {
@@ -234,7 +234,7 @@ let insertLadOrderedServices = (req, res, next) => {
 
                   _mysql
                     .executeQuery({
-                      query: "INSERT INTO hims_f_lab_sample(??) VALUES ?",
+                      query: "INSERT IGNORE INTO hims_f_lab_sample(??) VALUES ?",
                       values: insertedLabSample,
                       includeValues: sample,
                       extraValues: {
@@ -291,7 +291,7 @@ let insertLadOrderedServices = (req, res, next) => {
                         _mysql
                           .executeQuery({
                             query:
-                              "INSERT INTO hims_f_ord_analytes(??) VALUES ?",
+                              "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ?",
                             values: labAnalytes,
                             includeValues: analyts,
                             extraValues: {
@@ -425,8 +425,8 @@ let insertLadOrderedServicesBackUp = (req, res, next) => {
     debugLog("labServices", labServices);
     connection.query(
       "INSERT INTO hims_f_lab_order(" +
-        insurtColumns.join(",") +
-        ",created_by,updated_by,hospital_id)  VALUES ?",
+      insurtColumns.join(",") +
+      ",created_by,updated_by,hospital_id)  VALUES ?",
       [
         jsonArrayToObject({
           sampleInputObject: insurtColumns,
@@ -513,8 +513,8 @@ let insertLadOrderedServicesBackUp = (req, res, next) => {
                 const sample = ["order_id", "sample_id"];
                 connection.query(
                   "insert into hims_f_lab_sample(" +
-                    sample.join(",") +
-                    ",created_by,updated_by) VALUES ?",
+                  sample.join(",") +
+                  ",created_by,updated_by) VALUES ?",
                   [
                     jsonArrayToObject({
                       sampleInputObject: sample,
@@ -565,8 +565,8 @@ let insertLadOrderedServicesBackUp = (req, res, next) => {
                       debugLog("labAnalytes: ", labAnalytes);
                       connection.query(
                         "insert into hims_f_ord_analytes(" +
-                          analyts.join(",") +
-                          ",created_by,updated_by) VALUES ?",
+                        analyts.join(",") +
+                        ",created_by,updated_by) VALUES ?",
                         [
                           jsonArrayToObject({
                             sampleInputObject: analyts,
@@ -715,10 +715,10 @@ SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
               debugLog("condition: ", condition);
               connection.query(
                 query +
-                  ";update hims_f_lab_order set lab_id_number ='" +
-                  labIdNumber +
-                  "',status='CL' where hims_f_lab_order_id=" +
-                  req.body.hims_f_lab_order_id,
+                ";update hims_f_lab_order set lab_id_number ='" +
+                labIdNumber +
+                "',status='CL' where hims_f_lab_order_id=" +
+                req.body.hims_f_lab_order_id,
                 condition,
                 (error, returns) => {
                   if (error) {
@@ -777,7 +777,7 @@ let getTestAnalytes = (req, res, next) => {
       db.query(
         "SELECT *,la.description from hims_f_ord_analytes, hims_d_lab_analytes la where hims_f_ord_analytes.record_status='A' \
         and la.hims_d_lab_analytes_id = hims_f_ord_analytes.analyte_id AND" +
-          where.condition,
+        where.condition,
         where.values,
 
         (error, result) => {
@@ -1071,26 +1071,26 @@ let updateLabResultEntry = (req, res, next) => {
           if (results != null && ref != null) {
             connection.query(
               "update hims_f_lab_order set `status`='" +
-                ref +
-                "',entered_date= '" +
-                moment().format("YYYY-MM-DD HH:mm") +
-                "',entered_by= '" +
-                user_id.updated_by +
-                "',confirmed_date= '" +
-                moment().format("YYYY-MM-DD HH:mm") +
-                "',confirmed_by= '" +
-                user_id.updated_by +
-                "',validated_date= '" +
-                moment().format("YYYY-MM-DD HH:mm") +
-                "',validated_by= '" +
-                user_id.updated_by +
-                "',updated_date= '" +
-                moment().format("YYYY-MM-DD HH:mm") +
-                "',run_type='" +
-                runtype[0] +
-                "',updated_by='" +
-                user_id.updated_by +
-                "' where hims_f_lab_order_id=? ",
+              ref +
+              "',entered_date= '" +
+              moment().format("YYYY-MM-DD HH:mm") +
+              "',entered_by= '" +
+              user_id.updated_by +
+              "',confirmed_date= '" +
+              moment().format("YYYY-MM-DD HH:mm") +
+              "',confirmed_by= '" +
+              user_id.updated_by +
+              "',validated_date= '" +
+              moment().format("YYYY-MM-DD HH:mm") +
+              "',validated_by= '" +
+              user_id.updated_by +
+              "',updated_date= '" +
+              moment().format("YYYY-MM-DD HH:mm") +
+              "',run_type='" +
+              runtype[0] +
+              "',updated_by='" +
+              user_id.updated_by +
+              "' where hims_f_lab_order_id=? ",
               [inputParam[0].order_id],
               (error, result) => {
                 if (error) {

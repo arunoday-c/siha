@@ -144,10 +144,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
                                 $this.state.network_id;
                               Service_data.billdetails[i].policy_number =
                                 $this.state.policy_number;
-                              Service_data.billdetails[
-                                i
-                              ].insurance_service_name =
-                                $this.state.insurance_service_name;
+
                               Service_data.billdetails[i].sec_company =
                                 $this.state.sec_insured;
                               // Service_data.billdetails[i].icd_code === Service_data.billdetails[0].icd_code;
@@ -251,8 +248,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
                     $this.state.sub_insurance_provider_id;
                   data.billdetails[0].network_id = $this.state.network_id;
                   data.billdetails[0].policy_number = $this.state.policy_number;
-                  data.billdetails[0].insurance_service_name =
-                    $this.state.insurance_service_name;
+
                   // data.billdetails[0].icd_code = "1";
                   // data.billdetails[0].icd_code === ""
                   //   ? null
@@ -434,7 +430,16 @@ const ProcessService = ($this, favouriteOrder, e) => {
 const deleteServices = ($this, row) => {
   let orderservicesdata = $this.state.orderservicesdata;
   let preserviceInput = $this.state.preserviceInput;
-  let deleteserviceInput = $this.state.deleteserviceInput
+  let deleteserviceInput = $this.state.deleteserviceInput;
+
+  let service_type =
+    row.service_type_id === 5
+      ? "LAB"
+      : row.service_type_id === 11
+        ? "RAD"
+        : row.service_type_id === 2
+          ? "PRO"
+          : null;
 
   const get_selected_row = _.find(
     preserviceInput,
@@ -446,7 +451,7 @@ const deleteServices = ($this, row) => {
 
   const _order_index = orderservicesdata.indexOf(row);
   if (row.hims_f_ordered_services_id > 0) {
-    deleteserviceInput.push({ hims_f_ordered_services_id: row.hims_f_ordered_services_id })
+    deleteserviceInput.push({ hims_f_ordered_services_id: row.hims_f_ordered_services_id, service_type: service_type })
   }
 
   orderservicesdata.splice(_order_index, 1);
@@ -465,6 +470,7 @@ const deleteServices = ($this, row) => {
   preserviceInput.splice(_index, 1);
   let app_amt = $this.state.approval_amt - row["company_payble"];
 
+  debugger
   if ($this.state.approval_limit_yesno === "Y") {
     if (app_amt < $this.state.preapp_limit_amount) {
       for (var k = 0; k < preserviceInput.length; k++) {
@@ -479,7 +485,42 @@ const deleteServices = ($this, row) => {
         onSuccess: response => {
           if (response.data.success) {
             let data = response.data.records;
+            // for (
+            //   let i = 0;
+            //   i < Service_data.billdetails.length;
+            //   i++
+            // ) {
+            //   Service_data.billdetails[i].visit_id =
+            //     $this.state.visit_id;
+            //   Service_data.billdetails[i].patient_id =
+            //     $this.state.patient_id;
 
+            //   Service_data.billdetails[i].doctor_id =
+            //     Window.global["provider_id"];
+            //   Service_data.billdetails[i].insurance_provider_id =
+            //     $this.state.insurance_provider_id;
+            //   Service_data.billdetails[i].insurance_sub_id =
+            //     $this.state.sub_insurance_provider_id;
+            //   Service_data.billdetails[i].network_id =
+            //     $this.state.network_id;
+            //   Service_data.billdetails[i].policy_number =
+            //     $this.state.policy_number;
+
+            //   Service_data.billdetails[i].sec_company =
+            //     $this.state.sec_insured;
+            //   // Service_data.billdetails[i].icd_code === Service_data.billdetails[0].icd_code;
+            //   // Approval Table
+
+            //   Service_data.billdetails[
+            //     i
+            //   ].insurance_network_office_id =
+            //     $this.state.hims_d_insurance_network_office_id;
+
+            //   Service_data.billdetails[i].requested_quantity =
+            //     Service_data.billdetails[i].quantity;
+            //   Service_data.billdetails[i].test_type =
+            //     $this.state.test_type;
+            // }
             algaehApiCall({
               uri: "/billing/billingCalculations",
               module: "billing",
@@ -521,22 +562,70 @@ const deleteServices = ($this, row) => {
         }
       });
     } else {
-      $this.setState({
-        orderservicesdata: orderservicesdata,
-        deleteserviceInput: deleteserviceInput,
-        preserviceInput: preserviceInput,
-        approval_amt: app_amt,
-        saved: saved
+      algaehApiCall({
+        uri: "/billing/billingCalculations",
+        module: "billing",
+        method: "POST",
+        data: { billdetails: orderservicesdata },
+        onSuccess: response => {
+          if (response.data.success) {
+            $this.setState({
+              orderservicesdata: orderservicesdata,
+              deleteserviceInput: deleteserviceInput,
+              preserviceInput: preserviceInput,
+              approval_amt: app_amt,
+              saved: saved,
+              sub_total_amount: response.data.records.sub_total_amount,
+              discount_amount: response.data.records.discount_amount,
+              net_total: response.data.records.net_total,
+              patient_payable: response.data.records.patient_payable,
+              company_payble: response.data.records.company_payble,
+              copay_amount: response.data.records.copay_amount,
+              sec_copay_amount: response.data.records.sec_copay_amount,
+            });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
       });
+
     }
   } else {
-    $this.setState({
-      deleteserviceInput: deleteserviceInput,
-      orderservicesdata: orderservicesdata,
-      preserviceInput: preserviceInput,
-      approval_amt: app_amt,
-      saved: saved
+    algaehApiCall({
+      uri: "/billing/billingCalculations",
+      module: "billing",
+      method: "POST",
+      data: { billdetails: orderservicesdata },
+      onSuccess: response => {
+        if (response.data.success) {
+          $this.setState({
+            deleteserviceInput: deleteserviceInput,
+            orderservicesdata: orderservicesdata,
+            preserviceInput: preserviceInput,
+            approval_amt: app_amt,
+            saved: saved,
+            sub_total_amount: response.data.records.sub_total_amount,
+            discount_amount: response.data.records.discount_amount,
+            net_total: response.data.records.net_total,
+            patient_payable: response.data.records.patient_payable,
+            company_payble: response.data.records.company_payble,
+            copay_amount: response.data.records.copay_amount,
+            sec_copay_amount: response.data.records.sec_copay_amount,
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
     });
+
   }
 };
 //Save Order
@@ -549,12 +638,14 @@ const SaveOrdersServices = ($this, e) => {
       let inputObj = {
         visit_id: $this.state.visit_id,
         approval_amt: $this.state.approval_amt,
+        approval_limit_yesno: $this.state.approval_limit_yesno,
         patient_id: $this.state.patient_id,
         incharge_or_provider: Window.global["provider_id"],
         doctor_id: Window.global["provider_id"],
         ordered_by: Window.global["provider_id"],
         billed: "N",
-        billdetails: $this.state.orderservicesdata
+        billdetails: $this.state.orderservicesdata,
+        deleteserviceInput: $this.state.deleteserviceInput
       };
       algaehApiCall({
         uri: "/orderAndPreApproval/insertOrderedServices",
@@ -596,7 +687,8 @@ const SaveOrdersServices = ($this, e) => {
                 sec_company_paybale: null,
                 sub_total_amount: null,
                 discount_amount: null,
-                net_total: null
+                net_total: null,
+                deleteserviceInput: []
               },
               () => {
                 if ($this.serviceSocket.connected) {
@@ -1054,8 +1146,7 @@ const ProcessFromFavourite = ($this, from) => {
                             $this.state.network_id;
                           Service_data.billdetails[i].policy_number =
                             $this.state.policy_number;
-                          // Service_data.billdetails[i].insurance_service_name =
-                          //   $this.state.insurance_service_name;
+
                           Service_data.billdetails[i].sec_company =
                             $this.state.sec_insured;
                           // Service_data.billdetails[i].icd_code === Service_data.billdetails[0].icd_code;
@@ -1164,8 +1255,7 @@ const ProcessFromFavourite = ($this, from) => {
                   $this.state.sub_insurance_provider_id;
                 data.billdetails[c].network_id = $this.state.network_id;
                 data.billdetails[c].policy_number = $this.state.policy_number;
-                // data.billdetails[c].insurance_service_name =
-                //   $this.state.insurance_service_name;
+
                 // data.billdetails[c].icd_code = "1";
                 // data.billdetails[0].icd_code === ""
                 //   ? null

@@ -2355,6 +2355,9 @@ export default {
                 let ser_gross_amt = 0;
                 let icd_code = "";
                 let covered = "Y";
+                let billed = servicesDetails.billed == undefined
+                  ? "N"
+                  : servicesDetails.billed;
                 let preapp_limit_amount =
                   servicesDetails.preapp_limit_amount == undefined
                     ? 0
@@ -2798,7 +2801,7 @@ export default {
                     sec_company_tax: 0,
                     sec_company_paybale: 0,
                     sec_copay_percntage: 0,
-                    sec_copay_amount: 0
+                    sec_copay_amount: 0,
                   },
                   {
                     service_type_id: records.service_type_id,
@@ -2856,7 +2859,8 @@ export default {
                     package_type: servicesDetails.package_type,
                     actual_amount: servicesDetails.actual_amount,
                     pack_expiry_date: servicesDetails.expiry_date,
-                    hims_f_ordered_services_id: servicesDetails.hims_f_ordered_services_id
+                    hims_f_ordered_services_id: servicesDetails.hims_f_ordered_services_id,
+                    billed: billed
                   }
                 );
 
