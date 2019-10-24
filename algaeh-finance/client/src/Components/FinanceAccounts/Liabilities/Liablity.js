@@ -1,97 +1,117 @@
-import React from "react";
-import SortableTree from "react-sortable-tree";
+import React, { useState, useEffect } from "react";
+import SortableTree, {
+  getNodeAtPath,
+  addNodeUnderParent,
+  removeNodeAtPath
+} from "react-sortable-tree";
 import "react-sortable-tree/style.css"; // This only needs to be imported once in your app
-
+import AddNewAccount from "../AddNewAccount/AddNewAccount";
 import "./liablity.scss";
-import {
-  AlgaehFormGroup,
-  AlgaehDateHandler,
-  AlgaehDropDown
-} from "../../../Wrappers";
-import {
-  currency_list,
-  liabilityType,
-  interestperiodType
-} from "../../../data/dropdownList";
+import { getAccounts } from ".././FinanceAccountEvent";
+import swal from "sweetalert2";
 
 export default function Liablity() {
-  const maxDepth = 5;
+  const [treeData, setTreeData] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedNode, setSelectedNode] = useState({});
+  const [selectHead, setSelectHead] = useState(false);
 
-  const renderDepthTitle = ({ path }) => `Depth: ${path.length}`;
-
-  const treeData = [
-    {
-      title: "Current Liabilities",
-      //subtitle: "`subtitle`",
-      expanded: true,
-      children: [
-        {
-          title: "Child Node",
-          subtitle: "Defined in `children` array belonging to parent"
-        },
-        {
-          title: "Child Node",
-          subtitle: "Defined in `children` array belonging to parent"
-        }
-      ]
-    },
-    {
-      title: "Accounts Payable",
-      //subtitle: "`subtitle`",
-      expanded: true,
-      children: [
-        {
-          title: "Child Node",
-          subtitle: "Defined in `children` array belonging to parent"
-        },
-        {
-          title: "Child Node",
-          subtitle: "Defined in `children` array belonging to parent"
-        }
-      ]
-    },
-    {
-      title: "Cheque Issued",
-      //subtitle: "`subtitle`",
-      expanded: true,
-      children: [
-        {
-          title: "Child Node",
-          subtitle: "Defined in `children` array belonging to parent"
-        },
-        {
-          title: "Child Node",
-          subtitle: "Defined in `children` array belonging to parent"
-        }
-      ]
-    },
-    {
-      title: "Deferred Income",
-      //subtitle: "`subtitle`",
-      expanded: true,
-      children: [
-        {
-          title: "Child Node",
-          subtitle: "Defined in `children` array belonging to parent"
-        },
-        {
-          title: "Child Node",
-          subtitle: "Defined in `children` array belonging to parent"
-        }
-      ]
+  useEffect(() => {
+    if (treeData.length === 0) {
+      getAccounts(("2"), data => {
+        setTreeData(data);
+      });
     }
-  ];
+  }, [treeData]);
 
+
+  function addNode(rowInfo, options, addedNode) {
+    return new Promise((resolve, reject) => {
+      try {
+        debugger
+        const { treeData } = options;
+        // let NEW_NODE = { title: addedNode.account_name };
+        let { node, treeIndex, path } = rowInfo;
+        let parentNode = getNodeAtPath({
+          treeData: treeData,
+          path: path,
+          getNodeKey: ({ treeIndex }) => treeIndex,
+          ignoreCollapsed: true
+        });
+        let getNodeKey = ({ node: object, treeIndex: number }) => {
+          return number;
+        };
+        let parentKey = getNodeKey(parentNode);
+        if (parentKey == -1) {
+          parentKey = null;
+        }
+        console.log(path, treeIndex);
+        let newTree = addNodeUnderParent({
+          treeData: treeData,
+          newNode: addedNode,
+          expandParent: true,
+          parentKey: parentKey,
+          getNodeKey: ({ treeIndex }) => treeIndex
+        });
+        resolve(newTree);
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
+  function removeNode(rowInfo, options) {
+    return new Promise((resolve, reject) => {
+      try {
+        const { treeData } = options;
+        let { node, treeIndex, path } = rowInfo;
+        console.log(path, treeIndex);
+
+        const removeNodeData = removeNodeAtPath({
+          treeData: treeData,
+          path: path,
+          getNodeKey: ({ node: TreeNode, treeIndex: number }) => {
+            return number;
+          },
+          ignoreCollapsed: false
+        });
+        resolve(removeNodeData);
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
   return (
     <div className="container-fluid liablityModuleScreen">
+
+
+      <AddNewAccount
+        showPopup={showPopup}
+        selectedNode={selectedNode}
+        onClose={e => {
+          setShowPopup(false);
+          if (e !== undefined) {
+            addNode(selectedNode, { treeData }, e).then(newTree => {
+              debugger
+              setTreeData(newTree.treeData);
+            });
+          }
+        }}
+      />
+
       <div className="portlet portlet-bordered margin-bottom-15">
         <div className="portlet-title">
           <div className="caption">
-            <h3 className="caption-subject">Liablity accounts</h3>
+            <h3 className="caption-subject">Liability accounts</h3>
           </div>
           <div className="actions">
-            {" "}
-            <button className="btn btn-primary btn-circle active">
+            <button
+              className="btn btn-primary btn-circle active"
+              onClick={() => {
+                setSelectHead(true);
+                setShowPopup(true);
+              }}
+            >
               <i className="fas fa-plus" />
             </button>
           </div>
@@ -99,16 +119,85 @@ export default function Liablity() {
         <div className="portlet-body">
           <div className="col">
             <div className="row">
-              {" "}
               <div style={{ height: 400, width: "100vw" }}>
-                <SortableTree treeData={treeData} />
-              </div>{" "}
+                <SortableTree
+                  treeData={treeData}
+                  onChange={treeData => {
+                    setTreeData(treeData);
+                  }}
+                  isVirtualized={true}
+                  canDrag={rowInfo => {
+                    return rowInfo.node.canDrag === true ? true : false;
+                  }}
+                  generateNodeProps={rowInfo => {
+                    return {
+                      buttons: [
+                        <div>
+                          {rowInfo.node.head_created_from === "U" ? (
+                            <button
+                              label="Delete"
+                              onClick={event => {
+                                let child_exists =
+                                  rowInfo.node.children === undefined
+                                    ? ""
+                                    : rowInfo.node.children.length > 0
+                                      ? "This node exists Sub Accounts, If delete childs also will get delete !"
+                                      : "";
+                                // rowInfo
+                                swal
+                                  .fire({
+                                    title: "Are you sure want to Remove?",
+                                    text: child_exists,
+                                    type: "warning",
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#3085d6",
+                                    cancelButtonColor: "#d33",
+                                    confirmButtonText: "Yes, delete it!"
+                                  })
+                                  .then(willProceed => {
+                                    if (willProceed.value) {
+                                      removeNode(rowInfo, { treeData })
+                                        .then(newTree => {
+                                          setTreeData(newTree);
+                                        })
+                                        .catch(error => {
+                                          alert(error);
+                                        });
+                                    }
+                                  });
+                              }}
+                            >
+                              Remove
+                            </button>
+                          ) : null}
+
+                          {rowInfo.node.leafnode === "N" ? (
+                            <button
+                              label="Add"
+                              onClick={event => {
+                                setSelectHead(false);
+                                setShowPopup(true);
+                                setSelectedNode(rowInfo);
+                              }}
+                            >
+                              Add
+                            </button>
+                          ) : null}
+                        </div>
+                      ],
+                      style: {
+                        height: "50px"
+                      }
+                    };
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="card">
+      {/* <div className="card">
         <h5 className="card-header">New Liablity Account</h5>
         <div className="card-body">
           <div className="row">
@@ -316,7 +405,7 @@ export default function Liablity() {
             Clear
           </button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
