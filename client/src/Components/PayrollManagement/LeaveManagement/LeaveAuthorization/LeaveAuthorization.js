@@ -590,14 +590,14 @@ export default class LeaveAuthorization extends Component {
                           <AlgaehLabel label={{ forceLabel: "Designation" }} />
                         )
                       },
-                      {
-                        fieldName: "sub_department_name",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Sub Department" }}
-                          />
-                        )
-                      },
+                      // {
+                      //   fieldName: "sub_department_name",
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{ forceLabel: "Sub Department" }}
+                      //     />
+                      //   )
+                      // },
                       {
                         fieldName: "leave_description",
                         label: (
