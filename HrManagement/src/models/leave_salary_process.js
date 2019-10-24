@@ -15,7 +15,7 @@ export default {
       const _mysql = new algaehMysql();
       const _leaveSalary = req.query;
 
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
 
       // utilities.logger().log("getLeaveSalaryProcess: ");
       _mysql
@@ -80,6 +80,9 @@ export default {
                   } else {
                     to_date_month = parseFloat(to_date_month);
                   }
+                  if (to_date_month > 12) {
+                    to_date_month = 1;
+                  }
                 } else {
                   from_date_month = parseFloat(from_date_month);
                   to_date_month = parseFloat(to_date_month);
@@ -92,6 +95,7 @@ export default {
                 console.log("to_date", to_date);
 
                 while (from_date <= to_date) {
+                  console.log("from_date", from_date);
                   console.log("to_date_month", to_date_month);
 
                   let fromDate_firstDate = null;
@@ -112,8 +116,6 @@ export default {
                     let selected_year = moment(from_date).year();
                     let selected_month = moment(from_date).format("M");
                     let selected_day = moment(from_date).format("DD");
-                    console.log("selected_day", selected_day);
-                    console.log("at_st_date", hrms_options.at_st_date);
 
                     if (
                       parseFloat(selected_day) >=
@@ -122,11 +124,13 @@ export default {
                       date_month = date_month + 1;
                       console.log("date_month in if con:", date_month);
                     }
+                    if (date_month > 12) {
+                      date_month = 1;
+                    }
 
                     console.log("date_month", date_month);
 
                     if (to_date_month === date_month) {
-                      console.log("Im here");
                       fromDate_firstDate = moment(
                         selected_year +
                           "-" +
@@ -146,24 +150,52 @@ export default {
                         .add(1, "M")
                         .format("YYYY-MM-DD");
                     } else {
-                      fromDate_firstDate = moment(
-                        selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_st_date,
-                        "YYYY-MM-DD"
-                      )
-                        .add(-1, "M")
-                        .format("YYYY-MM-DD");
+                      console.log("selected_day", selected_day);
+                      console.log("at_st_date", hrms_options.at_st_date);
+                      if (
+                        parseFloat(selected_day) >=
+                        parseFloat(hrms_options.at_st_date)
+                      ) {
+                        console.log("True", selected_day);
 
-                      fromDate_lastDate = moment(
-                        selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_end_date
-                      ).format("YYYY-MM-DD");
+                        fromDate_firstDate = moment(
+                          selected_year +
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_st_date,
+                          "YYYY-MM-DD"
+                        ).format("YYYY-MM-DD");
+
+                        fromDate_lastDate = moment(
+                          selected_year +
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_end_date
+                        )
+                          .add(1, "M")
+                          .format("YYYY-MM-DD");
+                      } else {
+                        fromDate_firstDate = moment(
+                          selected_year +
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_st_date,
+                          "YYYY-MM-DD"
+                        )
+                          .add(-1, "M")
+                          .format("YYYY-MM-DD");
+
+                        fromDate_lastDate = moment(
+                          selected_year +
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_end_date
+                        ).format("YYYY-MM-DD");
+                      }
                     }
                   } else {
                     fromDate_firstDate = moment(from_date)
@@ -176,6 +208,7 @@ export default {
 
                   console.log("fromDate_firstDate", fromDate_firstDate);
                   console.log("fromDate_lastDate", fromDate_lastDate);
+
                   if (to_date_month == date_month) {
                     // console.log("Im here 1");
                     // console.log("from_date_month", from_date_month);
@@ -301,12 +334,12 @@ export default {
             return;
           }
 
-          let balance_leave_days =
-            parseFloat(employee_leave_salary.balance_leave_days) -
-            parseFloat(req.query.leave_period);
+          // let balance_leave_days =
+          //   parseFloat(employee_leave_salary.balance_leave_days) -
+          //   parseFloat(req.query.leave_period);
           let leave_amount = 0;
           let airfare_amount = 0;
-          let airfare_months = 0;
+          // let airfare_months = 0;
 
           let intValue = 0;
           // if (balance_leave_days > 0) {
@@ -382,6 +415,9 @@ export default {
                     // ) {
                     // }
                     selected_month = parseFloat(selected_month) + 1;
+                    if (selected_month > 12) {
+                      selected_month = 1;
+                    }
                     selected_month = String(selected_month).toString();
                   }
 
@@ -411,7 +447,7 @@ export default {
                 utilities.logger().log("date_month: ", date_month);
                 utilities.logger().log("intValue: ", intValue);
 
-                if (end_date_month == date_month && intValue > 0) {
+                if (end_date_month == date_month || intValue > 0) {
                   utilities.logger().log("intValue_inside: ", intValue);
                   req.query.leave_end_date = end_date;
                   req.query.leave_salary = "Y";

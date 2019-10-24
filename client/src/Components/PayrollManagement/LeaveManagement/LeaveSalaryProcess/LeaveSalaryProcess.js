@@ -143,11 +143,13 @@ class LeaveSalaryProcess extends Component {
                 <h3 className="caption-subject">
                   Leave Salary Details -{" "}
                   {this.state.status === "PEN" ? (
-                    <span class="badge badge-info">Salary Pending</span>
+                    <span className="badge badge-info">Salary Pending</span>
                   ) : this.state.status === "PRO" ? (
-                    <span class="badge badge-success">Salary Processed</span>
+                    <span className="badge badge-success">
+                      Salary Processed
+                    </span>
                   ) : this.state.status === "CAN" ? (
-                    <span class="badge badge-danger">Cancelled</span>
+                    <span className="badge badge-danger">Cancelled</span>
                   ) : (
                     ""
                   )}
@@ -243,7 +245,9 @@ class LeaveSalaryProcess extends Component {
                       {
                         fieldName: "start_date",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Start Date" }} />
+                          <AlgaehLabel
+                            label={{ forceLabel: "Salary Start Date" }}
+                          />
                         ),
                         displayTemplate: row => {
                           return <span>{dateFormater(row.start_date)}</span>;
@@ -252,7 +256,9 @@ class LeaveSalaryProcess extends Component {
                       {
                         fieldName: "end_date",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "End Date" }} />
+                          <AlgaehLabel
+                            label={{ forceLabel: "Salary End Date" }}
+                          />
                         ),
                         displayTemplate: row => {
                           return <span>{dateFormater(row.end_date)}</span>;
