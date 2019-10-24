@@ -14,7 +14,6 @@ import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 import {
-  serviceTypeHandeler,
   texthandle,
   serviceHandeler,
   ProcessService,
@@ -22,7 +21,6 @@ import {
   SaveOrdersServices,
   calculateAmount,
   updateBillDetail,
-  onchangegridcol,
   EditGrid,
   makeZeroIngrid,
   openFavouriteOrder,
@@ -91,7 +89,8 @@ class OrderingServices extends Component {
       addNewService: false,
       all_favouriteservices: [],
       add_to_list: true,
-      all_favourites: []
+      all_favourites: [],
+      deleteserviceInput: []
     };
   }
 
@@ -205,9 +204,20 @@ class OrderingServices extends Component {
     ) {
       let output = nextProps.existinginsurance[0];
       output.insured = "Y";
+      output.approval_amt = nextProps.approval_amt;
+      output.orderservicesdata = nextProps.orderedList
+      output.preserviceInput = nextProps.preserviceInput
+
+
       this.setState({ ...output });
     } else {
-      this.setState({ insured: "N" });
+      let approval_amt = nextProps.approval_amt
+      this.setState({
+        insured: "N",
+        approval_amt: approval_amt,
+        orderservicesdata: nextProps.orderedList,
+        preserviceInput: nextProps.preserviceInput
+      });
     }
   }
 
@@ -420,10 +430,10 @@ class OrderingServices extends Component {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -440,10 +450,10 @@ class OrderingServices extends Component {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -467,8 +477,8 @@ class OrderingServices extends Component {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.services_id
-                                );
+                                f => f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -485,8 +495,8 @@ class OrderingServices extends Component {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.services_id
-                                );
+                                f => f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -727,10 +737,10 @@ class OrderingServices extends Component {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -759,8 +769,8 @@ class OrderingServices extends Component {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.services_id
-                                );
+                                f => f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -951,27 +961,3 @@ export default withRouter(
     mapDispatchToProps
   )(OrderingServices)
 );
-{
-  /*
-  {
-    fieldName: "quantity",
-    label: (
-      <AlgaehLabel label={{ fieldName: "quantity" }} />
-    ),
-    disabled: true,
-    others: {
-      minWidth: 80
-    }
-  },
-
-  {
-    fieldName: "gross_amount",
-    label: (
-      <AlgaehLabel label={{ fieldName: "gross_amount" }} />
-    ),
-    disabled: true,
-    others: {
-      minWidth: 110
-    }
-  },*/
-}

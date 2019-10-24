@@ -129,9 +129,74 @@ class PayRollDetails extends Component {
       <React.Fragment>
         <div className="hptl-phase1-add-employee-form popRightDiv">
           <div className="row">
-            <div className="col-lg-6 primary-details">
+            <div className="col-12">
+              <div className="row" style={{ marginTop: 15 }}>
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Gross Salary"
+                    }}
+                  />
+                  <h6>{getAmountFormart(this.state.gross_salary)}</h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Total Earning"
+                    }}
+                  />
+                  <h6>{getAmountFormart(this.state.total_earnings)}</h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Total Deduction"
+                    }}
+                  />
+                  <h6>{getAmountFormart(this.state.total_deductions)}</h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Total Emp. Contribution"
+                    }}
+                  />
+                  <h6>{getAmountFormart(this.state.total_contributions)}</h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Net Salary"
+                    }}
+                  />
+                  <h6>{getAmountFormart(this.state.net_salary)}</h6>
+                </div>
+                <div
+                  className="col"
+                  style={{
+                    border: "1px dashed #d3d3d3",
+                    background: "rgb(194, 255, 249)"
+                  }}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Cost to Company"
+                    }}
+                  />
+                  <h6 style={{ fontWeight: "bold" }}>
+                    {getAmountFormart(this.state.cost_to_company)}
+                  </h6>
+                </div>
+              </div>
+              <hr
+                style={{
+                  marginTop: 0
+                }}
+              ></hr>
+            </div>
+            <div className="col-4 primary-details">
               <h5>
-                <span>Salary Earnings Breakup</span>
+                <span>Earnings Details</span>
               </h5>
               {/* <div className="row">
                 <div
@@ -155,7 +220,7 @@ class PayRollDetails extends Component {
                 data-validate="EarnComponent"
               >
                 <AlagehAutoComplete
-                  div={{ className: "col-4" }}
+                  div={{ className: "col" }}
                   label={{
                     forceLabel: "Earnings Type",
                     isImp: true
@@ -174,7 +239,7 @@ class PayRollDetails extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-4" }}
+                  div={{ className: "col-3" }}
                   label={{
                     forceLabel: "Amount",
                     isImp:
@@ -200,7 +265,7 @@ class PayRollDetails extends Component {
                   }}
                 />
 
-                <div className="col" style={{ paddingTop: "19px" }}>
+                <div className="col-2" style={{ paddingTop: "19px" }}>
                   <button
                     className="btn btn-default"
                     onClick={AddEarnComponent.bind(this, this)}
@@ -209,7 +274,6 @@ class PayRollDetails extends Component {
                   </button>
                 </div>
               </div>
-              <hr />
               <div className="row padding-bottom-5">
                 <div className="col-12" id="EarningComponent_Cntr">
                   <AlgaehDataGrid
@@ -256,6 +320,11 @@ class PayRollDetails extends Component {
                                 : ""}
                             </span>
                           );
+                        },
+                        others: {
+                          style: {
+                            //textAlign: "left"
+                          }
                         }
                       },
                       {
@@ -286,6 +355,12 @@ class PayRollDetails extends Component {
                               }}
                             />
                           );
+                        },
+                        others: {
+                          maxWidth: 90,
+                          style: {
+                            textAlign: "right"
+                          }
                         }
                       }
                       // ,{
@@ -332,68 +407,17 @@ class PayRollDetails extends Component {
                   />
                 </div>
               </div>
-              <hr />
-              <div className="row padding-bottom-5">
-                <div className="col-3">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Gross Salary"
-                    }}
-                  />
-                  <h6>{getAmountFormart(this.state.gross_salary)}</h6>
-                </div>
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Total Earning"
-                    }}
-                  />
-                  <h6>{getAmountFormart(this.state.total_earnings)}</h6>
-                </div>
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Total Deduction"
-                    }}
-                  />
-                  <h6>{getAmountFormart(this.state.total_deductions)}</h6>
-                </div>
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Total Emp. Contribution"
-                    }}
-                  />
-                  <h6>{getAmountFormart(this.state.total_contributions)}</h6>
-                </div>
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Net Salary"
-                    }}
-                  />
-                  <h6>{getAmountFormart(this.state.net_salary)}</h6>
-                </div>
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Cost to Company"
-                    }}
-                  />
-                  <h6>{getAmountFormart(this.state.cost_to_company)}</h6>
-                </div>
-              </div>
             </div>
-            <div className="col-lg-6 secondary-details">
+            <div className="col-4 primary-details">
               <h5>
-                <span>Salary Deduction Breakup</span>
+                <span>Deduction Details</span>
               </h5>
               <div
                 className="row padding-bottom-5"
                 data-validate="DeductionComponent"
               >
                 <AlagehAutoComplete
-                  div={{ className: "col-4" }}
+                  div={{ className: "col" }}
                   label={{
                     forceLabel: "Deduction Type",
                     isImp: true
@@ -412,7 +436,7 @@ class PayRollDetails extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-4" }}
+                  div={{ className: "col-3" }}
                   label={{
                     forceLabel: "Amount",
                     isImp:
@@ -443,7 +467,7 @@ class PayRollDetails extends Component {
                     }
                   }}
                 />
-                <div className="col" style={{ paddingTop: "19px" }}>
+                <div className="col-2" style={{ paddingTop: "19px" }}>
                   <button
                     className="btn btn-default"
                     onClick={AddDeductionComponent.bind(this, this)}
@@ -498,6 +522,11 @@ class PayRollDetails extends Component {
                                 : ""}
                             </span>
                           );
+                        },
+                        others: {
+                          style: {
+                            //textAlign: "left"
+                          }
                         }
                       },
                       {
@@ -525,6 +554,12 @@ class PayRollDetails extends Component {
                               }}
                             />
                           );
+                        },
+                        others: {
+                          maxWidth: 90,
+                          style: {
+                            textAlign: "right"
+                          }
                         }
                       }
                     ]}
@@ -540,15 +575,17 @@ class PayRollDetails extends Component {
                   />
                 </div>
               </div>
+            </div>
+            <div className="col-4 secondary-details">
               <h5>
-                <span>Employee Contribution Breakup</span>
+                <span>Contribution Details</span>
               </h5>
               <div
                 className="row padding-bottom-5"
                 data-validate="ContributeComponent"
               >
                 <AlagehAutoComplete
-                  div={{ className: "col-4" }}
+                  div={{ className: "col" }}
                   label={{
                     forceLabel: "Contribution Type",
                     isImp: true
@@ -567,7 +604,7 @@ class PayRollDetails extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-4" }}
+                  div={{ className: "col-3" }}
                   label={{
                     forceLabel: "Amount",
                     isImp:
@@ -598,7 +635,7 @@ class PayRollDetails extends Component {
                     }
                   }}
                 />
-                <div className="col" style={{ paddingTop: "19px" }}>
+                <div className="col-2" style={{ paddingTop: "19px" }}>
                   <button
                     className="btn btn-default"
                     onClick={AddContributionComponent.bind(this, this)}
@@ -656,6 +693,11 @@ class PayRollDetails extends Component {
                                 : ""}
                             </span>
                           );
+                        },
+                        others: {
+                          style: {
+                            //textAlign: "left"
+                          }
                         }
                       },
                       {
@@ -683,6 +725,12 @@ class PayRollDetails extends Component {
                               }}
                             />
                           );
+                        },
+                        others: {
+                          maxWidth: 90,
+                          style: {
+                            textAlign: "right"
+                          }
                         }
                       }
                     ]}

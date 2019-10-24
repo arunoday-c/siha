@@ -825,7 +825,7 @@ export default {
           internal_error: true,
           message: "No receipt details"
         };
-        _mysql.rollBackTransaction(() => {});
+        _mysql.rollBackTransaction(() => { });
         next();
         return;
       } else if (
@@ -2377,7 +2377,7 @@ export default {
                     prices = allCompany_price.find(item => {
                       return (
                         item.insurance_id ==
-                          input[i]["primary_insurance_provider_id"] &&
+                        input[i]["primary_insurance_provider_id"] &&
                         item.services_id == input[i]["hims_d_services_id"]
                       );
                     });
@@ -2702,8 +2702,8 @@ export default {
                       from_pos == "Y"
                         ? unit_cost
                         : unit_cost != 0
-                        ? unit_cost
-                        : records.standard_fee;
+                          ? unit_cost
+                          : records.standard_fee;
                   }
 
                   // if (conversion_factor != 0) {
@@ -2855,7 +2855,8 @@ export default {
                     package_visit_type: servicesDetails.package_visit_type,
                     package_type: servicesDetails.package_type,
                     actual_amount: servicesDetails.actual_amount,
-                    pack_expiry_date: servicesDetails.expiry_date
+                    pack_expiry_date: servicesDetails.expiry_date,
+                    hims_f_ordered_services_id: servicesDetails.hims_f_ordered_services_id
                   }
                 );
 
@@ -3466,8 +3467,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                     from_pos == "Y"
                       ? unit_cost
                       : unit_cost != 0
-                      ? unit_cost
-                      : records.standard_fee;
+                        ? unit_cost
+                        : records.standard_fee;
                 }
 
                 // if (conversion_factor != 0) {

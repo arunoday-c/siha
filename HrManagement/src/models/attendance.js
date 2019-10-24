@@ -899,14 +899,11 @@ export default {
 
                         //ST---- reduce include holidays and weekoff
 
-                    
-
                         allEmployees[i]["defaults"].total_holidays -=
                           allEmployees[i]["defaults"].holiday_include;
                         allEmployees[i]["defaults"].total_week_off -=
                           allEmployees[i]["defaults"].week_off_include;
 
-                   
                         //EN---- reduce include holidays and weekoff
 
                         allEmployees[i]["defaults"].present_days =
@@ -930,8 +927,6 @@ export default {
                           parseFloat(
                             allEmployees[i]["defaults"].pending_leaves
                           );
-
-                      
 
                         attendanceArray.push({
                           employee_id: allEmployees[i]["hims_d_employee_id"],
@@ -3247,8 +3242,6 @@ export default {
                         );
                       }
 
-                      
-
                       //last month 10 days
                       for (let i = 0; i < LastTenDaysResult.length; i++) {
                         let shortage_time = 0;
@@ -3492,8 +3485,6 @@ export default {
                                       attResult[i]["employee_id"]
                                   )
                                   .Sum(s => s.updaid_leave_duration);
-
-                               
 
                                 insertArray.push({
                                   ...attResult[i],
@@ -6264,8 +6255,6 @@ export default {
                         });
                       });
 
-                      
-
                       req.records = final_roster;
                       next();
                     } else {
@@ -6421,6 +6410,7 @@ export default {
                           day["status"]
                         } not  PR </li>`;
                       }
+                      break;
 
                     case "PR":
                       if (day["worked_status"] == day["status"]) {
@@ -6648,8 +6638,6 @@ export default {
                   }
                 });
               });
-
-            
 
               if (insertArray.length > 0 && errorString == "") {
                 const insurtColumns = [
@@ -7668,7 +7656,7 @@ function getDaysArray(start, end) {
 
     return arr;
   } catch (e) {
-   // utilities.logger().log("error rr: ", e);
+    // utilities.logger().log("error rr: ", e);
   }
 }
 

@@ -3,13 +3,13 @@ import React, { useState, useEffect } from "react";
 import "./assets.scss";
 import {
   AlgaehFormGroup,
-  AlgaehDateHandler,
   AlgaehDropDown,
   AlgaehModalPopUp
 } from "../../../Wrappers";
 import ButtonType from "../../../Wrappers/algaehButton";
 import { AccountType } from "../../../utils/GlobalVariables";
-import moment from "moment";
+import { AddNewAccountDetails } from "./AssetEvents";
+import { swalMessage } from "../../../utils/algaehApiCall";
 
 export default function AddNewAccount(props) {
   const [lodingAddtoList, setLoadingAddtoList] = useState("");
@@ -19,6 +19,7 @@ export default function AddNewAccount(props) {
   const [opening_balance, setOpeningBalance] = useState(0);
   // const [opening_balance_date, setOpeningBalanceDate] = useState("");
   const { showPopup, onClose, selectedNode } = props;
+
 
   return (
     <AlgaehModalPopUp
@@ -34,49 +35,49 @@ export default function AddNewAccount(props) {
           <h5 className="card-header">New Asset Account</h5>
           <div className="card-body">
             <div className="row">
-            <AlgaehDropDown
-              div={{
-                className: "form-group algaeh-select-fld col-xs-4 col-md-3"
-              }}
-              label={{
-                forceLabel: "Select Default Currency",
-                isImp: true
-              }}
-              selector={{
-                className: "form-control",
-                value:account_type,
-                name: "account_type",
-                onChange: e => {
-                  debugger
-                  setAccountType(e.target.value);
-                }
-              }}
-              dataSource={{
-                textField: "name",
-                valueField: "value",
-                data: AccountType
-              }}
-            />
-            <AlgaehFormGroup
-              div={{
-                className: "form-group algaeh-text-fld col-xs-4 col-md-3"
-              }}
-              label={{
-                forceLabel: "Account Code",
-                isImp: true
-              }}
-              textBox={{
-                type: "text",
-                value: account_code,
-                className: "form-control",
-                id: "name",
-                onChange: e => {
-                  setAccountCode(e.target.value);
-                },
-                placeholder: " Enter Account Code",
-                autocomplete: false
-              }}
-            />
+              <AlgaehDropDown
+                div={{
+                  className: "form-group algaeh-select-fld col-xs-4 col-md-3"
+                }}
+                label={{
+                  forceLabel: "Select Default Currency",
+                  isImp: true
+                }}
+                selector={{
+                  className: "form-control",
+                  value: account_type,
+                  name: "account_type",
+                  onChange: e => {
+                    debugger
+                    setAccountType(e.target.value);
+                  }
+                }}
+                dataSource={{
+                  textField: "name",
+                  valueField: "value",
+                  data: AccountType
+                }}
+              />
+              <AlgaehFormGroup
+                div={{
+                  className: "form-group algaeh-text-fld col-xs-4 col-md-3"
+                }}
+                label={{
+                  forceLabel: "Account Code",
+                  isImp: true
+                }}
+                textBox={{
+                  type: "text",
+                  value: account_code,
+                  className: "form-control",
+                  id: "name",
+                  onChange: e => {
+                    setAccountCode(e.target.value);
+                  },
+                  placeholder: " Enter Account Code",
+                  autocomplete: false
+                }}
+              />
 
               <AlgaehFormGroup
                 div={{
@@ -99,7 +100,7 @@ export default function AddNewAccount(props) {
                   autocomplete: false
                 }}
               />
-              {account_type === "C"? <AlgaehFormGroup
+              {account_type === "C" ? <AlgaehFormGroup
                 div={{
                   className: "form-group algaeh-text-fld col-xs-4 col-md-3"
                 }}
@@ -119,7 +120,7 @@ export default function AddNewAccount(props) {
                   placeholder: " Enter Opening Balance",
                   autocomplete: false
                 }}
-              />: null}
+              /> : null}
 
               {/* {account_type === "C"?
               <AlgaehDateHandler
@@ -154,15 +155,50 @@ export default function AddNewAccount(props) {
                 classname="btn-primary"
                 loading={lodingAddtoList}
                 onClick={() => {
-                  debugger
-                  // setLoadingAddtoList(true);
-                  setAccountCode("");
-                  setAccountName("");
-                  setAccountType("G");
-                  setOpeningBalance(0);
-                  // setOpeningBalanceDate("");
-                  onClose({title:account_name, leafnode:account_type === "G"?"N":"Y", head_created_from:"U"});
+                  setLoadingAddtoList(true);
+                  AddNewAccountDetails(
+                    { finance_account_head_id: selectedNode.node.finance_account_head_id, account_name: account_name },
+                    errorMessage => {
+                      setAccountCode("");
+                      setAccountName("");
+                      setAccountType("G");
+                      setOpeningBalance(0);
+                      onClose();
+                      setLoadingAddtoList(false);
+                      swalMessage({
+                        type: "error",
+                        title: errorMessage
+                      });
+                    },
+                    result => {
+                      setAccountCode("");
+                      setAccountName("");
+                      setAccountType("G");
+                      setOpeningBalance(0);
+                      onClose({
+                        title: account_name,
+                        leafnode: account_type === "G" ? "N" : "Y",
+                        head_created_from: "U",
+                        finance_account_head_id: result.insertId
+                      });
+                      setLoadingAddtoList(false);
+                      swalMessage({
+                        type: "success",
+                        title: "Added Successfully ..."
+                      });
+                    }
+                  );
                 }}
+                // onClick={() => {
+                //   debugger
+                //   // setLoadingAddtoList(true);
+                //   setAccountCode("");
+                //   setAccountName("");
+                //   setAccountType("G");
+                //   setOpeningBalance(0);
+                //   // setOpeningBalanceDate("");
+                //   onClose({title:account_name, leafnode:account_type === "G"?"N":"Y", head_created_from:"U"});
+                // }}
                 label={{
                   forceLabel: "Add to List",
                   returnText: true
@@ -174,7 +210,6 @@ export default function AddNewAccount(props) {
                   setAccountName("");
                   setAccountType("G");
                   setOpeningBalance(0);
-                  // setOpeningBalanceDate("");
                   onClose();
                 }}
                 type="button"
