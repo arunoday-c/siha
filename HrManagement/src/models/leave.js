@@ -811,16 +811,7 @@ export default {
                                     .ToArray();
 
                                   if (monthArray.length > 0) {
-                                    utilities
-                                      .logger()
-                                      .log(
-                                        "monthArray: ",
-                                        input.employee_id +
-                                          "" +
-                                          input.year +
-                                          "" +
-                                          input.leave_id
-                                      );
+                                  
                                     _mysql
                                       .executeQuery({
                                         query: `select L.leave_category, hims_f_employee_monthly_leave_id, total_eligible,close_balance, ${monthArray} ,availed_till_date
@@ -910,7 +901,7 @@ export default {
                                               });
                                             })
                                             .value();
-                                          console.log("finalData:", finalData);
+                                          
 
                                           let insertPendLeave = "";
                                           if (
@@ -5982,9 +5973,6 @@ function projectedleaveCalcNEW(input, _mysql) {
   const to_date = input.to_date;
   // const year = moment(from_date, "YYYY-MM-DD").format("YYYY");
 
-  console.log("INSIDE PROJECTED")
-  console.log("input.from_date",input.from_date);
-  console.log("input.to_date",input.to_date);
   const attendance_starts = input.attendance_starts;
   const at_end_date = input.at_end_date;
 
@@ -6010,10 +5998,7 @@ function projectedleaveCalcNEW(input, _mysql) {
         moment(to_date, "YYYY-MM-DD").format("YYYYMMDD")
       );
       //-----------NEW
-      console.log("input.from_date",input.from_date);
-      console.log("from_date_month_n_date",from_date_month_n_date);
-      console.log("to_date_month_n_date",to_date_month_n_date);
-      console.log("cur_year_max_date",cur_year_max_date);
+ 
       if (
         from_date_month_n_date > cur_year_max_date ||
         to_date_month_n_date > cur_year_max_date
@@ -6980,6 +6965,8 @@ function yearlyLeaveProcess(inputs, req, mysql) {
                  parseFloat(100)
              );
 
+
+
             update_old_records.push({
               reduce_close_Balance: deduct_close_Balance,
               leave_id: carry_fwd_leav.leave_id,
@@ -6989,6 +6976,10 @@ function yearlyLeaveProcess(inputs, req, mysql) {
               carry_forward_leave: carry_fwd
             });
 
+
+            console.log("carry_forward_percentage:",carry_fwd_leav.carry_forward_percentage)
+            console.log("input.carry_forward:",input.carry_forward)
+            console.log("carry_fwd after %:",carry_fwd)
 
             m["close_balance"] = 
               parseFloat(carry_fwd) + parseFloat(m["eligible_days"])
@@ -7405,19 +7396,21 @@ function validateLeaveApplictn(inputs, my_sql,req) {
                 input["from_across_anual_leave"]="Y";
                
 
-                partA_res["cur_year_utilized"]=0;
+                // partA_res["cur_year_utilized"]=0;
                 // input["projected_applied_leaves"]=partA_res["predicted_leave_days"];
 
               if (max_available_leave >= calculatedLeaveDays||input.cancel == "Y") {              
                 partA_res["projected_applied_leaves"] =parseFloat(calculatedLeaveDays) -parseFloat(actualClosingBal);
                 input["carry_forward"]=parseFloat(max_available_leave)-parseFloat(calculatedLeaveDays);
               } 
-              else if(next_year_max_available>= calculatedLeaveDays){
-                input["carry_forward"]=parseFloat(calculatedLeaveDays)-parseFloat(next_year_max_available);
+              // else if(next_year_max_available>= calculatedLeaveDays){
+
+              //   console.log("INSIDE CAR:",next_year_max_available)
+              //   input["carry_forward"]=parseFloat(calculatedLeaveDays)-parseFloat(next_year_max_available);
              
-                partA_res["cur_year_utilized"]= parseFloat(calculatedLeaveDays)-parseFloat(max_available_leave)
+              //   partA_res["cur_year_utilized"]= parseFloat(calculatedLeaveDays)-parseFloat(max_available_leave)
              
-              }
+              // }
               else {
                 reject({
                   invalid_input: true,
@@ -7494,7 +7487,7 @@ function validateLeaveApplictn(inputs, my_sql,req) {
                             });
                         }
                       }).then(leavePresent => {
-                        console.log("leavePresent:", "leavePresent");
+                        console.log("PART A DONE");
 
                         input["from_date"] = next_year_from_date;
                         input["to_date"] = next_year_to_date;
@@ -7504,6 +7497,9 @@ function validateLeaveApplictn(inputs, my_sql,req) {
                         
                         calculateNoLeaveDays(input, _mysql)
                           .then(partB_res => {
+
+
+                            console.log("partB_res:",partB_res);
                             const calculatedLeaveDays =
                               parseFloat(partA_res.calculatedLeaveDays) +
                               parseFloat(partB_res.calculatedLeaveDays);
@@ -7520,13 +7516,20 @@ function validateLeaveApplictn(inputs, my_sql,req) {
 
                               if(input.from_across_anual_leave=="Y"){
 
-                            const A_plus_B_Max_available=  parseFloat(partA_res["predicted_leave_days"]) +
-                            parseFloat(  partA_res["actualClosingBal"])+parseFloat(partB_res["predicted_leave_days"]);
+                         
+                          
+                        
+                            const A_Max=  parseFloat(partA_res["predicted_leave_days"]) +parseFloat(  partA_res["actualClosingBal"]);
+                            const B_Max=  parseFloat(partB_res["predicted_leave_days"]) +parseFloat(  partB_res["actualClosingBal"]);
 
-                            const A_plus_B_applied=  parseFloat(partA_res.calculatedLeaveDays) +
-                            parseFloat(partB_res.calculatedLeaveDays);
+
+                          
 
  
+
+
+
+
 
                                  let  partA_projected_applied_leaves = 0;
 
@@ -7538,30 +7541,18 @@ function validateLeaveApplictn(inputs, my_sql,req) {
                               }
 
 
-                              const utilized =
-                              parseFloat(partB_res.actualClosingBal)+
-                              parseFloat(partB_res["predicted_leave_days"])-
-                              parseFloat(partB_res.calculatedLeaveDays) +
-                              parseFloat(partA_res["cur_year_utilized"]);
-
-
+                         
 
                               let partB_projected_applied_leaves =0;
-                              
-                              if(parseFloat(partB_res["predicted_leave_days"])-parseFloat(utilized)>0){
-
-                                partB_projected_applied_leaves =parseFloat(partB_res["predicted_leave_days"])-parseFloat(utilized);
-
-                              }
-
-                              //    const partA_projected_applied_leaves =
-                              // parseFloat(partA_res.calculatedLeaveDays) -
-                              // parseFloat(partA_res.actualClosingBal);
+                             
 
 
-                              // const partB_projected_applied_leaves =
-                              // parseFloat(partB_res.calculatedLeaveDays) -
-                              // parseFloat(parseFloat(partA_res["cur_year_utilized"]));
+                              if(parseFloat(partB_res["calculatedLeaveDays"])>parseFloat(partB_res.actualClosingBal)&&B_Max>=parseFloat(partB_res.calculatedLeaveDays)){
+                                partB_projected_applied_leaves =  parseFloat(partB_res["predicted_leave_days"])-(parseFloat(B_Max)-parseFloat(partB_res.calculatedLeaveDays));
+
+                              } 
+
+                            
 
       console.log("partA_projected_applied_leaves:",partA_projected_applied_leaves);
       console.log("partB_projected_applied_leaves:",partB_projected_applied_leaves);
@@ -7570,7 +7561,7 @@ function validateLeaveApplictn(inputs, my_sql,req) {
                               parseFloat(partA_projected_applied_leaves) +
                               parseFloat(partB_projected_applied_leaves);
 
-                        if( A_plus_B_applied<= A_plus_B_Max_available ){
+                        if(A_Max>= partA_res.calculatedLeaveDays&&B_Max>=partB_res.calculatedLeaveDays ){
 
                               resolve({
 
