@@ -1,20 +1,11 @@
 // @flow
 import React, { useState, useEffect } from "react";
-import { Accordion } from "semantic-ui-react";
 import "./assets.scss";
-import {
-  AlgaehFormGroup,
-  AlgaehDateHandler,
-  AlgaehDropDown,
-  AlgaehModalPopUp
-} from "../../../Wrappers";
-import { currency_list, account_role } from "../../../data/dropdownList";
 import SortableTree, {
   getNodeAtPath,
   addNodeUnderParent,
   removeNodeAtPath
 } from "react-sortable-tree";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { getAssetsAccounts } from "./AssetEvents";
 import AddNewAccount from "./AddNewAccount";
 import swal from "sweetalert2";
@@ -37,6 +28,7 @@ export default function Assets() {
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
       try {
+        debugger
         const { treeData } = options;
         // let NEW_NODE = { title: addedNode.account_name };
         let { node, treeIndex, path } = rowInfo;
@@ -97,7 +89,11 @@ export default function Assets() {
         onClose={e => {
           setShowPopup(false);
           if (e !== undefined) {
+            // getAssetsAccounts(data => {
+            //   setTreeData(data);
+            // });
             addNode(selectedNode, { treeData }, e).then(newTree => {
+              debugger
               setTreeData(newTree.treeData);
             });
           }
@@ -145,8 +141,8 @@ export default function Assets() {
                                   rowInfo.node.children === undefined
                                     ? ""
                                     : rowInfo.node.children.length > 0
-                                    ? "This node exists Sub Accounts, If delete childs also will get delete !"
-                                    : "";
+                                      ? "This node exists Sub Accounts, If delete childs also will get delete !"
+                                      : "";
                                 // rowInfo
                                 swal
                                   .fire({
