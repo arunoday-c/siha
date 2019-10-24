@@ -49,7 +49,7 @@ export default {
             item.forEach((data, i) => {
               if (
                 data["finance_account_head_id"] ==
-                  input.finance_account_head_id &&
+                input.finance_account_head_id &&
                 data["finance_account_head_id"] > 0
               ) {
                 outputArray.push({
@@ -159,18 +159,31 @@ export default {
         select SUBSTRING_INDEX(account_code, '.', -1)+1\
         FROM finance_account_head where parent_acc_id=?)) as new_code\
         FROM finance_account_head where finance_account_head_id=?;\
-        select (sort_order)as sort_order FROM finance_account_head where parent_acc_id=?;",
+        select coalesce(max(sort_order),0)as sort_order FROM finance_account_head where parent_acc_id=?;",
         values: [
           input.finance_account_head_id,
           input.finance_account_head_id,
           input.finance_account_head_id
         ],
-        printQuery: false
+        printQuery: true
       })
       .then(result => {
-        const data = result[0];
+        console.log("result:", result)
+
+        const data = result[0][0];
         const sort_order = parseInt(result[1][0]["sort_order"]) + 1;
-        const account_code = data["new_code"];
+
+        console.log("sort_order:", sort_order)
+        let account_code = 0;
+
+        if (data["new_code"] == null) {
+          account_code = data["account_code"] + "." + 1;
+        } else {
+
+          account_code = data["new_code"];
+        }
+
+
         const account_name = input["account_name"];
         const account_parent = data["account_code"];
         const group_type = "C";
@@ -200,6 +213,7 @@ export default {
             printQuery: true
           })
           .then(resul => {
+            console.log("resul", resul)
             _mysql.releaseConnection();
             req.records = resul;
             next();
@@ -269,7 +283,7 @@ function createHierarchy(arry) {
   // utilities.logger().log("children:", children);
 
   // function to recursively build the tree
-  let findChildren = function(parent) {
+  let findChildren = function (parent) {
     if (children[parent.finance_account_head_id]) {
       const tempchilds = children[parent.finance_account_head_id];
       // let child = [];

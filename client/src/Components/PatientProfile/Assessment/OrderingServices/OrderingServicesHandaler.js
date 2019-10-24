@@ -14,43 +14,6 @@ const texthandle = ($this, ctrl, e) => {
   });
 };
 
-// When Service Type selects respective Service Type theService to be filter
-const serviceTypeHandeler = ($this, e) => {
-  $this.setState(
-    {
-      [e.name]: e.value,
-      s_service: null
-    },
-    () => {
-      if ($this.state.insured === "N") {
-        $this.props.getServices({
-          uri: "/serviceType/getService",
-          module: "masterSettings",
-          method: "GET",
-          data: { service_type_id: $this.state.s_service_type },
-          redux: {
-            type: "SERVICES_GET_DATA",
-            mappingName: "services"
-          }
-        });
-      } else {
-        $this.props.getServices({
-          uri: "/serviceType/getServiceInsured",
-          module: "masterSettings",
-          method: "GET",
-          data: {
-            insurance_id: $this.state.insurance_provider_id,
-            service_type_id: $this.state.s_service_type
-          },
-          redux: {
-            type: "SERVICES_INS_GET_DATA",
-            mappingName: "services"
-          }
-        });
-      }
-    }
-  );
-};
 
 const serviceHandeler = ($this, e) => {
   $this.setState({
@@ -268,6 +231,12 @@ const ProcessService = ($this, favouriteOrder, e) => {
                           );
                         }
                       });
+                    } else {
+                      $this.setState(
+                        {
+                          loading_ProcessService: false
+                        }
+                      );
                     }
                   });
                 } else {
@@ -462,9 +431,10 @@ const ProcessService = ($this, favouriteOrder, e) => {
 };
 
 //if services got delete and if pre apprival limit exceed
-const deleteServices = ($this, row, rowId) => {
+const deleteServices = ($this, row) => {
   let orderservicesdata = $this.state.orderservicesdata;
   let preserviceInput = $this.state.preserviceInput;
+  let deleteserviceInput = $this.state.deleteserviceInput
 
   const get_selected_row = _.find(
     preserviceInput,
@@ -475,6 +445,9 @@ const deleteServices = ($this, row, rowId) => {
   let saved = false;
 
   const _order_index = orderservicesdata.indexOf(row);
+  if (row.hims_f_ordered_services_id > 0) {
+    deleteserviceInput.push({ hims_f_ordered_services_id: row.hims_f_ordered_services_id })
+  }
 
   orderservicesdata.splice(_order_index, 1);
   if (orderservicesdata.length === 0) {
@@ -526,7 +499,8 @@ const deleteServices = ($this, row, rowId) => {
                     patient_payable: response.data.records.patient_payable,
                     company_payble: response.data.records.company_payble,
                     copay_amount: response.data.records.copay_amount,
-                    sec_copay_amount: response.data.records.sec_copay_amount
+                    sec_copay_amount: response.data.records.sec_copay_amount,
+                    deleteserviceInput: deleteserviceInput
                   });
                 }
               },
@@ -549,6 +523,7 @@ const deleteServices = ($this, row, rowId) => {
     } else {
       $this.setState({
         orderservicesdata: orderservicesdata,
+        deleteserviceInput: deleteserviceInput,
         preserviceInput: preserviceInput,
         approval_amt: app_amt,
         saved: saved
@@ -556,6 +531,7 @@ const deleteServices = ($this, row, rowId) => {
     }
   } else {
     $this.setState({
+      deleteserviceInput: deleteserviceInput,
       orderservicesdata: orderservicesdata,
       preserviceInput: preserviceInput,
       approval_amt: app_amt,
@@ -572,6 +548,7 @@ const SaveOrdersServices = ($this, e) => {
     () => {
       let inputObj = {
         visit_id: $this.state.visit_id,
+        approval_amt: $this.state.approval_amt,
         patient_id: $this.state.patient_id,
         incharge_or_provider: Window.global["provider_id"],
         doctor_id: Window.global["provider_id"],
@@ -783,13 +760,6 @@ const updateBillDetail = ($this, e) => {
   });
 };
 
-const onchangegridcol = ($this, row, e) => {
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-  row[name] = value;
-  // row.update();
-  calculateAmount($this, row, e);
-};
 
 const EditGrid = ($this, cancelRow) => {
   let _orderservicesdata = $this.state.orderservicesdata;
@@ -1307,7 +1277,6 @@ const ProcessFromFavourite = ($this, from) => {
   );
 };
 export {
-  serviceTypeHandeler,
   serviceHandeler,
   texthandle,
   ProcessService,
@@ -1315,7 +1284,6 @@ export {
   SaveOrdersServices,
   calculateAmount,
   updateBillDetail,
-  onchangegridcol,
   EditGrid,
   makeZeroIngrid,
   openFavouriteOrder,
@@ -1323,5 +1291,6 @@ export {
   selectToProcess,
   ProcessFromFavourite,
   openViewFavouriteOrder,
-  closeViewFavouriteOrder
+  closeViewFavouriteOrder,
+
 };
