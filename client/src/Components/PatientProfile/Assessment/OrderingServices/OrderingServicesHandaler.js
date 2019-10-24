@@ -109,6 +109,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
                         preserviceInput[k].approval_limit_yesno =
                           data.billdetails[0].preapp_limit_exceed;
                       }
+                      debugger
                       let approval_amt = data.billdetails[0].approval_amt;
                       let approval_limit_yesno =
                         data.billdetails[0].preapp_limit_exceed;
@@ -455,20 +456,9 @@ const deleteServices = ($this, row) => {
   }
 
   orderservicesdata.splice(_order_index, 1);
-  if (orderservicesdata.length === 0) {
-    saved = true;
 
-    $this.setState({
-      patient_payable: null,
-      company_payble: null,
-      sec_company_paybale: null,
-      sub_total_amount: null,
-      discount_amount: null,
-      net_total: null
-    });
-  }
   preserviceInput.splice(_index, 1);
-  let app_amt = $this.state.approval_amt - row["company_payble"];
+  let app_amt = parseFloat($this.state.approval_amt) - parseFloat(row["company_payble"]);
 
   debugger
   if ($this.state.approval_limit_yesno === "Y") {
@@ -485,42 +475,7 @@ const deleteServices = ($this, row) => {
         onSuccess: response => {
           if (response.data.success) {
             let data = response.data.records;
-            // for (
-            //   let i = 0;
-            //   i < Service_data.billdetails.length;
-            //   i++
-            // ) {
-            //   Service_data.billdetails[i].visit_id =
-            //     $this.state.visit_id;
-            //   Service_data.billdetails[i].patient_id =
-            //     $this.state.patient_id;
 
-            //   Service_data.billdetails[i].doctor_id =
-            //     Window.global["provider_id"];
-            //   Service_data.billdetails[i].insurance_provider_id =
-            //     $this.state.insurance_provider_id;
-            //   Service_data.billdetails[i].insurance_sub_id =
-            //     $this.state.sub_insurance_provider_id;
-            //   Service_data.billdetails[i].network_id =
-            //     $this.state.network_id;
-            //   Service_data.billdetails[i].policy_number =
-            //     $this.state.policy_number;
-
-            //   Service_data.billdetails[i].sec_company =
-            //     $this.state.sec_insured;
-            //   // Service_data.billdetails[i].icd_code === Service_data.billdetails[0].icd_code;
-            //   // Approval Table
-
-            //   Service_data.billdetails[
-            //     i
-            //   ].insurance_network_office_id =
-            //     $this.state.hims_d_insurance_network_office_id;
-
-            //   Service_data.billdetails[i].requested_quantity =
-            //     Service_data.billdetails[i].quantity;
-            //   Service_data.billdetails[i].test_type =
-            //     $this.state.test_type;
-            // }
             algaehApiCall({
               uri: "/billing/billingCalculations",
               module: "billing",
@@ -595,36 +550,53 @@ const deleteServices = ($this, row) => {
 
     }
   } else {
-    algaehApiCall({
-      uri: "/billing/billingCalculations",
-      module: "billing",
-      method: "POST",
-      data: { billdetails: orderservicesdata },
-      onSuccess: response => {
-        if (response.data.success) {
-          $this.setState({
-            deleteserviceInput: deleteserviceInput,
-            orderservicesdata: orderservicesdata,
-            preserviceInput: preserviceInput,
-            approval_amt: app_amt,
-            saved: saved,
-            sub_total_amount: response.data.records.sub_total_amount,
-            discount_amount: response.data.records.discount_amount,
-            net_total: response.data.records.net_total,
-            patient_payable: response.data.records.patient_payable,
-            company_payble: response.data.records.company_payble,
-            copay_amount: response.data.records.copay_amount,
-            sec_copay_amount: response.data.records.sec_copay_amount,
+    if (orderservicesdata.length > 0) {
+      algaehApiCall({
+        uri: "/billing/billingCalculations",
+        module: "billing",
+        method: "POST",
+        data: { billdetails: orderservicesdata },
+        onSuccess: response => {
+          if (response.data.success) {
+            $this.setState({
+              deleteserviceInput: deleteserviceInput,
+              orderservicesdata: orderservicesdata,
+              preserviceInput: preserviceInput,
+              approval_amt: app_amt,
+              saved: saved,
+              sub_total_amount: response.data.records.sub_total_amount,
+              discount_amount: response.data.records.discount_amount,
+              net_total: response.data.records.net_total,
+              patient_payable: response.data.records.patient_payable,
+              company_payble: response.data.records.company_payble,
+              copay_amount: response.data.records.copay_amount,
+              sec_copay_amount: response.data.records.sec_copay_amount,
+            });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
           });
         }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
+      });
+    } else {
+      saved = true;
+      $this.setState({
+        patient_payable: null,
+        company_payble: null,
+        sec_company_paybale: null,
+        sub_total_amount: null,
+        discount_amount: null,
+        net_total: null,
+        deleteserviceInput: deleteserviceInput,
+        orderservicesdata: orderservicesdata,
+        preserviceInput: preserviceInput,
+        approval_amt: app_amt,
+        saved: saved,
+      });
+    }
 
   }
 };
@@ -984,7 +956,8 @@ const ProcessFromFavourite = ($this, from) => {
   // orderedList
 
   let serviceInput = [];
-  let preserviceInput = $this.state.preserviceInput || [];
+  // let preserviceInput = $this.state.preserviceInput || [];
+  let preserviceInput = extend([], $this.state.preserviceInput);
   let Selected_Services = null;
   if (from === "Services") {
     Selected_Services = Enumerable.from($this.state.all_favouriteservices)
@@ -1114,7 +1087,9 @@ const ProcessFromFavourite = ($this, from) => {
                   for (let k = 0; k < preserviceInput.length; k++) {
                     preserviceInput[k].approval_limit_yesno = "Y";
                   }
-                  let approval_amt = data.billdetails[0].approval_amt;
+                  debugger
+                  let last_value = data.billdetails.length - 1
+                  let approval_amt = data.billdetails[last_value].approval_amt;
                   let approval_limit_yesno = "Y";
 
                   algaehApiCall({

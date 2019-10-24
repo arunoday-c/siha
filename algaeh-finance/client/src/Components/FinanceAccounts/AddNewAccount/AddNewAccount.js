@@ -1,6 +1,6 @@
 // @flow
 import React, { useState, useEffect } from "react";
-import "./assets.scss";
+import "./addnewaccount.scss";
 import {
   AlgaehFormGroup,
   AlgaehDropDown,
@@ -8,7 +8,7 @@ import {
 } from "../../../Wrappers";
 import ButtonType from "../../../Wrappers/algaehButton";
 import { AccountType } from "../../../utils/GlobalVariables";
-import { AddNewAccountDetails } from "./AssetEvents";
+import { AddNewAccountDetails } from "./AddNewAccEvent";
 import { swalMessage } from "../../../utils/algaehApiCall";
 
 export default function AddNewAccount(props) {
@@ -31,7 +31,7 @@ export default function AddNewAccount(props) {
       }}
     >
       <div className="popupInner" data-validate="LvEdtGrd">
-        <div className="container-fluid assetsModuleScreen">
+        <div className="container-fluid addnewaccountModuleScreen">
           <h5 className="card-header">New Asset Account</h5>
           <div className="card-body">
             <div className="row">
