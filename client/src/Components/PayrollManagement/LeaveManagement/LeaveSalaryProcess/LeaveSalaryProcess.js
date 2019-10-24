@@ -245,7 +245,9 @@ class LeaveSalaryProcess extends Component {
                       {
                         fieldName: "start_date",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Start Date" }} />
+                          <AlgaehLabel
+                            label={{ forceLabel: "Salary Start Date" }}
+                          />
                         ),
                         displayTemplate: row => {
                           return <span>{dateFormater(row.start_date)}</span>;
@@ -254,7 +256,9 @@ class LeaveSalaryProcess extends Component {
                       {
                         fieldName: "end_date",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "End Date" }} />
+                          <AlgaehLabel
+                            label={{ forceLabel: "Salary End Date" }}
+                          />
                         ),
                         displayTemplate: row => {
                           return <span>{dateFormater(row.end_date)}</span>;
