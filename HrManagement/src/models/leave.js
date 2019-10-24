@@ -6974,6 +6974,11 @@ function yearlyLeaveProcess(inputs, req, mysql) {
 
 
           if(input.from_across_anual_leave=="Y"){
+            const carry_fwd= Math.round(
+              ( parseFloat(input.carry_forward) *
+                 parseFloat(carry_fwd_leav.carry_forward_percentage)) /
+                 parseFloat(100)
+             );
 
             update_old_records.push({
               reduce_close_Balance: deduct_close_Balance,
@@ -6981,12 +6986,12 @@ function yearlyLeaveProcess(inputs, req, mysql) {
               employee_id: carry_fwd_leav.employee_id,
               year: carry_fwd_leav.year,
               carry_forward_done: "Y",
-              carry_forward_leave: input.carry_forward
+              carry_forward_leave: carry_fwd
             });
 
 
             m["close_balance"] = 
-              parseFloat(input.carry_forward) + parseFloat(m["eligible_days"])
+              parseFloat(carry_fwd) + parseFloat(m["eligible_days"])
             
             console.log("HERE:",m["close_balance"])
             return {
@@ -7523,16 +7528,43 @@ function validateLeaveApplictn(inputs, my_sql,req) {
 
  
 
-                                 const partA_projected_applied_leaves =
-                              parseFloat(partA_res.calculatedLeaveDays) -
-                              parseFloat(partA_res.actualClosingBal);
+                                 let  partA_projected_applied_leaves = 0;
+
+                              if(parseFloat(partA_res.calculatedLeaveDays) -
+                              parseFloat(partA_res.actualClosingBal)>0){
+                                partA_projected_applied_leaves=parseFloat(partA_res.calculatedLeaveDays) -
+                                parseFloat(partA_res.actualClosingBal);
+
+                              }
 
 
-                              const partB_projected_applied_leaves =
-                              parseFloat(partB_res.calculatedLeaveDays) -
-                              parseFloat(parseFloat(partA_res["cur_year_utilized"]));
+                              const utilized =
+                              parseFloat(partB_res.actualClosingBal)+
+                              parseFloat(partB_res["predicted_leave_days"])-
+                              parseFloat(partB_res.calculatedLeaveDays) +
+                              parseFloat(partA_res["cur_year_utilized"]);
 
 
+
+                              let partB_projected_applied_leaves =0;
+                              
+                              if(parseFloat(partB_res["predicted_leave_days"])-parseFloat(utilized)>0){
+
+                                partB_projected_applied_leaves =parseFloat(partB_res["predicted_leave_days"])-parseFloat(utilized);
+
+                              }
+
+                              //    const partA_projected_applied_leaves =
+                              // parseFloat(partA_res.calculatedLeaveDays) -
+                              // parseFloat(partA_res.actualClosingBal);
+
+
+                              // const partB_projected_applied_leaves =
+                              // parseFloat(partB_res.calculatedLeaveDays) -
+                              // parseFloat(parseFloat(partA_res["cur_year_utilized"]));
+
+      console.log("partA_projected_applied_leaves:",partA_projected_applied_leaves);
+      console.log("partB_projected_applied_leaves:",partB_projected_applied_leaves);
 
                               const projected_applied_leaves =
                               parseFloat(partA_projected_applied_leaves) +
@@ -7555,6 +7587,7 @@ function validateLeaveApplictn(inputs, my_sql,req) {
                                 total_weekOff: total_weekOff,
                                 is_across_year_leave:"Y",
                                 is_projected_leave:"Y",
+                                carry_forward:input["carry_forward"]>0?input["carry_forward"]:0,
                                 from_year_calculatedLeaveDays:partA_res.calculatedLeaveDays,
                                 to_year_calculatedLeaveDays:partB_res.calculatedLeaveDays,
                                 partA_monthWise:  partA_res.monthWiseCalculatedLeaveDeduction,
@@ -8981,7 +9014,12 @@ function acrossYearAuthorize(month_number,deductionResult,cur_year_leaveData,nex
             
                 if (deductionResult.is_projected_leave == "Y") {
                   newCloseBal =
-                  parseFloat(deductionResult.partA_actualClosingBal)-parseFloat(deductionResult.partA_predicted_leave_days);
+                  parseFloat(deductionResult.partA_actualClosingBal)+
+                  parseFloat(deductionResult.partA_predicted_leave_days)-
+                  parseFloat(deductionResult.from_year_calculatedLeaveDays)-                  
+                  parseFloat(deductionResult.carry_forward);
+                  
+                  
                   actualClosingBal =
                     deductionResult.partA_actualClosingBal;
                   projected_applied_leaves =
@@ -9132,6 +9170,8 @@ function acrossYearAuthorize(month_number,deductionResult,cur_year_leaveData,nex
                 let newCloseBal = "";
                 let actualClosingBal = 0;
                 let projected_applied_leaves = 0;
+                
+                
                 let newAvailTillDate =
                   parseFloat(next_year_leaveData[0]["availed_till_date"]) +
                   parseFloat(deductionResult.to_year_calculatedLeaveDays);
@@ -9142,9 +9182,8 @@ function acrossYearAuthorize(month_number,deductionResult,cur_year_leaveData,nex
 
 
 
-                    newCloseBal =0;
-                    actualClosingBal =
-                      deductionResult.partB_actualClosingBal;
+                    newCloseBal =
+                      parseFloat(deductionResult.partB_actualClosingBal)-parseFloat(deductionResult.to_year_calculatedLeaveDays)-parseFloat(deductionResult.partB_projected_applied_leaves);
                     projected_applied_leaves =
                       deductionResult.partB_projected_applied_leaves;
 
