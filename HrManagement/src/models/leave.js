@@ -9174,7 +9174,7 @@ function acrossYearAuthorize(month_number,deductionResult,cur_year_leaveData,nex
 
 
                     newCloseBal =
-                      parseFloat(deductionResult.partB_actualClosingBal)-parseFloat(deductionResult.to_year_calculatedLeaveDays)-parseFloat(deductionResult.partB_projected_applied_leaves);
+                      parseFloat(deductionResult.partB_actualClosingBal)+parseFloat(deductionResult.partB_projected_applied_leaves)-parseFloat(deductionResult.to_year_calculatedLeaveDays);
                     projected_applied_leaves =
                       deductionResult.partB_projected_applied_leaves;
 
