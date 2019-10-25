@@ -405,7 +405,10 @@ export default () => {
     }
   });
   api.get("/processYearlyLeave", processYearlyLeave, (req, res, next) => {
-    if (req.records) {
+    if (
+      req.records.invalid_input != undefined &&
+      req.records.invalid_input == true
+    ) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
         records: req.records
