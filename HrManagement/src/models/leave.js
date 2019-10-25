@@ -4409,8 +4409,8 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select hims_f_leave_application_id,employee_id,authorized1,authorized2,\
-          authorized3,`status`from hims_f_leave_application where authorized1='N' \
+            "select hims_f_leave_application_id,employee_id,from_date,to_date,leave_id,authorized1,authorized2,\
+          authorized3,`status`,is_across_year_leave from hims_f_leave_application where authorized1='N' \
           and authorized2='N' and authorized3='N' and `status`='PEN' and employee_id=?\
           and hims_f_leave_application_id=?",
           values: [req.body.employee_id, req.body.hims_f_leave_application_id],
@@ -4419,6 +4419,156 @@ export default {
         })
         .then(result => {
           if (result.length > 0) {
+
+
+        if(result[0]["is_across_year_leave"]=="Y"){
+
+
+
+
+
+                          //YOU CAN CANCEL
+                          input["cancel"]="Y";
+                          input={...input,...result[0]};
+                          // req.body["leave_id"]=result[0]["leave_id"];
+                          //------------------------------------------------------------------
+                          validateLeaveApplictn( input,_mysql)                             
+                          .then(deductionResult => {
+
+                       
+                      
+                            _mysql
+                            .executeQuery({
+                              query: `select * from hims_f_employee_monthly_leave where employee_id=? and year in (?) and leave_id=?;\
+                              select leave_application_code from hims_f_leave_application where employee_id=? and leave_id=? and (date_format(from_date,'%Y')=? \
+                               or date_format(to_date,'%Y')=? ) and status<>'CAN' and hims_f_leave_application_id<>?;
+                              `,
+                              values: [
+                                input.employee_id,
+                                [deductionResult.from_year,deductionResult.to_year],
+                                input.leave_id,
+                                input.employee_id,
+                                input.leave_id,
+                                deductionResult.to_year,
+                                deductionResult.to_year,
+                                input.hims_f_leave_application_id
+                              ],
+                              printQuery: true
+                            })
+                            .then(resdata => {
+                              const leaveData=resdata[0];
+                              const acrossYearSecondLeave=resdata[1];
+                              
+                          if(leaveData.length>0){
+                            
+                            if(deductionResult.is_across_year_leave=="Y")
+                            {
+
+
+                              if(acrossYearSecondLeave.length>0){
+
+                                _mysql.releaseConnection();
+                                req.records = {
+                                  invalid_input:true,
+                                  message:`Please Cancel (${acrossYearSecondLeave[0]["leave_application_code"]}) application First `
+                                };
+                                next();
+
+                              }else{
+                              const cur_year_leaveData=leaveData.filter(f=>f.year==deductionResult.from_year);
+                              const next_year_leaveData=leaveData.filter(f=>f.year==deductionResult.to_year);
+                            
+                            
+                              acrossYearCancel(deductionResult,cur_year_leaveData,next_year_leaveData,input,req).then(resu=>{
+  
+                            
+  
+  
+  
+                                _mysql
+                                .executeQueryWithTransaction({
+                                  query:
+                           
+                        
+                                  resu.delete_partB+                                
+                                  resu.deletePendingLeave +
+                                  resu.anualLeave+                                  
+                                  "delete from hims_f_leave_application where hims_f_leave_application_id=?;\
+                                  update hims_f_employee_monthly_leave set carry_forward_done='N',carry_forward_leave=0,processed='N' where\
+                                  hims_f_employee_monthly_leave_id=?", 
+                                  values: [req.body.hims_f_leave_application_id,resu.hims_f_employee_monthly_leave_id],                          
+                                  printQuery: true
+                                })
+                                .then(finalRes => {
+                                  _mysql.commitTransaction(() => {
+                                    _mysql.releaseConnection();
+                                    req.records = finalRes;
+                                    next();
+                                  });
+                                })
+                                .catch(error => {
+                                console.log("error: ", error);
+                                  _mysql.rollBackTransaction(() => {
+                                    next(error);
+                                  });
+                                });
+  
+                                }).catch(error => {
+                                  console.log("error55: ", error);
+                                  _mysql.releaseConnection();
+                                  req.records = error;
+                                  next(error);
+                                });
+      
+                              }
+
+                            }
+                            else
+                            {
+                          
+                              //invalid data
+                              _mysql.releaseConnection();
+                              req.records = {
+                                invalid_input: true,
+                                message: "leave Not found"
+                              };
+
+                              _mysql.rollBackTransaction(() => {});
+                              next();
+                            }
+                          }else {
+                            //invalid data
+                            _mysql.releaseConnection();
+                            req.records = {
+                              invalid_input: true,
+                              message: "leave Not found"
+                            };
+  
+                            _mysql.rollBackTransaction(() => {});
+                            next();
+                          }
+
+
+                          })
+                          .catch(error => {
+                            console.log("error6:", error);
+                            _mysql.rollBackTransaction(() => {
+                              next(error);
+                            });
+                          });
+
+                            })
+                            .catch(error => {
+                              console.log("error6:", error);
+                              _mysql.rollBackTransaction(() => {
+                                next(error);
+                              });
+                            });
+
+
+        }else{
+
+            
             _mysql
               .executeQuery({
                 query:
@@ -4445,6 +4595,7 @@ export default {
                 _mysql.releaseConnection();
                 next(e);
               });
+            }
           } else {
             _mysql.releaseConnection();
             req.records = {
@@ -7210,7 +7361,7 @@ function validateLeaveApplictn(inputs, my_sql,req) {
       let input = inputs;
       let _mysql = my_sql;
 
-
+      console.log("FROM inputs:",inputs)
 
       _mysql
       .executeQuery({
@@ -7382,7 +7533,7 @@ function validateLeaveApplictn(inputs, my_sql,req) {
 
              
                 const monthly_accrual_days=partA_res["monthly_accrual_days"];
-                const next_year_max_available= parseFloat(max_available_leave)+parseFloat(monthly_accrual_days);
+ 
                 console.log("max_available_leave:",max_available_leave)
                 console.log("calculatedLeaveDays:",calculatedLeaveDays)
 
@@ -7502,7 +7653,7 @@ function validateLeaveApplictn(inputs, my_sql,req) {
 
                               if(input.from_across_anual_leave=="Y"){
 
-                         
+                         console.log("AAAAAAAAAAAAAAAAAAAAAAAA")
                           
                         
                             const A_Max=  parseFloat(partA_res["predicted_leave_days"]) +parseFloat(  partA_res["actualClosingBal"]);
@@ -7597,8 +7748,12 @@ function validateLeaveApplictn(inputs, my_sql,req) {
                             }
 
                               }
+
+
+
                               else{
 
+                         console.log("BBBBBBBBBBBBBBBBBBBBBB")
                                 resolve({
                                   calculatedLeaveDays: calculatedLeaveDays,
                                   leave_applied_days: leave_applied_days,
@@ -7607,6 +7762,7 @@ function validateLeaveApplictn(inputs, my_sql,req) {
                                   total_holiday: total_holiday,
                                   total_weekOff: total_weekOff,
                                   is_across_year_leave:"Y",
+                                  annual_leave:partA_res.annual_leave,
                                   from_year_calculatedLeaveDays:partA_res.calculatedLeaveDays,
                                   to_year_calculatedLeaveDays:partB_res.calculatedLeaveDays,
                                   partA_monthWise:  partA_res.monthWiseCalculatedLeaveDeduction,
@@ -7893,7 +8049,7 @@ function calculateNoLeaveDays(inputs,_mysql) {
                 console.log("part:",input["part"])
                 console.log("from_athurization:",input["from_athurization"] )
 
-                if (allLeaves[0].processed == "Y"&&input["part"]!="B"&&input["from_athurization"]!="Y") {
+                if (allLeaves[0].processed == "Y"&&input["part"]!="B"&&input["from_athurization"]!="Y"&&input["cancel"]!="Y") {
                   _mysql.releaseConnection();
                  console.log("HELLO")
                   reject({
@@ -8141,9 +8297,9 @@ function calculateNoLeaveDays(inputs,_mysql) {
                     
                     
                     
-                       if (
-                        (currentClosingBal < calculatedLeaveDays &&
-                        annual_leave == "Y" &&input.cancel != "Y")||(annual_leave == "Y" &&input.is_across_year_leave == "Y")
+                       if (input.cancel != "Y"&&
+                        ((currentClosingBal < calculatedLeaveDays &&
+                        annual_leave == "Y" )||(annual_leave == "Y" &&input.is_across_year_leave == "Y"))
                       ) {
 
 
@@ -8232,7 +8388,7 @@ function calculateNoLeaveDays(inputs,_mysql) {
                         // return;
                       }
                       else if (input.cancel == "Y" &&  input.is_projected_leave == "Y"){
-                     
+                     console.log("PPPPPPPPPPPPPPPPPPPPPPpp")
                         resolve({
                           leave_applied_days: leave_applied_days,
                           calculatedLeaveDays: calculatedLeaveDays,
@@ -8240,7 +8396,8 @@ function calculateNoLeaveDays(inputs,_mysql) {
                           include_holidays: include_holidays,
                           total_holiday: total_holiday,
                           include_week_offs: include_week_offs,
-                          total_weekOff: total_weekOff
+                          total_weekOff: total_weekOff,
+                          annual_leave:annual_leave
                         });
                       }
                       
@@ -9372,29 +9529,53 @@ function acrossYearCancel(deductionResult,cur_year_leaveData,next_year_leaveData
       try {
     new Promise((resolve, reject) => {
 
+
+      let december_days=0;                   
+      deductionResult.partB_monthWise.find(item=>{                      
+        if( item.month_name.toUpperCase()=="DECEMBER"){
+          december_days= item.finalLeave;
+          
+        }
+      });
+
+      deductionResult.partA_monthWise.find((item,index)=>{                      
+        if( item.month_name.toUpperCase()=="DECEMBER"){                   
+          deductionResult.partA_monthWise[index]["finalLeave"]+=december_days;
+        }
+      });
+
           let monthArray = deductionResult.partA_monthWise;
        
 
           if (monthArray.length > 0) {
             
             if (cur_year_leaveData.length > 0) {     
-            
+              let projected_string="";
                 let newCloseBal = "";
                 let actualClosingBal = 0;
                 let projected_applied_leaves = 0;
                 let newAvailTillDate =
                   parseFloat(cur_year_leaveData[0]["availed_till_date"]) -
                   parseFloat(deductionResult.from_year_calculatedLeaveDays);
+                
+                  console.log("deductionResult:",deductionResult)
             
-            
-                if (deductionResult.is_projected_leave == "Y") {
-                 
+                if (deductionResult.is_across_year_leave == "Y"&&deductionResult.annual_leave=="Y") {
+                  
+                  console.log("CCCCCCC")
                   newCloseBal =
-                    deductionResult.currentClosingBal;
-                  actualClosingBal =
-                    deductionResult.actualClosingBal;
-                  projected_applied_leaves =
-                    deductionResult.projected_applied_leaves;
+                  parseFloat(cur_year_leaveData[0]["close_balance"]) +
+                  parseFloat(cur_year_leaveData[0]["actual_closing_balance"])+
+                  parseFloat(cur_year_leaveData[0]["accumulated_leaves"]);
+            
+
+                  console.log("newCloseBal:",newCloseBal)
+                  newAvailTillDate =
+                  parseFloat(cur_year_leaveData[0]["availed_till_date"]) -
+                  parseFloat(deductionResult.from_year_calculatedLeaveDays);
+            
+                  projected_string=", accumulated_leaves=0,projected_applied_leaves=0,actual_closing_balance=0"
+            
                 } else {
                   newCloseBal =parseFloat(cur_year_leaveData[0]["close_balance"])+parseFloat(deductionResult.from_year_calculatedLeaveDays);
                 }
@@ -9429,7 +9610,7 @@ function acrossYearCancel(deductionResult,cur_year_leaveData,next_year_leaveData
                     }
             
             
-                    let partA_update_leave_balnce=` update hims_f_employee_monthly_leave set ${month_new_balances},processed='N',carry_forward_done='N',carry_forward_leave=0  where \
+                    let partA_update_leave_balnce=` update hims_f_employee_monthly_leave set ${month_new_balances},processed='N',carry_forward_done='N',carry_forward_leave=0 ${projected_string}  where \
                     hims_f_employee_monthly_leave_id= ${cur_year_leaveData[0].hims_f_employee_monthly_leave_id} ;`
             
                     
@@ -9501,6 +9682,7 @@ function acrossYearCancel(deductionResult,cur_year_leaveData,next_year_leaveData
             resolve({...resultA,
               delete_partB:delete_partB,
             update_leave_application:update_leave_application,
+            hims_f_employee_monthly_leave_id: cur_year_leaveData[0].hims_f_employee_monthly_leave_id
           });
             
           } else {
