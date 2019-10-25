@@ -5,6 +5,7 @@ import moment from "moment";
 import logUtils from "../utils/logging";
 import appsettings from "../utils/appsettings.json";
 import { LINQ } from "node-linq";
+import { parse } from "url";
 //import { inflate } from "zlib";
 
 const { debugLog, debugFunction } = logUtils
@@ -664,8 +665,8 @@ let newReceipt = (dataBase, req, res, callBack, next) => {
 
             dataBase.query(
               "INSERT  INTO hims_f_receipt_details ( " +
-                receptSample.join(",") +
-                ",hims_f_receipt_header_id) VALUES ? ",
+              receptSample.join(",") +
+              ",hims_f_receipt_header_id) VALUES ? ",
               [
                 jsonArrayToObject({
                   sampleInputObject: receptSample,
@@ -958,8 +959,8 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
 
       connection.query(
         "SELECT * FROM `hims_d_services` WHERE `hims_d_services_id` IN (" +
-          questions +
-          ") AND record_status='A'",
+        questions +
+        ") AND record_status='A'",
         service_ids.items,
         (error, result) => {
           if (error) {
@@ -999,7 +1000,9 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
             let unit_cost =
               servicesDetails.unit_cost == undefined
                 ? 0
-                : servicesDetails.unit_cost;
+                : parseFloat(servicesDetails.unit_cost);
+
+            let from_pos = servicesDetails.from_pos;
 
             let zeroBill =
               servicesDetails.zeroBill == undefined
@@ -1030,7 +1033,8 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
             let patient_tax = 0,
               company_tax = 0,
               sec_company_tax = 0,
-              total_tax = 0;
+              total_tax = 0,
+              s_patient_tax = 0;
 
             let after_dect_amout = 0,
               deductable_percentage = 0,
@@ -1041,21 +1045,22 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
             let conversion_factor =
               servicesDetails.conversion_factor == undefined
                 ? 0
-                : servicesDetails.conversion_factor;
+                : parseFloat(servicesDetails.conversion_factor);
+
             let quantity =
               servicesDetails.quantity == undefined
                 ? 1
-                : servicesDetails.quantity;
+                : parseFloat(servicesDetails.quantity);
 
             let discount_amout =
               servicesDetails.discount_amout == undefined
                 ? 0
-                : servicesDetails.discount_amout;
+                : parseFloat(servicesDetails.discount_amout);
 
             let discount_percentage =
               servicesDetails.discount_percentage == undefined
                 ? 0
-                : servicesDetails.discount_percentage;
+                : parseFloat(servicesDetails.discount_percentage);
 
             let insured =
               servicesDetails.insured == undefined
@@ -1067,6 +1072,10 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                 ? "N"
                 : servicesDetails.sec_insured;
 
+            let bulkProcess =
+              servicesDetails.bulkProcess == undefined
+                ? "N"
+                : servicesDetails.bulkProcess;
             let approval_amt =
               servicesDetails.approval_amt == undefined
                 ? 0
@@ -1084,8 +1093,8 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
             let approved_amount =
               servicesDetails.approved_amount == undefined
                 ? 0
-                : servicesDetails.approved_amount;
-            debugLog("Pre app", servicesDetails.pre_approval);
+                : parseFloat(servicesDetails.approved_amount);
+
             let pre_approval =
               servicesDetails.pre_approval == undefined
                 ? "N"
@@ -1097,6 +1106,9 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
             let ser_gross_amt = 0;
             let icd_code = "";
             let covered = "Y";
+            let billed = servicesDetails.billed == undefined
+              ? "N"
+              : servicesDetails.billed;
             let preapp_limit_amount =
               servicesDetails.preapp_limit_amount == undefined
                 ? 0
@@ -1229,13 +1241,13 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     discount_percentage = (discount_amout / gross_amount) * 100;
                   } else if (discount_percentage > 0) {
                     discount_amout = (gross_amount * discount_percentage) / 100;
-                    discount_amout = discount_amout.toFixed(2);
+                    discount_amout = parseFloat(discount_amout).toFixed(2);
                   }
                   net_amout = gross_amount - discount_amout;
 
                   //Patient And Company
                   if (policydtls.copay_status == "Y") {
-                    copay_amount = policydtls.copay_amt;
+                    copay_amount = parseFloat(policydtls.copay_amt);
                     copay_percentage = (copay_amount / net_amout) * 100;
                   } else {
                     debugLog("policydtls: ", policydtls);
@@ -1326,54 +1338,60 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     }
 
                     deductable_amount =
-                      (net_amout * deductable_percentage) / 100;
+                      (net_amout * parseFloat(deductable_percentage)) / 100;
                     after_dect_amout = net_amout - deductable_amount;
-                    copay_amount = (after_dect_amout * copay_percentage) / 100;
-                    copay_amount = copay_amount.toFixed(2);
+                    copay_amount = (after_dect_amout * parseFloat(copay_percentage)) / 100;
+                    copay_amount = parseFloat(copay_amount).toFixed(2);
                   }
 
-                  debugLog("net_amout: ", net_amout);
-                  debugLog("copay_amount: ", copay_amount);
-                  patient_resp = copay_amount + deductable_amount;
-                  comapany_resp = (net_amout - patient_resp).toFixed(2);
+                  patient_resp = parseFloat(copay_amount) + parseFloat(deductable_amount);
+                  comapany_resp = parseFloat((parseFloat(net_amout) - parseFloat(patient_resp))).toFixed(2);
+                  // console.log("patient_resp: ", patient_resp);
+                  // console.log("comapany_resp: ", comapany_resp);
 
-                  debugLog("patient_resp: ", patient_resp);
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                    patient_tax = (
-                      (patient_resp * records.vat_percent) /
+                    patient_tax = parseFloat(
+                      (parseFloat(patient_resp) * parseFloat(records.vat_percent)) /
+                      100
+                    ).toFixed(2);
+                  }
+                  if (records.vat_applicable == "Y") {
+                    s_patient_tax = parseFloat(
+                      (parseFloat(patient_resp) * parseFloat(records.vat_percent)) /
                       100
                     ).toFixed(2);
                   }
 
                   if (records.vat_applicable == "Y") {
-                    company_tax = (
-                      (comapany_resp * records.vat_percent) /
+                    company_tax = parseFloat(
+                      (parseFloat(comapany_resp) * parseFloat(records.vat_percent)) /
                       100
                     ).toFixed(2);
                   }
-                  total_tax = parseFloat(patient_tax + company_tax).toFixed(2);
+                  // console.log("patient_tax: ", patient_tax);
+                  // console.log("company_tax: ", company_tax);
+                  total_tax = parseFloat(parseFloat(patient_tax) + company_tax).toFixed(2);
 
                   patient_payable = parseFloat(
-                    patient_resp + patient_tax
+                    parseFloat(patient_resp) + parseFloat(patient_tax)
                   ).toFixed(2);
-                  console.log("approved_amount: ", approved_amount);
-                  console.log("unit_cost: ", unit_cost);
 
                   if (approved_amount !== 0 && approved_amount < unit_cost) {
                     let diff_val = approved_amount - comapany_resp;
-                    patient_payable = (patient_payable + diff_val).toFixed(2);
-                    patient_resp = (patient_resp + diff_val).toFixed(2);
+                    patient_payable = parseFloat((patient_payable + diff_val)).toFixed(2);
+                    patient_resp = parseFloat((patient_resp + diff_val)).toFixed(2);
                     comapany_resp = comapany_resp - diff_val;
                   }
 
-                  debugLog("comapany_resp 2: ", comapany_resp);
-
-                  company_payble = net_amout - patient_resp;
+                  company_payble = parseFloat(net_amout) - parseFloat(patient_resp);
 
                   company_payble = parseFloat(
-                    company_payble + company_tax
+                    parseFloat(company_payble) + parseFloat(company_tax)
                   ).toFixed(2);
+
+                  // console.log("patient_payable: ", patient_payable);
+                  // console.log("company_payble: ", company_payble);
 
                   preapp_limit_amount = policydtls.preapp_limit;
                   if (policydtls.preapp_limit !== 0) {
@@ -1432,7 +1450,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
                     patient_tax = (
-                      (patient_resp * records.vat_percent) /
+                      (patient_resp * parseFloat(records.vat_percent)) /
                       100
                     ).toFixed(2);
                     total_tax = patient_tax;
@@ -1463,11 +1481,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     ) {
                       sec_copay_percntage = secpolicydtls.copay_consultation;
                       sec_deductable_percentage = secpolicydtls.deductible;
-                      debugLog("sec_copay_percntage", sec_copay_percntage);
-                      debugLog(
-                        "sec_deductable_percentage",
-                        sec_deductable_percentage
-                      );
+
                     } else if (
                       appsettings.hims_d_service_type.service_type_id
                         .Procedure == records.service_type_id
@@ -1672,7 +1686,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
               })
               .then(() => {
                 if (m == result.length - 1) {
-                  debugLog("outputArray", outputArray);
+
                   return resolve({ billdetails: outputArray });
                 }
               })
@@ -1761,7 +1775,7 @@ let patientAdvanceRefund = (req, res, next) => {
             req.query.receipt_number = newNumber;
             req.body.receipt_number = newNumber;
             inputParam.receipt_number = newNumber;
-            debugLog("new R for recpt number:", newNumber);
+
             // receipt header table insert
             connection.query(
               "INSERT INTO hims_f_receipt_header (receipt_number, receipt_date, billing_header_id, total_amount,\
@@ -1815,8 +1829,8 @@ let patientAdvanceRefund = (req, res, next) => {
 
                   connection.query(
                     "INSERT  INTO hims_f_receipt_details ( " +
-                      receptSample.join(",") +
-                      ",hims_f_receipt_header_id) VALUES ? ",
+                    receptSample.join(",") +
+                    ",hims_f_receipt_header_id) VALUES ? ",
                     [
                       jsonArrayToObject({
                         sampleInputObject: receptSample,
@@ -1874,7 +1888,7 @@ let patientAdvanceRefund = (req, res, next) => {
                                 //advance adding
                                 if (inputParameters.transaction_type == "AD") {
                                   inputParameters.advance_amount += existingAdvance;
-                                  debugLog("existingAdvance:", existingAdvance);
+
 
                                   connection.query(
                                     "UPDATE  `hims_f_patient` SET  `advance_amount`=?, \
@@ -1963,7 +1977,7 @@ let patientAdvanceRefund = (req, res, next) => {
                     }
                   );
                 } else {
-                  debugLog("Data is not inerted to billing header");
+
                   next(
                     httpStatus.generateError(
                       httpStatus.badRequest,
@@ -1985,7 +1999,7 @@ let patientAdvanceRefund = (req, res, next) => {
                 next(error);
               });
             }
-            debugLog("new PAYMENT no : ", newNumber);
+
             inputParam.receipt_number = newNumber;
             req.body.receipt_number = newNumber;
 
@@ -2043,8 +2057,8 @@ created_by, created_date, updated_by, updated_date,  counter_id, shift_id, pay_t
                   ];
                   connection.query(
                     "INSERT  INTO hims_f_receipt_details ( " +
-                      receptSample.join(",") +
-                      ",hims_f_receipt_header_id) VALUES ? ",
+                    receptSample.join(",") +
+                    ",hims_f_receipt_header_id) VALUES ? ",
                     [
                       jsonArrayToObject({
                         sampleInputObject: receptSample,
@@ -2101,7 +2115,7 @@ created_by, created_date, updated_by, updated_date,  counter_id, shift_id, pay_t
                                 //advance adding
                                 //                     if (inputParameters.transaction_type == "AD") {
                                 //                       inputParameters.advance_amount += existingAdvance;
-                                //                       debugLog("existingAdvance:", existingAdvance);
+
 
                                 //                       connection.query(
                                 //                         "UPDATE  `hims_f_patient` SET  `advance_amount`=?, \
@@ -2190,7 +2204,7 @@ created_by, created_date, updated_by, updated_date,  counter_id, shift_id, pay_t
                     }
                   );
                 } else {
-                  debugLog("Data is not inerted to billing header");
+
                   next(
                     httpStatus.generateError(
                       httpStatus.badRequest,
@@ -2212,17 +2226,12 @@ created_by, created_date, updated_by, updated_date,  counter_id, shift_id, pay_t
 function insuranceServiceDetails(body, db, next, connection, resolve) {
   // req = req;
   // let db = req.db;
-  debugLog("reqbodyin insurance func:", body);
+
   let NetOffModel = {
     hims_d_insurance_network_office_id: null
   };
   let input = extend(NetOffModel, body);
-  debugLog(
-    "hims_d_insurance_network_office_id:",
-    input.hims_d_insurance_network_office_id
-  );
 
-  debugLog("connection string:", connection);
   connection.query(
     "select price_from ,copay_consultation,copay_percent,copay_percent_rad,copay_percent_trt,copay_percent_dental,\
     copay_medicine, preapp_limit, deductible, deductible_lab,deductible_rad, deductible_trt, deductible_medicine from hims_d_insurance_network_office where hims_d_insurance_network_office_id=?",
@@ -2233,9 +2242,6 @@ function insuranceServiceDetails(body, db, next, connection, resolve) {
         next(error);
       }
 
-      debugLog("result of network offic", resultOffic);
-      debugFunction("inside result of network office  ");
-
       // if s
       if (resultOffic != null && resultOffic[0].price_from == "S") {
         let insuranceModel = {
@@ -2244,7 +2250,7 @@ function insuranceServiceDetails(body, db, next, connection, resolve) {
           services_id: null
         };
         let inputparam = extend(insuranceModel, body);
-        debugLog("val second:", inputparam.insurance_id);
+
 
         connection.query(
           "select Inp.company_service_price_type,copay_status,copay_amt,deductable_status,deductable_amt,pre_approval,covered,\
@@ -2262,7 +2268,7 @@ function insuranceServiceDetails(body, db, next, connection, resolve) {
               next(error);
             }
             debugFunction("inside result of second query if s is there  ");
-            debugLog("S is :", result_s);
+
             // req.records = extend({
             //   insurence_result: result_s[0]
             // });
@@ -2295,7 +2301,7 @@ function insuranceServiceDetails(body, db, next, connection, resolve) {
               releaseDBConnection(db, connection);
               next(error);
             }
-            debugLog("p is :", result_p);
+
             debugFunction("inside result of second query if  p is there  ");
             // req.records = extend({
             //   policy_result: result_p[0]
@@ -2345,11 +2351,10 @@ let addEpisodeEncounter = (connection, req, res, callBack, next) => {
         }
 
         currentEncounterNo = result[0].encounter_id;
-        debugLog("currentEncounterNo:", currentEncounterNo);
 
         if (currentEncounterNo > 0) {
           let nextEncounterNo = currentEncounterNo + 1;
-          debugLog("nextEncounterNo:", nextEncounterNo);
+
 
           connection.query(
             "update hims_d_options set encounter_id=? where hims_d_options_id=1",
@@ -2427,7 +2432,7 @@ let addEpisodeEncounterData = (req, res, next) => {
     req.body
   );
 
-  debugLog("Input:", req.body);
+
 
   //created_date, created_by, updated_date, updated_by,
   db.query(
@@ -2449,7 +2454,7 @@ let addEpisodeEncounterData = (req, res, next) => {
     ],
     (error, results) => {
       if (error) {
-        debugLog("error", error);
+
         if (req.options == null) {
           connection.rollback(() => {
             releaseDBConnection(req.db, db);
@@ -2678,8 +2683,8 @@ let newReceiptData = (req, res, next) => {
 
           db.query(
             "INSERT  INTO hims_f_receipt_details ( " +
-              receptSample.join(",") +
-              ",hims_f_receipt_header_id) VALUES ? ",
+            receptSample.join(",") +
+            ",hims_f_receipt_header_id) VALUES ? ",
             [
               jsonArrayToObject({
                 sampleInputObject: receptSample,
