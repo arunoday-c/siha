@@ -910,6 +910,16 @@ class ApplyLeave extends Component {
                           }
                         },
                         {
+                          fieldName: "employee_code",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />
+                          )
+                        },
+                        {
+                          fieldName: "full_name",
+                          label: <AlgaehLabel label={{ forceLabel: "Name" }} />
+                        },
+                        {
                           fieldName: "leave_application_code",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
@@ -963,6 +973,7 @@ class ApplyLeave extends Component {
                             maxWidth: 150
                           }
                         },
+
                         {
                           fieldName: "remarks",
 

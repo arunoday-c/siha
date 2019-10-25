@@ -2876,19 +2876,30 @@ export default {
   },
   //created by irfan: to get all employees whose yearly leave is proccessed
   getYearlyLeaveData: (req, res, next) => {
-    if (req.query.year > 0) {
+    const input = req.query;
+    if (input.year > 0) {
       const _mysql = new algaehMysql();
-
+      let strQry = "";
+      if (input.employee_id > 0) {
+        strQry += " and EYL.employee_id=" + input.employee_id;
+      }
+      if (input.employee_group_id > 0) {
+        strQry += " and E.employee_group_id=" + input.employee_group_id;
+      }
       _mysql
         .executeQuery({
           query:
             "select hims_f_employee_yearly_leave_id,employee_id,year ,\
-      E.employee_code,  E.full_name as employee_name,SD.sub_department_code,\
-      SD.sub_department_name from  hims_f_employee_yearly_leave EYL  inner join hims_d_employee E on\
-      EYL.employee_id=E.hims_d_employee_id  left join hims_d_sub_department SD\
-      on E.sub_department_id=SD.hims_d_sub_department_id  where EYL.year=? and EYL.hospital_id=? order by hims_f_employee_yearly_leave_id desc",
-          values: [req.query.year, req.userIdentity.hospital_id],
-          printQuery: false
+            E.employee_code,  E.full_name as employee_name, SD.sub_department_name, D.department_name, EG.group_description \
+            from  hims_f_employee_yearly_leave EYL  inner join hims_d_employee E on\
+            EYL.employee_id=E.hims_d_employee_id  left join hims_d_sub_department SD\
+            on E.sub_department_id = SD.hims_d_sub_department_id left join hims_d_employee_group EG\
+            on E.employee_group_id = EG.hims_d_employee_group_id left join hims_d_department D\
+            on SD.department_id=D.hims_d_department_id  where EYL.year=? and EYL.hospital_id=?" +
+            strQry +
+            " order by hims_f_employee_yearly_leave_id desc",
+          values: [input.year, input.hospital_id],
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -2904,7 +2915,6 @@ export default {
         invalid_input: true,
         message: "Please Provide valid year "
       };
-
       next();
       return;
     }
@@ -2922,11 +2932,12 @@ export default {
         .executeQuery({
           query:
             "select hims_f_leave_application_id,leave_application_code,employee_id,application_date,\
-      leave_id,from_date,to_date,from_leave_session,to_leave_session,\
-      leave_applied_from,total_applied_days,total_approved_days,status,authorized3,authorized2,authorized1,remarks,L.leave_code,\
-      L.leave_description from hims_f_leave_application LA inner join hims_d_leave L on\
-       LA.leave_id=L.hims_d_leave_id and L.record_status='A'\
-       where LA.record_status='A' and LA.employee_id=? " +
+              leave_id,from_date,to_date,from_leave_session,to_leave_session, leave_applied_from, \
+              total_applied_days, total_approved_days,status,authorized3,authorized2,authorized1, \
+              remarks,L.leave_code, L.leave_description, E.employee_code, E.full_name from hims_f_leave_application LA \
+              inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id and L.record_status='A'\
+              inner join hims_d_employee E on E.hims_d_employee_id=LA.employee_id\
+              where LA.record_status='A' and LA.employee_id=? " +
             status +
             " order by hims_f_leave_application_id desc",
           values: [req.query.employee_id],
