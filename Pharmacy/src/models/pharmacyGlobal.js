@@ -21,7 +21,7 @@ export default {
              from hims_m_item_location IL,hims_d_pharmacy_uom PU, hims_d_item_master IM where\
              IL.sales_uom = PU.hims_d_pharmacy_uom_id and IL.item_id = IM.hims_d_item_master_id and \
              IL.record_status='A'  and item_id=? and pharmacy_location_id=? and qtyhand>0 \
-             and (date(expirydt) > date(CURDATE())|| exp_date_not_required='Y') order by date(expirydt)",
+             and (date(expirydt) > date(CURDATE())|| exp_date_required='N') order by date(expirydt)",
           values: [req.query.item_id, req.query.item_id, req.query.location_id],
           printQuery: true
         })
@@ -436,7 +436,7 @@ export default {
             expiry_date_filter = new Date(
               today_date.setFullYear(
                 today_date.getFullYear() +
-                  parseInt(result[0].notification_before)
+                parseInt(result[0].notification_before)
               )
             );
           }

@@ -421,7 +421,7 @@ class InitialStock extends Component {
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "Expiry Date",
-                      isImp: this.state.required_batchno === "N" ? true : false
+                      isImp: this.state.required_batchno === "Y" ? true : false
                     }}
                     textBox={{ className: "txt-fld", name: "expiry_date" }}
                     events={{
@@ -573,10 +573,10 @@ class InitialStock extends Component {
                           this.props.intlocations === undefined
                             ? []
                             : this.props.intlocations.filter(
-                                f =>
-                                  f.hims_d_pharmacy_location_id ===
-                                  row.location_id
-                              );
+                              f =>
+                                f.hims_d_pharmacy_location_id ===
+                                row.location_id
+                            );
 
                         return (
                           <span>
@@ -591,10 +591,10 @@ class InitialStock extends Component {
                           this.props.intlocations === undefined
                             ? []
                             : this.props.intlocations.filter(
-                                f =>
-                                  f.hims_d_pharmacy_location_id ===
-                                  row.location_id
-                              );
+                              f =>
+                                f.hims_d_pharmacy_location_id ===
+                                row.location_id
+                            );
 
                         return (
                           <span>
@@ -620,10 +620,10 @@ class InitialStock extends Component {
                           this.props.intitemcategory === undefined
                             ? []
                             : this.props.intitemcategory.filter(
-                                f =>
-                                  f.hims_d_item_category_id ===
-                                  row.item_category_id
-                              );
+                              f =>
+                                f.hims_d_item_category_id ===
+                                row.item_category_id
+                            );
 
                         return (
                           <span>
@@ -638,10 +638,10 @@ class InitialStock extends Component {
                           this.props.intitemcategory === undefined
                             ? []
                             : this.props.intitemcategory.filter(
-                                f =>
-                                  f.hims_d_item_category_id ===
-                                  row.item_category_id
-                              );
+                              f =>
+                                f.hims_d_item_category_id ===
+                                row.item_category_id
+                            );
 
                         return (
                           <span>
@@ -668,9 +668,9 @@ class InitialStock extends Component {
                           this.props.intitemgroup === undefined
                             ? []
                             : this.props.intitemgroup.filter(
-                                f =>
-                                  f.hims_d_item_group_id === row.item_group_id
-                              );
+                              f =>
+                                f.hims_d_item_group_id === row.item_group_id
+                            );
 
                         return (
                           <span>
@@ -685,9 +685,9 @@ class InitialStock extends Component {
                           this.props.intitemgroup === undefined
                             ? []
                             : this.props.intitemgroup.filter(
-                                f =>
-                                  f.hims_d_item_group_id === row.item_group_id
-                              );
+                              f =>
+                                f.hims_d_item_group_id === row.item_group_id
+                            );
 
                         return (
                           <span>
@@ -713,8 +713,8 @@ class InitialStock extends Component {
                           this.props.intitemlist === undefined
                             ? []
                             : this.props.intitemlist.filter(
-                                f => f.hims_d_item_master_id === row.item_id
-                              );
+                              f => f.hims_d_item_master_id === row.item_id
+                            );
 
                         return (
                           <span>
@@ -729,8 +729,8 @@ class InitialStock extends Component {
                           this.props.intitemlist === undefined
                             ? []
                             : this.props.intitemlist.filter(
-                                f => f.hims_d_item_master_id === row.item_id
-                              );
+                              f => f.hims_d_item_master_id === row.item_id
+                            );
 
                         return (
                           <span>

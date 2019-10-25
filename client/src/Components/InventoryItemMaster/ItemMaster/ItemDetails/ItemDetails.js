@@ -61,7 +61,7 @@ class ItemDetails extends Component {
 
   componentWillReceiveProps(newProps) {
     let InputOutput = newProps.itemPop;
-    this.setState({ ...this.state, ...InputOutput }, () => {});
+    this.setState({ ...this.state, ...InputOutput }, () => { });
   }
 
   render() {
@@ -188,15 +188,15 @@ class ItemDetails extends Component {
                       <label className="checkbox" style={{ color: "#212529" }}>
                         <input
                           type="checkbox"
-                          name="exp_date_not_required"
+                          name="exp_date_required"
                           checked={
-                            this.state.exp_date_not_required === "Y"
+                            this.state.exp_date_required === "Y"
                               ? true
                               : false
                           }
                           onChange={BatchExpRequired.bind(this, this, context)}
                         />
-                        <span>Not Required</span>
+                        <span>Required</span>
                       </label>
                     </div>
                   </div>{" "}
@@ -385,9 +385,9 @@ class ItemDetails extends Component {
                               this.props.inventoryitemuom === undefined
                                 ? []
                                 : this.props.inventoryitemuom.filter(
-                                    f =>
-                                      f.hims_d_inventory_uom_id === row.uom_id
-                                  );
+                                  f =>
+                                    f.hims_d_inventory_uom_id === row.uom_id
+                                );
 
                             return (
                               <span>
@@ -516,7 +516,7 @@ class ItemDetails extends Component {
                       paging={{ page: 0, rowsPerPage: 5 }}
                       events={{
                         onDelete: deleteUOM.bind(this, this, context),
-                        onEdit: row => {},
+                        onEdit: row => { },
                         onDone: updateUOM.bind(this, this, context)
                       }}
                     />
