@@ -261,7 +261,7 @@ class AddEmployeeOpenBalance extends PureComponent {
             ) : this.props.selected_type === "LO" ? (
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-6  form-group mandatory" }}
+                  div={{ className: "col-6 form-group mandatory" }}
                   label={{
                     forceLabel: "Select Loan.",
                     isImp: true
@@ -285,7 +285,7 @@ class AddEmployeeOpenBalance extends PureComponent {
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col-6" }}
+                  div={{ className: "col-6 form-group mandatory" }}
                   label={{
                     forceLabel: "Start Year.",
                     isImp: true
@@ -309,7 +309,7 @@ class AddEmployeeOpenBalance extends PureComponent {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-6" }}
+                  div={{ className: "col-6 form-group mandatory" }}
                   label={{
                     forceLabel: "Start Month",
                     isImp: true
@@ -334,7 +334,7 @@ class AddEmployeeOpenBalance extends PureComponent {
                 />
 
                 <AlgaehDateHandler
-                  div={{ className: "col-6" }}
+                  div={{ className: "col-6 form-group mandatory" }}
                   label={{
                     forceLabel: "Loan Applied",
                     isImp: true
