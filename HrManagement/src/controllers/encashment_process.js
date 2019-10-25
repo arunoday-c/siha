@@ -7,7 +7,8 @@ const {
   getLeaveEncashLevels,
   InsertLeaveEncashment,
   getLeaveEncash,
-  UpdateLeaveEncash
+  UpdateLeaveEncash,
+  calculateEncashmentAmount
 } = encashment_process;
 
 export default () => {
@@ -49,6 +50,13 @@ export default () => {
   );
 
   api.put("/UpdateLeaveEncash", UpdateLeaveEncash, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records
+    });
+  });
+
+  api.get("/calculateEncashmentAmount", calculateEncashmentAmount, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       result: req.records

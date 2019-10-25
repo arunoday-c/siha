@@ -9,7 +9,8 @@ import {
   LoadEncashment,
   ClearData,
   ProcessEncash,
-  employeeSearch
+  employeeSearch,
+  numberhandle
 } from "./EncashmentProcessEvents.js";
 import moment from "moment";
 import {
@@ -155,7 +156,7 @@ class LeaveEncashmentProcess extends Component {
               </span>
             </div> */}
 
-            <AlagehAutoComplete
+            {/* <AlagehAutoComplete
               div={{ className: "col-2 form-group mandatory" }}
               label={{
                 forceLabel: "Encashment Type",
@@ -178,7 +179,7 @@ class LeaveEncashmentProcess extends Component {
                   });
                 }
               }}
-            />
+            /> */}
             <div className="col globalSearchCntr">
               <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
               <h6 onClick={employeeSearch.bind(this, this)}>
@@ -208,6 +209,13 @@ class LeaveEncashmentProcess extends Component {
               </button>
             </div>
 
+            {this.state.processed_already === true ?
+              <div className="col">
+                <h6>
+                  Already Processed
+              </h6>
+              </div> : null}
+
             <div className="col">
               <AlgaehLabel
                 label={{
@@ -229,8 +237,8 @@ class LeaveEncashmentProcess extends Component {
               <h6>
                 {this.state.encashment_date
                   ? moment(this.state.encashment_date).format(
-                      Options.dateFormat
-                    )
+                    Options.dateFormat
+                  )
                   : Options.dateFormat}
               </h6>
             </div>
@@ -265,10 +273,43 @@ class LeaveEncashmentProcess extends Component {
                         )
                       },
                       {
+                        fieldName: "close_balance",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Close Balance" }} />
+                        )
+                      },
+                      {
                         fieldName: "leave_days",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "No. of Leave" }} />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return this.state.processed_already === false ? (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                value: row.leave_days,
+                                className: "txt-fld",
+                                name: "leave_days",
+                                number: {
+                                  thousandSeparator: ",",
+                                  allowNegative: false
+                                },
+                                dontAllowKeys: ["-", "e"],
+                                events: {
+                                  onChange: numberhandle.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  disabled: this.state.processed_already
+                                }
+                              }}
+                            />
+                          ) : row.leave_days;
+                        }
                       },
                       {
                         fieldName: "leave_amount",
@@ -283,22 +324,22 @@ class LeaveEncashmentProcess extends Component {
                           );
                         }
                       },
-                      {
-                        fieldName: "Airfare Amount",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "AirfareAmount" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "AirfareTotalMonth",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Airfare Total Month" }}
-                          />
-                        )
-                      }
+                      // {
+                      //   fieldName: "Airfare Amount",
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{ forceLabel: "AirfareAmount" }}
+                      //     />
+                      //   )
+                      // },
+                      // {
+                      //   fieldName: "AirfareTotalMonth",
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{ forceLabel: "Airfare Total Month" }}
+                      //     />
+                      //   )
+                      // }
                     ]}
                     keyId="leave_id"
                     dataSource={{ data: this.state.encashDetail }}
