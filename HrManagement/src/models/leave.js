@@ -1935,7 +1935,7 @@ export default {
                             req.records = {
                               invalid_input: true,
                               message: `max available is ${max_available_leave} days, you cant apply for  
-                              ${calculatedLeaveDays } `
+                              ${calculatedLeaveDays } days`
                             };
                             next();
                             return;
@@ -1953,7 +1953,7 @@ export default {
                       req.records = {
                         invalid_input: true,
                         message: `max available is ${currentClosingBal} days, you cant apply for  
-                        ${calculatedLeaveDays } `
+                        ${calculatedLeaveDays } days`
                       };
                       next();
                       return;
@@ -2054,7 +2054,7 @@ export default {
                             req.records = {
                               invalid_input: true,
                               message: `max available is ${max_available_leave} days, you cant apply for  
-                              ${calculatedLeaveDays } `
+                              ${calculatedLeaveDays } days`
                             };
                             next();
                             return;
@@ -2073,7 +2073,7 @@ export default {
                       req.records = {
                         invalid_input: true,
                         message: `max available is ${currentClosingBal} days, you cant apply for  
-                        ${calculatedLeaveDays } `
+                        ${calculatedLeaveDays } days`
                       };
                       next();
                       return;
@@ -5676,7 +5676,7 @@ function calc(db, body) {
                             resolve({
                               invalid_input: true,
                               message: `max available is ${max_available_leave} days, you cant apply for  
-                              ${calculatedLeaveDays } `
+                              ${calculatedLeaveDays } days`
                             });
                             // next();
                             // return;
@@ -5693,7 +5693,7 @@ function calc(db, body) {
                       resolve({
                         invalid_input: true,
                         message: `max available is ${currentClosingBal} days, you cant apply for  
-                        ${calculatedLeaveDays } `
+                        ${calculatedLeaveDays } days`
                       });
                     }
                   })
@@ -5794,7 +5794,7 @@ function calc(db, body) {
                         resolve({
                           invalid_input: true,
                           message: `max available is ${max_available_leave} days, you cant apply for  
-                          ${calculatedLeaveDays } `
+                          ${calculatedLeaveDays } days`
                         });
                         // next();
                         // return;
@@ -5812,7 +5812,7 @@ function calc(db, body) {
                   resolve({
                     invalid_input: true,
                     message: `max available is ${max_available_leave} days, you cant apply for  
-                          ${calculatedLeaveDays } `
+                          ${calculatedLeaveDays } days`
                   });
                 }
               } else {
@@ -7299,7 +7299,7 @@ function validateLeaveApplictn(inputs, my_sql,req) {
             reject({
               invalid_input: true,
               message: `max available is ${max_available_leave} days, you cant apply for  
-              ${calculatedLeaveDays } `
+              ${sameYearResult.calculatedLeaveDays } days`
             });
           }
 
@@ -7389,26 +7389,18 @@ function validateLeaveApplictn(inputs, my_sql,req) {
                 input["from_across_anual_leave"]="Y";
                
 
-                // partA_res["cur_year_utilized"]=0;
-                // input["projected_applied_leaves"]=partA_res["predicted_leave_days"];
+               
 
               if (max_available_leave >= calculatedLeaveDays||input.cancel == "Y") {              
                 partA_res["projected_applied_leaves"] =parseFloat(calculatedLeaveDays) -parseFloat(actualClosingBal);
                 input["carry_forward"]=parseFloat(max_available_leave)-parseFloat(calculatedLeaveDays);
               } 
-              // else if(next_year_max_available>= calculatedLeaveDays){
-
-              //   console.log("INSIDE CAR:",next_year_max_available)
-              //   input["carry_forward"]=parseFloat(calculatedLeaveDays)-parseFloat(next_year_max_available);
-             
-              //   partA_res["cur_year_utilized"]= parseFloat(calculatedLeaveDays)-parseFloat(max_available_leave)
-             
-              // }
+         
               else {
                 reject({
                   invalid_input: true,
                   message: `max available is ${max_available_leave} days, you cant apply for  
-                  ${calculatedLeaveDays } `
+                  ${calculatedLeaveDays } days`
                 });
               }
             
@@ -7581,10 +7573,24 @@ function validateLeaveApplictn(inputs, my_sql,req) {
                                 to_year:to_year
                               });
                             }else{
+
+                              let max_days;
+                              let applying_days;
+                              let calc_year;
+
+                              if(A_Max< partA_res.calculatedLeaveDays){
+                                max_days=A_Max;
+                                applying_days= partA_res.calculatedLeaveDays;
+                                calc_year=from_year;
+                              }else if(B_Max< partB_res.calculatedLeaveDays){
+                                max_days=B_Max;
+                                applying_days= partB_res.calculatedLeaveDays;
+                                calc_year=to_year;
+                              }
                               reject({
                                 invalid_input: true,
-                                message: `max available is ${A_Max+B_Max} days, you cant apply for  
-                                ${partA_res.calculatedLeaveDays+partB_res.calculatedLeaveDays } `
+                                message: `max available is ${max_days} days in ${calc_year}, you cant apply for  
+                                ${applying_days} days`
                               });
 
 
@@ -8243,7 +8249,7 @@ function calculateNoLeaveDays(inputs,_mysql) {
                         reject({
                           invalid_input: true,
                           message: `max available is ${currentClosingBal} days, you cant apply for  
-                        ${calculatedLeaveDays } `
+                        ${calculatedLeaveDays } days`
                         });
                       }
                     } else {
@@ -8404,7 +8410,7 @@ function calculateNoLeaveDays(inputs,_mysql) {
                         reject({
                           invalid_input: true,
                           message: `max available is ${currentClosingBal} days, you cant apply for  
-                          ${calculatedLeaveDays } `
+                          ${calculatedLeaveDays } days`
                         });
                       }
                     }
