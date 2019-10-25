@@ -1934,9 +1934,8 @@ export default {
                           } else {
                             req.records = {
                               invalid_input: true,
-                              message: `you dont have enough leaves for :${
-                                allLeaves[0]["leave_description"]
-                              } `
+                              message: `max available is ${max_available_leave} days, you cant apply for  
+                              ${calculatedLeaveDays } `
                             };
                             next();
                             return;
@@ -1953,9 +1952,8 @@ export default {
                       _mysql.releaseConnection();
                       req.records = {
                         invalid_input: true,
-                        message: `you dont have enough leaves for :${
-                          allLeaves[0]["leave_description"]
-                        } `
+                        message: `max available is ${currentClosingBal} days, you cant apply for  
+                        ${calculatedLeaveDays } `
                       };
                       next();
                       return;
@@ -2055,9 +2053,8 @@ export default {
                           } else {
                             req.records = {
                               invalid_input: true,
-                              message: `you dont have enough leaves for :${
-                                allLeaves[0]["leave_description"]
-                              } `
+                              message: `max available is ${max_available_leave} days, you cant apply for  
+                              ${calculatedLeaveDays } `
                             };
                             next();
                             return;
@@ -2075,9 +2072,8 @@ export default {
   
                       req.records = {
                         invalid_input: true,
-                        message: `you dont have enough leaves for :${
-                          allLeaves[0]["leave_description"]
-                        } `
+                        message: `max available is ${currentClosingBal} days, you cant apply for  
+                        ${calculatedLeaveDays } `
                       };
                       next();
                       return;
@@ -5679,9 +5675,8 @@ function calc(db, body) {
                           } else {
                             resolve({
                               invalid_input: true,
-                              message: `you dont have enough leaves for :${
-                                result[0]["leave_description"]
-                              } `
+                              message: `max available is ${max_available_leave} days, you cant apply for  
+                              ${calculatedLeaveDays } `
                             });
                             // next();
                             // return;
@@ -5697,9 +5692,8 @@ function calc(db, body) {
                     } else {
                       resolve({
                         invalid_input: true,
-                        message: `you dont have enough leaves for :${
-                          result[0]["leave_description"]
-                        } `
+                        message: `max available is ${currentClosingBal} days, you cant apply for  
+                        ${calculatedLeaveDays } `
                       });
                     }
                   })
@@ -5799,9 +5793,8 @@ function calc(db, body) {
                       } else {
                         resolve({
                           invalid_input: true,
-                          message: `you dont have enough leaves for :${
-                            result[0]["leave_description"]
-                          } `
+                          message: `max available is ${max_available_leave} days, you cant apply for  
+                          ${calculatedLeaveDays } `
                         });
                         // next();
                         // return;
@@ -5818,9 +5811,8 @@ function calc(db, body) {
                   utilities.logger().log("FISH: ", "PART");
                   resolve({
                     invalid_input: true,
-                    message: `you dont have enough leaves for :${
-                      result[0]["leave_description"]
-                    } `
+                    message: `max available is ${max_available_leave} days, you cant apply for  
+                          ${calculatedLeaveDays } `
                   });
                 }
               } else {
@@ -7306,7 +7298,8 @@ function validateLeaveApplictn(inputs, my_sql,req) {
           }  else {
             reject({
               invalid_input: true,
-              message: `you dont have enough leaves `
+              message: `max available is ${max_available_leave} days, you cant apply for  
+              ${calculatedLeaveDays } `
             });
           }
 
@@ -7414,7 +7407,8 @@ function validateLeaveApplictn(inputs, my_sql,req) {
               else {
                 reject({
                   invalid_input: true,
-                  message: `you dont have enough leaves `
+                  message: `max available is ${max_available_leave} days, you cant apply for  
+                  ${calculatedLeaveDays } `
                 });
               }
             
@@ -7589,7 +7583,8 @@ function validateLeaveApplictn(inputs, my_sql,req) {
                             }else{
                               reject({
                                 invalid_input: true,
-                                message: `you dont have enough leaves `
+                                message: `max available is ${A_Max+B_Max} days, you cant apply for  
+                                ${partA_res.calculatedLeaveDays+partB_res.calculatedLeaveDays } `
                               });
 
 
@@ -8247,9 +8242,8 @@ function calculateNoLeaveDays(inputs,_mysql) {
                         _mysql.releaseConnection();
                         reject({
                           invalid_input: true,
-                          message: `you dont have enough leaves for :${
-                            allLeaves[0]["leave_description"]
-                          } `
+                          message: `max available is ${currentClosingBal} days, you cant apply for  
+                        ${calculatedLeaveDays } `
                         });
                       }
                     } else {
@@ -8409,9 +8403,8 @@ function calculateNoLeaveDays(inputs,_mysql) {
 
                         reject({
                           invalid_input: true,
-                          message: `you dont have enough leaves for :${
-                            allLeaves[0]["leave_description"]
-                          } `
+                          message: `max available is ${currentClosingBal} days, you cant apply for  
+                          ${calculatedLeaveDays } `
                         });
                       }
                     }
