@@ -609,7 +609,7 @@ export default {
                   .executeQuery({
                     query:
                       " select attendance_starts,at_end_date from hims_d_hrms_options limit 1; ",
-                    printQuery: true
+                    printQuery: false
                   })
                   .then(authResult => {
                     req.body["attendance_starts"] =
@@ -645,7 +645,7 @@ export default {
                                     req.userIdentity.algaeh_d_app_user_id,
                                     input.hims_f_leave_application_id
                                   ],
-                                  printQuery: true
+                                  printQuery: false
                                 })
                                 .then(authResult => {
                                   _mysql.releaseConnection();
@@ -695,7 +695,7 @@ export default {
                       req.userIdentity.algaeh_d_app_user_id,
                       input.hims_f_leave_application_id
                     ],
-                    printQuery: true
+                    printQuery: false
                   })
                   .then(authResult => {
                     if (authResult[0].affectedRows > 0 && input.status == "R") {
@@ -822,7 +822,7 @@ export default {
                                           input.year,
                                           input.leave_id
                                         ],
-                                        printQuery: true
+                                        printQuery: false
                                       })
                                       .then(leaveData => {
                                      
@@ -1148,7 +1148,7 @@ export default {
                   .executeQuery({
                     query:
                       " select attendance_starts,at_end_date from hims_d_hrms_options limit 1; ",
-                    printQuery: true
+                    printQuery: false
                   })
                   .then(authResult => {
                     req.body["attendance_starts"] =
@@ -1177,7 +1177,7 @@ export default {
                                     req.userIdentity.algaeh_d_app_user_id,
                                     input.hims_f_leave_application_id
                                   ],
-                                  printQuery: true
+                                  printQuery: false
                                 })
                                 .then(authResult => {
                                   _mysql.releaseConnection();
@@ -1231,7 +1231,7 @@ export default {
                       req.userIdentity.algaeh_d_app_user_id,
                       input.hims_f_leave_application_id
                     ],
-                    printQuery: true
+                    printQuery: false
                   })
                   .then(authResult => {
                     if (authResult[0].affectedRows > 0 && input.status == "R") {
@@ -1329,7 +1329,7 @@ export default {
                                       [deductionResult.from_year,deductionResult.to_year],
                                       input.leave_id
                                     ],
-                                    printQuery: true
+                                    printQuery: false
                                   })
                                   .then(leaveData => {
                                 
@@ -1364,7 +1364,7 @@ export default {
                                 resu.update_leave_application+
                                 resu.insertPendLeave +
                                 resu.anualLeave,                           
-                                printQuery: true
+                                printQuery: false
                               })
                               .then(finalRes => {
                                 _mysql.commitTransaction(() => {
@@ -1401,7 +1401,7 @@ export default {
                               resul.update_leave_application+
                               resul.insertPendLeave +
                               resul.anualLeave,                           
-                              printQuery: true
+                              printQuery: false
                             })
                             .then(finalRes => {
                               _mysql.commitTransaction(() => {
@@ -1648,7 +1648,7 @@ export default {
               SELECT attendance_starts,at_end_date FROM hims_d_hrms_options limit 1;",
           values: [input.employee_id],
   
-          printQuery: true
+          printQuery: false
         })
         .then(branch => {
           const hospital_id = branch[0][0]["hospital_id"];
@@ -1670,7 +1670,7 @@ export default {
                 to_date
               ],
   
-              printQuery: true
+              printQuery: false
             })
             .then(result => {
               allLeaves = result[0];
@@ -2853,7 +2853,7 @@ export default {
         and L.record_status='A' where ML.year=? and ML.employee_id=?  and  LD.employee_type=E.employee_type and  (LD.gender=E.sex or LD.gender='BOTH' ) \
           order by hims_f_employee_monthly_leave_id desc;",
           values: [req.query.year, req.query.employee_id],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -2892,7 +2892,7 @@ export default {
       EYL.employee_id=E.hims_d_employee_id  left join hims_d_sub_department SD\
       on E.sub_department_id=SD.hims_d_sub_department_id  where EYL.year=? and EYL.hospital_id=? ${strQry} order by hims_f_employee_yearly_leave_id desc`,
           values: [req.query.year, req.userIdentity.hospital_id],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -3778,7 +3778,7 @@ export default {
                   " order by hims_f_leave_application_id desc",
                 values: [req.query.hospital_id],
 
-                printQuery: true
+                printQuery: false
               })
               .then(result => {
                 _mysql.releaseConnection();
@@ -4457,7 +4457,7 @@ export default {
                                 deductionResult.to_year,
                                 input.hims_f_leave_application_id
                               ],
-                              printQuery: true
+                              printQuery: false
                             })
                             .then(resdata => {
                               const leaveData=resdata[0];
@@ -4501,7 +4501,7 @@ export default {
                                   update hims_f_employee_monthly_leave set carry_forward_done='N',carry_forward_leave=0,processed='N' where\
                                   hims_f_employee_monthly_leave_id=?", 
                                   values: [req.body.hims_f_leave_application_id,resu.hims_f_employee_monthly_leave_id],                          
-                                  printQuery: true
+                                  printQuery: false
                                 })
                                 .then(finalRes => {
                                   _mysql.commitTransaction(() => {
@@ -4979,7 +4979,7 @@ export default {
                                 deductionResult.to_year,
                                 input.hims_f_leave_application_id
                               ],
-                              printQuery: true
+                              printQuery: false
                             })
                             .then(resdata => {
                               const leaveData=resdata[0];
@@ -5020,7 +5020,7 @@ export default {
                                   resu.update_leave_application+
                                   resu.deletePendingLeave +
                                   resu.anualLeave,                           
-                                  printQuery: true
+                                  printQuery: false
                                 })
                                 .then(finalRes => {
                                   _mysql.commitTransaction(() => {
@@ -5060,7 +5060,7 @@ export default {
                                   resul.update_leave_application+
                                   resul.deletePendingLeave +
                                   resul.anualLeave,                           
-                                  printQuery: true
+                                  printQuery: false
                                 })
                                 .then(finalRes => {
                                   _mysql.commitTransaction(() => {
@@ -5203,7 +5203,7 @@ export default {
               where record_status='A';`,
           values: [input.year, input.hospital_id],
 
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -5285,7 +5285,7 @@ export default {
           _mysql
             .executeQuery({
               query: execute_query,
-              printQuery: true
+              printQuery: false
             })
             .then(result => {
               _mysql.releaseConnection();
@@ -5607,7 +5607,7 @@ function calc(db, body) {
                       moment(to_date).format("YYYY-MM-DD")
                     ],
 
-                    printQuery: true
+                    printQuery: false
                   })
                   .then(holidayResult => {
                     //s -------START OF--- get count of holidays and weekOffs betwen apllied leave range
@@ -6065,7 +6065,7 @@ function saveF(_mysql, req, next, input, msg) {
                 req.userIdentity.algaeh_d_app_user_id
               ],
 
-              printQuery: true
+              printQuery: false
             })
             .then(result => {
               if (input.absent_id > 0) {
@@ -6420,7 +6420,7 @@ function projectedleaveCalcNEW(input, _mysql) {
           input.leave_id,
           [year_partA,year_partB]
         ],
-        printQuery: true
+        printQuery: false
       })
       .then(result => {
         // mysql.releaseConnection();
@@ -6621,7 +6621,7 @@ function projectedleaveCalc_BEFORE_ACROSS(input, _mysql) {
           input.leave_id,
           input.year
         ],
-        printQuery: true
+        printQuery: false
       })
       .then(result => {
        
@@ -6886,7 +6886,7 @@ function projectedleaveCalc(input, _mysql) {
             input.leave_id,
             year
           ],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
         
@@ -7014,7 +7014,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
             parseInt(input.year) - 1,
             req.userIdentity.hospital_id
           ],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           const AllEmployees = result[0];
@@ -7231,7 +7231,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
                           hospital_id: req.userIdentity.hospital_id
                         },
                         bulkInsertOrUpdate: true,
-                        printQuery: true
+                        printQuery: false
                       })
                       .then(yearResult => {
                         resolve(yearResult);
@@ -7267,7 +7267,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
                       hospital_id: req.userIdentity.hospital_id
                     },
                     bulkInsertOrUpdate: true,
-                    printQuery: true
+                    printQuery: false
                   })
                   .then(monthResult => {
                  
@@ -7344,7 +7344,7 @@ function validateLeaveApplictn(inputs, my_sql,req) {
       .executeQuery({
         query:
           " select attendance_starts,at_end_date from hims_d_hrms_options limit 1; ",
-        printQuery: true
+        printQuery: false
       })
       .then(authResult => {
 
@@ -7965,7 +7965,7 @@ function calculateNoLeaveDays(inputs,_mysql) {
               SELECT attendance_starts,at_end_date FROM hims_d_hrms_options limit 1;",
           values: [input.employee_id],
 
-          printQuery: true
+          printQuery: false
         })
         .then(branch => {
           const hospital_id = branch[0][0]["hospital_id"];
@@ -7987,7 +7987,7 @@ function calculateNoLeaveDays(inputs,_mysql) {
                 to_date
               ],
 
-              printQuery: true
+              printQuery: false
             })
             .then(result => {
               allLeaves = result[0];
