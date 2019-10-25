@@ -39,7 +39,8 @@ const LoadEncashment = ($this, e) => {
               $this.setState({
                 ...data.Leave_Encash_Header[0],
                 encashDetail: data.Leave_Encash_Detail,
-                processBtn: true
+                processBtn: true,
+                processed_already: true
               });
             } else {
               let total_amount = Enumerable.from(response.data.result).sum(w =>
@@ -80,18 +81,19 @@ const ProcessEncash = ($this, e) => {
     data: $this.state,
     method: "POST",
     onSuccess: response => {
+      debugger
       $this.setState({
         encashment_number: response.data.result.encashment_number,
         processBtn: true
       });
-      AlgaehLoader({ show: true });
+      AlgaehLoader({ show: false });
       swalMessage({
         title: "Processed Succesfully...",
         type: "success"
       });
     },
     onFailure: error => {
-      AlgaehLoader({ show: true });
+      AlgaehLoader({ show: false });
       swalMessage({
         title: error.message || error.response.data.message,
         type: "error"
@@ -119,10 +121,78 @@ const employeeSearch = $this => {
   });
 };
 
+const numberhandle = ($this, row, e) => {
+  debugger
+  // let name = e.target.name;
+  let value = e.target.value;
+  if (parseFloat(value) > parseFloat(row.close_balance)) {
+    swalMessage({
+      title: "Cannot be greater than Closing Balancing",
+      type: "warning"
+    });
+    return;
+  }
+
+
+  let inputObj = {
+    employee_id: $this.state.employee_id,
+    year: $this.state.year,
+    leave_days: value
+  };
+
+  AlgaehLoader({ show: true });
+  algaehApiCall({
+    uri: "/encashmentprocess/calculateEncashmentAmount",
+    module: "hrManagement",
+    data: inputObj,
+    method: "GET",
+    onSuccess: response => {
+      if (response.data.result.length > 0) {
+        let data = response.data.result[0];
+        if (data.Exists) {
+          $this.setState({
+            ...data.Leave_Encash_Header[0],
+            encashDetail: data.Leave_Encash_Detail,
+          });
+        } else {
+          let total_amount = Enumerable.from(response.data.result).sum(w =>
+            parseFloat(w.total_amount)
+          );
+
+          $this.setState({
+            encashDetail: response.data.result,
+            total_amount: total_amount,
+            processBtn: false
+          });
+        }
+      }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message || error.response.data.message,
+        type: "error"
+      });
+    }
+  });
+
+  // let encashDetail = $this.state.encashDetail;
+  // let _index = encashDetail.indexOf(row);
+
+
+  // row[name] = value;
+  // encashDetail[_index] = row;
+  // $this.setState({
+  //   encashDetail: encashDetail
+  // });
+};
+
 export {
   texthandler,
   LoadEncashment,
   ClearData,
   ProcessEncash,
-  employeeSearch
+  employeeSearch,
+  numberhandle
 };
