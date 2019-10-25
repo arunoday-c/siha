@@ -19,6 +19,8 @@ import {
 import Enumerable from "linq";
 import swal from "sweetalert2";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import ButtonType from "../../../Wrapper/algaehButton";
 
 class ApplyLeave extends Component {
   constructor(props) {
@@ -44,7 +46,8 @@ class ApplyLeave extends Component {
       projected_leave_enable: false,
       Request_enable: true,
       projected_applied_leaves: null,
-      is_projected_leave: "N"
+      is_projected_leave: "N",
+      loading_Process: false
     };
     this.getLeaveTypes();
   }
@@ -257,6 +260,7 @@ class ApplyLeave extends Component {
   }
 
   getAppliedDays() {
+    AlgaehLoader({ show: true });
     algaehApiCall({
       uri: "/leave/calculateLeaveDays",
       method: "GET",
@@ -273,6 +277,7 @@ class ApplyLeave extends Component {
       },
       onSuccess: res => {
         if (res.data.success) {
+          AlgaehLoader({ show: false });
           this.setState({
             total_applied_days: res.data.records.calculatedLeaveDays,
             projected_applied_leaves: res.data.records.projected_applied_leaves,
@@ -289,6 +294,7 @@ class ApplyLeave extends Component {
             }
           });
         } else if (!res.data.success) {
+          AlgaehLoader({ show: false });
           swalMessage({
             title: res.data.records.message,
             type: "warning"
@@ -300,6 +306,7 @@ class ApplyLeave extends Component {
         }
       },
       onFailure: err => {
+        AlgaehLoader({ show: false });
         swalMessage({
           title: err.message,
           type: "error"
@@ -426,48 +433,54 @@ class ApplyLeave extends Component {
       alertTypeIcon: "warning",
       querySelector: "data-validate='apply-leave-div'",
       onSuccess: () => {
-        algaehApiCall({
-          uri: "/leave/applyEmployeeLeave",
-          method: "POST",
-          module: "hrManagement",
-          data: {
-            employee_id: this.state.employee_id,
-            sub_department_id: this.state.sub_department_id,
-            leave_id: this.state.leave_id,
-            leave_type: this.state.leave_type,
-            from_date: this.state.from_date,
-            to_date: this.state.to_date,
-            from_leave_session: this.state.from_leave_session,
-            to_leave_session: this.state.to_leave_session,
-            total_applied_days: this.state.total_applied_days,
-            remarks: this.state.remarks,
-            absent_id: this.state.absent_id,
-            leave_from: this.state.leave_from ? this.state.leave_from : "SS",
-            hospital_id: this.state.hospital_id,
-            ...this.state.extra
-          },
-          onSuccess: res => {
-            if (res.data.success) {
-              swalMessage({
-                title: "Leave Applied Successfully",
-                type: "success"
-              });
-
-              this.getEmployeeLeaveHistory();
-              this.clearState();
-            } else if (!res.data.success) {
-              swalMessage({
-                title: res.data.records.message,
-                type: "error"
+        this.setState({ loading_Process: true }, () => {
+          algaehApiCall({
+            uri: "/leave/applyEmployeeLeave",
+            method: "POST",
+            module: "hrManagement",
+            data: {
+              employee_id: this.state.employee_id,
+              sub_department_id: this.state.sub_department_id,
+              leave_id: this.state.leave_id,
+              leave_type: this.state.leave_type,
+              from_date: this.state.from_date,
+              to_date: this.state.to_date,
+              from_leave_session: this.state.from_leave_session,
+              to_leave_session: this.state.to_leave_session,
+              total_applied_days: this.state.total_applied_days,
+              remarks: this.state.remarks,
+              absent_id: this.state.absent_id,
+              leave_from: this.state.leave_from ? this.state.leave_from : "SS",
+              hospital_id: this.state.hospital_id,
+              ...this.state.extra
+            },
+            onSuccess: res => {
+              if (res.data.success) {
+                swalMessage({
+                  title: "Leave Applied Successfully",
+                  type: "success"
+                });
+                this.setState({ loading_Process: false });
+                this.getEmployeeLeaveHistory();
+                this.clearState();
+              } else if (!res.data.success) {
+                this.setState({ loading_Process: false }, () => {
+                  swalMessage({
+                    title: res.data.records.message,
+                    type: "error"
+                  });
+                });
+              }
+            },
+            onCatch: err => {
+              this.setState({ loading_Process: false }, () => {
+                swalMessage({
+                  title: err.message,
+                  type: "error"
+                });
               });
             }
-          },
-          onFailure: err => {
-            swalMessage({
-              title: err.message,
-              type: "error"
-            });
-          }
+          });
         });
       }
     });
@@ -840,14 +853,23 @@ class ApplyLeave extends Component {
                     }}
                   />
                   <div className="col-3">
-                    <button
+                    <ButtonType
+                      classname="btn-primary"
+                      loading={this.state.loading_Process}
+                      onClick={this.applyLeave.bind(this)}
+                      label={{
+                        forceLabel: "Request",
+                        returnText: true
+                      }}
+                    />
+                    {/* <button
                       onClick={this.applyLeave.bind(this)}
                       type="button"
                       className="btn btn-primary"
                       disabled={this.state.Request_enable}
                     >
                       Request
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>
