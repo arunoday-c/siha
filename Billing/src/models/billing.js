@@ -2673,7 +2673,7 @@ export default {
                         parseFloat(apr_amount_bulk) +
                         parseFloat(company_payble);
 
-                      approval_amt = apr_amount_bulk;
+                      approval_amt = parseFloat(approval_amt) + apr_amount_bulk;
                     } else {
                       approval_amt =
                         parseFloat(approval_amt) + parseFloat(company_payble);

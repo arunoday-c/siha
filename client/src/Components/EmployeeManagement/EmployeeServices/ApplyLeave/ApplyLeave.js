@@ -20,7 +20,6 @@ import Enumerable from "linq";
 import swal from "sweetalert2";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
-import ButtonType from "../../../Wrapper/algaehButton";
 
 class ApplyLeave extends Component {
   constructor(props) {
@@ -128,6 +127,7 @@ class ApplyLeave extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
+        AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/leave/deleteLeaveApplication",
           method: "DELETE",
@@ -137,6 +137,7 @@ class ApplyLeave extends Component {
             hims_f_leave_application_id: data.hims_f_leave_application_id
           },
           onSuccess: res => {
+            AlgaehLoader({ show: false });
             if (res.data.success) {
               swalMessage({
                 title: "Leave Application Deleted Successfully",
@@ -150,17 +151,13 @@ class ApplyLeave extends Component {
               });
             }
           },
-          onFailure: err => {
+          onCatch: err => {
+            AlgaehLoader({ show: false });
             swalMessage({
               title: err.message,
               type: "error"
             });
           }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
         });
       }
     });
@@ -230,7 +227,7 @@ class ApplyLeave extends Component {
             {
               to_leave_session: "FD"
             },
-            () => {}
+            () => { }
           );
         } else if (from_leave_session === "FH" && to_leave_session === "SH") {
           this.setState({
@@ -295,13 +292,13 @@ class ApplyLeave extends Component {
           });
         } else if (!res.data.success) {
           AlgaehLoader({ show: false });
-          swalMessage({
-            title: res.data.records.message,
-            type: "warning"
-          });
           this.setState({
             Request_enable: true,
             total_applied_days: 0
+          });
+          swalMessage({
+            title: res.data.records.message,
+            type: "warning"
           });
         }
       },
@@ -389,7 +386,7 @@ class ApplyLeave extends Component {
               leave_type: myObj !== undefined ? myObj.leave_type : null,
               projected_leave_enable:
                 myObj.leave_category === "A" &&
-                myObj.avail_if_no_balance === "Y"
+                  myObj.avail_if_no_balance === "Y"
                   ? true
                   : false
             });
@@ -417,14 +414,18 @@ class ApplyLeave extends Component {
     this.setState({
       leave_id: null,
       from_date: null,
-      from_leave_session: null,
+      from_leave_session: "FD",
       to_date: null,
-      to_leave_session: null,
+      to_leave_session: "FD",
       remarks: null,
       total_applied_days: 0.0,
       available_balance: 0.0,
       employee_name: null,
-      full_name: null
+      full_name: null,
+      Request_enable: true,
+      projected_applied_leaves: null,
+      is_projected_leave: "N",
+      loading_Process: false
     });
   }
 
@@ -433,55 +434,56 @@ class ApplyLeave extends Component {
       alertTypeIcon: "warning",
       querySelector: "data-validate='apply-leave-div'",
       onSuccess: () => {
-        this.setState({ loading_Process: true }, () => {
-          algaehApiCall({
-            uri: "/leave/applyEmployeeLeave",
-            method: "POST",
-            module: "hrManagement",
-            data: {
-              employee_id: this.state.employee_id,
-              sub_department_id: this.state.sub_department_id,
-              leave_id: this.state.leave_id,
-              leave_type: this.state.leave_type,
-              from_date: this.state.from_date,
-              to_date: this.state.to_date,
-              from_leave_session: this.state.from_leave_session,
-              to_leave_session: this.state.to_leave_session,
-              total_applied_days: this.state.total_applied_days,
-              remarks: this.state.remarks,
-              absent_id: this.state.absent_id,
-              leave_from: this.state.leave_from ? this.state.leave_from : "SS",
-              hospital_id: this.state.hospital_id,
-              ...this.state.extra
-            },
-            onSuccess: res => {
-              if (res.data.success) {
-                swalMessage({
-                  title: "Leave Applied Successfully",
-                  type: "success"
-                });
-                this.setState({ loading_Process: false });
-                this.getEmployeeLeaveHistory();
-                this.clearState();
-              } else if (!res.data.success) {
-                this.setState({ loading_Process: false }, () => {
-                  swalMessage({
-                    title: res.data.records.message,
-                    type: "error"
-                  });
-                });
-              }
-            },
-            onCatch: err => {
+        AlgaehLoader({ show: true });
+        algaehApiCall({
+          uri: "/leave/applyEmployeeLeave",
+          method: "POST",
+          module: "hrManagement",
+          data: {
+            employee_id: this.state.employee_id,
+            sub_department_id: this.state.sub_department_id,
+            leave_id: this.state.leave_id,
+            leave_type: this.state.leave_type,
+            from_date: this.state.from_date,
+            to_date: this.state.to_date,
+            from_leave_session: this.state.from_leave_session,
+            to_leave_session: this.state.to_leave_session,
+            total_applied_days: this.state.total_applied_days,
+            remarks: this.state.remarks,
+            absent_id: this.state.absent_id,
+            leave_from: this.state.leave_from ? this.state.leave_from : "SS",
+            hospital_id: this.state.hospital_id,
+            ...this.state.extra
+          },
+          onSuccess: res => {
+            AlgaehLoader({ show: false });
+            if (res.data.success) {
+              swalMessage({
+                title: "Leave Applied Successfully",
+                type: "success"
+              });
+              this.setState({ loading_Process: false });
+              this.getEmployeeLeaveHistory();
+              this.clearState();
+            } else if (!res.data.success) {
               this.setState({ loading_Process: false }, () => {
                 swalMessage({
-                  title: err.message,
+                  title: res.data.records.message,
                   type: "error"
                 });
               });
             }
-          });
+          },
+          onCatch: err => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+
+          }
         });
+
       }
     });
   }
@@ -501,7 +503,7 @@ class ApplyLeave extends Component {
           });
         }
       },
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -524,7 +526,7 @@ class ApplyLeave extends Component {
           });
         }
       },
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -670,16 +672,16 @@ class ApplyLeave extends Component {
                   </div>
                   {(this.state.projected_leave_enable === true &&
                     this.state.is_projected_leave === "Y") ||
-                  parseFloat(this.state.projected_applied_leaves) > 0 ? (
-                    <div className="col-12 margin-bottom-15">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Projected Leaves"
-                        }}
-                      />
-                      <h6>{this.state.projected_applied_leaves} day(s)</h6>
-                    </div>
-                  ) : null}
+                    parseFloat(this.state.projected_applied_leaves) > 0 ? (
+                      <div className="col-12 margin-bottom-15">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Projected Leaves"
+                          }}
+                        />
+                        <h6>{this.state.projected_applied_leaves} day(s)</h6>
+                      </div>
+                    ) : null}
                   <AlgaehDateHandler
                     div={{ className: "col-6 form-group mandatory" }}
                     label={{
@@ -853,7 +855,7 @@ class ApplyLeave extends Component {
                     }}
                   />
                   <div className="col-3">
-                    <ButtonType
+                    {/* <ButtonType
                       classname="btn-primary"
                       loading={this.state.loading_Process}
                       onClick={this.applyLeave.bind(this)}
@@ -861,15 +863,16 @@ class ApplyLeave extends Component {
                         forceLabel: "Request",
                         returnText: true
                       }}
-                    />
-                    {/* <button
+                      others={{ disabled: this.state.Request_enable }}
+                    /> */}
+                    <button
                       onClick={this.applyLeave.bind(this)}
                       type="button"
                       className="btn btn-primary"
                       disabled={this.state.Request_enable}
                     >
                       Request
-                    </button> */}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -954,8 +957,8 @@ class ApplyLeave extends Component {
                                     Cancelled
                                   </span>
                                 ) : (
-                                  "------"
-                                )}
+                                          "------"
+                                        )}
                               </span>
                             );
                           },
@@ -1127,9 +1130,9 @@ class ApplyLeave extends Component {
                       isEditable={false}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
-                        onEdit: () => {},
-                        onDelete: () => {},
-                        onDone: () => {}
+                        onEdit: () => { },
+                        onDelete: () => { },
+                        onDone: () => { }
                       }}
                     />
                   </div>
@@ -1166,8 +1169,8 @@ class ApplyLeave extends Component {
                       </div>
                     ))
                   ) : (
-                    <div className="noResult">Not Eligible for any Leaves</div>
-                  )}
+                      <div className="noResult">Not Eligible for any Leaves</div>
+                    )}
                 </div>
               </div>
             </div>
