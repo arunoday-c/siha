@@ -49,7 +49,7 @@ export default {
             .executeQuery({
               query:
                 "select hims_f_employee_monthly_leave_id,leave_id,hims_f_employee_monthly_leave.employee_id,`year`,close_balance,encashment_leave, \
-              leaEncash.earnings_id, leaEncash.percent, empEarn.amount,\
+              leaEncash.earnings_id, leaEncash.percent, empEarn.amount, lea.leave_description,\
               CASE when close_balance < encashment_leave then sum( ((empEarn.amount *12/365)*(leaEncash.percent/100))*close_balance) else \
               sum(((empEarn.amount *12/365)*(leaEncash.percent/100))*encashment_leave)  end leave_amount , case when close_balance < encashment_leave then\
               close_balance else encashment_leave end leave_days from \

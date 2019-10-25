@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ItemDetails from "./ItemDetails/ItemDetails";
+// import ItemDetails from "./ItemDetails/ItemDetails";
 import "./../../../styles/site.scss";
 import "./ItemMaster.scss";
 import {
@@ -294,15 +294,15 @@ class ItemMaster extends Component {
                         >
                           <input
                             type="checkbox"
-                            name="exp_date_not_required"
+                            name="exp_date_required"
                             checked={
-                              this.state.exp_date_not_required === "Y"
+                              this.state.exp_date_required === "Y"
                                 ? true
                                 : false
                             }
                             onChange={BatchExpRequired.bind(this, this)}
                           />
-                          <span>Not Required</span>
+                          <span>Required</span>
                         </label>
                       </div>
                     </div>
@@ -506,9 +506,9 @@ class ItemMaster extends Component {
                                 this.props.itemuom === undefined
                                   ? []
                                   : this.props.itemuom.filter(
-                                      f =>
-                                        f.hims_d_pharmacy_uom_id === row.uom_id
-                                    );
+                                    f =>
+                                      f.hims_d_pharmacy_uom_id === row.uom_id
+                                  );
 
                               return (
                                 <span>
@@ -637,7 +637,7 @@ class ItemMaster extends Component {
                         paging={{ page: 0, rowsPerPage: 5 }}
                         events={{
                           onDelete: deleteUOM.bind(this, this),
-                          onEdit: row => {},
+                          onEdit: row => { },
                           onDone: updateUOM.bind(this, this)
                         }}
                       />
@@ -667,7 +667,7 @@ class ItemMaster extends Component {
                         },
                         onChange: texthandle.bind(this, this)
                       }}
-                      //forceUpdate={true}
+                    //forceUpdate={true}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-4 mandatory form-group" }}

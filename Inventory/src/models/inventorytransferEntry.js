@@ -659,7 +659,7 @@ export default {
                   inner join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id \
                   inner join `hims_d_inventory_item_master` IM  on IM.hims_d_inventory_item_master_id=D.item_id \
                   inner join `hims_d_inventory_uom` PU  on PU.hims_d_inventory_uom_id=D.item_uom \
-                  where D.inventory_header_id=? and  (date(LOC.expirydt) > date(CURDATE()) || exp_date_not_required='Y') \
+                  where D.inventory_header_id=? and  (date(LOC.expirydt) > date(CURDATE()) || exp_date_required='N') \
                   and D.quantity_outstanding<>0 order by  date(LOC.expirydt) ",
                 values: [inputParam.hims_f_inventory_material_header_id],
                 printQuery: false

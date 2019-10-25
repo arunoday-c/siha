@@ -257,28 +257,12 @@ class LeaveEncashmentProcess extends Component {
                     datavalidate="leaveEncashProcessGrid"
                     columns={[
                       {
-                        fieldName: "leave_id",
+                        fieldName: "leave_description",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Leave Description" }}
                           />
-                        ),
-                        displayTemplate: row => {
-                          let display =
-                            this.props.leaveMaster === undefined
-                              ? []
-                              : this.props.leaveMaster.filter(
-                                  f => f.hims_d_leave_id === row.leave_id
-                                );
-
-                          return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? display[0].leave_description
-                                : ""}
-                            </span>
-                          );
-                        }
+                        )
                       },
                       {
                         fieldName: "leave_days",
