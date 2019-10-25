@@ -105,7 +105,7 @@ const itemchangeText = ($this, e, ctrl) => {
     item_group_id: e.group_id,
     uom_id: e.stocking_uom_id,
     sales_uom: e.sales_uom_id,
-    required_batchno: e.exp_date_not_required,
+    required_batchno: e.exp_date_required,
     item_code: e.item_code,
     // unit_cost: e.selected.purchase_cost,
     sales_price: e.sales_price,
@@ -134,7 +134,7 @@ const AddItems = $this => {
         document.querySelector("[name='unit_cost']").focus();
       } else if (
         $this.state.expiry_date === null &&
-        $this.state.required_batchno === "N"
+        $this.state.required_batchno === "Y"
       ) {
         swalMessage({
           title: "Select Expiry Date.",

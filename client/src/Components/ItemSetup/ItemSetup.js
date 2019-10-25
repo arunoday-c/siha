@@ -146,7 +146,7 @@ class ItemSetup extends Component {
           service_id: firstRecordSet.service_id,
           purchase_cost: firstRecordSet.purchase_cost,
           addl_information: firstRecordSet.addl_information,
-          exp_date_not_required: firstRecordSet.exp_date_not_required,
+          exp_date_required: firstRecordSet.exp_date_required,
           sfda_code: firstRecordSet.sfda_code,
           reorder_qty: firstRecordSet.reorder_qty,
           standard_fee: firstRecordSet.sales_price,
@@ -242,8 +242,8 @@ class ItemSetup extends Component {
                           this.props.itemgeneric === undefined
                             ? []
                             : this.props.itemgeneric.filter(
-                                f => f.hims_d_item_generic_id === row.generic_id
-                              );
+                              f => f.hims_d_item_generic_id === row.generic_id
+                            );
 
                         return (
                           <span>
@@ -264,9 +264,9 @@ class ItemSetup extends Component {
                           this.props.itemcategory === undefined
                             ? []
                             : this.props.itemcategory.filter(
-                                f =>
-                                  f.hims_d_item_category_id === row.category_id
-                              );
+                              f =>
+                                f.hims_d_item_category_id === row.category_id
+                            );
 
                         return (
                           <span>
@@ -285,8 +285,8 @@ class ItemSetup extends Component {
                           this.props.itemgroup === undefined
                             ? []
                             : this.props.itemgroup.filter(
-                                f => f.hims_d_item_group_id === row.group_id
-                              );
+                              f => f.hims_d_item_group_id === row.group_id
+                            );
 
                         return (
                           <span>
@@ -308,10 +308,10 @@ class ItemSetup extends Component {
                           this.props.itemuom === undefined
                             ? []
                             : this.props.itemuom.filter(
-                                f =>
-                                  f.hims_d_pharmacy_uom_id ===
-                                  row.purchase_uom_id
-                              );
+                              f =>
+                                f.hims_d_pharmacy_uom_id ===
+                                row.purchase_uom_id
+                            );
 
                         return (
                           <span>
@@ -332,9 +332,9 @@ class ItemSetup extends Component {
                           this.props.itemuom === undefined
                             ? []
                             : this.props.itemuom.filter(
-                                f =>
-                                  f.hims_d_pharmacy_uom_id === row.sales_uom_id
-                              );
+                              f =>
+                                f.hims_d_pharmacy_uom_id === row.sales_uom_id
+                            );
 
                         return (
                           <span>
@@ -355,10 +355,10 @@ class ItemSetup extends Component {
                           this.props.itemuom === undefined
                             ? []
                             : this.props.itemuom.filter(
-                                f =>
-                                  f.hims_d_pharmacy_uom_id ===
-                                  row.stocking_uom_id
-                              );
+                              f =>
+                                f.hims_d_pharmacy_uom_id ===
+                                row.stocking_uom_id
+                            );
 
                         return (
                           <span>

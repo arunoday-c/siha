@@ -603,7 +603,7 @@ export default {
               "select itmloc.item_id, itmloc.pharmacy_location_id, itmloc.batchno, itmloc.expirydt, itmloc.qtyhand, \
                 itmloc.grnno, itmloc.sales_uom, itmloc.barcode, item.item_description, itmloc.sale_price,   \
                 itmloc.avgcost from hims_m_item_location as itmloc inner join hims_d_item_master as item on itmloc.item_id = item.hims_d_item_master_id  \
-                where item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0 and (expirydt > CURDATE()|| exp_date_not_required='Y')  order by expirydt",
+                where item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0 and (expirydt > CURDATE()|| exp_date_required='N')  order by expirydt",
             values: [item_ids, location_ids],
             printQuery: true
           })

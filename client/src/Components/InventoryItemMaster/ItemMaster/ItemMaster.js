@@ -215,15 +215,15 @@ class InvItemMaster extends Component {
                         >
                           <input
                             type="checkbox"
-                            name="exp_date_not_required"
+                            name="exp_date_required"
                             checked={
-                              this.state.exp_date_not_required === "Y"
+                              this.state.exp_date_required === "Y"
                                 ? true
                                 : false
                             }
                             onChange={BatchExpRequired.bind(this, this)}
                           />
-                          <span>Not Required</span>
+                          <span>Required</span>
                         </label>
                       </div>
                     </div>
@@ -430,9 +430,9 @@ class InvItemMaster extends Component {
                                 this.props.inventoryitemuom === undefined
                                   ? []
                                   : this.props.inventoryitemuom.filter(
-                                      f =>
-                                        f.hims_d_inventory_uom_id === row.uom_id
-                                    );
+                                    f =>
+                                      f.hims_d_inventory_uom_id === row.uom_id
+                                  );
 
                               return (
                                 <span>
@@ -560,7 +560,7 @@ class InvItemMaster extends Component {
                         paging={{ page: 0, rowsPerPage: 5 }}
                         events={{
                           onDelete: deleteUOM.bind(this, this),
-                          onEdit: row => {},
+                          onEdit: row => { },
                           onDone: updateUOM.bind(this, this)
                         }}
                       />
@@ -693,8 +693,8 @@ class InvItemMaster extends Component {
                     {this.state.hims_d_inventory_item_master_id === null ? (
                       <AlgaehLabel label={{ fieldName: "btnSave" }} />
                     ) : (
-                      <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                    )}
+                        <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                      )}
                   </button>
                   <button
                     onClick={e => {
