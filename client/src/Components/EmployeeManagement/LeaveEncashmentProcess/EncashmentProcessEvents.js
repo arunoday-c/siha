@@ -1,10 +1,10 @@
-import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
-import AlgaehSearch from "../../../Wrapper/globalSearch";
-import spotlightSearch from "../../../../Search/spotlightSearch.json";
+import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall.js";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 import Enumerable from "linq";
-import LeaveEncashmentProcessIOputs from "../../../../Models/LeaveEncashmentProcess";
-import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import LeaveEncashmentProcessIOputs from "../../../Models/LeaveEncashmentProcess";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const texthandler = ($this, e) => {
   let name = e.name || e.target.name;
@@ -81,7 +81,6 @@ const ProcessEncash = ($this, e) => {
     data: $this.state,
     method: "POST",
     onSuccess: response => {
-      debugger
       $this.setState({
         encashment_number: response.data.result.encashment_number,
         processBtn: true
@@ -122,7 +121,6 @@ const employeeSearch = $this => {
 };
 
 const numberhandle = ($this, row, e) => {
-  debugger
   // let name = e.target.name;
   let value = e.target.value;
   if (parseFloat(value) > parseFloat(row.close_balance)) {
@@ -132,7 +130,6 @@ const numberhandle = ($this, row, e) => {
     });
     return;
   }
-
 
   let inputObj = {
     employee_id: $this.state.employee_id,
@@ -152,7 +149,7 @@ const numberhandle = ($this, row, e) => {
         if (data.Exists) {
           $this.setState({
             ...data.Leave_Encash_Header[0],
-            encashDetail: data.Leave_Encash_Detail,
+            encashDetail: data.Leave_Encash_Detail
           });
         } else {
           let total_amount = Enumerable.from(response.data.result).sum(w =>
@@ -179,7 +176,6 @@ const numberhandle = ($this, row, e) => {
 
   // let encashDetail = $this.state.encashDetail;
   // let _index = encashDetail.indexOf(row);
-
 
   // row[name] = value;
   // encashDetail[_index] = row;
