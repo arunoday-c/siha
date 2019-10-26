@@ -197,7 +197,7 @@ class OpeningBalance extends Component {
                   onChange={this.changeChecks.bind(this)}
                   checked={this.state.selected_type === "LS"}
                 />
-                <span>Leave Salary</span>
+                <span>Annual Leave Salary</span>
               </label>
             </div>
           </div>
