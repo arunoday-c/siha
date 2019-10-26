@@ -6729,17 +6729,17 @@ function projectedleaveCalc(input, _mysql) {
       
             if (cur_month > 12) {
               cur_month = 1;
-      
-              temp_number_of_months.push(cur_month);
             }
+              temp_number_of_months.push(cur_month);
+            
           } else if (from_day > at_end_date && to_day > at_end_date) {
             cur_month = parseInt(from_month) + parseInt(1);
       
             if (cur_month > 12) {
               cur_month = 1;
-      
-              temp_number_of_months.push(cur_month);
             }
+              temp_number_of_months.push(cur_month);
+            
           }
         } else {
           while (
@@ -7350,14 +7350,14 @@ function validateLeaveApplictn(inputs, my_sql,req) {
       _mysql
       .executeQuery({
         query:
-          " select attendance_starts,at_end_date from hims_d_hrms_options limit 1; ",
+          " select attendance_starts,at_st_date,at_end_date from hims_d_hrms_options limit 1; ",
         printQuery: false
       })
       .then(authResult => {
 
 
       input["actual_to_date"]=input.to_date;
-      const actual_from_session = input["from_session"];
+      // const actual_from_session = input["from_session"];
       const actual_to_session = input["to_session"];
       let from_year = "";
       let to_year = "";
@@ -7367,7 +7367,9 @@ function validateLeaveApplictn(inputs, my_sql,req) {
         const attendance_starts =authResult[0]["attendance_starts"];
         const at_end_date =authResult[0]["at_end_date"];
       
-   
+        input["attendance_starts"]=attendance_starts;
+        input["at_end_date"]=at_end_date;
+        input["at_st_date"]= authResult[0]["at_st_date"];
 
      
 
@@ -7808,14 +7810,41 @@ function calculateNoLeaveDays(inputs,_mysql) {
       let calculatedLeaveDays = 0;
       let session_diff = 0;
       let my_religion = input.religion_id;
-      let from_month = moment(from_date).format("M");
-      let to_month = moment(to_date).format("M");
+      
       let year = input.year;
       
-
+     const attendance_starts=input["attendance_starts"];
+     const at_end_date= input["at_end_date"];
+     const at_st_date= input["at_st_date"];
     
 
 
+     let from_month ="";
+     let to_month = "";
+
+     if (attendance_starts == "PM" && at_end_date > 0) {
+
+
+      if(moment(from_date, "YYYY-MM-DD").format("D")>at_end_date){
+        from_month=parseInt(moment(from_date, "YYYY-MM-DD").format("M"))+1;
+      }else{
+        from_month=moment(from_date, "YYYY-MM-DD").format("M");
+      }
+
+
+      if(moment(to_date, "YYYY-MM-DD").format("D")>at_end_date){
+        to_month=parseInt(moment(to_date, "YYYY-MM-DD").format("M"))+1;
+      }else{
+        to_month=moment(to_date, "YYYY-MM-DD").format("M");
+      }
+
+     }else{
+       from_month = moment(from_date).format("M");
+       to_month = moment(to_date).format("M");
+
+     }
+
+   
       let dateStart = moment(from_date);
       let dateEnd = moment(to_date);
       let dateRange = [];
@@ -7856,6 +7885,40 @@ function calculateNoLeaveDays(inputs,_mysql) {
       // EN OF---------calculate Half-day or Full-day from session
 
       //ST---------get month names and start_of_month and end_of_month number of days in a full month
+      if (attendance_starts == "PM" && at_end_date > 0) {
+     const len=  numberOfMonths(at_end_date,dateStart,dateEnd);
+     let skip_adding_month="N";
+      console.log("len:",len)
+       for(let i=0;i<len;i++) {        
+
+      
+        
+          if(moment(from_date).format("D")>at_end_date){
+            dateStart.add(1, "month");
+            skip_adding_month="Y";
+          }
+            let copy_of_dateStart= moment(dateStart.valueOf());          
+            const prev_month= moment(copy_of_dateStart).add(-1, "month");
+
+            const startOfMonth=moment(prev_month,"YYYY-MM-DD").format("YYYY-MM")+"-"+at_st_date;
+            const endOfMonth=moment(dateStart,"YYYY-MM-DD").format("YYYY-MM")+"-"+at_end_date;
+
+            const numberOfDays = moment(endOfMonth, "YYYY-MM-DD").diff(
+                            moment(startOfMonth, "YYYY-MM-DD"),"days") + 1;
+
+               
+             
+          dateRange.push({
+            month_name: dateStart.format("MMMM"),
+            startOfMonth: startOfMonth,
+            endOfMonth: endOfMonth,  
+            numberOfDays:numberOfDays
+          });
+
+          if(skip_adding_month=="N")
+          dateStart.add(1, "month");
+        }
+      }else{
       while (
         dateEnd > dateStart ||
         dateStart.format("M") === dateEnd.format("M")
@@ -7873,6 +7936,9 @@ function calculateNoLeaveDays(inputs,_mysql) {
         });
         dateStart.add(1, "month");
       }
+    }
+          console.log("dateRange:",dateRange)
+
       //END OF---------get month names and start_of_month and end_of_month number of days in a full month
 
       //ST------calculate begning_of_leave and end_of_leave and leaveDays in leaveDates Range
@@ -8552,6 +8618,8 @@ function calculateNoLeaveDays(inputs,_mysql) {
           reject(error);
         });
     } catch (e) {
+      console.log("e456:",e)
+
       reject(e);
     }
   });
@@ -9134,19 +9202,19 @@ function acrossYearAuthorize(month_number,deductionResult,cur_year_leaveData,nex
                     deductionResult.partA_predicted_leave_days;
 
 
-                    let december_days=0;                   
-                    deductionResult.partB_monthWise.find((item,index)=>{                      
-                      if( item.month_name.toUpperCase()=="DECEMBER"){
-                        december_days= item.finalLeave;
-                        deductionResult.partB_monthWise[index]["finalLeave"]=0;
-                      }
-                    });
+                    // let december_days=0;                   
+                    // deductionResult.partB_monthWise.find((item,index)=>{                      
+                    //   if( item.month_name.toUpperCase()=="DECEMBER"){
+                    //     december_days= item.finalLeave;
+                    //     deductionResult.partB_monthWise[index]["finalLeave"]=0;
+                    //   }
+                    // });
 
-                    deductionResult.partA_monthWise.find((item,index)=>{                      
-                      if( item.month_name.toUpperCase()=="DECEMBER"){                   
-                        deductionResult.partA_monthWise[index]["finalLeave"]+=december_days;
-                      }
-                    });
+                    // deductionResult.partA_monthWise.find((item,index)=>{                      
+                    //   if( item.month_name.toUpperCase()=="DECEMBER"){                   
+                    //     deductionResult.partA_monthWise[index]["finalLeave"]+=december_days;
+                    //   }
+                    // });
                   
                 } else {
                   newCloseBal =parseFloat(cur_year_leaveData[0]["close_balance"]);
@@ -9491,19 +9559,19 @@ function acrossYearCancel(deductionResult,cur_year_leaveData,next_year_leaveData
     new Promise((resolve, reject) => {
 
 
-      let december_days=0;                   
-      deductionResult.partB_monthWise.find(item=>{                      
-        if( item.month_name.toUpperCase()=="DECEMBER"){
-          december_days= item.finalLeave;
+      // let december_days=0;                   
+      // deductionResult.partB_monthWise.find(item=>{                      
+      //   if( item.month_name.toUpperCase()=="DECEMBER"){
+      //     december_days= item.finalLeave;
           
-        }
-      });
+      //   }
+      // });
 
-      deductionResult.partA_monthWise.find((item,index)=>{                      
-        if( item.month_name.toUpperCase()=="DECEMBER"){                   
-          deductionResult.partA_monthWise[index]["finalLeave"]+=december_days;
-        }
-      });
+      // deductionResult.partA_monthWise.find((item,index)=>{                      
+      //   if( item.month_name.toUpperCase()=="DECEMBER"){                   
+      //     deductionResult.partA_monthWise[index]["finalLeave"]+=december_days;
+      //   }
+      // });
 
           let monthArray = deductionResult.partA_monthWise;
        
@@ -9671,4 +9739,137 @@ function acrossYearCancel(deductionResult,cur_year_leaveData,next_year_leaveData
 
   
   });
+}
+
+
+function numberOfMonths(at_end_date,dateStart,dateEnd){
+
+  let date_start=moment(dateStart.valueOf());  
+  let date_end=moment(dateEnd.valueOf());  
+
+   
+    try {
+  const number_of_months = [];
+  const temp_number_of_months = [];
+    console.log("PM");
+  
+    let from_month = moment(date_start, "YYYY-MM-DD").format("M");
+    let to_month = moment(date_end, "YYYY-MM-DD").format("M");
+    let from_day = moment(date_start, "YYYY-MM-DD").format("D");
+    let to_day = moment(date_end, "YYYY-MM-DD").format("D");
+    if (from_month == to_month) {
+      let cur_month = "";
+      if (from_day <= at_end_date && to_day <= at_end_date) {
+        temp_number_of_months.push(parseInt(from_month));
+      } else if (from_day <= at_end_date && to_day > at_end_date) {
+        temp_number_of_months.push(from_month);
+        cur_month = parseInt(from_month) + parseInt(1);
+  
+        if (cur_month > 12) {
+          cur_month = 1;
+        }
+          temp_number_of_months.push(cur_month);
+        
+      } else if (from_day > at_end_date && to_day > at_end_date) {
+        cur_month = parseInt(from_month) + parseInt(1);
+  
+        if (cur_month > 12) {
+          cur_month = 1;
+        }
+          temp_number_of_months.push(cur_month);
+        
+      }
+    } else {
+      while (
+        moment(date_end, "YYYY-MM-DD").format("YYYYMM") >=
+        moment(date_start, "YYYY-MM-DD").format("YYYYMM")
+      ) {
+        let cur_month = 0;
+        if (from_month == moment(date_start, "YYYY-MM-DD").format("M")) {
+          if (from_day <= at_end_date) {
+            cur_month = parseInt(from_month);
+  
+            if (cur_month > 12) {
+              cur_month = 1;
+  
+              temp_number_of_months.push(cur_month);
+            } else {
+              temp_number_of_months.push(cur_month);
+            }
+          } else if (from_day > at_end_date) {
+            cur_month = parseInt(from_month) + parseInt(1);
+            if (cur_month > 12) {
+              cur_month = 1;
+  
+              temp_number_of_months.push(cur_month);
+            } else {
+              temp_number_of_months.push(cur_month);
+            }
+          }
+  
+          date_start.add(1, "M");
+        } else if (to_month == moment(date_start, "YYYY-MM-DD").format("M")) {
+          if (to_day <= at_end_date) {
+            cur_month = parseInt(moment(date_start, "YYYY-MM-DD").format("M"));
+  
+            if (cur_month > 12) {
+              cur_month = 1;
+  
+              temp_number_of_months.push(cur_month);
+            } else {
+              temp_number_of_months.push(cur_month);
+            }
+          } else if (to_day > at_end_date) {
+            cur_month = parseInt(moment(date_start, "YYYY-MM-DD").format("M"));
+  
+            if (cur_month > 12) {
+              cur_month = 1;
+  
+              temp_number_of_months.push(cur_month);
+            } else {
+              temp_number_of_months.push(cur_month);
+            }
+  
+            cur_month = parseInt(cur_month) + parseInt(1);
+  
+            if (cur_month > 12) {
+              cur_month = 1;
+  
+              temp_number_of_months.push(cur_month);
+            } else {
+              temp_number_of_months.push(cur_month);
+            }
+          }
+          date_start.add(1, "M");
+        } else {
+          cur_month = parseInt(moment(date_start, "YYYY-MM-DD").format("M"));
+  
+          if (cur_month > 12) {
+            cur_month = 1;
+  
+            temp_number_of_months.push(cur_month);
+          } else {
+            temp_number_of_months.push(cur_month);
+          }
+  
+          date_start.add(1, "M");
+        }
+      }
+    }
+
+
+
+    temp_number_of_months.forEach(item=>{
+      if (number_of_months.indexOf(item) === -1) {
+      number_of_months.push(item);
+      }    });
+      console.log("number_of_months:",number_of_months)
+     return number_of_months.length;
+    
+
+  } catch (e) {
+    console.log("e89e:",e)
+    reject(e);
+  }
+
 }
