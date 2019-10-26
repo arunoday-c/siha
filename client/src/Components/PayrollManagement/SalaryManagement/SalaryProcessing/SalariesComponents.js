@@ -335,9 +335,9 @@ export default class SalariesComponents extends PureComponent {
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}
                             events={{
-                              onEdit: () => {},
-                              onDelete: () => {},
-                              onDone: () => {}
+                              onEdit: () => { },
+                              onDelete: () => { },
+                              onDone: () => { }
                             }}
                           />
                         </div>
@@ -407,9 +407,9 @@ export default class SalariesComponents extends PureComponent {
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}
                             events={{
-                              onEdit: () => {},
-                              onDelete: () => {},
-                              onDone: () => {}
+                              onEdit: () => { },
+                              onDelete: () => { },
+                              onDone: () => { }
                             }}
                           />
                         </div>
@@ -481,9 +481,9 @@ export default class SalariesComponents extends PureComponent {
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}
                             events={{
-                              onEdit: () => {},
-                              onDelete: () => {},
-                              onDone: () => {}
+                              onEdit: () => { },
+                              onDelete: () => { },
+                              onDone: () => { }
                             }}
                           />
                         </div>

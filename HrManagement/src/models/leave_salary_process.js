@@ -477,7 +477,7 @@ export default {
                     _mysql.releaseConnection();
                     req.flag = 1;
                     req.records = {
-                      message: "Please Process Attandance"
+                      message: "Please Process Attendance"
                     };
                     next();
                     return;
