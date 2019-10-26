@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./leave_mgmt.scss";
 import LeaveAuth from "./LeaveAuthorization/LeaveAuthorization";
-import LeaveEncashmentProcess from "./LeaveEncashmentProcess/LeaveEncashmentProcess";
+// import LeaveEncashmentProcess from "./LeaveEncashmentProcess/LeaveEncashmentProcess";
 import LeaveEncashAuth from "./LeaveEncashmentAuth/LeaveEncashmentAuth";
 import LeaveSalaryProcess from "./LeaveSalaryProcess/LeaveSalaryProcess";
 import LeaveYearlyProcess from "./LeaveYearlyProcess/LeaveYearlyProcess";
