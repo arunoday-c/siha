@@ -5,6 +5,7 @@ import ApplyLeave from "./ApplyLeave/ApplyLeave";
 import LoanRequest from "./LoanRequest/LoanRequest";
 import RejoinAnnualLeave from "./RejoinAnnualLeave/RejoinAnnualLeave";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import LeaveEncashmentProcess from ".././LeaveEncashmentProcess/LeaveEncashmentProcess";
 
 export default class SelfService extends Component {
   constructor(props) {
@@ -116,6 +117,22 @@ export default class SelfService extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"LeaveEncashmentProcess"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+                ref={attReg => {
+                  this.attReg = attReg;
+                }}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Request Leave Encashment"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -134,6 +151,8 @@ export default class SelfService extends Component {
             <LoanRequest type="AD" />
           ) : this.state.pageDisplay === "RejoinFromAnnual" ? (
             <RejoinAnnualLeave />
+          ) : this.state.pageDisplay === "LeaveEncashmentProcess" ? (
+            <LeaveEncashmentProcess from_screen="ES" />
           ) : null}
         </div>
       </div>

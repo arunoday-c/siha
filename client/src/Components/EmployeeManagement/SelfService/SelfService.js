@@ -10,6 +10,7 @@ import LoanRequest from "./LoanRequest/LoanRequest";
 import LeaveEncashment from "./LeaveEncashmemnt/LeaveEncashment";
 import HolidayListSelf from "./HolidayListSelf/HolidayListSelf";
 import TimeSheetSelf from "./TimeSheetSelf/TimeSheetSelf";
+import LeaveEncashmentProcess from ".././LeaveEncashmentProcess/LeaveEncashmentProcess";
 
 // import employeeProfileImg from "../../../assets/images/employee_profile_img.webp";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
@@ -76,6 +77,7 @@ export default class SelfService extends Component {
     }
     e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
+
     this.setState({
       pageDisplay: specified
     });
@@ -279,6 +281,22 @@ export default class SelfService extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"LeaveEncashmentProcess"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+                ref={attReg => {
+                  this.attReg = attReg;
+                }}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Request Leave Encashment"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -308,6 +326,8 @@ export default class SelfService extends Component {
             <TimeSheetSelf />
           ) : this.state.pageDisplay === "HolidayListSelf" ? (
             <HolidayListSelf />
+          ) : this.state.pageDisplay === "LeaveEncashmentProcess" ? (
+            <LeaveEncashmentProcess empData={this.state.employee_details} />
           ) : null}
         </div>
       </div>

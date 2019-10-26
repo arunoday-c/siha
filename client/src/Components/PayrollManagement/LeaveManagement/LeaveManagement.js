@@ -46,19 +46,7 @@ export default class LeaveManagement extends Component {
                 />
               }
             </li>
-            <li
-              algaehtabs={"LeaveEncashmentProcess"}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Encashment Process"
-                  }}
-                />
-              }
-            </li>
+
             <li
               algaehtabs={"LeaveEncashAuth"}
               className={"nav-item tab-button"}
@@ -104,8 +92,6 @@ export default class LeaveManagement extends Component {
         <div className="col-12 leave-section">
           {this.state.pageDisplay === "LeaveAuth" ? (
             <LeaveAuth />
-          ) : this.state.pageDisplay === "LeaveEncashmentProcess" ? (
-            <LeaveEncashmentProcess />
           ) : this.state.pageDisplay === "LeaveEncashAuth" ? (
             <LeaveEncashAuth />
           ) : this.state.pageDisplay === "LeaveSalaryProcess" ? (

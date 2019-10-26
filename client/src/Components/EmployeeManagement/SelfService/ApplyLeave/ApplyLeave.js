@@ -40,8 +40,8 @@ class ApplyLeave extends Component {
       to_date: props.leave.to_date ? props.leave.to_date : null,
       from_leave_session: props.leave.from_session
         ? props.leave.from_session
-        : null,
-      to_leave_session: props.leave.to_session ? props.leave.to_session : null,
+        : "FD",
+      to_leave_session: props.leave.to_session ? props.leave.to_session : "FD",
       absent_id: props.leave.absent_id ? props.leave.absent_id : null,
       leave_from: props.leave.leave_from ? props.leave.leave_from : null,
       hospital_id: obritery.hims_d_hospital_id,
@@ -252,30 +252,71 @@ class ApplyLeave extends Component {
         hims_d_leave_detail_id: this.state.hims_d_leave_detail_id,
         religion_id: this.state.religion_id,
         leave_id: this.state.leave_id,
-        employee_id: this.state.employee_id,
-        hospital_id: this.state.hospital_id,
-        employee_branch: this.state.employee_branch
+        employee_id: this.state.employee_id
       },
       onSuccess: res => {
         if (res.data.success) {
           AlgaehLoader({ show: false });
-          this.setState({
-            total_applied_days: res.data.records.calculatedLeaveDays,
-            projected_applied_leaves: res.data.records.projected_applied_leaves,
-            is_projected_leave:
-              res.data.records.is_projected_leave === undefined
-                ? "N"
-                : res.data.records.is_projected_leave,
-            Request_enable: false,
-            extra: {
-              holiday_included: res.data.records.include_holidays,
-              holidays: res.data.records.total_holiday,
-              weekoff_included: res.data.records.include_week_offs,
-              weekoff_days: res.data.records.total_weekOff
-            }
-          });
+          if (res.data.records.is_projected_leave === "Y") {
+            swal({
+              title: "Applying across the year leave.",
+              text:
+                "Apply leave and transfer balance leave to next year or Request balance leave for encashment?",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonText: "Request Encashment",
+              confirmButtonColor: "#44b8bd",
+              cancelButtonColor: "#d33",
+              cancelButtonText: "Transfer Leave"
+            }).then(willDelete => {
+              if (!willDelete.value) {
+                swalMessage({
+                  title:
+                    "Please enter remarks and request leave. Employee leave will transfer after leave Approval.",
+                  type: "info"
+                });
+                this.setState({
+                  total_applied_days: res.data.records.calculatedLeaveDays,
+                  projected_applied_leaves:
+                    res.data.records.projected_applied_leaves,
+                  is_projected_leave:
+                    res.data.records.is_projected_leave === undefined
+                      ? "N"
+                      : res.data.records.is_projected_leave,
+                  Request_enable: false,
+                  extra: {
+                    holiday_included: res.data.records.include_holidays,
+                    holidays: res.data.records.total_holiday,
+                    weekoff_included: res.data.records.include_week_offs,
+                    weekoff_days: res.data.records.total_weekOff
+                  }
+                });
+              } else {
+                swalMessage({
+                  title: "Please request from leave encashment screen",
+                  type: "info"
+                });
+              }
+            });
+          } else {
+            this.setState({
+              total_applied_days: res.data.records.calculatedLeaveDays,
+              projected_applied_leaves:
+                res.data.records.projected_applied_leaves,
+              is_projected_leave:
+                res.data.records.is_projected_leave === undefined
+                  ? "N"
+                  : res.data.records.is_projected_leave,
+              Request_enable: false,
+              extra: {
+                holiday_included: res.data.records.include_holidays,
+                holidays: res.data.records.total_holiday,
+                weekoff_included: res.data.records.include_week_offs,
+                weekoff_days: res.data.records.total_weekOff
+              }
+            });
+          }
         } else if (!res.data.success) {
-          debugger
           AlgaehLoader({ show: false });
           this.setState({
             Request_enable: true,
@@ -285,7 +326,6 @@ class ApplyLeave extends Component {
             title: res.data.records.message,
             type: "warning"
           });
-
         }
       },
       onFailure: err => {
@@ -372,7 +412,7 @@ class ApplyLeave extends Component {
               leave_type: myObj !== undefined ? myObj.leave_type : null,
               projected_leave_enable:
                 myObj.leave_category === "A" &&
-                  myObj.avail_if_no_balance === "Y"
+                myObj.avail_if_no_balance === "Y"
                   ? true
                   : false
             });
@@ -400,9 +440,9 @@ class ApplyLeave extends Component {
     this.setState({
       leave_id: null,
       from_date: null,
-      from_leave_session: null,
+      from_leave_session: "FD",
       to_date: null,
-      to_leave_session: null,
+      to_leave_session: "FD",
       remarks: null,
       total_applied_days: 0.0,
       available_balance: 0.0
@@ -465,7 +505,6 @@ class ApplyLeave extends Component {
                 type: "error"
               });
             }
-
           },
           onCatch: err => {
             AlgaehLoader({ show: false });
@@ -475,7 +514,6 @@ class ApplyLeave extends Component {
             });
           }
         });
-
       }
     });
   }
@@ -496,7 +534,7 @@ class ApplyLeave extends Component {
           });
         }
       },
-      onFailure: err => { }
+      onFailure: err => {}
     });
   }
 
@@ -520,7 +558,7 @@ class ApplyLeave extends Component {
           });
         }
       },
-      onFailure: err => { }
+      onFailure: err => {}
     });
   }
 
@@ -643,16 +681,16 @@ class ApplyLeave extends Component {
                   </div>
                   {(this.state.projected_leave_enable === true &&
                     this.state.is_projected_leave === "Y") ||
-                    parseFloat(this.state.projected_applied_leaves) > 0 ? (
-                      <div className="col-12 margin-bottom-15">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Projected Leaves"
-                          }}
-                        />
-                        <h6>{this.state.projected_applied_leaves} day(s)</h6>
-                      </div>
-                    ) : null}
+                  parseFloat(this.state.projected_applied_leaves) > 0 ? (
+                    <div className="col-12 margin-bottom-15">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Projected Leaves"
+                        }}
+                      />
+                      <h6>{this.state.projected_applied_leaves} day(s)</h6>
+                    </div>
+                  ) : null}
                   <AlgaehDateHandler
                     div={{ className: "col-6 margin-bottom-15" }}
                     label={{
@@ -919,8 +957,8 @@ class ApplyLeave extends Component {
                                     Cancelled
                                   </span>
                                 ) : (
-                                          "------"
-                                        )}
+                                  "------"
+                                )}
                               </span>
                             );
                           },
@@ -1091,9 +1129,9 @@ class ApplyLeave extends Component {
                       isEditable={false}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
-                        onEdit: () => { },
-                        onDelete: () => { },
-                        onDone: () => { }
+                        onEdit: () => {},
+                        onDelete: () => {},
+                        onDone: () => {}
                       }}
                     />
                   </div>
@@ -1131,8 +1169,8 @@ class ApplyLeave extends Component {
                       </div>
                     ))
                   ) : (
-                      <div className="noResult">Not Eligible for any Leaves</div>
-                    )}
+                    <div className="noResult">Not Eligible for any Leaves</div>
+                  )}
                 </div>
               </div>
             </div>
