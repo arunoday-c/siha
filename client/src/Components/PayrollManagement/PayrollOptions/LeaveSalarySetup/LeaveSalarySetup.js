@@ -161,7 +161,7 @@ export default class LeaveSalarySetup extends Component {
           <div className="portlet portlet-bordered  transactionSettings">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Leave Salary Setup</h3>
+                <h3 className="caption-subject">Annual Leave Salary Setup</h3>
               </div>
             </div>
             <div className="portlet-body">

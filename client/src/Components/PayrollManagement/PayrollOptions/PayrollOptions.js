@@ -64,7 +64,7 @@ class PayrollOptions extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Leave Salary Setup"
+                      forceLabel: "Annual Leave Salary Setup"
                     }}
                   />
                 }

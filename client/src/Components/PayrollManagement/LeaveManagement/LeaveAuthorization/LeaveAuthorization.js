@@ -461,19 +461,7 @@ export default class LeaveAuthorization extends Component {
                           return row.status === "PEN" ? (
                             <React.Fragment>
                               <i
-                                style={
-                                  {
-                                    //     pointerEvents:
-                                    //      row.status === "Y" ? "none" : null,
-                                    //  opacity: row.status === "Y" ? "0.1" : null
-                                  }
-                                }
-                                className="fas fa-thumbs-up"
-                                // onClick={this.authorizeLeave.bind(
-                                //   this,
-                                //   "A",
-                                //   row
-                                // )}
+                                className="fas fa-eye"
                                 onClick={() => {
                                   this.setState({
                                     open: true,
@@ -483,14 +471,14 @@ export default class LeaveAuthorization extends Component {
                                 }}
                               />
 
-                              <i
+                              {/* <i
                                 className="fas fa-thumbs-down"
                                 onClick={this.authorizeLeave.bind(
                                   this,
                                   "R",
                                   row
                                 )}
-                              />
+                              /> */}
                             </React.Fragment>
                           ) : row.status === "APR" ? (
                             <i
@@ -509,7 +497,7 @@ export default class LeaveAuthorization extends Component {
                         },
                         others: {
                           filterable: false,
-                          maxWidth: 105
+                          maxWidth: 60
                         }
                       },
                       {

@@ -349,7 +349,7 @@ const openSalaryComponents = ($this, row) => {
       if (response.data.success) {
         let data = response.data.result;
         if (data.length === 0) {
-          return
+          return;
         }
         let header = data[0]["salaryprocess_header"][0];
         const salaryprocess_Earning = Enumerable.from(
@@ -385,8 +385,10 @@ const openSalaryComponents = ($this, row) => {
           total_days: header.total_days,
           absent_days: header.absent_days,
           total_work_days: header.total_work_days,
-          total_weekoff_days: header.total_weekoff_days,
-          total_holidays: header.total_holidays,
+          total_holidays:
+            header.total_holidays !== null ? header.total_holidays : 0,
+          total_weekoff_days:
+            header.total_weekoff_days !== null ? header.total_weekoff_days : 0,
           total_leave: header.total_leave,
           paid_leave: header.paid_leave,
           unpaid_leave: header.unpaid_leave,

@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import "./SalaryProcessing.scss";
 // import "./../../styles/site.scss";
 import {
   AlgaehLabel,
@@ -335,9 +336,9 @@ export default class SalariesComponents extends PureComponent {
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}
                             events={{
-                              onEdit: () => { },
-                              onDelete: () => { },
-                              onDone: () => { }
+                              onEdit: () => {},
+                              onDelete: () => {},
+                              onDone: () => {}
                             }}
                           />
                         </div>
@@ -407,9 +408,9 @@ export default class SalariesComponents extends PureComponent {
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}
                             events={{
-                              onEdit: () => { },
-                              onDelete: () => { },
-                              onDone: () => { }
+                              onEdit: () => {},
+                              onDelete: () => {},
+                              onDone: () => {}
                             }}
                           />
                         </div>
@@ -481,9 +482,9 @@ export default class SalariesComponents extends PureComponent {
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}
                             events={{
-                              onEdit: () => { },
-                              onDelete: () => { },
-                              onDone: () => { }
+                              onEdit: () => {},
+                              onDelete: () => {},
+                              onDone: () => {}
                             }}
                           />
                         </div>
