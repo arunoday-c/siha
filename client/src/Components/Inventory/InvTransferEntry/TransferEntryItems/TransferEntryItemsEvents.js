@@ -205,8 +205,8 @@ const deleteTransEntryDetail = ($this, context, row, rowId) => {
     $this.props.inventoryitemlist === undefined
       ? []
       : $this.props.inventoryitemlist.filter(
-          f => f.hims_d_inventory_item_master_id === row.item_id
-        );
+        f => f.hims_d_inventory_item_master_id === row.item_id
+      );
 
   swal({
     title: "Are you sure want to delete ?" + display[0].item_description + "?",
@@ -479,6 +479,7 @@ const AddSelectedBatches = ($this, context) => {
 
       _stock_detail[_index].inventory_stock_detail = batches.map(
         (item, index) => {
+          item.sales_price = item.sale_price;
           return { ...item, ...details };
         }
       );
@@ -575,7 +576,8 @@ const itemchangeText = ($this, context, e, ctrl) => {
               uom_description: e.uom_description,
               stocking_uom: e.stocking_uom,
               conversion_factor: sales_conversion_factor.conversion_factor,
-              sales_qtyhand: sales_qtyhand
+              sales_qtyhand: sales_qtyhand,
+              sales_price: e.sale_price
             });
 
             if (context !== undefined) {
@@ -602,7 +604,8 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 uom_description: e.uom_description,
                 stocking_uom: e.stocking_uom,
                 conversion_factor: sales_conversion_factor.conversion_factor,
-                sales_qtyhand: sales_qtyhand
+                sales_qtyhand: sales_qtyhand,
+                sales_price: e.sale_price
               });
             }
           } else {
