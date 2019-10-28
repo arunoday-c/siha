@@ -135,254 +135,298 @@ class Modules extends Component {
   render() {
     return (
       <div className="modules">
-        <div className="col-lg-12">
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Module Code",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "module_code",
-                value: this.state.module_code,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Module Name",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "module_name",
-                value: this.state.module_name,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Licence Key",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "licence_key",
-                value: this.state.licence_key,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Icon",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "icons",
-                value: this.state.icons,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Other Language",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "other_language",
-                value: this.state.other_language,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-            <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Access By"
-              }}
-              selector={{
-                name: "access_by",
-                className: "select-fld",
-                value: this.state.access_by,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.ACCESS_BY
-                },
-                onChange: this.dropDownHandle.bind(this)
-              }}
-            />
+        <div className="row inner-top-search margin-bottom-15">
+          <AlagehFormGroup
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{
+              forceLabel: "Module Code",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "module_code",
+              value: this.state.module_code,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-3 form-group mandatory" }}
+            label={{
+              forceLabel: "Module Name",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "module_name",
+              value: this.state.module_name,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-3 form-group mandatory" }}
+            label={{
+              forceLabel: "Licence Key",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "licence_key",
+              value: this.state.licence_key,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{
+              forceLabel: "Icon name (Font-Awesome)",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "icons",
+              value: this.state.icons,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{
+              forceLabel: "Other Language",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "other_language",
+              value: this.state.other_language,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
+          <AlagehAutoComplete
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{
+              forceLabel: "Access By"
+            }}
+            selector={{
+              name: "access_by",
+              className: "select-fld",
+              value: this.state.access_by,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: GlobalVariables.ACCESS_BY
+              },
+              onChange: this.dropDownHandle.bind(this)
+            }}
+          />
 
-            <AlagehFormGroup
-              div={{ className: "col-lg-2" }}
-              label={{
-                forceLabel: "Display Order",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "display_order",
-                value: this.state.display_order,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                },
-                others: {
-                  type: "number"
-                }
-              }}
-            />
+          <AlagehFormGroup
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{
+              forceLabel: "Display Order",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "display_order",
+              value: this.state.display_order,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              },
+              others: {
+                type: "number"
+              }
+            }}
+          />
 
-            <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
-              label={{
-                forceLabel: "Module Plan"
-              }}
-              selector={{
-                name: "module_plan",
-                className: "select-fld",
-                value: this.state.module_plan,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.MODULE_PLAN
-                },
-                onChange: this.dropDownHandle.bind(this)
-              }}
-            />
+          <AlagehAutoComplete
+            div={{ className: "col-2 form-group" }}
+            label={{
+              forceLabel: "Module Plan"
+            }}
+            selector={{
+              name: "module_plan",
+              className: "select-fld",
+              value: this.state.module_plan,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: GlobalVariables.MODULE_PLAN
+              },
+              onChange: this.dropDownHandle.bind(this)
+            }}
+          />
 
-            <div className="col-lg-2">
-              <button
-                type="submit"
-                style={{ marginTop: 19 }}
-                onClick={this.addModules.bind(this)}
-                className="btn btn-primary"
-              >
-                Add to List
-              </button>
-            </div>
+          <div className="col">
+            <button
+              type="submit"
+              style={{ marginTop: 19 }}
+              onClick={this.addModules.bind(this)}
+              className="btn btn-primary"
+            >
+              Add to List
+            </button>
           </div>
+        </div>
+        <div className="row">
+          <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Lists of Modules</h3>
+                </div>
+                <div className="actions"></div>
+              </div>
 
-          <div data-validate="shiftDiv" id="algaehGrid_Cntr">
-            <AlgaehDataGrid
-              id="shift-grid"
-              datavalidate="data-validate='shiftDiv'"
-              columns={[
-                {
-                  fieldName: "module_code",
-                  label: <AlgaehLabel label={{ forceLabel: "Module Code" }} />,
-                  disabled: true
-                },
-                {
-                  fieldName: "module_name",
-                  label: <AlgaehLabel label={{ forceLabel: "Module Name" }} />,
-                  disabled: true
-                },
-                {
-                  fieldName: "module_plan",
-                  label: <AlgaehLabel label={{ forceLabel: "Module Plan" }} />,
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        {row.module_plan === "S"
-                          ? "Silver"
-                          : row.module_plan === "G"
-                          ? "Gold"
-                          : "Platinum"}
-                      </span>
-                    );
-                  },
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        div={{}}
-                        selector={{
-                          name: "module_plan",
-                          className: "select-fld",
-                          value: row.module_plan,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.MODULE_PLAN
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12">
+                    <div data-validate="shiftDiv" id="algaehGrid_Cntr">
+                      <AlgaehDataGrid
+                        id="shift-grid"
+                        datavalidate="data-validate='shiftDiv'"
+                        columns={[
+                          {
+                            fieldName: "module_code",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Module Code" }}
+                              />
+                            ),
+                            disabled: true
                           },
-                          onChange: this.onchangegridcol.bind(this, row)
-                        }}
-                      />
-                    );
-                  }
-                },
+                          {
+                            fieldName: "module_name",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Module Name" }}
+                              />
+                            ),
+                            disabled: true
+                          },
+                          {
+                            fieldName: "module_plan",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Module Plan" }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  {row.module_plan === "S"
+                                    ? "Silver"
+                                    : row.module_plan === "G"
+                                    ? "Gold"
+                                    : "Platinum"}
+                                </span>
+                              );
+                            },
+                            editorTemplate: row => {
+                              return (
+                                <AlagehAutoComplete
+                                  div={{}}
+                                  selector={{
+                                    name: "module_plan",
+                                    className: "select-fld",
+                                    value: row.module_plan,
+                                    dataSource: {
+                                      textField: "name",
+                                      valueField: "value",
+                                      data: GlobalVariables.MODULE_PLAN
+                                    },
+                                    onChange: this.onchangegridcol.bind(
+                                      this,
+                                      row
+                                    )
+                                  }}
+                                />
+                              );
+                            }
+                          },
 
-                {
-                  fieldName: "icons",
-                  label: <AlgaehLabel label={{ forceLabel: "Icons" }} />,
-                  disabled: true
-                },
-                {
-                  fieldName: "other_language",
-                  label: (
-                    <AlgaehLabel label={{ forceLabel: "Other Language" }} />
-                  ),
-                  disabled: true
-                },
-                {
-                  fieldName: "licence_key",
-                  label: <AlgaehLabel label={{ forceLabel: "Licence Key" }} />,
-                  disabled: true
-                },
-                {
-                  fieldName: "display_order",
-                  label: (
-                    <AlgaehLabel label={{ forceLabel: "Display Order" }} />
-                  ),
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{}}
-                        textBox={{
-                          value: row.display_order,
-                          className: "txt-fld",
-                          name: "display_order",
-                          events: {
-                            onChange: this.onchangegridcol.bind(this, row)
+                          {
+                            fieldName: "icons",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Icons" }} />
+                            ),
+                            disabled: true
                           },
-                          others: {
-                            type: "number"
+                          {
+                            fieldName: "other_language",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Other Language" }}
+                              />
+                            ),
+                            disabled: true
+                          },
+                          {
+                            fieldName: "licence_key",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Licence Key" }}
+                              />
+                            ),
+                            disabled: true
+                          },
+                          {
+                            fieldName: "display_order",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Display Order" }}
+                              />
+                            ),
+                            editorTemplate: row => {
+                              return (
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    value: row.display_order,
+                                    className: "txt-fld",
+                                    name: "display_order",
+                                    events: {
+                                      onChange: this.onchangegridcol.bind(
+                                        this,
+                                        row
+                                      )
+                                    },
+                                    others: {
+                                      type: "number"
+                                    }
+                                  }}
+                                />
+                              );
+                            }
                           }
+                        ]}
+                        keyId="algaeh_d_module_id"
+                        dataSource={{
+                          data: this.state.modules
+                        }}
+                        filter={true}
+                        isEditable={true}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                        events={{
+                          onEdit: () => {},
+                          onDelete: this.deleteModules.bind(this),
+                          onDone: this.updateModules.bind(this)
                         }}
                       />
-                    );
-                  }
-                }
-              ]}
-              keyId="algaeh_d_module_id"
-              dataSource={{
-                data: this.state.modules
-              }}
-              filter={true}
-              isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              events={{
-                onEdit: () => {},
-                onDelete: this.deleteModules.bind(this),
-                onDone: this.updateModules.bind(this)
-              }}
-            />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
