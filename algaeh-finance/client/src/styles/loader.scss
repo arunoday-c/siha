@@ -5,10 +5,11 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba($primary-color, 0.3);
+  background: rgba($primary-color, 0.5);
   transition: top 1.2s linear 3.1s;
   z-index: 99999;
 }
+
 .algaeh-progress {
   position: absolute;
   top: 50%;
@@ -24,7 +25,6 @@
   border: 2px solid $color-white;
   border-radius: 50%;
   color: $color-white;
-  background: rgba($color-black, 0.5);
 }
 .algaeh-progress .progress__item:before {
   content: "";
@@ -39,7 +39,7 @@
   border-right: solid 10px $color-white;
   border-top-right-radius: 100%;
   transform-origin: left bottom;
-  animation: spin 0.5s linear infinite;
+  -webkit-animation: spin 0.5s linear infinite;
 }
 .algaeh-progress.float .progress__item:before {
   border-top-width: 2px;
@@ -59,24 +59,24 @@
   margin: -43px 0 0 12px;
   width: 45px;
   height: 45px;
-  border-top: solid 10px rgba($color-black, 0.5);
-  border-right: solid 10px rgba($color-black, 0.5);
+  border-top: solid 10px rgba($color-black, 0.9);
+  border-right: solid 10px rgba($color-black, 0.9);
   border-top-right-radius: 100%;
   z-index: -1;
   transform-origin: left bottom;
-  animation: spin 0.5s linear infinite;
+  -webkit-animation: spin 0.5s linear infinite;
 }
 .algaeh-progress.shadow:after {
   content: "";
   position: absolute;
-  top: 45%;
-  left: 45%;
+  top: 50%;
+  left: 50%;
   width: 100px;
   height: 100px;
   color: $primary-color;
   text-align: center;
   line-height: 100px;
-  border: 2px solid rgba($color-black, 0.5);
+  border: 2px solid rgba($color-black, 0.9);
   border-radius: 50%;
   margin: -40px 0 0 -40px;
   z-index: -1;
@@ -84,7 +84,7 @@
 }
 .algaeh-progress.done .progress__item {
   opacity: 0;
-  animation: done 3.1s;
+  -webkit-animation: done 3.1s;
   transition: opacity 0.3s linear 3.1s;
 }
 .algaeh-progress.done .progress__item:before {
@@ -95,10 +95,11 @@
 }
 .algaeh-progress.done:after {
   opacity: 0;
-  animation: done 3.1s;
+  -webkit-animation: done 3.1s;
   transition: opacity 0.15s linear 3.1s;
 }
-@keyframes done {
+
+@-webkit-keyframes done {
   10% {
     transform: scale(1.1);
   }
@@ -127,7 +128,8 @@
     transform: scale(1);
   }
 }
-@keyframes spin {
+
+@-webkit-keyframes spin {
   100% {
     -webkit-transform: rotate(360deg);
   }
