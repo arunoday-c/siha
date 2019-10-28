@@ -318,6 +318,11 @@ const PageToPlot = {
       import("./Components/Procurement/PurchaseOrderEntry/PurchaseOrderEntry")
     )
   ),
+  PurchaseReturnEntry: React.lazy(() =>
+    retry(() =>
+      import("./Components/Procurement/PurchaseReturnEntry/PurchaseReturnEntry")
+    )
+  ),
   ReceiptEntry: React.lazy(() =>
     retry(() => import("./Components/Procurement/ReceiptEntry/ReceiptEntry"))
   ),

@@ -152,7 +152,7 @@ export default function Assets() {
                         return {
                           buttons: [
                             <div>
-                              {rowInfo.node.head_created_from === "U" ? (
+                              {rowInfo.node.created_status === "U" ? (
                                 <button
                                   label="Delete"
                                   onClick={event => {
