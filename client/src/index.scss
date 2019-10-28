@@ -734,11 +734,12 @@ ul.ul-legend {
   .inline {
     display: inline-block;
   }
-  .inline + .inline {
-    margin-left: 10px;
-  }
+  // .inline + .inline {
+  //   margin-left: 10px;
+  // }
   .radio {
     color: #999;
+    margin-right: 10px;
 
     position: relative;
   }
