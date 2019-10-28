@@ -360,7 +360,7 @@ export default class LeaveAuthorization extends Component {
               }}
             />
 
-            <div className="col globalSearchCntr">
+            <div className="col-3 globalSearchCntr">
               <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
               <h6 onClick={this.employeeSearch.bind(this)}>
                 {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
@@ -371,52 +371,17 @@ export default class LeaveAuthorization extends Component {
               </h6>
             </div>
 
-            {/* <div className="col-lg-3" style={{ marginTop: 10 }}>
-              <div
-                className="row"
-                style={{
-                  border: " 1px solid #ced4d9",
-                  borderRadius: 5,
-                  marginLeft: 0
-                }}
-              >
-                <div className="col">
-                  <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
-                  <h6>
-                    {this.state.employee_name
-                      ? this.state.employee_name
-                      : "------"}
-                  </h6>
-                </div>
-                <div
-                  className="col-3"
-                  style={{ borderLeft: "1px solid #ced4d8" }}
-                >
-                  <i
-                    className="fas fa-search fa-lg"
-                    style={{
-                      paddingTop: 17,
-                      paddingLeft: 3,
-                      cursor: "pointer"
-                    }}
-                    onClick={this.employeeSearch.bind(this)}
-                  />
-                </div>
-              </div>
-            </div> */}
-
-            <div className="col form-group">
+            <div className="col form-group" style={{ textAlign: "right" }}>
               {" "}
               <button
                 onClick={this.clearState.bind(this)}
-                style={{ marginTop: 19 }}
                 className="btn btn-default"
               >
                 Clear
               </button>
               <button
                 onClick={this.loadLeaveApplications.bind(this)}
-                style={{ marginTop: 19, marginLeft: 5 }}
+                style={{ marginLeft: 5 }}
                 className="btn btn-primary"
               >
                 {!this.state.loading ? (
@@ -470,15 +435,6 @@ export default class LeaveAuthorization extends Component {
                                   });
                                 }}
                               />
-
-                              {/* <i
-                                className="fas fa-thumbs-down"
-                                onClick={this.authorizeLeave.bind(
-                                  this,
-                                  "R",
-                                  row
-                                )}
-                              /> */}
                             </React.Fragment>
                           ) : row.status === "APR" ? (
                             <i
@@ -502,9 +458,7 @@ export default class LeaveAuthorization extends Component {
                       },
                       {
                         fieldName: "status",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Leave Status" }} />
-                        ),
+                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                         displayTemplate: row => {
                           return (
                             <span>
