@@ -68,7 +68,7 @@ class FamilyAndIdentification extends Component {
       <React.Fragment>
         <div className="hptl-phase1-add-employee-form popRightDiv">
           <div className="row">
-            <div className="col-12" data-validate="empIdGrid">
+            <div className="col-6" data-validate="empIdGrid">
               <h5>
                 <span>Identification Details</span>
               </h5>
