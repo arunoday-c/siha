@@ -7,27 +7,111 @@ import {
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import ButtonType from "../../Wrapper/algaehButton";
-import { AddLisMachineConfiguration } from "./LisConfigEvent"
+import { AddLisMachineConfiguration } from "./LisConfigEvent";
 import { swalMessage } from "../../../utils/algaehApiCall";
 
 export default function LisConfig() {
   const baseState = {
-    hims_d_lis_configuration_id: "", machine_name: "", communication_type: "0", hl7_supported: "0", check_sum: "0", connection_type: "0",
-    stat_flag: "", rotine_flag: "", result_extension: "", order_mode: "0", file_upload: "", com_port_name: "", brud_rate: "",
-    ser_result_part_loc: "", host_ip_address: "", port_no: "", tcp_result_part_loc: "", driver_name: "", description: ""
-  }
+    hims_d_lis_configuration_id: "",
+    machine_name: "",
+    communication_type: "0",
+    hl7_supported: "0",
+    check_sum: "0",
+    connection_type: "0",
+    stat_flag: "",
+    rotine_flag: "",
+    result_extension: "",
+    order_mode: "0",
+    file_upload: "",
+    com_port_name: "",
+    brud_rate: "",
+    ser_result_part_loc: "",
+    host_ip_address: "",
+    port_no: "",
+    tcp_result_part_loc: "",
+    driver_name: "",
+    description: ""
+  };
   const [lis_config, setLisConfig] = useState({ ...baseState });
   const [lodingAddtoList, setLoadingAddtoList] = useState(false);
 
   function EventHandaler(e) {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setLisConfig(state => {
-      return { ...state, [name]: value }
-    })
+      return { ...state, [name]: value };
+    });
   }
 
   return (
     <div className="LisConfig">
+      <div className="row">
+        <div className="col-12" style={{ marginTop: 15 }}>
+          <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">Lists of Machine</h3>
+              </div>
+              <div className="actions">
+                <a
+                  className="btn btn-primary active"
+                  style={{ lineHeight: "22px" }}
+                >
+                  Add New Machine
+                </a>
+              </div>
+            </div>
+
+            <div className="portlet-body">
+              <div className="row">
+                <div className="col-12">
+                  <AlgaehDataGrid
+                    id=""
+                    columns={[
+                      {
+                        fieldName: "",
+                        label: "Machine Name"
+                      },
+                      {
+                        fieldName: "",
+                        label: "Communication Type"
+                      },
+
+                      {
+                        fieldName: "",
+                        label: "IS HL7 SUPPORTED"
+                      },
+
+                      {
+                        fieldName: "",
+                        label: "CHECKSUM REQUIRED"
+                      },
+
+                      {
+                        fieldName: "",
+                        label: "CONNECTION TYPE"
+                      },
+
+                      {
+                        fieldName: "",
+                        label: "ORDER MODE"
+                      }
+                    ]}
+                    keyId=""
+                    dataSource={{}}
+                    isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{
+                      onEdit: "",
+                      onDelete: "",
+                      onDone: ""
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="row">
         <div className="col-12">
           <div className="portlet portlet-bordered margin-bottom-15">
@@ -78,7 +162,9 @@ export default function LisConfig() {
                         type="radio"
                         value="0"
                         name="communication_type"
-                        checked={lis_config.communication_type === "0" ? true : false}
+                        checked={
+                          lis_config.communication_type === "0" ? true : false
+                        }
                         onChange={EventHandaler}
                       />
                       <span>Unidirectional</span>
@@ -89,7 +175,9 @@ export default function LisConfig() {
                         type="radio"
                         value="1"
                         name="communication_type"
-                        checked={lis_config.communication_type === "1" ? true : false}
+                        checked={
+                          lis_config.communication_type === "1" ? true : false
+                        }
                         onChange={EventHandaler}
                       />
                       <span>Bidirectional</span>
@@ -99,7 +187,9 @@ export default function LisConfig() {
                         type="radio"
                         value="2"
                         name="communication_type"
-                        checked={lis_config.communication_type === "2" ? true : false}
+                        checked={
+                          lis_config.communication_type === "2" ? true : false
+                        }
                         onChange={EventHandaler}
                       />
                       <span>Not Supported</span>
@@ -114,7 +204,9 @@ export default function LisConfig() {
                         type="radio"
                         value="1"
                         name="hl7_supported"
-                        checked={lis_config.hl7_supported === "1" ? true : false}
+                        checked={
+                          lis_config.hl7_supported === "1" ? true : false
+                        }
                         onChange={EventHandaler}
                       />
                       <span>Yes</span>
@@ -125,7 +217,9 @@ export default function LisConfig() {
                         type="radio"
                         value="0"
                         name="hl7_supported"
-                        checked={lis_config.hl7_supported === "0" ? true : false}
+                        checked={
+                          lis_config.hl7_supported === "0" ? true : false
+                        }
                         onChange={EventHandaler}
                       />
                       <span>No</span>
@@ -166,7 +260,9 @@ export default function LisConfig() {
                         type="radio"
                         value="1"
                         name="connection_type"
-                        checked={lis_config.connection_type === "1" ? true : false}
+                        checked={
+                          lis_config.connection_type === "1" ? true : false
+                        }
                         onChange={EventHandaler}
                       />
                       <span>Serial Port Mode</span>
@@ -177,7 +273,9 @@ export default function LisConfig() {
                         type="radio"
                         value="0"
                         name="connection_type"
-                        checked={lis_config.connection_type === "0" ? true : false}
+                        checked={
+                          lis_config.connection_type === "0" ? true : false
+                        }
                         onChange={EventHandaler}
                       />
                       <span>TCP Mode</span>
@@ -268,22 +366,23 @@ export default function LisConfig() {
                     </label>
                   </div>
                 </div>
-                {lis_config.order_mode === "2" ? <AlagehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    forceLabel: "File Upload",
-                    isImp: false
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "file_upload",
-                    value: lis_config.file_upload,
-                    events: {
-                      onChange: EventHandaler
-                    }
-                  }}
-                /> : null}
-
+                {lis_config.order_mode === "2" ? (
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "File Upload",
+                      isImp: false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "file_upload",
+                      value: lis_config.file_upload,
+                      events: {
+                        onChange: EventHandaler
+                      }
+                    }}
+                  />
+                ) : null}
               </div>
             </div>
           </div>
@@ -299,7 +398,6 @@ export default function LisConfig() {
 
             <div className="portlet-body">
               <div className="row">
-
                 <AlagehFormGroup
                   div={{ className: "col" }}
                   label={{
@@ -466,8 +564,8 @@ export default function LisConfig() {
                 AddLisMachineConfiguration(
                   lis_config,
                   errorMessage => {
-                    setLisConfig({ ...baseState })
-                    setLoadingAddtoList(false)
+                    setLisConfig({ ...baseState });
+                    setLoadingAddtoList(false);
 
                     swalMessage({
                       type: "error",
@@ -475,8 +573,8 @@ export default function LisConfig() {
                     });
                   },
                   result => {
-                    setLisConfig({ ...baseState })
-                    setLoadingAddtoList(false)
+                    setLisConfig({ ...baseState });
+                    setLoadingAddtoList(false);
                     swalMessage({
                       type: "success",
                       title: "Added Successfully ..."
@@ -489,11 +587,9 @@ export default function LisConfig() {
                 returnText: true
               }}
             />
-
           </div>
         </div>
       </div>
     </div>
   );
-
 }
