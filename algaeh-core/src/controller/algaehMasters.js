@@ -32,7 +32,10 @@ const {
   assignComponents,
   updateAlgaehModules,
   deleteUserLogin,
-  getHrmsAuthLevels
+  getHrmsAuthLevels,
+  addLisMachineConfiguration,
+  getLisMachineConfiguration,
+  updateLisMachineConfiguration
 } = masterModels;
 const { releaseConnection } = utils;
 
@@ -595,6 +598,40 @@ export default ({ config, db }) => {
     }
     next();
   });
+
+  api.post("/addLisMachineConfiguration", addLisMachineConfiguration, (req, res, next) => {
+    let result = req.records;
+
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result
+    });
+
+    next();
+  });
+
+  api.get("/getLisMachineConfiguration", getLisMachineConfiguration, (req, res, next) => {
+    let result = req.records;
+
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result
+    });
+
+    next();
+  });
+
+  api.put("/updateLisMachineConfiguration", updateLisMachineConfiguration, (req, res, next) => {
+    let result = req.records;
+
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result
+    });
+
+    next();
+  });
+
 
   return api;
 };

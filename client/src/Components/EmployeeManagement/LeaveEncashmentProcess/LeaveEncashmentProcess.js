@@ -372,7 +372,10 @@ class LeaveEncashmentProcess extends Component {
                 disabled={this.state.processBtn}
               >
                 <AlgaehLabel
-                  label={{ forceLabel: "Process", returnText: true }}
+                  label={{
+                    forceLabel: "Request for Encashment",
+                    returnText: true
+                  }}
                 />
               </button>
             </div>

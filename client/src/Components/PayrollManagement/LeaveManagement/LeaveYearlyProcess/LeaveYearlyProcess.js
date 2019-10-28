@@ -501,7 +501,7 @@ class LeaveYearlyProcess extends Component {
                           />
                         ),
                         others: {
-                          style: { textAlign: "left" }
+                          maxWidth: 150
                         }
                       },
                       {
@@ -512,7 +512,7 @@ class LeaveYearlyProcess extends Component {
                           />
                         ),
                         others: {
-                          style: { textAlign: "left" }
+                          maxWidth: 150
                         }
                       },
                       {
@@ -523,7 +523,7 @@ class LeaveYearlyProcess extends Component {
                           />
                         ),
                         others: {
-                          maxWidth: 250
+                          maxWidth: 150
                         }
                       }
                     ]}
