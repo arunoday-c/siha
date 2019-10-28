@@ -91,16 +91,42 @@ export default {
     const _mysql = new algaehMysql();
     let input = req.query;
 
-    if (input.account_level >= 0 && input.finance_account_head_id > 0) {
+    if (
+      (input.finance_account_head_id > 0 &&
+        input.finance_account_head_id < 5) ||
+      (input.childs_of != "N" && input.childs_of != undefined)
+    ) {
+      // input["childs_of"] = "A";
       console.log("input:", input);
+      let finance_account_head_id = "";
+
+      if (input.childs_of != "N") {
+        switch (input.childs_of) {
+          case "A":
+            finance_account_head_id = 1;
+            break;
+
+          case "L":
+            finance_account_head_id = 2;
+            break;
+          case "I":
+            finance_account_head_id = 3;
+            break;
+          case "C":
+            finance_account_head_id = 4;
+            break;
+        }
+      } else {
+        finance_account_head_id = input.finance_account_head_id;
+      }
       _mysql
         .executeQuery({
           query: `with recursive cte (finance_account_head_id, account_name, parent_acc_id,
-              finance_account_child_id,child_name,child_created_from,account_level,sort_order,head_id) as (
+              finance_account_child_id,child_name,child_created_from,account_level,sort_order,head_id,created_status) as (
               
               select finance_account_head_id,account_name,parent_acc_id,
               C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
-              ,account_level,H.sort_order,CM.head_id
+              ,account_level,H.sort_order,CM.head_id,H.created_from as created_status
               FROM finance_account_head H left join 
               finance_head_m_child CM on H.finance_account_head_id=CM.head_id
               left join finance_account_child C on CM.child_id=C.finance_account_child_id
@@ -110,7 +136,7 @@ export default {
               
               select   H.finance_account_head_id,H.account_name,H.parent_acc_id,
               C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
-              ,H.account_level,H.sort_order,CM.head_id
+              ,H.account_level,H.sort_order,CM.head_id,H.created_from as created_status
               FROM finance_account_head H left join 
               finance_head_m_child CM on H.finance_account_head_id=CM.head_id
               left join finance_account_child C on CM.child_id=C.finance_account_child_id
@@ -128,7 +154,7 @@ export default {
         .then(result => {
           _mysql.releaseConnection();
 
-          const outputArray = createHierarchy(result);
+          const outputArray = createHierarchy(result, input.childs_of);
 
           req.records = outputArray;
           next();
@@ -142,6 +168,7 @@ export default {
         invalid_input: true,
         message: "Please provide Valid Input"
       };
+      next();
     }
   },
 
@@ -201,7 +228,7 @@ export default {
           query:
             "select finance_account_head_id,account_code,account_name,\
         account_level,hierarchy_path, concat(account_code,'.',(\
-        select SUBSTRING_INDEX(account_code, '.', -1)+1\
+        select SUBSTRING_INDEX(max(account_code), '.', -1)+1\
         FROM finance_account_head where parent_acc_id=?)) as new_code\
         FROM finance_account_head where finance_account_head_id=?;\
         select coalesce(max(sort_order),0)as sort_order FROM finance_account_head where parent_acc_id=?;",
@@ -277,7 +304,8 @@ export default {
 //   select SUBSTRING_INDEX(account_code, '.', -1)+1
 //   FROM finance_account_head where parent_acc_id=10)) as new_code
 //   FROM finance_account_head where finance_account_head_id=10;
-function createHierarchy(arry) {
+function createHierarchy(arry, childs_of) {
+  const onlyChilds = [];
   const utilities = new algaehUtilities();
   let roots = [],
     children = {};
@@ -305,6 +333,16 @@ function createHierarchy(arry) {
         created_status: item["child_created_from"]
       });
 
+      if (childs_of != undefined && childs_of != "N") {
+        onlyChilds.push({
+          finance_account_child_id: item["finance_account_child_id"],
+          title: item.child_name,
+          head_id: item["head_id"],
+          leafnode: "Y",
+          created_status: item["child_created_from"]
+        });
+      }
+
       const data = target.find(val => {
         return val.finance_account_head_id == item.finance_account_head_id;
       });
@@ -313,7 +351,6 @@ function createHierarchy(arry) {
         target.push({
           ...item,
           title: item.account_name,
-          created_status: item["head_created_from"],
           leafnode: "N"
         });
       }
@@ -356,7 +393,11 @@ function createHierarchy(arry) {
     findChildren(roots[i]);
   }
 
-  return roots;
+  if (childs_of != undefined && childs_of != "N") {
+    return onlyChilds;
+  } else {
+    return roots;
+  }
 }
 
 // with recursive cte (finance_account_head_id, account_name, parent_acc_id) as (

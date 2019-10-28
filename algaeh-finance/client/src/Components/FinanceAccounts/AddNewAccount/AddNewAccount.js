@@ -12,7 +12,7 @@ import { AddNewAccountDetails } from "./AddNewAccEvent";
 import { swalMessage } from "../../../utils/algaehApiCall";
 
 export default function AddNewAccount(props) {
-  const [lodingAddtoList, setLoadingAddtoList] = useState("");
+  const [lodingAddtoList, setLoadingAddtoList] = useState(false);
   const [account_code, setAccountCode] = useState("");
   const [account_name, setAccountName] = useState("");
   const [account_type, setAccountType] = useState("G");
