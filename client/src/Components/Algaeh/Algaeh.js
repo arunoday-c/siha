@@ -4,7 +4,7 @@ import Components from "./Components/Components";
 import Screens from "./Screens/Screens";
 import ScreenElements from "./ScreenElements/ScreenElements";
 import Formula from "./Formula/Formula";
-import LisConfig from "./LisConfig/LisConfig";
+import LisConfigList from "./LisConfig/LisConfigList";
 
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import "./algaeh.scss";
@@ -127,7 +127,7 @@ class Algaeh extends Component {
           ) : this.state.pageDisplay === "Formula" ? (
             <Formula />
           ) : this.state.pageDisplay === "LisConfig" ? (
-            <LisConfig />
+            <LisConfigList />
           ) : null}
         </div>
       </div>

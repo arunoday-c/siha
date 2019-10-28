@@ -2038,44 +2038,79 @@ let addLisMachineConfiguration = (req, res, next) => {
 };
 
 
+let getLisMachineConfiguration = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT * FROM hims_d_lis_configuration"
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
 let updateLisMachineConfiguration = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let input = req.body;
-    if (req.userIdentity.role_type != "GN") {
-      _mysql
-        .executeQuery({
-          query:
-            "INSERT INTO `algaeh_d_app_group` (app_group_code, app_group_name, app_group_desc,group_type, created_date, created_by, updated_date, updated_by)\
-              VALUE(?,?,?,?,?,?,?,?)",
-          values: [
-            input.app_group_code,
-            input.app_group_name,
-            input.app_group_desc,
-            input.group_type,
-            new Date(),
-            input.created_by,
-            new Date(),
-            input.updated_by
-          ]
-          // printQuery: true
-        })
-        .then(result => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
-        })
-        .catch(error => {
-          _mysql.releaseConnection();
-          next(error);
-        });
-    } else {
-      req.records = {
-        validUser: false,
-        message: "you dont have admin privilege"
-      };
-      next();
-    }
+
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_d_lis_configuration set machine_name=?, communication_type=?, hl7_supported=?, check_sum=?, \
+            connection_type=?, stat_flag=?, rotine_flag=?, result_extension=?, order_mode=?, file_upload=?, com_port_name=?, \
+            brud_rate=?, ser_result_part_loc=?, host_ip_address=?, port_no=?, tcp_result_part_loc=?, driver_name=?, \
+            description=?, updated_date=?, updated_by=? where hims_d_lis_configuration_id=?",
+        values: [
+          input.machine_name,
+          input.communication_type,
+          input.hl7_supported,
+          input.check_sum,
+          input.connection_type,
+          input.stat_flag,
+          input.rotine_flag,
+          input.result_extension,
+          input.order_mode,
+          input.file_upload,
+          input.com_port_name,
+          input.brud_rate,
+          input.ser_result_part_loc,
+          input.host_ip_address,
+          input.port_no,
+          input.tcp_result_part_loc,
+          input.driver_name,
+          input.description,
+          new Date(),
+          input.updated_by,
+          input.hims_d_lis_configuration_id
+        ],
+        // printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+
   } catch (e) {
     _mysql.releaseConnection();
     next(e);
@@ -2114,5 +2149,6 @@ export default {
   deleteUserLogin,
   getHrmsAuthLevels,
   addLisMachineConfiguration,
+  getLisMachineConfiguration,
   updateLisMachineConfiguration
 };
