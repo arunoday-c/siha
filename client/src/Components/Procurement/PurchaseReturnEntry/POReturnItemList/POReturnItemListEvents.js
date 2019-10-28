@@ -591,7 +591,7 @@ const dateFormater = ($this, value) => {
   }
 };
 
-const onchangegridcol = ($this, row, e) => {
+const onchangegridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let _stock_detail =
@@ -618,16 +618,26 @@ const onchangegridcol = ($this, row, e) => {
     $this.setState({
       pharmacy_stock_detail: _stock_detail
     });
-    onchhangegriddiscount($this, row, e);
+    if (context !== undefined) {
+      context.updateState({
+        pharmacy_stock_detail: _stock_detail
+      });
+    }
+    onchhangegriddiscount($this, context, row, e);
   } else {
     $this.setState({
       inventory_stock_detail: _stock_detail
     });
-    onchhangegriddiscount($this, row, e);
+    if (context !== undefined) {
+      context.updateState({
+        inventory_stock_detail: _stock_detail
+      });
+    }
+    onchhangegriddiscount($this, context, row, e);
   }
 };
 
-const onchhangegriddiscount = ($this, row, e) => {
+const onchhangegriddiscount = ($this, context, row, e) => {
   //
 
   let discount_percentage = 0;
@@ -670,16 +680,103 @@ const onchhangegriddiscount = ($this, row, e) => {
     appendSymbol: false
   });
   _stock_detail[_index] = row;
+
   if ($this.state.po_return_from === "PHR") {
     $this.setState({
       pharmacy_stock_detail: _stock_detail
     });
+    if (context !== undefined) {
+      context.updateState({
+        pharmacy_stock_detail: _stock_detail
+      });
+    }
+    calculateHeadervalues($this, context, row);
   } else {
     $this.setState({
       inventory_stock_detail: _stock_detail
     });
+    if (context !== undefined) {
+      context.updateState({
+        inventory_stock_detail: _stock_detail
+      });
+    }
+    calculateHeadervalues($this, context, row);
   }
 
+};
+
+const calculateHeadervalues = ($this, context, row) => {
+
+
+  if ($this.state.po_return_from === "PHR") {
+    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+
+    pharmacy_stock_detail[row.rowIdx] = row;
+
+    let sub_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
+      parseFloat(s.extended_cost)
+    );
+
+    let receipt_net_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
+      parseFloat(s.net_extended_cost)
+    );
+
+    let return_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
+      parseFloat(s.total_amount)
+    );
+
+
+    $this.setState({
+      pharmacy_stock_detail: pharmacy_stock_detail,
+      sub_total: sub_total,
+      receipt_net_total: receipt_net_total,
+      return_total: return_total
+    });
+
+    if (context !== undefined) {
+      context.updateState({
+        pharmacy_stock_detail: pharmacy_stock_detail,
+        sub_total: sub_total,
+        receipt_net_total: receipt_net_total,
+        return_total: return_total
+      });
+    }
+  } else {
+    let inventory_stock_detail = $this.state.inventory_stock_detail;
+
+    inventory_stock_detail[row.rowIdx] = row;
+
+    let sub_total = Enumerable.from(inventory_stock_detail).sum(s =>
+      parseFloat(s.extended_cost)
+    );
+
+    let receipt_net_total = Enumerable.from(inventory_stock_detail).sum(s =>
+      parseFloat(s.net_extended_cost)
+    );
+
+    let return_total = Enumerable.from(inventory_stock_detail).sum(s =>
+      parseFloat(s.total_amount)
+    );
+
+
+    $this.setState({
+      inventory_stock_detail: inventory_stock_detail,
+      sub_total: sub_total,
+      receipt_net_total: receipt_net_total,
+      return_total: return_total
+    });
+
+    if (context !== undefined) {
+      context.updateState({
+        inventory_stock_detail: inventory_stock_detail,
+        sub_total: sub_total,
+        receipt_net_total: receipt_net_total,
+        return_total: return_total
+      });
+    }
+
+
+  }
 };
 
 const AssignData = $this => {

@@ -1571,7 +1571,7 @@ let assignScreens = (req, res, next) => {
                     " INSERT IGNORE INTO `algaeh_m_screen_role_privilage_mapping` (module_role_map_id, screen_id, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?); ",
                     [
                       input.update_screens[i][
-                        "algaeh_m_module_role_privilage_mapping_id"
+                      "algaeh_m_module_role_privilage_mapping_id"
                       ],
                       input.update_screens[i]["insert_screens"][k],
                       req.userIdentity.algaeh_d_app_user_id,
@@ -1981,6 +1981,107 @@ let getHrmsAuthLevels = (req, res, next) => {
     next();
   }
 };
+
+let addLisMachineConfiguration = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_d_lis_configuration` (machine_name, communication_type, hl7_supported, check_sum, \
+              connection_type, stat_flag, rotine_flag, result_extension, order_mode, file_upload, com_port_name, \
+              brud_rate, ser_result_part_loc, host_ip_address, port_no, tcp_result_part_loc, driver_name, \
+              description, created_date, created_by, updated_date, updated_by) \
+              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        values: [
+          input.machine_name,
+          input.communication_type,
+          input.hl7_supported,
+          input.check_sum,
+          input.connection_type,
+          input.stat_flag,
+          input.rotine_flag,
+          input.result_extension,
+          input.order_mode,
+          input.file_upload,
+          input.com_port_name,
+          input.brud_rate,
+          input.ser_result_part_loc,
+          input.host_ip_address,
+          input.port_no,
+          input.tcp_result_part_loc,
+          input.driver_name,
+          input.description,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ]
+        // printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
+
+let updateLisMachineConfiguration = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let input = req.body;
+    if (req.userIdentity.role_type != "GN") {
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO `algaeh_d_app_group` (app_group_code, app_group_name, app_group_desc,group_type, created_date, created_by, updated_date, updated_by)\
+              VALUE(?,?,?,?,?,?,?,?)",
+          values: [
+            input.app_group_code,
+            input.app_group_name,
+            input.app_group_desc,
+            input.group_type,
+            new Date(),
+            input.created_by,
+            new Date(),
+            input.updated_by
+          ]
+          // printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } else {
+      req.records = {
+        validUser: false,
+        message: "you dont have admin privilege"
+      };
+      next();
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
 export default {
   addAlgaehGroupMAster,
   updateAlgaehGroupMAster,
@@ -2011,5 +2112,7 @@ export default {
   assignComponents,
   updateAlgaehModules,
   deleteUserLogin,
-  getHrmsAuthLevels
+  getHrmsAuthLevels,
+  addLisMachineConfiguration,
+  updateLisMachineConfiguration
 };
