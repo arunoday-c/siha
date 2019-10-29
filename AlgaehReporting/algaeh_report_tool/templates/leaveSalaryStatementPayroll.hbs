@@ -22,15 +22,12 @@
                         <th excelwidth="6">Sl No.</th>
                         <th excelwidth="18">Employee Code</th>
                         <th excelwidth="50">Employee Name</th>
-                        <th excelwidth="18">Salary No Name</th>
+                        <th excelwidth="18">Leave Salary No</th>
                         <th excelwidth="18">Nationality</th>
-                        <th excelwidth="18">Working Days</th>
-                        <th excelwidth="18">Present Days</th>
-                        <th excelwidth="18">Advance Due</th>
-                        <th excelwidth="18">Loan Due Amt</th>
-                        <th excelwidth="18">Total Earnings</th>
-                        <th excelwidth="18">Total Deductions</th>
-                        <th excelwidth="18">Net Salary</th>
+                        <th excelwidth="18">Normal Salary</th>
+                        <th excelwidth="18">Leave Salary</th>
+                        <th excelwidth="18">Airfair Amount</th>
+                        <th excelwidth="18">Total Amount</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -69,16 +66,12 @@
                         <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{inc @index}}</td>
                         <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{employee_code}}</td>
                         <td excelalignment='{"vertical":"middle","horizontal":"left"}'>{{employee_name}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{salary_number}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{leave_salary_number}}</td>
                         <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{nationality}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{total_days}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{display_present_days}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{advance_due}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{loan_due_amount}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{total_earnings}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{total_deductions}}</td>
-                        <td excelfonts='{"bold":true}' excelalignment='{"vertical":"middle","horizontal":"right"}'>
-                            {{net_salary}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{salary_amount}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{leave_amount}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{airfare_amount}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{total_amount}}</td>
                     </tr>
                     {{/each }}{{/each }}{{/each }}
 
