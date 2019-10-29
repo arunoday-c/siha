@@ -293,7 +293,7 @@ export default {
       utilities.logger().log("processLeaveSalary: ");
       const _mysql = new algaehMysql();
       const _leaveSalary = req.query;
-
+      //const leaveDate = moment(_leaveSalary.leave_start_date);
       let start_date = moment(_leaveSalary.leave_start_date).format("YYYYMMDD");
       let end_date = moment(_leaveSalary.leave_end_date).format("YYYYMMDD");
       let end_date_month = moment(_leaveSalary.leave_end_date).format("M");
@@ -477,7 +477,11 @@ export default {
                     _mysql.releaseConnection();
                     req.flag = 1;
                     req.records = {
-                      message: "Please Process Attendance"
+                      message:
+                        "Process attendance till " +
+                        moment(_leaveSalary.leave_start_date, "YYYY-MM-DD")
+                          .add(-1, "days")
+                          .format("DD-MM-YYYY")
                     };
                     next();
                     return;
