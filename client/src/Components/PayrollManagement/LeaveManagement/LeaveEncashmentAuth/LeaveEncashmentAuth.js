@@ -31,11 +31,14 @@ import {
   AlgaehOpenContainer,
   getAmountFormart
 } from "../../../../utils/GlobalFunctions";
-import EncashmentAuthDtls from "./EncashmentAuthDtls"
+import EncashmentAuthDtls from "./EncashmentAuthDtls";
 
 class LeaveEncashmentAuth extends Component {
   constructor(props) {
     super(props);
+    let month = moment().format("MM");
+    let year = moment().format("YYYY");
+
     this.state = {
       year: moment().year(),
       hospital_id: JSON.parse(
@@ -51,7 +54,13 @@ class LeaveEncashmentAuth extends Component {
       auth_level: null,
       isOpen: false,
       emp_name: null,
-      authorized: "PEN"
+      authorized: "PEN",
+      to_date: new Date(),
+      from_date: moment("01" + month + year, "DDMMYYYY")._d,
+      leave_encash_level: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
+      ).leave_encash_level,
+      encash_authorized: null
     };
 
     this.getHospitals();
@@ -138,20 +147,23 @@ class LeaveEncashmentAuth extends Component {
     });
   }
   clearState() {
+    let month = moment().format("MM");
+    let year = moment().format("YYYY");
     let auth_level =
       this.state.leave_levels.length > 0
         ? Enumerable.from(this.state.leave_levels).maxBy(w => w.value)
         : null;
 
     this.setState({
-      from_date: null,
-      to_date: null,
+      to_date: new Date(),
+      from_date: moment("01" + month + year, "DDMMYYYY")._d,
       employee_id: null,
       employee_name: null,
       auth_level: auth_level !== null ? auth_level.value : null,
       authorized: "PEN",
       leave_applns: [],
-      EncashHeader: []
+      EncashHeader: [],
+      encash_authorized: null
     });
   }
   employeeSearch() {
@@ -171,7 +183,7 @@ class LeaveEncashmentAuth extends Component {
             employee_name: row.full_name,
             employee_id: row.hims_d_employee_id
           },
-          () => { }
+          () => {}
         );
       }
     });
@@ -292,7 +304,6 @@ class LeaveEncashmentAuth extends Component {
             </div>
 
             <div className="col form-group" style={{ textAlign: "right" }}>
-
               <button
                 onClick={this.clearState.bind(this)}
                 className="btn btn-default"
@@ -308,8 +319,8 @@ class LeaveEncashmentAuth extends Component {
                 {!this.state.loading ? (
                   <span>Load</span>
                 ) : (
-                    <i className="fas fa-spinner fa-spin" />
-                  )}
+                  <i className="fas fa-spinner fa-spin" />
+                )}
               </button>
             </div>
           </div>
@@ -380,8 +391,8 @@ class LeaveEncashmentAuth extends Component {
                                   Cancelled
                                 </span>
                               ) : (
-                                        "------"
-                                      )}
+                                "------"
+                              )}
                             </span>
                           );
                         }
@@ -392,7 +403,7 @@ class LeaveEncashmentAuth extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Employee Code" }}
                           />
-                        ),
+                        )
                         // displayTemplate: row => {
                         //   return (
                         //     <span
@@ -457,9 +468,7 @@ class LeaveEncashmentAuth extends Component {
                         ),
                         displayTemplate: row => {
                           return (
-                            <span>
-                              {getAmountFormart(row.total_amount)}
-                            </span>
+                            <span>{getAmountFormart(row.total_amount)}</span>
                           );
                         }
                       }
@@ -547,6 +556,7 @@ class LeaveEncashmentAuth extends Component {
           EncashDetailPer={this.state.EncashDetailPer}
           emp_name={this.state.emp_name}
           auth_level={this.state.auth_level}
+          encash_authorized={this.state.encash_authorized}
         />
       </div>
     );
