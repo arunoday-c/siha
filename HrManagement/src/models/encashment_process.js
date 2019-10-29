@@ -258,22 +258,16 @@ export default {
 
     _stringData += inputParam.employee_id != null ? " and employee_id=? " : "";
 
-    _stringData +=
-      inputParam.hospital_id != null ? " and emp.hospital_id=? " : "";
-
-    _stringData +=
-      inputParam.sub_department_id != null
-        ? " and emp.sub_department_id=? "
-        : "";
-
     /* Select statemwnt  */
 
     _mysql
       .executeQuery({
         query:
           "select hims_f_leave_encash_header_id,encashment_number, employee_id, encashment_date, year, total_amount,\
-          emp.employee_code, emp.full_name from hims_f_leave_encash_header, hims_d_employee emp where \
-          hims_f_leave_encash_header.employee_id = emp.hims_d_employee_id and `year` = ? " +
+          emp.employee_code, emp.full_name, authorized, D.designation from hims_f_leave_encash_header EH \
+          inner join hims_d_employee emp on EH.employee_id = emp.hims_d_employee_id \
+          inner join hims_d_designation D on D.hims_d_designation_id = emp.employee_designation_id \
+          where EH.hospital_id = ? and date(encashment_date) between date(?) and date(?) and authorized=?" +
           _stringData,
         values: _.valuesIn(inputParam),
         printQuery: true

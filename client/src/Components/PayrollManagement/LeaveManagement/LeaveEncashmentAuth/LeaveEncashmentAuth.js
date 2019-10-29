@@ -6,10 +6,8 @@ import { bindActionCreators } from "redux";
 import "./LeaveEncashmentAuth.scss";
 import {
   texthandler,
-  employeeSearch,
   LoadEncashment,
   getLeaveEncashDetails,
-  AuthorizeLEaveEncash,
   getLeaveLevels,
   dateFormater
 } from "./LeaveEncashmentAuthEvents.js";
@@ -19,7 +17,7 @@ import Enumerable from "linq";
 import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import { algaehApiCall } from "../../../../utils/algaehApiCall";
 
 import {
   AlagehAutoComplete,
@@ -30,8 +28,10 @@ import {
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import {
   getYears,
-  AlgaehOpenContainer
+  AlgaehOpenContainer,
+  getAmountFormart
 } from "../../../../utils/GlobalFunctions";
+import EncashmentAuthDtls from "./EncashmentAuthDtls"
 
 class LeaveEncashmentAuth extends Component {
   constructor(props) {
@@ -48,7 +48,10 @@ class LeaveEncashmentAuth extends Component {
       EncashDetail: [],
       EncashDetailPer: [],
       leave_levels: [],
-      auth_level: null
+      auth_level: null,
+      isOpen: false,
+      emp_name: null,
+      authorized: "PEN"
     };
 
     this.getHospitals();
@@ -63,9 +66,7 @@ class LeaveEncashmentAuth extends Component {
             hospitals: res.data.records
           });
         }
-      },
-
-      onFailure: err => {}
+      }
     });
   }
   componentDidMount() {
@@ -145,11 +146,12 @@ class LeaveEncashmentAuth extends Component {
     this.setState({
       from_date: null,
       to_date: null,
-      hims_d_employee_id: null,
+      employee_id: null,
       employee_name: null,
       auth_level: auth_level !== null ? auth_level.value : null,
-      leave_status: "PEN",
-      leave_applns: []
+      authorized: "PEN",
+      leave_applns: [],
+      EncashHeader: []
     });
   }
   employeeSearch() {
@@ -167,11 +169,17 @@ class LeaveEncashmentAuth extends Component {
         this.setState(
           {
             employee_name: row.full_name,
-            hims_d_employee_id: row.hims_d_employee_id
+            employee_id: row.hims_d_employee_id
           },
-          () => {}
+          () => { }
         );
       }
+    });
+  }
+
+  closePopup() {
+    this.setState({
+      isOpen: false
     });
   }
   render() {
@@ -261,9 +269,9 @@ class LeaveEncashmentAuth extends Component {
                 isImp: false
               }}
               selector={{
-                name: "leave_status",
+                name: "authorized",
                 className: "select-fld",
-                value: this.state.leave_status,
+                value: this.state.authorized,
                 dataSource: {
                   textField: "name",
                   valueField: "value",
@@ -284,7 +292,7 @@ class LeaveEncashmentAuth extends Component {
             </div>
 
             <div className="col form-group" style={{ textAlign: "right" }}>
-              {" "}
+
               <button
                 onClick={this.clearState.bind(this)}
                 className="btn btn-default"
@@ -300,8 +308,8 @@ class LeaveEncashmentAuth extends Component {
                 {!this.state.loading ? (
                   <span>Load</span>
                 ) : (
-                  <i className="fas fa-spinner fa-spin" />
-                )}
+                    <i className="fas fa-spinner fa-spin" />
+                  )}
               </button>
             </div>
           </div>
@@ -311,7 +319,6 @@ class LeaveEncashmentAuth extends Component {
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">
-                  {" "}
                   List of Leave Encashment Request
                 </h3>
               </div>
@@ -336,22 +343,12 @@ class LeaveEncashmentAuth extends Component {
                             <span>
                               <i
                                 className="fas fa-eye"
-                                // onClick={AuthorizeLEaveEncash.bind(
-                                //   this,
-                                //   this,
-                                //   "APR",
-                                //   row
-                                // )}
-                              />
-                              {/* <i
-                                className="fas fa-thumbs-down"
-                                onClick={AuthorizeLEaveEncash.bind(
+                                onClick={getLeaveEncashDetails.bind(
                                   this,
                                   this,
-                                  "REJ",
                                   row
                                 )}
-                              /> */}
+                              />
                             </span>
                           );
                         },
@@ -361,30 +358,30 @@ class LeaveEncashmentAuth extends Component {
                         }
                       },
                       {
-                        fieldName: "status",
+                        fieldName: "authorized",
                         label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                         displayTemplate: row => {
                           return (
                             <span>
-                              {row.status === "PEN" ? (
+                              {row.authorized === "PEN" ? (
                                 <span className="badge badge-warning">
                                   Pending
                                 </span>
-                              ) : row.status === "APR" ? (
+                              ) : row.authorized === "APR" ? (
                                 <span className="badge badge-success">
                                   Approved
                                 </span>
-                              ) : row.status === "REJ" ? (
+                              ) : row.authorized === "REJ" ? (
                                 <span className="badge badge-danger">
                                   Rejected
                                 </span>
-                              ) : row.status === "CAN" ? (
+                              ) : row.authorized === "CAN" ? (
                                 <span className="badge badge-danger">
                                   Cancelled
                                 </span>
                               ) : (
-                                "------"
-                              )}
+                                        "------"
+                                      )}
                             </span>
                           );
                         }
@@ -396,22 +393,22 @@ class LeaveEncashmentAuth extends Component {
                             label={{ forceLabel: "Employee Code" }}
                           />
                         ),
-                        displayTemplate: row => {
-                          return (
-                            <span
-                              onClick={getLeaveEncashDetails.bind(
-                                this,
-                                this,
-                                row
-                              )}
-                            >
-                              {row.employee_code}
-                            </span>
-                          );
-                        },
-                        className: drow => {
-                          return "greenCell";
-                        }
+                        // displayTemplate: row => {
+                        //   return (
+                        //     <span
+                        //       onClick={getLeaveEncashDetails.bind(
+                        //         this,
+                        //         this,
+                        //         row
+                        //       )}
+                        //     >
+                        //       {row.employee_code}
+                        //     </span>
+                        //   );
+                        // },
+                        // className: drow => {
+                        //   return "greenCell";
+                        // }
                       },
                       {
                         fieldName: "full_name",
@@ -453,32 +450,19 @@ class LeaveEncashmentAuth extends Component {
                           );
                         }
                       },
-                      // {
-                      //   fieldName: "year",
-                      //   label: <AlgaehLabel label={{ forceLabel: "Year" }} />
-                      // },
                       {
                         fieldName: "total_amount",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Total Amount" }} />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {getAmountFormart(row.total_amount)}
+                            </span>
+                          );
+                        }
                       }
-                      // {
-                      //   fieldName: "Airfare Amount",
-                      //   label: (
-                      //     <AlgaehLabel
-                      //       label={{ forceLabel: "Airfare Amount" }}
-                      //     />
-                      //   )
-                      // },
-                      // {
-                      //   fieldName: "AirfareTotalMonth",
-                      //   label: (
-                      //     <AlgaehLabel
-                      //       label={{ forceLabel: "Airfare Total Month" }}
-                      //     />
-                      //   )
-                      // }
                     ]}
                     keyId="hims_f_leave_encash_header_id"
                     dataSource={{ data: this.state.EncashHeader }}
@@ -486,9 +470,6 @@ class LeaveEncashmentAuth extends Component {
                     filter={true}
                     loading={this.state.loading}
                     paging={{ page: 0, rowsPerPage: 10 }}
-                    // onRowSelect={row => {
-                    //   getLeaveEncashDetails(this, row);
-                    // }}
                   />
                 </div>
               </div>
@@ -496,7 +477,7 @@ class LeaveEncashmentAuth extends Component {
           </div>
         </div>
 
-        <div className="col-12">
+        {/* <div className="col-12">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
@@ -559,7 +540,14 @@ class LeaveEncashmentAuth extends Component {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
+        <EncashmentAuthDtls
+          open={this.state.isOpen}
+          onClose={this.closePopup.bind(this)}
+          EncashDetailPer={this.state.EncashDetailPer}
+          emp_name={this.state.emp_name}
+          auth_level={this.state.auth_level}
+        />
       </div>
     );
   }
