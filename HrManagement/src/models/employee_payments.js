@@ -728,6 +728,16 @@ export default {
                         inputParam.employee_id
                       );
 
+                      strQuery += "UPDATE `hims_d_employee` SET  `suspend_salary`='Y', `last_salary_process_date`=? \
+                      where hims_d_employee_id=?; UPDATE `hims_f_salary` SET `salary_paid`='Y' where hims_f_salary_id in (?);"
+
+                      values.push(
+                        moment(leave_salary.leave_end_date).format(
+                          "YYYY-MM-DD"
+                        ),
+                        inputParam.employee_id,
+                        salary_header_id
+                      );
                       _mysql
                         .executeQuery({
                           query: strQuery,
@@ -1173,10 +1183,10 @@ export default {
 
       let inputValues = [];
       let _stringData = "";
+      inputValues.push(input.payment_type);
       if (input.employee_id != null) {
-        _stringData += " and employee_id=? and payment_type=?";
+        _stringData += " and employee_id=? ";
         inputValues.push(input.employee_id);
-        inputValues.push(input.payment_type);
       }
 
       _mysql
@@ -1186,7 +1196,7 @@ export default {
           employee_end_of_service_id,employee_final_settlement_id,employee_leave_settlement_id,payment_application_code, \
           payment_type, payment_amount, payment_date, payment_mode, cheque_number, deduction_month, cancel, bank_id,\
           emp.employee_code, emp.full_name from hims_f_employee_payments, hims_d_employee emp where \
-        hims_f_employee_payments.employee_id = emp.hims_d_employee_id " +
+          hims_f_employee_payments.employee_id = emp.hims_d_employee_id and payment_type=? " +
             _stringData,
           values: inputValues,
           printQuery: true

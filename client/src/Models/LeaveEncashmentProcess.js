@@ -1,7 +1,7 @@
 import moment from "moment";
 
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
@@ -24,7 +24,8 @@ export default {
       sel_employee_id: null,
       employee_name: null,
       encashDetail: [],
-      processBtn: true
+      processBtn: true,
+      processed_already: false
     };
     return output;
   }

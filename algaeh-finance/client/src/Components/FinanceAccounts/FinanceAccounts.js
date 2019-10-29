@@ -21,7 +21,7 @@ export default function FinanceAccounts(props) {
   }
 
   return (
-    <div className="col">
+    <div className="">
       <div className="row">
         <div className="tabMaster toggle-section">
           <ul className="nav">

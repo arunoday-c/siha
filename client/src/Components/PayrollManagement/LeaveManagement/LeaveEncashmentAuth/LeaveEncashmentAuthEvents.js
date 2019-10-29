@@ -64,7 +64,10 @@ const LoadEncashment = $this => {
       AlgaehLoader({ show: true });
 
       let inputObj = {
-        year: $this.state.year
+        hospital_id: $this.state.hospital_id,
+        from_date: $this.state.from_date,
+        to_date: $this.state.to_date,
+        authorized: $this.state.authorized
       };
 
       if ($this.state.auth_level === 1) {
@@ -77,14 +80,6 @@ const LoadEncashment = $this => {
 
       if ($this.state.employee_id !== null) {
         inputObj.employee_id = $this.state.employee_id;
-      }
-
-      if ($this.state.hospital_id !== null) {
-        inputObj.hospital_id = $this.state.hospital_id;
-      }
-
-      if ($this.state.sub_department_id !== null) {
-        inputObj.sub_department_id = $this.state.sub_department_id;
       }
 
       algaehApiCall({
@@ -127,6 +122,8 @@ const getLeaveEncashDetails = ($this, row) => {
     .toArray();
 
   $this.setState({
+    isOpen: true,
+    emp_name: row.full_name,
     EncashDetailPer: EncashDetailPer
   });
 };

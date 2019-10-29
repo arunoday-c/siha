@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import "./SalaryProcessing.scss";
 // import "./../../styles/site.scss";
 import {
   AlgaehLabel,

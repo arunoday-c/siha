@@ -403,9 +403,14 @@ class LeaveYearlyProcess extends Component {
                   valueField: "hims_d_leave_id",
                   data: this.state.leaves
                 },
-                onChange: this.dropDownHandler.bind(this)
+                onChange: this.dropDownHandler.bind(this),
+                onClear: () => {
+                  this.setState({
+                    leave_id: null
+                  });
+                }
               }}
-            />{" "}
+            />
             <div className="col form-group">
               <button
                 onClick={this.processYearlyLeave.bind(this)}
@@ -496,7 +501,7 @@ class LeaveYearlyProcess extends Component {
                           />
                         ),
                         others: {
-                          style: { textAlign: "left" }
+                          maxWidth: 150
                         }
                       },
                       {
@@ -507,7 +512,7 @@ class LeaveYearlyProcess extends Component {
                           />
                         ),
                         others: {
-                          style: { textAlign: "left" }
+                          maxWidth: 150
                         }
                       },
                       {
@@ -518,7 +523,7 @@ class LeaveYearlyProcess extends Component {
                           />
                         ),
                         others: {
-                          maxWidth: 250
+                          maxWidth: 150
                         }
                       }
                     ]}

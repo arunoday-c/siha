@@ -12,14 +12,13 @@ import { AddNewAccountDetails } from "./AddNewAccEvent";
 import { swalMessage } from "../../../utils/algaehApiCall";
 
 export default function AddNewAccount(props) {
-  const [lodingAddtoList, setLoadingAddtoList] = useState("");
+  const [lodingAddtoList, setLoadingAddtoList] = useState(false);
   const [account_code, setAccountCode] = useState("");
   const [account_name, setAccountName] = useState("");
   const [account_type, setAccountType] = useState("G");
   const [opening_balance, setOpeningBalance] = useState(0);
   // const [opening_balance_date, setOpeningBalanceDate] = useState("");
   const { showPopup, onClose, selectedNode } = props;
-
 
   return (
     <AlgaehModalPopUp
@@ -48,7 +47,7 @@ export default function AddNewAccount(props) {
                   value: account_type,
                   name: "account_type",
                   onChange: e => {
-                    debugger
+                    debugger;
                     setAccountType(e.target.value);
                   }
                 }}
@@ -93,34 +92,36 @@ export default function AddNewAccount(props) {
                   className: "form-control",
                   id: "name",
                   onChange: e => {
-                    debugger
+                    debugger;
                     setAccountName(e.target.value);
                   },
                   placeholder: " Enter Account Name",
                   autocomplete: false
                 }}
               />
-              {account_type === "C" ? <AlgaehFormGroup
-                div={{
-                  className: "form-group algaeh-text-fld col-xs-4 col-md-3"
-                }}
-                label={{
-                  forceLabel: "Opening Balance",
-                  isImp: true
-                }}
-                textBox={{
-                  type: "number",
-                  value: opening_balance,
-                  className: "form-control",
-                  id: "name",
-                  onChange: e => {
-                    debugger
-                    setOpeningBalance(e.target.value);
-                  },
-                  placeholder: " Enter Opening Balance",
-                  autocomplete: false
-                }}
-              /> : null}
+              {account_type === "C" ? (
+                <AlgaehFormGroup
+                  div={{
+                    className: "form-group algaeh-text-fld col-xs-4 col-md-3"
+                  }}
+                  label={{
+                    forceLabel: "Opening Balance",
+                    isImp: true
+                  }}
+                  textBox={{
+                    type: "number",
+                    value: opening_balance,
+                    className: "form-control",
+                    id: "name",
+                    onChange: e => {
+                      debugger;
+                      setOpeningBalance(e.target.value);
+                    },
+                    placeholder: " Enter Opening Balance",
+                    autocomplete: false
+                  }}
+                />
+              ) : null}
 
               {/* {account_type === "C"?
               <AlgaehDateHandler
@@ -142,8 +143,6 @@ export default function AddNewAccount(props) {
                 maxDate={new Date()}
                 // minDate={new Date()}
               />: null} */}
-
-
             </div>
           </div>
         </div>
@@ -157,7 +156,12 @@ export default function AddNewAccount(props) {
                 onClick={() => {
                   setLoadingAddtoList(true);
                   AddNewAccountDetails(
-                    { finance_account_head_id: selectedNode.node.finance_account_head_id, account_name: account_name },
+                    {
+                      finance_account_head_id:
+                        selectedNode.node.finance_account_head_id,
+                      account_name: account_name,
+                      leaf_node: account_type === "G" ? "N" : "Y"
+                    },
                     errorMessage => {
                       setAccountCode("");
                       setAccountName("");

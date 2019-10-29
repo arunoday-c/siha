@@ -189,202 +189,229 @@ class Screens extends Component {
   render() {
     return (
       <div className="screens">
-        <div className="col-lg-12">
-          <div className="row">
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Module"
-              }}
-              selector={{
-                name: "module_id",
-                className: "select-fld",
-                value: this.state.module_id,
-                dataSource: {
-                  textField: "module_name",
-                  valueField: "algaeh_d_module_id",
-                  data: this.state.modules
-                },
-                onChange: this.dropDownHandle.bind(this)
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Screen Code",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "screen_code",
-                value: this.state.screen_code,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Screen Name",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "screen_name",
-                value: this.state.screen_name,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Page to Redirect",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "page_to_redirect",
-                value: this.state.page_to_redirect,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
+        <div className="row inner-top-search margin-bottom-15">
+          <AlagehAutoComplete
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Module",
+              isImp: true
+            }}
+            selector={{
+              name: "module_id",
+              className: "select-fld",
+              value: this.state.module_id,
+              dataSource: {
+                textField: "module_name",
+                valueField: "algaeh_d_module_id",
+                data: this.state.modules
+              },
+              onChange: this.dropDownHandle.bind(this)
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Screen Code",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "screen_code",
+              value: this.state.screen_code,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-3 mandatory form-group" }}
+            label={{
+              forceLabel: "Screen Name",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "screen_name",
+              value: this.state.screen_name,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Page to Redirect",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "page_to_redirect",
+              value: this.state.page_to_redirect,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
 
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Other Language",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "other_language",
-                value: this.state.other_language,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
+          <AlagehFormGroup
+            div={{ className: "col-3 mandatory form-group" }}
+            label={{
+              forceLabel: "Other Language",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "other_language",
+              value: this.state.other_language,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
 
-            <div className="col-lg-3">
-              <button
-                type="submit"
-                style={{ marginTop: 19 }}
-                onClick={this.addScreens.bind(this)}
-                className="btn btn-primary"
-              >
-                Add to List
-              </button>
-            </div>
+          <div className="col form-group">
+            <button
+              type="submit"
+              onClick={this.addScreens.bind(this)}
+              className="btn btn-primary"
+            >
+              Add to List
+            </button>
           </div>
+        </div>
+        <div className="row">
+          <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Lists of Modules</h3>
+                </div>
+                <div className="actions"></div>
+              </div>
 
-          <div data-validate="shiftDiv" id="algaehGrid_Cntr">
-            <AlgaehDataGrid
-              id="shift-grid"
-              datavalidate="data-validate='shiftDiv'"
-              columns={[
-                {
-                  fieldName: "screen_code",
-                  label: "Screen Code",
-                  disabled: true
-                },
-                {
-                  fieldName: "screen_name",
-                  label: "Screen Name",
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "screen_name",
-                          value: row.screen_name,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12">
+                    <div data-validate="shiftDiv" id="algaehGrid_Cntr">
+                      <AlgaehDataGrid
+                        id="shift-grid"
+                        datavalidate="data-validate='shiftDiv'"
+                        columns={[
+                          {
+                            fieldName: "screen_code",
+                            label: "Screen Code",
+                            disabled: true
                           },
-                          others: {
-                            errormessage: "Screen Name - cannot be blank",
-                            required: true
+                          {
+                            fieldName: "screen_name",
+                            label: "Screen Name",
+                            editorTemplate: row => {
+                              return (
+                                <AlagehFormGroup
+                                  div={{ className: "col" }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "screen_name",
+                                    value: row.screen_name,
+                                    events: {
+                                      onChange: this.changeGridEditors.bind(
+                                        this,
+                                        row
+                                      )
+                                    },
+                                    others: {
+                                      errormessage:
+                                        "Screen Name - cannot be blank",
+                                      required: true
+                                    }
+                                  }}
+                                />
+                              );
+                            }
+                          },
+                          {
+                            fieldName: "page_to_redirect",
+                            label: "Page to Redirect",
+                            editorTemplate: row => {
+                              return (
+                                <AlagehFormGroup
+                                  div={{ className: "col" }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "page_to_redirect",
+                                    value: row.page_to_redirect,
+                                    events: {
+                                      onChange: this.changeGridEditors.bind(
+                                        this,
+                                        row
+                                      )
+                                    },
+                                    others: {
+                                      errormessage:
+                                        "Page to Redirect - cannot be blank",
+                                      required: true
+                                    }
+                                  }}
+                                />
+                              );
+                            }
+                          },
+                          {
+                            fieldName: "module_name",
+                            label: "Module Name",
+                            disabled: true
+                          },
+                          {
+                            fieldName: "module_code",
+                            label: "Module Code",
+                            disabled: true
+                          },
+                          {
+                            fieldName: "other_language",
+                            label: "Other Language",
+                            editorTemplate: row => {
+                              return (
+                                <AlagehFormGroup
+                                  div={{ className: "col" }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "other_language",
+                                    value: row.other_language,
+                                    events: {
+                                      onChange: this.changeGridEditors.bind(
+                                        this,
+                                        row
+                                      )
+                                    },
+                                    others: {
+                                      errormessage: "Module - cannot be blank",
+                                      required: true
+                                    }
+                                  }}
+                                />
+                              );
+                            }
                           }
+                        ]}
+                        keyId="algaeh_app_screens_id"
+                        dataSource={{
+                          data: this.state.screens
+                        }}
+                        filter={true}
+                        isEditable={true}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                        events={{
+                          onEdit: () => {},
+                          onDelete: this.deleteScreens.bind(this),
+                          onDone: this.updateScreens.bind(this)
                         }}
                       />
-                    );
-                  }
-                },
-                {
-                  fieldName: "page_to_redirect",
-                  label: "Page to Redirect",
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "page_to_redirect",
-                          value: row.page_to_redirect,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          },
-                          others: {
-                            errormessage: "Page to Redirect - cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "module_name",
-                  label: "Module Name",
-                  disabled: true
-                },
-                {
-                  fieldName: "module_code",
-                  label: "Module Code",
-                  disabled: true
-                },
-                {
-                  fieldName: "other_language",
-                  label: "Other Language",
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "other_language",
-                          value: row.other_language,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          },
-                          others: {
-                            errormessage: "Module - cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
-                }
-              ]}
-              keyId="algaeh_app_screens_id"
-              dataSource={{
-                data: this.state.screens
-              }}
-              filter={true}
-              isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              events={{
-                onEdit: () => {},
-                onDelete: this.deleteScreens.bind(this),
-                onDone: this.updateScreens.bind(this)
-              }}
-            />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

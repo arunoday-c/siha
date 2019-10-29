@@ -46,16 +46,13 @@ class RulesDetails extends PureComponent {
       <React.Fragment>
         <div className="hptl-phase1-add-employee-form popRightDiv">
           <div className="row">
-            <div
-              className="col-lg-12"
-              style={{ borderBottom: "1px dashed #d3d3d3" }}
-            >
+            <div className="col-12">
               <h5>
                 <span>Applicable Rules</span>
               </h5>
               <div className="row paddin-bottom-5">
                 <div
-                  className="col-2 customCheckbox form-group"
+                  className="col-3 customCheckbox form-group"
                   style={{ border: "none" }}
                 >
                   <label className="checkbox inline">
@@ -68,14 +65,16 @@ class RulesDetails extends PureComponent {
                     />
                     <span>
                       <AlgaehLabel
-                        label={{ forceLabel: "Leave Salary Process" }}
+                        label={{
+                          forceLabel: "Eligible for Annual Leave Salary"
+                        }}
                       />
                     </span>
                   </label>
                 </div>
 
                 <div
-                  className="col-2 customCheckbox form-group"
+                  className="col-3 customCheckbox form-group"
                   style={{ border: "none" }}
                 >
                   <label className="checkbox inline">
@@ -92,7 +91,7 @@ class RulesDetails extends PureComponent {
                 </div>
 
                 <div
-                  className="col-2 customCheckbox form-group"
+                  className="col-3 customCheckbox form-group"
                   style={{ border: "none" }}
                 >
                   <label className="checkbox inline">
@@ -109,7 +108,7 @@ class RulesDetails extends PureComponent {
                 </div>
 
                 <div
-                  className="col-2 customCheckbox form-group"
+                  className="col-3 customCheckbox form-group"
                   style={{ border: "none" }}
                 >
                   <label className="checkbox inline">
@@ -126,7 +125,7 @@ class RulesDetails extends PureComponent {
                 </div>
 
                 <div
-                  className="col-2 customCheckbox form-group"
+                  className="col-3 customCheckbox form-group"
                   style={{ border: "none" }}
                 >
                   <label className="checkbox inline">
@@ -144,7 +143,7 @@ class RulesDetails extends PureComponent {
                   </label>
                 </div>
                 <div
-                  className="col-2 customCheckbox form-group"
+                  className="col-3 customCheckbox form-group"
                   style={{ border: "none" }}
                 >
                   <label className="checkbox inline">
@@ -162,7 +161,7 @@ class RulesDetails extends PureComponent {
                   </label>
                 </div>
                 <div
-                  className="col-2 customCheckbox form-group"
+                  className="col-3 customCheckbox form-group"
                   style={{ border: "none" }}
                 >
                   <label className="checkbox inline">

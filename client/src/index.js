@@ -9,6 +9,7 @@ import thunk from "redux-thunk";
 import { applyMiddleware, createStore } from "redux";
 import "./index.scss";
 import "./styles/site.scss";
+import "./loader.scss";
 // import * as serviceWorker from "./serviceWorker";
 
 const middleware =

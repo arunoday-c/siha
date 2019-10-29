@@ -19,7 +19,7 @@ export default function Assets() {
 
   useEffect(() => {
     if (treeData.length === 0) {
-      getAccounts(("1"), data => {
+      getAccounts("1", data => {
         setTreeData(data);
       });
     }
@@ -28,7 +28,7 @@ export default function Assets() {
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
       try {
-        debugger
+        debugger;
         const { treeData } = options;
         // let NEW_NODE = { title: addedNode.account_name };
         let { node, treeIndex, path } = rowInfo;
@@ -90,104 +90,128 @@ export default function Assets() {
           setShowPopup(false);
           if (e !== undefined) {
             addNode(selectedNode, { treeData }, e).then(newTree => {
-              debugger
+              debugger;
               setTreeData(newTree.treeData);
             });
           }
         }}
       />
-      <div className="portlet portlet-bordered margin-bottom-15">
-        <div className="portlet-title">
-          <div className="caption">
-            <h3 className="caption-subject">Asset accounts</h3>
+      <div className="row">
+        <div className="col-4">
+          <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">Asset accounts</h3>
+              </div>
+              <div className="actions"></div>
+            </div>
+            <div className="portlet-body"></div>
           </div>
-          <div className="actions">
-            <button
-              className="btn btn-primary btn-circle active"
-              onClick={() => {
-                setSelectHead(true);
-                setShowPopup(true);
-              }}
-            >
-              <i className="fas fa-plus" />
-            </button>
+          <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">Asset accounts</h3>
+              </div>
+              <div className="actions"></div>
+            </div>
+            <div className="portlet-body"></div>
           </div>
         </div>
-        <div className="portlet-body">
-          <div className="col">
-            <div className="row">
-              <div style={{ height: 400, width: "100vw" }}>
-                <SortableTree
-                  treeData={treeData}
-                  onChange={treeData => {
-                    setTreeData(treeData);
-                  }}
-                  isVirtualized={true}
-                  canDrag={rowInfo => {
-                    return rowInfo.node.canDrag === true ? true : false;
-                  }}
-                  generateNodeProps={rowInfo => {
-                    return {
-                      buttons: [
-                        <div>
-                          {rowInfo.node.head_created_from === "U" ? (
-                            <button
-                              label="Delete"
-                              onClick={event => {
-                                let child_exists =
-                                  rowInfo.node.children === undefined
-                                    ? ""
-                                    : rowInfo.node.children.length > 0
-                                      ? "This node exists Sub Accounts, If delete childs also will get delete !"
-                                      : "";
-                                // rowInfo
-                                swal
-                                  .fire({
-                                    title: "Are you sure want to Remove?",
-                                    text: child_exists,
-                                    type: "warning",
-                                    showCancelButton: true,
-                                    confirmButtonColor: "#3085d6",
-                                    cancelButtonColor: "#d33",
-                                    confirmButtonText: "Yes, delete it!"
-                                  })
-                                  .then(willProceed => {
-                                    if (willProceed.value) {
-                                      removeNode(rowInfo, { treeData })
-                                        .then(newTree => {
-                                          setTreeData(newTree);
-                                        })
-                                        .catch(error => {
-                                          alert(error);
-                                        });
-                                    }
-                                  });
-                              }}
-                            >
-                              Remove
-                            </button>
-                          ) : null}
+        <div className="col-8">
+          <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">Asset accounts</h3>
+              </div>
+              <div className="actions">
+                <button className="btn btn-default btn-circle active">
+                  <i className="fas fa-print" />
+                </button>
+                <button className="btn btn-default btn-circle active">
+                  <i className="fas fa-search" />
+                </button>{" "}
+                <button className="btn btn-primary btn-circle active">
+                  <i className="fas fa-plus" />
+                </button>{" "}
+              </div>
+            </div>
+            <div className="portlet-body">
+              <div className="col">
+                <div className="row">
+                  <div className="treeNodeWrapper">
+                    <SortableTree
+                      treeData={treeData}
+                      onChange={treeData => {
+                        setTreeData(treeData);
+                      }}
+                      isVirtualized={true}
+                      canDrag={rowInfo => {
+                        return rowInfo.node.canDrag === true ? true : false;
+                      }}
+                      generateNodeProps={rowInfo => {
+                        return {
+                          buttons: [
+                            <div>
+                              {rowInfo.node.created_status === "U" ? (
+                                <button
+                                  label="Delete"
+                                  onClick={event => {
+                                    let child_exists =
+                                      rowInfo.node.children === undefined
+                                        ? ""
+                                        : rowInfo.node.children.length > 0
+                                        ? "This node exists Sub Accounts, If delete childs also will get delete !"
+                                        : "";
+                                    // rowInfo
+                                    swal
+                                      .fire({
+                                        title: "Are you sure want to Remove?",
+                                        text: child_exists,
+                                        type: "warning",
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#3085d6",
+                                        cancelButtonColor: "#d33",
+                                        confirmButtonText: "Yes, delete it!"
+                                      })
+                                      .then(willProceed => {
+                                        if (willProceed.value) {
+                                          removeNode(rowInfo, { treeData })
+                                            .then(newTree => {
+                                              setTreeData(newTree);
+                                            })
+                                            .catch(error => {
+                                              alert(error);
+                                            });
+                                        }
+                                      });
+                                  }}
+                                >
+                                  Remove
+                                </button>
+                              ) : null}
 
-                          {rowInfo.node.leafnode === "N" ? (
-                            <button
-                              label="Add"
-                              onClick={event => {
-                                setSelectHead(false);
-                                setShowPopup(true);
-                                setSelectedNode(rowInfo);
-                              }}
-                            >
-                              Add
-                            </button>
-                          ) : null}
-                        </div>
-                      ],
-                      style: {
-                        height: "50px"
-                      }
-                    };
-                  }}
-                />
+                              {rowInfo.node.leafnode === "N" ? (
+                                <button
+                                  label="Add"
+                                  onClick={event => {
+                                    setSelectHead(false);
+                                    setShowPopup(true);
+                                    setSelectedNode(rowInfo);
+                                  }}
+                                >
+                                  Add
+                                </button>
+                              ) : null}
+                            </div>
+                          ],
+                          style: {
+                            height: "50px"
+                          }
+                        };
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

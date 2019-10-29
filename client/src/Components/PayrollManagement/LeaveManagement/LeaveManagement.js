@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./leave_mgmt.scss";
 import LeaveAuth from "./LeaveAuthorization/LeaveAuthorization";
-import LeaveEncashmentProcess from "./LeaveEncashmentProcess/LeaveEncashmentProcess";
+// import LeaveEncashmentProcess from "./LeaveEncashmentProcess/LeaveEncashmentProcess";
 import LeaveEncashAuth from "./LeaveEncashmentAuth/LeaveEncashmentAuth";
 import LeaveSalaryProcess from "./LeaveSalaryProcess/LeaveSalaryProcess";
 import LeaveYearlyProcess from "./LeaveYearlyProcess/LeaveYearlyProcess";
@@ -46,19 +46,7 @@ export default class LeaveManagement extends Component {
                 />
               }
             </li>
-            <li
-              algaehtabs={"LeaveEncashmentProcess"}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Encashment Process"
-                  }}
-                />
-              }
-            </li>
+
             <li
               algaehtabs={"LeaveEncashAuth"}
               className={"nav-item tab-button"}
@@ -80,7 +68,7 @@ export default class LeaveManagement extends Component {
               {
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Leave Salary Process"
+                    forceLabel: "Annual Leave Salary Process"
                   }}
                 />
               }
@@ -104,8 +92,6 @@ export default class LeaveManagement extends Component {
         <div className="col-12 leave-section">
           {this.state.pageDisplay === "LeaveAuth" ? (
             <LeaveAuth />
-          ) : this.state.pageDisplay === "LeaveEncashmentProcess" ? (
-            <LeaveEncashmentProcess />
           ) : this.state.pageDisplay === "LeaveEncashAuth" ? (
             <LeaveEncashAuth />
           ) : this.state.pageDisplay === "LeaveSalaryProcess" ? (

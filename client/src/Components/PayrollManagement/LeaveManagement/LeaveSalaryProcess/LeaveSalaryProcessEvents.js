@@ -348,6 +348,9 @@ const openSalaryComponents = ($this, row) => {
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.result;
+        if (data.length === 0) {
+          return;
+        }
         let header = data[0]["salaryprocess_header"][0];
         const salaryprocess_Earning = Enumerable.from(
           data[0]["salaryprocess_detail"][0]
@@ -382,13 +385,18 @@ const openSalaryComponents = ($this, row) => {
           total_days: header.total_days,
           absent_days: header.absent_days,
           total_work_days: header.total_work_days,
-          total_weekoff_days: header.total_weekoff_days,
-          total_holidays: header.total_holidays,
+          total_holidays:
+            header.total_holidays !== null ? header.total_holidays : 0,
+          total_weekoff_days:
+            header.total_weekoff_days !== null ? header.total_weekoff_days : 0,
           total_leave: header.total_leave,
           paid_leave: header.paid_leave,
           unpaid_leave: header.unpaid_leave,
           present_days: header.present_days,
-          total_paid_days: header.total_paid_days
+          total_paid_days: header.total_paid_days,
+          display_present_days: header.display_present_days,
+          comp_off_days: 0,
+          pending_unpaid_leave: header.pending_unpaid_leave
         });
       } else if (!response.data.success) {
         AlgaehLoader({ show: false });

@@ -195,10 +195,10 @@ class PayRollDetails extends Component {
               ></hr>
             </div>
             <div className="col-4 primary-details">
-              <h5>
+              {/*  <h5>
                 <span>Earnings Details</span>
               </h5>
-              {/* <div className="row">
+             <div className="row">
                 <div
                   className="col-2 customCheckbox"
                   style={{ border: "none" }}
@@ -409,9 +409,9 @@ class PayRollDetails extends Component {
               </div>
             </div>
             <div className="col-4 primary-details">
-              <h5>
+          {/*      <h5>
                 <span>Deduction Details</span>
-              </h5>
+              </h5>       */}
               <div
                 className="row padding-bottom-5"
                 data-validate="DeductionComponent"
@@ -577,9 +577,9 @@ class PayRollDetails extends Component {
               </div>
             </div>
             <div className="col-4 secondary-details">
-              <h5>
+             {/*   <h5>
                 <span>Contribution Details</span>
-              </h5>
+              </h5>       */}
               <div
                 className="row padding-bottom-5"
                 data-validate="ContributeComponent"

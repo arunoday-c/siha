@@ -352,24 +352,43 @@ class EmployeePayment extends Component {
                       <div className="caption">
                         <h3 className="caption-subject">Payment Form</h3>
                       </div>
-                      <div className="actions">
-                        {this.state.request_number === null ? (
-                          ""
-                        ) : (
-                          <span>
-                            {this.state.request_number +
-                              "/" +
-                              this.state.full_name}
-                          </span>
-                        )}
-                        {/* <a className="btn btn-primary btn-circle active">
-                        <i className="fas fa-calculator" />
-                      </a>*/}
-                      </div>
+                      <div className="actions"></div>
                     </div>
 
                     <div className="portlet-body" style={{ minHeight: "43vh" }}>
                       <div className="row">
+                        {this.state.request_number === null ? (
+                          ""
+                        ) : (
+                          <>
+                            <div className="col-6">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Leave Request No."
+                                }}
+                              />
+                              <h6>
+                                {this.state.request_number
+                                  ? this.state.request_number
+                                  : "----------"}
+                              </h6>
+                            </div>
+
+                            <div className="col-6">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Employee Name"
+                                }}
+                              />
+                              <h6>
+                                {this.state.full_name
+                                  ? this.state.full_name
+                                  : "----------"}
+                              </h6>
+                            </div>
+                          </>
+                        )}
+
                         <div className="col-6">
                           <AlgaehLabel
                             label={{

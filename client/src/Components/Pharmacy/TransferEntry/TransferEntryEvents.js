@@ -260,7 +260,7 @@ const SaveTransferEntry = $this => {
   });
 
   $this.state.stock_detail = stock_detail;
-
+  debugger
   algaehApiCall({
     uri: "/transferEntry/addtransferEntry",
     module: "pharmacy",

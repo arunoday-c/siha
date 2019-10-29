@@ -7,6 +7,43 @@ export default {
     const _EncashDetails = req.query;
 
     /* Select statemwnt  */
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_f_employee_monthly_leave_id,leave_id,ML.employee_id,`year`,close_balance,\
+            leaEncash.earnings_id, leaEncash.percent, empEarn.amount, lea.leave_description,  \
+            sum( ((empEarn.amount *12/365)*(leaEncash.percent/100))*close_balance) as leave_amount , \
+            close_balance as leave_days from hims_f_employee_monthly_leave ML, hims_d_leave lea, \
+            hims_d_leave_encashment leaEncash, hims_d_employee_earnings empEarn where ML.employee_id=? and \
+            `year`=? and ML.leave_id = lea.hims_d_leave_id and lea.leave_encash='Y' and \
+            ML.leave_id = leaEncash.leave_header_id and leaEncash.earnings_id = empEarn.earnings_id and \
+            empEarn.employee_id=ML.employee_id group by leave_id ;",
+        values: [_EncashDetails.employee_id, _EncashDetails.year]
+        // printQuery: true
+      })
+      .then(monthlyLeaves => {
+        _mysql.releaseConnection();
+
+        req.records = monthlyLeaves.map(data => {
+          return {
+            ...data,
+            total_amount: data.leave_amount
+          };
+        });
+
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  getEncashmentToProcess_new: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const _EncashDetails = req.query;
+
+    /* Select statemwnt  */
 
     _mysql
       .executeQuery({
@@ -22,7 +59,7 @@ export default {
           _mysql
             .executeQuery({
               query:
-                "select leave_id,leave_days, leave_amount, airfare_amount, airfare_months, total_amount, \
+                "select leave_id,leave_days, leave_amount, airfare_amount, airfare_months, total_amount, close_balance,\
                 leavems.leave_description from hims_f_leave_encash_detail, hims_d_leave leavems where  \
                 leavems.hims_d_leave_id = hims_f_leave_encash_detail.leave_id and leave_encash_header_id=?;",
               values: [leave_Encash[0].hims_f_leave_encash_header_id],
@@ -42,21 +79,21 @@ export default {
               });
             })
             .catch(e => {
+              _mysql.releaseConnection();
               next(e);
             });
         } else {
           _mysql
             .executeQuery({
               query:
-                "select hims_f_employee_monthly_leave_id,leave_id,hims_f_employee_monthly_leave.employee_id,`year`,close_balance,encashment_leave, \
-              leaEncash.earnings_id, leaEncash.percent, empEarn.amount, lea.leave_description,\
-              CASE when close_balance < encashment_leave then sum( ((empEarn.amount *12/365)*(leaEncash.percent/100))*close_balance) else \
-              sum(((empEarn.amount *12/365)*(leaEncash.percent/100))*encashment_leave)  end leave_amount , case when close_balance < encashment_leave then\
-              close_balance else encashment_leave end leave_days from \
-              hims_f_employee_monthly_leave, hims_d_leave lea, hims_d_leave_encashment leaEncash, hims_d_employee_earnings empEarn where \
-              hims_f_employee_monthly_leave.employee_id=? and `year`=? and hims_f_employee_monthly_leave.leave_id = lea.hims_d_leave_id and lea.leave_encash='Y' and\
-              hims_f_employee_monthly_leave.leave_id = leaEncash.leave_header_id and leaEncash.earnings_id = empEarn.earnings_id and \
-              empEarn.employee_id=hims_f_employee_monthly_leave.employee_id group by leave_id ;",
+                "select hims_f_employee_monthly_leave_id,leave_id,ML.employee_id,`year`,close_balance,\
+                leaEncash.earnings_id, leaEncash.percent, empEarn.amount, lea.leave_description,  \
+                sum( ((empEarn.amount *12/365)*(leaEncash.percent/100))*close_balance) as leave_amount , \
+                close_balance as leave_days from hims_f_employee_monthly_leave ML, hims_d_leave lea, \
+                hims_d_leave_encashment leaEncash, hims_d_employee_earnings empEarn where ML.employee_id=149 and \
+                `year`=2019 and ML.leave_id = lea.hims_d_leave_id and lea.leave_encash='Y' and \
+                ML.leave_id = leaEncash.leave_header_id and leaEncash.earnings_id = empEarn.earnings_id and \
+                empEarn.employee_id=ML.employee_id group by leave_id ;",
               values: [_EncashDetails.employee_id, _EncashDetails.year]
               // printQuery: true
             })
@@ -73,11 +110,13 @@ export default {
               next();
             })
             .catch(e => {
+              _mysql.releaseConnection();
               next(e);
             });
         }
       })
       .catch(e => {
+        _mysql.releaseConnection();
         next(e);
       });
   },
@@ -129,12 +168,25 @@ export default {
       })
       .then(generatedNumbers => {
         encashment_number = generatedNumbers[0];
+        let encashDetail = inputParam.encashDetail;
+        let strQuery = "";
+
+        for (let i = 0; i < encashDetail.length; i++) {
+          let close_balance =
+            parseFloat(encashDetail[i].close_balance) -
+            parseFloat(encashDetail[i].leave_days);
+          strQuery += _mysql.mysqlQueryFormat(
+            "UPDATE hims_f_employee_monthly_leave set close_balance=? where  hims_f_employee_monthly_leave_id=?;",
+            [close_balance, encashDetail[i].hims_f_employee_monthly_leave_id]
+          );
+        }
         _mysql
           .executeQuery({
             query:
               "INSERT INTO `hims_f_leave_encash_header` (encashment_number, employee_id, encashment_date,\
                 year, total_amount, authorized1, authorized2, authorized,hospital_id)\
-          VALUE(?,?,?,?,?,?,?,?,?)",
+          VALUE(?,?,?,?,?,?,?,?,?); " +
+              strQuery,
             values: [
               generatedNumbers[0],
               inputParam.employee_id,
@@ -145,15 +197,18 @@ export default {
               inputParam.authorized2,
               inputParam.authorized,
               req.userIdentity.hospital_id
-            ]
+            ],
+            printQuery: true
           })
-          .then(inserted_encash => {
+          .then(result => {
+            let inserted_encash = result[0];
             _mysql
               .executeQuery({
-                query: "INSERT INTO hims_f_leave_encash_detail(??) VALUES ?",
+                query: "INSERT INTO hims_f_leave_encash_detail(??) VALUES ?; ",
                 values: inputParam.encashDetail,
                 includeValues: [
                   "leave_id",
+                  "close_balance",
                   "leave_days",
                   "leave_amount",
                   "total_amount"
@@ -171,14 +226,23 @@ export default {
                   req.records = result;
                   next();
                 });
+              })
+              .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
               });
           })
           .catch(e => {
-            next(e);
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
           });
       })
-      .catch(error => {
-        next(error);
+      .catch(e => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
       });
   },
 
@@ -194,22 +258,16 @@ export default {
 
     _stringData += inputParam.employee_id != null ? " and employee_id=? " : "";
 
-    _stringData +=
-      inputParam.hospital_id != null ? " and emp.hospital_id=? " : "";
-
-    _stringData +=
-      inputParam.sub_department_id != null
-        ? " and emp.sub_department_id=? "
-        : "";
-
     /* Select statemwnt  */
 
     _mysql
       .executeQuery({
         query:
           "select hims_f_leave_encash_header_id,encashment_number, employee_id, encashment_date, year, total_amount,\
-          emp.employee_code, emp.full_name from hims_f_leave_encash_header, hims_d_employee emp where \
-          hims_f_leave_encash_header.employee_id = emp.hims_d_employee_id and `year` = ? " +
+          emp.employee_code, emp.full_name, authorized, D.designation from hims_f_leave_encash_header EH \
+          inner join hims_d_employee emp on EH.employee_id = emp.hims_d_employee_id \
+          inner join hims_d_designation D on D.hims_d_designation_id = emp.employee_designation_id \
+          where EH.hospital_id = ? and date(encashment_date) between date(?) and date(?) and authorized=?" +
           _stringData,
         values: _.valuesIn(inputParam),
         printQuery: true
@@ -242,7 +300,9 @@ export default {
               });
             })
             .catch(e => {
-              next(e);
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
             });
         } else {
           _mysql.commitTransaction(() => {
@@ -253,7 +313,9 @@ export default {
         }
       })
       .catch(e => {
-        next(e);
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
       });
   },
   UpdateLeaveEncash: (req, res, next) => {
@@ -297,6 +359,50 @@ export default {
         next();
       })
       .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  calculateEncashmentAmount: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const _EncashDetails = req.query;
+
+    /* Select statemwnt  */
+
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_f_employee_monthly_leave_id,leave_id,ML.employee_id,`year`,close_balance,\
+            leaEncash.earnings_id, leaEncash.percent, empEarn.amount, lea.leave_description,  \
+            sum( ((empEarn.amount *12/365)*(leaEncash.percent/100))* ?) as leave_amount , \
+            ? as leave_days from hims_f_employee_monthly_leave ML, hims_d_leave lea, \
+            hims_d_leave_encashment leaEncash, hims_d_employee_earnings empEarn where ML.employee_id=? and \
+            `year`=? and ML.leave_id = lea.hims_d_leave_id and lea.leave_encash='Y' and \
+            ML.leave_id = leaEncash.leave_header_id and leaEncash.earnings_id = empEarn.earnings_id and \
+            empEarn.employee_id=ML.employee_id group by leave_id ;",
+        values: [
+          _EncashDetails.leave_days,
+          _EncashDetails.leave_days,
+          _EncashDetails.employee_id,
+          _EncashDetails.year
+        ],
+        printQuery: true
+      })
+      .then(monthlyLeaves => {
+        _mysql.releaseConnection();
+
+        req.records = monthlyLeaves.map(data => {
+          return {
+            ...data,
+            total_amount: data.leave_amount
+          };
+        });
+
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
         next(e);
       });
   }

@@ -113,102 +113,118 @@ class Components extends Component {
   render() {
     return (
       <div className="components">
-        <div className="col-lg-12">
-          <div className="row">
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Screen"
-              }}
-              selector={{
-                name: "screen_id",
-                className: "select-fld",
-                value: this.state.screen_id,
-                dataSource: {
-                  textField: "screen_name",
-                  valueField: "algaeh_app_screens_id",
-                  data: this.state.screens
-                },
-                onChange: this.dropDownHandle.bind(this)
-              }}
-            />
+        <div className="row inner-top-search margin-bottom-15">
+          <AlagehAutoComplete
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Screen",
+              isImp: true
+            }}
+            selector={{
+              name: "screen_id",
+              className: "select-fld",
+              value: this.state.screen_id,
+              dataSource: {
+                textField: "screen_name",
+                valueField: "algaeh_app_screens_id",
+                data: this.state.screens
+              },
+              onChange: this.dropDownHandle.bind(this)
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Component Code",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "component_code",
+              value: this.state.component_code,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-3 mandatory form-group" }}
+            label={{
+              forceLabel: "Component Name",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "component_name",
+              value: this.state.component_name,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
 
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Component Code",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "component_code",
-                value: this.state.component_code,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Component Name",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "component_name",
-                value: this.state.component_name,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-
-            <div className="col-lg-3">
-              <button
-                type="submit"
-                style={{ marginTop: 19 }}
-                onClick={this.addComponents.bind(this)}
-                className="btn btn-primary"
-              >
-                Add to List
-              </button>
-            </div>
+          <div className="col">
+            <button
+              type="submit"
+              style={{ marginTop: 19 }}
+              onClick={this.addComponents.bind(this)}
+              className="btn btn-primary"
+            >
+              Add to List
+            </button>
           </div>
+        </div>
+        <div className="row">
+          <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Lists of Component</h3>
+                </div>
+                <div className="actions"></div>
+              </div>
 
-          <div data-validate="shiftDiv" id="algaehGrid_Cntr">
-            <AlgaehDataGrid
-              id="shift-grid"
-              datavalidate="data-validate='shiftDiv'"
-              columns={[
-                {
-                  fieldName: "screen_id",
-                  label: "Screen",
-                  disabled: true
-                },
-                {
-                  fieldName: "component_code",
-                  label: "Component Code"
-                },
-                {
-                  fieldName: "component_name",
-                  label: "Component Name",
-                  disabled: true
-                }
-              ]}
-              keyId="algaeh_d_module_id"
-              dataSource={{
-                data: this.state.components
-              }}
-              filter={true}
-              isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              events={{
-                onEdit: () => {},
-                onDelete: this.deleteComponents.bind(this),
-                onDone: this.updateComponents.bind(this)
-              }}
-            />
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12">
+                    <div data-validate="shiftDiv" id="algaehGrid_Cntr">
+                      <AlgaehDataGrid
+                        id="shift-grid"
+                        datavalidate="data-validate='shiftDiv'"
+                        columns={[
+                          {
+                            fieldName: "screen_id",
+                            label: "Screen",
+                            disabled: true
+                          },
+                          {
+                            fieldName: "component_code",
+                            label: "Component Code"
+                          },
+                          {
+                            fieldName: "component_name",
+                            label: "Component Name",
+                            disabled: true
+                          }
+                        ]}
+                        keyId="algaeh_d_module_id"
+                        dataSource={{
+                          data: this.state.components
+                        }}
+                        filter={true}
+                        isEditable={true}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                        events={{
+                          onEdit: () => {},
+                          onDelete: this.deleteComponents.bind(this),
+                          onDone: this.updateComponents.bind(this)
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

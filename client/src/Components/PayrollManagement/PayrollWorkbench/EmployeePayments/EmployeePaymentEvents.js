@@ -55,6 +55,7 @@ const LoadData = ($this, e) => {
     querySelector: "data-validate='loadData'",
     onSuccess: () => {
       AlgaehLoader({ show: true });
+      getEmployeePayments($this);
       let inputObj = {};
       if ($this.state.select_employee_id !== null) {
         inputObj.employee_id = $this.state.select_employee_id;
@@ -442,14 +443,16 @@ const employeeSearch = $this => {
 };
 
 const getEmployeePayments = $this => {
+  let inputObj = { payment_type: $this.state.sel_payment_type }
+
+  if ($this.state.select_employee_id !== null) {
+    inputObj.employee_id = $this.state.select_employee_id
+  }
   algaehApiCall({
     uri: "/employeepayments/getEmployeePayments",
     module: "hrManagement",
     method: "GET",
-    data: {
-      employee_id: $this.state.select_employee_id,
-      payment_type: $this.state.sel_payment_type
-    },
+    data: inputObj,
     onSuccess: response => {
       $this.setState({
         PreviousPayments: response.data.result

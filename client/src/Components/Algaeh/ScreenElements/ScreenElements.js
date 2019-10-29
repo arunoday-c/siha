@@ -115,100 +115,116 @@ class ScreenElements extends Component {
   render() {
     return (
       <div className="screen_elements">
-        <div className="col-lg-12">
-          <div className="row">
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Component"
-              }}
-              selector={{
-                name: "component_id",
-                className: "select-fld",
-                value: this.state.component_id,
-                dataSource: {
-                  textField: "component_name",
-                  valueField: "algaeh_d_app_component_id",
-                  data: this.state.components
-                },
-                onChange: this.dropDownHandle.bind(this)
-              }}
-            />
+        <div className="row inner-top-search margin-bottom-15">
+          <AlagehAutoComplete
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Component",
+              isImp: true
+            }}
+            selector={{
+              name: "component_id",
+              className: "select-fld",
+              value: this.state.component_id,
+              dataSource: {
+                textField: "component_name",
+                valueField: "algaeh_d_app_component_id",
+                data: this.state.components
+              },
+              onChange: this.dropDownHandle.bind(this)
+            }}
+          />
 
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Screen Element Code",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "screen_element_code",
-                value: this.state.screen_element_code,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Screen Element Name",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "screen_element_name",
-                value: this.state.screen_element_name,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
+          <AlagehFormGroup
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Screen Element Code",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "screen_element_code",
+              value: this.state.screen_element_code,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-3 mandatory form-group" }}
+            label={{
+              forceLabel: "Screen Element Name",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "screen_element_name",
+              value: this.state.screen_element_name,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
 
-            <div className="col-lg-3">
-              <button
-                type="submit"
-                style={{ marginTop: 19 }}
-                onClick={this.addScreenElements.bind(this)}
-                className="btn btn-primary"
-              >
-                Add to List
-              </button>
-            </div>
+          <div className="col">
+            <button
+              type="submit"
+              style={{ marginTop: 19 }}
+              onClick={this.addScreenElements.bind(this)}
+              className="btn btn-primary"
+            >
+              Add to List
+            </button>
           </div>
+        </div>
 
-          <div data-validate="screenElementDiv" id="algaehGrid_Cntr">
-            <AlgaehDataGrid
-              id="shift-grid"
-              datavalidate="data-validate='screenElementDiv'"
-              columns={[
-                {
-                  fieldName: "screen_element_code",
-                  label: "Screen Element Code"
-                },
-                {
-                  fieldName: "screen_element_name",
-                  label: "Screen Element Name"
-                },
-                {
-                  fieldName: "component_id",
-                  label: "Component"
-                }
-              ]}
-              keyId="algaeh_d_module_id"
-              dataSource={{
-                data: this.state.screen_elements
-              }}
-              filter={true}
-              isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              events={{
-                onEdit: () => {},
-                onDelete: this.deleteScreenElements.bind(this),
-                onDone: this.updateScreenElements.bind(this)
-              }}
-            />
+        <div className="row">
+          <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Lists of Modules</h3>
+                </div>
+                <div className="actions"></div>
+              </div>
+
+              <div className="portlet-body">
+                <div className="row">
+                  <div data-validate="screenElementDiv" id="algaehGrid_Cntr">
+                    <AlgaehDataGrid
+                      id="shift-grid"
+                      datavalidate="data-validate='screenElementDiv'"
+                      columns={[
+                        {
+                          fieldName: "screen_element_code",
+                          label: "Screen Element Code"
+                        },
+                        {
+                          fieldName: "screen_element_name",
+                          label: "Screen Element Name"
+                        },
+                        {
+                          fieldName: "component_id",
+                          label: "Component"
+                        }
+                      ]}
+                      keyId="algaeh_d_module_id"
+                      dataSource={{
+                        data: this.state.screen_elements
+                      }}
+                      filter={true}
+                      isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{
+                        onEdit: () => {},
+                        onDelete: this.deleteScreenElements.bind(this),
+                        onDone: this.updateScreenElements.bind(this)
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
