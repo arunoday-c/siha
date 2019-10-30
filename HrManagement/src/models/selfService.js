@@ -447,12 +447,12 @@ export default {
             query:
               "SELECT E.hims_d_employee_id, E.employee_code, E.full_name, E.last_salary_process_date, \
                 SD.sub_department_name, D.department_name, EG.group_description, LA.from_date, \
-                LA.to_date FROM hims_d_employee E \
+                LA.to_date, LA.hims_f_leave_application_id FROM hims_d_employee E \
                 inner join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id \
                 inner join hims_d_department D on SD.department_id = D.hims_d_department_id \
                 inner join hims_d_employee_group EG on EG.hims_d_employee_group_id = E.employee_group_id \
                 left join hims_f_leave_application LA on E.hims_d_employee_id = LA.employee_id \
-                where E.record_status = 'A' and E.suspend_salary = 'Y' ",
+                where E.record_status = 'A' and E.suspend_salary = 'Y' and LA.status='APR' ;",
             printQuery: true
           })
           .then(result => {
