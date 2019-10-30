@@ -6,7 +6,7 @@ const {
   getAccountHeads,
   addAccountHeads,
   getFinanceAccountsMaping,
-  addFinanceAccountsMaping
+  updateFinanceAccountsMaping
 } = finance;
 
 export default () => {
@@ -74,8 +74,8 @@ export default () => {
     }
   );
   api.post(
-    "/addFinanceAccountsMaping",
-    addFinanceAccountsMaping,
+    "/updateFinanceAccountsMaping",
+    updateFinanceAccountsMaping,
     (req, res, next) => {
       if (req.records.invalid_input == true) {
         res

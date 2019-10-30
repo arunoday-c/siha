@@ -299,7 +299,7 @@ export default {
     }
   },
   //created by irfan: to
-  addFinanceAccountsMaping: (req, res, next) => {
+  updateFinanceAccountsMaping: (req, res, next) => {
     const _mysql = new algaehMysql();
     // const utilities = new algaehUtilities();
     let input = req.body;
