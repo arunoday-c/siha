@@ -1338,7 +1338,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     }
 
                     deductable_amount =
-                      (net_amout * parseFloat(deductable_percentage)) / 100;
+                      deductable_percentage !== null ? (net_amout * parseFloat(deductable_percentage)) / 100 : 0;
                     after_dect_amout = net_amout - deductable_amount;
                     copay_amount = (after_dect_amout * parseFloat(copay_percentage)) / 100;
                     copay_amount = parseFloat(copay_amount).toFixed(2);

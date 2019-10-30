@@ -2467,6 +2467,7 @@ export default {
                     net_amout,
                     decimal_places
                   );
+                  console.log("copay_status", policydtls.copay_status)
                   //Patient And Company
                   if (policydtls.copay_status == "Y") {
                     copay_amount = policydtls.copay_amt;
@@ -2561,8 +2562,9 @@ export default {
                       copay_percentage = policydtls.copay_percent;
                     }
 
+                    console.log("deductable_percentage", deductable_percentage)
                     deductable_amount =
-                      (parseFloat(net_amout) * parseFloat(deductable_percentage)) / 100;
+                      deductable_percentage !== null ? (parseFloat(net_amout) * parseFloat(deductable_percentage)) / 100 : 0;
 
                     deductable_amount = utilities.decimalPoints(
                       deductable_amount,
@@ -2576,19 +2578,19 @@ export default {
                       decimal_places
                     );
                   }
-                  utilities
-                    .logger()
-                    .log("service_type_id: ", typeof patient_resp);
-                  utilities
-                    .logger()
-                    .log("service_type_id: ", typeof copay_amount);
-                  utilities
-                    .logger()
-                    .log("service_type_id: ", typeof deductable_amount);
+                  // utilities
+                  //   .logger()
+                  //   .log("service_type_id: ", typeof patient_resp);
+                  // utilities
+                  //   .logger()
+                  //   .log("service_type_id: ", typeof copay_amount);
+                  // utilities
+                  //   .logger()
+                  //   .log("service_type_id: ", typeof deductable_amount);
 
-                  // console.log(typeof patient_resp);
-                  // console.log(typeof copay_amount);
-                  // console.log(typeof deductable_amount);
+                  console.log("patient_resp", patient_resp);
+                  console.log("copay_amount", copay_amount);
+                  console.log("deductable_amount", deductable_amount);
                   patient_resp = parseFloat(copay_amount) + parseFloat(deductable_amount);
 
                   utilities
