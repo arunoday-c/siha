@@ -23,3 +23,27 @@ export function getHeaders(input){
         }
     });
 }
+
+export function updateFinanceAccountsMaping(input){
+    return new Promise((resolve,reject)=>{
+        try{
+            algaehApiCall({
+                uri: "/finance/updateFinanceAccountsMaping",
+                data: input,
+                method: "POST",
+                module: "finance",
+                onSuccess: response => {
+                    if (response.data.success === true) {
+                        resolve(response.data.result);
+                    }
+                },
+                onCatch:(error)=>{
+                    reject(error);
+                }
+            });
+        }
+        catch(e){
+            reject(e);
+        }
+    });
+}
