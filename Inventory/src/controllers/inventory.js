@@ -24,7 +24,10 @@ const {
   updateItemMasterAndUom,
   updateLocationPermission,
   addProcedureItems,
-  getItemMasterWithSalesPrice
+  getItemMasterWithSalesPrice,
+  getInventoryOptions,
+  addInventoryOptions,
+  updateInventoryOptions
 } = invModels;
 
 const { addServices, updateServicesOthrs } = serviceModels;
@@ -199,6 +202,27 @@ export default () => {
       });
     }
   );
+
+  api.get("/getInventoryOptions", getInventoryOptions, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.post("/addInventoryOptions", addInventoryOptions, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put("/updateInventoryOptions", updateInventoryOptions, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
 
   return api;
 };

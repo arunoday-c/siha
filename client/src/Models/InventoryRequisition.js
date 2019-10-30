@@ -1,5 +1,5 @@
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
@@ -70,7 +70,8 @@ export default {
       requistion_type_name: null,
       requistion_from: null,
       barcode: null,
-      transaction_qty: null
+      transaction_qty: null,
+      requisition_auth_level: null
     };
     return output;
   }
