@@ -6,6 +6,7 @@ import {
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import { ANNUAL_LEAVE_CAL } from "../../../../utils/GlobalVariables.json";
 
 export default class LeaveSalarySetup extends Component {
   constructor(props) {
@@ -15,7 +16,8 @@ export default class LeaveSalarySetup extends Component {
       basic_earning_component: undefined,
       earningDeductionList: [],
       airfare_percentage: 0,
-      hims_d_hrms_options_id: null
+      hims_d_hrms_options_id: null,
+      annual_leave_calculation: null
     };
 
     this.getLeaveSalaryOptions();
@@ -50,7 +52,8 @@ export default class LeaveSalarySetup extends Component {
           basic_earning_component: this.state.basic_earning_component,
           airfare_percentage: this.state.airfare_percentage,
           annual_leave_process_separately: this.state
-            .annual_leave_process_separately
+            .annual_leave_process_separately,
+          annual_leave_calculation: this.state.annual_leave_calculation
         },
         method: "POST",
         onSuccess: res => {
@@ -78,7 +81,8 @@ export default class LeaveSalarySetup extends Component {
           airfare_percentage: this.state.airfare_percentage,
           annual_leave_process_separately: this.state
             .annual_leave_process_separately,
-          hims_d_hrms_options_id: this.state.hims_d_hrms_options_id
+          hims_d_hrms_options_id: this.state.hims_d_hrms_options_id,
+          annual_leave_calculation: this.state.annual_leave_calculation
         },
         method: "PUT",
         onSuccess: res => {
@@ -112,6 +116,13 @@ export default class LeaveSalarySetup extends Component {
       basic_earning_component: e.value
     });
   }
+
+  dropDownHandler(value) {
+    this.setState({
+      [value.name]: value.value
+    });
+  }
+
   loadBasicComponents() {
     algaehApiCall({
       uri: "/payrollOptions/getSalarySetUp",
@@ -138,12 +149,12 @@ export default class LeaveSalarySetup extends Component {
       case "airfare_factor":
         e.target.value === "FI"
           ? this.setState({
-              [e.target.name]: e.target.value,
-              airfare_percentage: null
-            })
+            [e.target.name]: e.target.value,
+            airfare_percentage: null
+          })
           : this.setState({
-              [e.target.name]: e.target.value
-            });
+            [e.target.name]: e.target.value
+          });
 
         break;
 
@@ -224,6 +235,26 @@ export default class LeaveSalarySetup extends Component {
                   </div>
                 </div>
 
+                <AlagehAutoComplete
+                  div={{ className: "col-2 form-group" }}
+                  label={{ forceLabel: "Annual Leave Calculation", isImp: true }}
+                  selector={{
+                    name: "annual_leave_calculation",
+                    className: "select-fld",
+                    dataSource: {
+                      data: ANNUAL_LEAVE_CAL,
+                      textField: "name",
+                      valueField: "value"
+                    },
+                    onChange: this.dropDownHandler.bind(this),
+                    value: this.state.annual_leave_calculation,
+                    onClear: () => {
+                      this.setState({
+                        annual_leave_calculation: null
+                      });
+                    }
+                  }}
+                />
                 {this.state.airfare_factor === "PB" ? (
                   <React.Fragment>
                     <AlagehFormGroup
@@ -257,9 +288,16 @@ export default class LeaveSalarySetup extends Component {
                           valueField: "hims_d_earning_deduction_id"
                         },
                         onChange: this.basicComponentChange.bind(this),
-                        value: this.state.basic_earning_component
+                        value: this.state.basic_earning_component,
+                        onClear: () => {
+                          this.setState({
+                            basic_earning_component: null
+                          });
+                        }
                       }}
                     />
+
+
                   </React.Fragment>
                 ) : null}
               </div>

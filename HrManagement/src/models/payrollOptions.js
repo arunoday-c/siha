@@ -356,7 +356,8 @@ export default {
         .executeQuery({
           query:
             "SELECT hims_d_hrms_options_id, basic_earning_component, airfare_factor, annual_leave_process_separately, \
-            airfare_percentage FROM hims_d_hrms_options;"
+            airfare_percentage, annual_leave_calculation FROM hims_d_hrms_options;",
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -378,9 +379,10 @@ export default {
       .executeQuery({
         query:
           "update hims_d_hrms_options set \
-          annual_leave_process_separately=?,airfare_factor=?,basic_earning_component=?,airfare_percentage=?,\
+          annual_leave_calculation=?, annual_leave_process_separately=?,airfare_factor=?,basic_earning_component=?,airfare_percentage=?,\
           updated_date=?,updated_by=? where hims_d_hrms_options_id=?",
         values: [
+          input.annual_leave_calculation,
           input.annual_leave_process_separately,
           input.airfare_factor,
           input.basic_earning_component,
@@ -411,13 +413,14 @@ export default {
       .executeQuery({
         query:
           "INSERT  INTO hims_d_hrms_options(annual_leave_process_separately, airfare_factor, \
-        basic_earning_component, airfare_percentage, created_date, created_by values(?,?,?,?,?,?)",
+        basic_earning_component, airfare_percentage, annual_leave_calculation, created_date, created_by values(?,?,?,?,?,?,?)",
 
         values: [
           input.annual_leave_process_separately,
           input.airfare_factor,
           input.basic_earning_component,
           input.airfare_percentage,
+          input.annual_leave_calculation,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id
         ],

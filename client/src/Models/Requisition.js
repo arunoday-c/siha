@@ -1,5 +1,5 @@
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
@@ -66,7 +66,8 @@ export default {
       dummyField: false,
       authorizeEnable: true,
       cannotDelete: false,
-      transaction_qty: null
+      transaction_qty: null,
+      requisition_auth_level: null
     };
     return output;
   }
