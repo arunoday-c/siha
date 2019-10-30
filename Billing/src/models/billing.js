@@ -2228,7 +2228,7 @@ export default {
              vat_percent,service_status,effective_start_date,effectice_end_date,physiotherapy_service from hims_d_services\
              where hospital_id=? and hims_d_services_id in (?);${strQuery}`,
               values: [req.userIdentity.hospital_id, service_ids],
-              printQuery: false
+              printQuery: true
             })
             .then(result => {
               _mysql.releaseConnection();
@@ -2462,7 +2462,7 @@ export default {
                       decimal_places
                     );
                   }
-                  net_amout = gross_amount - discount_amout;
+                  net_amout = parseFloat(gross_amount) - parseFloat(discount_amout);
                   net_amout = utilities.decimalPoints(
                     net_amout,
                     decimal_places
@@ -2471,7 +2471,7 @@ export default {
                   if (policydtls.copay_status == "Y") {
                     copay_amount = policydtls.copay_amt;
                     copay_percentage =
-                      (parseFloat(copay_amount) / net_amout) * 100;
+                      (parseFloat(copay_amount) / parseFloat(net_amout)) * 100;
                   } else {
                     // utilities
                     //   .logger()
@@ -2562,15 +2562,15 @@ export default {
                     }
 
                     deductable_amount =
-                      (net_amout * parseFloat(deductable_percentage)) / 100;
+                      (parseFloat(net_amout) * parseFloat(deductable_percentage)) / 100;
 
                     deductable_amount = utilities.decimalPoints(
                       deductable_amount,
                       decimal_places
                     );
-                    after_dect_amout = net_amout - deductable_amount;
+                    after_dect_amout = parseFloat(net_amout) - parseFloat(deductable_amount);
                     copay_amount =
-                      (after_dect_amout * parseFloat(copay_percentage)) / 100;
+                      (parseFloat(after_dect_amout) * parseFloat(copay_percentage)) / 100;
                     copay_amount = utilities.decimalPoints(
                       copay_amount,
                       decimal_places
@@ -2589,13 +2589,13 @@ export default {
                   // console.log(typeof patient_resp);
                   // console.log(typeof copay_amount);
                   // console.log(typeof deductable_amount);
-                  patient_resp = copay_amount + deductable_amount;
+                  patient_resp = parseFloat(copay_amount) + parseFloat(deductable_amount);
 
                   utilities
                     .logger()
                     .log("service_type_id: ", typeof patient_resp);
 
-                  comapany_resp = net_amout - patient_resp;
+                  comapany_resp = parseFloat(net_amout) - parseFloat(patient_resp);
                   comapany_resp = utilities.decimalPoints(
                     comapany_resp,
                     decimal_places
@@ -2603,7 +2603,7 @@ export default {
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
                     patient_tax =
-                      (patient_resp * parseFloat(records.vat_percent)) / 100;
+                      (parseFloat(patient_resp) * parseFloat(records.vat_percent)) / 100;
 
                     patient_tax = utilities.decimalPoints(
                       patient_tax,
@@ -2615,7 +2615,7 @@ export default {
                     .log("vat_applicable: ", records.vat_applicable);
                   if (records.vat_applicable == "Y") {
                     s_patient_tax =
-                      (patient_resp * parseFloat(records.vat_percent)) / 100;
+                      (parseFloat(patient_resp) * parseFloat(records.vat_percent)) / 100;
 
                     s_patient_tax = utilities.decimalPoints(
                       patient_tax,
@@ -2625,22 +2625,22 @@ export default {
 
                   if (records.vat_applicable == "Y") {
                     company_tax =
-                      (comapany_resp * parseFloat(records.vat_percent)) / 100;
+                      (parseFloat(comapany_resp) * parseFloat(records.vat_percent)) / 100;
                     company_tax = utilities.decimalPoints(
                       company_tax,
                       decimal_places
                     );
                   }
-                  total_tax = patient_tax + company_tax;
+                  total_tax = parseFloat(patient_tax) + parseFloat(company_tax);
                   // total_tax = total_tax.toFixed(decimal_places);
-                  patient_payable = patient_resp + patient_tax;
+                  patient_payable = parseFloat(patient_resp) + parseFloat(patient_tax);
                   // patient_payable = patient_payable.toFixed(decimal_places);
 
                   if (approved_amount !== 0 && approved_amount < unit_cost) {
-                    let diff_val = approved_amount - comapany_resp;
-                    patient_payable = patient_payable + diff_val;
-                    patient_resp = patient_resp + diff_val;
-                    comapany_resp = comapany_resp - diff_val;
+                    let diff_val = parseFloat(approved_amount) - parseFloat(comapany_resp);
+                    patient_payable = parseFloat(patient_payable) + parseFloat(diff_val);
+                    patient_resp = parseFloat(patient_resp) + parseFloat(diff_val);
+                    comapany_resp = parseFloat(comapany_resp) - parseFloat(diff_val);
 
                     patient_payable = utilities.decimalPoints(
                       patient_payable,
@@ -2656,9 +2656,9 @@ export default {
                     );
                   }
 
-                  company_payble = net_amout - patient_resp;
+                  company_payble = parseFloat(net_amout) - parseFloat(patient_resp);
 
-                  company_payble = company_payble + company_tax;
+                  company_payble = parseFloat(company_payble) + parseFloat(company_tax);
 
                   company_payble = utilities.decimalPoints(
                     company_payble,
@@ -2673,24 +2673,24 @@ export default {
                         parseFloat(apr_amount_bulk) +
                         parseFloat(company_payble);
 
-                      approval_amt = parseFloat(approval_amt) + apr_amount_bulk;
+                      approval_amt = parseFloat(approval_amt) + parseFloat(apr_amount_bulk);
                     } else {
                       approval_amt =
                         parseFloat(approval_amt) + parseFloat(company_payble);
                     }
 
-                    utilities.logger().log("approval_amt: ", approval_amt);
-                    utilities.logger().log("company_payble: ", company_payble);
-                    utilities
-                      .logger()
-                      .log("preapp_limit_amount: ", preapp_limit_amount);
+                    // utilities.logger().log("approval_amt: ", approval_amt);
+                    // utilities.logger().log("company_payble: ", company_payble);
+                    // utilities
+                    //   .logger()
+                    //   .log("preapp_limit_amount: ", preapp_limit_amount);
                     if (approval_amt > preapp_limit_amount) {
-                      utilities.logger().log("enter: ");
+                      // utilities.logger().log("enter: ");
                       preapp_limit_exceed = "Y";
                     }
-                    utilities
-                      .logger()
-                      .log("preapp_limit_exceed: ", preapp_limit_exceed);
+                    // utilities
+                    //   .logger()
+                    //   .log("preapp_limit_exceed: ", preapp_limit_exceed);
                   }
 
                   //If primary and secondary exists
@@ -2698,22 +2698,22 @@ export default {
                   if (FollowUp === true) {
                     unit_cost =
                       unit_cost != 0
-                        ? unit_cost
+                        ? parseFloat(unit_cost)
                         : parseFloat(records.followup_free_fee);
                   } else {
                     unit_cost =
                       from_pos == "Y"
-                        ? unit_cost
+                        ? parseFloat(unit_cost)
                         : unit_cost != 0
-                          ? unit_cost
-                          : records.standard_fee;
+                          ? parseFloat(unit_cost)
+                          : parseFloat(records.standard_fee);
                   }
 
                   // if (conversion_factor != 0) {
                   //   unit_cost = unit_cost * conversion_factor;
                   // }
                   console.log("unit_cost", unit_cost);
-                  gross_amount = quantity * unit_cost;
+                  gross_amount = quantity * parseFloat(unit_cost);
                   console.log("gross_amount", gross_amount);
                   console.log("decimal_places", decimal_places);
                   gross_amount = utilities.decimalPoints(
@@ -2722,16 +2722,16 @@ export default {
                   );
 
                   if (discount_amout > 0) {
-                    discount_percentage = (discount_amout / gross_amount) * 100;
+                    discount_percentage = (parseFloat(discount_amout) / parseFloat(gross_amount)) * 100;
                   } else if (discount_percentage > 0) {
-                    discount_amout = (gross_amount * discount_percentage) / 100;
+                    discount_amout = (parseFloat(gross_amount) * parseFloat(discount_percentage)) / 100;
                     discount_amout = utilities.decimalPoints(
                       discount_amout,
                       decimal_places
                     );
                   }
-                  net_amout = gross_amount - discount_amout;
-                  patient_resp = net_amout;
+                  net_amout = parseFloat(gross_amount) - parseFloat(discount_amout);
+                  patient_resp = parseFloat(net_amout);
 
                   utilities
                     .logger()
@@ -2739,13 +2739,13 @@ export default {
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
                     patient_tax =
-                      (patient_resp * parseFloat(records.vat_percent)) / 100;
+                      (parseFloat(patient_resp) * parseFloat(records.vat_percent)) / 100;
 
                     patient_tax = utilities.decimalPoints(
                       patient_tax,
                       decimal_places
                     );
-                    total_tax = patient_tax;
+                    total_tax = parseFloat(patient_tax);
                   }
 
                   if (records.vat_applicable === "Y") {
@@ -2753,7 +2753,7 @@ export default {
                       .logger()
                       .log("vat_applicable: ", records.vat_applicable);
                     s_patient_tax =
-                      (patient_resp * parseFloat(records.vat_percent)) / 100;
+                      (parseFloat(patient_resp) * parseFloat(records.vat_percent)) / 100;
 
                     s_patient_tax = utilities.decimalPoints(
                       s_patient_tax,
@@ -2762,7 +2762,7 @@ export default {
                   }
 
                   // patient_payable = net_amout + patient_tax;
-                  patient_payable = patient_resp + patient_tax;
+                  patient_payable = parseFloat(patient_resp) + parseFloat(patient_tax);
                 }
 
                 // }
