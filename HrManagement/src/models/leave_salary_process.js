@@ -91,12 +91,12 @@ export default {
                 let leave_start_date = moment(
                   annul_leave_app[0].from_date
                 ).format("YYYY-MM-DD");
-                console.log("from_date", from_date);
-                console.log("to_date", to_date);
+                // console.log("from_date", from_date);
+                // console.log("to_date", to_date);
 
                 while (from_date <= to_date) {
-                  console.log("from_date", from_date);
-                  console.log("to_date_month", to_date_month);
+                  // console.log("from_date", from_date);
+                  // console.log("to_date_month", to_date_month);
 
                   let fromDate_firstDate = null;
                   let fromDate_lastDate = null;
@@ -122,67 +122,67 @@ export default {
                       parseFloat(hrms_options.at_st_date)
                     ) {
                       date_month = date_month + 1;
-                      console.log("date_month in if con:", date_month);
+                      // console.log("date_month in if con:", date_month);
                     }
                     if (date_month > 12) {
                       date_month = 1;
                     }
 
-                    console.log("date_month", date_month);
+                    // console.log("date_month", date_month);
 
                     if (to_date_month === date_month) {
                       fromDate_firstDate = moment(
                         selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_st_date,
+                        "-" +
+                        selected_month +
+                        "-" +
+                        hrms_options.at_st_date,
                         "YYYY-MM-DD"
                       ).format("YYYY-MM-DD");
 
                       fromDate_lastDate = moment(
                         selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_end_date
+                        "-" +
+                        selected_month +
+                        "-" +
+                        hrms_options.at_end_date
                       )
                         .add(1, "M")
                         .format("YYYY-MM-DD");
                     } else {
-                      console.log("selected_day", selected_day);
-                      console.log("at_st_date", hrms_options.at_st_date);
+                      // console.log("selected_day", selected_day);
+                      // console.log("at_st_date", hrms_options.at_st_date);
                       if (
                         parseFloat(selected_day) >=
                         parseFloat(hrms_options.at_st_date)
                       ) {
-                        console.log("True", selected_day);
+                        // console.log("True", selected_day);
 
                         fromDate_firstDate = moment(
                           selected_year +
-                            "-" +
-                            selected_month +
-                            "-" +
-                            hrms_options.at_st_date,
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_st_date,
                           "YYYY-MM-DD"
                         ).format("YYYY-MM-DD");
 
                         fromDate_lastDate = moment(
                           selected_year +
-                            "-" +
-                            selected_month +
-                            "-" +
-                            hrms_options.at_end_date
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_end_date
                         )
                           .add(1, "M")
                           .format("YYYY-MM-DD");
                       } else {
                         fromDate_firstDate = moment(
                           selected_year +
-                            "-" +
-                            selected_month +
-                            "-" +
-                            hrms_options.at_st_date,
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_st_date,
                           "YYYY-MM-DD"
                         )
                           .add(-1, "M")
@@ -190,10 +190,10 @@ export default {
 
                         fromDate_lastDate = moment(
                           selected_year +
-                            "-" +
-                            selected_month +
-                            "-" +
-                            hrms_options.at_end_date
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_end_date
                         ).format("YYYY-MM-DD");
                       }
                     }
@@ -206,8 +206,8 @@ export default {
                       .format("YYYY-MM-DD");
                   }
 
-                  console.log("fromDate_firstDate", fromDate_firstDate);
-                  console.log("fromDate_lastDate", fromDate_lastDate);
+                  // console.log("fromDate_firstDate", fromDate_firstDate);
+                  // console.log("fromDate_lastDate", fromDate_lastDate);
 
                   if (to_date_month == date_month) {
                     // console.log("Im here 1");
@@ -324,7 +324,7 @@ export default {
           let annual_leave_result = all_result[2];
           let hrms_options = all_result[3];
 
-          utilities.logger().log("hrms_options: ", hrms_options);
+          // utilities.logger().log("hrms_options: ", hrms_options);
 
           if (employee_leave_salary == undefined) {
             _mysql.releaseConnection();
@@ -334,12 +334,9 @@ export default {
             return;
           }
 
-          // let balance_leave_days =
-          //   parseFloat(employee_leave_salary.balance_leave_days) -
-          //   parseFloat(req.query.leave_period);
           let leave_amount = 0;
           let airfare_amount = 0;
-          // let airfare_months = 0;
+
 
           let intValue = 0;
           // if (balance_leave_days > 0) {
@@ -359,13 +356,21 @@ export default {
               airfare_amount = employee_result[0].airfare_amount;
             }
           }
+          // console.log("annual_leave_calculation: ", hrms_options[0].annual_leave_calculation)
           for (let k = 0; k < annual_leave_result.length; k++) {
             let per_day_sal = 0;
-            per_day_sal = parseFloat(annual_leave_result[k].amount) * 12;
-            per_day_sal = per_day_sal / 365;
-            per_day_sal = per_day_sal * req.query.leave_period;
+            if (hrms_options[0].annual_leave_calculation === "M") {
+              per_day_sal = parseFloat(annual_leave_result[k].amount) / 30;
+              per_day_sal = per_day_sal * req.query.leave_period;
 
-            leave_amount = leave_amount + per_day_sal;
+              leave_amount = leave_amount + per_day_sal;
+            } else {
+              per_day_sal = parseFloat(annual_leave_result[k].amount) * 12;
+              per_day_sal = per_day_sal / 365;
+              per_day_sal = per_day_sal * req.query.leave_period;
+
+              leave_amount = leave_amount + per_day_sal;
+            }
           }
 
           req.query.hospital_id = employee_result[0].hospital_id;
@@ -373,7 +378,7 @@ export default {
 
           if (hrms_options[0].attendance_starts === "PM") {
             let end_selected_day = moment(end_date).format("DD");
-            console.log("end_selected_day: ", end_selected_day);
+            // console.log("end_selected_day: ", end_selected_day);
             if (
               parseFloat(end_selected_day) >=
               parseFloat(hrms_options[0].at_end_date)
@@ -382,11 +387,11 @@ export default {
               end_date_month = String(end_date_month).toString();
             }
           }
-          console.log("end_date_month: ", end_date_month);
-          const syscCall = async function() {
+          // console.log("end_date_month: ", end_date_month);
+          const syscCall = async function () {
             while (start_date <= end_date) {
-              console.log("start_date: ", start_date);
-              console.log("end_date: ", end_date);
+              // console.log("start_date: ", start_date);
+              // console.log("end_date: ", end_date);
               try {
                 let fromDate_lastDate = null;
 
@@ -399,8 +404,8 @@ export default {
                   let selected_month = moment(start_date).format("M");
                   let selected_day = moment(start_date).format("DD");
 
-                  console.log("selected_day: ", selected_day);
-                  console.log("selected_month: ", selected_month);
+                  // console.log("selected_day: ", selected_day);
+                  // console.log("selected_month: ", selected_month);
                   if (
                     parseFloat(selected_day) >=
                     parseFloat(hrms_options[0].at_st_date)
@@ -408,7 +413,7 @@ export default {
                     start_date = moment(start_date)
                       .add(1, "M")
                       .format("YYYYMMDD");
-                    console.log("inside start_date: ", start_date);
+                    // console.log("inside start_date: ", start_date);
                     // if (
                     //   parseFloat(end_selected_day) <=
                     //   parseFloat(hrms_options[0].at_end_date)
@@ -421,16 +426,16 @@ export default {
                     selected_month = String(selected_month).toString();
                   }
 
-                  console.log("selected_month: ", selected_month);
+                  // console.log("selected_month: ", selected_month);
 
                   req.query.year = selected_year;
                   req.query.month = selected_month;
                   date_month = selected_month;
                   req.query.yearAndMonth = moment(
                     selected_year +
-                      "-" +
-                      selected_month +
-                      hrms_options[0].at_st_date,
+                    "-" +
+                    selected_month +
+                    hrms_options[0].at_st_date,
                     "YYYY-MM-DD"
                   )._d;
                 } else {
@@ -443,9 +448,9 @@ export default {
                   )._d;
                 }
 
-                utilities.logger().log("end_date_month: ", end_date_month);
-                utilities.logger().log("date_month: ", date_month);
-                utilities.logger().log("intValue: ", intValue);
+                // utilities.logger().log("end_date_month: ", end_date_month);
+                // utilities.logger().log("date_month: ", date_month);
+                // utilities.logger().log("intValue: ", intValue);
 
                 if (end_date_month == date_month || intValue > 0) {
                   utilities.logger().log("intValue_inside: ", intValue);
@@ -464,13 +469,13 @@ export default {
                   _attandance = await processAttendance(req, res, next);
                   _sarary = await newProcessSalary(req, res, next);
                 } else {
-                  utilities.logger().log("attendance_type else: ", intValue);
+                  // utilities.logger().log("attendance_type else: ", intValue);
                   _sarary = await newProcessSalary(req, res, next);
                   _attandance = Promise.resolve();
                 }
 
                 // let _sarary = await newProcessSalary(req, res, next);
-                utilities.logger().log("_sarary before:  ", _sarary);
+                // utilities.logger().log("_sarary before:  ", _sarary);
                 if (_sarary === undefined) {
                   utilities.logger().log("Salary Inside: ");
                   _mysql.commitTransaction(() => {
@@ -492,21 +497,21 @@ export default {
                   _sarary +
                   "; ";
 
-                utilities
-                  .logger()
-                  .log(
-                    "Promise attendance_starts: ",
-                    hrms_options[0].attendance_starts
-                  );
-                utilities
-                  .logger()
-                  .log("Promise at_end_date: ", hrms_options[0].at_end_date);
+                // utilities
+                //   .logger()
+                //   .log(
+                //     "Promise attendance_starts: ",
+                //     hrms_options[0].attendance_starts
+                //   );
+                // utilities
+                //   .logger()
+                //   .log("Promise at_end_date: ", hrms_options[0].at_end_date);
                 if (hrms_options[0].attendance_starts === "PM") {
                   let _selected_year = moment(start_date).year();
                   let _selected_month = moment(start_date).format("M");
 
-                  console.log("_selected_year: ", _selected_year);
-                  console.log("selected_month: ", _selected_month);
+                  // console.log("_selected_year: ", _selected_year);
+                  // console.log("selected_month: ", _selected_month);
 
                   // let selected_day = moment(from_date).format("DD");
 
@@ -523,10 +528,10 @@ export default {
 
                   fromDate_lastDate = moment(
                     _selected_year +
-                      "-" +
-                      _selected_month +
-                      "-" +
-                      hrms_options[0].at_end_date
+                    "-" +
+                    _selected_month +
+                    "-" +
+                    hrms_options[0].at_end_date
                   ).format("YYYY-MM-DD");
                 } else {
                   fromDate_lastDate = moment(start_date)
@@ -534,11 +539,11 @@ export default {
                     .format("YYYY-MM-DD");
                 }
 
-                console.log("Promise fromDate_lastDate: ", fromDate_lastDate);
+                // console.log("Promise fromDate_lastDate: ", fromDate_lastDate);
                 start_date = moment(fromDate_lastDate)
                   .add(1, "days")
                   .format("YYYYMMDD");
-                console.log("Promise start_date: ", start_date);
+                // console.log("Promise start_date: ", start_date);
                 // });
               } catch (e) {
                 _mysql.rollBackTransaction(() => {
@@ -547,8 +552,9 @@ export default {
               }
               intValue++;
             }
+            // console.log("leave_amount: ", leave_amount)
 
-            utilities.logger().log("strGetdataQry: ", strGetdataQry);
+            // utilities.logger().log("strGetdataQry: ", strGetdataQry);
 
             _mysql
               .executeQuery({
@@ -556,7 +562,7 @@ export default {
                 printQuery: true
               })
               .then(Salary_result => {
-                utilities.logger().log("Salary_result: ", Salary_result);
+                // utilities.logger().log("Salary_result: ", Salary_result);
                 _mysql.commitTransaction(() => {
                   let result_data = [];
                   let final_result = [];
@@ -703,7 +709,7 @@ export default {
                         inputParam.leave_salary_detail
                       )
                         .groupBy("leave_application_id")
-                        .map(function(items, data) {
+                        .map(function (items, data) {
                           return data;
                         })
                         .value();
@@ -723,21 +729,38 @@ export default {
                             }
                           );
 
+                          let strQuery = ""
+                          if (inputParam.annual_leave_calculation === "A") {
+                            strQuery = "UPDATE hims_f_salary SET salary_processed = 'Y' where hims_f_salary_id in (?);\
+                            select E.hims_d_employee_id as employee_id,EG.monthly_accrual_days as leave_days, " +
+                              inputParam.year +
+                              " as year," +
+                              inputParam.month +
+                              " as month, \
+                            CASE when airfare_factor = 'PB' then ((amount / 100)*airfare_percentage) else (airfare_amount/airfare_eligibility) end airfare_amount,\
+                            sum((EE.amount *12)/365)* EG.monthly_accrual_days as leave_salary\
+                            from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, hims_d_employee_earnings EE ,hims_d_earning_deduction ED\
+                            where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
+                            EE.earnings_id=ED.hims_d_earning_deduction_id and \
+                            ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';"
+                          } else if (inputParam.annual_leave_calculation === "M") {
+                            strQuery = "UPDATE hims_f_salary SET salary_processed = 'Y' where hims_f_salary_id in (?);\
+                            select E.hims_d_employee_id as employee_id,EG.monthly_accrual_days as leave_days, " +
+                              inputParam.year +
+                              " as year," +
+                              inputParam.month +
+                              " as month, \
+                            CASE when airfare_factor = 'PB' then ((amount / 100)*airfare_percentage) else (airfare_amount/airfare_eligibility) end airfare_amount,\
+                            sum(EE.amount /365)* EG.monthly_accrual_days as leave_salary\
+                            from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, hims_d_employee_earnings EE ,hims_d_earning_deduction ED\
+                            where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
+                            EE.earnings_id=ED.hims_d_earning_deduction_id and \
+                            ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';"
+                          }
+
                           _mysql
                             .executeQuery({
-                              query:
-                                "UPDATE hims_f_salary SET salary_processed = 'Y' where hims_f_salary_id in (?);\
-                                select E.hims_d_employee_id as employee_id,EG.monthly_accrual_days as leave_days, " +
-                                inputParam.year +
-                                " as year," +
-                                inputParam.month +
-                                " as month, \
-                                CASE when airfare_factor = 'PB' then ((amount / 100)*airfare_percentage) else (airfare_amount/airfare_eligibility) end airfare_amount,\
-                                sum((EE.amount *12)/365)* EG.monthly_accrual_days as leave_salary\
-                                from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, hims_d_employee_earnings EE ,hims_d_earning_deduction ED\
-                                where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
-                                EE.earnings_id=ED.hims_d_earning_deduction_id and \
-                                ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';",
+                              query: strQuery,
                               values: [
                                 _salaryHeader_id,
                                 inputParam.employee_id
