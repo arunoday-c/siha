@@ -646,8 +646,8 @@ class ApplyLeave extends Component {
                   <h3 className="caption-subject">Request Leave</h3>
                 </div>
               </div>
-              <div className="portlet-body">
-                <div className="row" style={{ minHeight: "70.6vh" }}>
+              <div className="portlet-body" style={{ minHeight: "70.6vh" }}>
+                <div className="row">
                   <div className="col-12 globalSearchCntr  form-group">
                     <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
                     <h6 onClick={this.employeeSearch.bind(this)}>
