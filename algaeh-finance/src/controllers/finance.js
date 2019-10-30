@@ -82,7 +82,7 @@ export default () => {
           .status(utlities.AlgaehUtilities().httpStatus().ok)
           .json({
             success: false,
-            result: req.records
+            message: req.records.message
           })
           .end();
       } else {

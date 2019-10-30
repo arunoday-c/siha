@@ -303,23 +303,35 @@ export default {
     const _mysql = new algaehMysql();
     // const utilities = new algaehUtilities();
     let input = req.body;
+    let strQry = "";
 
-    _mysql
-      .executeQuery({
-        query:
-          "update finance_accounts_maping set child_id=?,head_id=? where account=?;",
-        values: [input.child_id, input.head_id, input.account],
-        printQuery: false
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        _mysql.releaseConnection();
-        next(e);
-      });
+    input.forEach(item => {
+      strQry = `update finance_accounts_maping set child_id=${item.child_id},head_id=${item.head_id} where account=${item.account};`;
+    });
+
+    if (strQry != "") {
+      _mysql
+        .executeQuery({
+          query: strQry,
+
+          printQuery: false
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please Provide valid input"
+      };
+      next();
+    }
   },
   //created by irfan: to
   getFinanceAccountsMaping: (req, res, next) => {
