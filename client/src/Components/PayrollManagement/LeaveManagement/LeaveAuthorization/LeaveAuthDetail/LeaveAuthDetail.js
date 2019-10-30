@@ -5,7 +5,7 @@ import { AlgaehLabel, AlgaehDataGrid } from "../../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import moment from "moment";
 import { AlgaehOpenContainer } from "../../../../../utils/GlobalFunctions";
-import ButtonType from "../../../../Wrapper/algaehButton";
+import AlgaehLoader from "../../../..//Wrapper/fullPageLoader";
 
 class LeaveAuthDetail extends Component {
   constructor(props) {
@@ -57,7 +57,7 @@ class LeaveAuthDetail extends Component {
           });
         }
       },
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -70,74 +70,70 @@ class LeaveAuthDetail extends Component {
     //   });
     //   return;
     // }
-    this.setState({ loading_Process: true }, () => {
-      let send_data = {
-        total_approved_days: this.state.data.total_approved_days,
-        authorized_comment: this.state.remarks,
-        hims_f_leave_application_id: this.state.data
-          .hims_f_leave_application_id,
-        auth_level: this.state.data.auth_level,
-        status: type,
-        employee_id: this.state.data.employee_id,
-        leave_id: this.state.data.leave_id,
-        year: moment(this.state.data.from_date).format("YYYY"),
-        religion_id: this.state.data.religion_id,
-        leave_type: this.state.data.leave_type,
-        from_session: this.state.data.from_leave_session,
-        to_session: this.state.data.to_leave_session,
-        from_date: this.state.data.from_date,
-        to_date: this.state.data.to_date,
-        leave_from: this.state.data.leave_from,
-        absent_id: this.state.data.absent_id,
-        leave_category: this.state.data.leave_category,
-        hospital_id: this.state.data.hospital_id,
-        from_normal_salary: this.state.from_normal_salary
-      };
+    AlgaehLoader({ show: true });
 
-      algaehApiCall({
-        uri: "/leave/authorizeLeave",
-        method: "PUT",
-        data: send_data,
-        module: "hrManagement",
-        onSuccess: res => {
-          if (res.data.success) {
-            type === "A"
-              ? swalMessage({
-                  title: "Leave Authorized Successfully",
-                  type: "success"
-                })
-              : swalMessage({
-                  title: "Leave Rejected Successfully",
-                  type: "success"
-                });
+    let send_data = {
+      total_approved_days: this.state.data.total_approved_days,
+      authorized_comment: this.state.remarks,
+      hims_f_leave_application_id: this.state.data
+        .hims_f_leave_application_id,
+      auth_level: this.state.data.auth_level,
+      status: type,
+      employee_id: this.state.data.employee_id,
+      leave_id: this.state.data.leave_id,
+      year: moment(this.state.data.from_date).format("YYYY"),
+      religion_id: this.state.data.religion_id,
+      leave_type: this.state.data.leave_type,
+      from_session: this.state.data.from_leave_session,
+      to_session: this.state.data.to_leave_session,
+      from_date: this.state.data.from_date,
+      to_date: this.state.data.to_date,
+      leave_from: this.state.data.leave_from,
+      absent_id: this.state.data.absent_id,
+      leave_category: this.state.data.leave_category,
+      hospital_id: this.state.data.hospital_id,
+      from_normal_salary: this.state.from_normal_salary
+    };
 
-            this.setState({
-              remarks: "",
-              loading_Process: false
+    algaehApiCall({
+      uri: "/leave/authorizeLeave",
+      method: "PUT",
+      data: send_data,
+      module: "hrManagement",
+      onSuccess: res => {
+        if (res.data.success) {
+          type === "A"
+            ? swalMessage({
+              title: "Leave Authorized Successfully",
+              type: "success"
+            })
+            : swalMessage({
+              title: "Leave Rejected Successfully",
+              type: "success"
             });
 
-            document.getElementById("lvAuthLd").click();
-          } else {
-            this.setState({
-              loading_Process: false
-            });
-            swalMessage({
-              title: res.data.records.message,
-              type: "error"
-            });
-          }
-        },
-        onCatch: err => {
           this.setState({
-            loading_Process: false
+            remarks: ""
           });
+
+          document.getElementById("lvAuthLd").click();
+        } else {
           swalMessage({
-            title: err.message,
+            title: res.data.records.message,
             type: "error"
           });
         }
-      });
+        AlgaehLoader({ show: false });
+      },
+      onCatch: err => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
     });
+
   }
 
   cancelLeave(type) {
@@ -148,6 +144,7 @@ class LeaveAuthDetail extends Component {
       });
       return;
     }
+    AlgaehLoader({ show: true });
     let send_data = {
       total_approved_days: this.state.data.total_approved_days,
       authorized_comment: this.state.remarks,
@@ -193,8 +190,10 @@ class LeaveAuthDetail extends Component {
             type: "warning"
           });
         }
+        AlgaehLoader({ show: false });
       },
-      onFailure: err => {
+      onCatch: err => {
+        AlgaehLoader({ show: false });
         swalMessage({
           title: err.message,
           type: "error"
@@ -308,10 +307,10 @@ class LeaveAuthDetail extends Component {
                                 {this.state.data.from_leave_session === "FD"
                                   ? "Full Day"
                                   : this.state.data.from_leave_session === "FH"
-                                  ? "First Half"
-                                  : this.state.data.from_leave_session === "SH"
-                                  ? "Second Half"
-                                  : "------"}
+                                    ? "First Half"
+                                    : this.state.data.from_leave_session === "SH"
+                                      ? "Second Half"
+                                      : "------"}
                                 )
                               </small>
                             </h6>
@@ -333,10 +332,10 @@ class LeaveAuthDetail extends Component {
                                 {this.state.data.to_leave_session === "FD"
                                   ? "Full Day"
                                   : this.state.data.to_leave_session === "FH"
-                                  ? "First Half"
-                                  : this.state.data.to_leave_session === "SH"
-                                  ? "Second Half"
-                                  : "------"}
+                                    ? "First Half"
+                                    : this.state.data.to_leave_session === "SH"
+                                      ? "Second Half"
+                                      : "------"}
                                 )
                               </small>
                             </h6>
@@ -407,7 +406,7 @@ class LeaveAuthDetail extends Component {
                       <div className="col-12 btnFooter">
                         {this.props.type === undefined ? (
                           <React.Fragment>
-                            <ButtonType
+                            {/* <ButtonType
                               classname="btn btn-primary"
                               loading={this.state.loading_Process}
                               onClick={this.authorizeLeave.bind(this, "A")}
@@ -424,8 +423,8 @@ class LeaveAuthDetail extends Component {
                                 forceLabel: "Reject",
                                 returnText: true
                               }}
-                            />
-                            {/* <button
+                            /> */}
+                            <button
                               onClick={this.authorizeLeave.bind(this, "A")}
                               className="btn btn-primary"
                             >
@@ -436,7 +435,7 @@ class LeaveAuthDetail extends Component {
                               className="btn btn-danger"
                             >
                               Reject
-                            </button> */}
+                            </button>
                           </React.Fragment>
                         ) : null}
                         {this.props.type === "C" ? (
@@ -498,8 +497,8 @@ class LeaveAuthDetail extends Component {
                                         Processed
                                       </span>
                                     ) : (
-                                      "------"
-                                    )}
+                                                "------"
+                                              )}
                                   </span>
                                 );
                               },
@@ -509,14 +508,14 @@ class LeaveAuthDetail extends Component {
                                     {row.status === "PEN"
                                       ? "Pending"
                                       : row.status === "APR"
-                                      ? "Approved"
-                                      : row.status === "REJ"
-                                      ? "Rejected"
-                                      : row.status === "PRO"
-                                      ? "Processed"
-                                      : row.status === "CAN"
-                                      ? "Cancelled"
-                                      : "------"}
+                                        ? "Approved"
+                                        : row.status === "REJ"
+                                          ? "Rejected"
+                                          : row.status === "PRO"
+                                            ? "Processed"
+                                            : row.status === "CAN"
+                                              ? "Cancelled"
+                                              : "------"}
                                   </span>
                                 );
                               }
@@ -671,9 +670,9 @@ class LeaveAuthDetail extends Component {
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onEdit: () => {},
-                            onDelete: () => {},
-                            onDone: () => {}
+                            onEdit: () => { },
+                            onDelete: () => { },
+                            onDone: () => { }
                           }}
                         />
                       </div>
