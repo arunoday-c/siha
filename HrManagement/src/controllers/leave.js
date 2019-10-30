@@ -380,15 +380,21 @@ export default () => {
   );
   api.put("/cancelLeave", cancelLeave, (req, res, next) => {
     if (req.records.invalid_input == true) {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: false,
-        records: req.records
-      });
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: false,
+          records: req.records
+        })
+        .end();
     } else {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records
-      });
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          records: req.records
+        })
+        .end();
     }
   });
   api.get("/getLeaveBalances", getLeaveBalances, (req, res, next) => {
