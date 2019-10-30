@@ -306,7 +306,7 @@ export default {
     let strQry = "";
 
     input.forEach(item => {
-      strQry = `update finance_accounts_maping set child_id=${item.child_id},head_id=${item.head_id} where account=${item.account};`;
+      strQry += `update finance_accounts_maping set child_id=${item.child_id},head_id=${item.head_id} where account='${item.account}';`;
     });
 
     if (strQry != "") {

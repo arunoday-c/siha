@@ -47,3 +47,25 @@ export function updateFinanceAccountsMaping(input){
         }
     });
 }
+export function getFinanceAccountsMaping(){
+    return new Promise((resolve,reject)=>{
+        try{
+            algaehApiCall({
+                uri: "/finance/getFinanceAccountsMaping",
+                method: "GET",
+                module: "finance",
+                onSuccess: response => {
+                    if (response.data.success === true) {
+                        resolve(response.data.result);
+                    }
+                },
+                onCatch:(error)=>{
+                    reject(error);
+                }
+            });
+        }
+        catch(e){
+            reject(e);
+        }
+    });
+}
