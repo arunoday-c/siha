@@ -26,17 +26,16 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select employee_id,S.total_earnings,S.total_deductions,S.total_contributions,S.salary_number,
-              S.total_days,S.display_present_days,
-            S.net_salary,S.advance_due,S.loan_due_amount,E.employee_code,full_name as employee_name,
+          query: `select S.salary_amount,S.leave_amount,S.airfare_amount,S.total_amount,
+            S.leave_salary_number,E.employee_code,full_name as employee_name,
             E.mode_of_payment,SD.hims_d_sub_department_id,SD.sub_department_code,SD.sub_department_name,
             DP.hims_d_department_id, DP.department_name, NA.nationality,HO.hospital_name
-            from hims_f_salary S inner join  hims_d_employee E  on S.employee_id=E.hims_d_employee_id
+            from hims_f_leave_salary_header S inner join  hims_d_employee E  on S.employee_id=E.hims_d_employee_id
             left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
             left join hims_d_department DP on SD.department_id=DP.hims_d_department_id
             left join  hims_d_nationality NA  on E.nationality=NA.hims_d_nationality_id
             left join  hims_d_hospital HO  on E.hospital_id=HO.hims_d_hospital_id
-            WHERE S.salary_type='LS' and E.hospital_id=? and S.year=? and S.month=? ${strData} ;`,
+            WHERE  E.hospital_id=? and S.year=? and S.month=? ${strData} ;`,
           values: [input.hospital_id, input.year, input.month],
           printQuery: true
         })

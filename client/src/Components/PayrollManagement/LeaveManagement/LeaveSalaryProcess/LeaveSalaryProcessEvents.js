@@ -6,7 +6,7 @@ import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import Options from "../../../../Options.json";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { getAmountFormart, AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 import LeaveSalaryProcessIOputs from "../../../../Models/LeaveSalaryProcess";
 
 const texthandle = ($this, e) => {
@@ -232,10 +232,15 @@ const LeaveSalProcess = $this => {
 
 const SaveLeaveSalary = $this => {
   AlgaehLoader({ show: true });
+  let annual_leave_calculation = JSON.parse(
+    AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
+  ).annual_leave_calculation;
+  let inputObj = $this.state
+  inputObj.annual_leave_calculation = annual_leave_calculation
   algaehApiCall({
     uri: "/leavesalaryprocess/InsertLeaveSalary",
     module: "hrManagement",
-    data: $this.state,
+    data: inputObj,
     method: "POST",
     onSuccess: response => {
       if (response.data.success) {

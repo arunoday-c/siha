@@ -6598,16 +6598,16 @@ export default {
                       break;
 
                     case "N":
-                      if (day["worked_status"] !== day["status"]) {
-                        errorString += ` <li> ${
-                          employee["employee_code"]
-                        } on  ${moment(
-                          day.attendance_date,
-                          "YYYY-MM-DD"
-                        ).format("DD-MM-YYYY")} is ${
-                          day["status"]
-                        } not  N </li>`;
-                      }
+                      // if (day["worked_status"] !== day["status"]) {
+                      //   errorString += ` <li> ${
+                      //     employee["employee_code"]
+                      //   } on  ${moment(
+                      //     day.attendance_date,
+                      //     "YYYY-MM-DD"
+                      //   ).format("DD-MM-YYYY")} is ${
+                      //     day["status"]
+                      //   } not  N </li>`;
+                      // }
                       break;
 
                     default:

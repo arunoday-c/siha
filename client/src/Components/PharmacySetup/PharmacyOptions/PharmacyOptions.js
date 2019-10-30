@@ -14,7 +14,8 @@ export default class PharmacyOptions extends Component {
     this.state = {
       hims_d_pharmacy_options_id: null,
       notification_before: 0,
-      notification_type: "D"
+      notification_type: "D",
+      requisition_auth_level: "1"
     };
 
     this.getPharmacyOptions();
@@ -130,7 +131,35 @@ export default class PharmacyOptions extends Component {
                       valueField: "value",
                       data: GlobalVariables.NOTIFICATION_TYPE
                     },
-                    onChange: this.changeTexts.bind(this)
+                    onChange: this.changeTexts.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        notification_type: null
+                      });
+                    }
+                  }}
+                />
+                <AlagehAutoComplete
+                  div={{ className: "col-2 form-group" }}
+                  label={{
+                    forceLabel: "Requisition level",
+                    isImp: false
+                  }}
+                  selector={{
+                    name: "requisition_auth_level",
+                    value: this.state.requisition_auth_level,
+                    className: "select-fld",
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.AUTH_LEVEL2
+                    },
+                    onChange: this.changeTexts.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        requisition_auth_level: null
+                      });
+                    }
                   }}
                 />
               </div>

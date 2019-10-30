@@ -157,75 +157,12 @@ class EmployeePayment extends Component {
               }}
             />
 
-            {/* <AlagehFormGroup
-              div={{ className: "col form-group" }}
-              label={{
-                forceLabel: "Document No",
-                isImp: false
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "document_num",
-                value: this.state.document_num,
-                events: {
-                  onChange: texthandle.bind(this, this)
-                },
-                option: {
-                  type: "text"
-                },
-                others: {
-                  disabled: true
-                }
-              }}
-            />
-            <div
-              className="col"
-              style={{
-                paddingLeft: 0,
-                paddingTop: 25,
-                paddingRight: 0
-              }}
-            >
-              <span
-                onClick={RequestPaySearch.bind(this, this)}
-                style={{ cursor: "pointer" }}
-              >
-                <i className="fas fa-search" />
-              </span>
-            </div> */}
-
-            <div className="col-3" style={{ marginTop: 10 }}>
-              <div
-                className="row"
-                style={{
-                  border: " 1px solid #ced4d9",
-                  borderRadius: 5,
-                  marginLeft: 0
-                }}
-              >
-                <div className="col">
-                  <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
-                  <h6>
-                    {this.state.employee_name
-                      ? this.state.employee_name
-                      : "------"}
-                  </h6>
-                </div>
-                <div
-                  className="col-lg-3"
-                  style={{ borderLeft: "1px solid #ced4d8" }}
-                >
-                  <i
-                    className="fas fa-search fa-lg"
-                    style={{
-                      paddingTop: 17,
-                      paddingLeft: 3,
-                      cursor: "pointer"
-                    }}
-                    onClick={employeeSearch.bind(this, this)}
-                  />
-                </div>
-              </div>
+            <div className="col globalSearchCntr">
+              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <h6 onClick={employeeSearch.bind(this, this)}>
+                {this.state.employee_name ? this.state.employee_name : "------"}
+                <i className="fas fa-search fa-lg" />
+              </h6>
             </div>
 
             <div className="col margin-bottom-15">

@@ -193,6 +193,9 @@ const FinalizeSalary = $this => {
           $this.state.inputs.year;
       }
 
+      let annual_leave_calculation = JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
+      ).annual_leave_calculation;
       let inputObj = {
         fron_salary: "Y",
         salary_end_date: salary_end_date,
@@ -202,7 +205,8 @@ const FinalizeSalary = $this => {
         month: $this.state.inputs.month,
         hospital_id: $this.state.inputs.hospital_id,
         net_salary: net_salary,
-        _leave_salary_acc: _leave_salary_acc
+        _leave_salary_acc: _leave_salary_acc,
+        annual_leave_calculation: annual_leave_calculation
       };
 
       algaehApiCall({
