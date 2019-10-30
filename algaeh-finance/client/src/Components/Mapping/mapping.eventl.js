@@ -1,21 +1,25 @@
+import {algaehApiCall} from "../../utils/algaehApiCall";
 
-
-import {algaehApiCall, swalMessage} from "../../utils/algaehApiCall";
-
-algaehApiCall({
-    uri: "/finance/getAccountHeads",
-    data: { account_level: "0", finance_account_head_id: account_head_id },
-    method: "GET",
-    module: "finance",
-    onSuccess: response => {
-        if (response.data.success === true) {
-            callBack(response.data.result);
+export function getHeaders(input){
+    return new Promise((resolve,reject)=>{
+        try{
+            algaehApiCall({
+                uri: "/finance/getAccountHeads",
+                data: input,
+                method: "GET",
+                module: "finance",
+                onSuccess: response => {
+                    if (response.data.success === true) {
+                        resolve(response.data.result);
+                    }
+                },
+              onCatch:(error)=>{
+                    reject(error);
+              }
+            });
         }
-    },
-    onFailure: error => {
-        swalMessage({
-            type: "error",
-            title: error.response.data.message || error.message
-        });
-    }
-});
+        catch(e){
+            reject(e);
+        }
+    });
+}

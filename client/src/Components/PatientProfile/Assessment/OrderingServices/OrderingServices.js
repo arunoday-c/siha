@@ -387,7 +387,7 @@ class OrderingServices extends Component {
                 />
 
                 <div className="col" style={{ paddingTop: 19 }}>
-                  <ButtonType
+                  {/* <ButtonType
                     classname="btn-primary"
                     loading={this.state.loading_ProcessService}
                     onClick={ProcessService.bind(this, this, "")}
@@ -396,7 +396,15 @@ class OrderingServices extends Component {
                       returnText: true
                     }}
                     others={{ disabled: this.state.addNewService }}
-                  />
+                  /> */}
+                  <button
+                    className="btn btn-primary"
+                    style={{ marginLeft: 10 }}
+                    onClick={ProcessService.bind(this, this, "")}
+                    disabled={this.state.addNewService}
+                  >
+                    Add to List
+                  </button>
 
                   <button
                     className="btn btn-default"
@@ -813,7 +821,7 @@ class OrderingServices extends Component {
                     }}
                   />
 
-                  <ButtonType
+                  {/* <ButtonType
                     className="btn btn-default"
                     loading={this.state.loading_bulk_Service}
                     onClick={ProcessFromFavourite.bind(this, this, "Services")}
@@ -825,15 +833,15 @@ class OrderingServices extends Component {
                       disabled: this.state.add_to_list,
                       style: { float: "right", marginTop: 10 }
                     }}
-                  />
-                  {/*<button
+                  /> */}
+                  <button
                     className="btn btn-default"
                     style={{ float: "right", marginTop: 10 }}
                     onClick={ProcessFromFavourite.bind(this, this, "Services")}
                     disabled={this.state.add_to_list}
                   >
                     Add to List
-                  </button>*/}
+                  </button>
                 </div>
               </div>
 
@@ -905,7 +913,7 @@ class OrderingServices extends Component {
                 <div className="row">
                   <div className="col-lg-12">
                     <span className="float-right">
-                      <ButtonType
+                      {/* <ButtonType
                         classname="btn-primary"
                         loading={this.state.loading_saveOrderService}
                         onClick={SaveOrdersServices.bind(this, this)}
@@ -914,7 +922,14 @@ class OrderingServices extends Component {
                           returnText: true
                         }}
                         others={{ disabled: this.state.saved }}
-                      />
+                      /> */}
+                      <button
+                        className="btn btn-primary"
+                        onClick={SaveOrdersServices.bind(this, this)}
+                        disabled={this.state.saved}
+                      >
+                        Save Service
+                      </button>
                       <button
                         className="btn btn-default"
                         onClick={this.onClose.bind(this)}

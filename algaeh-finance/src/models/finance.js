@@ -100,7 +100,7 @@ export default {
       console.log("input:", input);
       let finance_account_head_id = "";
 
-      if (input.childs_of != "N") {
+      if (input.childs_of != "N"&& input.childs_of != undefined) {
         switch (input.childs_of) {
           case "A":
             finance_account_head_id = 1;
@@ -149,7 +149,7 @@ export default {
 
           printQuery: true,
 
-          values: [input.finance_account_head_id]
+          values: [finance_account_head_id]
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -328,7 +328,9 @@ function createHierarchy(arry, childs_of) {
       child.push({
         finance_account_child_id: item["finance_account_child_id"],
         title: item.child_name,
+        label:item.child_name,
         head_id: item["head_id"],
+        disabled:false,
         leafnode: "Y",
         created_status: item["child_created_from"]
       });
@@ -337,7 +339,9 @@ function createHierarchy(arry, childs_of) {
         onlyChilds.push({
           finance_account_child_id: item["finance_account_child_id"],
           title: item.child_name,
+          label:item.child_name,
           head_id: item["head_id"],
+          disabled:false,
           leafnode: "Y",
           created_status: item["child_created_from"]
         });
@@ -351,11 +355,13 @@ function createHierarchy(arry, childs_of) {
         target.push({
           ...item,
           title: item.account_name,
+          label:item.account_name,
+          disabled:true,
           leafnode: "N"
         });
       }
     } else {
-      target.push({ ...item, title: item.account_name, leafnode: "N" });
+      target.push({ ...item, title: item.account_name,label:item.account_name, disabled:true, leafnode: "N" });
     }
   }
 
