@@ -100,7 +100,7 @@ export default {
       console.log("input:", input);
       let finance_account_head_id = "";
 
-      if (input.childs_of != "N"&& input.childs_of != undefined) {
+      if (input.childs_of != "N" && input.childs_of != undefined) {
         switch (input.childs_of) {
           case "A":
             finance_account_head_id = 1;
@@ -297,6 +297,54 @@ export default {
           next(e);
         });
     }
+  },
+  //created by irfan: to
+  updateFinanceAccountsMaping: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    // const utilities = new algaehUtilities();
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "update finance_accounts_maping set child_id=?,head_id=? where account=?;",
+        values: [input.child_id, input.head_id, input.account],
+        printQuery: false
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+  //created by irfan: to
+  getFinanceAccountsMaping: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    // const utilities = new algaehUtilities();
+
+    _mysql
+      .executeQuery({
+        query:
+          "select account,child_id,head_id,H.account_name,C.child_name from \
+          finance_accounts_maping M left join finance_account_head H\
+          on M.head_id=H.finance_account_head_id left join finance_account_child C \
+          on M.child_id=C.finance_account_child_id ;",
+
+        printQuery: false
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };
 
@@ -328,9 +376,9 @@ function createHierarchy(arry, childs_of) {
       child.push({
         finance_account_child_id: item["finance_account_child_id"],
         title: item.child_name,
-        label:item.child_name,
+        label: item.child_name,
         head_id: item["head_id"],
-        disabled:false,
+        disabled: false,
         leafnode: "Y",
         created_status: item["child_created_from"]
       });
@@ -339,9 +387,9 @@ function createHierarchy(arry, childs_of) {
         onlyChilds.push({
           finance_account_child_id: item["finance_account_child_id"],
           title: item.child_name,
-          label:item.child_name,
+          label: item.child_name,
           head_id: item["head_id"],
-          disabled:false,
+          disabled: false,
           leafnode: "Y",
           created_status: item["child_created_from"]
         });
@@ -355,13 +403,19 @@ function createHierarchy(arry, childs_of) {
         target.push({
           ...item,
           title: item.account_name,
-          label:item.account_name,
-          disabled:true,
+          label: item.account_name,
+          disabled: true,
           leafnode: "N"
         });
       }
     } else {
-      target.push({ ...item, title: item.account_name,label:item.account_name, disabled:true, leafnode: "N" });
+      target.push({
+        ...item,
+        title: item.account_name,
+        label: item.account_name,
+        disabled: true,
+        leafnode: "N"
+      });
     }
   }
 

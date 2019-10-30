@@ -63,10 +63,15 @@ export default class RejoinAnnualLeave extends Component {
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
     }).then(willProceed => {
+      debugger
+      let dates_equal = moment(row.last_salary_process_date, "DD-MM-YYYY").isSame(row.to_date, "DD-MM-YYYY");
+
       if (willProceed.value) {
         let inputObj = {
           hims_d_employee_id: row.hims_d_employee_id,
-          last_salary_process_date: row.last_salary_process_date
+          last_salary_process_date: row.last_salary_process_date,
+          dates_equal: dates_equal,
+          hims_f_leave_application_id: row.hims_f_leave_application_id
         };
         algaehApiCall({
           uri: "/employee/UpdateEmployeeRejoined",
