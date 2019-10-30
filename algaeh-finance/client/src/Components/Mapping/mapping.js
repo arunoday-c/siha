@@ -1,17 +1,43 @@
 import React, {useEffect, useState} from "react";
+import DropdownTreeSelect from "react-dropdown-tree-select";
 import {
     AlgaehTreeDropDown,
     AlgaehValidator,
-    AlgaehButton
+    AlgaehButton,TreeNodes
 } from "algaeh-react-components";
-import TreeNodes from "./template";
+import {getHeaders} from "./mapping.eventl";
+// import 'react-dropdown-tree-select/dist/styles.css';
 export default function (props) {
- const [opControl,setOpControl]=  useState(undefined);
-    const [opPatientDeposit,setOpPatientDeposit]=  useState(undefined)
-  useEffect(()=>{
 
+ const [assets,setAssets]= useState([]);
+    const [lability,setLability]= useState([]);
+    const [opControl,setOpControl]=  useState(undefined);
+    const [opPatientDeposit,setOpPatientDeposit]=  useState(undefined);
+  useEffect(()=>{
+      getHeaders({finance_account_head_id:1})
+          .then(result=>{
+              if(result.length >0){
+                  setAssets(result[0].children);
+              }else{
+                  setAssets([]);
+              }
+          }).catch(error=>{
+            console.error(error);
+      });
+      getHeaders({finance_account_head_id:2})
+          .then(result=>{
+              if(result.length >0){
+                  setLability(result[0].children);
+              }else{
+                  setLability([]);
+              }
+          }).catch(error=>{
+          console.error(error);
+      });
   },[]);
-  return (
+
+
+    return (
     <div className="FinanceMappingScreen">
       <div className="row margin-top-15 margin-bottom-15">
         <div className="col-12">
@@ -24,47 +50,40 @@ export default function (props) {
             <div className="portlet-body">
               <AlgaehValidator mode="single" >
               <div className="row">
-                <AlgaehTreeDropDown
-                    div={{ className: "col-3 form-group" }}
-                    label={{ forceLabel: "OP Control A/c",isImp:true}}
-                    treeDefaultExpandAll={true}
-                    value={opControl}
-                >
-                 <TreeNodes data={[]} />
-                  {/*<TreeNode value="parent 1" title="parent 1" key="0-1">*/}
-                  {/*  <TreeNode value="parent 1-0" title="parent 1-0" key="0-1-1">*/}
-                  {/*    <TreeNode value="leaf1" title="my leaf" key="random" />*/}
-                  {/*    <TreeNode value="leaf2" title="your leaf" key="random1" />*/}
-                  {/*  </TreeNode>*/}
-                  {/*  <TreeNode*/}
-                  {/*    value="parent 1-1"*/}
-                  {/*    title="parent 1-1"*/}
-                  {/*    key="random2"*/}
-                  {/*  >*/}
-                  {/*    <TreeNode*/}
-                  {/*      value="sss"*/}
-                  {/*      title={<b style={{ color: "#08c" }}>sss</b>}*/}
-                  {/*      key="random3"*/}
-                  {/*    />*/}
-                  {/*  </TreeNode>*/}
-                  {/*</TreeNode>*/}
-                </AlgaehTreeDropDown>
+                  <AlgaehTreeDropDown
+                      div={{ className: "col-3 form-group" }}
+                      label={{ forceLabel: "OP CONTROL A/C",isImp:true}}
+                 others={ {data:assets,
+                     texts:{placeholder:"Please select account",
+                         noMatches:"No records found",label:"Visa"},
+                     mode:"radioSelect",
+                  onChange :(currentNode, selectedNodes) => {
+                      console.log('onChange::', currentNode, selectedNodes)
+                  }}}
+                  />
+
+
                   <AlgaehTreeDropDown
                       div={{ className: "col-3 form-group" }}
                       label={{ forceLabel: "OP Patient Deposit",isImp:true}}
-                      treeDefaultExpandAll={true}
                       value={opPatientDeposit}
-                  >
-                      <TreeNodes data={[]} />
-                  </AlgaehTreeDropDown>
+                      others={ {data:lability,
+                          texts:{placeholder:"Please select account",noMatches:"No records found"},
+                          mode:"radioSelect",
+                          onChange :(currentNode, selectedNodes) => {
+                              console.log('onChange::', currentNode, selectedNodes)
+                          }}}
+                  />
                   <AlgaehTreeDropDown
                       div={{ className: "col-3 form-group" }}
                       label={{ forceLabel: "OP Patient Receivable A/C",isImp:true}}
-                      treeDefaultExpandAll={true}
-                      value={opPatientDeposit}
-                  >
-                      <TreeNodes data={[]} />
-                  </AlgaehTreeDropDown>
+                      others={ {data:assets,
+                          texts:{placeholder:"Please select account",noMatches:"No records found"},
+                          mode:"radioSelect",
+                          onChange :(currentNode, selectedNodes) => {
+                              console.log('onChange::', currentNode, selectedNodes)
+                          }}}
+                  />
                   <AlgaehButton htmlType="submit" className="btn btn-primary"> MAP/UPDATE </AlgaehButton>
               </div>
               </AlgaehValidator>
