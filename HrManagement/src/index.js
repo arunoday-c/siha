@@ -133,11 +133,14 @@ app.use((error, req, res, next) => {
       },
       "error"
     );
-  res.status(error.status).json({
-    success: false,
-    isSql: error.sqlMessage != null ? true : false,
-    message: errorMessage
-  });
+  res
+    .status(error.status)
+    .json({
+      success: false,
+      isSql: error.sqlMessage != null ? true : false,
+      message: errorMessage
+    })
+    .end();
 });
 app.server.listen(_port);
 console.log(`HR MANAGEMENT Server is running  on PORT  - ${_port} *`);

@@ -1273,11 +1273,13 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_d_pharmacy_options` (`notification_before`, `notification_type`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
-            VALUE(?, ?, ?, ?, ?, ?)",
+            "INSERT INTO `hims_d_pharmacy_options` (`notification_before`, `notification_type`, `requisition_auth_level`, \
+            `created_date`, `created_by`, `updated_date`, `updated_by`)\
+            VALUE(?, ?, ?, ?, ?, ?, ?)",
           values: [
             input.notification_before,
             input.notification_type,
+            input.requisition_auth_level,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
@@ -1306,12 +1308,13 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "UPDATE `hims_d_pharmacy_options` SET `notification_before`=?, `notification_type`=?,\
+            "UPDATE `hims_d_pharmacy_options` SET `notification_before`=?, `notification_type`=?, `requisition_auth_level` = ?, \
                 `updated_date`=?, `updated_by`=? \
                 WHERE `hims_d_pharmacy_options_id`=? ;",
           values: [
             input.notification_before,
             input.notification_type,
+            input.requisition_auth_level,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.hims_d_pharmacy_options_id
