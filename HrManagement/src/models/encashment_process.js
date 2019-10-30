@@ -123,8 +123,9 @@ export default {
 
   getLeaveEncashLevels: (req, res, next) => {
     try {
-      let userPrivilege = req.userIdentity.leave_authorize_privilege;
-
+      // let userPrivilege = req.userIdentity.leave_authorize_privilege;
+      let userPrivilege = req.query.leave_encash_level;
+      console.log("userPrivilege", userPrivilege);
       let auth_levels = [];
       switch (userPrivilege) {
         case "1":
@@ -132,13 +133,6 @@ export default {
           break;
         case "2":
           auth_levels.push(
-            { name: "Level 2", value: 2 },
-            { name: "Level 1", value: 1 }
-          );
-          break;
-        case "3":
-          auth_levels.push(
-            { name: "Level 3", value: 3 },
             { name: "Level 2", value: 2 },
             { name: "Level 1", value: 1 }
           );
@@ -326,18 +320,34 @@ export default {
     let values = [];
 
     if (inputParam.auth_level == "1") {
-      strQuery =
-        "UPDATE hims_f_leave_encash_header SET authorized1 = ?,authorized1_by=?,authorized1_date=? where hims_f_leave_encash_header_id=?";
+      if (inputParam.leave_encash_level === "1") {
+        strQuery =
+          "UPDATE hims_f_leave_encash_header SET authorized1 = ?,authorized1_by=?,authorized1_date=?, authorized=? \
+          where hims_f_leave_encash_header_id=?";
 
-      values.push(
-        inputParam.authorized,
-        req.userIdentity.algaeh_d_app_user_id,
-        new Date(),
-        inputParam.hims_f_leave_encash_header_id
-      );
+        values.push(
+          inputParam.authorized,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          inputParam.authorized,
+          inputParam.hims_f_leave_encash_header_id
+        );
+      } else {
+        strQuery =
+          "UPDATE hims_f_leave_encash_header SET authorized1 = ?,authorized1_by=?,authorized1_date=? \
+          where hims_f_leave_encash_header_id=?";
+
+        values.push(
+          inputParam.authorized,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          inputParam.hims_f_leave_encash_header_id
+        );
+      }
     } else if (inputParam.auth_level == "2") {
       strQuery =
-        "UPDATE hims_f_leave_encash_header SET authorized2 = ?,authorized2_by=?,authorized2_date=?, authorized=? where hims_f_leave_encash_header_id=?";
+        "UPDATE hims_f_leave_encash_header SET authorized2 = ?,authorized2_by=?,authorized2_date=?, authorized=? \
+        where hims_f_leave_encash_header_id=?";
 
       values.push(
         inputParam.authorized,

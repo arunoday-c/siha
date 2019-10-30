@@ -305,9 +305,10 @@ const PageToPlot = {
   DayEndProcess: React.lazy(() =>
     retry(() => import("./Components/Finance/DayEndProcess/DayEndProcess"))
   ),
-  FinanceMapping: React.lazy(() =>
-    retry(() => import("./Components/Finance/FinanceMapping/FinanceMapping"))
-  ),
+  FinanceMapping: () => <FinanceFragment path="Mapping" />,
+  //  React.lazy(() =>
+  //   retry(() => import("./Components/Finance/FinanceMapping/FinanceMapping"))
+  // ),
   DeliveryNoteEntry: React.lazy(() =>
     retry(() =>
       import("./Components/Procurement/DeliveryNoteEntry/DeliveryNoteEntry")

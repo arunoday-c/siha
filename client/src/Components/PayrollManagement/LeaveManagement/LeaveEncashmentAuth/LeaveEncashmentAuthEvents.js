@@ -1,11 +1,15 @@
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  AlgaehOpenContainer
+} from "../../../../utils/GlobalFunctions";
 import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
 import Enumerable from "linq";
 import moment from "moment";
 import Options from "../../../../Options.json";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import swal from "sweetalert2";
 
 const texthandler = ($this, e) => {
   let name = e.name || e.target.name;
@@ -70,12 +74,14 @@ const LoadEncashment = $this => {
         authorized: $this.state.authorized
       };
 
-      if ($this.state.auth_level === 1) {
-        inputObj.authorized1 = "PEN";
-      }
-      if ($this.state.auth_level === 2) {
-        inputObj.authorized1 = "APR";
-        inputObj.authorized2 = "PEN";
+      if ($this.state.authorized === "PEN") {
+        if ($this.state.auth_level === 1) {
+          inputObj.authorized1 = "PEN";
+        }
+        if ($this.state.auth_level === 2) {
+          inputObj.authorized1 = "APR";
+          inputObj.authorized2 = "PEN";
+        }
       }
 
       if ($this.state.employee_id !== null) {
@@ -117,6 +123,7 @@ const LoadEncashment = $this => {
 };
 
 const getLeaveEncashDetails = ($this, row) => {
+  debugger;
   const EncashDetailPer = Enumerable.from($this.state.EncashDetail)
     .where(w => w.leave_encash_header_id === row.hims_f_leave_encash_header_id)
     .toArray();
@@ -124,56 +131,88 @@ const getLeaveEncashDetails = ($this, row) => {
   $this.setState({
     isOpen: true,
     emp_name: row.full_name,
-    EncashDetailPer: EncashDetailPer
+    EncashDetailPer: EncashDetailPer,
+    encash_authorized: row.authorized
   });
 };
 
 const AuthorizeLEaveEncash = ($this, data, row) => {
-  let inputObj = {
-    auth_level: $this.state.auth_level,
-    hims_f_leave_encash_header_id: row.hims_f_leave_encash_header_id,
-    authorized: data
-  };
-
-  let Succmsg = "";
-  if (data === "APR") {
-    Succmsg = "Authorized Successfully.";
-  } else {
-    Succmsg = "Rejected Successfully.";
+  debugger;
+  let message = "";
+  if (data === "CAN") {
+    message = "Are you sure you want to Cancel?";
+  } else if (data === "APR") {
+    message = "Are you sure you want to Authorize?";
+  } else if (data === "REJ") {
+    message = "Are you sure you want to Reject?";
   }
+  swal({
+    title: message,
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
+  }).then(willDelete => {
+    if (willDelete.value) {
+      debugger;
+      let inputObj = {
+        auth_level: $this.state.auth_level,
+        hims_f_leave_encash_header_id: row.leave_encash_header_id,
+        authorized: data,
+        leave_encash_level: $this.state.leave_encash_level
+      };
 
-  algaehApiCall({
-    uri: "/encashmentprocess/UpdateLeaveEncash",
-    module: "hrManagement",
-    data: inputObj,
-    method: "PUT",
-    onSuccess: response => {
-      swalMessage({
-        title: Succmsg,
-        type: "success"
-      });
-      LoadEncashment($this);
-      // $this.setState({
-      //   EncashHeader: response.data.result.leaveEncash_header,
-      //   EncashDetail: response.data.result.leaveEncash_detail
-      // });
-    },
-    onFailure: error => {
-      swalMessage({
-        title: error.response.data.message,
-        type: "error"
+      let Succmsg = "";
+      if (data === "APR") {
+        Succmsg = "Authorized Successfully.";
+      } else if (data === "REJ") {
+        Succmsg = "Rejected Successfully.";
+      } else {
+        Succmsg = "Cancelled Successfully.";
+      }
+
+      algaehApiCall({
+        uri: "/encashmentprocess/UpdateLeaveEncash",
+        module: "hrManagement",
+        data: inputObj,
+        method: "PUT",
+        onSuccess: response => {
+          swalMessage({
+            title: Succmsg,
+            type: "success"
+          });
+          LoadEncashment($this);
+          // $this.setState({
+          //   EncashHeader: response.data.result.leaveEncash_header,
+          //   EncashDetail: response.data.result.leaveEncash_detail
+          // });
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.response.data.message,
+            type: "error"
+          });
+        }
       });
     }
   });
 };
 
 const getLeaveLevels = $this => {
+  debugger;
+  let leave_encash_level = JSON.parse(
+    AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
+  ).leave_encash_level;
   algaehApiCall({
     uri: "/encashmentprocess/getLeaveEncashLevels",
     module: "hrManagement",
     method: "GET",
+    data: { leave_encash_level: leave_encash_level },
     onSuccess: res => {
       if (res.data.success) {
+        debugger;
         let auth_level =
           res.data.result.auth_levels.length > 0
             ? Enumerable.from(res.data.result.auth_levels).maxBy(w => w.value)

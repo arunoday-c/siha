@@ -5,7 +5,8 @@ type Props = {
   forceLabel: string,
   htmlFor: string,
   fieldName: string,
-  isImp: boolean
+  isImp: boolean,
+  label?: Object
 };
 
 export default function AlgaehLabel(props: Props) {

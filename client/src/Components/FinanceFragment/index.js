@@ -22,10 +22,10 @@ export default function FinanceFragment(props) {
           metadata: { componentName }
         } = manifest;
         const hash = js.split(".")[1];
-        console.log(hash, "hash");
+        // console.log(hash, "hash");
         const script = document.getElementById("finance-script");
         const hashAttr = script.getAttribute("data-hash");
-        console.log(hashAttr !== hash, "the truth");
+        // console.log(hashAttr !== hash, "the truth");
         if (hashAttr !== hash) {
           script.remove();
           const newScript = document.createElement("script");
@@ -35,7 +35,7 @@ export default function FinanceFragment(props) {
           newScript.id = "finance-script";
           newScript.crossOrigin = "anonymous";
           newScript.onload = () => {
-            console.log(window[componentName], componentName);
+            // console.log(window[componentName], componentName);
             setComp(window[componentName]);
           };
           document.body.appendChild(newScript);
@@ -48,7 +48,7 @@ export default function FinanceFragment(props) {
 
   if (Component) {
     const ReqComp = Component[props.path];
-    console.log(ReqComp);
+    // console.log(ReqComp);
     return <ReqComp hello="this is from hims" />;
   }
   if (err) {
