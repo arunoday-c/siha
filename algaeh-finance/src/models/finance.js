@@ -306,7 +306,9 @@ export default {
     let strQry = "";
 
     input.forEach(item => {
-      strQry = `update finance_accounts_maping set child_id=${item.child_id},head_id=${item.head_id} where account=${item.account};`;
+      strQry = `update finance_accounts_maping set child_id=${item.child_id},head_id=${item.head_id},
+      head_account_code=(select account_code from finance_account_head where finance_account_head_id =${item.head_id} limit 1)
+       where account=${item.account};`;
     });
 
     if (strQry != "") {
@@ -357,13 +359,34 @@ export default {
         _mysql.releaseConnection();
         next(e);
       });
+  },
+  //created by irfan: to
+  loadDayEndData: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    // const utilities = new algaehUtilities();
+
+    _mysql
+      .executeQuery({
+        query:
+          "select account,child_id,head_id,H.account_name,C.child_name from \
+          finance_accounts_maping M left join finance_account_head H\
+          on M.head_id=H.finance_account_head_id left join finance_account_child C \
+          on M.child_id=C.finance_account_child_id ;",
+
+        printQuery: false
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };
 
-// select finance_account_head_id,account_code,account_name, concat(account_code,'.',(
-//   select SUBSTRING_INDEX(account_code, '.', -1)+1
-//   FROM finance_account_head where parent_acc_id=10)) as new_code
-//   FROM finance_account_head where finance_account_head_id=10;
 function createHierarchy(arry, childs_of) {
   const onlyChilds = [];
   const utilities = new algaehUtilities();
@@ -472,33 +495,11 @@ function createHierarchy(arry, childs_of) {
   }
 }
 
-// with recursive cte (finance_account_head_id, account_name, parent_acc_id) as (
-//   select    finance_account_head_id, account_name, parent_acc_id
-//   from       finance_account_head  where      finance_account_head_id = 1
-//   union all
-//   select      H.finance_account_head_id,H.account_name,H.parent_acc_id
-//   from       finance_account_head H
-//   inner join cte
-//           on H.parent_acc_id = cte.finance_account_head_id
-// )
-// select * from cte;
-
-// function to recursively build the tree
-//  let findChildren = function(parent) {
-//   if (children[parent.finance_account_head_id]) {
-//     parent.children = children[parent.finance_account_head_id];
-
-//     for (let i = 0, len = parent.children.length; i < len; ++i) {
-//       findChildren(parent.children[i]);
-//     }
-//   }
-// };
-
-// "select finance_account_head_id,account_code,account_name,\
-//             H.created_from as head_created_from,account_level ,parent_acc_id,sort_order,\
-//             C.finance_account_child_id,C.child_name,CM.head_id,CM.created_from as child_created_from,\
-//             hierarchy_path FROM finance_account_head H left join \
-//             finance_head_m_child CM on H.finance_account_head_id=CM.head_id\
-//             left join finance_account_child C on CM.child_id=C.finance_account_child_id\
-//             where account_code like '1%'\
-//             order by account_level,sort_order            ;",
+// WITH cte_name  AS (
+//   SELECT finance_day_end_sub_detail_id, day_end_detail_id, payment_date, head_account_code,
+//   sum(debit_amount),sum(credit_amount) ,case when sum(debit_amount)= sum(credit_amount)then
+//   'true' else 'false'end as is_equal FROM hims_test_db.finance_day_end_sub_detail
+//   where payment_date between date('2019-10-30') and date('2019-10-31')
+//   group by day_end_detail_id)
+//   select * from finance_day_end_sub_detail where day_end_detail_id in (SELECT day_end_detail_id
+//    FROM cte_name where is_equal='true');

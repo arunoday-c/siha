@@ -631,6 +631,7 @@ export default {
           }
         })
         .then(generatedNumbers => {
+          req.body["receipt_number"]=generatedNumbers[0];
           _mysql
             .executeQuery({
               query:
@@ -2994,7 +2995,183 @@ export default {
       reject(e);
       next(e);
     }
+  },
+
+  //created by:IRFAN
+  addtoDayEnd: (req, res, next) => {
+    try {
+      const _options = req.connection == null ? {} : req.connection;
+  
+      const _mysql = new algaehMysql(_options);
+  
+      const utilities = new algaehUtilities();
+  
+      const inputParam = req.body;
+  
+      console.log("ONE:");
+  
+      utilities.logger().log("inputParamRR: ", inputParam);
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "INSERT INTO finance_day_end_header (trancation_date,amount,control_account,document_type,document_id,\
+              document_number,from_screen,transaction_type,cutomer_type,hospital_id) \
+              VALUES (?,?,?,?,?,?,?,?,?,?)",
+          values: [
+            new Date(),
+            inputParam.total_amount,
+            "OP_CON",
+            "RECEIPT",
+            inputParam.receipt_header_id,
+            inputParam.receipt_number            ,
+            "FD0002",
+            inputParam.transaction_type,
+            "P",
+            req.userIdentity.hospital_id
+          ],
+          printQuery: true
+        })
+        .then(headerDayEnd => {
+          console.log("TWO:");
+  
+          const insertDetail = inputParam.receiptdetails.map(m => {
+            return {
+              amount: m.amount,
+              payment_mode: m.pay_type
+            };
+          });
+          const IncludeValues = ["amount", "payment_mode"];
+          _mysql
+            .executeQueryWithTransaction({
+              query:
+                "INSERT INTO finance_day_end_detail (??) \
+                VALUES ? ",
+              values: insertDetail,
+              includeValues: IncludeValues,
+              bulkInsertOrUpdate: true,
+              extraValues: {
+                day_end_header_id: headerDayEnd["insertId"]
+              },
+              printQuery: true
+            })
+            .then(detail => {
+
+              console.log("THREE:");
+              _mysql
+                .executeQuery({
+                  query: "SELECT * FROM finance_accounts_maping;\
+                  select * from finance_day_end_detail where day_end_header_id=?; ",
+                  values:[headerDayEnd.insertId],
+                  printQuery: true
+                })
+                .then(rest => {
+
+                  const controlResult=rest[0];
+                  const day_end_detail=rest[1];
+
+                  const OP_DEP = controlResult.find(f => {
+                    return f.account == "OP_DEP";
+                  });
+  
+                  const CH_IN_HA = controlResult.find(f => {
+                    return f.account == "CH_IN_HA";
+                  });
+  
+                  const insertSubDetail = [];
+  
+                  if (inputParam.transaction_type == "AD") {
+
+                    day_end_detail.forEach(item => {
+
+                  if(item.payment_mode=="CA"){
+                      insertSubDetail.push({
+                        day_end_detail_id:item.finance_day_end_detail_id,
+                        payment_date: new Date(),
+                        head_account_code:OP_DEP.head_account_code,
+                        head_id: OP_DEP.head_id,
+                        child_id: OP_DEP.child_id,
+                        debit_amount: item.amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        narration:"OP BILL CASH COLLECTION BEBIT",
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                      insertSubDetail.push({
+                        day_end_detail_id:item.finance_day_end_detail_id,
+                        payment_date: new Date(),
+                        head_account_code:CH_IN_HA.head_account_code,
+                        head_id: CH_IN_HA.head_id,
+                        child_id: CH_IN_HA.child_id,
+                        debit_amount: 0,
+                        payment_type: "CR",
+                        credit_amount: item.amount,
+                        narration:"OP BILL CASH COLLECTION  CREDIT",
+                        hospital_id: req.userIdentity.hospital_id
+                    
+                      });
+                    }
+
+
+                    });
+  
+                    const IncludeValuess = [
+                      "day_end_detail_id",
+                      "payment_date",
+                      "head_account_code",
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "payment_type",
+                      "credit_amount",
+                      "narration"
+                    ];
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "INSERT INTO finance_day_end_sub_detail (??) \
+                           VALUES ? ",
+                        values: insertSubDetail,
+                        includeValues: IncludeValuess,
+                        bulkInsertOrUpdate: true,
+                        printQuery: true
+                      })
+                      .then(subResult => {
+                        console.log("FOUR");
+                        next();
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  } else {
+                    next();
+                  }
+                })
+                .catch(error => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            })
+            .catch(error => {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            });
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
   }
+  
 };
 
 //Not in Use
