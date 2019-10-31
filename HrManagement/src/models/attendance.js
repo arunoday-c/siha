@@ -5871,7 +5871,7 @@ export default {
 
                 order by hims_d_employee_id;
                 select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
-                L.leave_type,from_date,to_leave_session,to_date,holiday_included,weekoff_included,total_applied_days
+                L.leave_type,L.leave_description,from_date,to_leave_session,to_date,holiday_included,weekoff_included,total_applied_days
                 from hims_f_leave_application LA inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
                 inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id
                 inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
@@ -5995,199 +5995,199 @@ export default {
                           .Select(s => s)
                           .ToArray();
 
-                        employee.forEach((row, i) => {
-                          let leave = null;
-                          if (empLeave.length > 0) {
-                            leave = new LINQ(empLeave)
-                              .Where(
-                                w =>
-                                  w.from_date <= row["attendance_date"] &&
-                                  w.to_date >= row["attendance_date"]
-                              )
-                              .Select(s => {
-                                let leave_status = s.leave_type;
-
-                                if (
-                                  s.from_date == s.to_date &&
-                                  s.to_date == row["attendance_date"] &&
-                                  parseFloat(s.total_applied_days) ==
-                                    parseFloat(0.5)
-                                ) {
-                                  leave_status =
-                                    leave_status == "P" ? "HPL" : "HUL";
-                                } else if (s.from_date != s.to_date) {
+                          employee.forEach((row, i) => {
+                            let leave = null;
+                            if (empLeave.length > 0) {
+                              leave = new LINQ(empLeave)
+                                .Where(
+                                  w =>
+                                    w.from_date <= row["attendance_date"] &&
+                                    w.to_date >= row["attendance_date"]
+                                )
+                                .Select(s => {
+                                  let leave_status = s.leave_type;
+                          
                                   if (
-                                    s.from_date == row["attendance_date"] &&
-                                    s.from_leave_session == "SH"
-                                  ) {
-                                    leave_status =
-                                      leave_status == "P" ? "HPL" : "HUL";
-                                  } else if (
+                                    s.from_date == s.to_date &&
                                     s.to_date == row["attendance_date"] &&
-                                    s.to_leave_session == "FH"
+                                    parseFloat(s.total_applied_days) == parseFloat(0.5)
                                   ) {
-                                    leave_status =
-                                      leave_status == "P" ? "HPL" : "HUL";
+                                    leave_status = leave_status == "P" ? "HPL" : "HUL";
+                                  } else if (s.from_date != s.to_date) {
+                                    if (
+                                      s.from_date == row["attendance_date"] &&
+                                      s.from_leave_session == "SH"
+                                    ) {
+                                      leave_status = leave_status == "P" ? "HPL" : "HUL";
+                                    } else if (
+                                      s.to_date == row["attendance_date"] &&
+                                      s.to_leave_session == "FH"
+                                    ) {
+                                      leave_status = leave_status == "P" ? "HPL" : "HUL";
+                                    }
                                   }
-                                }
-
-                                if (leave_status == "P") {
-                                  leave_status = "PL";
-                                } else if (leave_status == "U") {
-                                  leave_status = "UL";
-                                }
-
+                          
+                                  if (leave_status == "P") {
+                                    leave_status = "PL";
+                                  } else if (leave_status == "U") {
+                                    leave_status = "UL";
+                                  }
+                          
+                                  return {
+                                    holiday_included: s.holiday_included,
+                                    weekoff_included: s.weekoff_included,
+                                    hospital_id: input.branch_id,
+                                    employee_id: row.employee_id,
+                                    project_id: row.project_id,
+                                    project_desc: row.project_desc,
+                                    full_name: row.full_name,
+                                    sub_department_id: row.sub_department_id,
+                                    employee_code: row.employee_code,
+                                    attendance_date: row["attendance_date"],
+                                    status: leave_status,
+                                    designation: row.designation,
+                                    leave_description:s.leave_description
+                                  };
+                                })
+                                .FirstOrDefault(null);
+                            }
+                          
+                            const holiday_or_weekOff = new LINQ(empHolidayweekoff)
+                              .Where(w => w.holiday_date == row["attendance_date"])
+                              .Select(s => {
                                 return {
-                                  holiday_included: s.holiday_included,
-                                  weekoff_included: s.weekoff_included,
-                                  hospital_id: input.branch_id,
-                                  employee_id: row.employee_id,
-                                  project_id: row.project_id,
-                                  project_desc: row.project_desc,
-                                  full_name: row.full_name,
-                                  sub_department_id: row.sub_department_id,
-                                  employee_code: row.employee_code,
-                                  attendance_date: row["attendance_date"],
-                                  status: leave_status,
-                                  designation: row.designation
+                                  holiday: s.holiday,
+                                  weekoff: s.weekoff
                                 };
                               })
                               .FirstOrDefault(null);
-                          }
-
-                          const holiday_or_weekOff = new LINQ(empHolidayweekoff)
-                            .Where(
-                              w => w.holiday_date == row["attendance_date"]
-                            )
-                            .Select(s => {
-                              return {
-                                holiday: s.holiday,
-                                weekoff: s.weekoff
-                              };
-                            })
-                            .FirstOrDefault(null);
-
-                          //----------------------------
-
-                          if (
-                            (holiday_or_weekOff == null && leave != null) ||
-                            (leave != null &&
-                              holiday_or_weekOff != null &&
-                              holiday_or_weekOff.holiday == "Y" &&
-                              leave.holiday_included == "Y") ||
-                            (leave != null &&
-                              holiday_or_weekOff != null &&
-                              holiday_or_weekOff.weekoff == "Y" &&
-                              leave.weekoff_included == "Y")
-                          ) {
-                            let color = "";
-
-                            if (leave.status == "PL" || leave.status == "HPL")
-                              color = "#ec7c00";
-                            if (leave.status == "UL" || leave.status == "HUL")
-                              color = "#ff0000";
-
+                          
+                            //----------------------------
+                          
                             if (
-                              row.isTimeSheet != undefined &&
-                              row.isTimeSheet == "Y"
+                              (holiday_or_weekOff == null && leave != null) ||
+                              (leave != null &&
+                                holiday_or_weekOff != null &&
+                                holiday_or_weekOff.holiday == "Y" &&
+                                leave.holiday_included == "Y") ||
+                              (leave != null &&
+                                holiday_or_weekOff != null &&
+                                holiday_or_weekOff.weekoff == "Y" &&
+                                leave.weekoff_included == "Y")
                             ) {
-                              outputArray.push({
-                                project_id: row.project_id,
-                                project_desc: row.project_desc,
-                                attendance_date: leave.attendance_date,
-                                status: leave.status,
-                                [moment(
-                                  leave.attendance_date,
-                                  "YYYY-MM-DD"
-                                ).format("YYYYMMDD")]: row.worked_hours,
-                                color: color
-                              });
-                            } else {
-                              outputArray.push({
-                                project_id: row.project_id,
-                                project_desc: row.project_desc,
-                                attendance_date: leave.attendance_date,
-                                status: leave.status,
-                                [moment(
-                                  leave.attendance_date,
-                                  "YYYY-MM-DD"
-                                ).format("YYYYMMDD")]: leave.status,
-                                color: color
-                              });
-                            }
-                          } else if (holiday_or_weekOff != null) {
-                            if (holiday_or_weekOff.weekoff == "Y") {
-                              if (
-                                row.isTimeSheet != undefined &&
-                                row.isTimeSheet == "Y"
-                              ) {
+                              let color = "";
+                          
+                              if (leave.status == "PL" || leave.status == "HPL") color = "#ec7c00";
+                              if (leave.status == "UL" || leave.status == "HUL") color = "#ff0000";
+                          
+                              if (row.isTimeSheet != undefined && row.isTimeSheet == "Y") {
                                 outputArray.push({
                                   project_id: row.project_id,
-                                  project_desc: row.project_desc,
-                                  attendance_date: row["attendance_date"],
-                                  status: "WO",
-                                  [moment(
-                                    row["attendance_date"],
-                                    "YYYY-MM-DD"
-                                  ).format("YYYYMMDD")]: row.worked_hours,
-                                  color: "#E7FEFD"
+                                  project_desc: leave.leave_description,
+                                  attendance_date: leave.attendance_date,
+                                  status: leave.status,
+                                  [moment(leave.attendance_date, "YYYY-MM-DD").format(
+                                    "YYYYMMDD"
+                                  )]: row.worked_hours,
+                                  color: color
                                 });
                               } else {
                                 outputArray.push({
                                   project_id: row.project_id,
-                                  project_desc: row.project_desc,
-                                  attendance_date: row["attendance_date"],
-                                  status: "WO",
-                                  [moment(
-                                    row["attendance_date"],
-                                    "YYYY-MM-DD"
-                                  ).format("YYYYMMDD")]: "WO",
-                                  color: "#E7FEFD"
+                                  project_desc:  leave.leave_description,
+                                  attendance_date: leave.attendance_date,
+                                  status: leave.status,
+                                  [moment(leave.attendance_date, "YYYY-MM-DD").format(
+                                    "YYYYMMDD"
+                                  )]: leave.status,
+                                  color: color
                                 });
                               }
-                            } else if (holiday_or_weekOff.holiday == "Y") {
-                              if (
-                                row.isTimeSheet != undefined &&
-                                row.isTimeSheet == "Y"
-                              ) {
-                                outputArray.push({
-                                  project_id: row.project_id,
-                                  project_desc: row.project_desc,
-                                  attendance_date: row["attendance_date"],
-                                  status: "HO",
-                                  [moment(
-                                    row["attendance_date"],
-                                    "YYYY-MM-DD"
-                                  ).format("YYYYMMDD")]: row.worked_hours,
-                                  color: "#EAEAFD"
-                                });
+                            } else if (holiday_or_weekOff != null) {
+                              if (holiday_or_weekOff.weekoff == "Y") {
+                                if (row.isTimeSheet != undefined && row.isTimeSheet == "Y") {
+                                  outputArray.push({
+                                    project_id: row.project_id,
+                                    project_desc: row.project_desc,
+                                    attendance_date: row["attendance_date"],
+                                    status: "WO",
+                                    [moment(row["attendance_date"], "YYYY-MM-DD").format(
+                                      "YYYYMMDD"
+                                    )]: row.worked_hours,
+                                    color: "#E7FEFD"
+                                  });
+                                } else {
+                                  outputArray.push({
+                                    project_id: row.project_id,
+                                    project_desc: row.project_desc,
+                                    attendance_date: row["attendance_date"],
+                                    status: "WO",
+                                    [moment(row["attendance_date"], "YYYY-MM-DD").format(
+                                      "YYYYMMDD"
+                                    )]: "WO",
+                                    color: "#E7FEFD"
+                                  });
+                                }
+                              } else if (holiday_or_weekOff.holiday == "Y") {
+                                if (row.isTimeSheet != undefined && row.isTimeSheet == "Y") {
+                                  outputArray.push({
+                                    project_id: row.project_id,
+                                    project_desc: row.project_desc,
+                                    attendance_date: row["attendance_date"],
+                                    status: "HO",
+                                    [moment(row["attendance_date"], "YYYY-MM-DD").format(
+                                      "YYYYMMDD"
+                                    )]: row.worked_hours,
+                                    color: "#EAEAFD"
+                                  });
+                                } else {
+                                  outputArray.push({
+                                    project_id: row.project_id,
+                                    project_desc: row.project_desc,
+                                    attendance_date: row["attendance_date"],
+                                    status: "HO",
+                                    [moment(row["attendance_date"], "YYYY-MM-DD").format(
+                                      "YYYYMMDD"
+                                    )]: "HO",
+                                    color: "#EAEAFD"
+                                  });
+                                }
                               } else {
-                                outputArray.push({
-                                  project_id: row.project_id,
-                                  project_desc: row.project_desc,
-                                  attendance_date: row["attendance_date"],
-                                  status: "HO",
-                                  [moment(
-                                    row["attendance_date"],
-                                    "YYYY-MM-DD"
-                                  ).format("YYYYMMDD")]: "HO",
-                                  color: "#EAEAFD"
-                                });
+                                if (row.isTimeSheet != undefined && row.isTimeSheet == "Y") {
+                                  outputArray.push({
+                                    project_id: row.project_id,
+                                    project_desc: row.project_desc,
+                                    attendance_date: row["attendance_date"],
+                                    status: row.project_id > 0 ? "PR" : "N",
+                                    [moment(row["attendance_date"], "YYYY-MM-DD").format(
+                                      "YYYYMMDD"
+                                    )]: row.worked_hours,
+                                    color: row.project_id > 0 ? "" : "#F5F5F5",
+                                    project_desc: row.project_desc
+                                  });
+                                } else {
+                                  outputArray.push({
+                                    project_id: row.project_id,
+                                    project_desc: row.project_desc,
+                                    attendance_date: row["attendance_date"],
+                                    status: row.project_id > 0 ? "PR" : "N",
+                                    [moment(row["attendance_date"], "YYYY-MM-DD").format("YYYYMMDD")]:
+                                      row.project_id > 0 ? "PR" : "N",
+                                    color: row.project_id > 0 ? "" : "#F5F5F5",
+                                    project_desc: row.project_desc
+                                  });
+                                }
                               }
                             } else {
-                              if (
-                                row.isTimeSheet != undefined &&
-                                row.isTimeSheet == "Y"
-                              ) {
+                              if (row.isTimeSheet != undefined && row.isTimeSheet == "Y") {
                                 outputArray.push({
                                   project_id: row.project_id,
                                   project_desc: row.project_desc,
                                   attendance_date: row["attendance_date"],
                                   status: row.project_id > 0 ? "PR" : "N",
-                                  [moment(
-                                    row["attendance_date"],
-                                    "YYYY-MM-DD"
-                                  ).format("YYYYMMDD")]: row.worked_hours,
+                                  [moment(row["attendance_date"], "YYYY-MM-DD").format(
+                                    "YYYYMMDD"
+                                  )]: row.worked_hours,
                                   color: row.project_id > 0 ? "" : "#F5F5F5",
                                   project_desc: row.project_desc
                                 });
@@ -6197,50 +6197,14 @@ export default {
                                   project_desc: row.project_desc,
                                   attendance_date: row["attendance_date"],
                                   status: row.project_id > 0 ? "PR" : "N",
-                                  [moment(
-                                    row["attendance_date"],
-                                    "YYYY-MM-DD"
-                                  ).format("YYYYMMDD")]:
+                                  [moment(row["attendance_date"], "YYYY-MM-DD").format("YYYYMMDD")]:
                                     row.project_id > 0 ? "PR" : "N",
                                   color: row.project_id > 0 ? "" : "#F5F5F5",
                                   project_desc: row.project_desc
                                 });
                               }
                             }
-                          } else {
-                            if (
-                              row.isTimeSheet != undefined &&
-                              row.isTimeSheet == "Y"
-                            ) {
-                              outputArray.push({
-                                project_id: row.project_id,
-                                project_desc: row.project_desc,
-                                attendance_date: row["attendance_date"],
-                                status: row.project_id > 0 ? "PR" : "N",
-                                [moment(
-                                  row["attendance_date"],
-                                  "YYYY-MM-DD"
-                                ).format("YYYYMMDD")]: row.worked_hours,
-                                color: row.project_id > 0 ? "" : "#F5F5F5",
-                                project_desc: row.project_desc
-                              });
-                            } else {
-                              outputArray.push({
-                                project_id: row.project_id,
-                                project_desc: row.project_desc,
-                                attendance_date: row["attendance_date"],
-                                status: row.project_id > 0 ? "PR" : "N",
-                                [moment(
-                                  row["attendance_date"],
-                                  "YYYY-MM-DD"
-                                ).format("YYYYMMDD")]:
-                                  row.project_id > 0 ? "PR" : "N",
-                                color: row.project_id > 0 ? "" : "#F5F5F5",
-                                project_desc: row.project_desc
-                              });
-                            }
-                          }
-                        });
+                          });
 
                         final_roster.push({
                           full_name: employee[0].full_name,

@@ -188,6 +188,40 @@ function excelManualTimeSheet(req, res, next) {
                     ]
                   };
                 }
+
+                if (
+                  cell.value == "PL" ||
+                  cell.value == "UL" ||
+                  cell.value == "HPL" ||
+                  cell.value == "HUL"
+                ) {
+                  console.log("valueColor:", valueColor);
+                  cell.note = {
+                    texts: [
+                      {
+                        font: {
+                          size: 12,
+                          color: { theme: 1 },
+                          name: "Calibri",
+                          family: 2,
+                          scheme: "minor"
+                        },
+                        text: "Leave Description :=  "
+                      },
+                      {
+                        font: {
+                          bold: true,
+                          size: 12,
+                          color: { theme: 1 },
+                          name: "Calibri",
+                          family: 2,
+                          scheme: "minor"
+                        },
+                        text: valueColor[2]
+                      }
+                    ]
+                  };
+                }
               }
             });
           }

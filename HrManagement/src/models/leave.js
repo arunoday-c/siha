@@ -6941,6 +6941,8 @@ function projectedleaveCalc(input, _mysql) {
     let year = input.year;
 
     return new Promise((resolve, reject) => {
+
+    if(moment( date_end, "YYYY-MM-DD").format("YYYYMMDD")>moment(date_start, "YYYY-MM-DD").format("YYYYMMDD")){
       if (attendance_starts == "PM" && at_end_date > 0) {
         console.log("PM");
 
@@ -6949,10 +6951,13 @@ function projectedleaveCalc(input, _mysql) {
         let from_day = moment(date_start, "YYYY-MM-DD").format("D");
         let to_day = moment(date_end, "YYYY-MM-DD").format("D");
         if (from_month == to_month) {
+    
           let cur_month = "";
           if (from_day <= at_end_date && to_day <= at_end_date) {
+           
             temp_number_of_months.push(parseInt(from_month));
           } else if (from_day <= at_end_date && to_day > at_end_date) {
+            
             temp_number_of_months.push(from_month);
             cur_month = parseInt(from_month) + parseInt(1);
 
@@ -6960,7 +6965,7 @@ function projectedleaveCalc(input, _mysql) {
               cur_month = 1;
             }
             temp_number_of_months.push(cur_month);
-          } else if (from_day > at_end_date && to_day > at_end_date) {
+          } else if (from_day > at_end_date && to_day > at_end_date) {            
             cur_month = parseInt(from_month) + parseInt(1);
 
             if (cur_month > 12) {
@@ -7098,7 +7103,7 @@ function projectedleaveCalc(input, _mysql) {
           }
         }
       }
-
+     
       temp_number_of_months.forEach(item => {
         if (number_of_months.indexOf(item) === -1) {
           number_of_months.push(item);
@@ -7125,7 +7130,7 @@ function projectedleaveCalc(input, _mysql) {
             input.leave_id,
             year
           ],
-          printQuery: false
+          printQuery: true
         })
         .then(result => {
           // mysql.releaseConnection();
@@ -7154,19 +7159,10 @@ function projectedleaveCalc(input, _mysql) {
                 message: "You already availed projected leaves"
               });
 
-              // req.records = {
-              //   invalid_input: true,
-              //   message: "You already availed projected leaves"
-              // };
-              // next();
+           
             }
           } else {
-            // req.records = {
-            //   invalid_input: true,
-            //   message: "You dont have this leave"
-            // };
-            // next();
-
+           
             reject({
               invalid_input: true,
               message: "You dont have this leave"
@@ -7177,6 +7173,13 @@ function projectedleaveCalc(input, _mysql) {
           console.log("e:", e);
           next(e);
         });
+      }else{
+        reject({
+          invalid_input: true,
+          message: "Cant apply Projected leaves for Past Dates"
+        });
+
+      }
     });
   } catch (e) {
     reject(e);
