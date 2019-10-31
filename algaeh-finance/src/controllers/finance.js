@@ -7,7 +7,8 @@ const {
   addAccountHeads,
   getFinanceAccountsMaping,
   updateFinanceAccountsMaping,
-  getDayEndData
+  getDayEndData,
+  postDayEndData
 } = finance;
 
 export default () => {
@@ -98,6 +99,25 @@ export default () => {
     }
   );
   api.get("/getDayEndData", getDayEndData, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: false,
+          message: req.records.message
+        })
+        .end();
+    } else {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records
+        })
+        .end();
+    }
+  });
+  api.post("/postDayEndData", postDayEndData, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res
         .status(utlities.AlgaehUtilities().httpStatus().ok)

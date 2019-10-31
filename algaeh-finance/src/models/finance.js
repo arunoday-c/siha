@@ -369,24 +369,24 @@ export default {
     let strQry = "";
 
     if (input.document_number !== undefined && input.document_number == null) {
-      strQry += ` H.document_number='${input.document_number}'`;
+      strQry += ` and  H.document_number='${input.document_number}'`;
     }
     if (
       input.transaction_type !== undefined &&
       input.transaction_type == null
     ) {
-      strQry += ` H.transaction_type='${input.transaction_type}'`;
+      strQry += ` and H.transaction_type='${input.transaction_type}'`;
     }
     _mysql
       .executeQuery({
         query: `select D.finance_day_end_detail_id ,H.trancation_date,case D.payment_mode when 'CA' then\
           'CASH' when 'CH' then 'CHEQUE' when 'CD' then 'CARD'  end as payment_mode ,D.amount,SD.narration,\
           H.document_type,H.document_number,case H.transaction_type when 'AD' then 'ADVANCE' \
-          when 'RF' then 'REFUND' end as transaction_type ,S.screen_name from finance_day_end_header H inner join\
+          when 'RF' then 'REFUND' end as transaction_type ,S.screen_name,SD.posted from finance_day_end_header H inner join\
           finance_day_end_detail D on H.finance_day_end_header_id=D.day_end_header_id \
           inner join finance_day_end_sub_detail SD on D.finance_day_end_detail_id=SD.day_end_detail_id\
           left join  algaeh_d_app_screens S on H.from_screen=S.screen_code\
-          where H.trancation_date between date(?) and  date(?) and SD.posted='N' ${strQry};`,
+          where H.trancation_date between date(?) and  date(?)  ${strQry};`,
         values: [input.from_date, input.to_date],
         printQuery: false
       })
@@ -394,6 +394,97 @@ export default {
         _mysql.releaseConnection();
         req.records = result;
         next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+  //created by irfan: to
+  postDayEndData: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    // const utilities = new algaehUtilities();
+    let input = req.query;
+
+    _mysql
+      .executeQuery({
+        query: `  WITH cte_  AS (
+          SELECT finance_day_end_sub_detail_id, day_end_detail_id, payment_date, head_account_code,
+          sum(debit_amount),sum(credit_amount) ,case when sum(debit_amount)= sum(credit_amount)then
+          'true' else 'false'end as is_equal FROM hims_test_db.finance_day_end_sub_detail
+          where posted='N' and day_end_detail_id in (?)
+          group by day_end_detail_id)
+          select * from finance_day_end_sub_detail where day_end_detail_id in (SELECT day_end_detail_id
+           FROM cte_ where is_equal='true');`,
+        values: [input.finance_day_end_detail_ids],
+        printQuery: false
+      })
+      .then(result => {
+        // _mysql.releaseConnection();
+        // req.records = result;
+        // next();
+        if (result.length > 0) {
+          const updateFinanceDayEndDetailIds = updateFinanceDayEndDetailIds.map(
+            m => {
+              return m.finance_day_end_sub_detail_id;
+            }
+          );
+          const insertColumns = [
+            "payment_date",
+            "head_account_code",
+            "head_id",
+            "child_id",
+            "debit_amount",
+            "credit_amount",
+            "payment_type",
+            "narration",
+            "hospital_id"
+          ];
+          _mysql
+            .executeQueryWithTransaction({
+              query: "insert into finance_voucher_details (??) values ?;",
+              values: result,
+              includeValues: insertColumns,
+              bulkInsertOrUpdate: true
+            })
+            .then(result2 => {
+              _mysql
+                .executeQueryWithTransaction({
+                  query:
+                    "update finance_day_end_sub_detail set posted='Y' ,posted_date=now(),\
+                posted_by=? where   finance_day_end_sub_detail_id in (?) ",
+                  values: [
+                    req.userIdentity.algaeh_d_app_user_id,
+                    updateFinanceDayEndDetailIds
+                  ],
+                  printQuery: false
+                })
+                .then(result3 => {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = result3;
+                    next();
+                  });
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        } else {
+          _mysql.releaseConnection();
+          next();
+          req.records = {
+            invalid_input: true,
+            message: "No records found to post"
+          };
+        }
       })
       .catch(e => {
         _mysql.releaseConnection();
@@ -514,7 +605,7 @@ function createHierarchy(arry, childs_of) {
 //   SELECT finance_day_end_sub_detail_id, day_end_detail_id, payment_date, head_account_code,
 //   sum(debit_amount),sum(credit_amount) ,case when sum(debit_amount)= sum(credit_amount)then
 //   'true' else 'false'end as is_equal FROM hims_test_db.finance_day_end_sub_detail
-//   where payment_date between date('2019-10-30') and date('2019-10-31')
+//   where posted='N' and  payment_date between date('2019-10-30') and date('2019-10-31')
 //   group by day_end_detail_id)
 //   select * from finance_day_end_sub_detail where day_end_detail_id in (SELECT day_end_detail_id
 //    FROM cte_name where is_equal='true');
