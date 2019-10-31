@@ -59,7 +59,7 @@ const getCtrlCode = ($this, docNumber) => {
         }
         data.ItemDisable = true;
         data.addedItem = true;
-        $this.setState(data, () => {});
+        $this.setState(data, () => { });
         AlgaehLoader({ show: false });
       }
     });
@@ -153,15 +153,22 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
 
   let authorize1 = "";
   let authorize2 = "";
-  if (authorize === "authorize1") {
+  if ($this.state.requisition_auth_level === "1") {
     $this.state.authorize1 = "Y";
-    authorize1 = "Y";
-    authorize2 = "N";
-  } else if (authorize === "authorize2") {
     $this.state.authorie2 = "Y";
-    $this.state.authorize1 = "Y";
     authorize1 = "Y";
     authorize2 = "Y";
+  } else {
+    if (authorize === "authorize1") {
+      $this.state.authorize1 = "Y";
+      authorize1 = "Y";
+      authorize2 = "N";
+    } else if (authorize === "authorize2") {
+      $this.state.authorie2 = "Y";
+      $this.state.authorize1 = "Y";
+      authorize1 = "Y";
+      authorize2 = "Y";
+    }
   }
   AlgaehLoader({ show: true });
 

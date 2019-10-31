@@ -13,6 +13,8 @@ import Location from "./Location/Location";
 import LocationPermission from "./LocationPermission/LocationPermission";
 
 // import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
+import InventoryOptions from "./InventoryOptions/InventoryOptions"
+
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 
@@ -20,7 +22,7 @@ class InventorySetup extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pageDisplay: "ItemCategory", sidBarOpen: true };
+    this.state = { pageDisplay: "InventoryOptions", sidBarOpen: true };
   }
 
   openTab(e) {
@@ -64,8 +66,21 @@ class InventorySetup extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"ItemCategory"}
+                algaehtabs={"InventoryOptions"}
                 className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "inventory_options"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"ItemCategory"}
+                className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
                 {
@@ -136,7 +151,9 @@ class InventorySetup extends Component {
         </div>
 
         <div className="common-section">
-          {this.state.pageDisplay === "ItemCategory" ? (
+          {this.state.pageDisplay === "InventoryOptions" ? (
+            <InventoryOptions />
+          ) : this.state.pageDisplay === "ItemCategory" ? (
             <ItemCategory />
           ) : this.state.pageDisplay === "ItemGroup" ? (
             <ItemGroup />

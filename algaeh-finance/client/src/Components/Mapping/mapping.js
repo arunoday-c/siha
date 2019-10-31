@@ -5,20 +5,23 @@ import {
     AlgaehButton,
     AlgaehMessagePop
 } from "algaeh-react-components";
-import {getHeaders,updateFinanceAccountsMaping} from "./mapping.eventl";
+import {getHeaders,updateFinanceAccountsMaping,getFinanceAccountsMaping} from "./mapping.eventl";
 export default function (props) {
 
- const [assets,setAssets]= useState([]);
+    const [assets,setAssets]= useState([]);
     const [lability,setLability]= useState([]);
     //Its as object to send header and child id.
     const [opControl,setOpControl]=  useState({});
-    const [opControlLabel,setOpControlLable]=  useState(undefined);
+    const [opControlLabel,setOpControlLable]=  useState("");
     //Its as object to send header and child id.
     const [opPatientDeposit,setOpPatientDeposit]=  useState({});
-    const [opDepositLabel,setOPDepositLable]=useState(undefined);
+    const [opDepositLabel,setOPDepositLable]=useState("");
     //Its as object to send header and child id.
     const [opReceviable,setOPReceviable] = useState({});
-    const [opReceviableLable,setOPReceviableLable]=useState(undefined);
+    const [opReceviableLable,setOPReceviableLable]=useState("");
+    //Its as object to send header and child id.
+    const [opCashInHand,setOPCashInHand]=  useState({});
+    const [opCashInHandLabel,setopCashInHandLable]=useState("");
 
   useEffect(()=>{
       getHeaders({finance_account_head_id:1})
@@ -29,7 +32,8 @@ export default function (props) {
                   setAssets([]);
               }
           }).catch(error=>{
-            console.error(error);
+
+          AlgaehMessagePop({type:"error",display:error});
       });
       getHeaders({finance_account_head_id:2})
           .then(result=>{
@@ -39,8 +43,35 @@ export default function (props) {
                   setLability([]);
               }
           }).catch(error=>{
-          console.error(error);
+          AlgaehMessagePop({type:"error",display:error});
       });
+      getFinanceAccountsMaping().then(result=>{
+          if(Array.isArray(result)){
+            const opCon=  result.find(f=>f.account ==="OP_CON");
+            if(opCon !==undefined){
+                setOpControl(opCon);
+                setOpControlLable(opCon.child_name);
+            }
+              const opDep=  result.find(f=>f.account ==="OP_DEP");
+              if(opDep !==undefined){
+                  setOpPatientDeposit(opDep);
+                  setOPDepositLable(opDep.child_name);
+              }
+
+              const opRec=  result.find(f=>f.account ==="OP_REC");
+              if(opRec !==undefined){
+                  setOPReceviable(opRec);
+                  setOPReceviableLable(opRec.child_name);
+              }
+              const cashInHand=  result.find(f=>f.account ==="CH_IN_HA");
+              if(cashInHand !==undefined){
+                  setOPCashInHand(cashInHand);
+                  setopCashInHandLable(cashInHand.child_name);
+              }
+          }
+      }).catch(error=>{
+          AlgaehMessagePop({type:"error",display:error});
+      })
   },[]);
 
 
@@ -55,13 +86,13 @@ export default function (props) {
               </div>
             </div>
             <div className="portlet-body">
-              <AlgaehValidator mode="single"
+              <AlgaehValidator
               onSubmit={()=>{
-                  updateFinanceAccountsMaping({opControl,opPatientDeposit,opReceviable})
-                      .then(result=>{
-                          AlgaehMessagePop({type:"success",title:"Success"});
+                  updateFinanceAccountsMaping([opControl,opPatientDeposit,opReceviable,opCashInHand])
+                      .then(()=>{
+                          AlgaehMessagePop({type:"success",display:"Updated successfully"});
                       }).catch(error=>{
-                      AlgaehMessagePop({type:"error",title:JSON.stringify(error)});
+                      AlgaehMessagePop({type:"error",display:JSON.stringify(error)});
                   });
               }}
               >
@@ -71,7 +102,7 @@ export default function (props) {
                       label={{ forceLabel: "OP CONTROL A/C",isImp:true}}
                       value={opControlLabel}
                       onChange ={(currentNode, selectedNodes) => {
-                          setOpControl({head_id:currentNode.head_id,child_id:currentNode.finance_account_child_id});
+                          setOpControl({head_id:currentNode.head_id,child_id:currentNode.finance_account_child_id,account:"OP_CON"});
                           setOpControlLable(currentNode.label);
                   }}
                  others={ {data:assets,
@@ -87,7 +118,7 @@ export default function (props) {
                       label={{ forceLabel: "OP Patient Deposit",isImp:true}}
                       value={opDepositLabel}
                       onChange ={(currentNode, selectedNodes) => {
-                          setOpPatientDeposit({head_id:currentNode.head_id,child_id:currentNode.finance_account_child_id});
+                          setOpPatientDeposit({head_id:currentNode.head_id,child_id:currentNode.finance_account_child_id,account:"OP_DEP"});
                           setOPDepositLable(currentNode.label);
                       }}
                       others={ {data:lability,
@@ -101,11 +132,25 @@ export default function (props) {
                       label={{ forceLabel: "OP Patient Receivable A/C",isImp:true}}
                       value={opReceviableLable}
                       onChange ={(currentNode, selectedNodes) => {
-                          setOPReceviable({head_id:currentNode.head_id,child_id:currentNode.finance_account_child_id});
+                          setOPReceviable({head_id:currentNode.head_id,child_id:currentNode.finance_account_child_id,account:"OP_REC"});
                           setOPReceviableLable(currentNode.label);
                       }}
                       others={ {data:assets,
                           texts:{placeholder:"Please select account",noMatches:"No records found"},
+                          mode:"radioSelect"
+                      }}
+                  />
+                  <AlgaehTreeDropDown
+                      div={{ className: "col-3 form-group" }}
+                      label={{ forceLabel: "Cash In Hand A/C",isImp:true}}
+                      value={opCashInHandLabel}
+                      onChange ={(currentNode, selectedNodes) => {
+                          setOPCashInHand({head_id:currentNode.head_id,child_id:currentNode.finance_account_child_id,account:"CH_IN_HA"});
+                          setopCashInHandLable(currentNode.label);
+                      }}
+                      others={ {data:assets,
+                          texts:{placeholder:"Please select account",
+                              noMatches:"No records found",label:"Visa"},
                           mode:"radioSelect"
                       }}
                   />

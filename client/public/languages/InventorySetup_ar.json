@@ -5,17 +5,14 @@
   "item_group": "بند مجموعة",
   "item_uom": "بند UOM",
   "location": "الموقع",
-
+  "inventory_options": "خيارات",
   "Addbutton": "أضف إلى القائمة",
-
   "inv_status": "الحالة",
-
   "type_code": "الشفرة",
   "type_desc": "لاسم",
   "arabic_type_desc": "الاسم العربي",
   "created_by": "صنع من قبل",
   "created_date": "الإنشاءخ تاريخ",
-
   "category_id": "الفئة",
   "location_type": "نوع الموقع",
   "allow_pos": "السماح POS"
