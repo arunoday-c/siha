@@ -22,7 +22,7 @@ export default function Liablity() {
         setTreeData(data);
       });
     }
-  }, [treeData]);
+  }, []);
 
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {

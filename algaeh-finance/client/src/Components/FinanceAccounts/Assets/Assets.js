@@ -20,15 +20,21 @@ export default function Assets() {
   useEffect(() => {
     if (treeData.length === 0) {
       getAccounts("1", data => {
-        setTreeData(data);
+        if(Array.isArray(data)){
+          if(data.length >0){
+            setTreeData(data[0].children);
+          }
+        }else{
+          setTreeData([]);
+        }
+
       });
     }
-  }, [treeData]);
+  }, []);
 
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
       try {
-        debugger;
         const { treeData } = options;
         // let NEW_NODE = { title: addedNode.account_name };
         let { node, treeIndex, path } = rowInfo;
@@ -90,7 +96,6 @@ export default function Assets() {
           setShowPopup(false);
           if (e !== undefined) {
             addNode(selectedNode, { treeData }, e).then(newTree => {
-              debugger;
               setTreeData(newTree.treeData);
             });
           }
@@ -140,6 +145,7 @@ export default function Assets() {
                 <div className="row">
                   <div className="treeNodeWrapper">
                     <SortableTree
+
                       treeData={treeData}
                       onChange={treeData => {
                         setTreeData(treeData);
@@ -151,57 +157,52 @@ export default function Assets() {
                       generateNodeProps={rowInfo => {
                         return {
                           buttons: [
-                            <div>
-                              {rowInfo.node.created_status === "U" ? (
-                                <button
-                                  label="Delete"
-                                  onClick={event => {
-                                    let child_exists =
-                                      rowInfo.node.children === undefined
-                                        ? ""
-                                        : rowInfo.node.children.length > 0
-                                        ? "This node exists Sub Accounts, If delete childs also will get delete !"
-                                        : "";
-                                    // rowInfo
-                                    swal
-                                      .fire({
-                                        title: "Are you sure want to Remove?",
-                                        text: child_exists,
-                                        type: "warning",
-                                        showCancelButton: true,
-                                        confirmButtonColor: "#3085d6",
-                                        cancelButtonColor: "#d33",
-                                        confirmButtonText: "Yes, delete it!"
-                                      })
-                                      .then(willProceed => {
-                                        if (willProceed.value) {
-                                          removeNode(rowInfo, { treeData })
-                                            .then(newTree => {
-                                              setTreeData(newTree);
-                                            })
-                                            .catch(error => {
-                                              alert(error);
-                                            });
-                                        }
-                                      });
-                                  }}
-                                >
-                                  Remove
-                                </button>
-                              ) : null}
+                            <div className="box">
+                              <ul>
+                                {rowInfo.node.created_status === "U" ? (<li label="Delete"
+                                    onClick={event => {
+                                      let child_exists =
+                                          rowInfo.node.children === undefined
+                                              ? ""
+                                              : rowInfo.node.children.length > 0
+                                              ? "This node exists Sub Accounts, If delete childs also will get delete !"
+                                              : "";
+                                      // rowInfo
+                                      swal
+                                          .fire({
+                                            title: "Are you sure want to Remove?",
+                                            text: child_exists,
+                                            type: "warning",
+                                            showCancelButton: true,
+                                            confirmButtonColor: "#3085d6",
+                                            cancelButtonColor: "#d33",
+                                            confirmButtonText: "Yes, delete it!"
+                                          })
+                                          .then(willProceed => {
+                                            if (willProceed.value) {
+                                              removeNode(rowInfo, { treeData })
+                                                  .then(newTree => {
+                                                    setTreeData(newTree);
+                                                  })
+                                                  .catch(error => {
+                                                    alert(error);
+                                                  });
+                                            }
+                                          });
+                                    }}  >
 
-                              {rowInfo.node.leafnode === "N" ? (
-                                <button
+                                      Remove
+
+                                </li>) : null}
+                              {rowInfo.node.leafnode === "N" ? (<li
                                   label="Add"
                                   onClick={event => {
                                     setSelectHead(false);
                                     setShowPopup(true);
                                     setSelectedNode(rowInfo);
-                                  }}
-                                >
-                                  Add
-                                </button>
-                              ) : null}
+                                  }} >
+                                  Add</li>) : null}
+                              </ul>
                             </div>
                           ],
                           style: {

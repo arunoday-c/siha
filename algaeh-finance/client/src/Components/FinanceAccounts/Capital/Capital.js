@@ -23,7 +23,7 @@ export default function Capital() {
         setTreeData(data);
       });
     }
-  }, [treeData]);
+  }, []);
 
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {

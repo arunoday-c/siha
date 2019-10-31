@@ -380,7 +380,7 @@ export default {
     _mysql
       .executeQuery({
         query: `select D.finance_day_end_detail_id ,H.trancation_date,case D.payment_mode when 'CA' then\
-          'CASH' when 'CH' then 'CHEQUE' when 'CD' then 'CARD'  end as payment_mode ,D.amount,\
+          'CASH' when 'CH' then 'CHEQUE' when 'CD' then 'CARD'  end as payment_mode ,D.amount,SD.narration,\
           H.document_type,H.document_number,case H.transaction_type when 'AD' then 'ADVANCE' \
           when 'RF' then 'REFUND' end as transaction_type ,S.screen_name from finance_day_end_header H inner join\
           finance_day_end_detail D on H.finance_day_end_header_id=D.day_end_header_id \

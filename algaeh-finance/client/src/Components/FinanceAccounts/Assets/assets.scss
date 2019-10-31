@@ -23,3 +23,18 @@
   height: 74vh;
   width: 100vw;
 }
+.rst__rowContentsDragDisabled{
+  border-radius: 5px!important;
+}
+.box {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-content: space-between;
+  ul{
+    li {
+      list-style: none;
+      border:1px solid grey;
+    }
+  }
+}

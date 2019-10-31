@@ -9,6 +9,7 @@ import {
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 
+import {algaehApiCall,swalMessage} from "../../../utils/algaehApiCall";
 const modules = [
   {
     name: "OP Bill",
@@ -69,11 +70,34 @@ const modules = [
 ];
 
 class DayEndProcess extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
-      trans_type: []
+      trans_type: [],
+      dayEnd:[]
     };
+
+  }
+
+  getDayEndProcess(){
+    try{
+      algaehApiCall({
+        uri:"/finance/getDayEndData",
+        data:{from_date:"2019-10-01",to_date:"2019-10-31"},
+        method: "GET",
+        module: "finance",
+        onSuccess:response=>{
+          this.setState({dayEnd:response.data.result});
+        },
+        onCatch:error=>{
+          debugger;
+        }
+      })
+    }
+    catch (e) {
+
+    }
   }
 
   dropDownHandle(value) {
@@ -185,7 +209,8 @@ class DayEndProcess extends Component {
                 }}
               />
               <div className="col">
-                <button className="btn btn-primary" style={{ marginTop: 19 }}>
+                <button className="btn btn-primary" style={{ marginTop: 19 }}
+                onClick={this.getDayEndProcess.bind(this)} >
                   Preview
                 </button>
               </div>
@@ -224,7 +249,7 @@ class DayEndProcess extends Component {
                         }
                       },
                       {
-                        fieldName: "documentType",
+                        fieldName: "document_type",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Document Type" }}
@@ -232,14 +257,14 @@ class DayEndProcess extends Component {
                         )
                       },
                       {
-                        fieldName: "documentNo",
+                        fieldName: "document_number",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Document No." }} />
                         ),
                         disabled: true
                       },
                       {
-                        fieldName: "document_date",
+                        fieldName: "trancation_date",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Document  Date" }}
@@ -247,36 +272,31 @@ class DayEndProcess extends Component {
                         )
                       },
                       {
-                        fieldName: "code",
-                        label: <AlgaehLabel label={{ forceLabel: "Code" }} />,
-                        disabled: true
-                      },
-                      {
-                        fieldName: "description_id",
+                        fieldName: "narration",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Description" }} />
                         )
                       },
                       {
-                        fieldName: "recipt_refund",
+                        fieldName: "transaction_type",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Recipt/ Refund" }}
+                            label={{ forceLabel: "Transaction Type" }}
                           />
                         ),
                         disabled: true
                       },
                       {
-                        fieldName: "invoiceAmount",
+                        fieldName: "amount",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Invoice Amount" }}
+                            label={{ forceLabel: "Amount" }}
                           />
                         )
                       },
 
                       {
-                        fieldName: "fromDocument",
+                        fieldName: "screen_name",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "From Document" }}
@@ -285,9 +305,9 @@ class DayEndProcess extends Component {
                         disabled: true
                       }
                     ]}
-                    keyId="service_type_id"
+                    keyId="finance_day_end_detail_id"
                     dataSource={{
-                      data: this.state.pharmacy_stock_detail
+                      data: this.state.dayEnd
                     }}
                     isEditable={false}
                     paging={{ page: 0, rowsPerPage: 10 }}
