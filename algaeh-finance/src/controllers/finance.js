@@ -118,7 +118,7 @@ export default () => {
     }
   });
   api.post("/postDayEndData", postDayEndData, (req, res, next) => {
-    if (req.records.invalid_input == true) {
+    if (req.records.invalid_input == true&&req.records.invalid_input!=undefined) {
       res
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({

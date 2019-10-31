@@ -75,9 +75,11 @@ class DayEndProcess extends Component {
     super(props);
     this.state = {
       trans_type: [],
-      dayEnd:[]
+      dayEnd:[],
+      from_date:undefined,
+      to_date:undefined
     };
-
+  this.selectedDayEndIds=[];
   }
 
   getDayEndProcess(){
@@ -91,15 +93,35 @@ class DayEndProcess extends Component {
           this.setState({dayEnd:response.data.result});
         },
         onCatch:error=>{
-          debugger;
+          swalMessage({title:error,type:"error"});
         }
-      })
+      });
     }
     catch (e) {
-
+      console.error(e);
     }
   }
-
+postDayEndProcess(){
+  try{
+    algaehApiCall({
+      uri:"/finance/postDayEndData",
+      data:{finance_day_end_detail_ids: this.selectedDayEndIds.map((item=>{
+        return item.finance_day_end_detail_id;
+        }))},
+      method: "POST",
+      module: "finance",
+      onSuccess:response=>{
+       swalMessage({type:"success",title:"Successfully Posted"})
+      },
+      onCatch:error=>{
+        swalMessage({title:error,type:"error"});
+      }
+    });
+  }
+  catch (e) {
+    console.error(e);
+  }
+}
   dropDownHandle(value) {
     switch (value.name) {
       case "modules":
@@ -167,14 +189,14 @@ class DayEndProcess extends Component {
                 label={{ forceLabel: "From Date" }}
                 textBox={{
                   className: "txt-fld",
-                  name: "expiry_date"
+                  name: "from_date"
                 }}
-                minDate={new Date()}
-                //disabled={true}
                 events={{
-                  onChange: null
+                  onChange: (selectedDate)=>{
+                    this.setState({from_date:selectedDate,to_date:undefined});
+                  }
                 }}
-                value={this.state.expiry_date}
+                value={this.state.from_date}
               />
 
               <AlgaehDateHandler
@@ -182,14 +204,16 @@ class DayEndProcess extends Component {
                 label={{ forceLabel: "To Date" }}
                 textBox={{
                   className: "txt-fld",
-                  name: "expiry_date"
+                  name: "to_date",
+
                 }}
-                minDate={new Date()}
-                //disabled={true}
+                {...this.state.from_date !==undefined?{minDate:new Date(this.state.from_date)}:{}}
                 events={{
-                  onChange: null
+                  onChange: (selectedDate)=>{
+                    this.setState({to_date:selectedDate});
+                  }
                 }}
-                value={this.state.expiry_date}
+                value={this.state.to_date}
               />
               <AlagehFormGroup
                 div={{ className: "col" }}
@@ -214,21 +238,7 @@ class DayEndProcess extends Component {
                   Preview
                 </button>
               </div>
-              {/* <div
-            className="customCheckbox col-lg-3"
-            style={{ border: "none", marginTop: "28px" }}
-          >
-            <label className="checkbox" style={{ color: "#212529" }}>
-              <input
-                type="checkbox"
-                name="Multiple PO"
-                checked={this.state.Cashchecked}
-                onChange={null}
-              />
 
-              <span style={{ fontSize: "0.8rem" }}>From Multiple PO</span>
-            </label>
-          </div> */}
             </div>
           </div>
         </div>
@@ -244,6 +254,21 @@ class DayEndProcess extends Component {
                       {
                         fieldName: "select_id",
                         label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
+                        displayTemplate:(row)=>(<input type="checkbox"
+                                                       onClick={(e)=>{
+                          if(e.target.checked ===true){
+                            //ToDo need to change this functionality
+                          const isExist=  this.selectedDayEndIds.findIndex(f=>f.finance_day_end_detail_id === row.finance_day_end_detail_id);
+                          //if(isExist===undefined){
+                            this.selectedDayEndIds.push({finance_day_end_sub_detail_id:row.finance_day_end_sub_detail_id,
+                              finance_day_end_detail_id:row.finance_day_end_detail_id});
+                          //}
+
+                          }else {
+                          const itemExists=  this.selectedDayEndIds.findIndex(f => f.finance_day_end_sub_detail_id === row.finance_day_end_sub_detail_id);
+                            this.selectedDayEndIds.splice(itemExists,1);
+                          }
+                        }} />),
                         other: {
                           maxWidth: 55
                         }
@@ -326,7 +351,7 @@ class DayEndProcess extends Component {
                       margin: "10px"
                     }}
                   >
-                    <button className="btn btn-primary">POST</button>
+                    <button className="btn btn-primary" onClick={this.postDayEndProcess.bind(this)}>POST</button>
                   </div>
                 </div>
               </div>

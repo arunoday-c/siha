@@ -379,16 +379,16 @@ export default {
     }
     _mysql
       .executeQuery({
-        query: `select D.finance_day_end_detail_id ,H.trancation_date,case D.payment_mode when 'CA' then\
+        query: `select SD.finance_day_end_sub_detail_id,D.finance_day_end_detail_id ,H.transaction_date,case D.payment_mode when 'CA' then\
           'CASH' when 'CH' then 'CHEQUE' when 'CD' then 'CARD'  end as payment_mode ,D.amount,SD.narration,\
           H.document_type,H.document_number,case H.transaction_type when 'AD' then 'ADVANCE' \
-          when 'RF' then 'REFUND' end as transaction_type ,S.screen_name,SD.posted from finance_day_end_header H inner join\
+          when 'RF' then 'REFUND' end as transaction_type ,S.screen_name from finance_day_end_header H inner join\
           finance_day_end_detail D on H.finance_day_end_header_id=D.day_end_header_id \
           inner join finance_day_end_sub_detail SD on D.finance_day_end_detail_id=SD.day_end_detail_id\
           left join  algaeh_d_app_screens S on H.from_screen=S.screen_code\
-          where H.trancation_date between date(?) and  date(?)  ${strQry};`,
+          where  SD.posted='N' and H.transaction_date between date(?) and  date(?)  ${strQry};`,
         values: [input.from_date, input.to_date],
-        printQuery: false
+        printQuery: true
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -404,31 +404,34 @@ export default {
   postDayEndData: (req, res, next) => {
     const _mysql = new algaehMysql();
     // const utilities = new algaehUtilities();
-    let input = req.query;
+    let input = req.body;
+
+    console.log("input:",input)
 
     _mysql
       .executeQuery({
         query: `  WITH cte_  AS (
           SELECT finance_day_end_sub_detail_id, day_end_detail_id, payment_date, head_account_code,
           sum(debit_amount),sum(credit_amount) ,case when sum(debit_amount)= sum(credit_amount)then
-          'true' else 'false'end as is_equal FROM hims_test_db.finance_day_end_sub_detail
+          'true' else 'false'end as is_equal FROM finance_day_end_sub_detail
           where posted='N' and day_end_detail_id in (?)
           group by day_end_detail_id)
           select * from finance_day_end_sub_detail where day_end_detail_id in (SELECT day_end_detail_id
            FROM cte_ where is_equal='true');`,
         values: [input.finance_day_end_detail_ids],
-        printQuery: false
+        printQuery: true
       })
       .then(result => {
         // _mysql.releaseConnection();
         // req.records = result;
         // next();
         if (result.length > 0) {
-          const updateFinanceDayEndDetailIds = updateFinanceDayEndDetailIds.map(
+          const updateFinanceDayEndDetailIds = result.map(
             m => {
               return m.finance_day_end_sub_detail_id;
             }
           );
+          console.log("updateFinanceDayEndDetailIds:",updateFinanceDayEndDetailIds)
           const insertColumns = [
             "payment_date",
             "head_account_code",
@@ -445,7 +448,8 @@ export default {
               query: "insert into finance_voucher_details (??) values ?;",
               values: result,
               includeValues: insertColumns,
-              bulkInsertOrUpdate: true
+              bulkInsertOrUpdate: true,
+              printQuery:true
             })
             .then(result2 => {
               _mysql
@@ -479,11 +483,12 @@ export default {
             });
         } else {
           _mysql.releaseConnection();
-          next();
+
           req.records = {
             invalid_input: true,
             message: "No records found to post"
           };
+          next();
         }
       })
       .catch(e => {
