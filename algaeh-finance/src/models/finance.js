@@ -361,18 +361,33 @@ export default {
       });
   },
   //created by irfan: to
-  loadDayEndData: (req, res, next) => {
+  getDayEndData: (req, res, next) => {
     const _mysql = new algaehMysql();
     // const utilities = new algaehUtilities();
+    let input = req.query;
 
+    let strQry = "";
+
+    if (input.document_number !== undefined && input.document_number == null) {
+      strQry += ` H.document_number='${input.document_number}'`;
+    }
+    if (
+      input.transaction_type !== undefined &&
+      input.transaction_type == null
+    ) {
+      strQry += ` H.transaction_type='${input.transaction_type}'`;
+    }
     _mysql
       .executeQuery({
-        query:
-          "select account,child_id,head_id,H.account_name,C.child_name from \
-          finance_accounts_maping M left join finance_account_head H\
-          on M.head_id=H.finance_account_head_id left join finance_account_child C \
-          on M.child_id=C.finance_account_child_id ;",
-
+        query: `select D.finance_day_end_detail_id ,H.trancation_date,case D.payment_mode when 'CA' then\
+          'CASH' when 'CH' then 'CHEQUE' when 'CD' then 'CARD'  end as payment_mode ,D.amount,\
+          H.document_type,H.document_number,case H.transaction_type when 'AD' then 'ADVANCE' \
+          when 'RF' then 'REFUND' end as transaction_type ,S.screen_name from finance_day_end_header H inner join\
+          finance_day_end_detail D on H.finance_day_end_header_id=D.day_end_header_id \
+          inner join finance_day_end_sub_detail SD on D.finance_day_end_detail_id=SD.day_end_detail_id\
+          left join  algaeh_d_app_screens S on H.from_screen=S.screen_code\
+          where H.trancation_date between date(?) and  date(?) and SD.posted='N' ${strQry};`,
+        values: [input.from_date, input.to_date],
         printQuery: false
       })
       .then(result => {
