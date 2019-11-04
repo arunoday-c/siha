@@ -92,33 +92,17 @@ export default {
     let input = req.query;
 
     if (
-      (input.finance_account_head_id > 0 &&
-        input.finance_account_head_id < 5) ||
-      (input.childs_of != "N" && input.childs_of != undefined)
+      input.finance_account_head_id > 0 &&
+      input.finance_account_head_id < 5
     ) {
       // input["childs_of"] = "A";
       console.log("input:", input);
-      let finance_account_head_id = "";
-
-      if (input.childs_of != "N" && input.childs_of != undefined) {
-        switch (input.childs_of) {
-          case "A":
-            finance_account_head_id = 1;
-            break;
-
-          case "L":
-            finance_account_head_id = 2;
-            break;
-          case "I":
-            finance_account_head_id = 3;
-            break;
-          case "C":
-            finance_account_head_id = 4;
-            break;
-        }
-      } else {
-        finance_account_head_id = input.finance_account_head_id;
+      let default_total = "0.0000";
+      let trans_symbol = "CR";
+      if (input.finance_account_head_id == 1) {
+        trans_symbol = "DR";
       }
+
       _mysql
         .executeQuery({
           query: `with recursive cte (finance_account_head_id, account_name, parent_acc_id,
@@ -149,12 +133,12 @@ export default {
 
           printQuery: true,
 
-          values: [finance_account_head_id]
+          values: [input.finance_account_head_id]
         })
         .then(result => {
           _mysql.releaseConnection();
 
-          const outputArray = createHierarchy(result, input.childs_of);
+          const outputArray = createHierarchy(result);
 
           req.records = outputArray;
           next();
@@ -406,7 +390,7 @@ export default {
     // const utilities = new algaehUtilities();
     let input = req.body;
 
-    console.log("input:",input)
+    console.log("input:", input);
 
     _mysql
       .executeQuery({
@@ -426,12 +410,13 @@ export default {
         // req.records = result;
         // next();
         if (result.length > 0) {
-          const updateFinanceDayEndDetailIds = result.map(
-            m => {
-              return m.finance_day_end_sub_detail_id;
-            }
+          const updateFinanceDayEndDetailIds = result.map(m => {
+            return m.finance_day_end_sub_detail_id;
+          });
+          console.log(
+            "updateFinanceDayEndDetailIds:",
+            updateFinanceDayEndDetailIds
           );
-          console.log("updateFinanceDayEndDetailIds:",updateFinanceDayEndDetailIds)
           const insertColumns = [
             "payment_date",
             "head_account_code",
@@ -449,7 +434,7 @@ export default {
               values: result,
               includeValues: insertColumns,
               bulkInsertOrUpdate: true,
-              printQuery:true
+              printQuery: true
             })
             .then(result2 => {
               _mysql
@@ -498,8 +483,8 @@ export default {
   }
 };
 
-function createHierarchy(arry, childs_of) {
-  const onlyChilds = [];
+function createHierarchy(arry) {
+  // const onlyChilds = [];
   const utilities = new algaehUtilities();
   let roots = [],
     children = {};
@@ -528,18 +513,6 @@ function createHierarchy(arry, childs_of) {
         leafnode: "Y",
         created_status: item["child_created_from"]
       });
-
-      if (childs_of != undefined && childs_of != "N") {
-        onlyChilds.push({
-          finance_account_child_id: item["finance_account_child_id"],
-          title: item.child_name,
-          label: item.child_name,
-          head_id: item["head_id"],
-          disabled: false,
-          leafnode: "Y",
-          created_status: item["child_created_from"]
-        });
-      }
 
       const data = target.find(val => {
         return val.finance_account_head_id == item.finance_account_head_id;
@@ -599,11 +572,7 @@ function createHierarchy(arry, childs_of) {
     findChildren(roots[i]);
   }
 
-  if (childs_of != undefined && childs_of != "N") {
-    return onlyChilds;
-  } else {
-    return roots;
-  }
+  return roots;
 }
 
 // WITH cte_name  AS (

@@ -3016,7 +3016,7 @@ export default {
       _mysql
         .executeQueryWithTransaction({
           query:
-            "INSERT INTO finance_day_end_header (trancation_date,amount,control_account,document_type,document_id,\
+            "INSERT INTO finance_day_end_header (transaction_date,amount,control_account,document_type,document_id,\
               document_number,from_screen,transaction_type,cutomer_type,hospital_id) \
               VALUES (?,?,?,?,?,?,?,?,?,?)",
           values: [
