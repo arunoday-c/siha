@@ -23,7 +23,8 @@ const loctexthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
+    location_type: e.selected.location_type
   });
 };
 
@@ -121,8 +122,8 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const ReceiptSearch = ($this, e) => {
-  let Inputs = "grn_for = '" + $this.state.po_return_from + "'";
-  debugger;
+  let Inputs = "grn_for = '" + $this.state.po_return_from + "' and return_done = 'N'";
+
 
   if (
     $this.state.po_return_from === "PHR" &&
@@ -164,19 +165,16 @@ const ReceiptSearch = ($this, e) => {
         method: "GET",
         onSuccess: response => {
           if (response.data.success) {
-            debugger;
+
             let data = response.data.records;
 
-            data.saveEnable = true;
+            data.saveEnable = false;
+
             data.dataExitst = true;
 
-            data.addedItem = true;
-            if (data.posted === "Y") {
-              data.postEnable = true;
-            } else {
-              data.postEnable = false;
-            }
             data.grn_number = row.grn_number;
+            data.location_type = row.location_type
+            data.grn_header_id = row.hims_f_procurement_grn_header_id
             $this.setState(data, () => {
               getData($this);
             });
@@ -197,25 +195,27 @@ const ClearData = ($this, e) => {
   $this.setState(IOputs);
 };
 
-const SavePOEnrty = $this => {
+const SavePOReutrnEnrty = $this => {
   AlgaehLoader({ show: true });
   if ($this.state.po_return_from === "PHR") {
-    $this.state.po_entry_detail = $this.state.pharmacy_stock_detail;
+    $this.state.po_return_entry_detail = $this.state.pharmacy_stock_detail;
   } else {
-    $this.state.po_entry_detail = $this.state.inventory_stock_detail;
+    $this.state.po_return_entry_detail = $this.state.inventory_stock_detail;
   }
+  debugger
 
   algaehApiCall({
-    uri: "/PurchaseOrderEntry/addPurchaseOrderEntry",
+    uri: "/PurchaseReturnEntry/addPurchaseReturnEntry",
     module: "procurement",
     data: $this.state,
     onSuccess: response => {
       if (response.data.success === true) {
         $this.setState({
-          purchase_number: response.data.records.purchase_number,
-          hims_f_procurement_po_header_id:
-            response.data.records.hims_f_procurement_po_header_id,
+          purchase_return_number: response.data.records.purchase_return_number,
+          hims_f_procurement_return_po_header_id:
+            response.data.records.hims_f_procurement_return_po_header_id,
           saveEnable: true,
+          postEnable: false,
           dataExitst: true
         });
 
@@ -243,46 +243,31 @@ const getCtrlCode = ($this, docNumber) => {
   IOputs.dataExitst = false;
   $this.setState(IOputs, () => {
     algaehApiCall({
-      uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
+      uri: "/PurchaseReturnEntry/getPurchaseReturnEntry",
       module: "procurement",
       method: "GET",
-      data: { purchase_number: docNumber },
+      data: { purchase_return_number: docNumber },
       onSuccess: response => {
         if (response.data.success) {
           let data = response.data.records;
           getData($this, data.po_return_from);
-          if (
-            $this.props.purchase_number !== undefined &&
-            $this.props.purchase_number.length !== 0
-          ) {
-            data.authorizeEnable = false;
-            data.ItemDisable = true;
-            data.ClearDisable = true;
 
-            for (let i = 0; i < data.po_entry_detail.length; i++) {
-              data.po_entry_detail[i].authorize_quantity =
-                data.authorize1 === "N"
-                  ? data.po_entry_detail[i].total_quantity
-                  : data.po_entry_detail[i].authorize_quantity;
-              data.po_entry_detail[i].quantity_outstanding =
-                data.authorize1 === "N"
-                  ? data.po_entry_detail[i].total_quantity
-                  : data.po_entry_detail[i].quantity_outstanding;
-              data.po_entry_detail[i].rejected_quantity =
-                parseFloat(data.po_entry_detail[i].total_quantity) -
-                parseFloat(data.po_entry_detail[i].authorize_quantity);
-            }
-          }
           data.saveEnable = true;
           data.dataExitst = true;
 
-          if (data.po_return_from === "PHR") {
-            $this.state.pharmacy_stock_detail = data.po_entry_detail;
+          if (data.is_posted === "N") {
+            data.postEnable = false
           } else {
-            $this.state.inventory_stock_detail = data.po_entry_detail;
+            data.postEnable = true
           }
 
-          data.addedItem = true;
+          if (data.po_return_from === "PHR") {
+            data.pharmacy_stock_detail = data.po_return_entry_detail;
+          } else {
+            data.inventory_stock_detail = data.po_return_entry_detail;
+          }
+
+
           $this.setState(data);
           AlgaehLoader({ show: false });
 
@@ -303,7 +288,7 @@ const getCtrlCode = ($this, docNumber) => {
     //   module: "procurement",
     //   method: "GET",
     //   printInput: true,
-    //   data: { purchase_number: docNumber },
+    //   data: { purchase_return_number: docNumber },
     //   redux: {
     //     type: "PO_ENTRY_GET_DATA",
     //     mappingName: "purchaseorderentry"
@@ -403,7 +388,7 @@ const getData = ($this, po_return_from) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "poitemcategory"
       },
-      afterSuccess: data => {}
+      afterSuccess: data => { }
     });
 
     $this.props.getItemGroup({
@@ -446,8 +431,8 @@ const generatePOReceipt = data => {
             : "poInventoryProcurement",
         reportParams: [
           {
-            name: "purchase_number",
-            value: data.purchase_number
+            name: "purchase_return_number",
+            value: data.purchase_return_number
           }
         ],
         outputFileType: "PDF"
@@ -485,8 +470,8 @@ const generatePOReceiptNoPrice = data => {
             : "poInventoryProcurementNoPrice",
         reportParams: [
           {
-            name: "purchase_number",
-            value: data.purchase_number
+            name: "purchase_return_number",
+            value: data.purchase_return_number
           }
         ],
         outputFileType: "PDF"
@@ -506,53 +491,103 @@ const generatePOReceiptNoPrice = data => {
   });
 };
 
-const AuthorizePOEntry = $this => {
-  let stock_detail =
-    $this.state.po_return_from === "PHR"
-      ? $this.state.pharmacy_stock_detail
-      : $this.state.inventory_stock_detail;
-  let auth_qty = Enumerable.from(stock_detail).any(
-    w => parseFloat(w.authorize_quantity) === 0 || w.authorize_quantity === ""
-  );
-  if (auth_qty === true) {
-    swalMessage({
-      title: "Please enter Authorize Quantity.",
-      type: "warning"
-    });
-  } else {
-    AlgaehLoader({ show: true });
-    if ($this.state.po_return_from === "PHR") {
-      $this.state.po_entry_detail = $this.state.pharmacy_stock_detail;
-    } else {
-      $this.state.po_entry_detail = $this.state.inventory_stock_detail;
+const PostPOReturnEntry = $this => {
+
+  AlgaehLoader({ show: true });
+  let InputObj = $this.state
+  InputObj.transaction_type = "PR";
+  InputObj.transaction_id = $this.state.hims_f_procurement_return_po_header_id;
+  InputObj.transaction_date = $this.state.return_date;
+  InputObj.year = moment().format("YYYY")
+  InputObj.period = moment().format("MM")
+
+  if ($this.state.po_return_from === "PHR") {
+    for (let i = 0; i < InputObj.pharmacy_stock_detail.length; i++) {
+      InputObj.pharmacy_stock_detail[i].location_id =
+        InputObj.pharmcy_location_id;
+      InputObj.pharmacy_stock_detail[i].location_type = InputObj.location_type;
+
+      InputObj.pharmacy_stock_detail[i].quantity =
+        parseFloat(InputObj.pharmacy_stock_detail[i].return_qty)
+
+      InputObj.pharmacy_stock_detail[i].uom_id =
+        InputObj.pharmacy_stock_detail[i].pharmacy_uom_id;
+
+      InputObj.pharmacy_stock_detail[i].sales_uom =
+        InputObj.pharmacy_stock_detail[i].sales_uom_id;
+      InputObj.pharmacy_stock_detail[i].item_id =
+        InputObj.pharmacy_stock_detail[i].phar_item_id;
+      InputObj.pharmacy_stock_detail[i].item_code_id =
+        InputObj.pharmacy_stock_detail[i].phar_item_id;
+
+      InputObj.pharmacy_stock_detail[i].item_category_id =
+        InputObj.pharmacy_stock_detail[i].phar_item_category;
+      InputObj.pharmacy_stock_detail[i].item_group_id =
+        InputObj.pharmacy_stock_detail[i].phar_item_group;
+
+      InputObj.pharmacy_stock_detail[i].net_total =
+        InputObj.pharmacy_stock_detail[i].net_extended_cost;
+      InputObj.pharmacy_stock_detail[i].operation = "-";
     }
-    $this.state.authorize1 = "Y";
-    algaehApiCall({
-      uri: "/PurchaseOrderEntry/updatePurchaseOrderEntry",
-      module: "procurement",
-      data: $this.state,
-      method: "PUT",
-      onSuccess: response => {
-        if (response.data.success === true) {
-          $this.setState({
-            authorize1: "Y"
-          });
-          swalMessage({
-            title: "Authorized successfully . .",
-            type: "success"
-          });
-        }
-        AlgaehLoader({ show: false });
-      },
-      onFailure: error => {
-        AlgaehLoader({ show: false });
+    // $this.state.po_return_entry_detail = $this.state.pharmacy_stock_detail;
+  } else {
+    // $this.state.po_return_entry_detail = $this.state.inventory_stock_detail;
+    for (let i = 0; i < InputObj.inventory_stock_detail.length; i++) {
+      InputObj.inventory_stock_detail[i].location_id =
+        InputObj.inventory_location_id;
+      InputObj.inventory_stock_detail[i].location_type = InputObj.location_type;
+
+      InputObj.inventory_stock_detail[i].quantity =
+        parseFloat(InputObj.inventory_stock_detail[i].return_qty)
+
+      InputObj.inventory_stock_detail[i].uom_id =
+        InputObj.inventory_stock_detail[i].inventory_uom_id;
+      InputObj.inventory_stock_detail[i].sales_uom =
+        InputObj.inventory_stock_detail[i].sales_uom_id;
+      InputObj.inventory_stock_detail[i].item_id =
+        InputObj.inventory_stock_detail[i].inv_item_id;
+      InputObj.inventory_stock_detail[i].item_code_id =
+        InputObj.inventory_stock_detail[i].inv_item_id;
+      InputObj.inventory_stock_detail[i].grn_number = InputObj.grn_number;
+      InputObj.inventory_stock_detail[i].item_category_id =
+        InputObj.inventory_stock_detail[i].inv_item_category_id;
+      InputObj.inventory_stock_detail[i].item_group_id =
+        InputObj.inventory_stock_detail[i].inv_item_group_id;
+
+      InputObj.inventory_stock_detail[i].net_total =
+        InputObj.inventory_stock_detail[i].net_extended_cost;
+      InputObj.inventory_stock_detail[i].operation = "-";
+    }
+  }
+  debugger
+
+  algaehApiCall({
+    uri: "/PurchaseReturnEntry/postPurchaseOrderEntry",
+    module: "procurement",
+    data: InputObj,
+    method: "PUT",
+    onSuccess: response => {
+      if (response.data.success === true) {
+        $this.setState({
+          postEnable: true,
+          is_posted: "Y"
+        });
         swalMessage({
-          title: error.message,
-          type: "error"
+          title: "Posted successfully . .",
+          type: "success"
         });
       }
-    });
-  }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+
 };
 
 const getVendorMaster = $this => {
@@ -576,10 +611,10 @@ export {
   ReceiptSearch,
   vendortexthandle,
   ClearData,
-  SavePOEnrty,
+  SavePOReutrnEnrty,
   getCtrlCode,
   loctexthandle,
-  AuthorizePOEntry,
+  PostPOReturnEntry,
   getVendorMaster,
   generatePOReceipt,
   generatePOReceiptNoPrice

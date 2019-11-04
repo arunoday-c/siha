@@ -43,7 +43,6 @@
         "fieldName": "contact_number",
         "label": "Contact Number"
       },
-
       {
         "fieldName": "primary_id_no",
         "label": "Primary ID No."
@@ -82,7 +81,6 @@
         "fieldName": "bill_number",
         "label": "Bill Number"
       },
-
       {
         "fieldName": "patient_code",
         "label": "Patient Code"
@@ -143,7 +141,6 @@
         "fieldName": "comission_code",
         "label": "Comission Number"
       },
-
       {
         "fieldName": "provider_code",
         "label": "Provider Code"
@@ -162,7 +159,6 @@
       }
     ]
   },
-
   "initialStock": {
     "intstock": [
       {
@@ -395,6 +391,35 @@
         "label": "Vendor Name",
         "required": "N"
       }
+    ],
+    "POReturnEntry": [
+      {
+        "fieldName": "purchase_return_number",
+        "label": "PO Number"
+      },
+      {
+        "fieldName": "return_date",
+        "label": "PO Date"
+      },
+      {
+        "fieldName": "po_return_from",
+        "label": "PO Done For"
+      },
+      {
+        "fieldName": "grn_number",
+        "label": "Receipt Number",
+        "required": "N"
+      },
+      {
+        "fieldName": "loc_description",
+        "label": "Location Name",
+        "required": "N"
+      },
+      {
+        "fieldName": "vendor_name",
+        "label": "Vendor Name",
+        "required": "N"
+      }
     ]
   },
   "Delivery": {
@@ -522,7 +547,6 @@
         "label": "Approved Amount"
       }
     ],
-
     "encash_leave": [
       {
         "fieldName": "encashment_number",
@@ -545,7 +569,6 @@
         "label": "Total Amount"
       }
     ],
-
     "end_of_service": [
       {
         "fieldName": "end_of_service_number",
@@ -568,7 +591,6 @@
         "label": "Payable Amount"
       }
     ],
-
     "final_settlement": [
       {
         "fieldName": "final_settlement_number",
@@ -591,7 +613,6 @@
         "label": "Total Amount"
       }
     ],
-
     "leave_settlement": [
       {
         "fieldName": "leave_salary_number",
@@ -645,7 +666,6 @@
       }
     ]
   },
-
   "pharmacy": {
     "itemdata": [
       {
@@ -731,7 +751,6 @@
         "fieldName": "consumption_number",
         "label": "Consumption Number"
       },
-
       {
         "fieldName": "consumption_date",
         "label": "Consumption Date"
