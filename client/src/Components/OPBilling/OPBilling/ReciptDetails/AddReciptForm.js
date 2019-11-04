@@ -60,6 +60,15 @@ class AddReciptForm extends Component {
         }
       });
     }
+    this.props.getBankCards({
+      uri: "/bankmaster/getBankCards",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "BANK_CARD_GET_DATA",
+        mappingName: "bankscards"
+      }
+    });
   }
 
   render() {
@@ -80,8 +89,8 @@ class AddReciptForm extends Component {
                       {this.state.receipt_number
                         ? this.state.receipt_number
                         : this.state.selectedLang === "en"
-                        ? "Not Generated"
-                        : "غير مولدة"}
+                          ? "Not Generated"
+                          : "غير مولدة"}
                     </h6>
                   </div>
                   <div className="col-lg-3">
@@ -222,11 +231,37 @@ class AddReciptForm extends Component {
                     </label>
                   </div>
 
+                  {this.state.Cardchecked === true ? <AlagehAutoComplete
+                    div={{ className: "col-lg-2 mandatory" }}
+                    label={{
+                      fieldName: "select_card",
+                      isImp: this.state.Cardchecked
+                    }}
+                    selector={{
+                      name: "bank_card_id",
+                      className: "select-fld",
+                      value: this.state.bank_card_id,
+                      dataSource: {
+                        textField: "card_name",
+                        valueField: "hims_d_bank_card_id",
+                        data: this.props.bankscards
+                      },
+                      onChange: texthandle.bind(this, this, context),
+                      onClear: () => {
+                        context.updateState({ bank_card_id: null });
+                        // this.setState({
+                        //   bank_card_id: null
+                        // });
+                      }
+
+                    }}
+                  /> : null}
+
                   <AlagehFormGroup
                     div={{ className: "col-lg-2" }}
                     label={{
                       fieldName: "amount",
-                      isImp: true
+                      isImp: this.state.Cardchecked
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
@@ -251,7 +286,8 @@ class AddReciptForm extends Component {
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
-                      fieldName: "card_check_number"
+                      fieldName: "card_check_number",
+                      isImp: this.state.Cardchecked
                     }}
                     textBox={{
                       number: { allowNegative: false },
@@ -306,7 +342,7 @@ class AddReciptForm extends Component {
                     div={{ className: "col-lg-2" }}
                     label={{
                       fieldName: "amount",
-                      isImp: true
+                      isImp: this.state.Checkchecked
                     }}
                     textBox={{
                       disabled: !this.state.Checkchecked,
@@ -333,7 +369,8 @@ class AddReciptForm extends Component {
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
-                      fieldName: "card_check_number"
+                      fieldName: "card_check_number",
+                      isImp: this.state.Checkchecked
                     }}
                     textBox={{
                       disabled: !this.state.Checkchecked,
@@ -390,14 +427,16 @@ class AddReciptForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    counters: state.counters
+    counters: state.counters,
+    bankscards: state.bankscards
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getCounters: AlgaehActions
+      getCounters: AlgaehActions,
+      getBankCards: AlgaehActions
     },
     dispatch
   );

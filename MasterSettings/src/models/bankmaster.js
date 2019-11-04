@@ -106,6 +106,8 @@ export default {
       next(e);
     }
   },
+
+
   deleteBank: (req, res, next) => {
     let inputParam = req.body;
     const _mysql = new algaehMysql();
@@ -130,5 +132,29 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
+
+
+  getBankCards: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select * from hims_d_bank_card "
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
 };

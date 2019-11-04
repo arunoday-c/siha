@@ -53,34 +53,45 @@ const ClearData = ($this, e) => {
 const Validations = $this => {
   let isError = false;
 
-  if ($this.state.card_amount > 0) {
+  if ($this.state.Cardchecked === true) {
     if ($this.state.card_number === null || $this.state.card_number === "") {
       isError = true;
+
       swalMessage({
         type: "warning",
-        title: "Invalid. Card Number cannot be blank."
+        title: "Card Number cannot be blank."
       });
 
-      document.querySelector("[name='card_check_number']").focus();
+      document.querySelector("[name='card_number']").focus();
       return isError;
-    }
-
-    if ($this.state.card_date === null || $this.state.card_date === "") {
+    } else if ($this.state.bank_card_id === null) {
       isError = true;
+
       swalMessage({
         type: "warning",
-        title: "Invalid. Card Date Cannot be blank."
+        title: "Select Card."
       });
 
-      document.querySelector("[name='card_date']").focus();
+      document.querySelector("[name='bank_card_id']").focus();
+      return isError;
+    } else if (parseFloat($this.state.card_amount) === 0) {
+      isError = true;
+
+      swalMessage({
+        type: "warning",
+        title: "Enter Card Amount."
+      });
+
+      document.querySelector("[name='card_amount']").focus();
       return isError;
     }
-  } else if ($this.state.cheque_amount > 0) {
+  } else if ($this.state.Checkchecked === true) {
     if (
       $this.state.cheque_number === null ||
       $this.state.cheque_number === ""
     ) {
       isError = true;
+
       swalMessage({
         type: "warning",
         title: "Check Number cannot be blank."
@@ -88,18 +99,18 @@ const Validations = $this => {
 
       document.querySelector("[name='cheque_number']").focus();
       return isError;
-    }
-
-    if ($this.state.cheque_date === null || $this.state.cheque_date === "") {
+    } else if ($this.state.cheque_amount === 0) {
       isError = true;
+
       swalMessage({
         type: "warning",
-        title: "Cheque Date Cannot be blank."
+        title: "Enter Check Amount."
       });
 
-      document.querySelector("[name='cheque_date']").focus();
+      document.querySelector("[name='cheque_amount']").focus();
       return isError;
     }
+
   } else if ($this.state.unbalanced_amount > 0) {
     isError = true;
     swalMessage({
@@ -393,7 +404,7 @@ const getPatientDetails = $this => {
         if (
           hospital_id.local_vat_applicable === "N" &&
           hospital_id.default_nationality ===
-            data.patientRegistration.nationality_id
+          data.patientRegistration.nationality_id
         ) {
           data.patientRegistration.vat_applicable = "N";
         } else {
