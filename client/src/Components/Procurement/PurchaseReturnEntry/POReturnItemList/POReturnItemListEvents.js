@@ -717,9 +717,18 @@ const calculateHeadervalues = ($this, context, row) => {
       parseFloat(s.extended_cost)
     );
 
-    let receipt_net_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
+    let discount_amount = Enumerable.from(pharmacy_stock_detail).sum(s =>
+      parseFloat(s.discount_amount)
+    );
+
+    let net_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
       parseFloat(s.net_extended_cost)
     );
+
+    let tax_amount = Enumerable.from(pharmacy_stock_detail).sum(s =>
+      parseFloat(s.tax_amount)
+    );
+
 
     let return_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
       parseFloat(s.total_amount)
@@ -729,7 +738,9 @@ const calculateHeadervalues = ($this, context, row) => {
     $this.setState({
       pharmacy_stock_detail: pharmacy_stock_detail,
       sub_total: sub_total,
-      receipt_net_total: receipt_net_total,
+      discount_amount: discount_amount,
+      net_total: net_total,
+      tax_amount: tax_amount,
       return_total: return_total
     });
 
@@ -737,7 +748,9 @@ const calculateHeadervalues = ($this, context, row) => {
       context.updateState({
         pharmacy_stock_detail: pharmacy_stock_detail,
         sub_total: sub_total,
-        receipt_net_total: receipt_net_total,
+        discount_amount: discount_amount,
+        net_total: net_total,
+        tax_amount: tax_amount,
         return_total: return_total
       });
     }
@@ -750,19 +763,29 @@ const calculateHeadervalues = ($this, context, row) => {
       parseFloat(s.extended_cost)
     );
 
-    let receipt_net_total = Enumerable.from(inventory_stock_detail).sum(s =>
+    let discount_amount = Enumerable.from(inventory_stock_detail).sum(s =>
+      parseFloat(s.discount_amount)
+    );
+
+    let net_total = Enumerable.from(inventory_stock_detail).sum(s =>
       parseFloat(s.net_extended_cost)
     );
+
+    let tax_amount = Enumerable.from(inventory_stock_detail).sum(s =>
+      parseFloat(s.tax_amount)
+    );
+
 
     let return_total = Enumerable.from(inventory_stock_detail).sum(s =>
       parseFloat(s.total_amount)
     );
 
-
     $this.setState({
       inventory_stock_detail: inventory_stock_detail,
       sub_total: sub_total,
-      receipt_net_total: receipt_net_total,
+      discount_amount: discount_amount,
+      net_total: net_total,
+      tax_amount: tax_amount,
       return_total: return_total
     });
 
@@ -770,7 +793,9 @@ const calculateHeadervalues = ($this, context, row) => {
       context.updateState({
         inventory_stock_detail: inventory_stock_detail,
         sub_total: sub_total,
-        receipt_net_total: receipt_net_total,
+        discount_amount: discount_amount,
+        net_total: net_total,
+        tax_amount: tax_amount,
         return_total: return_total
       });
     }

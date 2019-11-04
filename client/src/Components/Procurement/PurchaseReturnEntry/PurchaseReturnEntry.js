@@ -20,9 +20,9 @@ import {
     poforhandle,
     ReceiptSearch,
     ClearData,
-    SavePOEnrty,
+    SavePOReutrnEnrty,
     getCtrlCode,
-    AuthorizePOEntry,
+    PostPOReturnEntry,
     getVendorMaster,
     generatePOReceipt,
     generatePOReceiptNoPrice
@@ -46,10 +46,10 @@ class PurchaseReturnEntry extends Component {
 
     componentDidMount() {
         if (
-            this.props.purchase_number !== undefined &&
-            this.props.purchase_number.length !== 0
+            this.props.purchase_return_number !== undefined &&
+            this.props.purchase_return_number.length !== 0
         ) {
-            getCtrlCode(this, this.props.purchase_number);
+            getCtrlCode(this, this.props.purchase_return_number);
         }
     }
 
@@ -95,16 +95,16 @@ class PurchaseReturnEntry extends Component {
                                 label={{ forceLabel: "PO Return Number", returnText: true }}
                             />
                         ),
-                        value: this.state.purchase_number,
-                        selectValue: "purchase_number",
+                        value: this.state.purchase_return_number,
+                        selectValue: "purchase_return_number",
                         events: {
                             onChange: getCtrlCode.bind(this, this)
                         },
                         jsonFile: {
                             fileName: "spotlightSearch",
-                            fieldName: "Purchase.POEntry"
+                            fieldName: "Purchase.POReturnEntry"
                         },
-                        searchName: "POEntry"
+                        searchName: "POReturnEntry"
                     }}
                     userArea={
                         <div className="row">
@@ -115,8 +115,8 @@ class PurchaseReturnEntry extends Component {
                                     }}
                                 />
                                 <h6>
-                                    {this.state.po_date
-                                        ? moment(this.state.po_date).format(Options.dateFormat)
+                                    {this.state.return_date
+                                        ? moment(this.state.return_date).format(Options.dateFormat)
                                         : Options.dateFormat}
                                 </h6>
                             </div>
@@ -304,37 +304,6 @@ class PurchaseReturnEntry extends Component {
                                         }
                                     }}
                                 />
-
-                                {/*
-                  <AlgaehDateHandler
-                    div={{ className: "col" }}
-                    label={{ forceLabel: "Expected Arrival" }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "expected_date"
-                    }}
-                    minDate={new Date()}
-                    events={{
-                      onChange: datehandle.bind(this, this)
-                    }}
-                    disabled={this.state.dataExitst}
-                    value={this.state.expected_date}
-                  />
-                  <div
-                  className="customCheckbox col-lg-3"
-                  style={{ border: "none", marginTop: "28px" }}
-                >
-                  <label className="checkbox" style={{ color: "#212529" }}>
-                    <input
-                      type="checkbox"
-                      name="Pay by Cash"
-                      checked={this.state.Cashchecked}
-                      onChange={null}
-                    />
-
-                    <span style={{ fontSize: "0.8rem" }}>From Multiple Requisitions</span>
-                  </label>
-                </div> */}
                             </div>
                         </div>
                     </div>
@@ -357,12 +326,12 @@ class PurchaseReturnEntry extends Component {
                             <button
                                 type="button"
                                 className="btn btn-primary"
-                                onClick={SavePOEnrty.bind(this, this)}
+                                onClick={SavePOReutrnEnrty.bind(this, this)}
                                 disabled={this.state.saveEnable}
                             >
                                 <AlgaehLabel
                                     label={{
-                                        forceLabel: "Save Order",
+                                        forceLabel: "Save",
                                         returnText: true
                                     }}
                                 />
@@ -379,25 +348,21 @@ class PurchaseReturnEntry extends Component {
                                 />
                             </button>
 
-                            {this.props.purchase_auth === true ? (
-                                <button
-                                    type="button"
-                                    className="btn btn-other"
-                                    disabled={
-                                        this.state.authorize1 === "Y"
-                                            ? true
-                                            : this.state.authorizeBtn
-                                    }
-                                    onClick={AuthorizePOEntry.bind(this, this)}
-                                >
-                                    <AlgaehLabel
-                                        label={{
-                                            forceLabel: "Authorize",
-                                            returnText: true
-                                        }}
-                                    />
-                                </button>
-                            ) : null}
+
+                            <button
+                                type="button"
+                                className="btn btn-other"
+                                onClick={PostPOReturnEntry.bind(this, this)}
+                                disabled={this.state.postEnable}
+                            >
+                                <AlgaehLabel
+                                    label={{
+                                        forceLabel: "Post",
+                                        returnText: true
+                                    }}
+                                />
+                            </button>
+
                         </div>
                     </div>
                 </div>
