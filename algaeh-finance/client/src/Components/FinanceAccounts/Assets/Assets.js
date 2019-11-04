@@ -155,6 +155,8 @@ export default function Assets() {
                         return rowInfo.node.canDrag === true ? true : false;
                       }}
                       generateNodeProps={rowInfo => {
+                       const {node}=rowInfo;
+                       console.log("node",node);
                         return {
                           buttons: [
                             <div className="box">
@@ -207,7 +209,10 @@ export default function Assets() {
                           ],
                           style: {
                             height: "50px"
-                          }
+                          },
+                          title:(<><strong>{node.title}</strong> {node.leafnode ==="Y"?null:<small> / {node.children ===undefined ?0: node.children.length}</small>} </>),
+                          subtitle:(<div style={{    "fontSize": "medium",
+                           "marginTop": "7px"}}>{node.subtitle}</div>)
                         };
                       }}
                     />

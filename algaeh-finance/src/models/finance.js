@@ -563,8 +563,8 @@ function createHierarchy(
       //END---calulating Amount
       child.push({
         finance_account_child_id: item["finance_account_child_id"],
-        amount: amount,
-        title: item.child_name,
+        subtitle: amount,
+        title: item.child_name ,
         label: item.child_name,
         head_id: item["head_id"],
         disabled: false,
@@ -600,7 +600,7 @@ function createHierarchy(
 
         target.push({
           ...item,
-          amount: amount,
+          subtitle: amount,
           title: item.account_name,
           label: item.account_name,
           disabled: true,
@@ -630,7 +630,7 @@ function createHierarchy(
 
       target.push({
         ...item,
-        amount: amount,
+        subtitle: amount,
         title: item.account_name,
         label: item.account_name,
         disabled: true,

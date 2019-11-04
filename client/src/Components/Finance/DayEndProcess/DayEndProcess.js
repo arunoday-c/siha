@@ -257,15 +257,9 @@ postDayEndProcess(){
                         displayTemplate:(row)=>(<input type="checkbox"
                                                        onClick={(e)=>{
                           if(e.target.checked ===true){
-                            //ToDo need to change this functionality
-                          const isExist=  this.selectedDayEndIds.findIndex(f=>f.finance_day_end_detail_id === row.finance_day_end_detail_id);
-                          //if(isExist===undefined){
-                            this.selectedDayEndIds.push({finance_day_end_sub_detail_id:row.finance_day_end_sub_detail_id,
-                              finance_day_end_detail_id:row.finance_day_end_detail_id});
-                          //}
-
+                            this.selectedDayEndIds.push(row.finance_day_end_detail_id);
                           }else {
-                          const itemExists=  this.selectedDayEndIds.findIndex(f => f.finance_day_end_sub_detail_id === row.finance_day_end_sub_detail_id);
+                          const itemExists=  this.selectedDayEndIds.findIndex(f => f === row.finance_day_end_detail_id);
                             this.selectedDayEndIds.splice(itemExists,1);
                           }
                         }} />),
