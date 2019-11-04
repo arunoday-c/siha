@@ -97,7 +97,8 @@ export default {
     ) {
       // input["childs_of"] = "A";
       console.log("input:", input);
-      let default_total = "0.0000";
+
+      let default_total = "$$$";
       let trans_symbol = "CR";
       if (input.finance_account_head_id == 1) {
         trans_symbol = "DR";
@@ -105,10 +106,10 @@ export default {
 
       _mysql
         .executeQuery({
-          query: `with recursive cte (finance_account_head_id, account_name, parent_acc_id,
+          query: `with recursive cte (finance_account_head_id,account_code, account_name, parent_acc_id,
               finance_account_child_id,child_name,child_created_from,account_level,sort_order,head_id,created_status) as (
               
-              select finance_account_head_id,account_name,parent_acc_id,
+              select finance_account_head_id,H.account_code,account_name,parent_acc_id,
               C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
               ,account_level,H.sort_order,CM.head_id,H.created_from as created_status
               FROM finance_account_head H left join 
@@ -118,7 +119,7 @@ export default {
               
               union    
               
-              select   H.finance_account_head_id,H.account_name,H.parent_acc_id,
+              select   H.finance_account_head_id,H.account_code,H.account_name,H.parent_acc_id,
               C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
               ,H.account_level,H.sort_order,CM.head_id,H.created_from as created_status
               FROM finance_account_head H left join 
@@ -129,16 +130,36 @@ export default {
               on H.parent_acc_id = cte.finance_account_head_id       
               
               )
-              select * from cte order by account_level,sort_order;`,
+              select * from cte order by account_level,sort_order;              
+              select H.account_code,M.head_id,	M.child_id,coalesce((debit_amount) ,0.0000) as debit_amount,
+              coalesce((credit_amount) ,0.0000) as credit_amount	from finance_head_m_child M inner join 
+              finance_account_head H on M.head_id=H.finance_account_head_id
+              left join finance_voucher_details VD on H.finance_account_head_id=VD.head_id 
+              group by M.head_id,M.child_id; 
+
+              select finance_account_head_id as head_id ,account_code,coalesce((debit_amount) ,0.0000)as debit_amount,
+              coalesce((credit_amount) ,0.0000)as credit_amount from finance_account_head H left join
+              finance_voucher_details VD on H.finance_account_head_id=VD.head_id
+              where account_code like'${input.finance_account_head_id}%' group by account_code;
+         
+              `,
 
           printQuery: true,
 
           values: [input.finance_account_head_id]
         })
         .then(result => {
+          const child_data = result[1];
+          const head_data = result[2];
           _mysql.releaseConnection();
 
-          const outputArray = createHierarchy(result);
+          const outputArray = createHierarchy(
+            result[0],
+            child_data,
+            head_data,
+            trans_symbol,
+            default_total
+          );
 
           req.records = outputArray;
           next();
@@ -352,6 +373,13 @@ export default {
 
     let strQry = "";
 
+    if (
+      moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD") > 0 &&
+      moment(input.to_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
+    ) {
+      strQry += ` and H.transaction_date between date('${input.from_date}') and  date('${input.to_date}') `;
+    }
+
     if (input.document_number !== undefined && input.document_number == null) {
       strQry += ` and  H.document_number='${input.document_number}'`;
     }
@@ -370,8 +398,8 @@ export default {
           finance_day_end_detail D on H.finance_day_end_header_id=D.day_end_header_id \
           inner join finance_day_end_sub_detail SD on D.finance_day_end_detail_id=SD.day_end_detail_id\
           left join  algaeh_d_app_screens S on H.from_screen=S.screen_code\
-          where  SD.posted='N' and H.transaction_date between date(?) and  date(?)  ${strQry};`,
-        values: [input.from_date, input.to_date],
+          where  SD.posted='N'  ${strQry}  group by finance_day_end_detail_id;`,
+        // values: [input.from_date, input.to_date],
         printQuery: true
       })
       .then(result => {
@@ -483,7 +511,13 @@ export default {
   }
 };
 
-function createHierarchy(arry) {
+function createHierarchy(
+  arry,
+  child_data,
+  head_data,
+  trans_symbol,
+  default_total
+) {
   // const onlyChilds = [];
   const utilities = new algaehUtilities();
   let roots = [],
@@ -504,8 +538,32 @@ function createHierarchy(arry) {
       let child =
         children[item.finance_account_head_id] ||
         (children[item.finance_account_head_id] = []);
+
+      //ST---calulating Amount
+      const BALANCE = child_data.find(f => {
+        return (
+          item.head_id == f.head_id &&
+          item.finance_account_child_id == f.child_id
+        );
+      });
+
+      let amount = 0;
+      if (BALANCE != undefined) {
+        if (trans_symbol == "DR") {
+          amount = `${trans_symbol}- ${BALANCE.debit_amount} `;
+        } else {
+          amount = `${trans_symbol}- ${BALANCE.credit_amount} `;
+        }
+      } else {
+        console.log(" item1:", item);
+        console.log(" BALANCE1:", BALANCE);
+        amount = `${trans_symbol}- ${default_total} `;
+      }
+
+      //END---calulating Amount
       child.push({
         finance_account_child_id: item["finance_account_child_id"],
+        amount: amount,
         title: item.child_name,
         label: item.child_name,
         head_id: item["head_id"],
@@ -514,13 +572,35 @@ function createHierarchy(arry) {
         created_status: item["child_created_from"]
       });
 
+      //if children array doesnt contain this non-leaf node then push
       const data = target.find(val => {
         return val.finance_account_head_id == item.finance_account_head_id;
       });
 
       if (!data) {
+        //ST---calulating Amount
+        const BALANCE = head_data.find(f => {
+          return item.account_code == f.account_code;
+        });
+
+        let amount = 0;
+        if (BALANCE != undefined) {
+          if (trans_symbol == "DR") {
+            amount = `${trans_symbol}- ${BALANCE.debit_amount} `;
+          } else {
+            amount = `${trans_symbol}- ${BALANCE.credit_amount} `;
+          }
+        } else {
+          console.log(" item2:", item);
+          console.log(" BALANCE2:", BALANCE);
+          amount = `${trans_symbol}- ${default_total} `;
+        }
+
+        //END---calulating Amount
+
         target.push({
           ...item,
+          amount: amount,
           title: item.account_name,
           label: item.account_name,
           disabled: true,
@@ -528,8 +608,29 @@ function createHierarchy(arry) {
         });
       }
     } else {
+      //ST---calulating Amount
+      const BALANCE = head_data.find(f => {
+        return item.account_code == f.account_code;
+      });
+
+      let amount = 0;
+      if (BALANCE != undefined) {
+        if (trans_symbol == "DR") {
+          amount = `${trans_symbol}- ${BALANCE.debit_amount} `;
+        } else {
+          amount = `${trans_symbol}- ${BALANCE.credit_amount} `;
+        }
+      } else {
+        console.log(" item3:", item);
+        console.log(" BALANCE3:", BALANCE);
+        amount = `${trans_symbol}- ${default_total} `;
+      }
+
+      //END---calulating Amount
+
       target.push({
         ...item,
+        amount: amount,
         title: item.account_name,
         label: item.account_name,
         disabled: true,
@@ -545,20 +646,7 @@ function createHierarchy(arry) {
   let findChildren = function(parent) {
     if (children[parent.finance_account_head_id]) {
       const tempchilds = children[parent.finance_account_head_id];
-      // let child = [];
-      // tempchilds.forEach((item, i) => {
-      //   if (item.finance_account_head_id > 0) {
-      //     child.push({
-      //       ...item,
-      //       title: item.account_name
-      //     });
-      //   } else if (item.finance_account_child_id > 0) {
-      //     child.push({
-      //       ...item,
-      //       title: item.child_name
-      //     });
-      //   }
-      // });
+
       parent.children = tempchilds;
 
       for (let i = 0, len = parent.children.length; i < len; ++i) {
