@@ -16,6 +16,9 @@ export default function Assets() {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedNode, setSelectedNode] = useState({});
   const [selectHead, setSelectHead] = useState(false);
+const[searchQuery,setSearchQuery] = useState("");
+const [searchFocusIndex,setSearchFocusIndex] = useState(0);
+const [searchFoundCount,setSearchFoundCount]=useState(undefined);
 
   useEffect(() => {
     if (treeData.length === 0) {
@@ -139,6 +142,23 @@ export default function Assets() {
                   <i className="fas fa-plus" />
                 </button>{" "}
               </div>
+              <div>
+                <input type="text" placeholder="Search" value={searchQuery}
+                onChange={(e)=>{
+                  setSearchQuery(e.target.value);
+                }} />
+                <button onClick={()=>{
+                  const values=searchFocusIndex !==undefined ?(searchFoundCount + searchFocusIndex - 1) % searchFoundCount:searchFoundCount - 1;
+                debugger;
+                  setSearchFocusIndex(values )
+                }} >  &lt; </button>
+                <button onClick={()=>{
+                  const values=searchFocusIndex !== undefined ?(searchFocusIndex + 1) % searchFoundCount:0;
+                 debugger;
+                  setSearchFocusIndex(values);
+                }}>  &gt; </button>
+                <label>{searchFoundCount >0 ?searchFocusIndex+1:0} / {searchFoundCount || 0} </label>
+              </div>
             </div>
             <div className="portlet-body">
               <div className="col">
@@ -154,9 +174,14 @@ export default function Assets() {
                       canDrag={rowInfo => {
                         return rowInfo.node.canDrag === true ? true : false;
                       }}
+                      searchMethod={({node, searchQuery})=>{
+                      return  searchQuery &&
+                        node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1;
+                      }}
+                      searchQuery={searchQuery}
+                      searchFocusOffset={searchFocusIndex}
                       generateNodeProps={rowInfo => {
                        const {node}=rowInfo;
-                       console.log("node",node);
                         return {
                           buttons: [
                             <div className="box">
@@ -211,9 +236,13 @@ export default function Assets() {
                             height: "50px"
                           },
                           title:(<><strong>{node.title}</strong> {node.leafnode ==="Y"?null:<small> / {node.children ===undefined ?0: node.children.length}</small>} </>),
-                          subtitle:(<div style={{    "fontSize": "medium",
+                          subtitle:(<div style={{"fontSize": "medium",
                            "marginTop": "7px"}}>{node.subtitle}</div>)
                         };
+                      }}
+                      searchFinishCallback={matches=>{
+                        setSearchFocusIndex(matches.length > 0 ? searchFocusIndex % matches.length : 0);
+                        setSearchFoundCount(matches.length);
                       }}
                     />
                   </div>
