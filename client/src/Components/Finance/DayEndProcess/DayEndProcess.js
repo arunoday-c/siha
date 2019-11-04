@@ -86,7 +86,7 @@ class DayEndProcess extends Component {
     try{
       algaehApiCall({
         uri:"/finance/getDayEndData",
-        data:{from_date:"2019-10-01",to_date:"2019-10-31"},
+        data:{from_date:this.state.from_date,to_date:this.state.to_date},
         method: "GET",
         module: "finance",
         onSuccess:response=>{
