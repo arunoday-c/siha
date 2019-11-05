@@ -1,14 +1,14 @@
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 export function AddLisMachineConfiguration(data, error, result) {
-    debugger
+
     if (data.hims_d_lis_configuration_id === "") {
         algaehApiCall({
             uri: "/algaehMasters/addLisMachineConfiguration",
             method: "POST",
             data: data,
             onSuccess: res => {
-                debugger
+
                 if (res.data.success) {
                     result(res.data.result);
                 } else {
@@ -22,7 +22,7 @@ export function AddLisMachineConfiguration(data, error, result) {
             method: "PUT",
             data: data,
             onSuccess: res => {
-                debugger
+
                 if (res.data.success) {
                     result(res.data.result);
                 } else {

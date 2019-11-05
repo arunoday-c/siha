@@ -1,6 +1,7 @@
 import moment from "moment";
 import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
 import _ from "lodash";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 const UomchangeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -47,7 +48,7 @@ const itemchangeText = ($this, context, e) => {
   }
   if ($this.state.requistion_type === "PR") {
     let value = e.value || e.target.value;
-
+    AlgaehLoader({ show: true });
     $this.props.getSelectedItemDetais({
       uri: "/pharmacy/getItemMasterAndItemUom",
       module: "pharmacy",
@@ -96,6 +97,7 @@ const itemchangeText = ($this, context, e) => {
       }
     });
   } else {
+    AlgaehLoader({ show: true });
     let value = e.value || e.target.value;
 
     $this.props.getSelectedItemDetais({
@@ -255,8 +257,8 @@ const deleteRequisitionDetail = ($this, context, row) => {
     $this.props.requisition_auth === true
       ? true
       : pharmacy_stock_detail.length > 0
-      ? false
-      : true;
+        ? false
+        : true;
   let authBtnEnable = pharmacy_stock_detail.length > 0 ? false : true;
   $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
 
@@ -366,14 +368,16 @@ const getItemLocationStock = ($this, context, value) => {
           from_qtyhand: null
         });
       }
+      AlgaehLoader({ show: false });
     }
   });
 };
 
 const getConsumptionSelectedMonth = ($this, context, value) => {
   let date = new Date($this.state.requistion_date);
-  var from_date = new Date(date.getFullYear(), date.getMonth(), 1);
-  var to_date = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+  var from_date = new Date(date.getFullYear(), date.getMonth() - 3, date.getDate());
+  var to_date = new Date();
 
   algaehApiCall({
     uri: "/pharmacyGlobal/getConsumptionSelectedMonth",

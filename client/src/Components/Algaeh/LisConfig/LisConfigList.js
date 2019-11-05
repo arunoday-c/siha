@@ -20,12 +20,10 @@ export default function LisConfigList() {
   }, []);
 
   function ShowModel() {
-    debugger;
     setSelectedLisMachine({});
     setIsOpen(true);
   }
   function EditLisConfigModel(row) {
-    debugger;
     setSelectedLisMachine(row);
     setIsOpen(true);
   }
