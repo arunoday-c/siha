@@ -8,7 +8,6 @@ import {
 import moment from "moment";
 
 const DeptselectedHandeler = ($this, context, e) => {
-  debugger
   let primary_policy_num = $this.state.primary_policy_num
   SetBulkState({
     state: $this,
@@ -17,7 +16,6 @@ const DeptselectedHandeler = ($this, context, e) => {
         alertTypeIcon: "warning",
         querySelector: "data-validate='demographicDetails'",
         onSuccess: () => {
-          debugger
           if (
             $this.state.insured === "Y" &&
             ($this.state.primary_insurance_provider_id === null ||
@@ -34,7 +32,6 @@ const DeptselectedHandeler = ($this, context, e) => {
               type: "error"
             });
           } else {
-            debugger
             let dept = Enumerable.from($this.props.deptanddoctors.departmets)
               .where(w => w.sub_department_id === e.value)
               .firstOrDefault();

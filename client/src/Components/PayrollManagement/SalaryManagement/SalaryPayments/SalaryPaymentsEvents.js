@@ -173,7 +173,7 @@ const selectToPay = ($this, row, e) => {
 };
 
 const selectAll = ($this, e) => {
-  debugger;
+  // debugger;
 };
 
 const generatePaySlip = $this => {

@@ -491,7 +491,7 @@ const deletePOReturnDetail = ($this, context, row) => {
   let net_payable = 0;
   let total_tax = 0;
   let detail_discount = 0;
-  debugger
+
 
   if ($this.state.po_return_from === "PHR") {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
@@ -652,7 +652,7 @@ const onchhangegriddiscount = ($this, context, row, e) => {
   let _index = _stock_detail.indexOf(row);
 
   let extended_price = row.extended_price;
-  debugger
+
   extended_price =
     parseFloat(row.return_qty) * parseFloat(row.unit_cost);
   discount_percentage = row.discount_percentage;
