@@ -31,10 +31,37 @@
   flex-wrap: wrap;
   flex-direction: column;
   align-content: space-between;
-  ul{
+  ul.NodeActionButton{
+    margin: 0;
+    padding: 0 0 0 15px;
     li {
       list-style: none;
-      border:1px solid grey;
+      padding: 1px 5px;
+      border-radius: 6px;
+      text-align: center;
+      width: 52px;
+      font-size: 10px;
+      text-transform: uppercase;
+      &:hover{
+        cursor: pointer;
+      }
+    }
+    li.NodeDeleteButton{
+      color: red;
+      border: 1px solid red;
+      &:hover{
+        cursor: pointer;
+        background: red;
+        color: white;
+      }
+    }
+    li.NodeAddButton{
+      color: green;
+      border: 1px solid green; &:hover{
+      cursor: pointer;
+      background: green;
+      color: white;
+    }
     }
   }
 }

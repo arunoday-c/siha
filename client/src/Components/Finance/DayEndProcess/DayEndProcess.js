@@ -105,9 +105,7 @@ postDayEndProcess(){
   try{
     algaehApiCall({
       uri:"/finance/postDayEndData",
-      data:{finance_day_end_detail_ids: this.selectedDayEndIds.map((item=>{
-        return item.finance_day_end_detail_id;
-        }))},
+      data:{finance_day_end_detail_ids: this.selectedDayEndIds},
       method: "POST",
       module: "finance",
       onSuccess:response=>{
