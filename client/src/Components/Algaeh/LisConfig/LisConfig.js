@@ -41,9 +41,7 @@ export default function LisConfig(props) {
   const [organizations, setOrganizations] = useState([]);
 
   useEffect(() => {
-    debugger;
     if (Object.keys(props.selectedLisMachine).length > 0) {
-      debugger;
       setLisConfig({ ...props.selectedLisMachine });
     } else {
       setLisConfig({ ...baseState });

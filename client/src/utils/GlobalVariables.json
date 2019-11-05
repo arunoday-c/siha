@@ -2445,6 +2445,10 @@
     {
       "name": "Transfer Acknowledge",
       "value": "ACK"
+    },
+    {
+      "name": "Purchase Return",
+      "value": "PR"
     }
   ],
   "MODULE_PLAN": [
