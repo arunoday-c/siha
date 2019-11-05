@@ -5,7 +5,7 @@ import Liabilities from "./Liabilities";
 import Income from "./Income";
 import Capital from "./Capital";
 import Expense from "./Expense";
-
+import {AlgaehTabs} from "algaeh-react-components";
 export default function FinanceAccounts(props) {
   const [activeTab, setActiveTab] = useState("Assets");
 
@@ -22,6 +22,45 @@ export default function FinanceAccounts(props) {
 
   return (
     <div className="">
+{/*<AlgaehTabs*/}
+{/*content={[{*/}
+{/*  title:<AlgaehLabel*/}
+{/*      label={{*/}
+{/*        fieldName: "Assets"*/}
+{/*      }}*/}
+{/*  />,*/}
+{/*  children: <Assets />*/}
+{/*},*/}
+{/*  {title:<AlgaehLabel*/}
+{/*  label={{*/}
+{/*    fieldName: "Liabilities"*/}
+{/*  }}*/}
+{/*  />,*/}
+{/*  children: <Liabilities />*/}
+{/*},*/}
+{/*  {title:<AlgaehLabel*/}
+{/*        label={{*/}
+{/*          fieldName: "Income"*/}
+{/*        }}*/}
+{/*    />,*/}
+{/*    children: <Income />*/}
+{/*  },*/}
+{/*  {title:<AlgaehLabel*/}
+{/*        label={{*/}
+{/*          fieldName: "Capital"*/}
+{/*        }}*/}
+{/*    />,*/}
+{/*    children: <Capital />*/}
+{/*  },*/}
+{/*  {title:<AlgaehLabel*/}
+{/*        label={{*/}
+{/*          fieldName: "Expense"*/}
+{/*        }}*/}
+{/*    />,*/}
+{/*    children: <Expense />*/}
+{/*  }*/}
+{/*]}*/}
+{/*/>*/}
       <div className="row">
         <div className="tabMaster toggle-section">
           <ul className="nav">

@@ -149,12 +149,10 @@ const [searchFoundCount,setSearchFoundCount]=useState(undefined);
                 }} />
                 <button onClick={()=>{
                   const values=searchFocusIndex !==undefined ?(searchFoundCount + searchFocusIndex - 1) % searchFoundCount:searchFoundCount - 1;
-                debugger;
                   setSearchFocusIndex(values )
                 }} >  &lt; </button>
                 <button onClick={()=>{
                   const values=searchFocusIndex !== undefined ?(searchFocusIndex + 1) % searchFoundCount:0;
-                 debugger;
                   setSearchFocusIndex(values);
                 }}>  &gt; </button>
                 <label>{searchFoundCount >0 ?searchFocusIndex+1:0} / {searchFoundCount || 0} </label>
@@ -185,8 +183,8 @@ const [searchFoundCount,setSearchFoundCount]=useState(undefined);
                         return {
                           buttons: [
                             <div className="box">
-                              <ul>
-                                {rowInfo.node.created_status === "U" ? (<li label="Delete"
+                              <ul className="NodeActionButton">
+                                {rowInfo.node.created_status === "U" ? (<li className="NodeDeleteButton" label="Delete"
                                     onClick={event => {
                                       let child_exists =
                                           rowInfo.node.children === undefined
@@ -216,13 +214,11 @@ const [searchFoundCount,setSearchFoundCount]=useState(undefined);
                                                   });
                                             }
                                           });
-                                    }}  >
-
-                                      Remove
-
-                                </li>) : null}
+                                    }}>
+                                  Remove</li>) : null}
                               {rowInfo.node.leafnode === "N" ? (<li
                                   label="Add"
+                                  className="NodeAddButton"
                                   onClick={event => {
                                     setSelectHead(false);
                                     setShowPopup(true);
