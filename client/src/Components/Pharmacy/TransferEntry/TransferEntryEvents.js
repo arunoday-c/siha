@@ -13,7 +13,7 @@ const changeTexts = ($this, ctrl, e) => {
   $this.setState({ [name]: value });
 };
 
-const getCtrlCode = ($this, docNumber, row) => {
+const getCtrlCode = ($this, docNumber, row, from) => {
   AlgaehLoader({ show: true });
 
   let IOputs = TransferIOputs.inputParam();
@@ -46,6 +46,10 @@ const getCtrlCode = ($this, docNumber, row) => {
           for (let j = 0; j < data.pharmacy_stock_detail.length; j++) {
             data.pharmacy_stock_detail[j].quantity_transferred =
               data.pharmacy_stock_detail[j].quantity_transfer;
+            if (from === "Auth") {
+            data.pharmacy_stock_detail[j].ack_quantity =
+              data.pharmacy_stock_detail[j].quantity_transfer;
+            }
           }
 
           data.saveEnable = true;
