@@ -2997,7 +2997,7 @@ export default {
   },
 
   //created by:IRFAN
-  addtoDayEnd: (req, res, next) => {
+  addtoDayEndBAKP: (req, res, next) => {
     try {
       const _options = req.connection == null ? {} : req.connection;
 
@@ -3171,7 +3171,7 @@ export default {
     }
   },
   //created by:IRFAN
-  addtoDayEndSAVE: (req, res, next) => {
+  addtoDayEnd: (req, res, next) => {
     try {
       const _options = req.connection == null ? {} : req.connection;
   
@@ -3196,7 +3196,7 @@ export default {
             "OP_CON",
             "RECEIPT",
             inputParam.receipt_header_id,
-            inputParam.receipt_number            ,
+            inputParam.receipt_number,
             inputParam.ScreenCode,
             inputParam.transaction_type,
             "P",
@@ -3235,7 +3235,7 @@ export default {
                 const servicesIds=inputParam.billdetails.map(m=>{
                   return m.services_id;
                 })
-                fetchServiceDetails=` SELECT hims_d_services_id,head_account,head_id,child_id FROM hims_d_services
+                fetchServiceDetails=` SELECT hims_d_services_id,service_type_id,head_account,head_id,child_id FROM hims_d_services
                 where hims_d_services_id in(${servicesIds}); `
                         
               }
@@ -3260,6 +3260,9 @@ export default {
                   const CH_IN_HA = controlResult.find(f => {
                     return f.account == "CH_IN_HA";
                   });
+                  const OP_CON = controlResult.find(f => {
+                    return f.account == "OP_CON";
+                  });
   
                   const insertSubDetail = [];
   
@@ -3273,35 +3276,67 @@ export default {
                      
                       if(inputParam.billdetails.length>0){
 
+//full payment in cash
 
+                      rest[2].forEach(curService => {
                         day_end_detail.forEach(item => {
                           if (item.payment_mode == "CA") {
                             insertSubDetail.push({
                               day_end_detail_id: item.finance_day_end_detail_id,
                               payment_date: new Date(),
-                              head_account_code: OP_DEP.head_account_code,
-                              head_id: OP_DEP.head_id,
-                              child_id: OP_DEP.child_id,
+                              head_account_code: OP_CON.head_account_code,
+                              head_id: OP_CON.head_id,
+                              child_id: OP_CON.child_id,
                               debit_amount: item.amount,
                               payment_type: "DR",
                               credit_amount: 0,
-                              narration: "OP BILL CASH COLLECTION BEBIT",
+                              narration: "OP BILL CASH COLLECTION DEBIT",
                               hospital_id: req.userIdentity.hospital_id
                             });
+
                             insertSubDetail.push({
                               day_end_detail_id: item.finance_day_end_detail_id,
                               payment_date: new Date(),
                               head_account_code: CH_IN_HA.head_account_code,
                               head_id: CH_IN_HA.head_id,
                               child_id: CH_IN_HA.child_id,
+                              debit_amount: item.amount,
+                              payment_type: "DR",
+                              credit_amount: 0,
+                              narration: "OP BILL CASH COLLECTION DEBIT",
+                              hospital_id: req.userIdentity.hospital_id
+                            });
+
+
+
+                            insertSubDetail.push({
+                              day_end_detail_id: item.finance_day_end_detail_id,
+                              payment_date: new Date(),
+                              head_account_code: curService.head_account,
+                              head_id: curService.head_id,
+                              child_id: curService.child_id,
                               debit_amount: 0,
                               payment_type: "CR",
                               credit_amount: item.amount,
                               narration: "OP BILL CASH COLLECTION  CREDIT",
                               hospital_id: req.userIdentity.hospital_id
                             });
+
+                            insertSubDetail.push({
+                              day_end_detail_id: item.finance_day_end_detail_id,
+                              payment_date: new Date(),
+                              head_account_code: OP_CON.head_account_code,
+                              head_id: OP_CON.head_id,
+                              child_id: OP_CON.child_id,
+                              debit_amount: 0,
+                              payment_type: "CR",
+                              credit_amount:item.amount,
+                              narration: "OP BILL CASH COLLECTION DEBIT",
+                              hospital_id: req.userIdentity.hospital_id
+                            });
                           }
                         });
+                      });
                         resolve({});
                         
                       }
