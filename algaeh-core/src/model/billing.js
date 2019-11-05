@@ -659,8 +659,7 @@ let newReceipt = (dataBase, req, res, callBack, next) => {
               "pay_type",
               "amount",
               "created_by",
-              "updated_by",
-              "card_type"
+              "updated_by"
             ];
 
             dataBase.query(
@@ -1823,8 +1822,7 @@ let patientAdvanceRefund = (req, res, next) => {
                     "pay_type",
                     "amount",
                     "created_by",
-                    "updated_by",
-                    "card_type"
+                    "updated_by"
                   ];
 
                   connection.query(
@@ -2052,8 +2050,7 @@ created_by, created_date, updated_by, updated_date,  counter_id, shift_id, pay_t
                     "pay_type",
                     "amount",
                     "created_by",
-                    "updated_by",
-                    "card_type"
+                    "updated_by"
                   ];
                   connection.query(
                     "INSERT  INTO hims_f_receipt_details ( " +
@@ -2676,8 +2673,7 @@ let newReceiptData = (req, res, next) => {
             "pay_type",
             "amount",
             "created_by",
-            "updated_by",
-            "card_type"
+            "updated_by"
           ];
           //   debugLog("Detail Body: ", detailsInsert);
 

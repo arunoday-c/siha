@@ -130,8 +130,7 @@ export default {
                   "card_check_number",
                   "expiry_date",
                   "pay_type",
-                  "amount",
-                  "card_type"
+                  "amount"
                 ];
 
                 _mysql
