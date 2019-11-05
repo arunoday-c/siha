@@ -88,6 +88,7 @@ export default {
   },
   //created by irfan: to mark absent
   getAccountHeads: (req, res, next) => {
+    const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
     let input = req.query;
 
@@ -98,7 +99,7 @@ export default {
       // input["childs_of"] = "A";
       console.log("input:", input);
 
-      let default_total = "$$$";
+      let default_total = "0.00 NO TRANS";
       let trans_symbol = "CR";
       if (input.finance_account_head_id == 1) {
         trans_symbol = "DR";
@@ -131,20 +132,16 @@ export default {
               
               )
               select * from cte order by account_level,sort_order;              
-              select H.account_code,M.head_id,	M.child_id,coalesce(sum(debit_amount) ,0.0000) as debit_amount,
+              select head_account_code,head_id,	child_id,coalesce(sum(debit_amount) ,0.0000) as debit_amount,
               coalesce(sum(credit_amount) ,0.0000) as credit_amount, 
               (coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) )as cred_minus_deb,
               (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)) as deb_minus_cred
-              from finance_head_m_child M inner join 
-              finance_account_head H on M.head_id=H.finance_account_head_id
-              left join finance_voucher_details VD on H.finance_account_head_id=VD.head_id 
-              group by M.head_id,M.child_id; 
+              from finance_voucher_details group by child_id; 
 
               select finance_account_head_id as head_id ,account_code,coalesce(sum(debit_amount) ,0.0000)as debit_amount,
               coalesce(sum(credit_amount) ,0.0000)as credit_amount ,              
               (coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) )as cred_minus_deb,
-              (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)) as deb_minus_cred
-              
+              (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)) as deb_minus_cred              
               from finance_account_head H left join
               finance_voucher_details VD on H.finance_account_head_id=VD.head_id
               where account_code like'${input.finance_account_head_id}%' group by account_code;
@@ -159,6 +156,8 @@ export default {
           const child_data = result[1];
           const head_data = result[2];
           _mysql.releaseConnection();
+
+          utilities.logger().log("child_data: ", child_data);
 
           const outputArray = createHierarchy(
             result[0],
@@ -570,66 +569,98 @@ function createHierarchy(
   trans_symbol,
   default_total
 ) {
-  // const onlyChilds = [];
-  const utilities = new algaehUtilities();
-  let roots = [],
-    children = {};
+  try {
+    // const onlyChilds = [];
+    const utilities = new algaehUtilities();
+    let roots = [],
+      children = {};
 
-  // find the top level nodes and hash the children based on parent_acc_id
-  for (let i = 0, len = arry.length; i < len; ++i) {
-    let item = arry[i],
-      p = item.parent_acc_id,
-      //if it has no parent_acc_id
-      //seprating roots to roots array childerens to childeren array
-      target = !p ? roots : children[p] || (children[p] = []);
+    // find the top level nodes and hash the children based on parent_acc_id
+    for (let i = 0, len = arry.length; i < len; ++i) {
+      let item = arry[i],
+        p = item.parent_acc_id,
+        //if it has no parent_acc_id
+        //seprating roots to roots array childerens to childeren array
+        target = !p ? roots : children[p] || (children[p] = []);
 
-    if (
-      item.finance_account_child_id > 0 &&
-      item.finance_account_head_id == item.head_id
-    ) {
-      let child =
-        children[item.finance_account_head_id] ||
-        (children[item.finance_account_head_id] = []);
+      if (
+        item.finance_account_child_id > 0 &&
+        item.finance_account_head_id == item.head_id
+      ) {
+        let child =
+          children[item.finance_account_head_id] ||
+          (children[item.finance_account_head_id] = []);
 
-      //ST---calulating Amount
-      const BALANCE = child_data.find(f => {
-        return (
-          item.head_id == f.head_id &&
-          item.finance_account_child_id == f.child_id
-        );
-      });
+        //ST---calulating Amount
+        const BALANCE = child_data.find(f => {
+          return (
+            item.finance_account_head_id == f.head_id &&
+            item.finance_account_child_id == f.child_id
+          );
+        });
 
-      let amount = 0;
-      if (BALANCE != undefined) {
-        if (trans_symbol == "DR") {
-          amount = `${trans_symbol}- ${BALANCE.deb_minus_cred} `;
+        if (BALANCE && BALANCE.head_id == 49) {
+          console.log("item:", item);
+          console.log("BALANCE:", BALANCE);
+          console.log("=========================\n====================\n");
+        }
+        let amount = 0;
+        if (BALANCE != undefined) {
+          if (trans_symbol == "DR") {
+            amount = `${trans_symbol} ( ${BALANCE.deb_minus_cred} )`;
+          } else {
+            amount = `${trans_symbol} ( ${BALANCE.cred_minus_deb} )`;
+          }
         } else {
-          amount = `${trans_symbol}- ${BALANCE.cred_minus_deb} `;
+          amount = `${trans_symbol} ( ${default_total}) `;
+        }
+
+        //END---calulating Amount
+        child.push({
+          finance_account_child_id: item["finance_account_child_id"],
+          subtitle: amount,
+          title: item.child_name,
+          label: item.child_name,
+          head_id: item["head_id"],
+          disabled: false,
+          leafnode: "Y",
+          created_status: item["child_created_from"]
+        });
+
+        //if children array doesnt contain this non-leaf node then push
+        const data = target.find(val => {
+          return val.finance_account_head_id == item.finance_account_head_id;
+        });
+
+        if (!data) {
+          //ST---calulating Amount
+          const BALANCE = head_data.find(f => {
+            return item.account_code == f.account_code;
+          });
+
+          let amount = 0;
+          if (BALANCE != undefined) {
+            if (trans_symbol == "DR") {
+              amount = `${trans_symbol} ( ${BALANCE.deb_minus_cred}) `;
+            } else {
+              amount = `${trans_symbol} ( ${BALANCE.cred_minus_deb} )`;
+            }
+          } else {
+            amount = `${trans_symbol} ( ${default_total} )`;
+          }
+
+          //END---calulating Amount
+
+          target.push({
+            ...item,
+            subtitle: amount,
+            title: item.account_name,
+            label: item.account_name,
+            disabled: true,
+            leafnode: "N"
+          });
         }
       } else {
-        console.log(" item1:", item);
-        console.log(" BALANCE1:", BALANCE);
-        amount = `${trans_symbol}- ${default_total} `;
-      }
-
-      //END---calulating Amount
-      child.push({
-        finance_account_child_id: item["finance_account_child_id"],
-        subtitle: amount,
-        title: item.child_name,
-        label: item.child_name,
-        head_id: item["head_id"],
-        disabled: false,
-        leafnode: "Y",
-        created_status: item["child_created_from"]
-      });
-
-      //if children array doesnt contain this non-leaf node then push
-      const data = target.find(val => {
-        return val.finance_account_head_id == item.finance_account_head_id;
-      });
-
-      if (!data) {
         //ST---calulating Amount
         const BALANCE = head_data.find(f => {
           return item.account_code == f.account_code;
@@ -638,14 +669,12 @@ function createHierarchy(
         let amount = 0;
         if (BALANCE != undefined) {
           if (trans_symbol == "DR") {
-            amount = `${trans_symbol}- ${BALANCE.deb_minus_cred} `;
+            amount = `${trans_symbol} ( ${BALANCE.deb_minus_cred}) `;
           } else {
-            amount = `${trans_symbol}- ${BALANCE.cred_minus_deb} `;
+            amount = `${trans_symbol} ( ${BALANCE.cred_minus_deb}) `;
           }
         } else {
-          console.log(" item2:", item);
-          console.log(" BALANCE2:", BALANCE);
-          amount = `${trans_symbol}- ${default_total} `;
+          amount = `${trans_symbol} ( ${default_total}) `;
         }
 
         //END---calulating Amount
@@ -659,67 +688,40 @@ function createHierarchy(
           leafnode: "N"
         });
       }
-    } else {
-      //ST---calulating Amount
-      const BALANCE = head_data.find(f => {
-        return item.account_code == f.account_code;
-      });
+    }
 
-      let amount = 0;
-      if (BALANCE != undefined) {
-        if (trans_symbol == "DR") {
-          amount = `${trans_symbol}- ${BALANCE.deb_minus_cred} `;
-        } else {
-          amount = `${trans_symbol}- ${BALANCE.cred_minus_deb} `;
+    // utilities.logger().log("roots:", roots);
+    // utilities.logger().log("children:", children);
+
+    // function to recursively build the tree
+    let findChildren = function(parent) {
+      if (children[parent.finance_account_head_id]) {
+        const tempchilds = children[parent.finance_account_head_id];
+
+        parent.children = tempchilds;
+
+        for (let i = 0, len = parent.children.length; i < len; ++i) {
+          findChildren(parent.children[i]);
         }
-      } else {
-        console.log(" item3:", item);
-        console.log(" BALANCE3:", BALANCE);
-        amount = `${trans_symbol}- ${default_total} `;
       }
+    };
 
-      //END---calulating Amount
-
-      target.push({
-        ...item,
-        subtitle: amount,
-        title: item.account_name,
-        label: item.account_name,
-        disabled: true,
-        leafnode: "N"
-      });
+    // enumerate through to handle the case where there are multiple roots
+    for (let i = 0, len = roots.length; i < len; ++i) {
+      findChildren(roots[i]);
     }
+
+    return roots;
+  } catch (e) {
+    console.log("MY-ERORR:", e);
   }
-
-  // utilities.logger().log("roots:", roots);
-  // utilities.logger().log("children:", children);
-
-  // function to recursively build the tree
-  let findChildren = function(parent) {
-    if (children[parent.finance_account_head_id]) {
-      const tempchilds = children[parent.finance_account_head_id];
-
-      parent.children = tempchilds;
-
-      for (let i = 0, len = parent.children.length; i < len; ++i) {
-        findChildren(parent.children[i]);
-      }
-    }
-  };
-
-  // enumerate through to handle the case where there are multiple roots
-  for (let i = 0, len = roots.length; i < len; ++i) {
-    findChildren(roots[i]);
-  }
-
-  return roots;
 }
 
-// WITH cte_name  AS (
-//   SELECT finance_day_end_sub_detail_id, day_end_detail_id, payment_date, head_account_code,
-//   sum(debit_amount),sum(credit_amount) ,case when sum(debit_amount)= sum(credit_amount)then
-//   'true' else 'false'end as is_equal FROM hims_test_db.finance_day_end_sub_detail
-//   where posted='N' and  payment_date between date('2019-10-30') and date('2019-10-31')
-//   group by day_end_detail_id)
-//   select * from finance_day_end_sub_detail where day_end_detail_id in (SELECT day_end_detail_id
-//    FROM cte_name where is_equal='true');
+// select H.account_code,M.head_id,	M.child_id,coalesce(sum(debit_amount) ,0.0000) as debit_amount,
+// coalesce(sum(credit_amount) ,0.0000) as credit_amount,
+// (coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) )as cred_minus_deb,
+// (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)) as deb_minus_cred
+// from finance_head_m_child M inner join
+// finance_account_head H on M.head_id=H.finance_account_head_id
+// left join finance_voucher_details VD on H.finance_account_head_id=VD.head_id
+// group by M.head_id,M.child_id;
