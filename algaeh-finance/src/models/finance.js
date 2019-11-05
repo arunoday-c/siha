@@ -131,14 +131,21 @@ export default {
               
               )
               select * from cte order by account_level,sort_order;              
-              select H.account_code,M.head_id,	M.child_id,coalesce((debit_amount) ,0.0000) as debit_amount,
-              coalesce((credit_amount) ,0.0000) as credit_amount	from finance_head_m_child M inner join 
+              select H.account_code,M.head_id,	M.child_id,coalesce(sum(debit_amount) ,0.0000) as debit_amount,
+              coalesce(sum(credit_amount) ,0.0000) as credit_amount, 
+              (coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) )as cred_minus_deb,
+              (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)) as deb_minus_cred
+              from finance_head_m_child M inner join 
               finance_account_head H on M.head_id=H.finance_account_head_id
               left join finance_voucher_details VD on H.finance_account_head_id=VD.head_id 
               group by M.head_id,M.child_id; 
 
-              select finance_account_head_id as head_id ,account_code,coalesce((debit_amount) ,0.0000)as debit_amount,
-              coalesce((credit_amount) ,0.0000)as credit_amount from finance_account_head H left join
+              select finance_account_head_id as head_id ,account_code,coalesce(sum(debit_amount) ,0.0000)as debit_amount,
+              coalesce(sum(credit_amount) ,0.0000)as credit_amount ,              
+              (coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) )as cred_minus_deb,
+              (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)) as deb_minus_cred
+              
+              from finance_account_head H left join
               finance_voucher_details VD on H.finance_account_head_id=VD.head_id
               where account_code like'${input.finance_account_head_id}%' group by account_code;
          
@@ -508,6 +515,51 @@ export default {
         _mysql.releaseConnection();
         next(e);
       });
+  },
+  //created by irfan: to
+  removeAccountHead: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    // const utilities = new algaehUtilities();
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query: `SELECT finance_head_m_child_id,created_from FROM finance_head_m_child where \
+                head_id=? and child_id=?;`,
+        values: [input.head_id, input.child_id],
+        printQuery: true
+      })
+      .then(result => {
+        if (result[0]["created_from"] == "S") {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: "Cant Delete System Generated Account Heads"
+          };
+          next();
+        } else {
+          _mysql
+            .executeQuery({
+              query: `delete FROM finance_head_m_child where finance_head_m_child_id=?;            
+                    delete from finance_account_child where finance_account_child_id=?;`,
+              values: [result[0]["finance_head_m_child_id"], input.child_id],
+              printQuery: true
+            })
+            .then(resu => {
+              _mysql.releaseConnection();
+              req.records = resu;
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };
 
@@ -550,9 +602,9 @@ function createHierarchy(
       let amount = 0;
       if (BALANCE != undefined) {
         if (trans_symbol == "DR") {
-          amount = `${trans_symbol}- ${BALANCE.debit_amount} `;
+          amount = `${trans_symbol}- ${BALANCE.deb_minus_cred} `;
         } else {
-          amount = `${trans_symbol}- ${BALANCE.credit_amount} `;
+          amount = `${trans_symbol}- ${BALANCE.cred_minus_deb} `;
         }
       } else {
         console.log(" item1:", item);
@@ -564,7 +616,7 @@ function createHierarchy(
       child.push({
         finance_account_child_id: item["finance_account_child_id"],
         subtitle: amount,
-        title: item.child_name ,
+        title: item.child_name,
         label: item.child_name,
         head_id: item["head_id"],
         disabled: false,
@@ -586,9 +638,9 @@ function createHierarchy(
         let amount = 0;
         if (BALANCE != undefined) {
           if (trans_symbol == "DR") {
-            amount = `${trans_symbol}- ${BALANCE.debit_amount} `;
+            amount = `${trans_symbol}- ${BALANCE.deb_minus_cred} `;
           } else {
-            amount = `${trans_symbol}- ${BALANCE.credit_amount} `;
+            amount = `${trans_symbol}- ${BALANCE.cred_minus_deb} `;
           }
         } else {
           console.log(" item2:", item);
@@ -616,9 +668,9 @@ function createHierarchy(
       let amount = 0;
       if (BALANCE != undefined) {
         if (trans_symbol == "DR") {
-          amount = `${trans_symbol}- ${BALANCE.debit_amount} `;
+          amount = `${trans_symbol}- ${BALANCE.deb_minus_cred} `;
         } else {
-          amount = `${trans_symbol}- ${BALANCE.credit_amount} `;
+          amount = `${trans_symbol}- ${BALANCE.cred_minus_deb} `;
         }
       } else {
         console.log(" item3:", item);

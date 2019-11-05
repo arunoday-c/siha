@@ -13,7 +13,12 @@ import radModels from "algaeh-radiology/src/models/radiology";
 //   "algaeh-radiology/src/models/radiology"
 // );
 //destructuring
-const { newReceiptData, addBillData, addCashHandover } = billModels;
+const {
+  newReceiptData,
+  addBillData,
+  addtoDayEnd,
+  addCashHandover
+} = billModels;
 const {
   addOpBIlling,
   updateOrderedServicesBilled,
@@ -36,6 +41,7 @@ export default () => {
     addOpBIlling,
     newReceiptData,
     addBillData,
+    addtoDayEnd,
     addCashHandover,
     (req, res, next) => {
       if (
