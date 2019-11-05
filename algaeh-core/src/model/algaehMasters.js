@@ -1993,8 +1993,8 @@ let addLisMachineConfiguration = (req, res, next) => {
           "INSERT INTO `hims_d_lis_configuration` (machine_name, communication_type, hl7_supported, check_sum, \
               connection_type, stat_flag, rotine_flag, result_extension, order_mode, file_upload, com_port_name, \
               brud_rate, ser_result_part_loc, host_ip_address, port_no, tcp_result_part_loc, driver_name, \
-              description, created_date, created_by, updated_date, updated_by) \
-              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              description, hospital_id, created_date, created_by, updated_date, updated_by) \
+              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.machine_name,
           input.communication_type,
@@ -2014,6 +2014,7 @@ let addLisMachineConfiguration = (req, res, next) => {
           input.tcp_result_part_loc,
           input.driver_name,
           input.description,
+          input.hospital_id,
           new Date(),
           input.created_by,
           new Date(),
@@ -2041,12 +2042,12 @@ let addLisMachineConfiguration = (req, res, next) => {
 let getLisMachineConfiguration = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
-    let input = req.body;
 
     _mysql
       .executeQuery({
         query:
-          "SELECT * FROM hims_d_lis_configuration"
+          "SELECT LC.*, H.hospital_name FROM hims_d_lis_configuration LC \
+          inner join hims_d_hospital H on H.hims_d_hospital_id = LC.hospital_id"
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -2075,7 +2076,7 @@ let updateLisMachineConfiguration = (req, res, next) => {
           "update hims_d_lis_configuration set machine_name=?, communication_type=?, hl7_supported=?, check_sum=?, \
             connection_type=?, stat_flag=?, rotine_flag=?, result_extension=?, order_mode=?, file_upload=?, com_port_name=?, \
             brud_rate=?, ser_result_part_loc=?, host_ip_address=?, port_no=?, tcp_result_part_loc=?, driver_name=?, \
-            description=?, updated_date=?, updated_by=? where hims_d_lis_configuration_id=?",
+            description=?, hospital_id=?, updated_date=?, updated_by=? where hims_d_lis_configuration_id=?",
         values: [
           input.machine_name,
           input.communication_type,
@@ -2095,6 +2096,7 @@ let updateLisMachineConfiguration = (req, res, next) => {
           input.tcp_result_part_loc,
           input.driver_name,
           input.description,
+          input.hospital_id,
           new Date(),
           input.updated_by,
           input.hims_d_lis_configuration_id

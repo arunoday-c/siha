@@ -86,6 +86,12 @@ export default function LisConfigList() {
                         )
                       },
                       {
+                        fieldName: "hospital_name",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Branch Name" }} />
+                        )
+                      },
+                      {
                         fieldName: "communication_type",
                         label: (
                           <AlgaehLabel
@@ -98,8 +104,8 @@ export default function LisConfigList() {
                               {row.communication_type === "0"
                                 ? "Unidirectional"
                                 : row.communication_type === "1"
-                                ? "Bidirectional"
-                                : "Not Supported"}
+                                  ? "Bidirectional"
+                                  : "Not Supported"}
                             </span>
                           );
                         },
@@ -175,8 +181,8 @@ export default function LisConfigList() {
                               {row.order_mode === "0"
                                 ? "Query Mode"
                                 : row.order_mode === "1"
-                                ? "Download Mode"
-                                : "File Mode"}
+                                  ? "Download Mode"
+                                  : "File Mode"}
                             </span>
                           );
                         },

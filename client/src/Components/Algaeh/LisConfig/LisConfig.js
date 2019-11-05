@@ -3,11 +3,13 @@ import "./LisConfig.scss";
 import {
   AlagehFormGroup,
   AlgaehModalPopUp,
-  AlgaehLabel
+  AlgaehLabel,
+  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import ButtonType from "../../Wrapper/algaehButton";
-import { AddLisMachineConfiguration } from "./LisConfigEvent";
+import { AddLisMachineConfiguration, getOrganizations } from "./LisConfigEvent";
 import { swalMessage } from "../../../utils/algaehApiCall";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 export default function LisConfig(props) {
   const baseState = {
@@ -29,10 +31,14 @@ export default function LisConfig(props) {
     port_no: "",
     tcp_result_part_loc: "",
     driver_name: "",
-    description: ""
+    description: "",
+    hospital_id: JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    ).hims_d_hospital_id,
   };
   const [lis_config, setLisConfig] = useState({ ...baseState });
   const [lodingAddtoList, setLoadingAddtoList] = useState(false);
+  const [organizations, setOrganizations] = useState([]);
 
   useEffect(() => {
     debugger;
@@ -44,8 +50,14 @@ export default function LisConfig(props) {
     }
   }, [props]);
 
+  useEffect(() => {
+    getOrganizations(data => {
+      setOrganizations(data);
+    });
+  }, []);
+
   function EventHandaler(e) {
-    const { name, value } = e.target;
+    const { name, value } = e.target || e;
     setLisConfig(state => {
       return { ...state, [name]: value };
     });
@@ -82,7 +94,7 @@ export default function LisConfig(props) {
                     <div className="portlet-body">
                       <div className="row">
                         <AlagehFormGroup
-                          div={{ className: "col-3" }}
+                          div={{ className: "col" }}
                           label={{
                             forceLabel: "Machine Name",
                             isImp: false
@@ -96,21 +108,31 @@ export default function LisConfig(props) {
                             }
                           }}
                         />
-                        {/* <AlagehAutoComplete
-                  div={{ className: "col-2" }}
-                  label={{
-                    forceLabel: "Comunication Type"
-                  }}
-                  selector={{
-                    className: "select-fld",
-                    name: communication_type,
-                    value: communication_type,
-                    dataSource: {},
-                    onChange: e => {
-                      setCommunicationType(e.target.value);
-                    }
-                  }}
-                /> */}
+                        <AlagehAutoComplete
+                          div={{ className: "col" }}
+                          label={{
+                            forceLabel: "Assign Division/Branch",
+                            isImp: true
+                          }}
+                          selector={{
+                            name: "hospital_id",
+                            className: "select-fld",
+                            value: lis_config.hospital_id,
+                            dataSource: {
+                              textField: "hospital_name",
+                              valueField: "hims_d_hospital_id",
+                              data: organizations
+                            },
+                            onChange: EventHandaler,
+                            onClear: () => {
+                              setLisConfig(state => {
+                                return { ...state, hospital_id: null };
+                              });
+
+                            }
+                          }}
+                        />
+
                         <div className="col">
                           <label>Checksum Required</label>
                           <div className="customRadio">
@@ -430,67 +452,67 @@ export default function LisConfig(props) {
                     </div>
                   </div>
                 ) : (
-                  <div className="col-6">
-                    <div className="portlet portlet-bordered margin-bottom-15">
-                      <div className="portlet-title">
-                        <div className="caption">
-                          <h3 className="caption-subject">TCP Port Mode</h3>
+                    <div className="col-6">
+                      <div className="portlet portlet-bordered margin-bottom-15">
+                        <div className="portlet-title">
+                          <div className="caption">
+                            <h3 className="caption-subject">TCP Port Mode</h3>
+                          </div>
+                          <div className="actions"></div>
                         </div>
-                        <div className="actions"></div>
-                      </div>
 
-                      <div className="portlet-body">
-                        <div className="row">
-                          <AlagehFormGroup
-                            div={{ className: "col" }}
-                            label={{
-                              forceLabel: "Host IP Address",
-                              isImp: false
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "host_ip_address",
-                              value: lis_config.host_ip_address,
-                              events: {
-                                onChange: EventHandaler
-                              }
-                            }}
-                          />
-                          <AlagehFormGroup
-                            div={{ className: "col" }}
-                            label={{
-                              forceLabel: "Port No.",
-                              isImp: false
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "port_no",
-                              value: lis_config.port_no,
-                              events: {
-                                onChange: EventHandaler
-                              }
-                            }}
-                          />
-                          <AlagehFormGroup
-                            div={{ className: "col" }}
-                            label={{
-                              forceLabel: "Result Path Location",
-                              isImp: false
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "tcp_result_part_loc",
-                              value: lis_config.tcp_result_part_loc,
-                              events: {
-                                onChange: EventHandaler
-                              }
-                            }}
-                          />
+                        <div className="portlet-body">
+                          <div className="row">
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              label={{
+                                forceLabel: "Host IP Address",
+                                isImp: false
+                              }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "host_ip_address",
+                                value: lis_config.host_ip_address,
+                                events: {
+                                  onChange: EventHandaler
+                                }
+                              }}
+                            />
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              label={{
+                                forceLabel: "Port No.",
+                                isImp: false
+                              }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "port_no",
+                                value: lis_config.port_no,
+                                events: {
+                                  onChange: EventHandaler
+                                }
+                              }}
+                            />
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              label={{
+                                forceLabel: "Result Path Location",
+                                isImp: false
+                              }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "tcp_result_part_loc",
+                                value: lis_config.tcp_result_part_loc,
+                                events: {
+                                  onChange: EventHandaler
+                                }
+                              }}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
                 <div className="col-6">
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="portlet-title">

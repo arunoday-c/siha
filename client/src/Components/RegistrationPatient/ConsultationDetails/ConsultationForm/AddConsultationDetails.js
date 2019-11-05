@@ -8,6 +8,8 @@ import {
 import moment from "moment";
 
 const DeptselectedHandeler = ($this, context, e) => {
+  debugger
+  let primary_policy_num = $this.state.primary_policy_num
   SetBulkState({
     state: $this,
     callback: () => {
@@ -15,6 +17,7 @@ const DeptselectedHandeler = ($this, context, e) => {
         alertTypeIcon: "warning",
         querySelector: "data-validate='demographicDetails'",
         onSuccess: () => {
+          debugger
           if (
             $this.state.insured === "Y" &&
             ($this.state.primary_insurance_provider_id === null ||
@@ -31,6 +34,7 @@ const DeptselectedHandeler = ($this, context, e) => {
               type: "error"
             });
           } else {
+            debugger
             let dept = Enumerable.from($this.props.deptanddoctors.departmets)
               .where(w => w.sub_department_id === e.value)
               .firstOrDefault();
@@ -40,7 +44,8 @@ const DeptselectedHandeler = ($this, context, e) => {
               department_id: e.selected.department_id,
               department_type: e.selected.department_type,
               doctors: dept.doctors,
-              doctor_id: null
+              doctor_id: null,
+              primary_policy_num: primary_policy_num,
             });
             if (context !== null) {
               context.updateState({
@@ -49,6 +54,7 @@ const DeptselectedHandeler = ($this, context, e) => {
                 department_id: e.selected.department_id,
                 department_type: e.selected.department_type,
                 doctors: dept.doctors,
+                primary_policy_num: primary_policy_num,
                 doctor_id: null,
 
                 saveEnable: true,
@@ -148,7 +154,7 @@ export const clearBillDetails = (context, ...args) => {
 };
 
 const selectedHandeler = ($this, context, e) => {
-  let primary_policy_num = $this.state.primary_policy_num;
+  let primary_policy_num = $this.state.primary_policy_num
   SetBulkState({
     state: $this,
     callback: () => {
