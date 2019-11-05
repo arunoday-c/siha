@@ -539,7 +539,7 @@ const AddtoList = ($this, context) => {
   } else if (
     ($this.state.expiry_date === null ||
       $this.state.expiry_date === undefined) &&
-    item_details.exp_date_required === "N"
+    item_details.exp_date_required === "Y"
   ) {
     swalMessage({
       title: "Expiry Date is mandatory.",
@@ -606,6 +606,7 @@ const AddtoList = ($this, context) => {
       parseFloat(delivery_quantity);
     item_details.dn_quantity = delivery_quantity;
 
+    _item_details.dn_index = dn_entry_detail.length > 0 ? dn_entry_detail.length : 0
     _po_entry_detail[$this.state.selected_row_index] = item_details;
 
     delete _item_details.dn_entry_detail;

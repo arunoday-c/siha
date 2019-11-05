@@ -6,8 +6,7 @@ import { bindActionCreators } from "redux";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
@@ -31,7 +30,7 @@ class POReturnItemList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
+
     this.setState(nextProps.POReturnEntry);
   }
 
@@ -126,7 +125,8 @@ class POReturnItemList extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "Batch No." }}
                                 />
-                              )
+                              ),
+                              others: { minWidth: 150 }
                             },
                             {
                               fieldName: "vendor_batchno",
@@ -147,7 +147,7 @@ class POReturnItemList extends Component {
                                 />
                               ),
                               displayTemplate: row => {
-                                return (
+                                return this.state.is_posted === "N" ? (
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
@@ -181,7 +181,7 @@ class POReturnItemList extends Component {
                                       // }
                                     }}
                                   />
-                                );
+                                ) : parseFloat(row.return_qty);
                               }
                             },
                             {
@@ -353,7 +353,16 @@ class POReturnItemList extends Component {
                                 forceLabel: "Receipt Net Payable"
                               }}
                             />
-                            <h6>{getAmountFormart(this.state.net_payable)}</h6>
+                            <h6>{getAmountFormart(this.state.receipt_net_payable)}</h6>
+                          </div>
+
+                          <div className="col-lg-3">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Return Net Total"
+                              }}
+                            />
+                            <h6>{getAmountFormart(this.state.net_total)}</h6>
                           </div>
 
                           <div className="col-lg-3">

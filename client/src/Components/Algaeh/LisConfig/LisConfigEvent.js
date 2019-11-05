@@ -45,3 +45,15 @@ export function getLisMachineConfiguration(callBack) {
     });
 }
 
+export function getOrganizations(callBack) {
+    algaehApiCall({
+        uri: "/organization/getOrganization",
+        method: "GET",
+        onSuccess: res => {
+            if (res.data.success) {
+                callBack(res.data.records);
+            }
+        }
+    });
+}
+

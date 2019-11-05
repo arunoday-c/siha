@@ -157,14 +157,13 @@ let ReceiptPaymentInsert = (req, res, next) => {
                   "pay_type",
                   "amount",
                   "created_by",
-                  "updated_by",
-                  "card_type"
+                  "updated_by"
                 ];
 
                 connection.query(
                   "INSERT  INTO hims_f_receipt_details ( " +
-                    receptSample.join(",") +
-                    ",hims_f_receipt_header_id) VALUES ? ",
+                  receptSample.join(",") +
+                  ",hims_f_receipt_header_id) VALUES ? ",
                   [
                     jsonArrayToObject({
                       sampleInputObject: receptSample,
@@ -262,13 +261,12 @@ let ReceiptPaymentInsert = (req, res, next) => {
                   "pay_type",
                   "amount",
                   "created_by",
-                  "updated_by",
-                  "card_type"
+                  "updated_by"
                 ];
                 connection.query(
                   "INSERT  INTO hims_f_receipt_details ( " +
-                    receptSample.join(",") +
-                    ",hims_f_receipt_header_id) VALUES ? ",
+                  receptSample.join(",") +
+                  ",hims_f_receipt_header_id) VALUES ? ",
                   [
                     jsonArrayToObject({
                       sampleInputObject: receptSample,

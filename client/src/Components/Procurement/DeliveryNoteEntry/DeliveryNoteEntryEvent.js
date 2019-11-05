@@ -456,6 +456,8 @@ const SaveDNEnrty = $this => {
 
   delete InputObj.dn_entry_detail;
 
+  debugger
+
   if (batchExpiryDate.length === 0) {
     algaehApiCall({
       uri: "/DeliveryNoteEntry/addDeliveryNoteEntry",
@@ -679,7 +681,7 @@ const getData = $this => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "dnitemcategory"
       },
-      afterSuccess: data => {}
+      afterSuccess: data => { }
     });
 
     $this.props.getItemGroup({

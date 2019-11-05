@@ -3,6 +3,7 @@ import moment from "moment";
 import { LINQ } from "node-linq";
 import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
+import _ from "lodash";
 
 export default {
   generateNumber: (req, res, next) => {
@@ -192,165 +193,281 @@ export default {
           req.body.year = year;
           req.body.period = period;
           let dn_entry_detail = [];
+          const async = require('async');
 
-          for (let i = 0; i < input.po_entry_detail.length; i++) {
-            // if (input.dn_from == "PHR") {
-            //   dn_entry_detail = input.po_entry_detail[i].dn_entry_detail;
-            // } else {
-            //   dn_entry_detail = input.po_entry_detail[i].dn_entry_detail;
-            // }
-            updateItemMaster({
-              stock_detail: input.po_entry_detail[i].dn_entry_detail,
-              po_entry_detail: input.po_entry_detail,
-              stock_insert_detail: i,
-              _mysql: _mysql,
-              req: req,
-              next: next,
-              dn_from: input.dn_from
-            })
-              .then(ItemBatchGen => {
-                utilities
-                  .logger()
-                  .log("resolve: ", input.po_entry_detail[i].dn_entry_detail);
-                _mysql
-                  .executeQuery({
-                    query:
-                      "INSERT INTO hims_f_procurement_dn_detail ( phar_item_category,phar_item_group,phar_item_id,\
-                      inv_item_category_id,inv_item_group_id,inv_item_id,po_quantity,dn_quantity,\
-                      quantity_outstanding,\
-                      pharmacy_uom_id,inventory_uom_id,unit_cost,extended_cost,discount_percentage,discount_amount,\
-                      net_extended_cost,tax_percentage,tax_amount,total_amount,item_type,quantity_recieved_todate,\
-                      batchno_expiry_required,batchno,expiry_date,purchase_order_header_id,purchase_order_detail_id,\
-                      vendor_batchno,barcode,sales_price,free_qty,hims_f_procurement_dn_header_id) \
-                      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                    values: [
-                      input.po_entry_detail[i]["phar_item_category"],
-                      input.po_entry_detail[i]["phar_item_group"],
-                      input.po_entry_detail[i]["phar_item_id"],
-                      input.po_entry_detail[i]["inv_item_category_id"],
-                      input.po_entry_detail[i]["inv_item_group_id"],
-                      input.po_entry_detail[i]["inv_item_id"],
-                      input.po_entry_detail[i]["po_quantity"],
-                      input.po_entry_detail[i]["dn_quantity"],
-                      input.po_entry_detail[i]["quantity_outstanding"],
-                      input.po_entry_detail[i]["pharmacy_uom_id"],
-                      input.po_entry_detail[i]["inventory_uom_id"],
-                      input.po_entry_detail[i]["unit_cost"],
-                      input.po_entry_detail[i]["extended_cost"],
-                      input.po_entry_detail[i]["discount_percentage"],
-                      input.po_entry_detail[i]["discount_amount"],
-                      input.po_entry_detail[i]["net_extended_cost"],
-                      input.po_entry_detail[i]["tax_percentage"],
-                      input.po_entry_detail[i]["tax_amount"],
-                      input.po_entry_detail[i]["total_amount"],
-                      input.po_entry_detail[i]["item_type"],
-                      input.po_entry_detail[i]["quantity_recieved_todate"],
-                      input.po_entry_detail[i]["batchno_expiry_required"],
-                      input.po_entry_detail[i]["batchno"],
-                      input.po_entry_detail[i]["expiry_date"],
-                      input.po_entry_detail[i]["purchase_order_header_id"],
-                      input.po_entry_detail[i]["purchase_order_detail_id"],
-                      input.po_entry_detail[i]["vendor_batchno"],
-                      input.po_entry_detail[i]["barcode"],
-                      input.po_entry_detail[i]["sales_price"],
-                      input.po_entry_detail[i]["free_qty"],
-                      headerResult.insertId
-                    ],
-
-                    printQuery: false
-                  })
-                  .then(detailResult => {
-                    console.log("detailResult: ", detailResult.insertId.length);
-                    let IncludeSubValues = [
-                      "phar_item_category",
-                      "phar_item_group",
-                      "phar_item_id",
-                      "inv_item_category_id",
-                      "inv_item_group_id",
-                      "inv_item_id",
-                      "po_quantity",
-                      "dn_quantity",
-                      "quantity_outstanding",
-                      "pharmacy_uom_id",
-                      "inventory_uom_id",
-                      "unit_cost",
-                      "extended_cost",
-                      "discount_percentage",
-                      "discount_amount",
-                      "net_extended_cost",
-                      "tax_percentage",
-                      "tax_amount",
-                      "total_amount",
-                      "item_type",
-                      "quantity_recieved_todate",
-                      "batchno_expiry_required",
-                      "batchno",
-                      "expiry_date",
-                      "purchase_order_header_id",
-                      "purchase_order_detail_id",
-                      "vendor_batchno",
-                      "barcode",
-                      "sales_price",
-                      "free_qty"
-                    ];
-
-                    _mysql
-                      .executeQuery({
-                        query:
-                          "INSERT INTO hims_f_procurement_dn_batches(??) VALUES ?",
-                        values: input.po_entry_detail[i].dn_entry_detail,
-                        includeValues: IncludeSubValues,
-                        extraValues: {
-                          hims_f_procurement_dn_detail_id: detailResult.insertId
-                        },
-                        bulkInsertOrUpdate: true,
-                        printQuery: false
-                      })
-                      .then(subResult => {
-                        if (i == input.po_entry_detail.length - 1) {
-                          // req.connection = {
-                          //   connection: _mysql.connection,
-                          //   isTransactionConnection:
-                          //     _mysql.isTransactionConnection,
-                          //   pool: _mysql.pool
-                          // };
-                          // req.flag = 1;
-
-                          // _mysql.commitTransaction(() => {
-                          //   _mysql.releaseConnection();
-                          req.records = {
-                            delivery_note_number: input.delivery_note_number,
-                            hims_f_procurement_dn_header_id:
-                              headerResult.insertId
-                          };
-                          next();
-                          // });
-                        }
-                      });
-                  })
-                  .catch(error => {
-                    _mysql.rollBackTransaction(() => {
-                      next(error);
-                    });
-                  });
+          async.eachSeries(
+            input.po_entry_detail,
+            (inputObj, nextLoop) => {
+              // console.log("inputObj", inputObj);
+              const i = input.po_entry_detail.indexOf(inputObj);
+              console.log("index", i);
+              updateItemMaster({
+                stock_detail: inputObj.dn_entry_detail,
+                po_entry_detail: input.po_entry_detail,
+                stock_insert_detail: i,
+                _mysql: _mysql,
+                req: req,
+                next: next,
+                dn_from: input.dn_from
               })
-              .catch(e => {
-                _mysql.rollBackTransaction(() => {
-                  next(e);
+                .then(ItemBatchGen => {
+                  console.log("ItemBatchGen", ItemBatchGen)
+                  // utilities
+                  //   .logger()
+                  //   .log("resolve: ", input.po_entry_detail[i].dn_entry_detail);
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "INSERT INTO hims_f_procurement_dn_detail ( phar_item_category,phar_item_group,phar_item_id,\
+                        inv_item_category_id,inv_item_group_id,inv_item_id,po_quantity,dn_quantity,\
+                        quantity_outstanding,\
+                        pharmacy_uom_id,inventory_uom_id,unit_cost,extended_cost,discount_percentage,discount_amount,\
+                        net_extended_cost,tax_percentage,tax_amount,total_amount,item_type,quantity_recieved_todate,\
+                        batchno_expiry_required,batchno,expiry_date,purchase_order_header_id,purchase_order_detail_id,\
+                        vendor_batchno,barcode,sales_price,free_qty,hims_f_procurement_dn_header_id) \
+                        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                      values: [
+                        input.po_entry_detail[i]["phar_item_category"],
+                        input.po_entry_detail[i]["phar_item_group"],
+                        input.po_entry_detail[i]["phar_item_id"],
+                        input.po_entry_detail[i]["inv_item_category_id"],
+                        input.po_entry_detail[i]["inv_item_group_id"],
+                        input.po_entry_detail[i]["inv_item_id"],
+                        input.po_entry_detail[i]["po_quantity"],
+                        input.po_entry_detail[i]["dn_quantity"],
+                        input.po_entry_detail[i]["quantity_outstanding"],
+                        input.po_entry_detail[i]["pharmacy_uom_id"],
+                        input.po_entry_detail[i]["inventory_uom_id"],
+                        input.po_entry_detail[i]["unit_cost"],
+                        input.po_entry_detail[i]["extended_cost"],
+                        input.po_entry_detail[i]["discount_percentage"],
+                        input.po_entry_detail[i]["discount_amount"],
+                        input.po_entry_detail[i]["net_extended_cost"],
+                        input.po_entry_detail[i]["tax_percentage"],
+                        input.po_entry_detail[i]["tax_amount"],
+                        input.po_entry_detail[i]["total_amount"],
+                        input.po_entry_detail[i]["item_type"],
+                        input.po_entry_detail[i]["quantity_recieved_todate"],
+                        input.po_entry_detail[i]["batchno_expiry_required"],
+                        input.po_entry_detail[i]["batchno"],
+                        input.po_entry_detail[i]["expiry_date"],
+                        input.po_entry_detail[i]["purchase_order_header_id"],
+                        input.po_entry_detail[i]["purchase_order_detail_id"],
+                        input.po_entry_detail[i]["vendor_batchno"],
+                        input.po_entry_detail[i]["barcode"],
+                        input.po_entry_detail[i]["sales_price"],
+                        input.po_entry_detail[i]["free_qty"],
+                        headerResult.insertId
+                      ],
+
+                      printQuery: false
+                    })
+                    .then(detailResult => {
+                      console.log("detailResult: ", detailResult.insertId.length);
+                      let IncludeSubValues = [
+                        "phar_item_category",
+                        "phar_item_group",
+                        "phar_item_id",
+                        "inv_item_category_id",
+                        "inv_item_group_id",
+                        "inv_item_id",
+                        "po_quantity",
+                        "dn_quantity",
+                        "quantity_outstanding",
+                        "pharmacy_uom_id",
+                        "inventory_uom_id",
+                        "unit_cost",
+                        "extended_cost",
+                        "discount_percentage",
+                        "discount_amount",
+                        "net_extended_cost",
+                        "tax_percentage",
+                        "tax_amount",
+                        "total_amount",
+                        "item_type",
+                        "quantity_recieved_todate",
+                        "batchno_expiry_required",
+                        "batchno",
+                        "expiry_date",
+                        "purchase_order_header_id",
+                        "purchase_order_detail_id",
+                        "vendor_batchno",
+                        "barcode",
+                        "sales_price",
+                        "free_qty"
+                      ];
+
+                      _mysql
+                        .executeQuery({
+                          query:
+                            "INSERT INTO hims_f_procurement_dn_batches(??) VALUES ?",
+                          values: input.po_entry_detail[i].dn_entry_detail,
+                          includeValues: IncludeSubValues,
+                          extraValues: {
+                            hims_f_procurement_dn_detail_id: detailResult.insertId
+                          },
+                          bulkInsertOrUpdate: true,
+                          printQuery: false
+                        })
+                        .then(subResult => {
+                          if (i == input.po_entry_detail.length - 1) {
+                            req.records = {
+                              delivery_note_number: input.delivery_note_number,
+                              hims_f_procurement_dn_header_id:
+                                headerResult.insertId
+                            };
+                            next();
+                          } else {
+                            nextLoop()
+                          }
+                        });
+                    })
+                    .catch(error => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                      });
+                    });
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
                 });
-              });
-            // if (input.dn_from == "PHR") {
-            //
-            // } else {
-            //   updateInventoryItemMaster({
-            //     inventory_stock_detail:
-            //       input.po_entry_detail[i].dn_entry_detail,
-            //     _mysql: _mysql,
-            //     req: req,
-            //     next: next
-            //   });
-            // }
-          }
+
+            })
+
+          // for (let i = 0; i < input.po_entry_detail.length; i++) {
+
+          //   updateItemMaster({
+          //     stock_detail: input.po_entry_detail[i].dn_entry_detail,
+          //     po_entry_detail: input.po_entry_detail,
+          //     stock_insert_detail: i,
+          //     _mysql: _mysql,
+          //     req: req,
+          //     next: next,
+          //     dn_from: input.dn_from
+          //   })
+          //     .then(ItemBatchGen => {
+          //       utilities
+          //         .logger()
+          //         .log("resolve: ", input.po_entry_detail[i].dn_entry_detail);
+          //       _mysql
+          //         .executeQuery({
+          //           query:
+          //             "INSERT INTO hims_f_procurement_dn_detail ( phar_item_category,phar_item_group,phar_item_id,\
+          //             inv_item_category_id,inv_item_group_id,inv_item_id,po_quantity,dn_quantity,\
+          //             quantity_outstanding,\
+          //             pharmacy_uom_id,inventory_uom_id,unit_cost,extended_cost,discount_percentage,discount_amount,\
+          //             net_extended_cost,tax_percentage,tax_amount,total_amount,item_type,quantity_recieved_todate,\
+          //             batchno_expiry_required,batchno,expiry_date,purchase_order_header_id,purchase_order_detail_id,\
+          //             vendor_batchno,barcode,sales_price,free_qty,hims_f_procurement_dn_header_id) \
+          //             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          //           values: [
+          //             input.po_entry_detail[i]["phar_item_category"],
+          //             input.po_entry_detail[i]["phar_item_group"],
+          //             input.po_entry_detail[i]["phar_item_id"],
+          //             input.po_entry_detail[i]["inv_item_category_id"],
+          //             input.po_entry_detail[i]["inv_item_group_id"],
+          //             input.po_entry_detail[i]["inv_item_id"],
+          //             input.po_entry_detail[i]["po_quantity"],
+          //             input.po_entry_detail[i]["dn_quantity"],
+          //             input.po_entry_detail[i]["quantity_outstanding"],
+          //             input.po_entry_detail[i]["pharmacy_uom_id"],
+          //             input.po_entry_detail[i]["inventory_uom_id"],
+          //             input.po_entry_detail[i]["unit_cost"],
+          //             input.po_entry_detail[i]["extended_cost"],
+          //             input.po_entry_detail[i]["discount_percentage"],
+          //             input.po_entry_detail[i]["discount_amount"],
+          //             input.po_entry_detail[i]["net_extended_cost"],
+          //             input.po_entry_detail[i]["tax_percentage"],
+          //             input.po_entry_detail[i]["tax_amount"],
+          //             input.po_entry_detail[i]["total_amount"],
+          //             input.po_entry_detail[i]["item_type"],
+          //             input.po_entry_detail[i]["quantity_recieved_todate"],
+          //             input.po_entry_detail[i]["batchno_expiry_required"],
+          //             input.po_entry_detail[i]["batchno"],
+          //             input.po_entry_detail[i]["expiry_date"],
+          //             input.po_entry_detail[i]["purchase_order_header_id"],
+          //             input.po_entry_detail[i]["purchase_order_detail_id"],
+          //             input.po_entry_detail[i]["vendor_batchno"],
+          //             input.po_entry_detail[i]["barcode"],
+          //             input.po_entry_detail[i]["sales_price"],
+          //             input.po_entry_detail[i]["free_qty"],
+          //             headerResult.insertId
+          //           ],
+
+          //           printQuery: false
+          //         })
+          //         .then(detailResult => {
+          //           console.log("detailResult: ", detailResult.insertId.length);
+          //           let IncludeSubValues = [
+          //             "phar_item_category",
+          //             "phar_item_group",
+          //             "phar_item_id",
+          //             "inv_item_category_id",
+          //             "inv_item_group_id",
+          //             "inv_item_id",
+          //             "po_quantity",
+          //             "dn_quantity",
+          //             "quantity_outstanding",
+          //             "pharmacy_uom_id",
+          //             "inventory_uom_id",
+          //             "unit_cost",
+          //             "extended_cost",
+          //             "discount_percentage",
+          //             "discount_amount",
+          //             "net_extended_cost",
+          //             "tax_percentage",
+          //             "tax_amount",
+          //             "total_amount",
+          //             "item_type",
+          //             "quantity_recieved_todate",
+          //             "batchno_expiry_required",
+          //             "batchno",
+          //             "expiry_date",
+          //             "purchase_order_header_id",
+          //             "purchase_order_detail_id",
+          //             "vendor_batchno",
+          //             "barcode",
+          //             "sales_price",
+          //             "free_qty"
+          //           ];
+
+          //           _mysql
+          //             .executeQuery({
+          //               query:
+          //                 "INSERT INTO hims_f_procurement_dn_batches(??) VALUES ?",
+          //               values: input.po_entry_detail[i].dn_entry_detail,
+          //               includeValues: IncludeSubValues,
+          //               extraValues: {
+          //                 hims_f_procurement_dn_detail_id: detailResult.insertId
+          //               },
+          //               bulkInsertOrUpdate: true,
+          //               printQuery: false
+          //             })
+          //             .then(subResult => {
+          //               if (i == input.po_entry_detail.length - 1) {
+          //                 req.records = {
+          //                   delivery_note_number: input.delivery_note_number,
+          //                   hims_f_procurement_dn_header_id:
+          //                     headerResult.insertId
+          //                 };
+          //                 next();
+          //               }
+          //             });
+          //         })
+          //         .catch(error => {
+          //           _mysql.rollBackTransaction(() => {
+          //             next(error);
+          //           });
+          //         });
+          //     })
+          //     .catch(e => {
+          //       _mysql.rollBackTransaction(() => {
+          //         next(e);
+          //       });
+          //     });
+          // }
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {
@@ -741,6 +858,7 @@ export default {
 function updateItemMaster(options) {
   return new Promise((resolve, reject) => {
     try {
+      console.log("updateItemMaster: ");
       let dn_from = options.dn_from;
       let _mysql = options._mysql;
       let req = options.req;
@@ -750,18 +868,23 @@ function updateItemMaster(options) {
 
       const utilities = new algaehUtilities();
 
-      utilities.logger().log("updateItemMaster: ", stock_detail);
-      utilities.logger().log("stock_insert_detail: ", stock_insert_detail);
+      // console.log("updateItemMaster: ", stock_detail);
+      console.log("stock_insert_detail: ", stock_insert_detail);
+      // console.log("po_entry_detail: ", po_entry_detail);
 
       for (let i = 0; i < stock_detail.length; i++) {
-        utilities.logger().log("i: ", i);
+        console.log("i: ", i);
+
+
         let prev_length =
           stock_insert_detail > 0
-            ? po_entry_detail[stock_insert_detail - 1].dn_entry_detail.length +
-              i
+            ? po_entry_detail[stock_insert_detail].dn_entry_detail.length +
+            i
             : i;
 
-        utilities.logger().log("prev_length: ", prev_length);
+        console.log("prev_length: ", prev_length);
+        console.log("length: ", po_entry_detail[stock_insert_detail].dn_entry_detail.length);
+
         let strQuery = "";
         if (dn_from == "PHR") {
           strQuery += mysql.format(
@@ -784,63 +907,56 @@ function updateItemMaster(options) {
             var hours = date.getHours();
             var minutes = date.getMinutes();
             var seconds = date.getSeconds();
+            var day = date.getDate();
+            var year = String(new Date().getFullYear()).substring(2, 4);
+            var month = date.getMonth();
+
             var chars =
-              String(hours) +
-              String(minutes) +
-              String(seconds) +
               "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
             var length = 2;
-            var resultString = "";
+            var resultString = year + month + day + hours + minutes + seconds;
             for (var j = length; j > 0; --j)
               resultString += chars[Math.floor(Math.random() * chars.length)];
             resultString +=
-              req.userIdentity.algaeh_d_app_user_id +
               req.userIdentity.hospital_id;
 
-            let batch_no = parseInt(result[0].batch_no) + 1;
-            let barcode = result[0].item_code + "B" + resultString;
+            // let batch_no = parseInt(result[0].batch_no) + 1;
+            // let barcode = result[0].item_code + "B" + resultString;
 
             console.log("batch_no", "B" + resultString);
-            console.log("barcode", barcode);
+            // console.log("barcode", barcode);
 
+
+            console.log("dn_index", stock_detail[i].dn_index);
             if (dn_from == "PHR") {
-              // req.body.pharmacy_stock_detail;
-              // let SelectedItem = _.filter(req.body.pharmacy_stock_detail, f => {
-              //   return f.item_id === stock_detail[i].item_id;
-              // });
-              // utilities.logger().log("SelectedItem: ", SelectedItem);
-              // for (let j = 0; j < SelectedItem.length; j++) {
-              //   let _phr_index = req.body.pharmacy_stock_detail.indexOf(
-              //     SelectedItem[j]
-              //   );
-              //   utilities.logger().log("_phr_index: ", _phr_index);
-              //   SelectedItem[j].barcode = barcode;
-              //   SelectedItem[j].batchno = "B" + resultString;
-              //   req.body.pharmacy_stock_detail[_phr_index] = SelectedItem[j];
-              // }
 
-              console.log("prev_length", prev_length);
-              req.body.pharmacy_stock_detail[prev_length].batchno =
+              const phar_stock_data = _.find(req.body.pharmacy_stock_detail, f =>
+                f.dn_index === stock_detail[i].dn_index);
+
+              const _phar_index = req.body.pharmacy_stock_detail.indexOf(phar_stock_data)
+
+              console.log("_phar_index", _phar_index);
+
+              req.body.pharmacy_stock_detail[_phar_index].batchno =
                 "B" + resultString;
-              req.body.pharmacy_stock_detail[prev_length].barcode = barcode;
+              req.body.pharmacy_stock_detail[_phar_index].barcode = "B" + resultString;
 
-              utilities
-                .logger()
-                .log("batch_no: ", req.body.pharmacy_stock_detail[i].batch_no);
             } else {
-              req.body.inventory_stock_detail[i].batchno = "B" + resultString;
-              req.body.inventory_stock_detail[i].barcode = barcode;
+              const inv_stock_data = _.find(req.body.inventory_stock_detail, f =>
+                f.dn_index === stock_detail[i].dn_index);
 
-              utilities
-                .logger()
-                .log("batch_no: ", req.body.inventory_stock_detail[i].batch_no);
+              const _inv_index = req.body.inventory_stock_detail.indexOf(inv_stock_data)
+
+              req.body.inventory_stock_detail[_inv_index].batchno = "B" + resultString;
+              req.body.inventory_stock_detail[_inv_index].barcode = "B" + resultString;
             }
-
+            // console.log("length: ", po_entry_detail[stock_insert_detail - 1].dn_entry_detail.length);
             stock_detail[i].batchno = "B" + resultString;
-            stock_detail[i].barcode = barcode;
+            stock_detail[i].barcode = "B" + resultString;
 
             if (i == stock_detail.length - 1) {
-              utilities.logger().log("resolve: ");
+              console.log("resolve: ");
               resolve();
             }
           })

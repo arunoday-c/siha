@@ -26,7 +26,7 @@ import {
   checkcardhandaler,
   checkcheckhandaler,
   Validations,
-  countertexthandle,
+  // countertexthandle,
   getCashiersAndShiftMAP
 } from "./AdvanceModalHandaler";
 
@@ -44,13 +44,7 @@ import MyContext from "../../utils/MyContext";
 class AddAdvanceModal extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      Cashchecked: true,
-      Cardchecked: false,
-      Checkchecked: false,
-      lang_sets: "en_comp",
-      shift_id: null
-    };
+    this.state = {};
   }
   componentWillMount() {
     let IOputs = AdvRefunIOputs.inputParam();
@@ -240,6 +234,7 @@ class AddAdvanceModal extends PureComponent {
             }
           });
         } else {
+          $this.state.ScreenCode = getCookie("ScreenCode")
           algaehApiCall({
             uri: "/billing/patientAdvanceRefund",
             module: "billing",
@@ -367,8 +362,8 @@ class AddAdvanceModal extends PureComponent {
                         <h6>
                           {this.props.inputsparameters.collect_advance
                             ? getAmountFormart(
-                                this.props.inputsparameters.collect_advance
-                              )
+                              this.props.inputsparameters.collect_advance
+                            )
                             : getAmountFormart("0")}
                         </h6>
                       </div>
@@ -468,6 +463,29 @@ class AddAdvanceModal extends PureComponent {
                           </label>
                         </div>
 
+                        {this.state.Cardchecked === true ? <AlagehAutoComplete
+                          div={{ className: "col-lg-2 mandatory" }}
+                          label={{
+                            fieldName: "select_card",
+                            isImp: this.state.Cardchecked
+                          }}
+                          selector={{
+                            name: "bank_card_id",
+                            className: "select-fld",
+                            value: this.state.bank_card_id,
+                            dataSource: {
+                              textField: "card_name",
+                              valueField: "hims_d_bank_card_id",
+                              data: this.props.bankscards
+                            },
+                            onChange: texthandle.bind(this, this, context),
+                            onClear: () => {
+                              context.updateState({ bank_card_id: null });
+                            }
+
+                          }}
+                        /> : null}
+
                         <AlagehFormGroup
                           div={{ className: "col-lg-2" }}
                           label={{
@@ -491,7 +509,7 @@ class AddAdvanceModal extends PureComponent {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-lg-4" }}
+                          div={{ className: "col-lg-3" }}
                           label={{
                             fieldName: "card_check_number"
                           }}
@@ -511,7 +529,7 @@ class AddAdvanceModal extends PureComponent {
                         />
 
                         <AlgaehDateHandler
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col-lg-2" }}
                           label={{
                             fieldName: "expiry_date"
                           }}
@@ -624,8 +642,8 @@ class AddAdvanceModal extends PureComponent {
                       <h6>
                         {this.props.inputsparameters.advance_amount
                           ? getAmountFormart(
-                              this.props.inputsparameters.advance_amount
-                            )
+                            this.props.inputsparameters.advance_amount
+                          )
                           : getAmountFormart("0")}
                       </h6>
                     </div>
@@ -700,7 +718,8 @@ class AddAdvanceModal extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    shifts: state.shifts
+    shifts: state.shifts,
+    bankscards: state.bankscards
     // counters: state.counters
   };
 }

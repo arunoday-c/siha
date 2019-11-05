@@ -23,8 +23,8 @@ class PersistentDrawer extends React.Component {
     const Activated_Modueles =
       sessionStorage.getItem("ModuleDetails") !== null
         ? JSON.parse(
-            AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-          )
+          AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+        )
         : [];
     let Hims_active = false;
     let Hrms_active = false;
@@ -351,16 +351,16 @@ class PersistentDrawer extends React.Component {
   handleDrawerClose = () => {
     const _activeNodes =
       this.state.activeNode.menuselected === "" &&
-      this.state.activeNode.lastSelected !== ""
+        this.state.activeNode.lastSelected !== ""
         ? {
-            activeNode: {
-              ...this.state.activeNode,
-              ...{
-                menuselected: this.state.activeNode.lastSelected,
-                lastSelected: ""
-              }
+          activeNode: {
+            ...this.state.activeNode,
+            ...{
+              menuselected: this.state.activeNode.lastSelected,
+              lastSelected: ""
             }
           }
+        }
         : {};
 
     this.setState({
@@ -382,11 +382,11 @@ class PersistentDrawer extends React.Component {
     const isModfySelect =
       this.state.activeNode.menuselected === data.module_code
         ? {
-            activeNode: {
-              ...this.state.activeNode,
-              ...{ menuselected: "", lastSelected: data.module_code }
-            }
+          activeNode: {
+            ...this.state.activeNode,
+            ...{ menuselected: "", lastSelected: data.module_code }
           }
+        }
         : {};
     _putData = isModfySelect.activeNode !== undefined ? "" : _putData;
     this.setState({ onlyToggeleMenu: _putData, ...isModfySelect });
@@ -403,6 +403,7 @@ class PersistentDrawer extends React.Component {
   // }
 
   TriggerPath(submenu, module_id, e) {
+    debugger
     const name = submenu.page_to_redirect.replace(/\s/g, ""); // e.currentTarget.getAttribute("name");
 
     // submenu.screen_name === "Doctor Appointment"
@@ -423,6 +424,7 @@ class PersistentDrawer extends React.Component {
     const _submenuselected = submenu.screen_code; //e.currentTarget.getAttribute("submenuselected");
     setCookie("ScreenName", name, 30);
     setCookie("module_id", module_id, 30);
+    setCookie("ScreenCode", submenu.screen_code, 30);
     // AlgaehLoader({ show: true });
 
     this.setState({
@@ -526,8 +528,8 @@ class PersistentDrawer extends React.Component {
               {_menuSelected === menu.module_code || _toggle ? (
                 <i className="fas fa-angle-up" />
               ) : (
-                <i className="fas fa-angle-down" />
-              )}
+                  <i className="fas fa-angle-down" />
+                )}
             </div>
           </div>
           {_menuSelected === menu.module_code || _toggle ? (
@@ -594,8 +596,8 @@ class PersistentDrawer extends React.Component {
             {this.state.Hims_active === true ? (
               <p className="appLogoHIMSOnly" />
             ) : (
-              <p className="appLogoHRMSOnly" />
-            )}
+                <p className="appLogoHRMSOnly" />
+              )}
           </div>
 
           <h5 className="topNavbar-title mr-auto">

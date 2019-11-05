@@ -68,6 +68,15 @@ class AddBillingForm extends Component {
         }
       });
     }
+    this.props.getBankCards({
+      uri: "/bankmaster/getBankCards",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "BANK_CARD_GET_DATA",
+        mappingName: "bankscards"
+      }
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -191,8 +200,8 @@ class AddBillingForm extends Component {
                           {this.state.bill_number
                             ? this.state.bill_number
                             : this.state.selectedLang === "en"
-                            ? "Not Generated"
-                            : "غير مولدة"}
+                              ? "Not Generated"
+                              : "غير مولدة"}
                         </h6>
                       </div>
 
@@ -388,8 +397,8 @@ class AddBillingForm extends Component {
                             {this.state.receipt_number
                               ? this.state.receipt_number
                               : this.state.selectedLang === "en"
-                              ? "Not Generated"
-                              : "غير مولدة"}
+                                ? "Not Generated"
+                                : "غير مولدة"}
                           </h6>
                         </div>
                         <div className="col-lg-3">
@@ -401,8 +410,8 @@ class AddBillingForm extends Component {
                           <h6>
                             {this.state.receipt_date
                               ? moment(this.state.receipt_date).format(
-                                  "DD-MM-YYYY"
-                                )
+                                "DD-MM-YYYY"
+                              )
                               : "DD/MM/YYYY"}
                           </h6>
                         </div>
@@ -548,14 +557,38 @@ class AddBillingForm extends Component {
                             <span style={{ fontSize: "0.8rem" }}>
                               Pay by Card
                             </span>
+
+
                           </label>
                         </div>
+                        {this.state.Cardchecked === true ? <AlagehAutoComplete
+                          div={{ className: "col-lg-2 mandatory" }}
+                          label={{
+                            fieldName: "select_card",
+                            isImp: this.state.Cardchecked
+                          }}
+                          selector={{
+                            name: "bank_card_id",
+                            className: "select-fld",
+                            value: this.state.bank_card_id,
+                            dataSource: {
+                              textField: "card_name",
+                              valueField: "hims_d_bank_card_id",
+                              data: this.props.bankscards
+                            },
+                            onChange: texthandle.bind(this, this, context),
+                            onClear: () => {
+                              context.updateState({ bank_card_id: null });
+                            }
+
+                          }}
+                        /> : null}
 
                         <AlagehFormGroup
                           div={{ className: "col-lg-2" }}
                           label={{
                             fieldName: "amount",
-                            isImp: true
+                            isImp: this.state.Cardchecked
                           }}
                           textBox={{
                             disabled:
@@ -582,7 +615,8 @@ class AddBillingForm extends Component {
                         <AlagehFormGroup
                           div={{ className: "col no-padding-left-right" }}
                           label={{
-                            fieldName: "card_check_number"
+                            fieldName: "card_check_number",
+                            isImp: this.state.Cardchecked
                           }}
                           textBox={{
                             card: { creditCard: true },
@@ -657,7 +691,7 @@ class AddBillingForm extends Component {
                           div={{ className: "col-lg-2" }}
                           label={{
                             fieldName: "amount",
-                            isImp: true
+                            isImp: this.state.Checkchecked
                           }}
                           textBox={{
                             disabled:
@@ -693,7 +727,8 @@ class AddBillingForm extends Component {
                         <AlagehFormGroup
                           div={{ className: "col no-padding-left-right" }}
                           label={{
-                            fieldName: "card_check_number"
+                            fieldName: "card_check_number",
+                            isImp: this.state.Checkchecked
                           }}
                           textBox={{
                             disabled:
@@ -775,14 +810,16 @@ class AddBillingForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    counters: state.counters
+    counters: state.counters,
+    bankscards: state.bankscards
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getCounters: AlgaehActions
+      getCounters: AlgaehActions,
+      getBankCards: AlgaehActions
     },
     dispatch
   );

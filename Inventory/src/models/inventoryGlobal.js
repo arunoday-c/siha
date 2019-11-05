@@ -256,27 +256,32 @@ export default {
             var hours = date.getHours();
             var minutes = date.getMinutes();
             var seconds = date.getSeconds();
+            var day = date.getDate();
+            var year = String(new Date().getFullYear()).substring(2, 4);
+            var month = date.getMonth();
+            if (String(month).length == 1) {
+              month = "0" + month;
+            }
+
             var chars =
-              String(hours) +
-              String(minutes) +
-              String(seconds) +
               "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
             var length = 2;
-            var resultString = "";
+            var resultString = year + month + day + hours + minutes + seconds;
             for (var j = length; j > 0; --j)
               resultString += chars[Math.floor(Math.random() * chars.length)];
             resultString +=
               req.userIdentity.algaeh_d_app_user_id +
               req.userIdentity.hospital_id;
 
-            let batch_no = parseInt(result[0].batch_no) + 1;
-            let barcode = result[0].item_code + "B" + resultString;
+            // let batch_no = parseInt(result[0].batch_no) + 1;
+            // let barcode = result[0].item_code + "B" + resultString;
 
             console.log("batch_no", "B" + resultString);
-            console.log("barcode", barcode);
+            // console.log("barcode", barcode);
 
             req.body.inventory_stock_detail[i].batchno = "B" + resultString;
-            req.body.inventory_stock_detail[i].barcode = barcode;
+            req.body.inventory_stock_detail[i].barcode = "B" + resultString;
             utilities
               .logger()
               .log("batch_no: ", req.body.inventory_stock_detail[i].batch_no);

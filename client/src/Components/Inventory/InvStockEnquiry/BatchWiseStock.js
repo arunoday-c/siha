@@ -57,10 +57,10 @@ class BatchWiseStock extends Component {
                           this.props.inventorylocations === undefined
                             ? []
                             : this.props.inventorylocations.filter(
-                                f =>
-                                  f.hims_d_inventory_location_id ===
-                                  row.inventory_location_id
-                              );
+                              f =>
+                                f.hims_d_inventory_location_id ===
+                                row.inventory_location_id
+                            );
 
                         return (
                           <span>
@@ -75,10 +75,10 @@ class BatchWiseStock extends Component {
                           this.props.inventorylocations === undefined
                             ? []
                             : this.props.inventorylocations.filter(
-                                f =>
-                                  f.hims_d_inventory_location_id ===
-                                  row.inventory_location_id
-                              );
+                              f =>
+                                f.hims_d_inventory_location_id ===
+                                row.inventory_location_id
+                            );
 
                         return (
                           <span>
@@ -101,10 +101,10 @@ class BatchWiseStock extends Component {
                           this.props.inventoryitemlist === undefined
                             ? []
                             : this.props.inventoryitemlist.filter(
-                                f =>
-                                  f.hims_d_inventory_item_master_id ===
-                                  row.item_id
-                              );
+                              f =>
+                                f.hims_d_inventory_item_master_id ===
+                                row.item_id
+                            );
 
                         return (
                           <span>
@@ -119,10 +119,10 @@ class BatchWiseStock extends Component {
                           this.props.inventoryitemlist === undefined
                             ? []
                             : this.props.inventoryitemlist.filter(
-                                f =>
-                                  f.hims_d_inventory_item_master_id ===
-                                  row.item_id
-                              );
+                              f =>
+                                f.hims_d_inventory_item_master_id ===
+                                row.item_id
+                            );
 
                         return (
                           <span>
@@ -144,10 +144,10 @@ class BatchWiseStock extends Component {
                           this.props.inventoryitemuom === undefined
                             ? []
                             : this.props.inventoryitemuom.filter(
-                                f =>
-                                  f.hims_d_inventory_uom_id ===
-                                  row.stocking_uom_id
-                              );
+                              f =>
+                                f.hims_d_inventory_uom_id ===
+                                row.stocking_uom_id
+                            );
 
                         return (
                           <span>
@@ -169,8 +169,8 @@ class BatchWiseStock extends Component {
                           this.props.inventoryitemuom === undefined
                             ? []
                             : this.props.inventoryitemuom.filter(
-                                f => f.hims_d_inventory_uom_id === row.sales_uom
-                              );
+                              f => f.hims_d_inventory_uom_id === row.sales_uom
+                            );
 
                         return (
                           <span>
@@ -186,8 +186,8 @@ class BatchWiseStock extends Component {
                           this.props.inventoryitemuom === undefined
                             ? []
                             : this.props.inventoryitemuom.filter(
-                                f => f.hims_d_inventory_uom_id === row.sales_uom
-                              );
+                              f => f.hims_d_inventory_uom_id === row.sales_uom
+                            );
 
                         return (
                           <span>
@@ -203,14 +203,15 @@ class BatchWiseStock extends Component {
                       fieldName: "barcode",
                       label: <AlgaehLabel label={{ forceLabel: "Barcode" }} />,
                       disabled: true,
-                      others: { filterable: false }
+                      others: { filterable: false, minWidth: 150 }
                     },
                     {
                       fieldName: "batchno",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Batch No." }} />
                       ),
-                      disabled: true
+                      disabled: true,
+                      others: { minWidth: 150 }
                     },
                     {
                       fieldName: "vendor_batchno",
@@ -330,7 +331,7 @@ class BatchWiseStock extends Component {
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     //   onDelete: deleteServices.bind(this, this),
-                    onEdit: row => {},
+                    onEdit: row => { },
                     onDone: updateStockDetils.bind(this, this)
                   }}
                 />

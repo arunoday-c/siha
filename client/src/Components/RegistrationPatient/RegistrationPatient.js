@@ -394,6 +394,8 @@ class RegistrationPatient extends Component {
                   delete patientdata.cities;
                   delete patientdata.doctors;
 
+                  patientdata.ScreenCode = getCookie("ScreenCode")
+
                   if ($this.state.hims_d_patient_id === null) {
                     algaehApiCall({
                       uri: "/frontDesk/add",
@@ -780,8 +782,8 @@ class RegistrationPatient extends Component {
                 <h6>
                   {this.state.registration_date
                     ? moment(this.state.registration_date).format(
-                        Options.dateFormat
-                      )
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>

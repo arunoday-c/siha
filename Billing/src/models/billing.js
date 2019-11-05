@@ -47,8 +47,7 @@ export default {
               "card_check_number",
               "expiry_date",
               "pay_type",
-              "amount",
-              "card_type"
+              "amount"
             ];
 
             _mysql
@@ -631,7 +630,7 @@ export default {
           }
         })
         .then(generatedNumbers => {
-          req.body["receipt_number"]=generatedNumbers[0];
+          req.body["receipt_number"] = generatedNumbers[0];
           _mysql
             .executeQuery({
               query:
@@ -670,8 +669,7 @@ export default {
                   "pay_type",
                   "amount",
                   "created_by",
-                  "updated_by",
-                  "card_type"
+                  "updated_by"
                 ];
 
                 _mysql
@@ -1814,8 +1812,7 @@ export default {
                   "pay_type",
                   "amount",
                   "created_by",
-                  "updated_by",
-                  "card_type"
+                  "updated_by"
                 ];
 
                 _mysql
@@ -3003,15 +3000,15 @@ export default {
   addtoDayEnd: (req, res, next) => {
     try {
       const _options = req.connection == null ? {} : req.connection;
-  
+
       const _mysql = new algaehMysql(_options);
-  
+
       const utilities = new algaehUtilities();
-  
+
       const inputParam = req.body;
-  
+
       console.log("ONE:");
-  
+
       utilities.logger().log("inputParamRR: ", inputParam);
       _mysql
         .executeQueryWithTransaction({
@@ -3025,7 +3022,7 @@ export default {
             "OP_CON",
             "RECEIPT",
             inputParam.receipt_header_id,
-            inputParam.receipt_number            ,
+            inputParam.receipt_number,
             "FD0002",
             inputParam.transaction_type,
             "P",
@@ -3035,7 +3032,7 @@ export default {
         })
         .then(headerDayEnd => {
           console.log("TWO:");
-  
+
           const insertDetail = inputParam.receiptdetails.map(m => {
             return {
               amount: m.amount,
@@ -3063,59 +3060,59 @@ export default {
                 .executeQuery({
                   query: "SELECT * FROM finance_accounts_maping;\
                   select * from finance_day_end_detail where day_end_header_id=?; ",
-                  values:[headerDayEnd.insertId],
+                  values: [headerDayEnd.insertId],
                   printQuery: true
                 })
                 .then(rest => {
 
-                  const controlResult=rest[0];
-                  const day_end_detail=rest[1];
+                  const controlResult = rest[0];
+                  const day_end_detail = rest[1];
 
                   const OP_DEP = controlResult.find(f => {
                     return f.account == "OP_DEP";
                   });
-  
+
                   const CH_IN_HA = controlResult.find(f => {
                     return f.account == "CH_IN_HA";
                   });
-  
+
                   const insertSubDetail = [];
-  
+
                   if (inputParam.transaction_type == "AD") {
 
                     day_end_detail.forEach(item => {
 
-                  if(item.payment_mode=="CA"){
-                      insertSubDetail.push({
-                        day_end_detail_id:item.finance_day_end_detail_id,
-                        payment_date: new Date(),
-                        head_account_code:OP_DEP.head_account_code,
-                        head_id: OP_DEP.head_id,
-                        child_id: OP_DEP.child_id,
-                        debit_amount: item.amount,
-                        payment_type: "DR",
-                        credit_amount: 0,
-                        narration:"OP BILL CASH COLLECTION BEBIT",
-                        hospital_id: req.userIdentity.hospital_id
-                      });
-                      insertSubDetail.push({
-                        day_end_detail_id:item.finance_day_end_detail_id,
-                        payment_date: new Date(),
-                        head_account_code:CH_IN_HA.head_account_code,
-                        head_id: CH_IN_HA.head_id,
-                        child_id: CH_IN_HA.child_id,
-                        debit_amount: 0,
-                        payment_type: "CR",
-                        credit_amount: item.amount,
-                        narration:"OP BILL CASH COLLECTION  CREDIT",
-                        hospital_id: req.userIdentity.hospital_id
-                    
-                      });
-                    }
+                      if (item.payment_mode == "CA") {
+                        insertSubDetail.push({
+                          day_end_detail_id: item.finance_day_end_detail_id,
+                          payment_date: new Date(),
+                          head_account_code: OP_DEP.head_account_code,
+                          head_id: OP_DEP.head_id,
+                          child_id: OP_DEP.child_id,
+                          debit_amount: item.amount,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          narration: "OP BILL CASH COLLECTION BEBIT",
+                          hospital_id: req.userIdentity.hospital_id
+                        });
+                        insertSubDetail.push({
+                          day_end_detail_id: item.finance_day_end_detail_id,
+                          payment_date: new Date(),
+                          head_account_code: CH_IN_HA.head_account_code,
+                          head_id: CH_IN_HA.head_id,
+                          child_id: CH_IN_HA.child_id,
+                          debit_amount: 0,
+                          payment_type: "CR",
+                          credit_amount: item.amount,
+                          narration: "OP BILL CASH COLLECTION  CREDIT",
+                          hospital_id: req.userIdentity.hospital_id
+
+                        });
+                      }
 
 
                     });
-  
+
                     const IncludeValuess = [
                       "day_end_detail_id",
                       "payment_date",
@@ -3432,7 +3429,7 @@ export default {
       });
     }
   }
-  
+
 };
 
 //Not in Use

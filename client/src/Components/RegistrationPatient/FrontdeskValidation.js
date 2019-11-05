@@ -193,20 +193,41 @@ export function Validations(state) {
 
     return isError;
   }
-  if (state.state.card_amount > 0) {
+
+  if (state.state.Cardchecked === true) {
     if (state.state.card_number === null || state.state.card_number === "") {
       isError = true;
 
       swalMessage({
         type: "warning",
-        title: "Invalid. Card Number cannot be blank."
+        title: "Card Number cannot be blank."
       });
 
       document.querySelector("[name='card_number']").focus();
       return isError;
+    } else if (state.state.bank_card_id === null) {
+      isError = true;
+
+      swalMessage({
+        type: "warning",
+        title: "Select Card."
+      });
+
+      document.querySelector("[name='bank_card_id']").focus();
+      return isError;
+    } else if (parseFloat(state.state.card_amount) === 0) {
+      isError = true;
+
+      swalMessage({
+        type: "warning",
+        title: "Enter Card Amount."
+      });
+
+      document.querySelector("[name='card_amount']").focus();
+      return isError;
     }
   }
-  if (state.state.cheque_amount > 0) {
+  if (state.state.Checkchecked === true) {
     if (
       state.state.cheque_number === null ||
       state.state.cheque_number === ""
@@ -219,6 +240,16 @@ export function Validations(state) {
       });
 
       document.querySelector("[name='cheque_number']").focus();
+      return isError;
+    } else if (state.state.cheque_amount === 0) {
+      isError = true;
+
+      swalMessage({
+        type: "warning",
+        title: "Enter Check Amount."
+      });
+
+      document.querySelector("[name='cheque_amount']").focus();
       return isError;
     }
   }

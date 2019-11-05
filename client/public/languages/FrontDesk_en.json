@@ -125,18 +125,14 @@
   "advance_amount": "Available Advance",
   "advance_caption": "Advance",
   "refund_caption": "Refund",
-
   "responsibility_lbl": "Responsibility",
   "tax_lbl": "Vat",
   "payable_lbl": "Payable",
-
   "patient_lbl": "Patient Responsibility",
   "company_lbl": "Company Responsibility",
   "sec_comp_lbl": "Secondary Co.",
-
   "payment_number": "Payment Number",
   "payment_date": "Payment Date",
-
   "insurance_id": "Insurance Co.",
   "sub_insurance_id": "Sub Insurance Co.",
   "plan_id": "Policy No.",
@@ -156,7 +152,6 @@
   "PastVisit": "Past Visit",
   "treatment_plan_id": "Treatment Plan",
   "lbl_insurance": "Insurance",
-
   "card_holder_name": "Card Holder Name",
   "card_holder_age": "Holder Age",
   "card_holder_gender": "Holder Gender",
@@ -164,5 +159,6 @@
   "employee_id": "Employee ID",
   "created_date": "Ordered Date",
   "pre_approval": "Pre Approval",
-  "eligible_reference_number": "Reference Number"
+  "eligible_reference_number": "Reference Number",
+  "select_card": "Select Card"
 }
