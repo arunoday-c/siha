@@ -441,12 +441,11 @@ const AddSelectedBatches = ($this, context) => {
 
       _pharmacy_stock_detail.push(
         ...batches.map((item, index) => {
-          debugger
           item.sales_price = item.sale_price;
           return { ...item, ...details };
         })
       );
-      debugger
+
       saveEnable = _pharmacy_stock_detail.length > 0 ? false : true;
       context.updateState({
         stock_detail: _stock_detail,

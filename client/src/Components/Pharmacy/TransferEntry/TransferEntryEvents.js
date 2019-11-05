@@ -47,8 +47,8 @@ const getCtrlCode = ($this, docNumber, row, from) => {
             data.pharmacy_stock_detail[j].quantity_transferred =
               data.pharmacy_stock_detail[j].quantity_transfer;
             if (from === "Auth") {
-            data.pharmacy_stock_detail[j].ack_quantity =
-              data.pharmacy_stock_detail[j].quantity_transfer;
+              data.pharmacy_stock_detail[j].ack_quantity =
+                data.pharmacy_stock_detail[j].quantity_transfer;
             }
           }
 
@@ -264,7 +264,7 @@ const SaveTransferEntry = $this => {
   });
 
   $this.state.stock_detail = stock_detail;
-  debugger
+
   algaehApiCall({
     uri: "/transferEntry/addtransferEntry",
     module: "pharmacy",
