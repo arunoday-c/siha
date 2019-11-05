@@ -131,19 +131,19 @@ export default {
               
               )
               select * from cte order by account_level,sort_order;              
-              select H.account_code,M.head_id,	M.child_id,coalesce((debit_amount) ,0.0000) as debit_amount,
-              coalesce((credit_amount) ,0.0000) as credit_amount, 
-              (coalesce((credit_amount) ,0.0000)- coalesce((debit_amount) ,0.0000) )as cred_minus_deb,
-              (debit_amount) ,0.0000)- coalesce((credit_amount) ,0.0000)) as deb_minus_cred
+              select H.account_code,M.head_id,	M.child_id,coalesce(sum(debit_amount) ,0.0000) as debit_amount,
+              coalesce(sum(credit_amount) ,0.0000) as credit_amount, 
+              (coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) )as cred_minus_deb,
+              (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)) as deb_minus_cred
               from finance_head_m_child M inner join 
               finance_account_head H on M.head_id=H.finance_account_head_id
               left join finance_voucher_details VD on H.finance_account_head_id=VD.head_id 
               group by M.head_id,M.child_id; 
 
-              select finance_account_head_id as head_id ,account_code,coalesce((debit_amount) ,0.0000)as debit_amount,
-              coalesce((credit_amount) ,0.0000)as credit_amount ,              
-              (coalesce((credit_amount) ,0.0000)- coalesce((debit_amount) ,0.0000) )as cred_minus_deb,
-              (coalesce((debit_amount) ,0.0000)- coalesce((credit_amount) ,0.0000)) as deb_minus_cred
+              select finance_account_head_id as head_id ,account_code,coalesce(sum(debit_amount) ,0.0000)as debit_amount,
+              coalesce(sum(credit_amount) ,0.0000)as credit_amount ,              
+              (coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) )as cred_minus_deb,
+              (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)) as deb_minus_cred
               
               from finance_account_head H left join
               finance_voucher_details VD on H.finance_account_head_id=VD.head_id
