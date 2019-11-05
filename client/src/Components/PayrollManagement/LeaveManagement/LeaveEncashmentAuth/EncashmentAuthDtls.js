@@ -31,7 +31,7 @@ class EncashmentAuthDtls extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
+
     if (newProps.EncashDetailPer.length > 0) {
       this.setState({
         EncashDetailPer: newProps.EncashDetailPer,
@@ -85,50 +85,50 @@ class EncashmentAuthDtls extends Component {
                               displayTemplate: row => {
                                 return this.state.encash_authorized === "APR" ||
                                   this.state.encash_authorized === "REJ" ? (
-                                  <span>
-                                    <i
-                                      style={{
-                                        pointerEvents:
-                                          this.state.encash_authorized === "SET"
-                                            ? "none"
-                                            : "",
+                                    <span>
+                                      <i
+                                        style={{
+                                          pointerEvents:
+                                            this.state.encash_authorized === "SET"
+                                              ? "none"
+                                              : "",
 
-                                        opacity:
-                                          this.state.encash_authorized === "SET"
-                                            ? "0.1"
-                                            : ""
-                                      }}
-                                      className="fas fa-times"
-                                      onClick={AuthorizeLEaveEncash.bind(
-                                        this,
-                                        this,
-                                        "CAN",
-                                        row
-                                      )}
-                                    />
-                                  </span>
-                                ) : (
-                                  <span>
-                                    <i
-                                      className="fas fa-thumbs-up"
-                                      onClick={AuthorizeLEaveEncash.bind(
-                                        this,
-                                        this,
-                                        "APR",
-                                        row
-                                      )}
-                                    />
-                                    <i
-                                      className="fas fa-thumbs-down"
-                                      onClick={AuthorizeLEaveEncash.bind(
-                                        this,
-                                        this,
-                                        "REJ",
-                                        row
-                                      )}
-                                    />
-                                  </span>
-                                );
+                                          opacity:
+                                            this.state.encash_authorized === "SET"
+                                              ? "0.1"
+                                              : ""
+                                        }}
+                                        className="fas fa-times"
+                                        onClick={AuthorizeLEaveEncash.bind(
+                                          this,
+                                          this,
+                                          "CAN",
+                                          row
+                                        )}
+                                      />
+                                    </span>
+                                  ) : (
+                                    <span>
+                                      <i
+                                        className="fas fa-thumbs-up"
+                                        onClick={AuthorizeLEaveEncash.bind(
+                                          this,
+                                          this,
+                                          "APR",
+                                          row
+                                        )}
+                                      />
+                                      <i
+                                        className="fas fa-thumbs-down"
+                                        onClick={AuthorizeLEaveEncash.bind(
+                                          this,
+                                          this,
+                                          "REJ",
+                                          row
+                                        )}
+                                      />
+                                    </span>
+                                  );
                               },
                               others: { maxWidth: 90 }
                             },

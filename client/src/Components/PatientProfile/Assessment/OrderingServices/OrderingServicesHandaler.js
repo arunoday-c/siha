@@ -418,7 +418,7 @@ const deleteServices = ($this, row) => {
   preserviceInput.splice(_index, 1);
   let app_amt = parseFloat($this.state.approval_amt) - parseFloat(row["company_payble"]);
 
-  debugger
+
   if ($this.state.approval_limit_yesno === "Y") {
     if (app_amt < $this.state.preapp_limit_amount) {
       for (var k = 0; k < preserviceInput.length; k++) {
@@ -1036,7 +1036,7 @@ const ProcessFromFavourite = ($this, from) => {
               for (let k = 0; k < preserviceInput.length; k++) {
                 preserviceInput[k].approval_limit_yesno = "Y";
               }
-              debugger
+
               let last_value = data.billdetails.length - 1
               let approval_amt = data.billdetails[last_value].approval_amt;
               let approval_limit_yesno = "Y";

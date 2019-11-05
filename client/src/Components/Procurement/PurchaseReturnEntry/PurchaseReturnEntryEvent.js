@@ -202,7 +202,7 @@ const SavePOReutrnEnrty = $this => {
   } else {
     $this.state.po_return_entry_detail = $this.state.inventory_stock_detail;
   }
-  debugger
+
 
   algaehApiCall({
     uri: "/PurchaseReturnEntry/addPurchaseReturnEntry",
@@ -559,7 +559,7 @@ const PostPOReturnEntry = $this => {
       InputObj.inventory_stock_detail[i].operation = "-";
     }
   }
-  debugger
+
 
   algaehApiCall({
     uri: "/PurchaseReturnEntry/postPurchaseOrderEntry",

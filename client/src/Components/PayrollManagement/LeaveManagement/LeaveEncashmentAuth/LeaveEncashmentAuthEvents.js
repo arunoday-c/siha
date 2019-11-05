@@ -123,7 +123,7 @@ const LoadEncashment = $this => {
 };
 
 const getLeaveEncashDetails = ($this, row) => {
-  debugger;
+
   const EncashDetailPer = Enumerable.from($this.state.EncashDetail)
     .where(w => w.leave_encash_header_id === row.hims_f_leave_encash_header_id)
     .toArray();
@@ -137,7 +137,7 @@ const getLeaveEncashDetails = ($this, row) => {
 };
 
 const AuthorizeLEaveEncash = ($this, data, row) => {
-  debugger;
+
   let message = "";
   if (data === "CAN") {
     message = "Are you sure you want to Cancel?";
@@ -156,7 +156,7 @@ const AuthorizeLEaveEncash = ($this, data, row) => {
     cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
-      debugger;
+
       let inputObj = {
         auth_level: $this.state.auth_level,
         hims_f_leave_encash_header_id: row.leave_encash_header_id,
@@ -201,7 +201,7 @@ const AuthorizeLEaveEncash = ($this, data, row) => {
 };
 
 const getLeaveLevels = $this => {
-  debugger;
+
   let leave_encash_level = JSON.parse(
     AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
   ).leave_encash_level;
@@ -212,7 +212,7 @@ const getLeaveLevels = $this => {
     data: { leave_encash_level: leave_encash_level },
     onSuccess: res => {
       if (res.data.success) {
-        debugger;
+
         let auth_level =
           res.data.result.auth_levels.length > 0
             ? Enumerable.from(res.data.result.auth_levels).maxBy(w => w.value)

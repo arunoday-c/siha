@@ -442,7 +442,9 @@ export default {
                       "unit_cost",
                       "sales_uom",
                       "sales_price",
-                      "ack_quantity"
+                      "ack_quantity",
+                      "barcode",
+                      "vendor_batchno"
                     ];
 
                     _mysql
@@ -732,6 +734,7 @@ export default {
                         sale_price: s.sale_price,
                         mrp_price: s.mrp_price,
                         sales_uom: s.sales_uom,
+                        vendor_batchno: s.vendor_batchno,
                         quantity_transfer: 0
                       };
                     })
