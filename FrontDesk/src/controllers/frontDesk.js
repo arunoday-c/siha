@@ -25,6 +25,7 @@ const {
 const {
   newReceiptData,
   addBillData,
+  addtoDayEnd,
   addCashHandover,
   updatePatientPackage
 } = billModels;
@@ -65,6 +66,7 @@ export default () => {
         next();
       }
     },
+    addtoDayEnd,
     addCashHandover,
     (req, res, next) => {
       if (
@@ -122,6 +124,7 @@ export default () => {
         next();
       }
     },
+    addtoDayEnd,
     addCashHandover,
     (req, res, next) => {
       if (
