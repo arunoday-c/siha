@@ -525,8 +525,8 @@ export default {
     _mysql
       .executeQuery({
         query: `SELECT finance_head_m_child_id,created_from FROM finance_head_m_child where \
-        head_id=? and child_id=?;`,
-        values: [input.head_id, input.head_id],
+                head_id=? and child_id=?;`,
+        values: [input.head_id, input.child_id],
         printQuery: true
       })
       .then(result => {
@@ -541,13 +541,13 @@ export default {
           _mysql
             .executeQuery({
               query: `delete FROM finance_head_m_child where finance_head_m_child_id=?;            
-                    delete from finance_account_child where finance_account_child_id=?`,
+                    delete from finance_account_child where finance_account_child_id=?;`,
               values: [result[0]["finance_head_m_child_id"], input.child_id],
               printQuery: true
             })
             .then(resu => {
               _mysql.releaseConnection();
-              req.records = result;
+              req.records = resu;
               next();
             })
             .catch(e => {
