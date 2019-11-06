@@ -456,7 +456,6 @@ const SaveDNEnrty = $this => {
 
   delete InputObj.dn_entry_detail;
 
-  debugger
 
   if (batchExpiryDate.length === 0) {
     algaehApiCall({

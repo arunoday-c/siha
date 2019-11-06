@@ -63,7 +63,6 @@ export default class RejoinAnnualLeave extends Component {
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
     }).then(willProceed => {
-      debugger
       let dates_equal = moment(row.last_salary_process_date, "DD-MM-YYYY").isSame(row.to_date, "DD-MM-YYYY");
 
       if (willProceed.value) {

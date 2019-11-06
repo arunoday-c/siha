@@ -8,7 +8,8 @@ const {
   getFinanceAccountsMaping,
   updateFinanceAccountsMaping,
   getDayEndData,
-  postDayEndData
+  postDayEndData,
+  removeAccountHead
 } = finance;
 
 export default () => {
@@ -118,7 +119,32 @@ export default () => {
     }
   });
   api.post("/postDayEndData", postDayEndData, (req, res, next) => {
-    if (req.records.invalid_input == true&&req.records.invalid_input!=undefined) {
+    if (
+      req.records.invalid_input == true &&
+      req.records.invalid_input != undefined
+    ) {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: false,
+          message: req.records.message
+        })
+        .end();
+    } else {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records
+        })
+        .end();
+    }
+  });
+  api.delete("/removeAccountHead", removeAccountHead, (req, res, next) => {
+    if (
+      req.records.invalid_input == true &&
+      req.records.invalid_input != undefined
+    ) {
       res
         .status(utlities.AlgaehUtilities().httpStatus().ok)
         .json({

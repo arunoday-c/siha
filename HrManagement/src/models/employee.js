@@ -1267,7 +1267,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "IINSERT INTO hims_f_miscellaneous_earning_deduction(??) VALUES ?  ON DUPLICATE KEY UPDATE\
+            "INSERT INTO hims_f_miscellaneous_earning_deduction(??) VALUES ?  ON DUPLICATE KEY UPDATE\
           employee_id=values(employee_id),amount=values(amount),earning_deductions_id=values(earning_deductions_id), \
                     year=values(year),month=values(month),category=values(category),updated_date=values(updated_date),\
           updated_by=values(updated_by)",

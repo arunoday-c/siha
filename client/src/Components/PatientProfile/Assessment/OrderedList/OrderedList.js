@@ -53,7 +53,7 @@ class OrderedList extends PureComponent {
       return;
     }
 
-    debugger
+
 
     algaehApiCall({
       uri: "/patientRegistration/getVisitServiceAmount",
@@ -61,7 +61,7 @@ class OrderedList extends PureComponent {
       method: "GET",
       data: { hims_f_patient_visit_id: Window.global["visit_id"] },
       onSuccess: response => {
-        debugger
+
         if (response.data.success) {
           let orderedList = this.props.orderedList
           let preserviceInput = []

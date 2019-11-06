@@ -57,12 +57,12 @@ class LeaveAuthDetail extends Component {
           });
         }
       },
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
   authorizeLeave(type) {
-    debugger;
+
     // if (this.state.remarks === "") {
     //   swalMessage({
     //     title: "Remarks is Mandatory.",
@@ -103,13 +103,13 @@ class LeaveAuthDetail extends Component {
         if (res.data.success) {
           type === "A"
             ? swalMessage({
-                title: "Leave Authorized Successfully",
-                type: "success"
-              })
+              title: "Leave Authorized Successfully",
+              type: "success"
+            })
             : swalMessage({
-                title: "Leave Rejected Successfully",
-                type: "success"
-              });
+              title: "Leave Rejected Successfully",
+              type: "success"
+            });
 
           this.setState({
             remarks: ""
@@ -305,10 +305,10 @@ class LeaveAuthDetail extends Component {
                                 {this.state.data.from_leave_session === "FD"
                                   ? "Full Day"
                                   : this.state.data.from_leave_session === "FH"
-                                  ? "First Half"
-                                  : this.state.data.from_leave_session === "SH"
-                                  ? "Second Half"
-                                  : "------"}
+                                    ? "First Half"
+                                    : this.state.data.from_leave_session === "SH"
+                                      ? "Second Half"
+                                      : "------"}
                                 )
                               </small>
                             </h6>
@@ -330,10 +330,10 @@ class LeaveAuthDetail extends Component {
                                 {this.state.data.to_leave_session === "FD"
                                   ? "Full Day"
                                   : this.state.data.to_leave_session === "FH"
-                                  ? "First Half"
-                                  : this.state.data.to_leave_session === "SH"
-                                  ? "Second Half"
-                                  : "------"}
+                                    ? "First Half"
+                                    : this.state.data.to_leave_session === "SH"
+                                      ? "Second Half"
+                                      : "------"}
                                 )
                               </small>
                             </h6>
@@ -495,8 +495,8 @@ class LeaveAuthDetail extends Component {
                                         Processed
                                       </span>
                                     ) : (
-                                      "------"
-                                    )}
+                                                "------"
+                                              )}
                                   </span>
                                 );
                               },
@@ -506,14 +506,14 @@ class LeaveAuthDetail extends Component {
                                     {row.status === "PEN"
                                       ? "Pending"
                                       : row.status === "APR"
-                                      ? "Approved"
-                                      : row.status === "REJ"
-                                      ? "Rejected"
-                                      : row.status === "PRO"
-                                      ? "Processed"
-                                      : row.status === "CAN"
-                                      ? "Cancelled"
-                                      : "------"}
+                                        ? "Approved"
+                                        : row.status === "REJ"
+                                          ? "Rejected"
+                                          : row.status === "PRO"
+                                            ? "Processed"
+                                            : row.status === "CAN"
+                                              ? "Cancelled"
+                                              : "------"}
                                   </span>
                                 );
                               }
@@ -668,9 +668,9 @@ class LeaveAuthDetail extends Component {
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onEdit: () => {},
-                            onDelete: () => {},
-                            onDone: () => {}
+                            onEdit: () => { },
+                            onDelete: () => { },
+                            onDone: () => { }
                           }}
                         />
                       </div>
