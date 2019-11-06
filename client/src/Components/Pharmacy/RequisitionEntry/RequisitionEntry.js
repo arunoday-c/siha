@@ -38,7 +38,6 @@ class RequisitionEntry extends Component {
     let IOputs = RequisitionIOputs.inputParam();
     IOputs.requisition_auth = this.props.requisition_auth;
     this.setState(IOputs);
-
   }
 
   getPharmacyOptions() {
@@ -48,7 +47,9 @@ class RequisitionEntry extends Component {
       module: "pharmacy",
       onSuccess: res => {
         if (res.data.success) {
-          this.setState({ requisition_auth_level: res.data.records[0].requisition_auth_level });
+          this.setState({
+            requisition_auth_level: res.data.records[0].requisition_auth_level
+          });
         }
       },
       onFailure: err => {
@@ -107,7 +108,7 @@ class RequisitionEntry extends Component {
     ) {
       getCtrlCode(this, this.props.material_requisition_number);
     }
-    this.getPharmacyOptions()
+    this.getPharmacyOptions();
   }
 
   componentWillUnmount() {
@@ -175,27 +176,61 @@ class RequisitionEntry extends Component {
                   <h6>
                     {this.state.requistion_date
                       ? moment(this.state.requistion_date).format(
-                        Options.dateFormat
-                      )
+                          Options.dateFormat
+                        )
                       : Options.dateFormat}
                   </h6>
+                </div>{" "}
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Requisition Status"
+                    }}
+                  />
+                  <h6>
+                    {this.state.authorize1 === "Y" &&
+                    this.state.authorie2 === "Y" ? (
+                      <span className="badge badge-success">Authorized</span>
+                    ) : this.state.authorize1 === "Y" &&
+                      this.state.authorie2 === "N" ? (
+                      <span className="badge badge-danger">Pending</span>
+                    ) : (
+                      "-------"
+                    )}
+                  </h6>
                 </div>
+                {/* <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Transfer Status"
+                    }}
+                  />
+                  <h6>
+                    {this.state.authorize1 === "Y" &&
+                    this.state.authorie2 === "Y"
+                      ? "Authorized"
+                      : this.state.authorize1 === "Y" &&
+                        this.state.authorie2 === "N"
+                      ? "Pending"
+                      : null}
+                  </h6>
+                </div> */}
               </div>
             }
             printArea={
               this.state.material_requisition_number !== null
                 ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateMaterialReqPhar(this.state);
+                    menuitems: [
+                      {
+                        label: "Print Receipt",
+                        events: {
+                          onClick: () => {
+                            generateMaterialReqPhar(this.state);
+                          }
                         }
                       }
-                    }
-                  ]
-                }
+                    ]
+                  }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -244,8 +279,8 @@ class RequisitionEntry extends Component {
                       ? this.state.from_location_type === "WH"
                         ? "Warehouse"
                         : this.state.from_location_type === "MS"
-                          ? "Main Store"
-                          : "Sub Store"
+                        ? "Main Store"
+                        : "Sub Store"
                       : "----------"}
                   </h6>
                 </div>
@@ -318,8 +353,8 @@ class RequisitionEntry extends Component {
                       ? this.state.to_location_type === "WH"
                         ? "Warehouse"
                         : this.state.to_location_type === "MS"
-                          ? "Main Store"
-                          : "Sub Store"
+                        ? "Main Store"
+                        : "Sub Store"
                       : "----------"}
                   </h6>
                 </div>
@@ -368,8 +403,7 @@ class RequisitionEntry extends Component {
                   </button>
 
                   {this.props.requisition_auth === true ? (
-
-                    < button
+                    <button
                       type="button"
                       className="btn btn-other"
                       disabled={
@@ -377,8 +411,8 @@ class RequisitionEntry extends Component {
                           ? true
                           : this.state.authorize1 === "Y" &&
                             this.state.authorie2 === "Y"
-                            ? true
-                            : false
+                          ? true
+                          : false
                       }
                       onClick={AuthorizeRequisitionEntry.bind(
                         this,
@@ -393,7 +427,9 @@ class RequisitionEntry extends Component {
                           forceLabel:
                             this.state.authorize1 === "N"
                               ? "Authorize 1"
-                              : this.state.requisition_auth_level === "2" ? "Authorize 2" : "Authorize 1",
+                              : this.state.requisition_auth_level === "2"
+                              ? "Authorize 2"
+                              : "Authorize 1",
                           returnText: true
                         }}
                       />
@@ -404,7 +440,7 @@ class RequisitionEntry extends Component {
             </div>
           </div>
         </div>
-      </React.Fragment >
+      </React.Fragment>
     );
   }
 }
