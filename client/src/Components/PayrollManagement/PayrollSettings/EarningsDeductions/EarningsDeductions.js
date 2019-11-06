@@ -72,7 +72,8 @@ class EarningsDeductions extends Component {
       specific_nationality: false,
       nationality_id: null,
       hims_d_earning_deduction_id: null,
-      annual_salary_comp: false
+      annual_salary_comp: false,
+      on_edit: false
     });
   }
 
@@ -1040,6 +1041,7 @@ class EarningsDeductions extends Component {
                     />
                   </div>
                   <div className="col-4">
+                    <label>Specific Nationality</label>
                     <div className="customCheckbox">
                       <label className="checkbox inline">
                         <input
@@ -1048,13 +1050,13 @@ class EarningsDeductions extends Component {
                           checked={this.state.specific_nationality}
                           onChange={this.SpecificChecks.bind(this)}
                         />
-                        <span>Specific Nationality</span>
+                        <span>Yes</span>
                       </label>
                     </div>
 
                     {this.state.displayNationality === true ? (
                       <AlagehAutoComplete
-                        div={{ className: "col mandatory" }}
+                        div={{ className: "" }}
                         label={{
                           forceLabel: "Nationality",
                           isImp: true
@@ -1074,21 +1076,6 @@ class EarningsDeductions extends Component {
                     ) : null}
                   </div>
                   <div className="col-4">
-                    <label>Shortage Deduction Applicable</label>
-                    <div className="customCheckbox">
-                      <label className="checkbox inline">
-                        <input
-                          type="checkbox"
-                          value="yes"
-                          name="shortage_deduction_applicable"
-                          checked={this.state.shortage_deduction_applicable}
-                          onChange={this.changeChecks.bind(this)}
-                        />
-                        <span>Yes</span>
-                      </label>
-                    </div>
-                  </div>
-                  <div className="col-4">
                     <label>Overtime Applicable</label>
                     <div className="customCheckbox">
                       <label className="checkbox inline">
@@ -1104,7 +1091,22 @@ class EarningsDeductions extends Component {
                     </div>
                   </div>
                   <div className="col-4">
-                    <label>Miscellaneous Component</label>
+                    <label>Shortage Applicable</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox inline">
+                        <input
+                          type="checkbox"
+                          value="yes"
+                          name="shortage_deduction_applicable"
+                          checked={this.state.shortage_deduction_applicable}
+                          onChange={this.changeChecks.bind(this)}
+                        />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-4">
+                    <label>Misc. Component</label>
                     <div className="customCheckbox">
                       <label className="checkbox inline">
                         <input
