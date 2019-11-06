@@ -329,6 +329,11 @@ export default class MiscEarningsDeductions extends Component {
           });
 
           this.clearState();
+        } else {
+          swalMessage({
+            title: res.data.records.message,
+            type: "warning"
+          });
         }
       },
       onFailure: err => {
@@ -893,6 +898,9 @@ export default class MiscEarningsDeductions extends Component {
                         filter={true}
                         loading={this.state.loading}
                         paging={{ page: 0, rowsPerPage: 10 }}
+                        actions={{
+                          allowDelete: false
+                        }}
                         events={{
                           onEdit: () => { },
                           onDelete: () => { },
