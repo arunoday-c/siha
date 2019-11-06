@@ -35,7 +35,7 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-          printQuery: query => { },
+          printQuery: query => {},
           bulkInsertOrUpdate: true
         })
         .then(result => {
@@ -1306,11 +1306,11 @@ export default {
   UpdateEmployeeRejoined: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
-    let strQry = ""
+    let strQry = "";
     if (input.dates_equal === false) {
       let to_date = moment(input.last_salary_process_date, "YYYY-MM-DD")
         .add(-1, "days")
-        .format("YYYY-MM-DD")
+        .format("YYYY-MM-DD");
       strQry += mysql.format(
         "UPDATE hims_f_leave_application SET `early_rejoin` = 'Y', `to_date` = ? where hims_f_leave_application_id =? ; ",
         [to_date, input.hims_f_leave_application_id]
@@ -1319,7 +1319,8 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "Update hims_d_employee set suspend_salary = 'N', last_salary_process_date= ? where hims_d_employee_id=?; " + strQry,
+          "Update hims_d_employee set suspend_salary = 'N', last_salary_process_date= ? where hims_d_employee_id=?; " +
+          strQry,
         values: [input.last_salary_process_date, input.hims_d_employee_id],
 
         printQuery: true
@@ -1654,7 +1655,7 @@ export default {
               input.loan_application_date,
               input.employee_id,
               input.loan_id,
-              "APR",
+              "IS",
               input.pending_tenure,
               input.installment_amount,
               input.pending_loan,
