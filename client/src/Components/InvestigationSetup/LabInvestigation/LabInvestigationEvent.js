@@ -137,6 +137,9 @@ const updateLabInvestigation = ($this, context, row) => {
   let analytes = $this.state.analytes;
   let update_analytes = $this.state.update_analytes;
 
+  let analytes_index = analytes.indexOf(row)
+  // let update_analytes_index = update_analytes.indexOf(row)
+
   if ($this.state.hims_d_investigation_test_id !== null) {
     let Updateobj = {
       hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
@@ -162,12 +165,8 @@ const updateLabInvestigation = ($this, context, row) => {
     }
   }
 
-  for (let l = 0; l < analytes.length; l++) {
-    if (analytes[l].analyte_id === row.analyte_id) {
-      analytes[l] = row;
-    }
-  }
-  // analytes.splice(rowId, 1);
+  analytes[analytes_index] = row;
+
   $this.setState({
     analytes: analytes,
     update_analytes: update_analytes
@@ -266,15 +265,12 @@ function findAndRemoveAnalyte(analytes, row) {
 
 const onchangegridcol = ($this, row, e) => {
   let analytes = $this.state.analytes;
+  let analytes_index = analytes.indexOf(row)
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   row[name] = value;
+  analytes[analytes_index] = row;
 
-  for (let x = 0; x < analytes.length; x++) {
-    if (analytes[x].analyte_id === row.analyte_id) {
-      analytes[x] = row;
-    }
-  }
   $this.setState({ analytes: analytes });
 };
 
