@@ -9,7 +9,8 @@ const {
   updateFinanceAccountsMaping,
   getDayEndData,
   postDayEndData,
-  removeAccountHead
+  removeAccountHead,
+  test
 } = finance;
 
 export default () => {
@@ -161,6 +162,15 @@ export default () => {
         })
         .end();
     }
+  });
+  api.post("/test", test, (req, res, next) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        result: req.records
+      })
+      .end();
   });
 
   return api;
