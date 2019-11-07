@@ -190,7 +190,7 @@ let insertLadOrderedServices = (req, res, next) => {
               ],
               printQuery: true
             })
-            .then(investigation_test => {
+            .then(results => {
               let investigation_test = results[0];
               const age_data = results[1][0];
               const age_type = age_data["age_type"];
