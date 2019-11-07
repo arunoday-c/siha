@@ -131,7 +131,7 @@ class PrescriptionList extends Component {
                     />
                   </div>
 
-                  <div className="col" style={{ paddingTop: 21 }}>
+                  <div className="col" style={{ paddingTop: 19 }}>
                     <button
                       className="btn btn-primary btn-sm"
                       type="button"

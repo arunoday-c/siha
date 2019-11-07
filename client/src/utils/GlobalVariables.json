@@ -1989,47 +1989,47 @@
   ],
   "AUTH_LEVEL3": [
     {
-      "name": "1 Level",
+      "name": "Level 1",
       "value": "1"
     },
     {
-      "name": "2 Level",
+      "name": "Level 2",
       "value": "2"
     },
     {
-      "name": "3 Level",
+      "name": "Level 3",
       "value": "3"
     }
   ],
   "AUTH_LEVEL5": [
     {
-      "name": "1 Level",
+      "name": "Level 1",
       "value": "1"
     },
     {
-      "name": "2 Level",
+      "name": "Level 2",
       "value": "2"
     },
     {
-      "name": "3 Level",
+      "name": "Level 3",
       "value": "3"
     },
     {
-      "name": "4 Level",
+      "name": "Level 4",
       "value": "4"
     },
     {
-      "name": "5 Level",
+      "name": "Level 5",
       "value": "5"
     }
   ],
   "AUTH_LEVEL2": [
     {
-      "name": "1 Level",
+      "name": "Level 1",
       "value": "1"
     },
     {
-      "name": "2 Level",
+      "name": "Level 2",
       "value": "2"
     }
   ],

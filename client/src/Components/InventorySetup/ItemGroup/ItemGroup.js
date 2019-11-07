@@ -103,7 +103,7 @@ class ItemGroup extends Component {
               }}
             />
 
-            <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
+            <div className="col-lg-2 align-middle" style={{ paddingTop:19 }}>
               <button
                 onClick={insertItemGroup.bind(this, this)}
                 className="btn btn-primary"

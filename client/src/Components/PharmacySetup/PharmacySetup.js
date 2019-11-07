@@ -22,7 +22,7 @@ class PharmacySetup extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pageDisplay: "PharmacyOptions", sidBarOpen: true };
+    this.state = { pageDisplay: "Location", sidBarOpen: true };
   }
 
   openTab(e) {
@@ -66,15 +66,42 @@ class PharmacySetup extends Component {
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
+              {" "}
               <li
-                algaehtabs={"PharmacyOptions"}
                 className={"nav-item tab-button active"}
+                algaehtabs={"Location"}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "pharmacy_options"
+                      forceLabel: "Location Master"
+                    }}
+                  />
+                }
+              </li>{" "}
+              <li
+                className={"nav-item tab-button "}
+                algaehtabs={"LocationPermission"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "location_permission"
+                    }}
+                  />
+                }
+              </li>{" "}
+              <li
+                algaehtabs={"PharmacyOptions"}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Pharmacy Settings"
                     }}
                   />
                 }
@@ -92,7 +119,6 @@ class PharmacySetup extends Component {
                   />
                 }
               </li>
-
               <li
                 algaehtabs={"ItemGroup"}
                 className={"nav-item tab-button"}
@@ -106,7 +132,6 @@ class PharmacySetup extends Component {
                   />
                 }
               </li>
-
               <li
                 algaehtabs={"ItemGeneric"}
                 className={"nav-item tab-button "}
@@ -120,7 +145,6 @@ class PharmacySetup extends Component {
                   />
                 }
               </li>
-
               <li
                 className={"nav-item tab-button "}
                 algaehtabs={"ItemUOM"}
@@ -129,25 +153,11 @@ class PharmacySetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "item_uom"
+                      forceLabel: "UOM Master"
                     }}
                   />
                 }
               </li>
-              <li
-                className={"nav-item tab-button "}
-                algaehtabs={"Location"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "location"
-                    }}
-                  />
-                }
-              </li>
-
               <li
                 className={"nav-item tab-button "}
                 algaehtabs={"Form"}
@@ -156,12 +166,11 @@ class PharmacySetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "item_form"
+                      forceLabel: "Form Master"
                     }}
                   />
                 }
               </li>
-
               <li
                 className={"nav-item tab-button "}
                 algaehtabs={"Storage"}
@@ -170,21 +179,7 @@ class PharmacySetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "item_storage"
-                    }}
-                  />
-                }
-              </li>
-
-              <li
-                className={"nav-item tab-button "}
-                algaehtabs={"LocationPermission"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "location_permission"
+                      forceLabel: "Storage Master"
                     }}
                   />
                 }
@@ -192,7 +187,7 @@ class PharmacySetup extends Component {
             </ul>
           </div>
         </div>
-        <div className="common-section">
+        <div>
           {/*  {<this.state.pageDisplay />} */}
 
           {this.state.pageDisplay === "PharmacyOptions" ? (

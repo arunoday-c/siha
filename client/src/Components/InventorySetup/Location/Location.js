@@ -164,7 +164,7 @@ class Location extends Component {
               </label>
             </div>
 
-            <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
+            <div className="col-lg-2 align-middle" style={{ paddingTop:19 }}>
               <button
                 onClick={insertLocation.bind(this, this)}
                 className="btn btn-primary"
