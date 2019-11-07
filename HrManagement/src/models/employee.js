@@ -35,7 +35,7 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-          printQuery: query => {},
+          printQuery: query => { },
           bulkInsertOrUpdate: true
         })
         .then(result => {
@@ -1648,8 +1648,8 @@ export default {
           .executeQuery({
             query:
               "INSERT INTO `hims_f_loan_application` (loan_application_number, loan_application_date, employee_id, \
-                loan_id, loan_authorized, pending_tenure, installment_amount, pending_loan, start_year, start_month)\
-          VALUE(?,?,?,?,?,?,?,?,?,?)",
+                loan_id, loan_authorized, pending_tenure, installment_amount, pending_loan, start_year, start_month, hospital_id)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               numGenLeave[0],
               input.loan_application_date,
@@ -1660,7 +1660,8 @@ export default {
               input.installment_amount,
               input.pending_loan,
               input.start_year,
-              input.start_month
+              input.start_month,
+              input.hospital_id
             ],
             printQuery: true
           })

@@ -12,11 +12,6 @@ import {
   AlgaehDateHandler,
   AlgaehModalPopUp
 } from "../../../../Wrapper/algaehWrapper";
-import {
-  algaehApiCall,
-  swalMessage,
-  getCookie
-} from "../../../../../utils/algaehApiCall.js";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import AddEmployeeBalanceEvent from "./AddEmployeeBalanceEvent";
 import GlobalVariables from "../../../../../utils/GlobalVariables.json";
@@ -43,7 +38,8 @@ class AddEmployeeOpenBalance extends PureComponent {
       pending_tenure: null,
       loan_application_date: null,
       start_year: parseInt(moment().year(), 10),
-      start_month: null
+      start_month: null,
+      hospital_id: null
     };
   }
 
@@ -65,7 +61,8 @@ class AddEmployeeOpenBalance extends PureComponent {
         pending_tenure: null,
         loan_application_date: null,
         start_year: parseInt(moment().year(), 10),
-        start_month: null
+        start_month: null,
+        hospital_id: null
       },
       () => {
         this.props.onClose && this.props.onClose(e);
