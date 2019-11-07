@@ -13,7 +13,7 @@ import Location from "./Location/Location";
 import LocationPermission from "./LocationPermission/LocationPermission";
 
 // import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
-import InventoryOptions from "./InventoryOptions/InventoryOptions"
+import InventoryOptions from "./InventoryOptions/InventoryOptions";
 
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
@@ -67,54 +67,13 @@ class InventorySetup extends Component {
             <ul className="nav">
               <li
                 algaehtabs={"InventoryOptions"}
-                className={"nav-item tab-button active"}
+                className={"nav-item tab-button active "}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "inventory_options"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"ItemCategory"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "item_category"
-                    }}
-                  />
-                }
-              </li>
-
-              <li
-                algaehtabs={"ItemGroup"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "item_group"
-                    }}
-                  />
-                }
-              </li>
-
-              <li
-                className={"nav-item tab-button "}
-                algaehtabs={"ItemUOM"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "item_uom"
+                      forceLabel: "Inventory Settings"
                     }}
                   />
                 }
@@ -132,7 +91,6 @@ class InventorySetup extends Component {
                   />
                 }
               </li>
-
               <li
                 className={"nav-item tab-button "}
                 algaehtabs={"LocationPermission"}
@@ -142,6 +100,46 @@ class InventorySetup extends Component {
                   <AlgaehLabel
                     label={{
                       fieldName: "location_permission"
+                    }}
+                  />
+                }
+              </li>
+
+              <li
+                algaehtabs={"ItemCategory"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "item_category"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"ItemGroup"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "item_group"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                className={"nav-item tab-button "}
+                algaehtabs={"ItemUOM"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "UOM Master"
                     }}
                   />
                 }

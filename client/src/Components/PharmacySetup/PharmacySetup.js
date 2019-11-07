@@ -22,7 +22,7 @@ class PharmacySetup extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pageDisplay: "Location", sidBarOpen: true };
+    this.state = { pageDisplay: "PharmacyOptions", sidBarOpen: true };
   }
 
   openTab(e) {
@@ -66,9 +66,21 @@ class PharmacySetup extends Component {
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
-              {" "}
               <li
+                algaehtabs={"PharmacyOptions"}
                 className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Pharmacy Settings"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                className={"nav-item tab-button "}
                 algaehtabs={"Location"}
                 onClick={this.openTab.bind(this)}
               >
@@ -93,19 +105,6 @@ class PharmacySetup extends Component {
                   />
                 }
               </li>{" "}
-              <li
-                algaehtabs={"PharmacyOptions"}
-                className={"nav-item tab-button "}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Pharmacy Settings"
-                    }}
-                  />
-                }
-              </li>
               <li
                 algaehtabs={"ItemCategory"}
                 className={"nav-item tab-button"}

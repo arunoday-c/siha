@@ -99,7 +99,7 @@ export default class PharmacyOptions extends Component {
           <div className="portlet portlet-bordered marginBottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Notification Settings</h3>
+                <h3 className="caption-subject">Item Notification Settings</h3>
               </div>
             </div>
             <div className="portlet-body">
@@ -193,20 +193,17 @@ export default class PharmacyOptions extends Component {
               </div>
             </div>
           </div>
-
-          <div className="hptl-phase1-footer">
-            <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.saveOptions.bind(this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Save", returnText: true }}
-                  />
-                </button>
-              </div>
+        </div>
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={this.saveOptions.bind(this)}
+              >
+                <AlgaehLabel label={{ forceLabel: "Save", returnText: true }} />
+              </button>
             </div>
           </div>
         </div>
