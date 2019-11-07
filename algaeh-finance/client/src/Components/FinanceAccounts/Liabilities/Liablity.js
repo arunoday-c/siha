@@ -7,30 +7,38 @@ import SortableTree, {
 import "react-sortable-tree/style.css"; // This only needs to be imported once in your app
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
 import "./liablity.scss";
-import { getAccounts } from ".././FinanceAccountEvent";
+import { getAccounts,removeAccount } from ".././FinanceAccountEvent";
 import swal from "sweetalert2";
+import {AlgaehConfirm, AlgaehMessagePop} from "algaeh-react-components";
 
 export default function Liablity() {
   const [treeData, setTreeData] = useState([]);
+  const [labilityAmount,setLabilityAmount]=useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [selectedNode, setSelectedNode] = useState({});
-  const [selectHead, setSelectHead] = useState(false);
+  // const [selectHead, setSelectHead] = useState(false);
 
   useEffect(() => {
-    if (treeData.length === 0) {
+
       getAccounts("2", data => {
-        setTreeData(data);
-      });
-    }
+      if(Array.isArray(data)){
+        if(data.length >0){
+          setTreeData(data[0]["children"]);
+          setLabilityAmount(data[0]["subtitle"]);
+        }else{
+          setTreeData([]);
+        }
+      }else{
+        setTreeData([]);
+      }});
+
   }, []);
 
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
       try {
-        debugger;
         const { treeData } = options;
-        // let NEW_NODE = { title: addedNode.account_name };
-        let { node, treeIndex, path } = rowInfo;
+        let {  path } = rowInfo;
         let parentNode = getNodeAtPath({
           treeData: treeData,
           path: path,
@@ -41,10 +49,9 @@ export default function Liablity() {
           return number;
         };
         let parentKey = getNodeKey(parentNode);
-        if (parentKey == -1) {
+        if (parentKey === -1) {
           parentKey = null;
         }
-        console.log(path, treeIndex);
         let newTree = addNodeUnderParent({
           treeData: treeData,
           newNode: addedNode,
@@ -63,18 +70,21 @@ export default function Liablity() {
     return new Promise((resolve, reject) => {
       try {
         const { treeData } = options;
-        let { node, treeIndex, path } = rowInfo;
-        console.log(path, treeIndex);
-
-        const removeNodeData = removeNodeAtPath({
-          treeData: treeData,
-          path: path,
-          getNodeKey: ({ node: TreeNode, treeIndex: number }) => {
-            return number;
-          },
-          ignoreCollapsed: false
+        let { node,  path } = rowInfo;
+        const  {head_id,finance_account_child_id}=node;
+        removeAccount({ head_id: head_id,child_id:finance_account_child_id})
+            .then(()=>{
+              const removeNodeData = removeNodeAtPath({
+                treeData: treeData,
+                path: path,
+                getNodeKey: ({  treeIndex }) => treeIndex,
+              });
+              resolve(removeNodeData);
+            }).catch(error=>{
+              debugger;
+          reject(error);
         });
-        resolve(removeNodeData);
+
       } catch (e) {
         reject(e);
       }
@@ -121,13 +131,13 @@ export default function Liablity() {
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Liability accounts</h3>
+                <h3 className="caption-subject">Liability accounts <small>{labilityAmount}</small> </h3>
               </div>
               <div className="actions">
                 <button
                   className="btn btn-primary btn-circle active"
                   onClick={() => {
-                    setSelectHead(true);
+                    // setSelectHead(true);
                     setShowPopup(true);
                   }}
                 >
@@ -149,64 +159,57 @@ export default function Liablity() {
                         return rowInfo.node.canDrag === true ? true : false;
                       }}
                       generateNodeProps={rowInfo => {
+                        const {node}=rowInfo;
                         return {
                           buttons: [
-                            <div>
-                              {rowInfo.node.head_created_from === "U" ? (
-                                <button
-                                  label="Delete"
-                                  onClick={event => {
-                                    let child_exists =
-                                      rowInfo.node.children === undefined
-                                        ? ""
-                                        : rowInfo.node.children.length > 0
-                                        ? "This node exists Sub Accounts, If delete childs also will get delete !"
-                                        : "";
-                                    // rowInfo
-                                    swal
-                                      .fire({
-                                        title: "Are you sure want to Remove?",
-                                        text: child_exists,
-                                        type: "warning",
-                                        showCancelButton: true,
-                                        confirmButtonColor: "#3085d6",
-                                        cancelButtonColor: "#d33",
-                                        confirmButtonText: "Yes, delete it!"
-                                      })
-                                      .then(willProceed => {
-                                        if (willProceed.value) {
-                                          removeNode(rowInfo, { treeData })
-                                            .then(newTree => {
-                                              setTreeData(newTree);
-                                            })
-                                            .catch(error => {
-                                              alert(error);
-                                            });
-                                        }
-                                      });
-                                  }}
-                                >
-                                  Remove
-                                </button>
-                              ) : null}
+                            <div className="box">
+                              <ul className="NodeActionButton">
 
-                              {rowInfo.node.leafnode === "N" ? (
-                                <button
-                                  label="Add"
-                                  onClick={event => {
-                                    setSelectHead(false);
-                                    setShowPopup(true);
-                                    setSelectedNode(rowInfo);
-                                  }}
+                                {node.created_status === "U" ?(<li className="NodeDeleteButton" label="Delete"
+
                                 >
-                                  Add
-                                </button>
-                              ) : null}
+                                  <AlgaehConfirm title="Are you sure want to delete ?"
+                                                 placement="topLeft"
+                                                 onConfirm={(e)=>{
+
+                                                   removeNode(rowInfo)
+                                                       .then(newTree=>{
+                                                         setTreeData(newTree);
+                                                         AlgaehMessagePop({
+                                                           type:"success",
+                                                           display:"Account deleted successfully"
+                                                         });
+                                                       }).catch(error=>{
+                                                         debugger;
+                                                     AlgaehMessagePop({
+                                                       type:"error",
+                                                       display: error
+                                                     });
+                                                   })
+                                                 }}
+                                                 okButtonProps={{label:"Delete"}}
+                                                 disabled={node.children !==undefined && node.children.length > 0?true:false}
+                                                 okText="Yes, delete it!"
+                                                 cancelText="No"
+                                  > Remove </AlgaehConfirm> </li>) : null}
+                                {node.leafnode === "N" ? (<li
+                                    label="Add"
+                                    className="NodeAddButton"
+                                    onClick={event => {
+
+                                      setShowPopup(true);
+                                      setSelectedNode(rowInfo);
+                                    }} >
+                                  Add</li>) : null}
+                              </ul>
                             </div>
                           ],
                           style: {
                             height: "50px"
-                          }
+                          },
+                          title:(<><strong>{node.title}</strong> {node.leafnode ==="Y"?null:<small> / {node.children ===undefined ?0: node.children.length}</small>} </>),
+                          subtitle:(<div style={{"fontSize": "medium",
+                            "marginTop": "7px"}}>{node.subtitle}</div>)
                         };
                       }}
                     />

@@ -70,7 +70,10 @@ passport.deserializeUser((id, done) => {
 app.use((req, res, next) => {
   let reqH = req.headers;
   let reqUser = "";
+if(reqH["x-client-api"] !==undefined){
+ const xClientKey=  reqH["x-client-key"];
 
+}else{
   if (req.url != "/api/v1/apiAuth") {
     reqUser = jwtDecode(reqH["x-api-key"]).id;
     if (
@@ -103,8 +106,9 @@ app.use((req, res, next) => {
         return;
       }
     }
-  }
 
+  }
+}
   requestTracking("", {
     dateTime: new Date().toLocaleString(),
     requestIdentity: {
