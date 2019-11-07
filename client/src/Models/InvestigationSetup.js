@@ -1,5 +1,5 @@
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
@@ -42,7 +42,13 @@ export default {
       screening_test: "N",
       film_used: "N",
       clear: false,
-      analytes_required: true
+      analytes_required: true,
+
+
+      gender: null,
+      from_age: 0,
+      to_age: 0
+
     };
     return output;
   }
