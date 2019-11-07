@@ -1,7 +1,7 @@
 //Connection Done
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import lisIntegModels from "../model/LisIntegration";
+import lisIntegModels from "../models/LisIntegration";
 
 const { getLisMachineData, getTestDetails } = lisIntegModels;
 
