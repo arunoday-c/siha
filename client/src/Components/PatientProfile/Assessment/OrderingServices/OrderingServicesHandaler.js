@@ -27,15 +27,11 @@ const serviceHandeler = ($this, e) => {
 
 //Process and gets selectd service data with all calculation
 const ProcessService = ($this, favouriteOrder, e) => {
-  // orderedList
+
 
   let s_service = $this.state.s_service,
     s_service_type = $this.state.s_service_type;
-  // $this.setState(
-  //   {
-  //     loading_ProcessService: true
-  //   },
-  //   () => {
+
   let SelectedService = undefined;
   let PreSelectedService = undefined;
   if ($this.state.s_service_type !== 2) {
@@ -55,6 +51,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
   }
 
   if (SelectedService === undefined && PreSelectedService === undefined) {
+    debugger
 
     if (
       $this.state.s_service_type !== null &&
@@ -113,7 +110,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
                     preserviceInput[k].approval_limit_yesno =
                       data.billdetails[0].preapp_limit_exceed;
                   }
-                  let approval_amt = data.billdetails[0].approval_amt;
+                  let approval_amt = data.approval_amt;
                   let approval_limit_yesno =
                     data.billdetails[0].preapp_limit_exceed;
 
@@ -277,7 +274,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
                 existingservices.splice(0, 0, data.billdetails[0]);
               }
 
-              let approval_amt = data.billdetails[0].approval_amt;
+              let approval_amt = data.approval_amt;
               let preapp_limit_amount =
                 data.billdetails[0].preapp_limit_amount;
 
@@ -387,6 +384,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
 
 //if services got delete and if pre apprival limit exceed
 const deleteServices = ($this, row) => {
+  debugger
   let orderservicesdata = $this.state.orderservicesdata;
   let preserviceInput = $this.state.preserviceInput;
   let deleteserviceInput = $this.state.deleteserviceInput;
@@ -417,7 +415,7 @@ const deleteServices = ($this, row) => {
 
   preserviceInput.splice(_index, 1);
   let app_amt = parseFloat($this.state.approval_amt) - parseFloat(row["company_payble"]);
-
+  debugger
 
   if ($this.state.approval_limit_yesno === "Y") {
     if (app_amt < $this.state.preapp_limit_amount) {
@@ -1001,6 +999,7 @@ const ProcessFromFavourite = ($this, from) => {
 
   getFavouriteServices($this);
   AlgaehLoader({ show: true });
+  debugger
   algaehApiCall({
     uri: "/billing/getBillDetails",
     module: "billing",
@@ -1037,10 +1036,9 @@ const ProcessFromFavourite = ($this, from) => {
                 preserviceInput[k].approval_limit_yesno = "Y";
               }
 
-              let last_value = data.billdetails.length - 1
-              let approval_amt = data.billdetails[last_value].approval_amt;
+              let approval_amt = data.approval_amt;
               let approval_limit_yesno = "Y";
-
+              debugger
               algaehApiCall({
                 uri: "/billing/getBillDetails",
                 module: "billing",

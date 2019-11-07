@@ -74,11 +74,37 @@ class PharmacySetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "pharmacy_options"
+                      forceLabel: "Pharmacy Settings"
                     }}
                   />
                 }
               </li>
+              <li
+                className={"nav-item tab-button "}
+                algaehtabs={"Location"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Location Master"
+                    }}
+                  />
+                }
+              </li>{" "}
+              <li
+                className={"nav-item tab-button "}
+                algaehtabs={"LocationPermission"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "location_permission"
+                    }}
+                  />
+                }
+              </li>{" "}
               <li
                 algaehtabs={"ItemCategory"}
                 className={"nav-item tab-button"}
@@ -92,7 +118,6 @@ class PharmacySetup extends Component {
                   />
                 }
               </li>
-
               <li
                 algaehtabs={"ItemGroup"}
                 className={"nav-item tab-button"}
@@ -106,7 +131,6 @@ class PharmacySetup extends Component {
                   />
                 }
               </li>
-
               <li
                 algaehtabs={"ItemGeneric"}
                 className={"nav-item tab-button "}
@@ -120,7 +144,6 @@ class PharmacySetup extends Component {
                   />
                 }
               </li>
-
               <li
                 className={"nav-item tab-button "}
                 algaehtabs={"ItemUOM"}
@@ -129,25 +152,11 @@ class PharmacySetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "item_uom"
+                      forceLabel: "UOM Master"
                     }}
                   />
                 }
               </li>
-              <li
-                className={"nav-item tab-button "}
-                algaehtabs={"Location"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "location"
-                    }}
-                  />
-                }
-              </li>
-
               <li
                 className={"nav-item tab-button "}
                 algaehtabs={"Form"}
@@ -156,12 +165,11 @@ class PharmacySetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "item_form"
+                      forceLabel: "Form Master"
                     }}
                   />
                 }
               </li>
-
               <li
                 className={"nav-item tab-button "}
                 algaehtabs={"Storage"}
@@ -170,21 +178,7 @@ class PharmacySetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "item_storage"
-                    }}
-                  />
-                }
-              </li>
-
-              <li
-                className={"nav-item tab-button "}
-                algaehtabs={"LocationPermission"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "location_permission"
+                      forceLabel: "Storage Master"
                     }}
                   />
                 }
@@ -192,7 +186,7 @@ class PharmacySetup extends Component {
             </ul>
           </div>
         </div>
-        <div className="common-section">
+        <div>
           {/*  {<this.state.pageDisplay />} */}
 
           {this.state.pageDisplay === "PharmacyOptions" ? (

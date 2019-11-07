@@ -84,7 +84,6 @@ import opthometry from "../EHR/controller/opthometry";
 
 import diagram from "../controller/diagram";
 import myInit from "../controller/myinit";
-import LisIntegration from "../controller/LisIntegration";
 
 //connect to DB
 //function(db)
@@ -177,7 +176,6 @@ initializedDb(db => {
   router.use("/dentalForm", dentalForm({ config, db }));
   router.use("/opthometry", opthometry({ config, db }));
   router.use("/diagram", diagram({ config, db }));
-  router.use("/LisIntegration", LisIntegration({ config, db }));
 
 });
 

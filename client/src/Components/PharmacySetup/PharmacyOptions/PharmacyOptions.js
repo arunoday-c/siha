@@ -94,15 +94,25 @@ export default class PharmacyOptions extends Component {
 
   render() {
     return (
-      <div className="row LeaveSalarySetupScreen">
-        <div className="col-12">
-          <div className="portlet portlet-bordered  transactionSettings">
+      <div className="row" style={{ paddingTop: 15 }}>
+        <div className="col-3">
+          <div className="portlet portlet-bordered marginBottom-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">Item Notification Settings</h3>
+              </div>
+            </div>
             <div className="portlet-body">
               <div className="row">
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
+                  div={{
+                    className: "col-6",
+                    others: {
+                      style: { paddingRight: 0 }
+                    }
+                  }}
                   label={{
-                    forceLabel: "Notification Before",
+                    forceLabel: "Notify Expiry Before",
                     isImp: true
                   }}
                   textBox={{
@@ -117,9 +127,11 @@ export default class PharmacyOptions extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-2" }}
+                  div={{
+                    className: "col"
+                  }}
                   label={{
-                    forceLabel: "Notification Type",
+                    forceLabel: "",
                     isImp: true
                   }}
                   selector={{
@@ -139,10 +151,26 @@ export default class PharmacyOptions extends Component {
                     }
                   }}
                 />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-3">
+          <div className="portlet portlet-bordered marginBottom-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">
+                  Material Requestion Settings
+                </h3>
+              </div>
+            </div>
+            <div className="portlet-body">
+              <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-2 form-group" }}
+                  div={{ className: "col" }}
                   label={{
-                    forceLabel: "Requisition level",
+                    forceLabel: "Requisition Auth level",
                     isImp: false
                   }}
                   selector={{
@@ -165,20 +193,17 @@ export default class PharmacyOptions extends Component {
               </div>
             </div>
           </div>
-
-          <div className="hptl-phase1-footer">
-            <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.saveOptions.bind(this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Save", returnText: true }}
-                  />
-                </button>
-              </div>
+        </div>
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={this.saveOptions.bind(this)}
+              >
+                <AlgaehLabel label={{ forceLabel: "Save", returnText: true }} />
+              </button>
             </div>
           </div>
         </div>

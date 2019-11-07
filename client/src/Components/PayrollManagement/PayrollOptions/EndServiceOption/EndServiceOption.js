@@ -694,7 +694,7 @@ export default class EndServiceOption extends Component {
 
                           <div
                             className="col-3 align-middle"
-                            style={{ paddingTop: 21 }}
+                            style={{ paddingTop:19 }}
                           >
                             <button
                               onClick={this.addServiceRange.bind(this)}
@@ -789,7 +789,7 @@ export default class EndServiceOption extends Component {
                           />
                           <div
                             className="col-2 align-middle"
-                            style={{ paddingTop: 21 }}
+                            style={{ paddingTop:19 }}
                           >
                             <button
                               onClick={this.addEarningComponent.bind(this)}
@@ -932,7 +932,7 @@ export default class EndServiceOption extends Component {
 
                           <div
                             className="col-3 align-middle"
-                            style={{ paddingTop: 21 }}
+                            style={{ paddingTop:19 }}
                           >
                             <button
                               onClick={this.addTerminationComps.bind(this)}
@@ -1011,7 +1011,7 @@ export default class EndServiceOption extends Component {
                           />
                           <div
                             className="col-2 align-middle"
-                            style={{ paddingTop: 21 }}
+                            style={{ paddingTop:19 }}
                           >
                             <button
                               onClick={this.addEarningComponent.bind(this)}

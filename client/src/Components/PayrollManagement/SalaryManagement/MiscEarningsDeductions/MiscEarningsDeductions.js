@@ -98,7 +98,7 @@ export default class MiscEarningsDeductions extends Component {
         }
       },
 
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -199,14 +199,14 @@ export default class MiscEarningsDeductions extends Component {
           if (res.data.success) {
             res.data.records.length > 0
               ? this.setState({
-                  employees: res.data.records,
-                  loading: false,
-                  lockEarnings: true
-                })
+                employees: res.data.records,
+                loading: false,
+                lockEarnings: true
+              })
               : swalMessage({
-                  title: "Sorry There are no Employees to Process",
-                  type: "warning"
-                });
+                title: "Sorry There are no Employees to Process",
+                type: "warning"
+              });
           } else if (!res.data.success) {
             swalMessage({
               title: res.data.records.message,
@@ -300,24 +300,25 @@ export default class MiscEarningsDeductions extends Component {
 
     this.state.isBulk
       ? (sendData = {
-          earning_deduction_id: this.state.earning_deduction_id,
-          year: this.state.year,
-          month: this.state.month,
-          category: this.state.component_category,
-          employees: this.state.employees
-        })
+        earning_deduction_id: this.state.earning_deduction_id,
+        year: this.state.year,
+        month: this.state.month,
+        category: this.state.component_category,
+        employees: this.state.employees
+      })
       : (sendData = {
-          earning_deduction_id: this.state.earning_deduction_id,
-          year: this.state.year,
-          month: this.state.month,
-          category: this.state.component_category,
-          employees: this.state.send_array
-        });
+        earning_deduction_id: this.state.earning_deduction_id,
+        year: this.state.year,
+        month: this.state.month,
+        category: this.state.component_category,
+        employees: this.state.send_array
+      });
 
     //  console.log("Data:", JSON.stringify(sendData));
 
     algaehApiCall({
       uri: "/employee/addMisEarnDedcToEmployees",
+      module: "hrManagement",
       method: "POST",
       data: sendData,
       onSuccess: res => {
@@ -328,6 +329,11 @@ export default class MiscEarningsDeductions extends Component {
           });
 
           this.clearState();
+        } else {
+          swalMessage({
+            title: res.data.records.message,
+            type: "warning"
+          });
         }
       },
       onFailure: err => {
@@ -344,14 +350,14 @@ export default class MiscEarningsDeductions extends Component {
 
     type === "B"
       ? (data = {
-          component_type: type,
-          component_category: "E",
-          miscellaneous_component: "Y"
-        })
+        component_type: type,
+        component_category: "E",
+        miscellaneous_component: "Y"
+      })
       : (data = {
-          component_category: type,
-          miscellaneous_component: "Y"
-        });
+        component_category: type,
+        miscellaneous_component: "Y"
+      });
 
     algaehApiCall({
       uri: "/payrollSettings/getMiscEarningDeductions",
@@ -665,8 +671,8 @@ export default class MiscEarningsDeductions extends Component {
                 {!this.state.loading ? (
                   <span>Load</span>
                 ) : (
-                  <i className="fas fa-spinner fa-spin" />
-                )}
+                    <i className="fas fa-spinner fa-spin" />
+                  )}
               </button>
             </div>
           </div>
@@ -774,10 +780,10 @@ export default class MiscEarningsDeductions extends Component {
                                       Processed
                                     </span>
                                   ) : (
-                                    <span className="badge badge-warning">
-                                      Not Processed
+                                      <span className="badge badge-warning">
+                                        Not Processed
                                     </span>
-                                  )}
+                                    )}
                                 </span>
                               );
                             },
@@ -859,28 +865,28 @@ export default class MiscEarningsDeductions extends Component {
                             editorTemplate: row => {
                               return row.salary_processed === "N" ||
                                 row.salary_processed === null ? (
-                                <AlagehFormGroup
-                                  div={{ className: "col" }}
-                                  textBox={{
-                                    decimal: { allowNegative: false },
-                                    className: "txt-fld",
-                                    name: "amount",
-                                    value: row.amount,
-                                    events: {
-                                      onChange: this.changeGridEditors.bind(
-                                        this,
-                                        row
-                                      )
-                                    },
-                                    others: {
-                                      errormessage: "Amount - cannot be blank",
-                                      required: true
-                                    }
-                                  }}
-                                />
-                              ) : (
-                                getAmountFormart(row.amount)
-                              );
+                                  <AlagehFormGroup
+                                    div={{ className: "col" }}
+                                    textBox={{
+                                      decimal: { allowNegative: false },
+                                      className: "txt-fld",
+                                      name: "amount",
+                                      value: row.amount,
+                                      events: {
+                                        onChange: this.changeGridEditors.bind(
+                                          this,
+                                          row
+                                        )
+                                      },
+                                      others: {
+                                        errormessage: "Amount - cannot be blank",
+                                        required: true
+                                      }
+                                    }}
+                                  />
+                                ) : (
+                                  getAmountFormart(row.amount)
+                                );
                             }
                           }
                         ]}
@@ -892,9 +898,12 @@ export default class MiscEarningsDeductions extends Component {
                         filter={true}
                         loading={this.state.loading}
                         paging={{ page: 0, rowsPerPage: 10 }}
+                        actions={{
+                          allowDelete: false
+                        }}
                         events={{
-                          onEdit: () => {},
-                          onDelete: () => {},
+                          onEdit: () => { },
+                          onDelete: () => { },
                           onDone: this.addEarningsForEmployee.bind(this)
                         }}
                       />

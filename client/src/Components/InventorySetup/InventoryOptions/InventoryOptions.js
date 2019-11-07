@@ -94,55 +94,22 @@ export default class InventoryOptions extends Component {
 
   render() {
     return (
-      <div className="row LeaveSalarySetupScreen">
-        <div className="col-12">
-          <div className="portlet portlet-bordered  transactionSettings">
+      <div className="row" style={{ paddingTop: 15 }}>
+        <div className="col-3">
+          <div className="portlet portlet-bordered marginBottom-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">
+                  Material Requestion Settings
+                </h3>
+              </div>
+            </div>
             <div className="portlet-body">
               <div className="row">
-                {/* <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    forceLabel: "Notification Before",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "notification_before",
-                    value: this.state.notification_before,
-
-                    events: {
-                      onChange: this.changeTexts.bind(this)
-                    }
-                  }}
-                />
-
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-2" }}
+                  div={{ className: "col form-group" }}
                   label={{
-                    forceLabel: "Notification Type",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "notification_type",
-                    className: "select-fld",
-                    value: this.state.notification_type,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.NOTIFICATION_TYPE
-                    },
-                    onChange: this.changeTexts.bind(this),
-                    onClear: () => {
-                      this.setState({
-                        notification_type: null
-                      });
-                    }
-                  }}
-                /> */}
-                <AlagehAutoComplete
-                  div={{ className: "col-2 form-group" }}
-                  label={{
-                    forceLabel: "Requisition level",
+                    forceLabel: "Requisition Auth level",
                     isImp: false
                   }}
                   selector={{
@@ -165,20 +132,17 @@ export default class InventoryOptions extends Component {
               </div>
             </div>
           </div>
-
-          <div className="hptl-phase1-footer">
-            <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.saveOptions.bind(this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Save", returnText: true }}
-                  />
-                </button>
-              </div>
+        </div>
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={this.saveOptions.bind(this)}
+              >
+                <AlgaehLabel label={{ forceLabel: "Save", returnText: true }} />
+              </button>
             </div>
           </div>
         </div>

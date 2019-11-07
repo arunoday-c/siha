@@ -29,12 +29,14 @@ export default function AllEvents() {
         onRowSelect: row => {
           $this.setState({
             employee_name: row.full_name,
-            hims_d_employee_id: row.hims_d_employee_id
+            hims_d_employee_id: row.hims_d_employee_id,
+            hospital_id: row.hospital_id
           });
         }
       });
     },
     SaveData: $this => {
+      debugger
       let selected_uri = "";
       let inputObj = {};
 
@@ -71,7 +73,7 @@ export default function AllEvents() {
           leave_salary_amount: $this.state.leave_salary_amount,
           airticket_amount: $this.state.airticket_amount,
           airfare_months: $this.state.airfare_months,
-          hospital_id: $this.props.hospital_id
+          hospital_id: $this.state.hospital_id
         };
       } else if ($this.props.selected_type === "GR") {
         if ($this.state.month === null) {
@@ -161,7 +163,8 @@ export default function AllEvents() {
           installment_amount: $this.state.installment_amount,
           loan_application_date: $this.state.loan_application_date,
           start_year: $this.state.start_year,
-          start_month: $this.state.start_month
+          start_month: $this.state.start_month,
+          hospital_id: $this.state.hospital_id
         };
       }
       algaehApiCall({

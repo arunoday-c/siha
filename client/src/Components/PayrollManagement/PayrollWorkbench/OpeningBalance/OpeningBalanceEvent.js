@@ -270,7 +270,7 @@ export default function ManualAttendanceEvents() {
             },
             {
               fieldName: "pending_tenure",
-              label: <AlgaehLabel label={{ forceLabel: "Pending Amount" }} />,
+              label: <AlgaehLabel label={{ forceLabel: "Pending Tenure" }} />,
               others: {
                 filterable: false
               },

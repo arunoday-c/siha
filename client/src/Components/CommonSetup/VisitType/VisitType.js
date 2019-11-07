@@ -383,7 +383,7 @@ class VisitType extends Component {
 
                 <div
                   className="col-lg-2 align-middle"
-                  style={{ paddingTop: 21 }}
+                  style={{ paddingTop:19 }}
                 >
                   <button
                     onClick={this.addVisit.bind(this)}

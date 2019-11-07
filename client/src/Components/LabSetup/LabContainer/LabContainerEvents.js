@@ -46,7 +46,7 @@ const updateLabContainer = ($this, data) => {
         });
       }
     },
-    onFailure: error => {}
+    onFailure: error => { }
   });
 };
 
@@ -87,7 +87,7 @@ const showconfirmDialog = ($this, id) => {
             });
           }
         },
-        onFailure: error => {}
+        onFailure: error => { }
       });
     } else {
       swalMessage({
@@ -138,10 +138,34 @@ const insertLabContainer = ($this, e) => {
   });
 };
 
+
+
+const testData = ($this, e) => {
+
+  algaehApiCall({
+    uri: "/LisIntegration/getTestDetails",
+    module: "laboratory",
+    method: "GET",
+    data: { lab_id_number: "101929713001" },
+    onSuccess: response => {
+      if (response.data.success === true) {
+        debugger
+        swalMessage({
+          title: "Lab Container added successfully",
+          type: "success"
+        });
+      }
+    }
+  });
+
+};
+
+
 export {
   changeTexts,
   onchangegridcol,
   insertLabContainer,
   updateLabContainer,
-  deleteLabContainer
+  deleteLabContainer,
+  testData
 };

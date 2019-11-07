@@ -122,7 +122,23 @@ class PurchaseOrderEntry extends Component {
                     ? moment(this.state.po_date).format(Options.dateFormat)
                     : Options.dateFormat}
                 </h6>
-              </div>
+              </div>{" "}
+              {this.state.dataExitst === true ? (
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "PO Status"
+                    }}
+                  />
+                  <h6>
+                    {this.state.authorize1 === "Y" ? (
+                      <span className="badge badge-success">Authorized</span>
+                    ) : (
+                      <span className="badge badge-danger">Pending</span>
+                    )}
+                  </h6>
+                </div>
+              ) : null}
             </div>
           }
           printArea={
