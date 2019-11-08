@@ -72,11 +72,18 @@
     }
     li.NodeAddButton {
       border-bottom: 1px solid #dddddd;
-
       &:hover {
         cursor: pointer;
         background: green;
         color: white;
+      }
+    }
+    li.disabled {
+      cursor: none;
+      color: #dadada;
+      &:hover {
+        color: #dadada;
+        background: none;
       }
     }
   }
