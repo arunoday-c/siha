@@ -1,5 +1,4 @@
 .hptl-phase1-requisition-form {
-  min-height: 80vh;
   .form-details {
     padding: 5px;
     padding-bottom: 0px;
@@ -9,13 +8,13 @@
     color: red;
   }
 
-  .form-group {
-    // margin-top: 12vh;
-    padding: 2vh;
-  }
-
   .go-button {
     cursor: pointer;
     margin-top: 2.5vh;
+  }
+  #REQ_details {
+    .ReactTable {
+      max-height: 53vh !important;
+    }
   }
 }

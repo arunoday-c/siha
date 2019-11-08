@@ -413,7 +413,7 @@ class OrderMedication extends Component {
                     className="col-12"
                     style={{ paddingTop: 9, textAlign: "right" }}
                   >
-                    <span style={{ textAlign: "left" }}>
+                    <span style={{ textAlign: "left", marginRight: "10" }}>
                       Pharmacy Stock: <b>{this.state.total_quantity}</b>
                     </span>
                     <button
