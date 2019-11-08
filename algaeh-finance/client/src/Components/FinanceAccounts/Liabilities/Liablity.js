@@ -73,9 +73,8 @@ export default function Liablity() {
       try {
 
         let { node,  path } = rowInfo;
-        const  {head_id,finance_account_child_id}=node;
-
-        removeAccount({ head_id: head_id,child_id:finance_account_child_id})
+        const  {head_id,finance_account_child_id,leafnode,finance_account_head_id}=node;
+        removeAccount({ head_id: leafnode ==="N"?finance_account_head_id: head_id,child_id:finance_account_child_id,leaf_node:leafnode})
             .then(()=>{
               const removeNodeData = removeNodeAtPath({
                 treeData: treeData,

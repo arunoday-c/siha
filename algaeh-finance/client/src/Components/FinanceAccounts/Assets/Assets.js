@@ -56,9 +56,8 @@ const [searchFoundCount,setSearchFoundCount]=useState(undefined);
     return new Promise((resolve, reject) => {
       try {
          let {node, path } = rowInfo;
-      const  {head_id,finance_account_child_id}=node;
-
-        removeAccount({ head_id: head_id,child_id:finance_account_child_id})
+      const  {head_id,finance_account_child_id,leafnode,finance_account_head_id}=node;
+        removeAccount({ head_id: leafnode ==="N"?finance_account_head_id: head_id,child_id:finance_account_child_id,leaf_node:leafnode})
             .then(()=>{
               const removeNodeData = removeNodeAtPath({
                 treeData,
@@ -185,7 +184,6 @@ const [searchFoundCount,setSearchFoundCount]=useState(undefined);
                                     <AlgaehConfirm title="Are you sure want to delete ?"
                                                    placement="topLeft"
                                                    onConfirm={(e)=>{
-
                                                      removeNode(rowInfo)
                                                          .then(newTree=>{
                                                            setTreeData(newTree);
@@ -201,7 +199,7 @@ const [searchFoundCount,setSearchFoundCount]=useState(undefined);
                                                      })
                                                    }}
                                                    okButtonProps={{label:"Delete"}}
-                                                   disabled={node.children !==undefined && node.children.length > 0?true:false}
+                                                   // disabled={node.children !==undefined && node.children.length > 0?true:false}
                                                    okText="Yes, delete it!"
                                                    cancelText="No"
                                     > Remove </AlgaehConfirm> </li>) : null}
