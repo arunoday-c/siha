@@ -240,125 +240,116 @@ class RequisitionEntry extends Component {
             className="row  inner-top-search"
             style={{ marginTop: 76, paddingBottom: 10 }}
           >
-            {/* Patient code */}
-            <div className="col-lg-8">
-              <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col-4" }}
-                  label={{ forceLabel: "Requesting From" }}
-                  selector={{
-                    name: "from_location_id",
-                    className: "select-fld",
-                    value: this.state.from_location_id,
-                    dataSource: {
-                      textField: "location_description",
-                      valueField: "hims_d_pharmacy_location_id",
-                      data: userwiselocations
-                    },
-                    others: {
-                      disabled: this.state.addedItem
-                    },
-                    onChange: LocationchangeTexts.bind(this, this, "From"),
-                    onClear: () => {
-                      this.setState({
-                        from_location_id: null,
-                        from_location_type: null
-                      });
-                    }
-                  }}
-                />
+            {/* <AlagehAutoComplete
+              div={{ className: "col-3" }}
+              label={{ forceLabel: "Requisition Type" }}
+              selector={{
+                name: "requistion_type",
+                className: "select-fld",
+                value: this.state.requistion_type,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.FORMAT_POS_REQUISITION_TYPE
+                },
+                others: {
+                  disabled: true
+                  // this.state.from_location_type === "MS" ? false : true
+                },
 
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Location Type"
-                    }}
-                  />
-                  <h6>
-                    {this.state.from_location_type
-                      ? this.state.from_location_type === "WH"
-                        ? "Warehouse"
-                        : this.state.from_location_type === "MS"
-                        ? "Main Store"
-                        : "Sub Store"
-                      : "----------"}
-                  </h6>
-                </div>
+                onChange: changeTexts.bind(this, this),
+                onClear: () => {
+                  this.setState({
+                    requistion_type: null
+                  });
+                }
+              }}
+            /> */}
+            <AlagehAutoComplete
+              div={{ className: "col-3" }}
+              label={{ forceLabel: "Requesting From" }}
+              selector={{
+                name: "from_location_id",
+                className: "select-fld",
+                value: this.state.from_location_id,
+                dataSource: {
+                  textField: "location_description",
+                  valueField: "hims_d_pharmacy_location_id",
+                  data: userwiselocations
+                },
+                others: {
+                  disabled: this.state.addedItem
+                },
+                onChange: LocationchangeTexts.bind(this, this, "From"),
+                onClear: () => {
+                  this.setState({
+                    from_location_id: null,
+                    from_location_type: null
+                  });
+                }
+              }}
+            />
 
-                <AlagehAutoComplete
-                  div={{ className: "col-3" }}
-                  label={{ forceLabel: "Requisition Type" }}
-                  selector={{
-                    name: "requistion_type",
-                    className: "select-fld",
-                    value: this.state.requistion_type,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.FORMAT_POS_REQUISITION_TYPE
-                    },
-                    others: {
-                      disabled: true
-                      // this.state.from_location_type === "MS" ? false : true
-                    },
-
-                    onChange: changeTexts.bind(this, this),
-                    onClear: () => {
-                      this.setState({
-                        requistion_type: null
-                      });
-                    }
-                  }}
-                />
-              </div>
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Location Type"
+                }}
+              />
+              <h6>
+                {this.state.from_location_type
+                  ? this.state.from_location_type === "WH"
+                    ? "Warehouse"
+                    : this.state.from_location_type === "MS"
+                    ? "Main Store"
+                    : "Sub Store"
+                  : "----------"}
+              </h6>
             </div>
-            <div className="col-4">
-              <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col-6" }}
-                  label={{ forceLabel: "Requesting To" }}
-                  selector={{
-                    name: "to_location_id",
-                    className: "select-fld",
-                    value: this.state.to_location_id,
-                    dataSource: {
-                      textField: "location_description",
-                      valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.reqlocations
-                    },
-                    others: {
-                      disabled:
-                        this.state.requistion_type === "PR"
-                          ? true
-                          : this.state.addedItem
-                    },
-                    onChange: LocationchangeTexts.bind(this, this, "To"),
-                    onClear: () => {
-                      this.setState({
-                        to_location_id: null,
-                        to_location_type: null
-                      });
-                    }
-                  }}
-                />
 
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Location Type"
-                    }}
-                  />
-                  <h6>
-                    {this.state.to_location_type
-                      ? this.state.to_location_type === "WH"
-                        ? "Warehouse"
-                        : this.state.to_location_type === "MS"
-                        ? "Main Store"
-                        : "Sub Store"
-                      : "----------"}
-                  </h6>
-                </div>
-              </div>
+            <AlagehAutoComplete
+              div={{ className: "col-3" }}
+              label={{ forceLabel: "Requesting To" }}
+              selector={{
+                name: "to_location_id",
+                className: "select-fld",
+                value: this.state.to_location_id,
+                dataSource: {
+                  textField: "location_description",
+                  valueField: "hims_d_pharmacy_location_id",
+                  data: this.props.reqlocations
+                },
+                others: {
+                  disabled:
+                    this.state.requistion_type === "PR"
+                      ? true
+                      : this.state.addedItem
+                },
+                onChange: LocationchangeTexts.bind(this, this, "To"),
+                onClear: () => {
+                  this.setState({
+                    to_location_id: null,
+                    to_location_type: null
+                  });
+                }
+              }}
+            />
+
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Location Type"
+                }}
+              />
+              <h6>
+                {this.state.to_location_type
+                  ? this.state.to_location_type === "WH"
+                    ? "Warehouse"
+                    : this.state.to_location_type === "MS"
+                    ? "Main Store"
+                    : "Sub Store"
+                  : "----------"}
+              </h6>
             </div>
           </div>
 
