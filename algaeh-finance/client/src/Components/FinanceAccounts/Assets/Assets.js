@@ -10,6 +10,7 @@ import { AlgaehConfirm, AlgaehMessagePop } from "algaeh-react-components";
 import "antd/dist/antd.css";
 import { getAccounts, removeAccount } from ".././FinanceAccountEvent";
 export default function Assets() {
+  const [symbol, setSymbol] = useState("");
   const [assetAmount, setAssetAmount] = useState("");
   const [treeData, setTreeData] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
@@ -88,6 +89,7 @@ export default function Assets() {
         if (data.length > 0) {
           setTreeData(data[0].children);
           setAssetAmount(data[0]["subtitle"]);
+          setSymbol(data[0]["trans_symbol"]);
         } else {
           setTreeData([]);
         }
@@ -137,16 +139,13 @@ export default function Assets() {
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">
-                  Asset accounts <small> {assetAmount}</small>{" "}
+                  Asset accounts: {assetAmount} {symbol}
                 </h3>
               </div>
               <div className="actions">
                 <button className="btn btn-default btn-circle active">
                   <i className="fas fa-print" />
                 </button>
-                <button className="btn btn-default btn-circle active">
-                  <i className="fas fa-search" />
-                </button>{" "}
                 <button className="btn btn-primary btn-circle active">
                   <i className="fas fa-plus" />
                 </button>{" "}
@@ -277,7 +276,7 @@ export default function Assets() {
                             <div
                               style={{ fontSize: "medium", marginTop: "7px" }}
                             >
-                              {node.subtitle}
+                              {node.subtitle} {node.trans_symbol}
                             </div>
                           )
                         };
