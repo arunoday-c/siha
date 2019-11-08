@@ -6,8 +6,8 @@ import SortableTree, {
 } from "react-sortable-tree";
 import "react-sortable-tree/style.css"; // This only needs to be imported once in your app
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
-import "./liablity.scss";
-import { getAccounts,removeAccount } from ".././FinanceAccountEvent";
+import "../Assets/assets.scss";
+import {getAccounts, isPositive, removeAccount} from ".././FinanceAccountEvent";
 
 import {AlgaehConfirm, AlgaehMessagePop} from "algaeh-react-components";
 
@@ -146,8 +146,8 @@ export default function Liablity() {
                   <i className="fas fa-plus" />
                 </button>
               </div>
-              <div>
-                <input type="text" placeholder="Search" value={searchQuery}
+              <div className="searchCntr">
+                <input type="text" placeholder="Search Account Heads" value={searchQuery}
                        onChange={(e)=>{
                          setSearchQuery(e.target.value);
                        }} />
@@ -176,55 +176,82 @@ export default function Liablity() {
                         return rowInfo.node.canDrag === true ? true : false;
                       }}
                       generateNodeProps={rowInfo => {
-                        const {node}=rowInfo;
+                        const { node } = rowInfo;
                         return {
                           buttons: [
                             <div className="box">
                               <ul className="NodeActionButton">
-
-                                {node.created_status === "U" ?(<li className="NodeDeleteButton" label="Delete"
-
-                                >
-                                  <AlgaehConfirm title="Are you sure want to delete ?"
-                                                 placement="topLeft"
-                                                 onConfirm={(e)=>{
-                                                   removeNode(rowInfo)
-                                                       .then(newTree=>{
-                                                         setTreeData(newTree);
-                                                         AlgaehMessagePop({
-                                                           type:"success",
-                                                           display:"Account deleted successfully"
-                                                         });
-                                                       }).catch(error=>{
-                                                     AlgaehMessagePop({
-                                                       type:"error",
-                                                       display: error
-                                                     });
-                                                   })
-                                                 }}
-                                                 okButtonProps={{label:"Delete"}}
-                                                 disabled={node.children !==undefined && node.children.length > 0?true:false}
-                                                 okText="Yes, delete it!"
-                                                 cancelText="No"
-                                  > Remove </AlgaehConfirm> </li>) : null}
-                                {node.leafnode === "N" ? (<li
+                                <li
                                     label="Add"
-                                    className="NodeAddButton"
+                                    className={"NodeAddButton "+(node.leafnode==="Y"?"disabled":"")}
                                     onClick={event => {
-
                                       setShowPopup(true);
                                       setSelectedNode(rowInfo);
-                                    }} >
-                                  Add</li>) : null}
+                                    }}
+                                >
+                                  Add
+                                </li>
+                                <li
+                                    className={"NodeDeleteButton "+(node.created_status ==="S"?"disabled":"")}
+                                    label="Delete"
+                                >
+                                  <AlgaehConfirm
+                                      title="Are you sure want to delete ?"
+                                      placement="topLeft"
+                                      onConfirm={e => {
+                                        removeNode(rowInfo)
+                                            .then(newTree => {
+                                              setTreeData(newTree);
+                                              AlgaehMessagePop({
+                                                type: "success",
+                                                display:
+                                                    "Account deleted successfully"
+                                              });
+                                            })
+                                            .catch(error => {
+                                              AlgaehMessagePop({
+                                                type: "error",
+                                                display: error
+                                              });
+                                            });
+                                      }}
+                                      okButtonProps={{ label: "Delete" }}
+                                      // disabled={node.children !==undefined && node.children.length > 0?true:false}
+                                      okText="Yes, delete it!"
+                                      cancelText="No"
+                                  >
+                                    {" "}
+                                    Remove{" "}
+                                  </AlgaehConfirm>{" "}
+                                </li>
                               </ul>
                             </div>
                           ],
                           style: {
-                            height: "50px"
+                            height: "50px",
+                            minWidth: "150px"
                           },
-                          title:(<><strong>{node.title}</strong> {node.leafnode ==="Y"?null:<small> / {node.children ===undefined ?0: node.children.length}</small>} </>),
-                          subtitle:(<div style={{"fontSize": "medium",
-                            "marginTop": "7px"}}>{node.subtitle}</div>)
+                          title: (
+                              <>
+                              <span>
+                                {node.title} {" "}
+                                {node.leafnode === "Y" ? null : (
+                                    <>/
+                                      {node.children === undefined
+                                          ? 0
+                                          : node.children.length}
+                                    </>
+                                )}
+                              </span>
+                              </>
+                          ),
+                          subtitle: (
+                              <div
+                                  style={{ fontSize: "medium", marginTop: "7px" }}
+                              >
+                                <span className={isPositive(node.subtitle)}>{node.subtitle}</span>  <small>{node.trans_symbol}</small>
+                              </div>
+                          )
                         };
                       }}
                       searchMethod={({node, searchQuery})=>{

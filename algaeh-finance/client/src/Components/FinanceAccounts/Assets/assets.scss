@@ -79,7 +79,7 @@
       }
     }
     li.disabled {
-      cursor: none;
+      pointer-events: none;
       color: #dadada;
       &:hover {
         color: #dadada;
@@ -118,4 +118,10 @@
       cursor: pointer !important;
     }
   }
+}
+.negitive{
+  color:#9f3a38!important;
+}
+.rst__rowSearchFocus{
+  outline: solid 3px #00a796  !important;
 }

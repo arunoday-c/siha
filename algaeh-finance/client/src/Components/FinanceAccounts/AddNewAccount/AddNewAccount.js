@@ -86,7 +86,7 @@ export default function AddNewAccount(props) {
       <div className="row">
         <AlgaehDropDown
             div={{
-              className: "form-group algaeh-select-fld col-xs-4 col-md-3"
+              className: "col form-group"
             }}
             label={{
               forceLabel: "Select Default Currency",
@@ -107,30 +107,11 @@ export default function AddNewAccount(props) {
               data: AccountType
             }}
         />
-        <AlgaehFormGroup
-            div={{
-              className: "form-group algaeh-text-fld col-xs-4 col-md-3"
-            }}
-            label={{
-              forceLabel: "Account Code",
-              isImp: true
-            }}
-            textBox={{
-              type: "text",
-              value: account_code,
-              className: "form-control",
-              id: "name",
-              onChange: e => {
-                setAccountCode(e.target.value);
-              },
-              placeholder: " Enter Account Code",
-              autocomplete: false
-            }}
-        />
+
 
         <AlgaehFormGroup
             div={{
-              className: "form-group algaeh-text-fld col-xs-4 col-md-3"
+              className: "col form-group"
             }}
             label={{
               forceLabel: "Account Name",
