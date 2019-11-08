@@ -8,7 +8,7 @@ import "react-sortable-tree/style.css"; // This only needs to be imported once i
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
 import "./liablity.scss";
 import { getAccounts,removeAccount } from ".././FinanceAccountEvent";
-import swal from "sweetalert2";
+
 import {AlgaehConfirm, AlgaehMessagePop} from "algaeh-react-components";
 
 export default function Liablity() {
@@ -16,7 +16,9 @@ export default function Liablity() {
   const [labilityAmount,setLabilityAmount]=useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [selectedNode, setSelectedNode] = useState({});
-  // const [selectHead, setSelectHead] = useState(false);
+  const[searchQuery,setSearchQuery] = useState("");
+  const [searchFocusIndex,setSearchFocusIndex] = useState(0);
+  const [searchFoundCount,setSearchFoundCount]=useState(undefined);
 
   useEffect(() => {
 
@@ -66,12 +68,13 @@ export default function Liablity() {
     });
   }
 
-  function removeNode(rowInfo, options) {
+  function removeNode(rowInfo) {
     return new Promise((resolve, reject) => {
       try {
-        const { treeData } = options;
+
         let { node,  path } = rowInfo;
         const  {head_id,finance_account_child_id}=node;
+
         removeAccount({ head_id: head_id,child_id:finance_account_child_id})
             .then(()=>{
               const removeNodeData = removeNodeAtPath({
@@ -81,7 +84,7 @@ export default function Liablity() {
               });
               resolve(removeNodeData);
             }).catch(error=>{
-              debugger;
+
           reject(error);
         });
 
@@ -99,7 +102,7 @@ export default function Liablity() {
           setShowPopup(false);
           if (e !== undefined) {
             addNode(selectedNode, { treeData }, e).then(newTree => {
-              debugger;
+
               setTreeData(newTree.treeData);
             });
           }
@@ -137,12 +140,27 @@ export default function Liablity() {
                 <button
                   className="btn btn-primary btn-circle active"
                   onClick={() => {
-                    // setSelectHead(true);
+
                     setShowPopup(true);
                   }}
                 >
                   <i className="fas fa-plus" />
                 </button>
+              </div>
+              <div>
+                <input type="text" placeholder="Search" value={searchQuery}
+                       onChange={(e)=>{
+                         setSearchQuery(e.target.value);
+                       }} />
+                <button onClick={()=>{
+                  const values=searchFocusIndex !==undefined ?(searchFoundCount + searchFocusIndex - 1) % searchFoundCount:searchFoundCount - 1;
+                  setSearchFocusIndex(values )
+                }} >  &lt; </button>
+                <button onClick={()=>{
+                  const values=searchFocusIndex !== undefined ?(searchFocusIndex + 1) % searchFoundCount:0;
+                  setSearchFocusIndex(values);
+                }}>  &gt; </button>
+                <label>{searchFoundCount >0 ?searchFocusIndex+1:0} / {searchFoundCount || 0} </label>
               </div>
             </div>
             <div className="portlet-body">
@@ -171,7 +189,6 @@ export default function Liablity() {
                                   <AlgaehConfirm title="Are you sure want to delete ?"
                                                  placement="topLeft"
                                                  onConfirm={(e)=>{
-
                                                    removeNode(rowInfo)
                                                        .then(newTree=>{
                                                          setTreeData(newTree);
@@ -180,7 +197,6 @@ export default function Liablity() {
                                                            display:"Account deleted successfully"
                                                          });
                                                        }).catch(error=>{
-                                                         debugger;
                                                      AlgaehMessagePop({
                                                        type:"error",
                                                        display: error
@@ -211,6 +227,16 @@ export default function Liablity() {
                           subtitle:(<div style={{"fontSize": "medium",
                             "marginTop": "7px"}}>{node.subtitle}</div>)
                         };
+                      }}
+                      searchMethod={({node, searchQuery})=>{
+                        return  searchQuery &&
+                            node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1;
+                      }}
+                      searchQuery={searchQuery}
+                      searchFocusOffset={searchFocusIndex}
+                      searchFinishCallback={matches=>{
+                        setSearchFocusIndex (matches.length > 0 ? searchFocusIndex % matches.length : 0);
+                        setSearchFoundCount(matches.length);
                       }}
                     />
                   </div>

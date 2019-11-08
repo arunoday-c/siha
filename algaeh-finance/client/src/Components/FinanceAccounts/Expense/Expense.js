@@ -6,32 +6,43 @@ import SortableTree, {
   addNodeUnderParent,
   removeNodeAtPath
 } from "react-sortable-tree";
-import "react-sortable-tree/style.css"; // This only needs to be imported once in your app
+import "react-sortable-tree/style.css";
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
-import { getAccounts } from ".././FinanceAccountEvent";
-import swal from "sweetalert2";
+import { getAccounts,removeAccount } from ".././FinanceAccountEvent";
+// import swal from "sweetalert2";
+import {AlgaehConfirm, AlgaehMessagePop} from "algaeh-react-components";
 
 export default function Expense() {
+  const[expenceAmount,setExpenseAmount]=useState("");
   const [treeData, setTreeData] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [selectedNode, setSelectedNode] = useState({});
-  const [selectHead, setSelectHead] = useState(false);
+  const[searchQuery,setSearchQuery] = useState("");
+  const [searchFocusIndex,setSearchFocusIndex] = useState(0);
+  const [searchFoundCount,setSearchFoundCount]=useState(undefined);
 
   useEffect(() => {
-    if (treeData.length === 0) {
-      getAccounts("5", data => {
-        setTreeData(data);
+   getAccounts("5", data => {
+     if(Array.isArray(data)){
+       if(data.length >0){
+         setTreeData(data[0].children);
+         setExpenseAmount(data[0]["subtitle"]);
+       }else{
+         setTreeData([]);
+       }
+     }else{
+       setTreeData([]);
+     }
       });
-    }
+
   }, []);
 
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
       try {
-        debugger;
+
         const { treeData } = options;
-        // let NEW_NODE = { title: addedNode.account_name };
-        let { node, treeIndex, path } = rowInfo;
+        let {  treeIndex, path } = rowInfo;
         let parentNode = getNodeAtPath({
           treeData: treeData,
           path: path,
@@ -42,7 +53,7 @@ export default function Expense() {
           return number;
         };
         let parentKey = getNodeKey(parentNode);
-        if (parentKey == -1) {
+        if (parentKey === -1) {
           parentKey = null;
         }
         console.log(path, treeIndex);
@@ -60,22 +71,23 @@ export default function Expense() {
     });
   }
 
-  function removeNode(rowInfo, options) {
+  function removeNode(rowInfo) {
     return new Promise((resolve, reject) => {
       try {
-        const { treeData } = options;
-        let { node, treeIndex, path } = rowInfo;
-        console.log(path, treeIndex);
+        let {node, path } = rowInfo;
+        const  {head_id,finance_account_child_id}=node;
 
-        const removeNodeData = removeNodeAtPath({
-          treeData: treeData,
-          path: path,
-          getNodeKey: ({ node: TreeNode, treeIndex: number }) => {
-            return number;
-          },
-          ignoreCollapsed: false
-        });
-        resolve(removeNodeData);
+        removeAccount({ head_id: head_id,child_id:finance_account_child_id})
+            .then(()=>{
+              const removeNodeData = removeNodeAtPath({
+                treeData,
+                path: path,
+                getNodeKey: ({ treeIndex }) => treeIndex
+              });
+              resolve(removeNodeData);
+            }).catch(error=>{
+          reject(error);
+        })
       } catch (e) {
         reject(e);
       }
@@ -90,7 +102,6 @@ export default function Expense() {
           setShowPopup(false);
           if (e !== undefined) {
             addNode(selectedNode, { treeData }, e).then(newTree => {
-              debugger;
               setTreeData(newTree.treeData);
             });
           }
@@ -113,26 +124,43 @@ export default function Expense() {
                 <h3 className="caption-subject">Expense accounts</h3>
               </div>
               <div className="actions"></div>
+
             </div>
             <div className="portlet-body"></div>
+
           </div>
         </div>
         <div className="col-8">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Expense accounts</h3>
+                <h3 className="caption-subject">Expense accounts {expenceAmount}</h3>
               </div>
               <div className="actions">
                 <button
                   className="btn btn-primary btn-circle active"
                   onClick={() => {
-                    setSelectHead(true);
+
                     setShowPopup(true);
                   }}
                 >
                   <i className="fas fa-plus" />
                 </button>
+              </div>
+              <div>
+                <input type="text" placeholder="Search" value={searchQuery}
+                       onChange={(e)=>{
+                         setSearchQuery(e.target.value);
+                       }} />
+                <button onClick={()=>{
+                  const values=searchFocusIndex !==undefined ?(searchFoundCount + searchFocusIndex - 1) % searchFoundCount:searchFoundCount - 1;
+                  setSearchFocusIndex(values )
+                }} >  &lt; </button>
+                <button onClick={()=>{
+                  const values=searchFocusIndex !== undefined ?(searchFocusIndex + 1) % searchFoundCount:0;
+                  setSearchFocusIndex(values);
+                }}>  &gt; </button>
+                <label>{searchFoundCount >0 ?searchFocusIndex+1:0} / {searchFoundCount || 0} </label>
               </div>
             </div>
             <div className="portlet-body">
@@ -149,65 +177,67 @@ export default function Expense() {
                         return rowInfo.node.canDrag === true ? true : false;
                       }}
                       generateNodeProps={rowInfo => {
+                        const {node}=rowInfo;
                         return {
                           buttons: [
-                            <div>
-                              {rowInfo.node.head_created_from === "U" ? (
-                                <button
-                                  label="Delete"
-                                  onClick={event => {
-                                    let child_exists =
-                                      rowInfo.node.children === undefined
-                                        ? ""
-                                        : rowInfo.node.children.length > 0
-                                        ? "This node exists Sub Accounts, If delete childs also will get delete !"
-                                        : "";
-                                    // rowInfo
-                                    swal
-                                      .fire({
-                                        title: "Are you sure want to Remove?",
-                                        text: child_exists,
-                                        type: "warning",
-                                        showCancelButton: true,
-                                        confirmButtonColor: "#3085d6",
-                                        cancelButtonColor: "#d33",
-                                        confirmButtonText: "Yes, delete it!"
-                                      })
-                                      .then(willProceed => {
-                                        if (willProceed.value) {
-                                          removeNode(rowInfo, { treeData })
-                                            .then(newTree => {
-                                              setTreeData(newTree);
-                                            })
-                                            .catch(error => {
-                                              alert(error);
-                                            });
-                                        }
-                                      });
-                                  }}
-                                >
-                                  Remove
-                                </button>
-                              ) : null}
+                            <div className="box">
+                              <ul className="NodeActionButton">
 
-                              {rowInfo.node.leafnode === "N" ? (
-                                <button
-                                  label="Add"
-                                  onClick={event => {
-                                    setSelectHead(false);
-                                    setShowPopup(true);
-                                    setSelectedNode(rowInfo);
-                                  }}
+                                {node.created_status === "U" ?(<li className="NodeDeleteButton" label="Delete"
+
                                 >
-                                  Add
-                                </button>
-                              ) : null}
+                                  <AlgaehConfirm title="Are you sure want to delete ?"
+                                                 placement="topLeft"
+                                                 onConfirm={(e)=>{
+
+                                                   removeNode(rowInfo)
+                                                       .then(newTree=>{
+                                                         setTreeData(newTree);
+                                                         AlgaehMessagePop({
+                                                           type:"success",
+                                                           display:"Account deleted successfully"
+                                                         });
+                                                       }).catch(error=>{
+                                                     AlgaehMessagePop({
+                                                       type:"error",
+                                                       display: error
+                                                     });
+                                                   })
+                                                 }}
+                                                 okButtonProps={{label:"Delete"}}
+                                                 disabled={node.children !==undefined && node.children.length > 0?true:false}
+                                                 okText="Yes, delete it!"
+                                                 cancelText="No"
+                                  > Remove </AlgaehConfirm> </li>) : null}
+                                {node.leafnode === "N" ? (<li
+                                    label="Add"
+                                    className="NodeAddButton"
+                                    onClick={event => {
+
+                                      setShowPopup(true);
+                                      setSelectedNode(rowInfo);
+                                    }} >
+                                  Add</li>) : null}
+                              </ul>
                             </div>
                           ],
                           style: {
                             height: "50px"
-                          }
+                          },
+                          title:(<><strong>{node.title}</strong> {node.leafnode ==="Y"?null:<small> / {node.children ===undefined ?0: node.children.length}</small>} </>),
+                          subtitle:(<div style={{"fontSize": "medium",
+                            "marginTop": "7px"}}>{node.subtitle}</div>)
                         };
+                      }}
+                      searchMethod={({node, searchQuery})=>{
+                        return  searchQuery &&
+                            node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1;
+                      }}
+                      searchQuery={searchQuery}
+                      searchFocusOffset={searchFocusIndex}
+                      searchFinishCallback={matches=>{
+                        setSearchFocusIndex (matches.length > 0 ? searchFocusIndex % matches.length : 0);
+                        setSearchFoundCount(matches.length);
                       }}
                     />
                   </div>
