@@ -23,45 +23,60 @@
   height: 74vh;
   width: 100vw;
 }
-.rst__rowContentsDragDisabled{
-  border-radius: 5px!important;
+
+.rst__rowTitleWithSubtitle {
+  text-transform: uppercase !important;
+  margin-bottom: 5px !important;
+  font-size: 0.8rem !important;
+  font-weight: normal !important;
+}
+.rst__rowSubtitle {
+  font-size: 1.5rem !important;
+  font-weight: bold !important;
+}
+
+.rst__rowContentsDragDisabled {
+  border-radius: 5px !important;
 }
 .box {
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
   align-content: space-between;
-  ul.NodeActionButton{
-    margin: 0;
-    padding: 0 0 0 15px;
+  ul.NodeActionButton {
+    margin: 0 -6px 0 0;
+    padding: 0;
+    border-left: 1px solid #d9d9d9;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 0 5px 5px 0;
     li {
       list-style: none;
       padding: 1px 5px;
-      border-radius: 6px;
       text-align: center;
-      width: 52px;
+      width: 50px;
+      line-height: 22px;
+      height: 25px;
       font-size: 10px;
       text-transform: uppercase;
-      &:hover{
+      &:hover {
         cursor: pointer;
       }
     }
-    li.NodeDeleteButton{
-      color: red;
-      border: 1px solid red;
-      &:hover{
+    li.NodeDeleteButton {
+      &:hover {
         cursor: pointer;
         background: red;
         color: white;
       }
     }
-    li.NodeAddButton{
-      color: green;
-      border: 1px solid green; &:hover{
-      cursor: pointer;
-      background: green;
-      color: white;
-    }
+    li.NodeAddButton {
+      border-bottom: 1px solid #dddddd;
+      &:hover {
+        cursor: pointer;
+        background: green;
+        color: white;
+      }
     }
   }
 }
