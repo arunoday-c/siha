@@ -80,3 +80,26 @@
     }
   }
 }
+.searchCntr {
+  float: right;
+  width: 50%;
+  input {
+    width: 70%;
+    float: left;
+    height: 25px;
+    border-radius: 4px 0 0 4px;
+  }
+  button {
+    float: left;
+    width: 25px;
+    height: 25px;
+    background: #e6e6e6;
+    border: 1px solid #808080;
+    &:last-child {
+      border-radius: 0 4px 4px 0 !important;
+    }
+  }
+  label {
+    margin-left: 5px;
+  }
+}

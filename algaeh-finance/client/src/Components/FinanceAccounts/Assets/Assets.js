@@ -1,5 +1,4 @@
-
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "./assets.scss";
 import SortableTree, {
   getNodeAtPath,
@@ -7,17 +6,17 @@ import SortableTree, {
   removeNodeAtPath
 } from "react-sortable-tree";
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
-import {AlgaehConfirm, AlgaehMessagePop} from "algaeh-react-components";
+import { AlgaehConfirm, AlgaehMessagePop } from "algaeh-react-components";
 import "antd/dist/antd.css";
-import {getAccounts,removeAccount} from ".././FinanceAccountEvent";
+import { getAccounts, removeAccount } from ".././FinanceAccountEvent";
 export default function Assets() {
-  const [assetAmount,setAssetAmount] = useState("");
+  const [assetAmount, setAssetAmount] = useState("");
   const [treeData, setTreeData] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [selectedNode, setSelectedNode] = useState({});
-const[searchQuery,setSearchQuery] = useState("");
-const [searchFocusIndex,setSearchFocusIndex] = useState(0);
-const [searchFoundCount,setSearchFoundCount]=useState(undefined);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchFocusIndex, setSearchFocusIndex] = useState(0);
+  const [searchFoundCount, setSearchFoundCount] = useState(undefined);
 
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
@@ -55,43 +54,51 @@ const [searchFoundCount,setSearchFoundCount]=useState(undefined);
   function removeNode(rowInfo) {
     return new Promise((resolve, reject) => {
       try {
-         let {node, path } = rowInfo;
-      const  {head_id,finance_account_child_id,leafnode,finance_account_head_id}=node;
-        removeAccount({ head_id: leafnode ==="N"?finance_account_head_id: head_id,child_id:finance_account_child_id,leaf_node:leafnode})
-            .then(()=>{
-              const removeNodeData = removeNodeAtPath({
-                treeData,
-                path: path,
-                getNodeKey: ({ treeIndex }) => treeIndex
-              });
-              resolve(removeNodeData);
-            }).catch(error=>{
-              reject(error);
+        let { node, path } = rowInfo;
+        const {
+          head_id,
+          finance_account_child_id,
+          leafnode,
+          finance_account_head_id
+        } = node;
+        removeAccount({
+          head_id: leafnode === "N" ? finance_account_head_id : head_id,
+          child_id: finance_account_child_id,
+          leaf_node: leafnode
         })
+          .then(() => {
+            const removeNodeData = removeNodeAtPath({
+              treeData,
+              path: path,
+              getNodeKey: ({ treeIndex }) => treeIndex
+            });
+            resolve(removeNodeData);
+          })
+          .catch(error => {
+            reject(error);
+          });
       } catch (e) {
         reject(e);
       }
     });
   }
-  useEffect(()=>{
-    getAccounts("1",(data)=>{
-      if(Array.isArray(data)){
-        if(data.length >0){
+  useEffect(() => {
+    getAccounts("1", data => {
+      if (Array.isArray(data)) {
+        if (data.length > 0) {
           setTreeData(data[0].children);
           setAssetAmount(data[0]["subtitle"]);
-        }else{
+        } else {
           setTreeData([]);
         }
-      }else{
+      } else {
         setTreeData([]);
       }
     });
-
-  },[]);
+  }, []);
 
   return (
     <div className="container-fluid assetsModuleScreen">
-
       <AddNewAccount
         showPopup={showPopup}
         selectedNode={selectedNode}
@@ -129,7 +136,9 @@ const [searchFoundCount,setSearchFoundCount]=useState(undefined);
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Asset accounts  <small>  {assetAmount}</small> </h3>
+                <h3 className="caption-subject">
+                  Asset accounts <small> {assetAmount}</small>{" "}
+                </h3>
               </div>
               <div className="actions">
                 <button className="btn btn-default btn-circle active">
@@ -142,20 +151,43 @@ const [searchFoundCount,setSearchFoundCount]=useState(undefined);
                   <i className="fas fa-plus" />
                 </button>{" "}
               </div>
-              <div>
-                <input type="text" placeholder="Search" value={searchQuery}
-                onChange={(e)=>{
-                  setSearchQuery(e.target.value);
-                }} />
-                <button onClick={()=>{
-                  const values=searchFocusIndex !==undefined ?(searchFoundCount + searchFocusIndex - 1) % searchFoundCount:searchFoundCount - 1;
-                  setSearchFocusIndex(values )
-                }} >  &lt; </button>
-                <button onClick={()=>{
-                  const values=searchFocusIndex !== undefined ?(searchFocusIndex + 1) % searchFoundCount:0;
-                  setSearchFocusIndex(values);
-                }}>  &gt; </button>
-                <label>{searchFoundCount >0 ?searchFocusIndex+1:0} / {searchFoundCount || 0} </label>
+              <div className="searchCntr">
+                <input
+                  type="text"
+                  placeholder="Search Account Heads"
+                  value={searchQuery}
+                  onChange={e => {
+                    setSearchQuery(e.target.value);
+                  }}
+                />
+                <button
+                  onClick={() => {
+                    const values =
+                      searchFocusIndex !== undefined
+                        ? (searchFoundCount + searchFocusIndex - 1) %
+                          searchFoundCount
+                        : searchFoundCount - 1;
+                    setSearchFocusIndex(values);
+                  }}
+                >
+                  {" "}
+                  &lt;{" "}
+                </button>
+                <button
+                  onClick={() => {
+                    const values =
+                      searchFocusIndex !== undefined
+                        ? (searchFocusIndex + 1) % searchFoundCount
+                        : 0;
+                    setSearchFocusIndex(values);
+                  }}
+                >
+                  &gt;
+                </button>
+                <label>
+                  {searchFoundCount > 0 ? searchFocusIndex + 1 : 0} /{" "}
+                  {searchFoundCount || 0}{" "}
+                </label>
               </div>
             </div>
             <div className="portlet-body">
@@ -163,80 +195,112 @@ const [searchFoundCount,setSearchFoundCount]=useState(undefined);
                 <div className="row">
                   <div className="treeNodeWrapper">
                     <SortableTree
-                        treeData={treeData}
-                        onChange={treeData => {
-                          setTreeData(treeData);
-                        }}
-                        isVirtualized={true}
-                        canDrag={rowInfo => {
-                          return rowInfo.node.canDrag === true ? true : false;
-                        }}
-                        generateNodeProps={rowInfo => {
-                          const {node}=rowInfo;
-                          return {
-                            buttons: [
-                              <div className="box">
-                                <ul className="NodeActionButton">
-
-                                  {node.created_status === "U" ?(<li className="NodeDeleteButton" label="Delete"
-
+                      treeData={treeData}
+                      onChange={treeData => {
+                        setTreeData(treeData);
+                      }}
+                      isVirtualized={true}
+                      canDrag={rowInfo => {
+                        return rowInfo.node.canDrag === true ? true : false;
+                      }}
+                      generateNodeProps={rowInfo => {
+                        const { node } = rowInfo;
+                        return {
+                          buttons: [
+                            <div className="box">
+                              <ul className="NodeActionButton">
+                                <li
+                                  label="Add"
+                                  className="NodeAddButton "
+                                  onClick={event => {
+                                    setShowPopup(true);
+                                    setSelectedNode(rowInfo);
+                                  }}
+                                >
+                                  Add
+                                </li>
+                                <li
+                                  className="NodeDeleteButton "
+                                  label="Delete"
+                                >
+                                  <AlgaehConfirm
+                                    title="Are you sure want to delete ?"
+                                    placement="topLeft"
+                                    onConfirm={e => {
+                                      removeNode(rowInfo)
+                                        .then(newTree => {
+                                          setTreeData(newTree);
+                                          AlgaehMessagePop({
+                                            type: "success",
+                                            display:
+                                              "Account deleted successfully"
+                                          });
+                                        })
+                                        .catch(error => {
+                                          AlgaehMessagePop({
+                                            type: "error",
+                                            display: error
+                                          });
+                                        });
+                                    }}
+                                    okButtonProps={{ label: "Delete" }}
+                                    // disabled={node.children !==undefined && node.children.length > 0?true:false}
+                                    okText="Yes, delete it!"
+                                    cancelText="No"
                                   >
-                                    <AlgaehConfirm title="Are you sure want to delete ?"
-                                                   placement="topLeft"
-                                                   onConfirm={(e)=>{
-                                                     removeNode(rowInfo)
-                                                         .then(newTree=>{
-                                                           setTreeData(newTree);
-                                                           AlgaehMessagePop({
-                                                             type:"success",
-                                                             display:"Account deleted successfully"
-                                                           });
-                                                         }).catch(error=>{
-                                                       AlgaehMessagePop({
-                                                         type:"error",
-                                                         display: error
-                                                       });
-                                                     })
-                                                   }}
-                                                   okButtonProps={{label:"Delete"}}
-                                                   // disabled={node.children !==undefined && node.children.length > 0?true:false}
-                                                   okText="Yes, delete it!"
-                                                   cancelText="No"
-                                    > Remove </AlgaehConfirm> </li>) : null}
-                                  {node.leafnode === "N" ? (<li
-                                      label="Add"
-                                      className="NodeAddButton"
-                                      onClick={event => {
-
-                                        setShowPopup(true);
-                                        setSelectedNode(rowInfo);
-                                      }} >
-                                    Add</li>) : null}
-                                </ul>
-                              </div>
-                            ],
-                            style: {
-                              height: "50px"
-                            },
-                            title:(<><strong>{node.title}</strong> {node.leafnode ==="Y"?null:<small> / {node.children ===undefined ?0: node.children.length}</small>} </>),
-                            subtitle:(<div style={{"fontSize": "medium",
-                              "marginTop": "7px"}}>{node.subtitle}</div>)
-                          };
-                        }}
-                        searchMethod={({node, searchQuery})=>{
-                          return  searchQuery &&
-                              node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1;
-                        }}
-                        searchQuery={searchQuery}
-                        searchFocusOffset={searchFocusIndex}
-                        searchFinishCallback={matches=>{
-                         setSearchFocusIndex (matches.length > 0 ? searchFocusIndex % matches.length : 0);
-                          setSearchFoundCount(matches.length);
-                        }}
+                                    {" "}
+                                    Remove{" "}
+                                  </AlgaehConfirm>{" "}
+                                </li>
+                              </ul>
+                            </div>
+                          ],
+                          style: {
+                            height: "50px",
+                            minWidth: "150px"
+                          },
+                          title: (
+                            <>
+                              <span>
+                                {node.title} /{" "}
+                                {node.leafnode === "Y" ? null : (
+                                  <>
+                                    {node.children === undefined
+                                      ? 0
+                                      : node.children.length}
+                                  </>
+                                )}
+                              </span>
+                            </>
+                          ),
+                          subtitle: (
+                            <div
+                              style={{ fontSize: "medium", marginTop: "7px" }}
+                            >
+                              {node.subtitle}
+                            </div>
+                          )
+                        };
+                      }}
+                      searchMethod={({ node, searchQuery }) => {
+                        return (
+                          searchQuery &&
+                          node.title
+                            .toLowerCase()
+                            .indexOf(searchQuery.toLowerCase()) > -1
+                        );
+                      }}
+                      searchQuery={searchQuery}
+                      searchFocusOffset={searchFocusIndex}
+                      searchFinishCallback={matches => {
+                        setSearchFocusIndex(
+                          matches.length > 0
+                            ? searchFocusIndex % matches.length
+                            : 0
+                        );
+                        setSearchFoundCount(matches.length);
+                      }}
                     />
-
-
-
                   </div>
                 </div>
               </div>
@@ -244,5 +308,6 @@ const [searchFoundCount,setSearchFoundCount]=useState(undefined);
           </div>
         </div>
       </div>
-    </div>);
+    </div>
+  );
 }
