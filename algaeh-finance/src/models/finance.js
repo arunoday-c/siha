@@ -554,44 +554,126 @@ export default {
     // const utilities = new algaehUtilities();
     let input = req.body;
 
-    _mysql
-      .executeQuery({
-        query: `SELECT finance_head_m_child_id,created_from FROM finance_head_m_child where \
-                head_id=? and child_id=?;`,
-        values: [input.head_id, input.child_id],
-        printQuery: true
-      })
-      .then(result => {
-        if (result[0]["created_from"] == "S") {
-          _mysql.releaseConnection();
-          req.records = {
-            invalid_input: true,
-            message: "Cant Delete System Generated Account Heads"
-          };
-          next();
-        } else {
-          _mysql
-            .executeQuery({
-              query: `delete FROM finance_head_m_child where finance_head_m_child_id=?;            
-                    delete from finance_account_child where finance_account_child_id=?;`,
-              values: [result[0]["finance_head_m_child_id"], input.child_id],
-              printQuery: true
-            })
-            .then(resu => {
+    if (input.leaf_node == "Y") {
+      _mysql
+        .executeQuery({
+          query: `SELECT finance_head_m_child_id,created_from FROM finance_head_m_child where \
+                head_id=? and child_id=?;\
+                select finance_voucher_id from finance_voucher_details where head_id=? and child_id=? limit 1;`,
+          values: [
+            input.head_id,
+            input.child_id,
+            input.head_id,
+            input.child_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          if (result[0][0]["created_from"] == "S") {
+            _mysql.releaseConnection();
+            req.records = {
+              invalid_input: true,
+              message: "Cant Delete System Generated Account "
+            };
+            next();
+          } else {
+            if (result[1].length > 0) {
               _mysql.releaseConnection();
-              req.records = resu;
+              req.records = {
+                invalid_input: true,
+                message: "Transactions Found Cant Delete this Account "
+              };
               next();
-            })
-            .catch(e => {
+            } else {
+              _mysql
+                .executeQueryWithTransaction({
+                  query: `delete FROM finance_head_m_child where finance_head_m_child_id=?;            
+                    delete from finance_account_child where finance_account_child_id=?;`,
+                  values: [
+                    result[0][0]["finance_head_m_child_id"],
+                    input.child_id
+                  ],
+                  printQuery: true
+                })
+                .then(resu => {
+                  // _mysql.releaseConnection();
+                  // req.records = resu;
+                  // next();
+
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = resu;
+                    next();
+                  });
+                })
+                .catch(e => {
+                  _mysql.releaseConnection();
+                  next(e);
+                });
+            }
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else if (input.leaf_node == "N") {
+      _mysql
+        .executeQuery({
+          query: `SELECT finance_account_head_id, created_from FROM hims_test_db.finance_account_head\
+                   where finance_account_head_id=?;\
+                select finance_voucher_id from finance_voucher_details where head_id=?  limit 1;`,
+          values: [input.head_id, input.head_id],
+          printQuery: true
+        })
+        .then(result => {
+          if (result[0][0]["created_from"] == "S") {
+            _mysql.releaseConnection();
+            req.records = {
+              invalid_input: true,
+              message: "Cant Delete System Generated Account Heads"
+            };
+            next();
+          } else {
+            if (result[1].length > 0) {
               _mysql.releaseConnection();
-              next(e);
-            });
-        }
-      })
-      .catch(e => {
-        _mysql.releaseConnection();
-        next(e);
-      });
+              req.records = {
+                invalid_input: true,
+                message: "Transactions Found Cant Delete this Account "
+              };
+              next();
+            } else {
+              _mysql
+                .executeQueryWithTransaction({
+                  query: `delete FROM finance_head_m_child where head_id=?;            
+                    delete from finance_account_child where finance_account_child_id=?;
+                    delete from finance_account_head  where finance_account_head_id=?;`,
+                  values: [input.head_id, input.child_id, input.head_id],
+                  printQuery: true
+                })
+                .then(resu => {
+                  // _mysql.releaseConnection();
+                  // req.records = resu;
+                  // next();
+
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = resu;
+                    next();
+                  });
+                })
+                .catch(e => {
+                  _mysql.releaseConnection();
+                  next(e);
+                });
+            }
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    }
   },
   //created by irfan: to
   testBKUP: (req, res, next) => {
