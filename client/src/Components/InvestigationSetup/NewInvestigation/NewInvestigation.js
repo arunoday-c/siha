@@ -66,7 +66,12 @@ class NewInvestigation extends PureComponent {
     }
   }
   onClose = e => {
-    this.props.onClose && this.props.onClose(true);
+    let IOputs = InvestigationIOputs.inputParam();
+    IOputs.InvestigationtypeEnable = false;
+    this.setState({ ...this.state, ...IOputs }, () => {
+      this.props.onClose && this.props.onClose(true);
+    });
+
   };
 
   handleClose = () => {
@@ -257,8 +262,8 @@ class NewInvestigation extends PureComponent {
                   {this.state.investigation_type === "L" ? (
                     <LabInvestigation InvestigationIOputs={this.state} />
                   ) : (
-                    <RadInvestigation InvestigationIOputs={this.state} />
-                  )}
+                      <RadInvestigation InvestigationIOputs={this.state} />
+                    )}
                 </MyContext.Provider>
               </div>
             </div>
@@ -277,8 +282,8 @@ class NewInvestigation extends PureComponent {
                       {this.state.hims_d_investigation_test_id === null ? (
                         <AlgaehLabel label={{ fieldName: "btnSave" }} />
                       ) : (
-                        <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                      )}
+                          <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                        )}
                     </button>
                     <button
                       onClick={e => {

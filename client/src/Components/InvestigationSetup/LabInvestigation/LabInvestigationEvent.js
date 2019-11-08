@@ -39,6 +39,44 @@ const texthandle = ($this, context, ctrl, e) => {
   }
 };
 
+const ageValidater = ($this, context) => {
+
+  debugger
+
+  let isError = false
+
+  if ($this.state.age_type === "D" && parseFloat($this.state.to_age) > 30) {
+    swalMessage({
+      type: "warning",
+      title: "To Age cannot be greater than 30 Days"
+    });
+    isError = true
+  } else if ($this.state.age_type === "M" && parseFloat($this.state.to_age) > 12) {
+    swalMessage({
+      type: "warning",
+      title: "To Age cannot be greater than 12 Months"
+    });
+    isError = true
+  }
+  if (parseFloat($this.state.from_age) > 0 && parseFloat($this.state.to_age)) {
+    if (parseFloat($this.state.from_age) > parseFloat($this.state.to_age)) {
+      swalMessage({
+        type: "warning",
+        title: "To Age cannot be less than From Age"
+      });
+      isError = true
+    }
+  }
+  if (isError === true) {
+    $this.setState({
+      to_age: 0
+    });
+    context.updateState({
+      to_age: 0
+    });
+  }
+};
+
 const containeridhandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
   let name = e.name || e.target.name;
@@ -82,6 +120,14 @@ const AddAnalytes = ($this, context) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='analyte_details'",
     onSuccess: () => {
+      if (parseFloat($this.state.to_age) === 0) {
+        swalMessage({
+          type: "warning",
+          title: "To Age should be greater than 0."
+        });
+        document.querySelector("[name='to_age']").focus();
+        return
+      }
       let insert_analytes = $this.state.insert_analytes;
       let analytes = $this.state.analytes;
       let obj = {
@@ -107,19 +153,35 @@ const AddAnalytes = ($this, context) => {
       }
 
       analytes.push(obj);
-      $this.setState(
-        {
-          analytes: analytes,
-          insert_analytes: insert_analytes,
-          analyte_id: null
-        },
-        () => $this.clearInputState()
-      );
+      $this.setState({
+        analytes: analytes,
+        insert_analytes: insert_analytes,
+        analyte_id: null,
+        analyte_type: null,
+        result_unit: null,
+        gender: null,
+        from_age: null,
+        to_age: null,
+        critical_low: null,
+        critical_high: null,
+        normal_low: null,
+        normal_high: null
+      });
       if (context !== undefined) {
         context.updateState({
           analytes: analytes,
           insert_analytes: insert_analytes,
-          analyte_id: null
+
+          analyte_id: null,
+          analyte_type: null,
+          result_unit: null,
+          gender: null,
+          from_age: null,
+          to_age: null,
+          critical_low: null,
+          critical_high: null,
+          normal_low: null,
+          normal_high: null
         });
       }
     }
@@ -281,5 +343,6 @@ export {
   AddAnalytes,
   updateLabInvestigation,
   deleteLabAnalyte,
-  onchangegridcol
+  onchangegridcol,
+  ageValidater
 };

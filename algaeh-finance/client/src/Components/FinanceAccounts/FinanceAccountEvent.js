@@ -7,6 +7,7 @@ export function getAccounts(account_head_id, callBack) {
         method: "GET",
         module: "finance",
         onSuccess: response => {
+            debugger;
             if (response.data.success === true) {
                 callBack(response.data.result);
             }
@@ -18,4 +19,30 @@ export function getAccounts(account_head_id, callBack) {
             });
         }
     });
+}
+
+export function removeAccount(input){
+    return new Promise((resolve,reject)=>{
+        try{
+            algaehApiCall({
+                uri: "/finance/removeAccountHead",
+                data: input,
+                method: "DELETE",
+                module: "finance",
+                onSuccess: response => {
+                    if (response.data.success === true) {
+                        resolve();
+                    }else{
+                        reject(response.data.message);
+                    }
+                },
+                onCatch: error => {
+                    reject(error);
+                }
+            });
+        }
+        catch(e){
+            reject(e);
+        }
+    })
 }

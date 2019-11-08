@@ -18,7 +18,7 @@ import {
   Validations,
   getCashiersAndShiftMAP,
   generateReceipt,
-  selectVisit,
+  // selectVisit,
   ShowOrderPackage,
   ClosePackage,
   getPatientDetails,
@@ -30,9 +30,9 @@ import { successfulMessage } from "../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
-import AlgaehReport from "../Wrapper/printReports";
+// import AlgaehReport from "../Wrapper/printReports";
 import moment from "moment";
-import Options from "../../Options.json";
+// import Options from "../../Options.json";
 import OrderingPackages from "../PatientProfile/Assessment/OrderingPackages/OrderingPackages";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
 

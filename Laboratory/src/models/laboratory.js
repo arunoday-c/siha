@@ -87,6 +87,8 @@ export default {
     const _mysql = new algaehMysql(_options);
     try {
       const utilities = new algaehUtilities();
+
+      let input = req.body;
       utilities.logger().log("Services Bill: ");
       // let Services =
       //   req.records.ResultOfFetchOrderIds == null
@@ -131,7 +133,7 @@ export default {
       if (labServices.length > 0) {
         _mysql
           .executeQuery({
-            query: "INSERT INTO hims_f_lab_order(??) VALUES ?",
+            query: "INSERT IGNORE INTO hims_f_lab_order(??) VALUES ?",
             values: labServices,
             includeValues: IncludeValues,
             extraValues: {
@@ -151,11 +153,39 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select  hims_d_investigation_test_id from hims_d_investigation_test where record_status='A' and services_id in (?)",
-                values: [get_services_id],
+                  "select  hims_d_investigation_test_id from hims_d_investigation_test where record_status='A' and services_id in (?);\
+                  select case when days<31 then 'D' when days<365 then 'M' else 'Y' end as age_type,\
+                  TIMESTAMPDIFF(day, ?, curdate()) as days,\
+                  TIMESTAMPDIFF(month, ?, curdate()) as months,\
+                  TIMESTAMPDIFF(year, ?, curdate()) as years from \
+                  (select  TIMESTAMPDIFF(day, ?, curdate()) as days) as a;",
+                values: [
+                  get_services_id,
+                  input.date_of_birth,
+                  input.date_of_birth,
+                  input.date_of_birth,
+                  input.date_of_birth
+                ],
                 printQuery: true
               })
-              .then(investigation_test => {
+              .then(results => {
+                let investigation_test = results[0];
+                const age_data = results[1][0];
+                const age_type = age_data["age_type"];
+                let age = "";
+                switch (age_type) {
+                  case "D":
+                    age = age_data["days"];
+
+                    break;
+                  case "M":
+                    age = age_data["months"];
+                    break;
+                  case "Y":
+                    age = age_data["years"];
+                    break;
+                }
+
                 const test_id = new LINQ(investigation_test)
                   .Select(s => {
                     return s.hims_d_investigation_test_id;
@@ -171,12 +201,16 @@ export default {
                       and visit_id =? and service_id in (?); \
                       select hims_d_investigation_test.services_id, analyte_type, result_unit, analyte_id, \
                       critical_low, critical_high, normal_low,normal_high from hims_d_investigation_test,  hims_m_lab_analyte where hims_d_investigation_test_id=hims_m_lab_analyte.test_id and \
-                      hims_m_lab_analyte.record_status='A' and hims_m_lab_analyte.test_id in  (?);",
+                      hims_m_lab_analyte.record_status='A' and hims_m_lab_analyte.test_id in  (?) \
+                      and gender=? and age_type=? and ? between from_age and to_age;",
                     values: [
                       test_id,
                       req.body.visit_id,
                       get_services_id,
-                      test_id
+                      test_id,
+                      input.gender,
+                      age_type,
+                      age
                     ],
                     printQuery: true
                   })
@@ -210,7 +244,7 @@ export default {
 
                     _mysql
                       .executeQuery({
-                        query: "INSERT INTO hims_f_lab_sample(??) VALUES ?",
+                        query: "INSERT IGNORE INTO hims_f_lab_sample(??) VALUES ?",
                         values: insertedLabSample,
                         includeValues: sample,
                         extraValues: {
@@ -248,6 +282,7 @@ export default {
                         utilities
                           .logger()
                           .log("specimentRecords: ", specimentRecords[2]);
+
                         const labAnalytes = new LINQ(specimentRecords[2])
                           .Select(s => {
                             return {
@@ -264,12 +299,13 @@ export default {
                             };
                           })
                           .ToArray();
+
                         utilities.logger().log("labAnalytes: ", labAnalytes);
                         if (labAnalytes.length > 0) {
                           _mysql
                             .executeQuery({
                               query:
-                                "INSERT INTO hims_f_ord_analytes(??) VALUES ?",
+                                "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ?",
                               values: labAnalytes,
                               includeValues: analyts,
                               extraValues: {
@@ -998,7 +1034,7 @@ export default {
           w =>
             w.hims_f_ordered_services_id > 0 &&
             w.service_type_id ==
-              appsettings.hims_d_service_type.service_type_id.Lab
+            appsettings.hims_d_service_type.service_type_id.Lab
         )
         .Select(s => {
           return {
