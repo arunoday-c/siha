@@ -114,10 +114,12 @@ export default {
       input.finance_account_head_id > 0 &&
       input.finance_account_head_id < 5
     ) {
-      let default_total = "NILL";
-      let trans_symbol = "CR";
+      const decimal_places = req.userIdentity.decimal_places;
+
+      const default_total = parseFloat(0).toFixed(decimal_places);
+      let trans_symbol = "Cr.";
       if (input.finance_account_head_id == 1) {
-        trans_symbol = "DR";
+        trans_symbol = "Dr.";
       }
 
       _mysql
@@ -172,7 +174,7 @@ export default {
                 )select * from cte)
                 group by finance_account_head_id order by account_level;   `,
 
-          printQuery: false,
+          printQuery: true,
 
           values: [
             input.finance_account_head_id,
@@ -185,7 +187,7 @@ export default {
 
           const child_data = result[1];
 
-          calcAmount(result[3], result[2], req.userIdentity.decimal_places)
+          calcAmount(result[3], result[2], decimal_places)
             .then(head_data => {
               const outputArray = createHierarchy(
                 result[0],
@@ -883,18 +885,19 @@ function createHierarchy(
 
         let amount = 0;
         if (BALANCE != undefined) {
-          if (trans_symbol == "DR") {
-            amount = `${trans_symbol} ( ${BALANCE.deb_minus_cred} )`;
+          if (trans_symbol == "Dr.") {
+            amount = BALANCE.deb_minus_cred;
           } else {
-            amount = `${trans_symbol} ( ${BALANCE.cred_minus_deb} )`;
+            amount = BALANCE.cred_minus_deb;
           }
         } else {
-          amount = `${trans_symbol} ( ${default_total}) `;
+          amount = default_total;
         }
 
         //END---calulating Amount
         child.push({
           finance_account_child_id: item["finance_account_child_id"],
+          trans_symbol: trans_symbol,
           subtitle: amount,
           title: item.child_name,
           label: item.child_name,
@@ -912,24 +915,25 @@ function createHierarchy(
         if (!data) {
           //ST---calulating Amount
           const BALANCE = head_data.find(f => {
-            return item.account_code == f.account_code;
+            return item.finance_account_head_id == f.finance_account_head_id;
           });
 
           let amount = 0;
           if (BALANCE != undefined) {
-            if (trans_symbol == "DR") {
-              amount = `${trans_symbol} ( ${BALANCE.deb_minus_cred}) `;
+            if (trans_symbol == "Dr.") {
+              amount = BALANCE.deb_minus_cred;
             } else {
-              amount = `${trans_symbol} ( ${BALANCE.cred_minus_deb} )`;
+              amount = BALANCE.cred_minus_deb;
             }
           } else {
-            amount = `${trans_symbol} ( ${default_total} )`;
+            amount = default_total;
           }
 
           //END---calulating Amount
 
           target.push({
             ...item,
+            trans_symbol: trans_symbol,
             subtitle: amount,
             title: item.account_name,
             label: item.account_name,
@@ -940,24 +944,25 @@ function createHierarchy(
       } else {
         //ST---calulating Amount
         const BALANCE = head_data.find(f => {
-          return item.account_code == f.account_code;
+          return item.finance_account_head_id == f.finance_account_head_id;
         });
 
         let amount = 0;
         if (BALANCE != undefined) {
-          if (trans_symbol == "DR") {
-            amount = `${trans_symbol} ( ${BALANCE.deb_minus_cred}) `;
+          if (trans_symbol == "Dr.") {
+            amount = BALANCE.deb_minus_cred;
           } else {
-            amount = `${trans_symbol} ( ${BALANCE.cred_minus_deb}) `;
+            amount = BALANCE.cred_minus_deb;
           }
         } else {
-          amount = `${trans_symbol} ( ${default_total}) `;
+          amount = default_total;
         }
 
         //END---calulating Amount
 
         target.push({
           ...item,
+          trans_symbol: trans_symbol,
           subtitle: amount,
           title: item.account_name,
           label: item.account_name,
