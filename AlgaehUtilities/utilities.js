@@ -102,13 +102,7 @@ algaehUtilities.prototype.logger = function(reqTracker) {
     level: _levels,
     eol: "\r\n"
   });
-  // var colorizer = winston.format.colorize();
-  // colorizer.addColors({
-  //   error: "red",
-  //   warn: "yellow",
-  //   info: "cyan",
-  //   debug: "green"
-  // });
+
   var logger = winston.createLogger({
     handleExceptions: true,
     format: winston.format.combine(
@@ -126,17 +120,7 @@ algaehUtilities.prototype.logger = function(reqTracker) {
         ).toLocaleString()}",
        "message":{${message}${msg.data}}}`;
       })
-      // winston.format.colorize(),
-      // winston.format.json()
-      // winston.format.printf(msg => {
-      //   var _data = colorizer.colorize(
-      //     msg.level,
-      //     `{${new Date(msg.timestamp).toLocaleString()} - ${msg.level}:   -${
-      //       msg.message
-      //     } , data -${msg.data} } `
-      //   );
-      //   return _data;
-      // })
+
     ),
     transports: [transport]
   });

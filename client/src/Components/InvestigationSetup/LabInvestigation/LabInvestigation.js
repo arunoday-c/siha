@@ -18,13 +18,13 @@ import {
   AddAnalytes,
   updateLabInvestigation,
   deleteLabAnalyte,
-  onchangegridcol
+  onchangegridcol,
+  ageValidater
 } from "./LabInvestigationEvent";
 import variableJson from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import MyContext from "../../../utils/MyContext.js";
-// import { successfulMessage } from "../../../utils/GlobalFunctions";
-// import { getCookie } from "../../../utils/algaehApiCall";
+import { swalMessage } from "../../../utils/algaehApiCall";
 
 class LabInvestigation extends Component {
   constructor(props) {
@@ -35,7 +35,7 @@ class LabInvestigation extends Component {
   componentWillMount() {
     let InputOutput = this.props.InvestigationIOputs;
     this.setState({ ...this.state, ...InputOutput });
-    this.clearInputState();
+    // this.clearInputState();
   }
 
   componentDidMount() {
@@ -103,24 +103,24 @@ class LabInvestigation extends Component {
     this.setState(newProps.InvestigationIOputs);
   }
 
-  componentWillUnmount() {
-    this.clearInputState();
-  }
+  // componentWillUnmount() {
+  //   this.clearInputState();
+  // }
 
-  clearInputState() {
-    this.setState({
-      analyte_id: "",
-      analyte_type: "",
-      result_unit: "",
-      gender: "",
-      from_age: "",
-      to_age: "",
-      critical_low: "",
-      critical_high: "",
-      normal_low: "",
-      normal_high: ""
-    });
-  }
+  // clearInputState() {
+  //   this.setState({
+  //     analyte_id: "",
+  //     analyte_type: "",
+  //     result_unit: "",
+  //     gender: "",
+  //     from_age: "",
+  //     to_age: "",
+  //     critical_low: "",
+  //     critical_high: "",
+  //     normal_low: "",
+  //     normal_high: ""
+  //   });
+  // }
 
   genderHandle(context, e) {
     let name = e.name || e.target.name;
@@ -133,6 +133,47 @@ class LabInvestigation extends Component {
       context.updateState({
         [name]: value
       });
+    }
+  }
+
+  ageTypeHandle(context, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+
+
+    let isError = false
+
+    if (value === "D" && parseFloat(this.state.to_age) > 30) {
+      swalMessage({
+        type: "warning",
+        title: "To Age cannot be greater than 30 Days"
+      });
+      isError = true
+    } else if (value === "M" && parseFloat(this.state.to_age) > 12) {
+      swalMessage({
+        type: "warning",
+        title: "To Age cannot be greater than 12 Months"
+      });
+      isError = true
+    }
+
+    if (isError === true) {
+      this.setState({
+        [name]: null
+      });
+      context.updateState({
+        [name]: null
+      });
+    } else {
+      this.setState({
+        [name]: value
+      });
+
+      if (context !== undefined) {
+        context.updateState({
+          [name]: value
+        });
+      }
     }
   }
 
@@ -270,6 +311,28 @@ class LabInvestigation extends Component {
                         onChange: e => this.genderHandle(context, e)
                       }}
                     />
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Age Type",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "age_type",
+                        className: "select-fld",
+                        value: this.state.age_type,
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: variableJson.LAB_AGE_TYPE
+                        },
+                        onChange: e => this.ageTypeHandle(context, e),
+                        others: {
+                          onBlur: ageValidater.bind(this, this, context),
+                        }
+                      }}
+                    />
+
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
@@ -284,7 +347,10 @@ class LabInvestigation extends Component {
                           allowNegative: false
                         },
                         events: {
-                          onChange: texthandle.bind(this, this, context)
+                          onChange: texthandle.bind(this, this, context),
+                        },
+                        others: {
+                          onBlur: ageValidater.bind(this, this, context),
                         }
                       }}
                     />
@@ -302,28 +368,14 @@ class LabInvestigation extends Component {
                         },
                         value: this.state.to_age,
                         events: {
-                          onChange: texthandle.bind(this, this, context)
+                          onChange: texthandle.bind(this, this, context),
+                        },
+                        others: {
+                          onBlur: ageValidater.bind(this, this, context),
                         }
                       }}
                     />
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Age Type",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "age_type",
-                        className: "select-fld",
-                        value: this.state.age_type,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: variableJson.LAB_AGE_TYPE
-                        },
-                        onChange: e => this.genderHandle(context, e)
-                      }}
-                    />
+
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{

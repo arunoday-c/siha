@@ -133,7 +133,7 @@ export default {
       if (labServices.length > 0) {
         _mysql
           .executeQuery({
-            query: "INSERT INTO hims_f_lab_order(??) VALUES ?",
+            query: "INSERT IGNORE INTO hims_f_lab_order(??) VALUES ?",
             values: labServices,
             includeValues: IncludeValues,
             extraValues: {
@@ -158,7 +158,7 @@ export default {
                   TIMESTAMPDIFF(day, ?, curdate()) as days,\
                   TIMESTAMPDIFF(month, ?, curdate()) as months,\
                   TIMESTAMPDIFF(year, ?, curdate()) as years from \
-                  (select  TIMESTAMPDIFF(day, ?, curdate()) as days) as a;                     ",
+                  (select  TIMESTAMPDIFF(day, ?, curdate()) as days) as a;",
                 values: [
                   get_services_id,
                   input.date_of_birth,
@@ -244,7 +244,7 @@ export default {
 
                     _mysql
                       .executeQuery({
-                        query: "INSERT INTO hims_f_lab_sample(??) VALUES ?",
+                        query: "INSERT IGNORE INTO hims_f_lab_sample(??) VALUES ?",
                         values: insertedLabSample,
                         includeValues: sample,
                         extraValues: {
@@ -305,7 +305,7 @@ export default {
                           _mysql
                             .executeQuery({
                               query:
-                                "INSERT INTO hims_f_ord_analytes(??) VALUES ?",
+                                "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ?",
                               values: labAnalytes,
                               includeValues: analyts,
                               extraValues: {
@@ -1034,7 +1034,7 @@ export default {
           w =>
             w.hims_f_ordered_services_id > 0 &&
             w.service_type_id ==
-              appsettings.hims_d_service_type.service_type_id.Lab
+            appsettings.hims_d_service_type.service_type_id.Lab
         )
         .Select(s => {
           return {
