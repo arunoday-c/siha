@@ -7,7 +7,6 @@ export function getAccounts(account_head_id, callBack) {
         method: "GET",
         module: "finance",
         onSuccess: response => {
-            debugger;
             if (response.data.success === true) {
                 callBack(response.data.result);
             }
@@ -45,4 +44,13 @@ export function removeAccount(input){
             reject(e);
         }
     })
+}
+
+export function isPositive(value){
+    if(parseFloat(value) >=0) {
+        return "";
+    }
+    else{
+        return " negitive";
+    }
 }

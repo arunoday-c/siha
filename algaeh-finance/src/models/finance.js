@@ -194,7 +194,8 @@ export default {
                 child_data,
                 head_data,
                 trans_symbol,
-                default_total
+                default_total,
+                decimal_places
               );
 
               req.records = outputArray;
@@ -851,7 +852,8 @@ function createHierarchy(
   child_data,
   head_data,
   trans_symbol,
-  default_total
+  default_total,
+  decimal_places
 ) {
   try {
     // const onlyChilds = [];
@@ -886,10 +888,16 @@ function createHierarchy(
         let amount = 0;
         if (BALANCE != undefined) {
           if (trans_symbol == "Dr.") {
-            amount = BALANCE.deb_minus_cred;
+            amount = parseFloat(BALANCE.deb_minus_cred).toFixed(decimal_places);
           } else {
-            amount = BALANCE.cred_minus_deb;
+            amount = parseFloat(BALANCE.cred_minus_deb).toFixed(decimal_places);
           }
+
+          // if (trans_symbol == "Dr.") {
+          //   amount = BALANCE.deb_minus_cred;
+          // } else {
+          //   amount = BALANCE.cred_minus_deb;
+          // }
         } else {
           amount = default_total;
         }

@@ -109,7 +109,8 @@ postDayEndProcess(){
       method: "POST",
       module: "finance",
       onSuccess:response=>{
-       swalMessage({type:"success",title:"Successfully Posted"})
+       swalMessage({type:"success",title:"Successfully Posted"});
+        this.getDayEndProcess();
       },
       onCatch:error=>{
         swalMessage({title:error,type:"error"});
@@ -281,7 +282,7 @@ postDayEndProcess(){
                         disabled: true
                       },
                       {
-                        fieldName: "trancation_date",
+                        fieldName: "transaction_date",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Document  Date" }}
