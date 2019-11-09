@@ -1,6 +1,7 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
+import InvestigationIOputs from "../../../Models/InvestigationSetup";
 
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
@@ -103,7 +104,8 @@ const Validations = $this => {
 };
 const InsertLabTest = ($this, e) => {
   const err = Validations($this);
-  console.log($this.state, "from insert lab");
+  // console.log($this.state, "from insert lab");
+  debugger
 
   if (!err) {
     if ($this.state.hims_d_investigation_test_id === null) {
@@ -118,7 +120,11 @@ const InsertLabTest = ($this, e) => {
               type: "success",
               title: "Saved successfully . ."
             });
-            $this.props.onClose && $this.props.onClose(true);
+            let IOputs = InvestigationIOputs.inputParam();
+            $this.setState({ ...$this.state, ...IOputs }, () => {
+              $this.props.onClose && $this.props.onClose(true);
+            });
+
           }
         }
       });
@@ -135,7 +141,10 @@ const InsertLabTest = ($this, e) => {
               type: "success",
               title: "Updated successfully . ."
             });
-            $this.props.onClose && $this.props.onClose(true);
+            let IOputs = InvestigationIOputs.inputParam();
+            $this.setState({ ...$this.state, ...IOputs }, () => {
+              $this.props.onClose && $this.props.onClose(true);
+            });
           }
         }
       });

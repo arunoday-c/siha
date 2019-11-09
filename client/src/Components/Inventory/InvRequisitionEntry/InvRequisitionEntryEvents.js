@@ -227,6 +227,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
         quantity_required: 0,
         barcode: null,
         item_uom: null,
+        transaction_qty: null,
         from_qtyhand: 0,
         to_qtyhand: 0
       });
@@ -251,6 +252,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
         quantity_required: 0,
         barcode: null,
         item_uom: null,
+        transaction_qty: null,
         from_qtyhand: 0,
         to_qtyhand: 0
       });
