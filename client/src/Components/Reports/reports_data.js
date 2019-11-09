@@ -3419,21 +3419,36 @@ const Inventory_Reports = [
           },
 
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
-            name: "item_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Item",
+            name: "stockUsed",
 
-            link: {
-              uri: "/inventory/getItemMaster",
-              module: "inventory"
-            },
+            isImp: true,
+            label: "Show for Last (month's)",
+
             dataSource: {
-              textField: "item_description",
-              valueField: "hims_d_item_master_id",
-              data: undefined
+              textField: "stockUsed",
+              valueField: "stockUsedValue",
+              data: [
+                {
+                  stockUsed: "1 months",
+                  stockUsedValue: moment()
+                    .add(-1, "months")
+                    .format("YYYY-MM-DD")
+                },
+                {
+                  stockUsed: "2 months",
+                  stockUsedValue: moment()
+                    .add(-2, "months")
+                    .format("YYYY-MM-DD")
+                },
+                {
+                  stockUsed: "3 months",
+                  stockUsedValue: moment()
+                    .add(-3, "months")
+                    .format("YYYY-MM-DD")
+                }
+              ]
             }
           },
 
@@ -3443,7 +3458,7 @@ const Inventory_Reports = [
             name: "item_id",
             initialLoad: true,
             isImp: false,
-            label: "Show for Last (month's)",
+            label: "Item",
 
             link: {
               uri: "/inventory/getItemMaster",
@@ -4355,23 +4370,37 @@ const Pharmacy_Reports = [
               data: []
             }
           },
-
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
-            name: "item_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Item",
+            name: "stockUsed",
 
-            link: {
-              uri: "/pharmacy/getItemMaster",
-              module: "pharmacy"
-            },
+            isImp: true,
+            label: "Show for Last (month's)",
+
             dataSource: {
-              textField: "item_description",
-              valueField: "hims_d_item_master_id",
-              data: undefined
+              textField: "stockUsed",
+              valueField: "stockUsedValue",
+              data: [
+                {
+                  stockUsed: "1 months",
+                  stockUsedValue: moment()
+                    .add(-1, "months")
+                    .format("YYYY-MM-DD")
+                },
+                {
+                  stockUsed: "2 months",
+                  stockUsedValue: moment()
+                    .add(-2, "months")
+                    .format("YYYY-MM-DD")
+                },
+                {
+                  stockUsed: "3 months",
+                  stockUsedValue: moment()
+                    .add(-3, "months")
+                    .format("YYYY-MM-DD")
+                }
+              ]
             }
           },
 
@@ -4381,7 +4410,7 @@ const Pharmacy_Reports = [
             name: "item_id",
             initialLoad: true,
             isImp: false,
-            label: "Show for Last (month's)",
+            label: "Item",
 
             link: {
               uri: "/pharmacy/getItemMaster",
