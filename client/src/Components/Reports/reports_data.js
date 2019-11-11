@@ -320,12 +320,12 @@ const Hims_Reports = [
                     : // : currentValue.value === "POS"
                     // ? "posReceipt"
                     currentValue.value === "AD"
-                      ? "advanceReceipt"
-                      : currentValue.value === "OPC"
-                        ? "opCreditReceipt"
-                        : // : currentValue.value === "POSC"
-                        // ? "posCreditReceipt"
-                        "";
+                    ? "advanceReceipt"
+                    : currentValue.value === "OPC"
+                    ? "opCreditReceipt"
+                    : // : currentValue.value === "POSC"
+                      // ? "posCreditReceipt"
+                      "";
                 callback({ reportQuery: reportQuery });
               }
             }
@@ -2075,7 +2075,7 @@ const HR_Payroll_Reports = [
               data: LEAVE_STATUS
             },
             events: {
-              onChange: (reportState, currentValue) => { }
+              onChange: (reportState, currentValue) => {}
             }
           }
         ]
@@ -3848,8 +3848,8 @@ const Inventory_Reports = [
         ]
       },
       {
-        subitem: "Inventory Stock Report",
-        reportName: "inventoryStockReport",
+        subitem: "Inventory Store Report",
+        reportName: "inventoryStoreReport",
         requireIframe: true,
         reportParameters: [
           {
@@ -5269,8 +5269,8 @@ export default function loadActiveReports() {
       const Activated_Modueles =
         sessionStorage.getItem("ModuleDetails") !== null
           ? JSON.parse(
-            AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-          )
+              AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+            )
           : [];
       let result = [];
       for (let i = 0; i < Activated_Modueles.length; i++) {
