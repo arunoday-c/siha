@@ -4011,21 +4011,6 @@ const Inventory_Reports = [
               data: undefined
             }
           },
-
-          {
-            className: "col-2 mandatory",
-            type: "dropdown",
-            name: "location_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Purchase No",
-            dataSource: {
-              textField: "location_description",
-              valueField: "hims_d_inventory_location_id",
-              data: []
-            }
-          },
-
           {
             className: "col-2 mandatory  form-group",
             type: "date",
@@ -4047,7 +4032,19 @@ const Inventory_Reports = [
               minDate: null
             }
           },
-
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Purchase No",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_inventory_location_id",
+              data: []
+            }
+          },
           {
             className: "col-2",
             type: "dropdown",
