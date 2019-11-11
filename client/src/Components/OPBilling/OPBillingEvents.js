@@ -54,7 +54,10 @@ const Validations = $this => {
   let isError = false;
 
   if ($this.state.Cardchecked === true) {
-    if ($this.state.card_number === null || $this.state.card_number === "") {
+    if (
+      $this.state.card_check_number === null ||
+      $this.state.card_check_number === ""
+    ) {
       isError = true;
 
       swalMessage({
@@ -62,7 +65,7 @@ const Validations = $this => {
         title: "Card Number cannot be blank."
       });
 
-      document.querySelector("[name='card_number']").focus();
+      document.querySelector("[name='card_check_number']").focus();
       return isError;
     } else if ($this.state.bank_card_id === null) {
       isError = true;
@@ -110,8 +113,8 @@ const Validations = $this => {
       document.querySelector("[name='cheque_amount']").focus();
       return isError;
     }
-
-  } else if ($this.state.unbalanced_amount > 0) {
+  }
+  if ($this.state.unbalanced_amount > 0) {
     isError = true;
     swalMessage({
       type: "warning",
@@ -404,7 +407,7 @@ const getPatientDetails = $this => {
         if (
           hospital_id.local_vat_applicable === "N" &&
           hospital_id.default_nationality ===
-          data.patientRegistration.nationality_id
+            data.patientRegistration.nationality_id
         ) {
           data.patientRegistration.vat_applicable = "N";
         } else {

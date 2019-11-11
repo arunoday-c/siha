@@ -1,4 +1,4 @@
-{{{importStyle 'css/creditinvoice.css'}}}
+{{{importStyle 'css/algaehReportStyles.css'}}}
 
 <body>
     <div class="print-body">
@@ -10,42 +10,27 @@
                         <th>Sl No.</th>
                         <th>Employee Code</th>
                         <th>Employee Name</th>
-                        <th>Employee Group</th>
-                        <th>Department</th>
-                        <th>Sub Department</th>
-                        <th>Loan Type</th>
-                        <th>Applied On</th>
-                        <th>Requested Amt</th>
-                        <th>Approved Amt</th>
-                        <th>Instalment Amt</th>
-                        <th>Pending Tenure</th>
-                        <th>Due Amt</th>
-                    </tr>
+                        <th>Emp. Group</th>
+                        <th>Designation</th>
+                        <th>Description</th>
+                        <th>Total Amount</th>
                 </thead>
                 <tbody>{{#hasElement details}}
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
-                        <td>{{employee_name}}</td>
+                        <td style="text-align: left;">{{full_name}}</td>
                         <td>{{group_description}}</td>
-                        <td>{{department_name}}</td>
-                        <td>{{sub_department_name}}</td>
-                        <td>{{loan_description}}</td>
-                        <td>{{loan_application_date}}</td>
-                        <td>{{loan_amount}}</td>
-                        <td>{{approved_amount}}</td>
-                        <td>{{installment_amount}}</td>
-                        <td>{{pending_tenure}}</td>
-                        <td>{{pending_loan}}</td>
+                        <td>{{designation}}</td>
+                        <td>{{earning_deduction_description}}</td>
+                        <td>{{amount}}</td>
                     </tr>
                     {{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="12" class="noResultTextReport">No Records Found</td>
-                    </tr>
-
-                    {{/hasElement }}
+                        <td colspan="5" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
                 </tbody>
             </table>
         </section>

@@ -1,4 +1,4 @@
-{{{importStyle 'css/creditinvoice.css'}}}
+{{{importStyle 'css/algaehReportStyles.css'}}}
 
 <body>
     <div class="print-body">
@@ -6,46 +6,46 @@
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
-                     <tr>
-    <th>Sl No.</th>
-    <th>File No.</th>
-    <th>Patient Name</th>
-    <th>Memebership No.</th>
-    <th>Invoice No.</th>
-    <th>Consultation</th>
-    <th>Lab</th>
-    <th>Radiology</th>
-    <th>Dental</th>
-    <th>Procedure</th>
-    <th>Medicines</th>
-    <th>Gross Amt.</th>
-    <th>Discount</th>
-    <th>Co.Payed</th>
-    <th>Patient Vat</th>
-    <th>Net Amount</th>
-    <th>Payer Vat</th>
-  </tr>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>File No.</th>
+                        <th>Patient Name</th>
+                        <th>Memebership No.</th>
+                        <th>Invoice No.</th>
+                        <th>Consultation</th>
+                        <th>Lab</th>
+                        <th>Radiology</th>
+                        <th>Dental</th>
+                        <th>Procedure</th>
+                        <th>Medicines</th>
+                        <th>Gross Amt.</th>
+                        <th>Discount</th>
+                        <th>Co.Payed</th>
+                        <th>Patient Vat</th>
+                        <th>Net Amount</th>
+                        <th>Payer Vat</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>File No.</td>
-    <td>Patient Name</td>
-    <td>Memebership No.</td>
-    <td>Invoice No.</td>
-    <td>Consultation</td>
-    <td>Lab</td>
-    <td>Radiology</td>
-    <td>Dental</td>
-    <td>Procedure</td>
-    <td>Medicines</td>
-    <td>Gross Amt.</td>
-    <td>Discount</td>
-    <td>Co.Payed</td>
-    <td>Patient Vat</td>
-    <td>Net Amount</td>
-    <td>Payer Vat</td>
+                        <td>Patient Name</td>
+                        <td>Memebership No.</td>
+                        <td>Invoice No.</td>
+                        <td>Consultation</td>
+                        <td>Lab</td>
+                        <td>Radiology</td>
+                        <td>Dental</td>
+                        <td>Procedure</td>
+                        <td>Medicines</td>
+                        <td>Gross Amt.</td>
+                        <td>Discount</td>
+                        <td>Co.Payed</td>
+                        <td>Patient Vat</td>
+                        <td>Net Amount</td>
+                        <td>Payer Vat</td>
                     </tr>
                     {{/each }}
                     <tr>
@@ -65,13 +65,41 @@
                 </tbody>
             </table>
             <table class="tableTotal">
-                <tr><td>Total Gross Amt.</td><td>{{total_gross_amount}}</td><td>الإجمالي قبل الضريبة المضافة</td></tr>
-                <tr><td>Total Discount Amt.</td><td>{{total_discount_amount}}</td><td>الخصم</td></tr>
-                <tr><td>Total Deductible Amt.</td><td>{{total_discount_amount}}</td><td>الخصم</td></tr>
-                <tr><td>Total Patient Vat</td><td>{{total_discount_amount}}</td><td>الخصم</td></tr>
-                <tr><td>Total Net Amt.</td><td>{{total_discount_amount}}</td><td>الخصم</td></tr>
-                <tr><td>Total Payer Vat</td><td>{{total_discount_amount}}</td><td>الخصم</td></tr>
-                <tr><td>Net Amount + Payer Vat</td><td>{{total_discount_amount}}</td><td>الخصم</td></tr>
+                <tr>
+                    <td>Total Gross Amt.</td>
+                    <td>{{total_gross_amount}}</td>
+                    <td>الإجمالي قبل الضريبة المضافة</td>
+                </tr>
+                <tr>
+                    <td>Total Discount Amt.</td>
+                    <td>{{total_discount_amount}}</td>
+                    <td>الخصم</td>
+                </tr>
+                <tr>
+                    <td>Total Deductible Amt.</td>
+                    <td>{{total_discount_amount}}</td>
+                    <td>الخصم</td>
+                </tr>
+                <tr>
+                    <td>Total Patient Vat</td>
+                    <td>{{total_discount_amount}}</td>
+                    <td>الخصم</td>
+                </tr>
+                <tr>
+                    <td>Total Net Amt.</td>
+                    <td>{{total_discount_amount}}</td>
+                    <td>الخصم</td>
+                </tr>
+                <tr>
+                    <td>Total Payer Vat</td>
+                    <td>{{total_discount_amount}}</td>
+                    <td>الخصم</td>
+                </tr>
+                <tr>
+                    <td>Net Amount + Payer Vat</td>
+                    <td>{{total_discount_amount}}</td>
+                    <td>الخصم</td>
+                </tr>
             </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}

@@ -1,0 +1,64 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        {{!-- <section>
+            <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span></td>
+                    <td><label class="textEnLft">No Employees</label>:<span class="valueText">{{no_employees}}</span>
+                    </td>
+                </tr>
+            </table>
+
+
+        </section> --}}
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>UOM</th>
+                        <th>QTY Purchased</th>
+                        <th>Purchase Cost</th>
+                        <th>Total Cost</th>
+                    </tr>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#hasElement result}}
+
+                    {{#each result}}
+                    <tr>
+                        <td colspan="7" class="tableSubHdg">PO No.: {{religion}}
+                            <span class="textFloatRight">Total Cost: {{no_employee}}</span>
+
+                        </td>
+                    </tr>
+                    {{#each poitems}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>Item Code</th>
+                        <td>Item Name</th>
+                        <td>UOM</td>
+                        <td>QTY Purchased</td>
+                        <td>Purchase Cost</td>
+                        <td>Total Cost</td>
+                    </tr>
+                    {{/each }}{{/each }}
+                    {{else}}
+                    <tr>
+                        <td colspan="7" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
+                </tbody>
+
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+    </div>
+</body>

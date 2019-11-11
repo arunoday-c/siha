@@ -9,7 +9,7 @@ import {
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 
-import {algaehApiCall,swalMessage} from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 const modules = [
   {
     name: "OP Bill",
@@ -70,57 +70,54 @@ const modules = [
 ];
 
 class DayEndProcess extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
       trans_type: [],
-      dayEnd:[],
-      from_date:undefined,
-      to_date:undefined
+      dayEnd: [],
+      from_date: undefined,
+      to_date: undefined
     };
-  this.selectedDayEndIds=[];
+    this.selectedDayEndIds = [];
   }
 
-  getDayEndProcess(){
-    try{
+  getDayEndProcess() {
+    try {
       algaehApiCall({
-        uri:"/finance/getDayEndData",
-        data:{from_date:this.state.from_date,to_date:this.state.to_date},
+        uri: "/finance/getDayEndData",
+        data: { from_date: this.state.from_date, to_date: this.state.to_date },
         method: "GET",
         module: "finance",
-        onSuccess:response=>{
-          this.setState({dayEnd:response.data.result});
+        onSuccess: response => {
+          this.setState({ dayEnd: response.data.result });
         },
-        onCatch:error=>{
-          swalMessage({title:error,type:"error"});
+        onCatch: error => {
+          swalMessage({ title: error, type: "error" });
         }
       });
-    }
-    catch (e) {
+    } catch (e) {
       console.error(e);
     }
   }
-postDayEndProcess(){
-  try{
-    algaehApiCall({
-      uri:"/finance/postDayEndData",
-      data:{finance_day_end_detail_ids: this.selectedDayEndIds},
-      method: "POST",
-      module: "finance",
-      onSuccess:response=>{
-       swalMessage({type:"success",title:"Successfully Posted"});
-        this.getDayEndProcess();
-      },
-      onCatch:error=>{
-        swalMessage({title:error,type:"error"});
-      }
-    });
+  postDayEndProcess() {
+    try {
+      algaehApiCall({
+        uri: "/finance/postDayEndData",
+        data: { finance_day_end_header_ids: this.selectedDayEndIds },
+        method: "POST",
+        module: "finance",
+        onSuccess: response => {
+          swalMessage({ type: "success", title: "Successfully Posted" });
+          this.getDayEndProcess();
+        },
+        onCatch: error => {
+          swalMessage({ title: error, type: "error" });
+        }
+      });
+    } catch (e) {
+      console.error(e);
+    }
   }
-  catch (e) {
-    console.error(e);
-  }
-}
   dropDownHandle(value) {
     switch (value.name) {
       case "modules":
@@ -191,8 +188,11 @@ postDayEndProcess(){
                   name: "from_date"
                 }}
                 events={{
-                  onChange: (selectedDate)=>{
-                    this.setState({from_date:selectedDate,to_date:undefined});
+                  onChange: selectedDate => {
+                    this.setState({
+                      from_date: selectedDate,
+                      to_date: undefined
+                    });
                   }
                 }}
                 value={this.state.from_date}
@@ -203,13 +203,14 @@ postDayEndProcess(){
                 label={{ forceLabel: "To Date" }}
                 textBox={{
                   className: "txt-fld",
-                  name: "to_date",
-
+                  name: "to_date"
                 }}
-                {...this.state.from_date !==undefined?{minDate:new Date(this.state.from_date)}:{}}
+                {...(this.state.from_date !== undefined
+                  ? { minDate: new Date(this.state.from_date) }
+                  : {})}
                 events={{
-                  onChange: (selectedDate)=>{
-                    this.setState({to_date:selectedDate});
+                  onChange: selectedDate => {
+                    this.setState({ to_date: selectedDate });
                   }
                 }}
                 value={this.state.to_date}
@@ -232,12 +233,14 @@ postDayEndProcess(){
                 }}
               />
               <div className="col">
-                <button className="btn btn-primary" style={{ marginTop: 19 }}
-                onClick={this.getDayEndProcess.bind(this)} >
+                <button
+                  className="btn btn-primary"
+                  style={{ marginTop: 19 }}
+                  onClick={this.getDayEndProcess.bind(this)}
+                >
                   Preview
                 </button>
               </div>
-
             </div>
           </div>
         </div>
@@ -253,15 +256,23 @@ postDayEndProcess(){
                       {
                         fieldName: "select_id",
                         label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
-                        displayTemplate:(row)=>(<input type="checkbox"
-                                                       onClick={(e)=>{
-                          if(e.target.checked ===true){
-                            this.selectedDayEndIds.push(row.finance_day_end_detail_id);
-                          }else {
-                          const itemExists=  this.selectedDayEndIds.findIndex(f => f === row.finance_day_end_detail_id);
-                            this.selectedDayEndIds.splice(itemExists,1);
-                          }
-                        }} />),
+                        displayTemplate: row => (
+                          <input
+                            type="checkbox"
+                            onClick={e => {
+                              if (e.target.checked === true) {
+                                this.selectedDayEndIds.push(
+                                  row.finance_day_end_header_id
+                                );
+                              } else {
+                                const itemExists = this.selectedDayEndIds.findIndex(
+                                  f => f === row.finance_day_end_header_id
+                                );
+                                this.selectedDayEndIds.splice(itemExists, 1);
+                              }
+                            }}
+                          />
+                        ),
                         other: {
                           maxWidth: 55
                         }
@@ -306,11 +317,7 @@ postDayEndProcess(){
                       },
                       {
                         fieldName: "amount",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Amount" }}
-                          />
-                        )
+                        label: <AlgaehLabel label={{ forceLabel: "Amount" }} />
                       },
 
                       {
@@ -323,7 +330,7 @@ postDayEndProcess(){
                         disabled: true
                       }
                     ]}
-                    keyId="finance_day_end_detail_id"
+                    keyId="finance_day_end_header_id"
                     dataSource={{
                       data: this.state.dayEnd
                     }}
@@ -344,7 +351,12 @@ postDayEndProcess(){
                       margin: "10px"
                     }}
                   >
-                    <button className="btn btn-primary" onClick={this.postDayEndProcess.bind(this)}>POST</button>
+                    <button
+                      className="btn btn-primary"
+                      onClick={this.postDayEndProcess.bind(this)}
+                    >
+                      POST
+                    </button>
                   </div>
                 </div>
               </div>
