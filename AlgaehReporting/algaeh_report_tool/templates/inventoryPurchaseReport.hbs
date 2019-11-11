@@ -23,8 +23,8 @@
                         <th>Item Code</th>
                         <th>Item Name</th>
                         <th>UOM</th>
-                        <th>QTY Purchased</th>
-                        <th>Purchase Cost</th>
+                        <th>Requested Quantity</th>
+                        <th>Unit Price</th>
                         <th>Total Cost</th>
                     </tr>
                     </tr>
@@ -34,20 +34,20 @@
 
                     {{#each result}}
                     <tr>
-                        <td colspan="7" class="tableSubHdg">PO No.: {{religion}}
-                            <span class="textFloatRight">Total Cost: {{no_employee}}</span>
+                        <td colspan="7" class="tableSubHdg">PO No.: {{purchase_number}}
+                            <span class="textFloatRight">Total Cost: {{net_total}}</span>
 
                         </td>
                     </tr>
                     {{#each poitems}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>Item Code</th>
-                        <td>Item Name</th>
-                        <td>UOM</td>
-                        <td>QTY Purchased</td>
-                        <td>Purchase Cost</td>
-                        <td>Total Cost</td>
+                        <td>{{item_code}}</th>
+                        <td>{{item_description}}</th>
+                        <td>{{uom_description}}</td>
+                        <td>{{authorize_quantity}}</td>
+                        <td>{{unit_cost}}</td>
+                        <td>{{net_extended_cost}}</td>
                     </tr>
                     {{/each }}{{/each }}
                     {{else}}

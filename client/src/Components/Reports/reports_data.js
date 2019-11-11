@@ -4037,7 +4037,7 @@ const Inventory_Reports = [
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "Purchase No",
             dataSource: {
               textField: "location_description",
