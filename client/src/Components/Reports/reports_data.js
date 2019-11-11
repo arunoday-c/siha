@@ -320,12 +320,12 @@ const Hims_Reports = [
                     : // : currentValue.value === "POS"
                     // ? "posReceipt"
                     currentValue.value === "AD"
-                    ? "advanceReceipt"
-                    : currentValue.value === "OPC"
-                    ? "opCreditReceipt"
-                    : // : currentValue.value === "POSC"
-                      // ? "posCreditReceipt"
-                      "";
+                      ? "advanceReceipt"
+                      : currentValue.value === "OPC"
+                        ? "opCreditReceipt"
+                        : // : currentValue.value === "POSC"
+                        // ? "posCreditReceipt"
+                        "";
                 callback({ reportQuery: reportQuery });
               }
             }
@@ -2075,7 +2075,7 @@ const HR_Payroll_Reports = [
               data: LEAVE_STATUS
             },
             events: {
-              onChange: (reportState, currentValue) => {}
+              onChange: (reportState, currentValue) => { }
             }
           }
         ]
@@ -3359,8 +3359,8 @@ const Inventory_Reports = [
     name: "Inventory",
     submenu: [
       {
-        subitem: "Current Stock List",
-        reportName: "currentStockInventory",
+        subitem: "Consumption List",
+        reportName: "consumptionListInventory",
         requireIframe: true,
         reportParameters: [
           {
@@ -3415,6 +3415,13 @@ const Inventory_Reports = [
               textField: "location_description",
               valueField: "hims_d_inventory_location_id",
               data: []
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
             }
           },
 
@@ -3449,9 +3456,15 @@ const Inventory_Reports = [
                     .format("YYYY-MM-DD")
                 }
               ]
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
             }
           },
-
           {
             className: "col-2",
             type: "dropdown",
@@ -3466,8 +3479,15 @@ const Inventory_Reports = [
             },
             dataSource: {
               textField: "item_description",
-              valueField: "hims_d_item_master_id",
+              valueField: "hims_d_inventory_item_master_id",
               data: undefined
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
             }
           }
         ]
@@ -4414,8 +4434,8 @@ const Pharmacy_Reports = [
         ]
       },
       {
-        subitem: "Current Stock List",
-        reportName: "currentStockPharmacy",
+        subitem: "Consumption List",
+        reportName: "consumptionListPharmacy",
         requireIframe: true,
         reportParameters: [
           {
@@ -4470,6 +4490,13 @@ const Pharmacy_Reports = [
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
               data: []
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
             }
           },
           {
@@ -4503,6 +4530,13 @@ const Pharmacy_Reports = [
                     .format("YYYY-MM-DD")
                 }
               ]
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
             }
           },
 
@@ -4522,6 +4556,13 @@ const Pharmacy_Reports = [
               textField: "item_description",
               valueField: "hims_d_item_master_id",
               data: undefined
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
             }
           }
         ]
@@ -5084,8 +5125,8 @@ export default function loadActiveReports() {
       const Activated_Modueles =
         sessionStorage.getItem("ModuleDetails") !== null
           ? JSON.parse(
-              AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-            )
+            AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+          )
           : [];
       let result = [];
       for (let i = 0; i < Activated_Modueles.length; i++) {
