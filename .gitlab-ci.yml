@@ -1,4 +1,8 @@
 # gitlab ci/cd to build docker images
 build_image:
+  tags:
+    - build
+    - hims
   - cd F:\LOCAL DEV\newrepository\algaeh-monorepo
   - algaeh-cli build -a
+  - docker-compose -f docker-compose.yml up -d --build
