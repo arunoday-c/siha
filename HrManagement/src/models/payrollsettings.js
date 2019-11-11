@@ -8,13 +8,15 @@ export default {
     let _stringData = " ";
     let intValue = [];
     if (req.query.component_category != null) {
-      _stringData = " and component_category=? ";
+      _stringData += " and component_category=? ";
       intValue.push(req.query.component_category);
-    } else if (req.query.miscellaneous_component != null) {
-      _stringData = " and miscellaneous_component=? ";
+    }
+    if (req.query.miscellaneous_component != null) {
+      _stringData += " and miscellaneous_component=? ";
       intValue.push(req.query.miscellaneous_component);
-    } else if (req.query.component_type != null) {
-      _stringData = " and component_type=? ";
+    }
+    if (req.query.component_type != null) {
+      _stringData += " and component_type=? ";
       intValue.push(req.query.component_type);
     }
 
@@ -136,8 +138,8 @@ export default {
       input.year > 0
         ? input.year
         : moment()
-            .startOf("year")
-            .format("YYYY-MM-DD");
+          .startOf("year")
+          .format("YYYY-MM-DD");
 
     const start_of_year = moment(year, "YYYY")
       .startOf("year")
