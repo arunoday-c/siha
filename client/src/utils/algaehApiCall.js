@@ -242,6 +242,7 @@ export function algaehApiCall(options) {
           if (err.response !== undefined) {
             const { status, data } = err.response;
             if (status === 423) {
+              debugger;
               showOtherPopup = false;
               reLoginPopup(data);
               return;
@@ -347,6 +348,7 @@ export function algaehApiCall(options) {
 
 export function reLoginPopup({ message, username }) {
   if (username === undefined) {
+    debugger;
     window.location.href = window.location.origin + "/#";
     return;
   }
@@ -371,6 +373,7 @@ export function reLoginPopup({ message, username }) {
       const { value, dismiss } = rest;
       showOtherPopup = true;
       if (dismiss === "cancel") {
+        debugger;
         window.location.href = window.location.origin + "/#";
         return;
       }
@@ -416,6 +419,7 @@ export function reLoginPopup({ message, username }) {
         //  window.location.href = window.location.origin + "/#";
         //  window.location.reload();
       } else {
+        debugger;
         window.location.reload();
       }
     });

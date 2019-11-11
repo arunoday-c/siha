@@ -45,7 +45,7 @@ const calculateRecipt = ($this, context) => {
     onSuccess: response => {
       if (response.data.success) {
         if (context !== null) {
-          context.updateState({ ...response.data.records, saveEnable: false });
+          context.updateState({ ...response.data.records });
         }
       }
       AlgaehLoader({ show: false });

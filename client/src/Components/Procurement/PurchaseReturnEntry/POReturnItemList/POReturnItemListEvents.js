@@ -487,99 +487,110 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
 
 const deletePOReturnDetail = ($this, context, row) => {
   let sub_total = 0;
-  let net_total = 0;
-  let net_payable = 0;
-  let total_tax = 0;
-  let detail_discount = 0;
-
+  let net_total = 0
+  let discount_amount = 0;
+  let return_total = 0, tax_amount = 0;
 
   if ($this.state.po_return_from === "PHR") {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
     pharmacy_stock_detail.splice(row.rowIdx, 1);
 
-    sub_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
-      parseFloat(s.extended_price)
-    );
 
-    net_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
-      parseFloat(s.net_extended_cost)
-    );
+    if (pharmacy_stock_detail.length > 0) {
+      sub_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
+        parseFloat(s.extended_cost)
+      );
 
-    net_payable = Enumerable.from(pharmacy_stock_detail).sum(s =>
-      parseFloat(s.total_amount)
-    );
+      discount_amount = Enumerable.from(pharmacy_stock_detail).sum(s =>
+        parseFloat(s.discount_amount)
+      );
 
-    total_tax = Enumerable.from(pharmacy_stock_detail).sum(s =>
-      parseFloat(s.tax_amount)
-    );
+      net_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
+        parseFloat(s.net_extended_cost)
+      );
 
-    detail_discount = Enumerable.from(pharmacy_stock_detail).sum(s =>
-      parseFloat(s.sub_discount_amount)
-    );
-    if (pharmacy_stock_detail.length === 0) {
-      assignDataandclear(
-        $this,
-        context,
-        pharmacy_stock_detail,
-        "pharmacy_stock_detail"
+      tax_amount = Enumerable.from(pharmacy_stock_detail).sum(s =>
+        parseFloat(s.tax_amount)
+      );
+
+      return_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
+        parseFloat(s.total_amount)
       );
     } else {
-      if (context !== undefined) {
-        context.updateState({
-          pharmacy_stock_detail: pharmacy_stock_detail,
-          sub_total: sub_total,
-          net_total: net_total,
-          net_payable: net_payable,
-          total_tax: total_tax,
-          detail_discount: detail_discount
-        });
-      }
+      sub_total = 0
+      discount_amount = 0
+      net_total = 0
+      tax_amount = 0
+      return_total = 0
     }
+
+
+
+    $this.setState({
+      pharmacy_stock_detail: pharmacy_stock_detail,
+      sub_total: sub_total,
+      discount_amount: discount_amount,
+      net_total: net_total,
+      tax_amount: tax_amount,
+      return_total: return_total
+    });
+
+    if (context !== undefined) {
+      context.updateState({
+        pharmacy_stock_detail: pharmacy_stock_detail,
+        sub_total: sub_total,
+        discount_amount: discount_amount,
+        net_total: net_total,
+        tax_amount: tax_amount,
+        return_total: return_total
+      });
+    }
+
   } else {
     {
       let inventory_stock_detail = $this.state.inventory_stock_detail;
 
       inventory_stock_detail.splice(row.rowIdx, 1);
 
-      sub_total = Enumerable.from(inventory_stock_detail).sum(s =>
-        parseFloat(s.extended_price)
-      );
+      if (inventory_stock_detail.length > 0) {
+        sub_total = Enumerable.from(inventory_stock_detail).sum(s =>
+          parseFloat(s.extended_cost)
+        );
 
-      net_total = Enumerable.from(inventory_stock_detail).sum(s =>
-        parseFloat(s.net_extended_cost)
-      );
+        discount_amount = Enumerable.from(inventory_stock_detail).sum(s =>
+          parseFloat(s.discount_amount)
+        );
 
-      net_payable = Enumerable.from(inventory_stock_detail).sum(s =>
-        parseFloat(s.total_amount)
-      );
+        net_total = Enumerable.from(inventory_stock_detail).sum(s =>
+          parseFloat(s.net_extended_cost)
+        );
 
-      total_tax = Enumerable.from(inventory_stock_detail).sum(s =>
-        parseFloat(s.tax_amount)
-      );
+        tax_amount = Enumerable.from(inventory_stock_detail).sum(s =>
+          parseFloat(s.tax_amount)
+        );
 
-      detail_discount = Enumerable.from(inventory_stock_detail).sum(s =>
-        parseFloat(s.sub_discount_amount)
-      );
 
-      if (inventory_stock_detail.length === 0) {
-        assignDataandclear(
-          $this,
-          context,
-          inventory_stock_detail,
-          "inventory_stock_detail"
+        return_total = Enumerable.from(inventory_stock_detail).sum(s =>
+          parseFloat(s.total_amount)
         );
       } else {
-        if (context !== undefined) {
-          context.updateState({
-            inventory_stock_detail: inventory_stock_detail,
-            sub_total: sub_total,
-            net_total: net_total,
-            net_payable: net_payable,
-            total_tax: total_tax,
-            detail_discount: detail_discount
-          });
-        }
+        sub_total = 0
+        discount_amount = 0
+        net_total = 0
+        tax_amount = 0
+        return_total = 0
+      }
+
+      if (context !== undefined) {
+        context.updateState({
+          inventory_stock_detail: inventory_stock_detail,
+          sub_total: sub_total,
+          discount_amount: discount_amount,
+          net_total: net_total,
+          tax_amount: tax_amount,
+          return_total: return_total
+        });
       }
     }
   }

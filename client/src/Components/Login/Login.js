@@ -83,7 +83,8 @@ export default function() {
               const { success, records, message } = response.data;
               if (success === true) {
                 setCookie("userName", records.user_display_name);
-                setCookie("keyResources", records.keyResources, 30);
+                // setCookie("keyResources", records.keyResources, 30);
+                setCookie("authToken",records.token);
                 sessionStorage.setItem(
                   "keyData",
                   AlgaehCloseContainer(JSON.stringify(records.keyData))
@@ -169,16 +170,18 @@ export default function() {
                                 records,
                                 message
                               } = response.data;
+
                               if (success === true) {
                                 setCookie(
                                   "userName",
                                   records.user_display_name
                                 );
-                                setCookie(
-                                  "keyResources",
-                                  records.keyResources,
-                                  30
-                                );
+                                setCookie("authToken",records.token);
+                                // setCookie(
+                                //   "keyResources",
+                                //   records.keyResources,
+                                //   30
+                                // );
                                 sessionStorage.setItem(
                                   "keyData",
                                   AlgaehCloseContainer(

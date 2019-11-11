@@ -8,10 +8,11 @@ export default ({ db }) => {
   //add middleware
   api.use((req, res, next) => {
     req.db = db;
-    if (req.url == "/apiAuth") {
+    if (req.url.includes ("/apiAuth")) {
       next();
     } else {
       var token = req.body.token || req.query.token || req.headers["x-api-key"];
+
       if (token) {
         jwt.verify(token, config.default.SECRETKey, (err, decoded) => {
           if (err) {

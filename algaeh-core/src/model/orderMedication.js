@@ -81,8 +81,8 @@ let addPatientPrescriptionBAckup = (req, res, next) => {
 
               connection.query(
                 "INSERT INTO hims_f_prescription_detail(" +
-                  insurtColumns.join(",") +
-                  ",`prescription_id`) VALUES ?",
+                insurtColumns.join(",") +
+                ",`prescription_id`) VALUES ?",
                 [
                   jsonArrayToObject({
                     sampleInputObject: insurtColumns,
@@ -165,8 +165,8 @@ let addPatientPrescriptionBAckup = (req, res, next) => {
 
                           connection.query(
                             "INSERT INTO hims_f_medication_approval(" +
-                              insurtCols.join(",") +
-                              ",created_by,updated_by) VALUES ?",
+                            insurtCols.join(",") +
+                            ",created_by,updated_by) VALUES ?",
                             [
                               jsonArrayToObject({
                                 sampleInputObject: insurtCols,
@@ -312,13 +312,14 @@ let addPatientPrescription = (req, res, next) => {
                 "frequency_time",
                 "insured",
                 "pre_approval",
-                "instructions"
+                "instructions",
+                "start_date"
               ];
 
               connection.query(
                 "INSERT INTO hims_f_prescription_detail(" +
-                  insurtColumns.join(",") +
-                  ",`prescription_id`) VALUES ?",
+                insurtColumns.join(",") +
+                ",`prescription_id`) VALUES ?",
                 [
                   jsonArrayToObject({
                     sampleInputObject: insurtColumns,
@@ -393,8 +394,8 @@ let addPatientPrescription = (req, res, next) => {
 
                           connection.query(
                             "INSERT INTO hims_f_medication_approval(" +
-                              insurtCols.join(",") +
-                              ",created_by,updated_by,created_date,updated_date,insurance_provider_id,\
+                            insurtCols.join(",") +
+                            ",created_by,updated_by,created_date,updated_date,insurance_provider_id,\
                               sub_insurance_id, network_id, insurance_network_office_id, patient_id, visit_id,\
                                hospital_id) VALUES ?",
                             [
@@ -516,7 +517,7 @@ let getPatientPrescription = (req, res, next) => {
         H.prescription_date,H.prescription_status,H.cancelled,D.hims_f_prescription_detail_id, D.prescription_id, D.item_id, D.generic_id, D.dosage,\
         D.frequency, D.no_of_days,D.dispense, D.frequency_type, D.frequency_time, D.start_date, D.item_status \
         from hims_f_prescription H,hims_f_prescription_detail D ,hims_f_patient P WHERE H.hims_f_prescription_id = D.prescription_id and P.hims_d_patient_id=H.patient_id and " +
-          where.condition,
+        where.condition,
         where.values,
 
         (error, result) => {
@@ -598,9 +599,9 @@ let getPatientMedications = (req, res, next) => {
               enddate: endDate,
               active:
                 parseInt(moment().format("YYYYMMDD")) <=
-                parseInt(
-                  moment(endDate, "YYYY-MM-DD HH:mm:ss").format("YYYYMMDD")
-                )
+                  parseInt(
+                    moment(endDate, "YYYY-MM-DD HH:mm:ss").format("YYYYMMDD")
+                  )
                   ? true
                   : false
             };

@@ -326,7 +326,8 @@ const onchangegridcol = ($this, context, row, e) => {
 };
 
 const getItemLocationStock = ($this, context, value) => {
-  $this.props.getItemLocationStock({
+
+  algaehApiCall({
     uri: "/pharmacyGlobal/getItemLocationStock",
     module: "pharmacy",
     method: "GET",
@@ -334,41 +335,47 @@ const getItemLocationStock = ($this, context, value) => {
       pharmacy_location_id: value.location_id,
       item_id: value.item_id
     },
-    redux: {
-      type: "ITEMS_BATCH_GET_DATA",
-      mappingName: "itemBatch"
-    },
-    afterSuccess: data => {
-      if (data.length > 0) {
-        // let total_quantity = 0;
-        let total_quantity = _.sumBy(data, s => {
-          return parseFloat(s.qtyhand);
-        });
-
-        if (value.set === "To") {
-          $this.setState({
-            to_qtyhand: total_quantity
+    onSuccess: response => {
+      debugger
+      if (response.data.success === true) {
+        let data = response.data.records
+        if (data.length > 0) {
+          // let total_quantity = 0;
+          let total_quantity = _.sumBy(data, s => {
+            return parseFloat(s.qtyhand);
           });
 
-          context.updateState({
-            to_qtyhand: total_quantity
-          });
-        } else if (value.set === "From") {
-          $this.setState({
-            from_qtyhand: total_quantity
-          });
+          if (value.set === "To") {
+            $this.setState({
+              to_qtyhand: total_quantity
+            });
 
-          context.updateState({
-            from_qtyhand: total_quantity
-          });
+            context.updateState({
+              to_qtyhand: total_quantity
+            });
+          } else if (value.set === "From") {
+            $this.setState({
+              from_qtyhand: total_quantity
+            });
+
+            context.updateState({
+              from_qtyhand: total_quantity
+            });
+          }
+        } else {
+          if (value.set === "To") {
+            context.updateState({
+              to_qtyhand: null
+            });
+          } else if (value.set === "From") {
+            context.updateState({
+              from_qtyhand: null
+            });
+          }
+
         }
-      } else {
-        context.updateState({
-          to_qtyhand: null,
-          from_qtyhand: null
-        });
+        AlgaehLoader({ show: false });
       }
-      AlgaehLoader({ show: false });
     }
   });
 };

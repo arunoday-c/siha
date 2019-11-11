@@ -778,10 +778,6 @@
         "label": "Batch No."
       },
       {
-        "fieldName": "expirydt",
-        "label": "Expiry Date"
-      },
-      {
         "fieldName": "barcode",
         "label": "Bar Code"
       }

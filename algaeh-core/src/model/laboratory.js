@@ -183,10 +183,10 @@ let insertLadOrderedServices = (req, res, next) => {
                   (select  TIMESTAMPDIFF(day, ?, curdate()) as days) as a;",
               values: [
                 get_services_id,
-                input.date_of_birth,
-                input.date_of_birth,
-                input.date_of_birth,
-                input.date_of_birth
+                req.body.date_of_birth,
+                req.body.date_of_birth,
+                req.body.date_of_birth,
+                req.body.date_of_birth
               ],
               printQuery: true
             })
@@ -230,7 +230,7 @@ let insertLadOrderedServices = (req, res, next) => {
                     req.body.visit_id,
                     get_services_id,
                     test_id,
-                    input.gender,
+                    req.body.gender,
                     age_type,
                     age
                   ],
