@@ -2428,20 +2428,26 @@ export default {
                     : records.cpt_code;
 
                 if (insured == "Y" && policydtls.covered == "Y") {
-                  ser_net_amount = policydtls.net_amount;
-                  ser_gross_amt = policydtls.gross_amt;
-
-                  if (policydtls.company_service_price_type == "N") {
-                    unit_cost =
-                      unit_cost != 0
-                        ? unit_cost
-                        : parseFloat(policydtls.net_amount);
+                  if (FollowUp === true) {
+                    ser_net_amount = 0;
+                    ser_gross_amt = 0;
+                    unit_cost = 0;
                   } else {
-                    unit_cost =
-                      unit_cost != 0
-                        ? unit_cost
-                        : parseFloat(policydtls.gross_amt);
+                    ser_net_amount = policydtls.net_amount;
+                    ser_gross_amt = policydtls.gross_amt;
+                    if (policydtls.company_service_price_type == "N") {
+                      unit_cost =
+                        unit_cost != 0
+                          ? unit_cost
+                          : parseFloat(policydtls.net_amount);
+                    } else {
+                      unit_cost =
+                        unit_cost != 0
+                          ? unit_cost
+                          : parseFloat(policydtls.gross_amt);
+                    }
                   }
+
 
                   // if (conversion_factor != 0) {
                   //   unit_cost = unit_cost * conversion_factor;
@@ -3462,8 +3468,7 @@ export default {
                     _mysql
                       .executeQueryWithTransaction({
                         query:
-                          "INSERT INTO finance_day_end_sub_detail (??) \
-                             VALUES ? ",
+                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ",
                         values: insertSubDetail,
                         includeValues: IncludeValuess,
                         bulkInsertOrUpdate: true,

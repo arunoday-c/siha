@@ -5,6 +5,7 @@ import Roles from "./Roles/Roles";
 import Groups from "./Groups/Groups";
 import ScreenAssignment from "./ScreenAssignment/ScreenAssignment";
 import ComponentElementAssignment from "./ComponentElementAssignment/ComponentElementAssignment";
+import ApiConfig from "./APIConfig";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 
 class AdminSetup extends Component {
@@ -80,6 +81,19 @@ class AdminSetup extends Component {
                     label={{
                       fieldName: "screen_assignment"
                     }}
+                  />
+                }
+              </li>
+              <li
+                  algaehtabs={"apiconfig"}
+                  className={"nav-item tab-button"}
+                  onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                      label={{
+                        forceLabel:"API CONFIG"
+                      }}
                   />
                 }
               </li>
@@ -176,7 +190,7 @@ class AdminSetup extends Component {
             <ScreenAssignment />
           ) : this.state.pageDisplay === "ComponentElementAssignment" ? (
             <ComponentElementAssignment />
-          ) : null}
+          ) : this.state.pageDisplay ==="apiconfig"?(<ApiConfig/>):  null}
         </div>
       </div>
     );

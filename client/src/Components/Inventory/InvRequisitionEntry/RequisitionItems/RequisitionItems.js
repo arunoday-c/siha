@@ -662,8 +662,7 @@ function mapStateToProps(state) {
     inventoryitemdetaillist: state.inventoryitemdetaillist,
     inventoryitemcategory: state.inventoryitemcategory,
     inventoryitemuom: state.inventoryitemuom,
-    inventoryitemgroup: state.inventoryitemgroup,
-    inventoryitemBatch: state.inventoryitemBatch
+    inventoryitemgroup: state.inventoryitemgroup
   };
 }
 
@@ -673,8 +672,7 @@ function mapDispatchToProps(dispatch) {
       getSelectedItemDetais: AlgaehActions,
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
-      getItemUOM: AlgaehActions,
-      getItemLocationStock: AlgaehActions
+      getItemUOM: AlgaehActions
     },
     dispatch
   );

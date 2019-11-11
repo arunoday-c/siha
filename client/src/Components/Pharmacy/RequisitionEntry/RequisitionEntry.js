@@ -7,7 +7,7 @@ import moment from "moment";
 
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
-  changeTexts,
+  // changeTexts,
   getCtrlCode,
   ClearData,
   SaveRequisitionEntry,
@@ -19,7 +19,7 @@ import "./RequisitionEntry.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
+// import GlobalVariables from "../../../utils/GlobalVariables.json";
 import RequisitionItems from "./RequisitionItems/RequisitionItems";
 import MyContext from "../../../utils/MyContext";
 import RequisitionIOputs from "../../../Models/Requisition";
@@ -176,8 +176,8 @@ class RequisitionEntry extends Component {
                   <h6>
                     {this.state.requistion_date
                       ? moment(this.state.requistion_date).format(
-                          Options.dateFormat
-                        )
+                        Options.dateFormat
+                      )
                       : Options.dateFormat}
                   </h6>
                 </div>{" "}
@@ -189,14 +189,14 @@ class RequisitionEntry extends Component {
                   />
                   <h6>
                     {this.state.authorize1 === "Y" &&
-                    this.state.authorie2 === "Y" ? (
-                      <span className="badge badge-success">Authorized</span>
-                    ) : this.state.authorize1 === "Y" &&
-                      this.state.authorie2 === "N" ? (
-                      <span className="badge badge-danger">Pending</span>
-                    ) : (
-                      "-------"
-                    )}
+                      this.state.authorie2 === "Y" ? (
+                        <span className="badge badge-success">Authorized</span>
+                      ) : this.state.authorize1 === "Y" &&
+                        this.state.authorie2 === "N" ? (
+                          <span className="badge badge-danger">Pending</span>
+                        ) : (
+                          "-------"
+                        )}
                   </h6>
                 </div>
                 {/* <div className="col">
@@ -220,17 +220,17 @@ class RequisitionEntry extends Component {
             printArea={
               this.state.material_requisition_number !== null
                 ? {
-                    menuitems: [
-                      {
-                        label: "Print Receipt",
-                        events: {
-                          onClick: () => {
-                            generateMaterialReqPhar(this.state);
-                          }
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generateMaterialReqPhar(this.state);
                         }
                       }
-                    ]
-                  }
+                    }
+                  ]
+                }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -301,8 +301,8 @@ class RequisitionEntry extends Component {
                   ? this.state.from_location_type === "WH"
                     ? "Warehouse"
                     : this.state.from_location_type === "MS"
-                    ? "Main Store"
-                    : "Sub Store"
+                      ? "Main Store"
+                      : "Sub Store"
                   : "----------"}
               </h6>
             </div>
@@ -346,8 +346,8 @@ class RequisitionEntry extends Component {
                   ? this.state.to_location_type === "WH"
                     ? "Warehouse"
                     : this.state.to_location_type === "MS"
-                    ? "Main Store"
-                    : "Sub Store"
+                      ? "Main Store"
+                      : "Sub Store"
                   : "----------"}
               </h6>
             </div>
@@ -402,8 +402,8 @@ class RequisitionEntry extends Component {
                           ? true
                           : this.state.authorize1 === "Y" &&
                             this.state.authorie2 === "Y"
-                          ? true
-                          : false
+                            ? true
+                            : false
                       }
                       onClick={AuthorizeRequisitionEntry.bind(
                         this,
@@ -419,8 +419,8 @@ class RequisitionEntry extends Component {
                             this.state.authorize1 === "N"
                               ? "Authorize 1"
                               : this.state.requisition_auth_level === "2"
-                              ? "Authorize 2"
-                              : "Authorize 1",
+                                ? "Authorize 2"
+                                : "Authorize 1",
                           returnText: true
                         }}
                       />

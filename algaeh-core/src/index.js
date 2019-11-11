@@ -1,5 +1,4 @@
 import http from "http";
-import https from "https";
 import compression from "compression";
 import express from "express";
 import bodyParser from "body-parser";
@@ -7,8 +6,6 @@ import routes from "./routes";
 import passport from "passport";
 import cors from "cors";
 const LocalStrategy = require("passport-local").Strategy;
-
-import fs from "fs";
 import path from "path";
 import httpStatus from "./utils/httpStatus";
 import logUtils from "./utils/logging";
@@ -26,7 +23,6 @@ app.use(compression());
 if (process.env.NODE_ENV === "production") {
   console.log("Running prod...." + _port);
   const dist = path.resolve("../", "client", "build");
-  console.log(dist);
   app.use(express.static(dist));
 }
 
@@ -70,27 +66,31 @@ passport.deserializeUser((id, done) => {
 app.use((req, res, next) => {
   let reqH = req.headers;
   let reqUser = "";
-if(reqH["x-client-api"] !==undefined){
- const xClientKey=  reqH["x-client-key"];
+  // if (req.url !== "/api/v1/apiAuth") {
+  //   if(reqH["x-api-key"] !=="undefined" && reqH["x-api-key"] !=null){
+  //     reqUser = jwtDecode(reqH["x-api-key"]);
+  //   }else{
+  //     reqUser = req.body;
+  //   }
 
-}else{
-  if (req.url != "/api/v1/apiAuth") {
-    reqUser = jwtDecode(reqH["x-api-key"]).id;
-    if (
-      req.url != "/api/v1/apiAuth/authUser" &&
-      req.url != "/api/v1/apiAuth/relogin"
-    ) {
-      let header = req.headers["x-app-user-identity"];
+    // if (
+    //   req.url !== "/api/v1/apiAuth/authUser" &&
+    //   req.url !== "/api/v1/apiAuth/relogin"
+    // ) {
+  if( req.url.includes("/apiAuth") ===false ){
+      let header = req.headers["x-api-key"];//["x-app-user-identity"];
 
-      if (header != null && header != "" && header != "null") {
-        header = decryption(header);
+      if (header != null && header !== "" && header !== "null") {
+
+        header =jwtDecode(reqH["x-api-key"]);//decryption(header);
 
         req.body.created_by = header.algaeh_d_app_user_id;
         req.body.updated_by = header.algaeh_d_app_user_id;
         req.userIdentity = { ...header, "x-branch": reqH["x-branch"] };
 
         const { username } = req.userIdentity;
-        userSecurity(reqH["x-client-ip"], username).catch(error => {
+        userSecurity(reqH["x-client-ip"], username.toLowerCase()).catch(error => {
+
           res.status(httpStatus.locked).json({
             success: false,
             message: error,
@@ -105,10 +105,19 @@ if(reqH["x-client-api"] !==undefined){
         });
         return;
       }
+    }else{
+    if(req.url.includes("/logout")){
+      let header = req.headers["x-api-key"];
+      if (header != null && header !== "" && header !== "null") {
+        header =jwtDecode(reqH["x-api-key"]);
+        req.userIdentity = { ...header, "x-branch": reqH["x-branch"] };
+      }
     }
 
   }
-}
+
+ // }
+
   requestTracking("", {
     dateTime: new Date().toLocaleString(),
     requestIdentity: {
@@ -126,6 +135,7 @@ if(reqH["x-client-api"] !==undefined){
 
     requestMethod: req.method
   });
+
   next();
 });
 
@@ -153,10 +163,10 @@ app.use((error, req, res, next) => {
   if (req.db != null) {
     let connection = req.connection;
     if (connection != null) {
-      if (req.db._freeConnections.indexOf(connection) == -1) {
-        if (typeof connection.rollback == "function") {
+      if (req.db._freeConnections.indexOf(connection) === -1) {
+        if (typeof connection.rollback === "function") {
           connection.rollback(() => {
-            if (typeof connection.release == "function") connection.release();
+            if (typeof connection.release === "function") connection.release();
 
             res.status(error.status).json({
               success: false,
@@ -166,7 +176,7 @@ app.use((error, req, res, next) => {
             });
           });
         } else {
-          if (typeof connection.release == "function") connection.release();
+          if (typeof connection.release === "function") connection.release();
           res.status(error.status).json({
             success: false,
             message:

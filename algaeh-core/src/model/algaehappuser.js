@@ -113,7 +113,7 @@ let getLoginUserMaster = (req, res, next) => {
         .executeQuery({
           query:
             "select  algaeh_d_app_user_id,username,user_display_name,user_type,user_status,hims_d_employee_id,\
-            employee_code,full_name,role_name,app_group_name,algaeh_m_role_user_mappings_id,\
+            employee_code,full_name,role_name,app_group_name,algaeh_m_role_user_mappings_id,E.hospital_id,\
             hims_m_user_employee_id from  hims_m_user_employee UM \
             inner join algaeh_d_app_user U on UM.user_id=U.algaeh_d_app_user_id\
             inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id\

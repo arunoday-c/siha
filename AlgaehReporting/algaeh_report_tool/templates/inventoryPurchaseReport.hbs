@@ -20,13 +20,12 @@
                     <tr>
                     <tr>
                         <th>Sl No.</th>
-                        <th>Employee Code</th>
-                        <th>Employee Name</th>
-                        <th>Emp. Group</th>
-                        <th>Designation</th>
-                        <th>Date of Joining</th>
-                        <td>Present Days</td>
-                        <td>Total Amount</td>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>UOM</th>
+                        <th>QTY Purchased</th>
+                        <th>Purchase Cost</th>
+                        <th>Total Cost</th>
                     </tr>
                     </tr>
                 </thead>
@@ -35,27 +34,25 @@
 
                     {{#each result}}
                     <tr>
-                        <td colspan="8" class="tableSubHdg">E&amp;D Type: {{religion}} | E&amp;D Desc:
-                            <span class="textFloatRight">No
-                                Total Amount: {{no_employee}}</span>
+                        <td colspan="7" class="tableSubHdg">PO No.: {{religion}}
+                            <span class="textFloatRight">Total Cost: {{no_employee}}</span>
 
                         </td>
                     </tr>
-                    {{#each employees}}
+                    {{#each poitems}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{employee_code}}</td>
-                        <td style="text-align: left;">{{full_name}}</td>
-                        <td>{{group_description}}</td>
-                        <td>{{designation}}</td>
-                        <td>{{date_of_joining}}</td>
-                        <td>{{present_days}}</td>
-                        <td>{{total_amt}}</td>
+                        <td>Item Code</th>
+                        <td>Item Name</th>
+                        <td>UOM</td>
+                        <td>QTY Purchased</td>
+                        <td>Purchase Cost</td>
+                        <td>Total Cost</td>
                     </tr>
                     {{/each }}{{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="8" class="noResultTextReport">No Records Found</td>
+                        <td colspan="7" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
 

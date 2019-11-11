@@ -3067,15 +3067,57 @@ const HR_Payroll_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
-            name: "sub_department_id",
-            isImp: false,
-            label: "Sub-Department",
+            name: "edType",
+
+            isImp: true,
+            label: "Earnings & Deduction Type",
+
             dataSource: {
-              textField: "sub_department_name",
-              valueField: "hims_d_sub_department_id",
-              data: undefined
+              textField: "edType",
+              valueField: "edTypeValue",
+              data: [
+                {
+                  edType: "Earnings",
+                  edTypeValue: "E"
+                },
+                {
+                  edType: "Dedections",
+                  edTypeValue: "D"
+                },
+                {
+                  edType: "Bonus",
+                  edTypeValue: "B"
+                }
+              ]
+            }
+          },
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "edType",
+
+            isImp: true,
+            label: "Earnings & Deduction Description",
+
+            dataSource: {
+              textField: "edType",
+              valueField: "edTypeValue",
+              data: [
+                {
+                  edType: "Earnings",
+                  edTypeValue: "E"
+                },
+                {
+                  edType: "Dedections",
+                  edTypeValue: "D"
+                },
+                {
+                  edType: "Bonus",
+                  edTypeValue: "B"
+                }
+              ]
             }
           }
         ]
@@ -3359,8 +3401,8 @@ const Inventory_Reports = [
     name: "Inventory",
     submenu: [
       {
-        subitem: "Current Stock List",
-        reportName: "currentStockInventory",
+        subitem: "Consumption List",
+        reportName: "consumptionListInventory",
         requireIframe: true,
         reportParameters: [
           {
@@ -3415,9 +3457,56 @@ const Inventory_Reports = [
               textField: "location_description",
               valueField: "hims_d_inventory_location_id",
               data: []
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
             }
           },
 
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "stockUsed",
+
+            isImp: true,
+            label: "Show for Last (month's)",
+
+            dataSource: {
+              textField: "stockUsed",
+              valueField: "stockUsedValue",
+              data: [
+                {
+                  stockUsed: "1 months",
+                  stockUsedValue: moment()
+                    .add(-1, "months")
+                    .format("YYYY-MM-DD")
+                },
+                {
+                  stockUsed: "2 months",
+                  stockUsedValue: moment()
+                    .add(-2, "months")
+                    .format("YYYY-MM-DD")
+                },
+                {
+                  stockUsed: "3 months",
+                  stockUsedValue: moment()
+                    .add(-3, "months")
+                    .format("YYYY-MM-DD")
+                }
+              ]
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
+            }
+          },
           {
             className: "col-2",
             type: "dropdown",
@@ -3432,27 +3521,15 @@ const Inventory_Reports = [
             },
             dataSource: {
               textField: "item_description",
-              valueField: "hims_d_item_master_id",
+              valueField: "hims_d_inventory_item_master_id",
               data: undefined
-            }
-          },
-
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "item_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Show for Last (month's)",
-
-            link: {
-              uri: "/inventory/getItemMaster",
-              module: "inventory"
             },
-            dataSource: {
-              textField: "item_description",
-              valueField: "hims_d_item_master_id",
-              data: undefined
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
             }
           }
         ]
@@ -3573,16 +3650,16 @@ const Inventory_Reports = [
         ]
       },
 
-      {
-        subitem: "Items Issued Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-      },
-      {
-        subitem: "Items Received Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-      },
+      // {
+      //   subitem: "Items Issued Report",
+      //   template_name: "asset_war_exp",
+      //   reportParameters: []
+      // },
+      // {
+      //   subitem: "Items Received Report",
+      //   template_name: "asset_war_exp",
+      //   reportParameters: []
+      // },
       {
         subitem: "Item Expiry Report",
         reportName: "itemExpiryInventory",
@@ -3766,6 +3843,210 @@ const Inventory_Reports = [
               textField: "item_description",
               valueField: "hims_d_item_master_id",
               data: []
+            }
+          }
+        ]
+      },
+      {
+        subitem: "Inventory Store Report",
+        reportName: "inventoryStoreReport",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getInventoryLocation",
+                  module: "inventory",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      location_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: []
+                });
+              }
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Location",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_inventory_location_id",
+              data: []
+            }
+          },
+
+          {
+            className: "col-2 mandatory  form-group",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+
+          {
+            className: "col-2 mandatory  form-group",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "item_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Item",
+
+            link: {
+              uri: "/inventory/getItemMaster",
+              module: "inventory"
+            },
+            dataSource: {
+              textField: "item_description",
+              valueField: "hims_d_item_master_id",
+              data: undefined
+            }
+          }
+        ]
+      },
+      {
+        subitem: "Inventory Purchase Report",
+        reportName: "inventoryPurchaseReport",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getInventoryLocation",
+                  module: "inventory",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      location_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: []
+                });
+              }
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Purchase No",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_inventory_location_id",
+              data: []
+            }
+          },
+
+          {
+            className: "col-2 mandatory  form-group",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+
+          {
+            className: "col-2 mandatory  form-group",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "item_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Item",
+
+            link: {
+              uri: "/inventory/getItemMaster",
+              module: "inventory"
+            },
+            dataSource: {
+              textField: "item_description",
+              valueField: "hims_d_item_master_id",
+              data: undefined
             }
           }
         ]
@@ -4297,8 +4578,8 @@ const Pharmacy_Reports = [
         ]
       },
       {
-        subitem: "Current Stock List",
-        reportName: "currentStockPharmacy",
+        subitem: "Consumption List",
+        reportName: "consumptionListPharmacy",
         requireIframe: true,
         reportParameters: [
           {
@@ -4353,6 +4634,53 @@ const Pharmacy_Reports = [
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
               data: []
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
+            }
+          },
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "stockUsed",
+
+            isImp: true,
+            label: "Show for Last (month's)",
+
+            dataSource: {
+              textField: "stockUsed",
+              valueField: "stockUsedValue",
+              data: [
+                {
+                  stockUsed: "1 months",
+                  stockUsedValue: moment()
+                    .add(-1, "months")
+                    .format("YYYY-MM-DD")
+                },
+                {
+                  stockUsed: "2 months",
+                  stockUsedValue: moment()
+                    .add(-2, "months")
+                    .format("YYYY-MM-DD")
+                },
+                {
+                  stockUsed: "3 months",
+                  stockUsedValue: moment()
+                    .add(-3, "months")
+                    .format("YYYY-MM-DD")
+                }
+              ]
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
             }
           },
 
@@ -4372,25 +4700,13 @@ const Pharmacy_Reports = [
               textField: "item_description",
               valueField: "hims_d_item_master_id",
               data: undefined
-            }
-          },
-
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "item_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Show for Last (month's)",
-
-            link: {
-              uri: "/pharmacy/getItemMaster",
-              module: "pharmacy"
             },
-            dataSource: {
-              textField: "item_description",
-              valueField: "hims_d_item_master_id",
-              data: undefined
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
             }
           }
         ]
