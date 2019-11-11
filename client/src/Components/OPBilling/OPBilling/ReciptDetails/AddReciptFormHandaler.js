@@ -108,7 +108,7 @@ const cashtexthandle = ($this, context, ctrl, e) => {
       if (context !== null) {
         context.updateState({
           [e.target.name]: e.target.value,
-          saveEnable: true
+          // saveEnable: true
         });
       }
     }
@@ -146,7 +146,7 @@ const cardtexthandle = ($this, context, ctrl, e) => {
       if (context !== null) {
         context.updateState({
           [e.target.name]: e.target.value,
-          saveEnable: true
+          // saveEnable: true
         });
       }
     }
@@ -185,7 +185,7 @@ const chequetexthandle = ($this, context, ctrl, e) => {
       if (context !== null) {
         context.updateState({
           [e.target.name]: e.target.value,
-          saveEnable: true
+          // saveEnable: true
         });
       }
     }

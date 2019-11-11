@@ -320,12 +320,12 @@ const Hims_Reports = [
                     : // : currentValue.value === "POS"
                     // ? "posReceipt"
                     currentValue.value === "AD"
-                    ? "advanceReceipt"
-                    : currentValue.value === "OPC"
-                    ? "opCreditReceipt"
-                    : // : currentValue.value === "POSC"
-                      // ? "posCreditReceipt"
-                      "";
+                      ? "advanceReceipt"
+                      : currentValue.value === "OPC"
+                        ? "opCreditReceipt"
+                        : // : currentValue.value === "POSC"
+                        // ? "posCreditReceipt"
+                        "";
                 callback({ reportQuery: reportQuery });
               }
             }
@@ -2075,7 +2075,7 @@ const HR_Payroll_Reports = [
               data: LEAVE_STATUS
             },
             events: {
-              onChange: (reportState, currentValue) => {}
+              onChange: (reportState, currentValue) => { }
             }
           }
         ]
@@ -2972,10 +2972,14 @@ const HR_Payroll_Reports = [
               textField: "name",
               valueField: "value",
               data: allYears
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
             }
-            // events: {
-            //   onChange: (reportState, currentValue) => {}
-            // }
           },
           {
             className: "col-2 mandatory",
@@ -2992,6 +2996,13 @@ const HR_Payroll_Reports = [
             },
             others: {
               sort: "off"
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
             }
           },
           {
@@ -3009,6 +3020,13 @@ const HR_Payroll_Reports = [
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
               data: undefined
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
             }
           },
           {
@@ -3024,44 +3042,11 @@ const HR_Payroll_Reports = [
             dataSource: {
               textField: "group_description",
               valueField: "hims_d_employee_group_id"
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "department_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Department",
-            link: {
-              uri: "/department/get",
-              module: "masterSettings"
-            },
-            dataSource: {
-              textField: "department_name",
-              valueField: "hims_d_department_id",
-              data: undefined
             },
             events: {
-              onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/department/get/subdepartment",
-                  module: "masterSettings",
-                  method: "GET",
-                  data: { department_id: currentEvent.value },
-
-                  onSuccess: result => {
-                    reportState.setState({
-                      sub_department_id_list: result.data.records
-                    });
-                  }
-                });
-              },
               onClear: (reportState, currentName) => {
                 reportState.setState({
-                  [currentName]: undefined,
-                  sub_department_id_list: []
+                  [currentName]: undefined
                 });
               }
             }
@@ -3091,34 +3076,66 @@ const HR_Payroll_Reports = [
                   edTypeValue: "B"
                 }
               ]
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                if (currentEvent.value === "E" || currentEvent.value === "B") {
+                  algaehApiCall({
+                    uri: "/payrollSettings/getMiscEarningDeductions",
+                    module: "hrManagement",
+                    method: "GET",
+                    data: { component_category: "E", miscellaneous_component: "Y" },
+
+                    onSuccess: result => {
+                      reportState.setState({
+                        earning_deductions_id_list: result.data.records
+                      });
+                    }
+                  });
+                } else if (currentEvent.value === "D") {
+                  algaehApiCall({
+                    uri: "/payrollSettings/getMiscEarningDeductions",
+                    module: "hrManagement",
+                    method: "GET",
+                    data: { component_category: "D", miscellaneous_component: "Y" },
+
+                    onSuccess: result => {
+                      reportState.setState({
+                        earning_deductions_id_list: result.data.records
+                      });
+                    }
+                  });
+                }
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  earning_deductions_id_list: []
+                });
+              }
             }
           },
+
           {
-            className: "col-2 mandatory",
+            className: "col-2",
             type: "dropdown",
-            name: "edType",
-
-            isImp: true,
+            name: "earning_deductions_id",
+            isImp: false,
             label: "Earnings & Deduction Description",
-
             dataSource: {
-              textField: "edType",
-              valueField: "edTypeValue",
-              data: [
-                {
-                  edType: "Earnings",
-                  edTypeValue: "E"
-                },
-                {
-                  edType: "Dedections",
-                  edTypeValue: "D"
-                },
-                {
-                  edType: "Bonus",
-                  edTypeValue: "B"
-                }
-              ]
+              textField: "earning_deduction_description",
+              valueField: "hims_d_earning_deduction_id",
+              data: undefined
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
             }
+
           }
         ]
       }
@@ -3994,21 +4011,6 @@ const Inventory_Reports = [
               data: undefined
             }
           },
-
-          {
-            className: "col-2 mandatory",
-            type: "dropdown",
-            name: "location_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Purchase No",
-            dataSource: {
-              textField: "location_description",
-              valueField: "hims_d_inventory_location_id",
-              data: []
-            }
-          },
-
           {
             className: "col-2 mandatory  form-group",
             type: "date",
@@ -4030,7 +4032,19 @@ const Inventory_Reports = [
               minDate: null
             }
           },
-
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Purchase No",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_inventory_location_id",
+              data: []
+            }
+          },
           {
             className: "col-2",
             type: "dropdown",
@@ -5269,8 +5283,8 @@ export default function loadActiveReports() {
       const Activated_Modueles =
         sessionStorage.getItem("ModuleDetails") !== null
           ? JSON.parse(
-              AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-            )
+            AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+          )
           : [];
       let result = [];
       for (let i = 0; i < Activated_Modueles.length; i++) {
