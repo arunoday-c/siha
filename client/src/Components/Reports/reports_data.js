@@ -320,12 +320,12 @@ const Hims_Reports = [
                     : // : currentValue.value === "POS"
                     // ? "posReceipt"
                     currentValue.value === "AD"
-                    ? "advanceReceipt"
-                    : currentValue.value === "OPC"
-                    ? "opCreditReceipt"
-                    : // : currentValue.value === "POSC"
-                      // ? "posCreditReceipt"
-                      "";
+                      ? "advanceReceipt"
+                      : currentValue.value === "OPC"
+                        ? "opCreditReceipt"
+                        : // : currentValue.value === "POSC"
+                        // ? "posCreditReceipt"
+                        "";
                 callback({ reportQuery: reportQuery });
               }
             }
@@ -2075,7 +2075,7 @@ const HR_Payroll_Reports = [
               data: LEAVE_STATUS
             },
             events: {
-              onChange: (reportState, currentValue) => {}
+              onChange: (reportState, currentValue) => { }
             }
           }
         ]
@@ -4053,8 +4053,8 @@ const Inventory_Reports = [
         ]
       },
       {
-        subitem: "Inventory Transfer Report",
-        reportName: "inventoryTransferReport",
+        subitem: "Transfer Report",
+        reportName: "InventoryTransferReport",
         requireIframe: true,
         reportParameters: [
           {
@@ -5217,7 +5217,7 @@ const Pharmacy_Reports = [
                 //provider_id_list CONTROL NAME AND APPEND BY _LIST
                 algaehApiCall({
                   uri: "/pharmacy/getPharmacyLocation",
-                  module: "inventory",
+                  module: "pharmacy",
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
@@ -5280,8 +5280,8 @@ const Pharmacy_Reports = [
       },
       ,
       {
-        subitem: "Pharmacy Transfer Report",
-        reportName: "pharmacyTransferReport",
+        subitem: "Transfer Report",
+        reportName: "PharmacyTransferReport",
         requireIframe: true,
         reportParameters: [
           {
@@ -5299,7 +5299,7 @@ const Pharmacy_Reports = [
                 //provider_id_list CONTROL NAME AND APPEND BY _LIST
                 algaehApiCall({
                   uri: "/pharmacy/getPharmacyLocation",
-                  module: "inventory",
+                  module: "pharmacy",
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
@@ -5354,7 +5354,7 @@ const Pharmacy_Reports = [
             label: "From Location ",
             dataSource: {
               textField: "location_description",
-              valueField: "hims_d_inventory_location_id",
+              valueField: "hims_d_pharmacy_location_id",
               data: []
             }
           }
@@ -5515,8 +5515,8 @@ export default function loadActiveReports() {
       const Activated_Modueles =
         sessionStorage.getItem("ModuleDetails") !== null
           ? JSON.parse(
-              AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-            )
+            AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+          )
           : [];
       let result = [];
       for (let i = 0; i < Activated_Modueles.length; i++) {
