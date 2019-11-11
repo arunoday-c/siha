@@ -431,17 +431,27 @@ export default {
     ) {
       strQry += ` and H.transaction_type='${input.transaction_type}'`;
     }
+
+    // `select SD.finance_day_end_sub_detail_id,D.finance_day_end_detail_id ,H.transaction_date,case D.payment_mode when 'CA' then\
+    // 'CASH' when 'CH' then 'CHEQUE' when 'CD' then 'CARD'  end as payment_mode ,D.amount,SD.narration,\
+    // H.document_type,H.document_number,case H.transaction_type when 'AD' then 'ADVANCE' \
+    // when 'RF' then 'REFUND' end as transaction_type ,S.screen_name from finance_day_end_header H inner join\
+    // finance_day_end_detail D on H.finance_day_end_header_id=D.day_end_header_id \
+    // inner join finance_day_end_sub_detail SD on D.finance_day_end_detail_id=SD.day_end_detail_id\
+    // left join  algaeh_d_app_screens S on H.from_screen=S.screen_code\
+    // where  SD.posted='N'  ${strQry}  group by finance_day_end_detail_id;`
+
     _mysql
       .executeQuery({
-        query: `select SD.finance_day_end_sub_detail_id,D.finance_day_end_detail_id ,H.transaction_date,case D.payment_mode when 'CA' then\
-          'CASH' when 'CH' then 'CHEQUE' when 'CD' then 'CARD'  end as payment_mode ,D.amount,SD.narration,\
-          H.document_type,H.document_number,case H.transaction_type when 'AD' then 'ADVANCE' \
-          when 'RF' then 'REFUND' end as transaction_type ,S.screen_name from finance_day_end_header H inner join\
-          finance_day_end_detail D on H.finance_day_end_header_id=D.day_end_header_id \
-          inner join finance_day_end_sub_detail SD on D.finance_day_end_detail_id=SD.day_end_detail_id\
-          left join  algaeh_d_app_screens S on H.from_screen=S.screen_code\
-          where  SD.posted='N'  ${strQry}  group by finance_day_end_detail_id;`,
-        // values: [input.from_date, input.to_date],
+        query: ` select finance_day_end_header_id,transaction_date,amount,control_account,document_type,
+        document_number,from_screen,case H.transaction_type when 'AD' then 'ADVANCE' 
+        when 'RF' then 'REFUND' when 'BILL' then 'OPBILL' when  'DUE' then 
+        'PATIENT DUE' end as transaction_type,S.screen_name,H.narration 
+        from finance_day_end_header H inner join finance_day_end_sub_detail SD on
+         H.finance_day_end_header_id=SD.day_end_header_id
+        left join  algaeh_d_app_screens S on H.from_screen=S.screen_code  where  SD.posted='N'  ${strQry}
+        group by  finance_day_end_header_id; `,
+
         printQuery: true
       })
       .then(result => {
@@ -462,17 +472,29 @@ export default {
 
     console.log("input:", input);
 
+    // WITH cte_  AS (
+    //   SELECT finance_day_end_sub_detail_id, day_end_detail_id, payment_date, head_account_code,
+    //   sum(debit_amount),sum(credit_amount) ,case when sum(debit_amount)= sum(credit_amount)then
+    //   'true' else 'false'end as is_equal FROM finance_day_end_sub_detail
+    //   where posted='N' and day_end_detail_id in (?)
+    //   group by day_end_detail_id)
+    //   select * from finance_day_end_sub_detail where day_end_detail_id in (SELECT day_end_detail_id
+    //    FROM cte_ where is_equal='true')
+
     _mysql
       .executeQuery({
         query: `  WITH cte_  AS (
-          SELECT finance_day_end_sub_detail_id, day_end_detail_id, payment_date, head_account_code,
-          sum(debit_amount),sum(credit_amount) ,case when sum(debit_amount)= sum(credit_amount)then
-          'true' else 'false'end as is_equal FROM finance_day_end_sub_detail
-          where posted='N' and day_end_detail_id in (?)
-          group by day_end_detail_id)
-          select * from finance_day_end_sub_detail where day_end_detail_id in (SELECT day_end_detail_id
-           FROM cte_ where is_equal='true');`,
-        values: [input.finance_day_end_detail_ids],
+          SELECT finance_day_end_sub_detail_id,  payment_date, head_account_code,
+          case when sum(debit_amount)= sum(credit_amount)then
+          'true' else 'false'end as is_equal FROM finance_day_end_header H inner join
+          finance_day_end_sub_detail SD on H.finance_day_end_header_id=day_end_header_id
+          where H.posted='N' and day_end_header_id in (?)
+          group by day_end_header_id)
+          select finance_day_end_sub_detail_id,day_end_header_id,payment_date,head_account_code,
+          head_id,child_id,debit_amount,payment_type,credit_amount,narration,hospital_id 
+          from finance_day_end_sub_detail where day_end_header_id in (SELECT day_end_header_id
+          FROM cte_ where is_equal='true');`,
+        values: [input.finance_day_end_header_ids],
         printQuery: true
       })
       .then(result => {

@@ -29,9 +29,10 @@ let generateAccessToken = (req, res, next) => {
 
 let createJWTToken = (dataToSave)=>{
   return jwt.sign({
-    ...dataToSave
+    ...dataToSave,
+    stream:true
   },SECRET);
-}
+};
 
 // const days = moment.duration(TOKENTIME, "seconds").asDays();
 

@@ -131,5 +131,35 @@ module.exports = {
       }
     });
   },
+setStreamingPermissions :(name,options)=>{
+    return new Promise((resolve,reject)=>{
+      try{
+        redis.hmset(`streamingPermissions:${name}`, options);
+        console.log("Here Resolved");
+        resolve();
+      }
+      catch (e) {
 
+        reject(e);
+      }
+    })
+},
+  getStreamingPermissions :(name)=>{
+    return new Promise((resolve, reject) => {
+      try {
+        redis.hgetall(`streamingPermissions:${name.toLowerCase()}`, (error, result) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  },
+  deleteStramingPermissions :(name)=>{
+    redis.del(`streamingPermissions:${name.toLowerCase()}`)
+  }
 };

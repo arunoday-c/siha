@@ -2984,182 +2984,9 @@ export default {
     }
   },
 
+
   //created by:IRFAN
-  addtoDayEndBAKP: (req, res, next) => {
-    try {
-      const _options = req.connection == null ? {} : req.connection;
-
-      const _mysql = new algaehMysql(_options);
-
-      const utilities = new algaehUtilities();
-
-      const inputParam = req.body;
-
-      console.log("ONE:");
-
-      utilities.logger().log("inputParamRR: ", inputParam);
-      _mysql
-        .executeQueryWithTransaction({
-          query:
-            "INSERT INTO finance_day_end_header (transaction_date,amount,control_account,document_type,document_id,\
-              document_number,from_screen,transaction_type,cutomer_type,hospital_id) \
-              VALUES (?,?,?,?,?,?,?,?,?,?)",
-          values: [
-            new Date(),
-            inputParam.total_amount,
-            "OP_CON",
-            "RECEIPT",
-            inputParam.receipt_header_id,
-            inputParam.receipt_number,
-            "FD0002",
-            inputParam.transaction_type,
-            "P",
-            req.userIdentity.hospital_id
-          ],
-          printQuery: true
-        })
-        .then(headerDayEnd => {
-          console.log("TWO:");
-
-          const insertDetail = inputParam.receiptdetails.map(m => {
-            return {
-              amount: m.amount,
-              payment_mode: m.pay_type
-            };
-          });
-          const IncludeValues = ["amount", "payment_mode"];
-          _mysql
-            .executeQueryWithTransaction({
-              query:
-                "INSERT INTO finance_day_end_detail (??) \
-                VALUES ? ",
-              values: insertDetail,
-              includeValues: IncludeValues,
-              bulkInsertOrUpdate: true,
-              extraValues: {
-                day_end_header_id: headerDayEnd["insertId"]
-              },
-              printQuery: true
-            })
-            .then(detail => {
-
-              console.log("THREE:");
-              _mysql
-                .executeQuery({
-                  query: "SELECT * FROM finance_accounts_maping;\
-                  select * from finance_day_end_detail where day_end_header_id=?; ",
-                  values: [headerDayEnd.insertId],
-                  printQuery: true
-                })
-                .then(rest => {
-
-                  const controlResult = rest[0];
-                  const day_end_detail = rest[1];
-
-                  const OP_DEP = controlResult.find(f => {
-                    return f.account == "OP_DEP";
-                  });
-
-                  const CH_IN_HA = controlResult.find(f => {
-                    return f.account == "CH_IN_HA";
-                  });
-
-                  const insertSubDetail = [];
-
-                  if (inputParam.transaction_type == "AD") {
-
-                    day_end_detail.forEach(item => {
-
-                      if (item.payment_mode == "CA") {
-                        insertSubDetail.push({
-                          day_end_detail_id: item.finance_day_end_detail_id,
-                          payment_date: new Date(),
-                          head_account_code: OP_DEP.head_account_code,
-                          head_id: OP_DEP.head_id,
-                          child_id: OP_DEP.child_id,
-                          debit_amount: item.amount,
-                          payment_type: "DR",
-                          credit_amount: 0,
-                          narration: "OP BILL CASH COLLECTION BEBIT",
-                          hospital_id: req.userIdentity.hospital_id
-                        });
-                        insertSubDetail.push({
-                          day_end_detail_id: item.finance_day_end_detail_id,
-                          payment_date: new Date(),
-                          head_account_code: CH_IN_HA.head_account_code,
-                          head_id: CH_IN_HA.head_id,
-                          child_id: CH_IN_HA.child_id,
-                          debit_amount: 0,
-                          payment_type: "CR",
-                          credit_amount: item.amount,
-                          narration: "OP BILL CASH COLLECTION  CREDIT",
-                          hospital_id: req.userIdentity.hospital_id
-
-                        });
-                      }
-
-
-                    });
-
-                    const IncludeValuess = [
-                      "day_end_detail_id",
-                      "payment_date",
-                      "head_account_code",
-                      "head_id",
-                      "child_id",
-                      "debit_amount",
-                      "payment_type",
-                      "credit_amount",
-                      "narration"
-                    ];
-                    _mysql
-                      .executeQueryWithTransaction({
-                        query:
-                          "INSERT INTO finance_day_end_sub_detail (??) \
-                           VALUES ? ",
-                        values: insertSubDetail,
-                        includeValues: IncludeValuess,
-                        bulkInsertOrUpdate: true,
-                        printQuery: true
-                      })
-                      .then(subResult => {
-                        console.log("FOUR");
-                        next();
-                      })
-                      .catch(error => {
-                        _mysql.rollBackTransaction(() => {
-                          next(error);
-                        });
-                      });
-                  } else {
-                    next();
-                  }
-                })
-                .catch(error => {
-                  _mysql.rollBackTransaction(() => {
-                    next(error);
-                  });
-                });
-            })
-            .catch(error => {
-              _mysql.rollBackTransaction(() => {
-                next(error);
-              });
-            });
-        })
-        .catch(error => {
-          _mysql.rollBackTransaction(() => {
-            next(error);
-          });
-        });
-    } catch (e) {
-      _mysql.rollBackTransaction(() => {
-        next(e);
-      });
-    }
-  },
-  //created by:IRFAN
-  addtoDayEnd: (req, res, next) => {
+  addtoDayEndBACKUP: (req, res, next) => {
     try {
       const _options = req.connection == null ? {} : req.connection;
 
@@ -3383,7 +3210,8 @@ export default {
                     _mysql
                       .executeQueryWithTransaction({
                         query:
-                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ",
+                          "INSERT INTO finance_day_end_sub_detail (??) \
+                             VALUES ? ",
                         values: insertSubDetail,
                         includeValues: IncludeValuess,
                         bulkInsertOrUpdate: true,
@@ -3432,14 +3260,271 @@ export default {
     }
   },
   //created by:IRFAN
-  addtoDayEnd_DELETE: (req, res, next) => {
+  addtoDayEnd: (req, res, next) => {
     try {
+      const _options = req.connection == null ? {} : req.connection;
 
-      financeCalc(req)
-        .then(result => {
+      const _mysql = new algaehMysql(_options);
+      const utilities = new algaehUtilities();
+      const inputParam = req.body;
+
+      console.log("ONE:");
+
+      utilities.logger().log("inputParamRR: ", inputParam);
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "INSERT INTO finance_day_end_header (transaction_date,amount,control_account,document_type,document_id,\
+              document_number,from_screen,transaction_type,customer_type,narration,hospital_id) \
+              VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+          values: [
+            new Date(),
+            inputParam.receiveable_amount,
+            "OP_CON",
+            "RECEIPT",
+            inputParam.receipt_header_id,
+            inputParam.receipt_number,
+            inputParam.ScreenCode,
+            inputParam.transaction_type,
+            "P",
+            "OP BILLING RECIEPT",
+            req.userIdentity.hospital_id
+          ],
+          printQuery: true
+        })
+        .then(headerDayEnd => {
           console.log("TWO:");
-          next();
 
+          const insertDetail = inputParam.receiptdetails.map(m => {
+            return {
+              amount: m.amount,
+              payment_mode: m.pay_type
+            };
+          });
+          const IncludeValues = ["amount", "payment_mode"];
+          _mysql
+            .executeQueryWithTransaction({
+              query:
+                "INSERT INTO finance_day_end_detail (??) \
+                VALUES ? ",
+              values: insertDetail,
+              includeValues: IncludeValues,
+              bulkInsertOrUpdate: true,
+              extraValues: {
+                day_end_header_id: headerDayEnd["insertId"]
+              },
+              printQuery: true
+            })
+            .then(detail => {
+
+              let fetchServiceDetails = "";
+              if (inputParam.billdetails.length > 0) {
+
+                const servicesIds = inputParam.billdetails.map(m => {
+                  return m.services_id;
+                })
+                fetchServiceDetails = ` SELECT hims_d_services_id,service_type_id,head_account,head_id,child_id FROM hims_d_services
+                where hims_d_services_id in(${servicesIds}); `
+
+              }
+
+              console.log("THREE:");
+              _mysql
+                .executeQuery({
+                  query: "SELECT * FROM finance_accounts_maping;\
+                  select * from finance_day_end_detail where day_end_header_id=?;\
+                  SELECT head_id,child_id,head_account FROM hims_d_bank_card where hims_d_bank_card_id=?;\
+                  "+ fetchServiceDetails,
+                  values: [headerDayEnd.insertId,inputParam.bank_card_id],
+                  printQuery: true
+                })
+                .then(rest => {
+
+                  const controlResult = rest[0];
+                  const day_end_detail = rest[1];
+
+                  const OP_DEP = controlResult.find(f => {
+                    return f.account == "OP_DEP";
+                  });
+
+                  const CH_IN_HA = controlResult.find(f => {
+                    return f.account == "CH_IN_HA";
+                  });
+                  const OP_CON = controlResult.find(f => {
+                    return f.account == "OP_CON";
+                  });
+
+                   let insertSubDetail = [];
+
+
+                  //------------------------4444
+
+
+                  //finall insert
+                  new Promise((resolve, reject) => {
+                    try {
+
+                      if (inputParam.billdetails.length > 0) {
+
+                        //full payment in cash
+
+                        // rest[2].forEach(curService => {
+                         
+                        //     const serviceData=inputParam.billdetails.find(f=>{
+                        //       if(f.services_id==curService.hims_d_services_id)
+                        //       return f;
+                        //     });
+                           
+                        //     console.log("ammount MY:",serviceData.patient_payable);
+                    
+                        //     insertSubDetail.push({
+                        //       day_end_header_id: headerDayEnd.insertId,
+                        //       payment_date: new Date(),
+                        //       head_account_code: curService.head_account,
+                        //       head_id: curService.head_id,
+                        //       child_id: curService.child_id,
+                        //       debit_amount: 0,
+                        //       payment_type: "CR",
+                        //       credit_amount: serviceData.patient_payable,
+                        //       narration: "OP BILL CASH COLLECTION  CREDIT",
+                        //       hospital_id: req.userIdentity.hospital_id
+                        //     });
+
+                        // });
+
+
+                        // day_end_detail.forEach(item => {
+                         
+                        //   if (item.payment_mode == "CA") {                                                  
+                        //       insertSubDetail.push({
+                        //         day_end_header_id: headerDayEnd.insertId,
+                        //         payment_date: new Date(),
+                        //         head_account_code: CH_IN_HA.head_account_code,
+                        //         head_id: CH_IN_HA.head_id,
+                        //         child_id: CH_IN_HA.child_id,
+                        //         debit_amount: item.amount,
+                        //         payment_type: "DR",
+                        //         credit_amount: 0,
+                        //         narration: "OP BILL CASH COLLECTION DEBIT",
+                        //         hospital_id: req.userIdentity.hospital_id
+                        //       });
+
+                        //   }
+                        // });
+
+                        // resolve({});
+
+                        const options={
+                          hospital_id:req.userIdentity.hospital_id,
+                          insertId: headerDayEnd.insertId,
+                          CH_IN_HA:CH_IN_HA,
+                          OP_DEP:OP_DEP,
+                          OP_CON:OP_CON,
+                          card_details:rest[2]?rest[2][0]:null
+                        };
+                        if(inputParam.insured=="N"){
+                          cashPatientFinance(rest[3], day_end_detail, inputParam,options).then(resul=>{
+                            insertSubDetail=resul;
+                            resolve({});
+                          }).catch(error => {
+                            _mysql.rollBackTransaction(() => {
+                              next(error);
+                            });
+                          });
+                        }
+
+                      }
+                      else if (inputParam.transaction_type == "AD") {
+                        day_end_detail.forEach(item => {
+                          if (item.payment_mode == "CA") {
+                            insertSubDetail.push({
+                              day_end_detail_id: item.finance_day_end_detail_id,
+                              payment_date: new Date(),
+                              head_account_code: OP_DEP.head_account_code,
+                              head_id: OP_DEP.head_id,
+                              child_id: OP_DEP.child_id,
+                              debit_amount: item.amount,
+                              payment_type: "DR",
+                              credit_amount: 0,
+                              narration: "OP BILL CASH COLLECTION BEBIT",
+                              hospital_id: req.userIdentity.hospital_id
+                            });
+                            insertSubDetail.push({
+                              day_end_detail_id: item.finance_day_end_detail_id,
+                              payment_date: new Date(),
+                              head_account_code: CH_IN_HA.head_account_code,
+                              head_id: CH_IN_HA.head_id,
+                              child_id: CH_IN_HA.child_id,
+                              debit_amount: 0,
+                              payment_type: "CR",
+                              credit_amount: item.amount,
+                              narration: "OP BILL CASH COLLECTION  CREDIT",
+                              hospital_id: req.userIdentity.hospital_id
+                            });
+                          }
+                        });
+                        resolve({});
+                      } else {
+                        next();
+                      }
+
+
+                    } catch (e) {
+                      reject(e);
+                    }
+                  }).then(rests => {
+
+
+                    const IncludeValuess = [
+                      "day_end_header_id",
+                      "payment_date",
+                      "head_account_code",
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "payment_type",
+                      "credit_amount",
+                      "narration"
+                    ];
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ",
+                        values: insertSubDetail,
+                        includeValues: IncludeValuess,
+                        bulkInsertOrUpdate: true,
+                        printQuery: true
+                      })
+                      .then(subResult => {
+                        console.log("FOUR");
+                        next();
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+
+                  })
+                    .catch(error => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                      });
+                    });
+
+
+                })
+                .catch(error => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            })
+            .catch(error => {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            });
         })
         .catch(error => {
           _mysql.rollBackTransaction(() => {
@@ -3451,7 +3536,8 @@ export default {
         next(e);
       });
     }
-  }
+  },
+
 
 };
 
@@ -4419,186 +4505,84 @@ function insertOrderServices(options) {
   });
 }
 
+//created by :IRFAN to calculate the amount of account heads
+function cashPatientFinance(allServices, day_end_detail, inputParam,options) {
+  try {
+    return new Promise((resolve, reject) => {
+      
+      
+      const insertSubDetail = [];
+      allServices.forEach(curService => {
+                         
+        const serviceData=inputParam.billdetails.find(f=>{
+          if(f.services_id==curService.hims_d_services_id)
+          return f;
+        });
+       
+        console.log("ammount MY:",serviceData.patient_payable);
 
-function financeCalc(req) {
-  return new Promise((resolve, reject) => {
-    try {
-      const _options = req.connection == null ? {} : req.connection;
+        insertSubDetail.push({
+          day_end_header_id: options.insertId,
+          payment_date: new Date(),
+          head_account_code: curService.head_account,
+          head_id: curService.head_id,
+          child_id: curService.child_id,
+          debit_amount: 0,
+          payment_type: "CR",
+          credit_amount: serviceData.patient_payable,
+          narration: "OP BILL CASH COLLECTION  CREDIT",
+          hospital_id: options.hospital_id
+        });
 
-      const _mysql = new algaehMysql(_options);
-
-      const utilities = new algaehUtilities();
-
-      const inputParam = req.body;
-      console.log("FFFFFFFFFFFFFFFFF")
-      utilities.logger().log("REQINPUT: ", inputParam);
-
-      if (inputParam.billdetails.length > 0) {
-
-      } else
-
-        if (false) {
-          console.log("jjjjjjjjjjjj")
-
-          _mysql
-            .executeQueryWithTransaction({
-              query:
-                "INSERT INTO finance_day_end_header (transaction_date,amount,control_account,document_type,document_id,\
-              document_number,from_screen,transaction_type,cutomer_type,hospital_id) \
-              VALUES (?,?,?,?,?,?,?,?,?,?)",
-              values: [
-                new Date(),
-                inputParam.total_amount,
-                "OP_CON",
-                "RECEIPT",
-                inputParam.receipt_header_id,
-                inputParam.receipt_number,
-                inputParam.ScreenCode,
-                inputParam.transaction_type,
-                "P",
-                req.userIdentity.hospital_id
-              ],
-              printQuery: true
-            })
-            .then(headerDayEnd => {
-              console.log("TWO:");
-
-              const insertDetail = inputParam.receiptdetails.map(m => {
-                return {
-                  amount: m.amount,
-                  payment_mode: m.pay_type
-                };
-              });
-              const IncludeValues = ["amount", "payment_mode"];
-              _mysql
-                .executeQueryWithTransaction({
-                  query:
-                    "INSERT INTO finance_day_end_detail (??) \
-                VALUES ? ",
-                  values: insertDetail,
-                  includeValues: IncludeValues,
-                  bulkInsertOrUpdate: true,
-                  extraValues: {
-                    day_end_header_id: headerDayEnd["insertId"]
-                  },
-                  printQuery: true
-                })
-                .then(detail => {
-
-                  console.log("THREE:");
-                  _mysql
-                    .executeQuery({
-                      query: "SELECT * FROM finance_accounts_maping;\
-                  select * from finance_day_end_detail where day_end_header_id=?; ",
-                      values: [headerDayEnd.insertId],
-                      printQuery: true
-                    })
-                    .then(rest => {
-
-                      const controlResult = rest[0];
-                      const day_end_detail = rest[1];
-
-                      const OP_DEP = controlResult.find(f => {
-                        return f.account == "OP_DEP";
-                      });
-
-                      const CH_IN_HA = controlResult.find(f => {
-                        return f.account == "CH_IN_HA";
-                      });
-
-                      const insertSubDetail = [];
-
-                      if (inputParam.transaction_type == "AD") {
-
-                        day_end_detail.forEach(item => {
-
-                          if (item.payment_mode == "CA") {
-                            insertSubDetail.push({
-                              day_end_detail_id: item.finance_day_end_detail_id,
-                              payment_date: new Date(),
-                              head_account_code: OP_DEP.head_account_code,
-                              head_id: OP_DEP.head_id,
-                              child_id: OP_DEP.child_id,
-                              debit_amount: item.amount,
-                              payment_type: "DR",
-                              credit_amount: 0,
-                              narration: "OP BILL CASH COLLECTION BEBIT",
-                              hospital_id: req.userIdentity.hospital_id
-                            });
-                            insertSubDetail.push({
-                              day_end_detail_id: item.finance_day_end_detail_id,
-                              payment_date: new Date(),
-                              head_account_code: CH_IN_HA.head_account_code,
-                              head_id: CH_IN_HA.head_id,
-                              child_id: CH_IN_HA.child_id,
-                              debit_amount: 0,
-                              payment_type: "CR",
-                              credit_amount: item.amount,
-                              narration: "OP BILL CASH COLLECTION  CREDIT",
-                              hospital_id: req.userIdentity.hospital_id
-
-                            });
-                          }
+    });
 
 
-                        });
+    day_end_detail.forEach(item => {
+     
+      if (item.payment_mode == "CA") {                                                  
+          insertSubDetail.push({
+            day_end_header_id: options.insertId,
+            payment_date: new Date(),
+            head_account_code:options.CH_IN_HA.head_account_code,
+            head_id: options.CH_IN_HA.head_id,
+            child_id: options.CH_IN_HA.child_id,
+            debit_amount: item.amount,
+            payment_type: "DR",
+            credit_amount: 0,
+            narration: "OP BILL CASH COLLECTION DEBIT",
+            hospital_id: options.hospital_id
+          });
 
-                        const IncludeValuess = [
-                          "day_end_detail_id",
-                          "payment_date",
-                          "head_account_code",
-                          "head_id",
-                          "child_id",
-                          "debit_amount",
-                          "payment_type",
-                          "credit_amount",
-                          "narration"
-                        ];
-                        _mysql
-                          .executeQueryWithTransaction({
-                            query:
-                              "INSERT INTO finance_day_end_sub_detail (??) \
-                           VALUES ? ",
-                            values: insertSubDetail,
-                            includeValues: IncludeValuess,
-                            bulkInsertOrUpdate: true,
-                            printQuery: true
-                          })
-                          .then(subResult => {
-                            console.log("FOUR");
-                            resolve(subResult);
-                          })
-                          .catch(error => {
-                            _mysql.rollBackTransaction(() => {
-                              reject(error);
-                            });
-                          });
-                      } else {
-                        resolve({});
-                      }
-                    })
-                    .catch(error => {
-                      _mysql.rollBackTransaction(() => {
-                        reject(error);
-                      });
-                    });
-                })
-                .catch(error => {
-                  _mysql.rollBackTransaction(() => {
-                    reject(error);
-                  });
-                });
-            })
-            .catch(error => {
-              _mysql.rollBackTransaction(() => {
-                reject(error);
-              });
-            });
-        }
-    } catch (e) {
-      reject(e);
-    }
-  }).catch(e => {
-    options.next(e);
-  });
+      }
+      if (item.payment_mode == "CD") {                                                  
+          insertSubDetail.push({
+            day_end_header_id: options.insertId,
+            payment_date: new Date(),
+            head_account_code:null,
+            head_id: options.card_details.head_id,
+            child_id: options.card_details.child_id,
+            debit_amount: item.amount,
+            payment_type: "DR",
+            credit_amount: 0,
+            narration: "OP BILL CASH COLLECTION DEBIT",
+            hospital_id: options.hospital_id
+          });
+
+      }
+
+
+
+
+    });
+
+
+    console.log("HHHHHH")
+    resolve(insertSubDetail);
+
+
+    });
+  } catch (e) {
+    console.log("am55:", e);
+    reject(e);
+  }
 }

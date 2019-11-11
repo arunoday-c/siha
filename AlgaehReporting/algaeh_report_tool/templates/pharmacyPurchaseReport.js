@@ -1,7 +1,7 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
 
@@ -18,68 +18,37 @@ const executePDF = function executePDFMethod(options) {
 
       let strQuery = "";
 
-      if (input.department_id > 0) {
-        strQuery += ` and SD.department_id=${input.department_id}`;
-      }
-      if (input.sub_department_id > 0) {
-        strQuery += ` and E.sub_department_id=${input.sub_department_id}`;
-      }
-      if (input.religion_id > 0) {
-        strQuery += ` and E.religion_id=${input.religion_id}`;
-      }
-      if (input.employee_group_id > 0) {
-        strQuery += ` and E.employee_group_id=${input.employee_group_id}`;
-      }
-
       options.mysql
         .executeQuery({
           query: `
-select hospital_name FROM hims_d_hospital where hims_d_hospital_id=?;
-select hims_d_employee_id,employee_code,full_name,sex,date_of_joining,G.group_description,
-case employee_status when 'A' then 'ACTIVE' when 'I' then 'INACTIVE'
-when 'R' then 'RESIGNED' when 'T' then 'TERMINATED' when 'E' then 'RETIRED'
-end asemployee_status,DG.designation,N.nationality,R.religion_name,
-E.sub_department_id, SD.sub_department_name,D.hims_d_department_id,D.department_name,
-case employee_type when 'PE' then 'PERMANENT' when 'CO' then 'CONTRACT'
-when 'PB' then 'PROBATION' when 'LC' then 'LOCUM'
-when 'VC' then 'VISITING CONSULTANT'end as employee_type,hims_d_religion_id
-from hims_d_employee E left join hims_d_designation DG on
-E.employee_designation_id=DG.hims_d_designation_id
-left join hims_d_religion R on E.religion_id=R.hims_d_religion_id
-left join hims_d_nationality N on E.nationality=N.hims_d_nationality_id
-left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
-left join hims_d_department D on SD.department_id=D.hims_d_department_id
-left join hims_d_employee_group G on E.employee_group_id=G.hims_d_employee_group_id
-where E.hospital_id=? and E.record_status='A' ${strQuery}; `,
-          values: [input.hospital_id, input.hospital_id],
+          select H.*,D.*, IM.item_code, IM.item_description, IU.uom_description  from hims_f_procurement_po_header H 
+          inner join hims_f_procurement_po_detail D on D.procurement_header_id= H.hims_f_procurement_po_header_id 
+          inner join hims_d_item_master IM on IM.hims_d_item_master_id = D.phar_item_id 
+          inner join hims_d_pharmacy_uom IU on IU.hims_d_pharmacy_uom_id = D.pharmacy_uom_id 
+          where po_from = 'PHR' and date(po_date)  between date(?) and date(?) and hospital_id=? ${strQuery}; `,
+          values: [input.from_date, input.to_date, input.hospital_id],
           printQuery: true
         })
-        .then(res => {
+        .then(result => {
           options.mysql.releaseConnection();
-          const hospital_name = res[0][0]["hospital_name"];
-          const result = res[1];
 
           if (result.length > 0) {
             const nationgWiseEmp = _.chain(result)
-              .groupBy(g => g.hims_d_religion_id)
+              .groupBy(g => g.hims_f_procurement_po_header_id)
               .map(m => {
                 return {
-                  religion: m[0]["religion_name"],
-                  no_employee: m.length,
-                  employees: m
+                  purchase_number: m[0].purchase_number,
+                  net_total: m[0].net_total,
+                  poitems: m
                 };
               })
               .value();
 
             resolve({
-              hospital_name: hospital_name,
-              no_employees: result.length,
               result: nationgWiseEmp
             });
           } else {
             resolve({
-              hospital_name: hospital_name,
-              no_employees: result.length,
               result: result
             });
           }

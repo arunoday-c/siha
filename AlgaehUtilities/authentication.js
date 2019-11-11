@@ -1,8 +1,7 @@
 const utliites = require("./utilities");
-const {userSecurity}=require("./checksecurity");
-module.exports ={authentication:(req,res,next,onlyTokenVerify)=>{
+const {userSecurity,getStreamingPermissions}=require("./checksecurity");
+module.exports ={authentication:(req,res,next)=>{
 
-        const verifyToken=onlyTokenVerify ===undefined?false:onlyTokenVerify;
     const reqH = req.headers;
     const _token = reqH["x-api-key"];
     const _utilis= new  utliites();
@@ -10,7 +9,7 @@ module.exports ={authentication:(req,res,next,onlyTokenVerify)=>{
 
    if(verify){
        req.userIdentity = verify;
-      const {username} = verify;
+      const {username,stream,gatepass} = verify;
 
        _utilis.logger("res-tracking").log("",{
            dateTime: new Date().toLocaleString(),
@@ -28,7 +27,7 @@ module.exports ={authentication:(req,res,next,onlyTokenVerify)=>{
            requestMethod: req.method
        },"info");
 
-if(!verifyToken)
+if(stream ===undefined)
       { userSecurity(reqH["x-client-ip"],username.toLowerCase())
            .then(()=>{
                res.setHeader("connection","keep-alive");
@@ -41,8 +40,25 @@ if(!verifyToken)
            }).end();
            return;
        });}else{
+    getStreamingPermissions(username)
+        .then((result)=>{
+            if(Object.keys(result).length===0){
+                res.status(_utilis.httpStatus().unAuthorized).json({
+                    success:false,
+                    message:"No access to any api.Please contact your software provider."
+                }).end();
+            }
+            else{
+                next();
+            }
+        }).catch(error => {
+        res.status(_utilis.httpStatus().unAuthorized).json({
+            success: false,
+            message:error
+        }).end();
+    });
 
-    next();
+
 }
 
 
