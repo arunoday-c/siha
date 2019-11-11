@@ -51,8 +51,7 @@ const calculateRecipt = ($this, context, e) => {
               response.data.records.patient_payable ||
               $this.state.patient_payable;
             context.updateState({
-              ...response.data.records,
-              saveEnable: false
+              ...response.data.records
             });
           }
         }

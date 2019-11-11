@@ -429,7 +429,8 @@ const ProcessInsurance = ($this, context) => {
         secondary_insurance_provider_id:
           $this.state.secondary_insurance_provider_id,
         secondary_network_id: $this.state.secondary_network_id,
-        secondary_network_office_id: $this.state.secondary_network_office_id
+        secondary_network_office_id: $this.state.secondary_network_office_id,
+        FollowUp: $this.state.follow_up
       }
     ];
 

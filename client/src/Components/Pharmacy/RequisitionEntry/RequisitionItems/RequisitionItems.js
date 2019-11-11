@@ -23,7 +23,6 @@ import {
   EditGrid
 } from "./RequisitionItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import moment from "moment";
 
 class RequisitionItems extends Component {
   constructor(props) {
@@ -307,15 +306,15 @@ class RequisitionItems extends Component {
                                   this.props.itemlist === undefined
                                     ? []
                                     : this.props.itemlist.filter(
-                                        f =>
-                                          f.hims_d_item_master_id ===
-                                          row.item_id
-                                      );
+                                      f =>
+                                        f.hims_d_item_master_id ===
+                                        row.item_id
+                                    );
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                    display.length !== 0
+                                      display.length !== 0
                                       ? display[0].item_description
                                       : ""}
                                   </span>
@@ -326,15 +325,15 @@ class RequisitionItems extends Component {
                                   this.props.itemlist === undefined
                                     ? []
                                     : this.props.itemlist.filter(
-                                        f =>
-                                          f.hims_d_item_master_id ===
-                                          row.item_id
-                                      );
+                                      f =>
+                                        f.hims_d_item_master_id ===
+                                        row.item_id
+                                    );
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                    display.length !== 0
+                                      display.length !== 0
                                       ? display[0].item_description
                                       : ""}
                                   </span>
@@ -354,10 +353,10 @@ class RequisitionItems extends Component {
                                   this.props.itemcategory === undefined
                                     ? []
                                     : this.props.itemcategory.filter(
-                                        f =>
-                                          f.hims_d_item_category_id ===
-                                          row.item_category_id
-                                      );
+                                      f =>
+                                        f.hims_d_item_category_id ===
+                                        row.item_category_id
+                                    );
 
                                 return (
                                   <span>
@@ -372,10 +371,10 @@ class RequisitionItems extends Component {
                                   this.props.itemcategory === undefined
                                     ? []
                                     : this.props.itemcategory.filter(
-                                        f =>
-                                          f.hims_d_item_category_id ===
-                                          row.item_category_id
-                                      );
+                                      f =>
+                                        f.hims_d_item_category_id ===
+                                        row.item_category_id
+                                    );
 
                                 return (
                                   <span>
@@ -399,10 +398,10 @@ class RequisitionItems extends Component {
                                   this.props.itemgroup === undefined
                                     ? []
                                     : this.props.itemgroup.filter(
-                                        f =>
-                                          f.hims_d_item_group_id ===
-                                          row.item_group_id
-                                      );
+                                      f =>
+                                        f.hims_d_item_group_id ===
+                                        row.item_group_id
+                                    );
 
                                 return (
                                   <span>
@@ -417,10 +416,10 @@ class RequisitionItems extends Component {
                                   this.props.itemgroup === undefined
                                     ? []
                                     : this.props.itemgroup.filter(
-                                        f =>
-                                          f.hims_d_item_group_id ===
-                                          row.item_group_id
-                                      );
+                                      f =>
+                                        f.hims_d_item_group_id ===
+                                        row.item_group_id
+                                    );
 
                                 return (
                                   <span>
@@ -442,10 +441,10 @@ class RequisitionItems extends Component {
                                   this.props.itemuom === undefined
                                     ? []
                                     : this.props.itemuom.filter(
-                                        f =>
-                                          f.hims_d_pharmacy_uom_id ===
-                                          row.item_uom
-                                      );
+                                      f =>
+                                        f.hims_d_pharmacy_uom_id ===
+                                        row.item_uom
+                                    );
 
                                 return (
                                   <span>
@@ -460,10 +459,10 @@ class RequisitionItems extends Component {
                                   this.props.itemuom === undefined
                                     ? []
                                     : this.props.itemuom.filter(
-                                        f =>
-                                          f.hims_d_pharmacy_uom_id ===
-                                          row.item_uom
-                                      );
+                                      f =>
+                                        f.hims_d_pharmacy_uom_id ===
+                                        row.item_uom
+                                    );
 
                                 return (
                                   <span>
@@ -672,8 +671,7 @@ function mapStateToProps(state) {
     itemdetaillist: state.itemdetaillist,
     itemcategory: state.itemcategory,
     itemuom: state.itemuom,
-    itemgroup: state.itemgroup,
-    itemBatch: state.itemBatch
+    itemgroup: state.itemgroup
   };
 }
 
@@ -683,8 +681,7 @@ function mapDispatchToProps(dispatch) {
       getSelectedItemDetais: AlgaehActions,
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
-      getItemUOM: AlgaehActions,
-      getItemLocationStock: AlgaehActions
+      getItemUOM: AlgaehActions
     },
     dispatch
   );

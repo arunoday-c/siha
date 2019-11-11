@@ -74,7 +74,7 @@ const getInvestigations = $this => {
               analytes_required: firstRecordSet.test_section === "M" ? false : true,
               container_id: firstRecordSet.container_id,
               analytes: firstRecordSet.hims_m_lab_analyte_id === null ? [] : g.getSource(),
-              RadTemplate: g.getSource()
+              RadTemplate: firstRecordSet.hims_d_rad_template_detail_id === null ? [] : g.getSource()
             };
           })
           .toArray();
