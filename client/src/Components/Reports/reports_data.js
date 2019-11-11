@@ -3067,15 +3067,57 @@ const HR_Payroll_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
-            name: "sub_department_id",
-            isImp: false,
-            label: "Sub-Department",
+            name: "edType",
+
+            isImp: true,
+            label: "Earnings & Deduction Type",
+
             dataSource: {
-              textField: "sub_department_name",
-              valueField: "hims_d_sub_department_id",
-              data: undefined
+              textField: "edType",
+              valueField: "edTypeValue",
+              data: [
+                {
+                  edType: "Earnings",
+                  edTypeValue: "E"
+                },
+                {
+                  edType: "Dedections",
+                  edTypeValue: "D"
+                },
+                {
+                  edType: "Bonus",
+                  edTypeValue: "B"
+                }
+              ]
+            }
+          },
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "edType",
+
+            isImp: true,
+            label: "Earnings & Deduction Description",
+
+            dataSource: {
+              textField: "edType",
+              valueField: "edTypeValue",
+              data: [
+                {
+                  edType: "Earnings",
+                  edTypeValue: "E"
+                },
+                {
+                  edType: "Dedections",
+                  edTypeValue: "D"
+                },
+                {
+                  edType: "Bonus",
+                  edTypeValue: "B"
+                }
+              ]
             }
           }
         ]
@@ -3838,6 +3880,108 @@ const Inventory_Reports = [
             initialLoad: true,
             isImp: true,
             label: "Location",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_inventory_location_id",
+              data: []
+            }
+          },
+
+          {
+            className: "col-2 mandatory  form-group",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+
+          {
+            className: "col-2 mandatory  form-group",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "item_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Item",
+
+            link: {
+              uri: "/inventory/getItemMaster",
+              module: "inventory"
+            },
+            dataSource: {
+              textField: "item_description",
+              valueField: "hims_d_item_master_id",
+              data: undefined
+            }
+          }
+        ]
+      },
+      {
+        subitem: "Inventory Purchase Report",
+        reportName: "inventoryPurchaseReport",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getInventoryLocation",
+                  module: "inventory",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      location_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: []
+                });
+              }
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Purchase No",
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_inventory_location_id",
