@@ -8,6 +8,6 @@ const router = express();
 router.use("/laboratory", laboratory());
 router.use("/labmasters", labmasters());
 router.use("/investigation", investigation());
-router.use("/LisIntegration", LisIntegration());
+router.use("/lisIntegration", LisIntegration());
 
 export default router;

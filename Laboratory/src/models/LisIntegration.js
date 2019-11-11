@@ -3,8 +3,9 @@ import algaehMysql from "algaeh-mysql";
 export default {
     getLisMachineData: (req, res, next) => {
         const _mysql = new algaehMysql();
+
         try {
-            let inputObj = req.query
+            let inputObj = req.query;
             _mysql
                 .executeQuery({
                     query: "select * from hims_d_lis_configuration where hims_d_lis_configuration_id = ?;",

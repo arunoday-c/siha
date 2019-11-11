@@ -234,7 +234,7 @@ export default ({ config, db }) => {
   );
   api.get("/logout", (req, res, next) => {
     try {
-      
+
       if (req.userIdentity !== undefined) {
         const { username } = req.userIdentity;
         userSecurity(req.headers["x-client-ip"], username.toLowerCase())
