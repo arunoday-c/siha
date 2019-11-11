@@ -113,7 +113,8 @@ const Validations = $this => {
       document.querySelector("[name='cheque_amount']").focus();
       return isError;
     }
-  } else if ($this.state.unbalanced_amount > 0) {
+  }
+  if ($this.state.unbalanced_amount > 0) {
     isError = true;
     swalMessage({
       type: "warning",
