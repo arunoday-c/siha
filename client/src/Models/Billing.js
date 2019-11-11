@@ -99,7 +99,8 @@ export default {
       balance_credit: null,
       due_amount: 0,
       pack_balance_amount: 0,
-      bank_card_id: null
+      bank_card_id: null,
+      card_check_number: null
     };
     return output;
   }
