@@ -19,8 +19,8 @@ app.use(
 );
 app.use(compression());
 app.use((req,res,next)=>{
-  const integration = req.url.includes("lisIntegration") ? true:false;
-  authentication(req,res,next,integration);
+  // const integration = req.url.includes("lisIntegration") ? true:false;
+  authentication(req,res,next);
 });
 // app.use((req, res, next) => {
 //   const reqH = req.headers;

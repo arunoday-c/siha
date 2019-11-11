@@ -311,21 +311,51 @@ class LoginUsers extends Component {
     });
   }
 apiConfiguration(row,e){
+    const {username,hospital_id}=row;
   algaehApiCall({
     uri:"/apiAuth/getAPI",
     method:"GET",
-    data:{}
+    data:{username:username,item_id:hospital_id},
+    onSuccess:(response)=>{
+      const {data} = response;
+      const {success,records}=data;
+      if(success){
+        this.setState({
+          apiConfig:true,
+          selectedUSer:{"x-api-token": records["x-api-token"],username,full_name:row.full_name}
+        })
+      }
+    }
   });
-
-    this.setState({
-      apiConfig:true,
-      selectedUSer:row
-    })
 }
+  RemoveApiPermission(e){
+    const {username} = this.state.selectedUSer;
+    algaehApiCall({
+      uri:"/apiAuth/removeAPI",
+      method:"PUT",
+      data:{username:username},
+      onSuccess:(response)=>{
+        const {data} = response;
+        const {success,message}=data;
+        if(success){
+          this.setState({
+            apiConfig:false,
+            selectedUSer:{}
+          });
+          swalMessage({
+            type:"success",
+            title:message
+          })
+        }
+      }
+    });
+  }
+
   render() {
     return (
       <div className="login_users">
         <AlgaehModalPopUp
+            className="col-6"
             title="API Configuration"
             openPopup={this.state.apiConfig}
             onClose={()=>{
@@ -335,7 +365,8 @@ apiConfiguration(row,e){
         >
           <div>
             <h5>{this.state.selectedUSer.full_name}</h5>
-            <strong>API TOKEN</strong>:<small>Hello</small>
+            <strong>TOKEN</strong>:<small className="col-3">{this.state.selectedUSer["x-api-token"]}</small>
+            <button onClick={this.RemoveApiPermission.bind(this)} >Remove API Permission</button>
           </div>
         </AlgaehModalPopUp>
         <div className="row">
