@@ -3967,7 +3967,7 @@ const Inventory_Reports = [
         ]
       },
       {
-        subitem: "Inventory Purchase Report",
+        subitem: "Purchase Report",
         reportName: "inventoryPurchaseReport",
         requireIframe: true,
         reportParameters: [
@@ -4032,37 +4032,19 @@ const Inventory_Reports = [
               minDate: null
             }
           },
-          {
-            className: "col-2 mandatory",
-            type: "dropdown",
-            name: "location_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Purchase No",
-            dataSource: {
-              textField: "location_description",
-              valueField: "hims_d_inventory_location_id",
-              data: []
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "item_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Item",
-
-            link: {
-              uri: "/inventory/getItemMaster",
-              module: "inventory"
-            },
-            dataSource: {
-              textField: "item_description",
-              valueField: "hims_d_item_master_id",
-              data: undefined
-            }
-          }
+          // {
+          //   className: "col-2 mandatory",
+          //   type: "dropdown",
+          //   name: "location_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Purchase No",
+          //   dataSource: {
+          //     textField: "location_description",
+          //     valueField: "hims_d_inventory_location_id",
+          //     data: []
+          //   }
+          // }
         ]
       }
     ]
@@ -5128,6 +5110,87 @@ const Pharmacy_Reports = [
           }
         ]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Purchase Report",
+        reportName: "pharmacyPurchaseReport",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getInventoryLocation",
+                  module: "inventory",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      location_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: []
+                });
+              }
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2 mandatory  form-group",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+
+          {
+            className: "col-2 mandatory  form-group",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          // {
+          //   className: "col-2 mandatory",
+          //   type: "dropdown",
+          //   name: "location_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Purchase No",
+          //   dataSource: {
+          //     textField: "location_description",
+          //     valueField: "hims_d_inventory_location_id",
+          //     data: []
+          //   }
+          // }
+        ]
       }
       // {
       //   subitem: "GP Statment ItemWise Report",

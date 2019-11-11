@@ -358,11 +358,6 @@ const getItemLocationStock = ($this, context, value) => {
       if (response.data.success === true) {
         let data = response.data.records
         if (data.length > 0) {
-
-          // for (let i = 0; i < data.length; i++) {
-          //   let qtyhand = data[i].qtyhand;
-          //   total_quantity = parseFloat(total_quantity) + parseFloat(qtyhand);
-          // }
           let total_quantity = _.sumBy(data, s => {
             return parseFloat(s.qtyhand);
           });
@@ -394,88 +389,8 @@ const getItemLocationStock = ($this, context, value) => {
             });
           }
         }
-
-        // if (data.length > 0) {
-        //   // let total_quantity = 0;
-        //   let total_quantity = _.sumBy(data, s => {
-        //     return parseFloat(s.qtyhand);
-        //   });
-
-        //   if (value.set === "To") {
-        //     $this.setState({
-        //       to_qtyhand: total_quantity
-        //     });
-
-        //     context.updateState({
-        //       to_qtyhand: total_quantity
-        //     });
-        //   } else if (value.set === "From") {
-        //     $this.setState({
-        //       from_qtyhand: total_quantity
-        //     });
-
-        //     context.updateState({
-        //       from_qtyhand: total_quantity
-        //     });
-        //   }
-        // } else {
-        //   if (value.set === "To") {
-        //     context.updateState({
-        //       to_qtyhand: null
-        //     });
-        //   } else if (value.set === "From") {
-        //     context.updateState({
-        //       from_qtyhand: null
-        //     });
-        //   }
-        // }
         AlgaehLoader({ show: false });
       }
-    }
-  });
-  $this.props.getItemLocationStock({
-    uri: "/inventoryGlobal/getItemLocationStock",
-    module: "inventory",
-    method: "GET",
-    data: {
-      inventory_location_id: value.location_id,
-      item_id: value.item_id
-    },
-    redux: {
-      type: "ITEMS_BATCH_GET_DATA",
-      mappingName: "inventoryitemBatch"
-    },
-    afterSuccess: data => {
-      if (data.length !== 0) {
-        let total_quantity = 0;
-        for (let i = 0; i < data.length; i++) {
-          let qtyhand = data[i].qtyhand;
-          total_quantity = parseFloat(total_quantity) + parseFloat(qtyhand);
-        }
-        if (value.set === "To") {
-          $this.setState({
-            to_qtyhand: total_quantity
-          });
-
-          context.updateState({
-            to_qtyhand: total_quantity
-          });
-        } else if (value.set === "From") {
-          $this.setState({
-            from_qtyhand: total_quantity
-          });
-
-          context.updateState({
-            from_qtyhand: total_quantity
-          });
-        }
-      } else {
-        context.updateState({
-          to_qtyhand: null,
-          from_qtyhand: null
-        });
-      }
-      AlgaehLoader({ show: false });
     }
   });
 };

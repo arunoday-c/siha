@@ -5,7 +5,6 @@ import httpStatus from "../utils/httpStatus";
 import authmiddleware from "../middleware/authmiddleware";
 import account from "../model/account";
 import cryptography from "../utils/cryptography";
-import logging from "../utils/logging";
 import moment from "moment";
 const { apiAuth, authUser,apiAuthentication } = account;
 const { releaseConnection } = utils;
@@ -17,7 +16,8 @@ import {
   hSetUser,
   clientDecrypt,
   hDelUser,
-  userSecurity
+  userSecurity,
+  setStreamingPermissions,deleteStramingPermissions
 } from "algaeh-utilities/checksecurity";
 export default ({ config, db }) => {
   let api = Router();
@@ -80,8 +80,8 @@ export default ({ config, db }) => {
       if (result[0].length == 0) {
         next(httpStatus.generateError(httpStatus.notFound, "No record found"));
       } else {
-        console.log("result[0][0][\"locked\"]",result[0][0]["locked"]);
-        if (result[0][0]["locked"] == "N") {
+
+        if (result[0][0]["locked"] === "N") {
           let rowDetails = result[0][0];
           let encrypDetsil = { ...result[0][0], ...result[1][0] };
           let hospitalDetails = { ...result[1][0] };
@@ -258,21 +258,30 @@ export default ({ config, db }) => {
       next(e);
     }
   });
-  api.get("/getAPI",generateAccessToken,apiAuthentication,(req,res,next)=>{
+  api.get("/getAPI",apiAuthentication,(req,res,next)=>{
+    let result =req.records;
     if (result[0].length === 0) {
       next(httpStatus.generateError(httpStatus.notFound, "No record found"));
     } else {
       if (result[0][0]["locked"] === "N") {
         let encrypDetsil = { ...result[0][0], ...result[1][0] };
-        let keyData = encryption(encrypDetsil);
-        req.result = {
-          success: true,
-          records: {
-            clientResources: keyData,
-            clientKey: req.token
-          }
-        };
-        next();
+        let details= createJWTToken(encrypDetsil);
+        setStreamingPermissions(encrypDetsil.username.toLowerCase(),encrypDetsil)
+            .then(()=>{
+              res.status(httpStatus.ok).json({
+                success: true,
+                records: {
+                  "x-api-token": details
+                }}).end();
+
+            }).catch(error=>{
+          res.status(httpStatus.ok).json({
+            success: true,
+            message:error }).end();
+        });
+
+
+
       } else {
         next(
             httpStatus.generateError(
@@ -285,6 +294,14 @@ export default ({ config, db }) => {
         );
       }
     }
+  });
+  api.put("/removeAPI",(req,res,next)=>{
+    const {username} = req.body;
+    deleteStramingPermissions(username);
+    res.status(httpStatus.ok).json({
+      message:"Permission to access api is successfully removed",
+      success:true
+    })
   });
   return api;
 };
