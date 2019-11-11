@@ -26,12 +26,19 @@ let generateAccessToken = (req, res, next) => {
     next();
   }
 };
+
+let createJWTToken = (dataToSave)=>{
+  return jwt.sign({
+    ...dataToSave
+  },SECRET);
+}
+
 // const days = moment.duration(TOKENTIME, "seconds").asDays();
 
 let respond = (req, res) => {
   res.status(200).json({
     user: req.user,
-    token: req.token,
+    // token: req.token,
     // days: days,
     hospitalList: req.result.hospitalList,
     activemoduleList: req.result.activemoduleList
@@ -41,5 +48,6 @@ let respond = (req, res) => {
 export default {
   authenticate,
   generateAccessToken,
-  respond
+  respond,
+  createJWTToken
 };

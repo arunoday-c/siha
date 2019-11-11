@@ -66,7 +66,7 @@ module.exports = {
     });
   },
   hDelUser: key => {
-    redis.del(`user:${key}`);
+    redis.del(`user:${key.toLowerCase()}`);
     redis.decr(`usersCount`);
   },
   deleteFromRedis: name => {
@@ -130,5 +130,6 @@ module.exports = {
         reject(e);
       }
     });
-  }
+  },
+
 };

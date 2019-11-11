@@ -4,7 +4,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlagehFormGroup
+  AlagehFormGroup,AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 import {
@@ -47,7 +47,9 @@ class LoginUsers extends Component {
 
     this.state = {
       login_users: [],
-      PR_USER_TYPE: USER_TYPE
+      PR_USER_TYPE: USER_TYPE,
+      apiConfig:false,
+      selectedUSer:{}
     };
     this.getGroups();
     this.getLoginUsers();
@@ -268,7 +270,6 @@ class LoginUsers extends Component {
       }
     });
   }
-
   addLoginUser() {
     AlgaehValidation({
       alertTypeIcon: "warning",
@@ -309,10 +310,34 @@ class LoginUsers extends Component {
       }
     });
   }
+apiConfiguration(row,e){
+  algaehApiCall({
+    uri:"/apiAuth/getAPI",
+    method:"GET",
+    data:{}
+  });
 
+    this.setState({
+      apiConfig:true,
+      selectedUSer:row
+    })
+}
   render() {
     return (
       <div className="login_users">
+        <AlgaehModalPopUp
+            title="API Configuration"
+            openPopup={this.state.apiConfig}
+            onClose={()=>{
+        this.setState({ apiConfig:false,
+          selectedUSer:{}});
+            }}
+        >
+          <div>
+            <h5>{this.state.selectedUSer.full_name}</h5>
+            <strong>API TOKEN</strong>:<small>Hello</small>
+          </div>
+        </AlgaehModalPopUp>
         <div className="row">
           <div className="col-3">
             <div className="portlet portlet-bordered margin-bottom-15">
@@ -519,6 +544,17 @@ class LoginUsers extends Component {
                       id="loginUserGrid"
                       datavalidate="data-validate='apptClinicsDiv'"
                       columns={[
+                        {
+                          fieldName:"none",
+                          label:"API",
+                          others:{
+                            filterable:false
+                          }
+                          ,
+                          displayTemplate:(row)=>{
+                            return (<button onClick={this.apiConfiguration.bind(this,row)}>Config</button>)
+                          }
+                        },
                         {
                           fieldName: "full_name",
                           label: (

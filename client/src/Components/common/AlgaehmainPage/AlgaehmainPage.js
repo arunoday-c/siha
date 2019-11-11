@@ -92,13 +92,13 @@ class PersistentDrawer extends React.Component {
       Rad_active: Rad_active
     };
     const _userName = getCookie("userName");
-    const _keyResources = getCookie("keyResources");
+    // const _keyResources = getCookie("keyResources");
     if (_userName === null || _userName === "") {
       window.location.hash = "";
     }
-    if (_keyResources === null || _keyResources === "") {
-      window.location.hash = "";
-    }
+    // if (_keyResources === null || _keyResources === "") {
+    //   window.location.hash = "";
+    // }
 
     algaehApiCall({
       uri: "/algaehMasters/getRoleBaseActiveModules",

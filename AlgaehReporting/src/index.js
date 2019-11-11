@@ -7,8 +7,9 @@ import moment from "moment";
 import fs from "fs";
 import path from "path";
 import reportGen from "./report_generation";
-import algaehUtilities from "algaeh-utilities/utilities";
-import { userSecurity } from "algaeh-utilities/checksecurity";
+// import algaehUtilities from "algaeh-utilities/utilities";
+// import { userSecurity } from "algaeh-utilities/checksecurity";
+import {authentication} from "algaeh-utilities/authentication";
 const bwipjs = require("bwip-js");
 const exec = require("child_process").exec;
 const app = exxpress();
@@ -56,64 +57,67 @@ app.use("/barcode", (req, res) => {
     bwipjs(req, res);
   }
 });
-
-app.use((req, res, next) => {
-  const reqH = req.headers;
-  const _token = reqH["x-api-key"];
-  const utilities = new algaehUtilities();
-  utilities.logger().log("Xapi", _token, "debug");
-  const _verify = utilities.tokenVerify(_token);
-  if (_verify) {
-    let header = reqH["x-app-user-identity"];
-    if (header != null && header != "" && header != "null") {
-      header = utilities.decryption(header);
-      // req.userIdentity = header;
-      req.userIdentity = { ...header, "x-branch": reqH["x-branch"] };
-      let reqUser = utilities.getTokenData(_token).id;
-
-      const { username } = req.userIdentity;
-      userSecurity(reqH["x-client-ip"], username)
-        .then(() => {
-          res.setHeader("connection", "keep-alive");
-          next();
-        })
-        .catch(error => {
-          res.status(423).json({
-            success: false,
-            message: error,
-            username: error === "false" ? undefined : username
-          });
-          return;
-        });
-
-      utilities.logger("res-tracking").log(
-        "",
-        {
-          dateTime: new Date().toLocaleString(),
-          requestIdentity: {
-            requestClient: reqH["x-client-ip"],
-            requestAPIUser: reqUser,
-            reqUserIdentity: req.userIdentity
-          },
-          requestUrl: req.originalUrl,
-          requestHeader: {
-            host: reqH.host,
-            "user-agent": reqH["user-agent"],
-            "cache-control": reqH["cache-control"],
-            origin: reqH.origin
-          },
-          requestMethod: req.method
-        },
-        "info"
-      );
-    }
-  } else {
-    res.status(utilities.httpStatus().unAuthorized).json({
-      success: false,
-      message: "unauthorized access"
-    });
-  }
+app.use((req,res,next)=>{
+    authentication(req,res,next);
 });
+
+// app.use((req, res, next) => {
+//   const reqH = req.headers;
+//   const _token = reqH["x-api-key"];
+//   const utilities = new algaehUtilities();
+//   utilities.logger().log("Xapi", _token, "debug");
+//   const _verify = utilities.tokenVerify(_token);
+//   if (_verify) {
+//     let header = reqH["x-app-user-identity"];
+//     if (header != null && header != "" && header != "null") {
+//       header = utilities.decryption(header);
+//       // req.userIdentity = header;
+//       req.userIdentity = { ...header, "x-branch": reqH["x-branch"] };
+//       let reqUser = utilities.getTokenData(_token).id;
+//
+//       const { username } = req.userIdentity;
+//       userSecurity(reqH["x-client-ip"], username)
+//         .then(() => {
+//           res.setHeader("connection", "keep-alive");
+//           next();
+//         })
+//         .catch(error => {
+//           res.status(423).json({
+//             success: false,
+//             message: error,
+//             username: error === "false" ? undefined : username
+//           });
+//           return;
+//         });
+//
+//       utilities.logger("res-tracking").log(
+//         "",
+//         {
+//           dateTime: new Date().toLocaleString(),
+//           requestIdentity: {
+//             requestClient: reqH["x-client-ip"],
+//             requestAPIUser: reqUser,
+//             reqUserIdentity: req.userIdentity
+//           },
+//           requestUrl: req.originalUrl,
+//           requestHeader: {
+//             host: reqH.host,
+//             "user-agent": reqH["user-agent"],
+//             "cache-control": reqH["cache-control"],
+//             origin: reqH.origin
+//           },
+//           requestMethod: req.method
+//         },
+//         "info"
+//       );
+//     }
+//   } else {
+//     res.status(utilities.httpStatus().unAuthorized).json({
+//       success: false,
+//       message: "unauthorized access"
+//     });
+//   }
+// });
 
 app.use("/api/v1/report", getReport);
 app.use("/api/v1/excelReport", getExcelReport);
