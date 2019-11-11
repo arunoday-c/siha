@@ -320,12 +320,12 @@ const Hims_Reports = [
                     : // : currentValue.value === "POS"
                     // ? "posReceipt"
                     currentValue.value === "AD"
-                      ? "advanceReceipt"
-                      : currentValue.value === "OPC"
-                        ? "opCreditReceipt"
-                        : // : currentValue.value === "POSC"
-                        // ? "posCreditReceipt"
-                        "";
+                    ? "advanceReceipt"
+                    : currentValue.value === "OPC"
+                    ? "opCreditReceipt"
+                    : // : currentValue.value === "POSC"
+                      // ? "posCreditReceipt"
+                      "";
                 callback({ reportQuery: reportQuery });
               }
             }
@@ -2075,7 +2075,7 @@ const HR_Payroll_Reports = [
               data: LEAVE_STATUS
             },
             events: {
-              onChange: (reportState, currentValue) => { }
+              onChange: (reportState, currentValue) => {}
             }
           }
         ]
@@ -3085,7 +3085,10 @@ const HR_Payroll_Reports = [
                     uri: "/payrollSettings/getMiscEarningDeductions",
                     module: "hrManagement",
                     method: "GET",
-                    data: { component_category: "E", miscellaneous_component: "Y" },
+                    data: {
+                      component_category: "E",
+                      miscellaneous_component: "Y"
+                    },
 
                     onSuccess: result => {
                       reportState.setState({
@@ -3098,7 +3101,10 @@ const HR_Payroll_Reports = [
                     uri: "/payrollSettings/getMiscEarningDeductions",
                     module: "hrManagement",
                     method: "GET",
-                    data: { component_category: "D", miscellaneous_component: "Y" },
+                    data: {
+                      component_category: "D",
+                      miscellaneous_component: "Y"
+                    },
 
                     onSuccess: result => {
                       reportState.setState({
@@ -3135,7 +3141,6 @@ const HR_Payroll_Reports = [
                 });
               }
             }
-
           }
         ]
       }
@@ -3969,6 +3974,105 @@ const Inventory_Reports = [
       {
         subitem: "Inventory Purchase Report",
         reportName: "inventoryPurchaseReport",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getInventoryLocation",
+                  module: "inventory",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      location_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: []
+                });
+              }
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2 mandatory  form-group",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+
+          {
+            className: "col-2 mandatory  form-group",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Purchase No",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_inventory_location_id",
+              data: []
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "item_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Item",
+
+            link: {
+              uri: "/inventory/getItemMaster",
+              module: "inventory"
+            },
+            dataSource: {
+              textField: "item_description",
+              valueField: "hims_d_item_master_id",
+              data: undefined
+            }
+          }
+        ]
+      },
+      {
+        subitem: "Inventory Transfer Report",
+        reportName: "inventoryTransferReport",
         requireIframe: true,
         reportParameters: [
           {
@@ -5283,8 +5387,8 @@ export default function loadActiveReports() {
       const Activated_Modueles =
         sessionStorage.getItem("ModuleDetails") !== null
           ? JSON.parse(
-            AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-          )
+              AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+            )
           : [];
       let result = [];
       for (let i = 0; i < Activated_Modueles.length; i++) {
