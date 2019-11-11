@@ -6,9 +6,14 @@ import authmiddleware from "../middleware/authmiddleware";
 import account from "../model/account";
 import cryptography from "../utils/cryptography";
 import moment from "moment";
-const { apiAuth, authUser,apiAuthentication } = account;
+const { apiAuth, authUser, apiAuthentication } = account;
 const { releaseConnection } = utils;
-const { generateAccessToken, respond, authenticate,createJWTToken } = authmiddleware;
+const {
+  generateAccessToken,
+  respond,
+  authenticate,
+  createJWTToken
+} = authmiddleware;
 const { encryption } = cryptography;
 
 import {
@@ -17,7 +22,8 @@ import {
   clientDecrypt,
   hDelUser,
   userSecurity,
-  setStreamingPermissions,deleteStramingPermissions
+  setStreamingPermissions,
+  deleteStramingPermissions
 } from "algaeh-utilities/checksecurity";
 export default ({ config, db }) => {
   let api = Router();
@@ -33,7 +39,7 @@ export default ({ config, db }) => {
   //   generateAccessToken,
   //   respond
   // );
-  api.get("/", apiAuth,respond); //generateAccessToken, respond);
+  api.get("/", apiAuth, respond); //generateAccessToken, respond);
 
   //'/v1/authUser
   api.post(
@@ -58,7 +64,6 @@ export default ({ config, db }) => {
       }
 
       hGetUser(username.toLowerCase()).then(result => {
-
         if (Object.keys(result).length === 0) {
           next();
         } else {
@@ -80,7 +85,6 @@ export default ({ config, db }) => {
       if (result[0].length == 0) {
         next(httpStatus.generateError(httpStatus.notFound, "No record found"));
       } else {
-
         if (result[0][0]["locked"] === "N") {
           let rowDetails = result[0][0];
           let encrypDetsil = { ...result[0][0], ...result[1][0] };
@@ -98,7 +102,7 @@ export default ({ config, db }) => {
             records: {
               username: rowDetails["username"],
               user_display_name: rowDetails["user_display_name"],
-              token:createJWTToken(encrypDetsil),
+              token: createJWTToken(encrypDetsil, false),
               // keyResources: keyData,
               keyData: specfic_date,
               secureModels: req.secureModels,
@@ -234,7 +238,6 @@ export default ({ config, db }) => {
   );
   api.get("/logout", (req, res, next) => {
     try {
-
       if (req.userIdentity !== undefined) {
         const { username } = req.userIdentity;
         userSecurity(req.headers["x-client-ip"], username.toLowerCase())
@@ -258,50 +261,58 @@ export default ({ config, db }) => {
       next(e);
     }
   });
-  api.get("/getAPI",apiAuthentication,(req,res,next)=>{
-    let result =req.records;
+  api.get("/getAPI", apiAuthentication, (req, res, next) => {
+    let result = req.records;
     if (result[0].length === 0) {
       next(httpStatus.generateError(httpStatus.notFound, "No record found"));
     } else {
       if (result[0][0]["locked"] === "N") {
         let encrypDetsil = { ...result[0][0], ...result[1][0] };
-        let details= createJWTToken(encrypDetsil);
-        setStreamingPermissions(encrypDetsil.username.toLowerCase(),encrypDetsil)
-            .then(()=>{
-              res.status(httpStatus.ok).json({
+        let details = createJWTToken(encrypDetsil);
+        setStreamingPermissions(
+          encrypDetsil.username.toLowerCase(),
+          encrypDetsil
+        )
+          .then(() => {
+            res
+              .status(httpStatus.ok)
+              .json({
                 success: true,
                 records: {
                   "x-api-token": details
-                }}).end();
-
-            }).catch(error=>{
-          res.status(httpStatus.ok).json({
-            success: true,
-            message:error }).end();
-        });
-
-
-
+                }
+              })
+              .end();
+          })
+          .catch(error => {
+            res
+              .status(httpStatus.ok)
+              .json({
+                success: true,
+                message: error
+              })
+              .end();
+          });
       } else {
         next(
-            httpStatus.generateError(
-                httpStatus.locked,
-                "user ' " +
-                inputData.username.toUpperCase() +
-                " ' locked please\
+          httpStatus.generateError(
+            httpStatus.locked,
+            "user ' " +
+              inputData.username.toUpperCase() +
+              " ' locked please\
                         contact administrator."
-            )
+          )
         );
       }
     }
   });
-  api.put("/removeAPI",(req,res,next)=>{
-    const {username} = req.body;
+  api.put("/removeAPI", (req, res, next) => {
+    const { username } = req.body;
     deleteStramingPermissions(username);
     res.status(httpStatus.ok).json({
-      message:"Permission to access api is successfully removed",
-      success:true
-    })
+      message: "Permission to access api is successfully removed",
+      success: true
+    });
   });
   return api;
 };
