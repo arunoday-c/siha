@@ -174,7 +174,7 @@ export default {
                 )select * from cte)
                 group by finance_account_head_id order by account_level;   `,
 
-          printQuery: true,
+          printQuery: false,
 
           values: [
             input.finance_account_head_id,
@@ -484,9 +484,9 @@ export default {
     _mysql
       .executeQuery({
         query: `  WITH cte_  AS (
-          SELECT finance_day_end_sub_detail_id,  payment_date, head_account_code,
+          SELECT finance_day_end_sub_detail_id, day_end_header_id, payment_date, head_account_code,
           case when sum(debit_amount)= sum(credit_amount)then
-          'true' else 'false'end as is_equal FROM finance_day_end_header H inner join
+          'true' when transaction_type='ADJUST' then true  else 'false'end as is_equal,transaction_type FROM finance_day_end_header H inner join
           finance_day_end_sub_detail SD on H.finance_day_end_header_id=day_end_header_id
           where H.posted='N' and day_end_header_id in (?)
           group by day_end_header_id)
@@ -511,6 +511,7 @@ export default {
           );
           const insertColumns = [
             "payment_date",
+            "day_end_header_id",
             "head_account_code",
             "head_id",
             "child_id",
