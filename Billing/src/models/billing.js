@@ -3275,8 +3275,8 @@ export default {
         .executeQueryWithTransaction({
           query:
             "INSERT INTO finance_day_end_header (transaction_date,amount,control_account,document_type,document_id,\
-              document_number,from_screen,transaction_type,customer_type,hospital_id) \
-              VALUES (?,?,?,?,?,?,?,?,?,?)",
+              document_number,from_screen,transaction_type,customer_type,narration,hospital_id) \
+              VALUES (?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             new Date(),
             inputParam.receiveable_amount,
@@ -3287,6 +3287,7 @@ export default {
             inputParam.ScreenCode,
             inputParam.transaction_type,
             "P",
+            "OP BILLING RECIEPT",
             req.userIdentity.hospital_id
           ],
           printQuery: true
@@ -3331,8 +3332,10 @@ export default {
               _mysql
                 .executeQuery({
                   query: "SELECT * FROM finance_accounts_maping;\
-                  select * from finance_day_end_detail where day_end_header_id=?; "+ fetchServiceDetails,
-                  values: [headerDayEnd.insertId],
+                  select * from finance_day_end_detail where day_end_header_id=?;\
+                  SELECT head_id,child_id,head_account FROM hims_d_bank_card where hims_d_bank_card_id=?;\
+                  "+ fetchServiceDetails,
+                  values: [headerDayEnd.insertId,inputParam.bank_card_id],
                   printQuery: true
                 })
                 .then(rest => {
@@ -3351,7 +3354,7 @@ export default {
                     return f.account == "OP_CON";
                   });
 
-                  const insertSubDetail = [];
+                   let insertSubDetail = [];
 
 
                   //------------------------4444
@@ -3365,52 +3368,70 @@ export default {
 
                         //full payment in cash
 
-                        rest[2].forEach(curService => {
+                        // rest[2].forEach(curService => {
                          
-                            const serviceData=inputParam.billdetails.find(f=>{
-                              if(f.services_id==curService.hims_d_services_id)
-                              return f;
-                            });
+                        //     const serviceData=inputParam.billdetails.find(f=>{
+                        //       if(f.services_id==curService.hims_d_services_id)
+                        //       return f;
+                        //     });
                            
-                            console.log("ammount MY:",serviceData.patient_payable);
+                        //     console.log("ammount MY:",serviceData.patient_payable);
                     
-                            insertSubDetail.push({
-                              day_end_header_id: headerDayEnd.insertId,
-                              payment_date: new Date(),
-                              head_account_code: curService.head_account,
-                              head_id: curService.head_id,
-                              child_id: curService.child_id,
-                              debit_amount: 0,
-                              payment_type: "CR",
-                              credit_amount: serviceData.patient_payable,
-                              narration: "OP BILL CASH COLLECTION  CREDIT",
-                              hospital_id: req.userIdentity.hospital_id
+                        //     insertSubDetail.push({
+                        //       day_end_header_id: headerDayEnd.insertId,
+                        //       payment_date: new Date(),
+                        //       head_account_code: curService.head_account,
+                        //       head_id: curService.head_id,
+                        //       child_id: curService.child_id,
+                        //       debit_amount: 0,
+                        //       payment_type: "CR",
+                        //       credit_amount: serviceData.patient_payable,
+                        //       narration: "OP BILL CASH COLLECTION  CREDIT",
+                        //       hospital_id: req.userIdentity.hospital_id
+                        //     });
+
+                        // });
+
+
+                        // day_end_detail.forEach(item => {
+                         
+                        //   if (item.payment_mode == "CA") {                                                  
+                        //       insertSubDetail.push({
+                        //         day_end_header_id: headerDayEnd.insertId,
+                        //         payment_date: new Date(),
+                        //         head_account_code: CH_IN_HA.head_account_code,
+                        //         head_id: CH_IN_HA.head_id,
+                        //         child_id: CH_IN_HA.child_id,
+                        //         debit_amount: item.amount,
+                        //         payment_type: "DR",
+                        //         credit_amount: 0,
+                        //         narration: "OP BILL CASH COLLECTION DEBIT",
+                        //         hospital_id: req.userIdentity.hospital_id
+                        //       });
+
+                        //   }
+                        // });
+
+                        // resolve({});
+
+                        const options={
+                          hospital_id:req.userIdentity.hospital_id,
+                          insertId: headerDayEnd.insertId,
+                          CH_IN_HA:CH_IN_HA,
+                          OP_DEP:OP_DEP,
+                          OP_CON:OP_CON,
+                          card_details:rest[2]?rest[2][0]:null
+                        };
+                        if(inputParam.insured=="N"){
+                          cashPatientFinance(rest[3], day_end_detail, inputParam,options).then(resul=>{
+                            insertSubDetail=resul;
+                            resolve({});
+                          }).catch(error => {
+                            _mysql.rollBackTransaction(() => {
+                              next(error);
                             });
-
-                        });
-
-
-                        day_end_detail.forEach(item => {
-                          console.log("AM HEARE")
-                          console.log("item:",item)
-                          if (item.payment_mode == "CA") {                                                  
-                              insertSubDetail.push({
-                                day_end_header_id: headerDayEnd.insertId,
-                                payment_date: new Date(),
-                                head_account_code: CH_IN_HA.head_account_code,
-                                head_id: CH_IN_HA.head_id,
-                                child_id: CH_IN_HA.child_id,
-                                debit_amount: item.amount,
-                                payment_type: "DR",
-                                credit_amount: 0,
-                                narration: "OP BILL CASH COLLECTION DEBIT",
-                                hospital_id: req.userIdentity.hospital_id
-                              });
-
-                          }
-                        });
-
-                        resolve({});
+                          });
+                        }
 
                       }
                       else if (inputParam.transaction_type == "AD") {
@@ -3451,7 +3472,7 @@ export default {
                     } catch (e) {
                       reject(e);
                     }
-                  }).then(rest => {
+                  }).then(rests => {
 
 
                     const IncludeValuess = [
@@ -4484,3 +4505,84 @@ function insertOrderServices(options) {
   });
 }
 
+//created by :IRFAN to calculate the amount of account heads
+function cashPatientFinance(allServices, day_end_detail, inputParam,options) {
+  try {
+    return new Promise((resolve, reject) => {
+      
+      
+      const insertSubDetail = [];
+      allServices.forEach(curService => {
+                         
+        const serviceData=inputParam.billdetails.find(f=>{
+          if(f.services_id==curService.hims_d_services_id)
+          return f;
+        });
+       
+        console.log("ammount MY:",serviceData.patient_payable);
+
+        insertSubDetail.push({
+          day_end_header_id: options.insertId,
+          payment_date: new Date(),
+          head_account_code: curService.head_account,
+          head_id: curService.head_id,
+          child_id: curService.child_id,
+          debit_amount: 0,
+          payment_type: "CR",
+          credit_amount: serviceData.patient_payable,
+          narration: "OP BILL CASH COLLECTION  CREDIT",
+          hospital_id: options.hospital_id
+        });
+
+    });
+
+
+    day_end_detail.forEach(item => {
+     
+      if (item.payment_mode == "CA") {                                                  
+          insertSubDetail.push({
+            day_end_header_id: options.insertId,
+            payment_date: new Date(),
+            head_account_code:options.CH_IN_HA.head_account_code,
+            head_id: options.CH_IN_HA.head_id,
+            child_id: options.CH_IN_HA.child_id,
+            debit_amount: item.amount,
+            payment_type: "DR",
+            credit_amount: 0,
+            narration: "OP BILL CASH COLLECTION DEBIT",
+            hospital_id: options.hospital_id
+          });
+
+      }
+      if (item.payment_mode == "CD") {                                                  
+          insertSubDetail.push({
+            day_end_header_id: options.insertId,
+            payment_date: new Date(),
+            head_account_code:null,
+            head_id: options.card_details.head_id,
+            child_id: options.card_details.child_id,
+            debit_amount: item.amount,
+            payment_type: "DR",
+            credit_amount: 0,
+            narration: "OP BILL CASH COLLECTION DEBIT",
+            hospital_id: options.hospital_id
+          });
+
+      }
+
+
+
+
+    });
+
+
+    console.log("HHHHHH")
+    resolve(insertSubDetail);
+
+
+    });
+  } catch (e) {
+    console.log("am55:", e);
+    reject(e);
+  }
+}
