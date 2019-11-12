@@ -1407,64 +1407,65 @@ let addPatientNewAllergy = (req, res, next) => {
 //created by irfan: to get all allergies
 let getAllAllergies = (req, res, next) => {
 
-  // const _mysql = new algaehMysql({ path: keyPath });
-  // try {
-  //   let strQuery = ""
-  //   if (req.query.allergy_type !== null) {
-  //     strQuery = ` AND allergy_type = '${req.query.allergy_type}'`
-  //   }
-  //   _mysql
-  //     .executeQuery({
-  //       query:
-  //         "select hims_d_allergy_id, allergy_type, allergy_name \
-  //         from hims_d_allergy where record_status='A' " + strQuery,
-  //       printQuery: true
-  //     })
-  //     .then(result => {
-
-  //       _mysql.releaseConnection();
-  //       req.records = result;
-  //       next();
-  //     })
-  //     .catch(error => {
-  //       _mysql.releaseConnection();
-  //       next(error);
-  //     });
-  // } catch (e) {
-  //   _mysql.releaseConnection();
-  //   next(e);
-  // }
-
-  let selectWhere = {
-    allergy_type: "ALL"
-  };
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
+    let strQuery = ""
+    if (req.query.allergy_type !== null) {
+      strQuery = ` AND allergy_type = '${req.query.allergy_type}'`
     }
-    let db = req.db;
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_d_allergy_id, allergy_type, allergy_name \
+          from hims_d_allergy where record_status='A';",
+        printQuery: true
+      })
+      .then(result => {
 
-    let where = whereCondition(extend(selectWhere, req.query));
-
-    db.getConnection((error, connection) => {
-      connection.query(
-        "select hims_d_allergy_id,allergy_type,\
-        allergy_name from hims_d_allergy where record_status='A' AND" +
-        where.condition,
-        where.values,
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
+
+  // let selectWhere = {
+  //   allergy_type: "ALL"
+  // };
+  // try {
+  //   if (req.db == null) {
+  //     next(httpStatus.dataBaseNotInitilizedError());
+  //   }
+  //   let db = req.db;
+
+  //   let where = whereCondition(extend(selectWhere, req.query));
+  //   console.log("req.query", req.query)
+  //   console.log("where", where)
+  //   db.getConnection((error, connection) => {
+  //     connection.query(
+  //       "select hims_d_allergy_id,allergy_type,\
+  //       allergy_name from hims_d_allergy where record_status='A' AND" +
+  //       where.condition,
+  //       where.values,
+  //       (error, result) => {
+  //         releaseDBConnection(db, connection);
+  //         if (error) {
+  //           next(error);
+  //         }
+  //         req.records = result;
+  //         next();
+  //       }
+  //     );
+  //   });
+  // } catch (e) {
+  //   next(e);
+  // }
 };
 
 //created by irfan: to get all allergies
