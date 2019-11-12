@@ -9,6 +9,7 @@ build_image:
   script:
     - cd "F:\LOCAL DEV\newrepository\algaeh-monorepo"
     - $env:PATH += ";C:\Users\admin\AppData\Roaming\npm\"
+    - git pull
     - algaeh-cli build -a
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker-compose -f docker-compose.yml build
