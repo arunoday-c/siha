@@ -626,7 +626,7 @@ export default {
           tableName: "hims_f_app_numgen",
           identity: {
             algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity["x-branch"]
+            hospital_id: req.userIdentity.hospital_id
           }
         })
         .then(generatedNumbers => {
@@ -1776,7 +1776,7 @@ export default {
           tableName: "hims_f_app_numgen",
           identity: {
             algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity["x-branch"]
+            hospital_id: req.userIdentity.hospital_id
           }
         })
         .then(generatedNumbers => {
@@ -2114,7 +2114,7 @@ export default {
                               created_date: new Date(),
                               updated_by: req.userIdentity.algaeh_d_app_user_id,
                               updated_date: new Date(),
-                              hospital_id: req.userIdentity["x-branch"]
+                              hospital_id: req.userIdentity.hospital_id
                             },
                             bulkInsertOrUpdate: true,
                             printQuery: true
@@ -3263,11 +3263,11 @@ export default {
   addtoDayEnd: (req, res, next) => {
     try {
       const _options = req.connection == null ? {} : req.connection;
-  
+
       const _mysql = new algaehMysql(_options);
-  
+
       const utilities = new algaehUtilities();
-  
+
       _mysql
         .executeQuery({
           query:
@@ -3279,12 +3279,12 @@ export default {
         .then(appResult => {
           if (appResult.length > 0) {
             const inputParam = req.body;
-  
+
             let narration = "OP BILLING RECIEPT";
             let transaction_type = "BILL";
             let amount = inputParam.receiveable_amount;
             let control_account = "OP_CON";
-  
+
             if (inputParam.transaction_type == "AD") {
               narration = "PATIENT ADVANCE";
               transaction_type = "AD";
@@ -3297,7 +3297,7 @@ export default {
               amount = inputParam.total_amount;
               control_account = "OP_DEP";
             }
-  
+
             if (inputParam.advance_adjust > 0) {
               transaction_type = "ADJUST";
             }
@@ -3306,7 +3306,7 @@ export default {
               control_account = "OP_REC";
               amount = inputParam.credit_amount;
             }
-  
+
             utilities.logger().log("inputParamRR: ", inputParam);
             _mysql
               .executeQueryWithTransaction({
@@ -3360,7 +3360,7 @@ export default {
                       fetchServiceDetails = ` SELECT hims_d_services_id,service_type_id,head_account,head_id,child_id FROM hims_d_services
                         where hims_d_services_id in(${servicesIds}); `;
                     }
-  
+
                     _mysql
                       .executeQuery({
                         query:
@@ -3375,11 +3375,11 @@ export default {
                       .then(rest => {
                         const controlResult = rest[0];
                         const day_end_detail = rest[1];
-  
+
                         const OP_DEP = controlResult.find(f => {
                           return f.account == "OP_DEP";
                         });
-  
+
                         const CH_IN_HA = controlResult.find(f => {
                           return f.account == "CH_IN_HA";
                         });
@@ -3389,11 +3389,11 @@ export default {
                         const OP_REC = controlResult.find(f => {
                           return f.account == "OP_REC";
                         });
-  
+
                         let insertSubDetail = [];
-  
+
                         //------------------------4444
-  
+
                         //finall insert
                         new Promise((resolve, reject) => {
                           try {
@@ -3426,7 +3426,7 @@ export default {
                                     hospital_id: req.userIdentity.hospital_id
                                   });
                                 }
-  
+
                                 if (item.payment_mode == "CD") {
                                   insertSubDetail.push({
                                     day_end_header_id: headerDayEnd.insertId,
@@ -3472,7 +3472,7 @@ export default {
                                     hospital_id: req.userIdentity.hospital_id
                                   });
                                 }
-  
+
                                 if (item.payment_mode == "CD") {
                                   insertSubDetail.push({
                                     day_end_header_id: headerDayEnd.insertId,
@@ -3516,6 +3516,8 @@ export default {
                                       next(error);
                                     });
                                   });
+                              } else {
+                                next();
                               }
                             } else {
                               next();
@@ -4493,7 +4495,7 @@ function insertOrderServices(options) {
               created_date: new Date(),
               updated_by: req.userIdentity.algaeh_d_app_user_id,
               updated_date: new Date(),
-              hospital_id: req.userIdentity["x-branch"]
+              hospital_id: req.userIdentity.hospital_id
             },
             bulkInsertOrUpdate: true,
             printQuery: true
@@ -4586,12 +4588,12 @@ function cashPatientFinance(allServices, day_end_detail, inputParam, options) {
           hospital_id: options.hospital_id
         });
       }
-      if(inputParam.credit_amount>0){
-        
+      if (inputParam.credit_amount > 0) {
+
         insertSubDetail.push({
           day_end_header_id: options.insertId,
           payment_date: new Date(),
-          head_account_code:options. OP_REC.head_account_code,
+          head_account_code: options.OP_REC.head_account_code,
           head_id: options.OP_REC.head_id,
           child_id: options.OP_REC.child_id,
           debit_amount: inputParam.credit_amount,
@@ -4601,7 +4603,7 @@ function cashPatientFinance(allServices, day_end_detail, inputParam, options) {
           hospital_id: options.hospital_id
         });
       }
-     
+
 
       allServices.forEach(curService => {
 
@@ -4667,13 +4669,8 @@ function cashPatientFinance(allServices, day_end_detail, inputParam, options) {
       });
 
 
-<<<<<<< HEAD
-   
-    resolve(insertSubDetail);
-=======
       console.log("HHHHHH")
       resolve(insertSubDetail);
->>>>>>> e8225a579bbf8c062e650fdbae0420e3f6c8501c
 
 
     });
