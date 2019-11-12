@@ -107,7 +107,7 @@ export default {
         inputParam.billdetails == null ||
         inputParam.billdetails.length == 0
       ) {
-        const errorGen = httpStatus.generateError(
+        const errorGen = utilities.httpStatus().generateError(
           httpStatus.badRequest,
           "Please select atleast one service."
         );
@@ -120,7 +120,7 @@ export default {
         inputParam.sheet_discount_amount != 0 &&
         inputParam.bill_comments == ""
       ) {
-        const errorGene = httpStatus.generateError(
+        const errorGene = utilities.httpStatus().generateError(
           httpStatus.badRequest,
           "Please enter sheet level discount comments. "
         );
@@ -375,7 +375,7 @@ export default {
         req.body.intCalculateall == undefined ? req.body.billdetails : req.body;
       if (inputParam.length == 0) {
         next(
-          httpStatus.generateError(
+          utilities.httpStatus().generateError(
             httpStatus.badRequest,
             "Please select atleast one service"
           )
@@ -604,7 +604,7 @@ export default {
         inputParam.receiptdetails.length == 0
       ) {
         next(
-          httpStatus.generateError(
+          utilities.httpStatus().generateError(
             httpStatus.badRequest,
             "Please select atleast one service."
           )
@@ -1756,7 +1756,7 @@ export default {
         inputParam.receiptdetails.length == 0
       ) {
         next(
-          httpStatus.generateError(
+          utilities.httpStatus().generateError(
             httpStatus.badRequest,
             "Please select atleast one service."
           )
@@ -4348,7 +4348,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
             })
             .catch(e => {
               _mysql.releaseConnection();
-              next(httpStatus.generateError(httpStatus.badRequest, e));
+              next(utilities.httpStatus().generateError(httpStatus.badRequest, e));
             });
         }
       })
@@ -4562,21 +4562,21 @@ function insertOrderServices(options) {
 }
 
 //created by :IRFAN to calculate the amount of account heads
-function cashPatientFinance(allServices, day_end_detail, inputParam,options) {
+function cashPatientFinance(allServices, day_end_detail, inputParam, options) {
   try {
     return new Promise((resolve, reject) => {
-      
-      
+
+
       const insertSubDetail = [];
 
 
 
-      if(inputParam.advance_adjust>0){
-        
+      if (inputParam.advance_adjust > 0) {
+
         insertSubDetail.push({
           day_end_header_id: options.insertId,
           payment_date: new Date(),
-          head_account_code:options. OP_DEP.head_account_code,
+          head_account_code: options.OP_DEP.head_account_code,
           head_id: options.OP_DEP.head_id,
           child_id: options.OP_DEP.child_id,
           debit_amount: inputParam.advance_adjust,
@@ -4604,13 +4604,13 @@ function cashPatientFinance(allServices, day_end_detail, inputParam,options) {
      
 
       allServices.forEach(curService => {
-                         
-        const serviceData=inputParam.billdetails.find(f=>{
-          if(f.services_id==curService.hims_d_services_id)
-          return f;
+
+        const serviceData = inputParam.billdetails.find(f => {
+          if (f.services_id == curService.hims_d_services_id)
+            return f;
         });
-       
-        console.log("ammount MY:",serviceData.patient_payable);
+
+        console.log("ammount MY:", serviceData.patient_payable);
 
         insertSubDetail.push({
           day_end_header_id: options.insertId,
@@ -4625,16 +4625,16 @@ function cashPatientFinance(allServices, day_end_detail, inputParam,options) {
           hospital_id: options.hospital_id
         });
 
-    });
+      });
 
 
-    day_end_detail.forEach(item => {
-     
-      if (item.payment_mode == "CA") {                                                  
+      day_end_detail.forEach(item => {
+
+        if (item.payment_mode == "CA") {
           insertSubDetail.push({
             day_end_header_id: options.insertId,
             payment_date: new Date(),
-            head_account_code:options.CH_IN_HA.head_account_code,
+            head_account_code: options.CH_IN_HA.head_account_code,
             head_id: options.CH_IN_HA.head_id,
             child_id: options.CH_IN_HA.child_id,
             debit_amount: item.amount,
@@ -4644,12 +4644,12 @@ function cashPatientFinance(allServices, day_end_detail, inputParam,options) {
             hospital_id: options.hospital_id
           });
 
-      }
-      if (item.payment_mode == "CD") {                                                  
+        }
+        if (item.payment_mode == "CD") {
           insertSubDetail.push({
             day_end_header_id: options.insertId,
             payment_date: new Date(),
-            head_account_code:options.card_details.head_account,
+            head_account_code: options.card_details.head_account,
             head_id: options.card_details.head_id,
             child_id: options.card_details.child_id,
             debit_amount: item.amount,
@@ -4659,16 +4659,21 @@ function cashPatientFinance(allServices, day_end_detail, inputParam,options) {
             hospital_id: options.hospital_id
           });
 
-      }
+        }
 
 
 
 
-    });
+      });
 
 
+<<<<<<< HEAD
    
     resolve(insertSubDetail);
+=======
+      console.log("HHHHHH")
+      resolve(insertSubDetail);
+>>>>>>> e8225a579bbf8c062e650fdbae0420e3f6c8501c
 
 
     });

@@ -5162,5 +5162,23 @@
       "name": "Months",
       "value": "M"
     }
+  ],
+  "LOAN_STATUS": [
+    {
+      "name": "Approved",
+      "value": "APR"
+    },
+    {
+      "name": "Pending",
+      "value": "PEN"
+    },
+    {
+      "name": "Rejected",
+      "value": "REJ"
+    },
+    {
+      "name": "Issued",
+      "value": "IS"
+    }
   ]
 }

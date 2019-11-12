@@ -1,7 +1,7 @@
 import express from "express";
 import middleware from "../middleware";
-// import initializedDb from "../db";
-//import config from "../keys/keys";
+import initializedDb from "../db";
+//import configr from "../keys/keys";
 const con = require("algaeh-keys/keys");
 import account from "../controller/account";
 import employee from "../controller/employee";
@@ -88,10 +88,11 @@ import myInit from "../controller/myinit";
 //connect to DB
 //function(db)
 const config = con.default;
-const db={};
-//initializedDb(db => {
+// const db={};
+initializedDb(db => {
+
   //internal middleware
-  // router.use(middleware({ config, db }));
+  router.use(middleware({ config, db }));
   //api router v1
   router.use("/init", myInit());
   router.use("/apiAuth", account({ config, db }));
@@ -177,6 +178,6 @@ const db={};
   router.use("/opthometry", opthometry({ config, db }));
   router.use("/diagram", diagram({ config, db }));
 
-//});
+});
 
 export default router;

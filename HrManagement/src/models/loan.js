@@ -232,6 +232,10 @@ export default {
       employee = ` and employee_id=${req.query.employee_id} `;
     }
 
+    if (req.query.loan_authorized !== null) {
+      employee += ` and loan_authorized= '${req.query.loan_authorized}'`;
+    }
+
     if (
       req.query.from_date != "null" &&
       req.query.from_date != "" &&
@@ -361,7 +365,7 @@ export default {
                     "UPDATE hims_f_loan_application SET " +
                     authFields +
                     ",approved_amount=?,start_year=?,start_month=?,installment_amount=?,\
-                  loan_tenure=?,pending_tenure=?, updated_date=?, updated_by=?  WHERE hims_f_loan_application_id=?",
+                  loan_tenure=?,pending_tenure=?, updated_date=?, updated_by=?  WHERE hims_f_loan_application_id=?;",
                   values: [
                     input.authorized,
                     req.userIdentity.algaeh_d_app_user_id,
@@ -411,8 +415,9 @@ export default {
                       invalid_input: true,
                       message: "Please provide valid loan application id "
                     };
-                    _mysql.releaseConnection();
-                    next();
+                    _mysql.rollBackTransaction(() => {
+                      next();
+                    });
                   }
                 })
                 .catch(error => {
@@ -676,13 +681,157 @@ export default {
       next();
       return;
     }
+  },
+
+  //created by irfan:
+  getLoanLevels(req, res, next) {
+    try {
+      const userPrivilege = req.userIdentity.loan_authorize_privilege;
+
+      if (userPrivilege != "N") {
+        const _mysql = new algaehMysql();
+
+        _mysql
+          .executeQuery({
+            query: `SELECT authorization_plan FROM hims_d_hrms_options limit 1;\
+            select leave_level1 from hims_d_authorization_setup where leave_level1=
+              ${req.userIdentity.employee_id}  limit 1`
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+
+            if (result.length > 0) {
+              //----------------
+
+              let auth_levels = [];
+
+              if (result[0][0]["authorization_plan"] == "R") {
+                switch (userPrivilege.toString()) {
+                  case "1":
+                    auth_levels.push({ name: "Level 1", value: 1 });
+                    break;
+                  case "2":
+                    auth_levels.push(
+                      { name: "Level 2", value: 2 },
+                      { name: "Level 1", value: 1 }
+                    );
+                    break;
+                  case "3":
+                    auth_levels.push(
+                      { name: "Level 3", value: 3 },
+                      { name: "Level 2", value: 2 },
+                      { name: "Level 1", value: 1 }
+                    );
+                    break;
+                  case "4":
+                    auth_levels.push(
+                      { name: "Level 4", value: 4 },
+                      { name: "Level 3", value: 3 },
+                      { name: "Level 2", value: 2 },
+                      { name: "Level 1", value: 1 }
+                    );
+                    break;
+                  case "5":
+                    auth_levels.push(
+                      { name: "Level 5", value: 5 },
+                      { name: "Level 4", value: 4 },
+                      { name: "Level 3", value: 3 },
+                      { name: "Level 2", value: 2 },
+                      { name: "Level 1", value: 1 }
+                    );
+                    break;
+                }
+              } else if (result[0][0]["authorization_plan"] == "A") {
+                ///------------------------
+
+                switch (userPrivilege.toString()) {
+                  case "1":
+                    if (result[1].length > 0) {
+                      auth_levels.push({ name: "Level 1", value: 1 });
+                    }
+
+                    break;
+                  case "2":
+                    if (result[1].length > 0) {
+                      auth_levels.push(
+                        { name: "Level 2", value: 2 },
+                        { name: "Level 1", value: 1 }
+                      );
+                    } else {
+                      auth_levels.push({ name: "Level 2", value: 2 });
+                    }
+
+                    break;
+                  case "3":
+                    if (result[1].length > 0) {
+                      auth_levels.push(
+                        { name: "Level 3", value: 3 },
+                        { name: "Level 1", value: 1 }
+                      );
+                    } else {
+                      auth_levels.push({ name: "Level 3", value: 3 });
+                    }
+
+                    break;
+                  case "4":
+                    if (result[1].length > 0) {
+                      auth_levels.push(
+                        { name: "Level 4", value: 4 },
+                        { name: "Level 1", value: 1 }
+                      );
+                    } else {
+                      auth_levels.push({ name: "Level 4", value: 4 });
+                    }
+
+                    break;
+                  case "5":
+                    if (result[1].length > 0) {
+                      auth_levels.push(
+                        { name: "Level 5", value: 5 },
+                        { name: "Level 1", value: 1 }
+                      );
+                    } else {
+                      auth_levels.push({ name: "Level 5", value: 5 });
+                    }
+
+                    break;
+                }
+              }
+              req.records = { auth_levels };
+              next();
+            } else {
+              req.records = {
+                invalid_input: true,
+                message: "you dont have privilege"
+              };
+
+              next();
+              return;
+            }
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            reject(e);
+          });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "you dont have privilege"
+        };
+
+        next();
+        return;
+      }
+    } catch (e) {
+      next(e);
+    }
   }
 };
 //created by irfan: to get database field for authorization
 function getLoanAuthFields(auth_level) {
   return new Promise((resolve, reject) => {
     let authFields;
-    switch (auth_level) {
+    switch (auth_level.toString()) {
       case "1":
         authFields = [
           "authorized1=?",

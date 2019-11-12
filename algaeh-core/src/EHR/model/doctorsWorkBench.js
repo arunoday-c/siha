@@ -904,8 +904,8 @@ let getPatientVitalsOLD = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select * from hims_f_patient_vitals where " +
-          where.condition +
-          " order by visit_date desc, visit_time desc;",
+        where.condition +
+        " order by visit_date desc, visit_time desc;",
         where.values,
 
         (error, result) => {
@@ -954,8 +954,8 @@ PH.record_status='A' and PV.vital_id=PH.hims_d_vitals_header_id  "
         }
         sqlQuery += _mysql.mysqlQueryFormat(
           " group by visit_date , vital_id order by hims_f_patient_vitals_id  desc LIMIT 0," +
-            _limit +
-            ";"
+          _limit +
+          ";"
         );
         _mysql
           .executeQuery({ query: sqlQuery, printQuery: true })
@@ -980,32 +980,62 @@ PH.record_status='A' and PV.vital_id=PH.hims_d_vitals_header_id  "
 
 //created by irfan: to  getPatientAllergies
 let getPatientAllergies = (req, res, next) => {
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let inputData = extend({}, req.query);
 
-    db.getConnection((error, connection) => {
-      connection.query(
-        "select hims_f_patient_allergy_id,patient_id,allergy_id, onset, onset_date, severity, comment, allergy_inactive,A.allergy_type,A.allergy_name from\
-        hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?\
-        and PA.allergy_id=A.hims_d_allergy_id order by hims_f_patient_allergy_id desc;",
-        [inputData.patient_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let inputData = req.query;
+
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_f_patient_allergy_id,patient_id,allergy_id, onset, onset_date, severity, comment, \
+          allergy_inactive,A.allergy_type,A.allergy_name from hims_f_patient_allergy PA, hims_d_allergy A \
+          where PA.record_status='A' and patient_id=? and PA.allergy_id=A.hims_d_allergy_id \
+          order by hims_f_patient_allergy_id desc;" ,
+        values: [inputData.patient_id],
+        printQuery: true
+      })
+      .then(result => {
+
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
+
+  // try {
+  //   if (req.db == null) {
+  //     next(httpStatus.dataBaseNotInitilizedError());
+  //   }
+  //   let db = req.db;
+  //   let inputData = extend({}, req.query);
+
+  //   db.getConnection((error, connection) => {
+  //     connection.query(
+  //       "select hims_f_patient_allergy_id,patient_id,allergy_id, onset, onset_date, severity, comment, allergy_inactive,A.allergy_type,A.allergy_name from\
+  //       hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?\
+  //       and PA.allergy_id=A.hims_d_allergy_id order by hims_f_patient_allergy_id desc;",
+  //       [inputData.patient_id],
+  //       (error, result) => {
+  //         releaseDBConnection(db, connection);
+  //         if (error) {
+  //           next(error);
+  //         }
+  //         req.records = result;
+  //         next();
+  //       }
+  //     );
+  //   });
+  // } catch (e) {
+  //   next(e);
+  // }
 };
 
 //created by irfan: to  getPatientDiet
@@ -1069,30 +1099,55 @@ let getPatientDiagnosis = (req, res, next) => {
 };
 //created by irfan: to get chief complaints(HPI header) against (doctors)sub-department_id
 let getChiefComplaints = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let sub_department_id = req.userIdentity.sub_department_id;
-    debugLog("sub_dp_id:", sub_department_id);
-    db.getConnection((error, connection) => {
-      connection.query(
-        "select hims_d_hpi_header_id,hpi_description,created_date from hims_d_hpi_header where sub_department_id=? and record_status='A';",
-        [sub_department_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_d_hpi_header_id,hpi_description,created_date from hims_d_hpi_header where \
+          sub_department_id=? and record_status='A';",
+        values: [req.userIdentity.sub_department_id],
+        printQuery: true
+      })
+      .then(result => {
+
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
+  // try {
+  //   const _mysql = new algaehMysql({ path: keyPath });
+  //   if (req.db == null) {
+  //     next(httpStatus.dataBaseNotInitilizedError());
+  //   }
+  //   let db = req.db;
+  //   let sub_department_id = req.userIdentity.sub_department_id;
+  //   debugLog("sub_dp_id:", sub_department_id);
+  //   db.getConnection((error, connection) => {
+  //     connection.query(
+  //       "select hims_d_hpi_header_id,hpi_description,created_date from hims_d_hpi_header where sub_department_id=? and record_status='A';",
+  //       [sub_department_id],
+  //       (error, result) => {
+  //         releaseDBConnection(db, connection);
+  //         if (error) {
+  //           next(error);
+  //         }
+  //         req.records = result;
+  //         next();
+  //       }
+  //     );
+  //   });
+  // } catch (e) {
+  //   next(e);
+  // }
 };
 
 //created by irfan:  to add new chief complaints (hpi header)
@@ -1119,8 +1174,8 @@ let addNewChiefComplaint = (req, res, next) => {
 
       connection.query(
         "INSERT INTO hims_d_hpi_header(" +
-          insurtColumns.join(",") +
-          ",`sub_department_id`,created_date,update_date) VALUES ?",
+        insurtColumns.join(",") +
+        ",`sub_department_id`,created_date,update_date) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
@@ -1181,8 +1236,8 @@ let addPatientChiefComplaints = (req, res, next) => {
 
       connection.query(
         "INSERT INTO hims_f_episode_chief_complaint(`" +
-          insurtColumns.join("`,`") +
-          "`,created_date,updated_date,hospital_id) VALUES ?",
+        insurtColumns.join("`,`") +
+        "`,created_date,updated_date,hospital_id) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
@@ -1351,36 +1406,65 @@ let addPatientNewAllergy = (req, res, next) => {
 
 //created by irfan: to get all allergies
 let getAllAllergies = (req, res, next) => {
-  let selectWhere = {
-    allergy_type: "ALL"
-  };
+
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
+    let strQuery = ""
+    if (req.query.allergy_type !== null) {
+      strQuery = ` AND allergy_type = '${req.query.allergy_type}'`
     }
-    let db = req.db;
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_d_allergy_id, allergy_type, allergy_name \
+          from hims_d_allergy where record_status='A' " + strQuery,
+        printQuery: true
+      })
+      .then(result => {
 
-    let where = whereCondition(extend(selectWhere, req.query));
-
-    db.getConnection((error, connection) => {
-      connection.query(
-        "select hims_d_allergy_id,allergy_type,\
-        allergy_name from hims_d_allergy where record_status='A' AND" +
-          where.condition,
-        where.values,
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
+
+  // let selectWhere = {
+  //   allergy_type: "ALL"
+  // };
+  // try {
+  //   if (req.db == null) {
+  //     next(httpStatus.dataBaseNotInitilizedError());
+  //   }
+  //   let db = req.db;
+
+  //   let where = whereCondition(extend(selectWhere, req.query));
+
+  //   db.getConnection((error, connection) => {
+  //     connection.query(
+  //       "select hims_d_allergy_id,allergy_type,\
+  //       allergy_name from hims_d_allergy where record_status='A' AND" +
+  //       where.condition,
+  //       where.values,
+  //       (error, result) => {
+  //         releaseDBConnection(db, connection);
+  //         if (error) {
+  //           next(error);
+  //         }
+  //         req.records = result;
+  //         next();
+  //       }
+  //     );
+  //   });
+  // } catch (e) {
+  //   next(e);
+  // }
 };
 
 //created by irfan: to get all allergies
@@ -1539,8 +1623,8 @@ let addPatientDiagnosis = (req, res, next) => {
 
       connection.query(
         "INSERT INTO hims_f_patient_diagnosis(" +
-          insurtColumns.join(",") +
-          ",hospital_id) VALUES ?",
+        insurtColumns.join(",") +
+        ",hospital_id) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
@@ -1706,7 +1790,7 @@ let getReviewOfSystem = (req, res, next) => {
           "select RH.hims_d_review_of_system_header_id,RH.description as header_description,RD.hims_d_review_of_system_details_id,RD.description as detail_description from\
         hims_d_review_of_system_header RH,hims_d_review_of_system_details RD where\
          RH.hims_d_review_of_system_header_id=RD.review_of_system_heder_id and RD.record_status='A' and RH.record_status='A' and" +
-            where.condition,
+          where.condition,
           where.values,
 
           (error, result) => {
@@ -1925,8 +2009,8 @@ let addPatientVitals = (req, res, next) => {
 
       const _query = mysql.format(
         "INSERT INTO hims_f_patient_vitals(" +
-          insurtColumns.join(",") +
-          ",created_date,updated_date,hospital_id) VALUES ?",
+        insurtColumns.join(",") +
+        ",created_date,updated_date,hospital_id) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
@@ -2609,8 +2693,8 @@ let addPatientHistory = (req, res, next) => {
 
       connection.query(
         "INSERT INTO hims_f_patient_history(" +
-          insurtColumns.join(",") +
-          ",patient_id,provider_id, created_date,updated_date,hospital_id) VALUES ?",
+        insurtColumns.join(",") +
+        ",patient_id,provider_id, created_date,updated_date,hospital_id) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
@@ -2705,21 +2789,21 @@ let getPatientHistory = (req, res, next) => {
 
           let history = _.chain(result)
             .groupBy(g => g.history_type)
-            .map(function(detail, key) {
+            .map(function (detail, key) {
               return {
                 groupType: key,
                 groupName:
                   key == "SOH"
                     ? "Social History"
                     : key === "MEH"
-                    ? "Medical History"
-                    : key === "SGH"
-                    ? "Surgical History"
-                    : key === "FMH"
-                    ? "Family History"
-                    : key === "BRH"
-                    ? "Birth History"
-                    : "",
+                      ? "Medical History"
+                      : key === "SGH"
+                        ? "Surgical History"
+                        : key === "FMH"
+                          ? "Family History"
+                          : key === "BRH"
+                            ? "Birth History"
+                            : "",
                 groupDetail: detail
               };
             })
@@ -2865,8 +2949,8 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-          ? ","
-          : "";
+            ? ","
+            : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "significant_signs = ?", [
         inputData.significant_signs
       ]);
@@ -2877,10 +2961,10 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-          ? ","
-          : inputData.significant_signs != null
-          ? ","
-          : "";
+            ? ","
+            : inputData.significant_signs != null
+              ? ","
+              : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "other_signs = ?", [
         inputData.other_signs
       ]);

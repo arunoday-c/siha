@@ -13,19 +13,21 @@ function algaehUtilities(options) {
 }
 algaehUtilities.prototype.encryption = function(data) {
   try {
-    var stringData = JSON.stringify({
-      ...require("./cryptoData.json"),
-      ...data
-    });
-    return new cryptr(this.keys.SECRETKey).encrypt(stringData);
+    // var stringData = JSON.stringify({
+    //   ...require("./cryptoData.json"),
+    //   ...data
+    // });
+    // return new cryptr(this.keys.SECRETKey).encrypt(stringData);
+    return data;
   } catch (error) {
     throw error;
   }
 };
 algaehUtilities.prototype.decryption = function(data) {
   try {
-    var stringData = new cryptr(this.keys.SECRETKey).decrypt(data);
-    return JSON.parse(stringData);
+  //  var stringData = new cryptr(this.keys.SECRETKey).decrypt(data);
+    //return JSON.parse(stringData);
+    return data;
   } catch (error) {
     throw error;
   }

@@ -143,7 +143,7 @@ class LoanAdjustment extends Component {
             }}
           /> */}
 
-          <div className="col-lg-3">
+          {/* <div className="col-lg-3">
             <div
               className="row"
               style={{
@@ -175,12 +175,22 @@ class LoanAdjustment extends Component {
                 />
               </div>
             </div>
+          </div> */}
+
+          <div className="col-3 globalSearchCntr">
+            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <h6 onClick={this.employeeSearch.bind(this)}>
+              {this.state.employee_name
+                ? this.state.employee_name
+                : "Search Employee"}
+              <i className="fas fa-search fa-lg"></i>
+            </h6>
           </div>
 
           <div className="col-lg-2">
             <button
               onClick={this.getEmployeeLoans.bind(this)}
-              style={{ marginTop: 12 }}
+              style={{ marginTop: 19 }}
               className="btn btn-primary"
             >
               {!this.state.loading ? (
@@ -191,7 +201,7 @@ class LoanAdjustment extends Component {
             </button>
             <button
               onClick={this.clearState.bind(this)}
-              style={{ marginTop: 12, marginLeft: 5 }}
+              style={{ marginTop: 19, marginLeft: 5 }}
               className="btn btn-default"
             >
               Clear

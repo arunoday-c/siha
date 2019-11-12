@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./MiscEarningsDeductions.scss";
+import "./MiscEarningsDeductionsNew.scss";
 import {
   AlagehFormGroup,
   AlgaehLabel,
@@ -21,7 +21,7 @@ import {
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 
-export default class MiscEarningsDeductions extends Component {
+export default class MiscEarningsDeductionsNew extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -421,178 +421,295 @@ export default class MiscEarningsDeductions extends Component {
     return (
       <React.Fragment>
         <div className="misc_earn_dedc">
-          <div className="row" style={{ marginTop: 15 }}>
+          <div className="row  inner-top-search">
+            <AlagehAutoComplete
+              div={{ className: "col  form-group mandatory" }}
+              label={{
+                forceLabel: "Year",
+                isImp: true
+              }}
+              selector={{
+                name: "year",
+                className: "select-fld",
+                value: this.state.year,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: allYears
+                },
+                onChange: this.dropDownHandler.bind(this),
+                others: {
+                  disabled: this.state.lockEarnings
+                },
+                onClear: () => {
+                  this.setState({
+                    year: null
+                  });
+                }
+              }}
+            />
+            <AlagehAutoComplete
+              div={{ className: "col mandatory form-group" }}
+              label={{
+                forceLabel: "Month",
+                isImp: true
+              }}
+              selector={{
+                sort: "off",
+                name: "month",
+                className: "select-fld",
+                value: this.state.month,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.MONTHS
+                },
+                onChange: this.dropDownHandler.bind(this),
+                onClear: () => {
+                  this.setState({
+                    month: null
+                  });
+                },
+                others: {
+                  disabled: this.state.lockEarnings
+                }
+              }}
+            />
+
+            <AlagehAutoComplete
+              div={{ className: "col-2 form-group mandatory" }}
+              label={{
+                forceLabel: "Select a Branch",
+                isImp: true
+              }}
+              selector={{
+                name: "hospital_id",
+                className: "select-fld",
+                value: this.state.hospital_id,
+                dataSource: {
+                  textField: "hospital_name",
+                  valueField: "hims_d_hospital_id",
+                  data: this.state.hospitals
+                },
+                onChange: this.dropDownHandler.bind(this),
+                onClear: () => {
+                  this.setState({
+                    hospital_id: null
+                  });
+                },
+                others: {
+                  disabled: this.state.lockEarnings
+                }
+              }}
+            />
+            <div
+              className="col-4  form-group"
+              style={{
+                pointerEvents: this.state.lockEarnings ? "none" : null
+              }}
+            >
+              {/* <label>
+                Components<span className="imp">&nbsp;*</span>
+              </label> */}
+              <div className="customRadio" style={{ paddingBottom: 0 }}>
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    value="E"
+                    name="component_category"
+                    checked={this.state.component_category === "E"}
+                    onChange={this.textHandler.bind(this)}
+                  />
+                  <span>Earnings</span>
+                </label>
+
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    value="D"
+                    name="component_category"
+                    checked={this.state.component_category === "D"}
+                    onChange={this.textHandler.bind(this)}
+                  />
+                  <span>Deductions</span>
+                </label>
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    value="B"
+                    name="component_category"
+                    checked={this.state.component_category === "B"}
+                    onChange={this.textHandler.bind(this)}
+                  />
+                  <span>Bonus</span>
+                </label>
+              </div>
+              <div className="row">
+                <AlagehAutoComplete
+                  div={{ className: "col mandatory" }}
+                  selector={{
+                    name: "earning_deduction_id",
+                    className: "select-fld",
+                    value: this.state.earning_deduction_id,
+                    dataSource: {
+                      textField: "earning_deduction_description",
+                      valueField: "hims_d_earning_deduction_id",
+                      data: this.state.earn_deds
+                    },
+                    onChange: this.dropDownHandler.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        earning_deduction_id: null
+                      });
+                    },
+                    others: {
+                      tabIndex: "1",
+                      disabled: this.state.lockEarnings
+                    }
+                  }}
+                />
+              </div>
+            </div>
+            <AlagehAutoComplete
+              div={{ className: "col-2 form-group" }}
+              label={{ forceLabel: "Employee Group" }}
+              selector={{
+                name: "employee_group_id",
+                value: this.state.employee_group_id,
+                className: "select-fld",
+                dataSource: {
+                  textField: "group_description",
+                  valueField: "hims_d_employee_group_id",
+                  data: this.state.empGroups
+                },
+                onChange: this.dropDownHandler.bind(this),
+                onClear: () => {
+                  this.setState({
+                    employee_group_id: null
+                  });
+                }
+              }}
+            />
+            <AlagehAutoComplete
+              div={{ className: "col-2 form-group" }}
+              label={{ forceLabel: "Department", isImp: false }}
+              selector={{
+                name: "department_id",
+                value: this.state.department_id,
+                className: "select-fld",
+                dataSource: {
+                  textField: "department_name",
+                  valueField: "hims_d_department_id",
+                  data: this.state.allDepartments
+                },
+                onChange: this.DeptdropDownHandler.bind(this),
+                onClear: () => {
+                  this.setState({
+                    department_id: null,
+                    sub_department_id: null,
+                    sub_departments: []
+                  });
+                }
+              }}
+            />
+            <AlagehAutoComplete
+              div={{ className: "col-2 form-group" }}
+              label={{
+                forceLabel: "Sub Department",
+                isImp: false
+              }}
+              selector={{
+                name: "sub_department_id",
+                className: "select-fld",
+                value: this.state.sub_department_id,
+                dataSource: {
+                  textField: "sub_department_name",
+                  valueField: "hims_d_sub_department_id",
+                  data: this.state.sub_departments
+                },
+                onChange: this.dropDownHandler.bind(this),
+                onClear: () => {
+                  this.setState({
+                    sub_department_id: null
+                  });
+                },
+                others: {
+                  disabled: this.state.lockEarnings
+                }
+              }}
+            />
+            <div className="col globalSearchCntr">
+              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <h6 onClick={this.openSearch}>
+                {this.state.emp_name ? this.state.emp_name : "Search Employee"}
+                <i className="fas fa-search fa-lg"></i>
+              </h6>
+            </div>
+
+            <div
+              className="col-2 margin-bottom-15"
+              style={{ paddingTop: 19, textAlign: "right" }}
+            >
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={this.clearState.bind(this)}
+                style={{ marginRight: 10 }}
+              >
+                <AlgaehLabel
+                  label={{ forceLabel: "Clear", returnText: true }}
+                />
+              </button>
+              <button
+                onClick={this.getEmployeesForMiscED.bind(this)}
+                type="button"
+                className="btn btn-primary"
+                style={{
+                  pointerEvents: this.state.lockEarnings ? "none" : null
+                }}
+              >
+                {!this.state.loading ? (
+                  <span>Load</span>
+                ) : (
+                  <i className="fas fa-spinner fa-spin" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          <div className="row">
             <div className="col-3">
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
                   <div className="caption">
-                    <h3 className="caption-subject">Add Miscellaneous</h3>
+                    <h3 className="caption-subject">Assign to All</h3>
                   </div>
                 </div>
                 <div className="portlet-body">
                   <div className="row">
-                    <AlagehAutoComplete
-                      div={{ className: "col-12 form-group mandatory" }}
-                      label={{
-                        forceLabel: "Select a Branch",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "hospital_id",
-                        className: "select-fld",
-                        value: this.state.hospital_id,
-                        dataSource: {
-                          textField: "hospital_name",
-                          valueField: "hims_d_hospital_id",
-                          data: this.state.hospitals
-                        },
-                        onChange: this.dropDownHandler.bind(this),
-                        onClear: () => {
-                          this.setState({
-                            hospital_id: null
-                          });
-                        },
-                        others: {
-                          disabled: this.state.lockEarnings
-                        }
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col-5  form-group mandatory" }}
-                      label={{
-                        forceLabel: "Year",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "year",
-                        className: "select-fld",
-                        value: this.state.year,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: allYears
-                        },
-                        onChange: this.dropDownHandler.bind(this),
-                        others: {
-                          disabled: this.state.lockEarnings
-                        },
-                        onClear: () => {
-                          this.setState({
-                            year: null
-                          });
-                        }
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col-7 mandatory form-group" }}
-                      label={{
-                        forceLabel: "Month",
-                        isImp: true
-                      }}
-                      selector={{
-                        sort: "off",
-                        name: "month",
-                        className: "select-fld",
-                        value: this.state.month,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: GlobalVariables.MONTHS
-                        },
-                        onChange: this.dropDownHandler.bind(this),
-                        onClear: () => {
-                          this.setState({
-                            month: null
-                          });
-                        },
-                        others: {
-                          disabled: this.state.lockEarnings
-                        }
-                      }}
-                    />
-
-                    <div className="col-12 form-group mandatory globalSearchCntr">
-                      <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
-                      <h6 onClick={this.openSearch}>
-                        {this.state.emp_name
-                          ? this.state.emp_name
-                          : "Search Employee"}
-                        <i className="fas fa-search fa-lg"></i>
-                      </h6>
-                    </div>
-                    <div
-                      className="col-12  form-group"
-                      style={{
-                        pointerEvents: this.state.lockEarnings ? "none" : null
-                      }}
-                    >
-                      {/* <label>
-                Components<span className="imp">&nbsp;*</span>
-              </label> */}
-                      <div className="customRadio" style={{ paddingBottom: 0 }}>
-                        <label className="radio inline">
+                    <div className="col-12">
+                      <label>
+                        Apply to All<span className="imp">&nbsp;*</span>
+                      </label>
+                      <div className="customCheckbox">
+                        <label className="checkbox inline">
                           <input
-                            type="radio"
+                            type="checkbox"
                             value="E"
-                            name="component_category"
-                            checked={this.state.component_category === "E"}
-                            onChange={this.textHandler.bind(this)}
+                            name="isBulk"
+                            onChange={this.changeChecks.bind(this)}
+                            checked={this.state.isBulk}
                           />
-                          <span>Earnings</span>
+                          <span>Yes</span>
                         </label>
-
-                        <label className="radio inline">
-                          <input
-                            type="radio"
-                            value="D"
-                            name="component_category"
-                            checked={this.state.component_category === "D"}
-                            onChange={this.textHandler.bind(this)}
-                          />
-                          <span>Deductions</span>
-                        </label>
-                        <label className="radio inline">
-                          <input
-                            type="radio"
-                            value="B"
-                            name="component_category"
-                            checked={this.state.component_category === "B"}
-                            onChange={this.textHandler.bind(this)}
-                          />
-                          <span>Bonus</span>
-                        </label>
-                      </div>
-                      <div className="row">
-                        <AlagehAutoComplete
-                          div={{ className: "col mandatory" }}
-                          selector={{
-                            name: "earning_deduction_id",
-                            className: "select-fld",
-                            value: this.state.earning_deduction_id,
-                            dataSource: {
-                              textField: "earning_deduction_description",
-                              valueField: "hims_d_earning_deduction_id",
-                              data: this.state.earn_deds
-                            },
-                            onChange: this.dropDownHandler.bind(this),
-                            onClear: () => {
-                              this.setState({
-                                earning_deduction_id: null
-                              });
-                            },
-                            others: {
-                              tabIndex: "1",
-                              disabled: this.state.lockEarnings
-                            }
-                          }}
-                        />
                       </div>
                     </div>
+
                     <AlagehFormGroup
-                      div={{ className: "col-12 mandatory form-group " }}
+                      div={{ className: "col-12" }}
                       label={{
-                        forceLabel: "Enter Amount",
-                        isImp: true
+                        forceLabel: "Enter Bulk Amount",
+                        isImp: this.state.isBulk
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
@@ -608,34 +725,10 @@ export default class MiscEarningsDeductions extends Component {
                       }}
                     />
                     <div
-                      className="col margin-bottom-15"
-                      style={{ textAlign: "right" }}
+                      className="col-12"
+                      style={{ textAlign: "right", paddingTop: 19 }}
                     >
                       <button
-                        type="button"
-                        className="btn btn-default"
-                        onClick={this.clearState.bind(this)}
-                        style={{ marginRight: 10 }}
-                      >
-                        <AlgaehLabel
-                          label={{ forceLabel: "Clear", returnText: true }}
-                        />
-                      </button>
-                      <button
-                        onClick={this.getEmployeesForMiscED.bind(this)}
-                        type="button"
-                        className="btn btn-primary"
-                        style={{
-                          pointerEvents: this.state.lockEarnings ? "none" : null
-                        }}
-                      >
-                        {!this.state.loading ? (
-                          <span>Add</span>
-                        ) : (
-                          <i className="fas fa-spinner fa-spin" />
-                        )}
-                      </button>
-                      {/* <button
                         type="button"
                         className="btn btn-default"
                         style={{
@@ -645,7 +738,7 @@ export default class MiscEarningsDeductions extends Component {
                         onClick={this.applyAmount.bind(this)}
                       >
                         Apply
-                      </button> */}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -663,7 +756,7 @@ export default class MiscEarningsDeductions extends Component {
                   <div className="row">
                     <div
                       className="col-lg-12"
-                      id="MiscEarningsDeductionsGrid_Cntr"
+                      id="MiscEarningsDeductionsGrid_CntrNew"
                     >
                       <AlgaehDataGrid
                         id="MiscEarningsDeductionsGrid"
@@ -708,7 +801,7 @@ export default class MiscEarningsDeductions extends Component {
                             label: (
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Misc Description"
+                                  forceLabel: "Sub Department"
                                 }}
                               />
                             ),
@@ -724,24 +817,30 @@ export default class MiscEarningsDeductions extends Component {
                             disabled: true
                           },
                           {
-                            fieldName: "sub_department_name",
+                            fieldName: "employee_code",
 
                             label: (
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Misc Type"
+                                  forceLabel: "Employee Code"
                                 }}
                               />
                             ),
-                            displayTemplate: row => {
-                              return (
-                                <span>
-                                  {row.sub_department_name !== null
-                                    ? row.sub_department_name
-                                    : "Not Specified"}
-                                </span>
-                              );
+                            others: {
+                              maxWidth: 150
                             },
+                            disabled: true
+                          },
+                          {
+                            fieldName: "employee_name",
+
+                            label: (
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Employee Name"
+                                }}
+                              />
+                            ),
                             disabled: true
                           },
                           {
