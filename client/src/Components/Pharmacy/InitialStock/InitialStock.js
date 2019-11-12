@@ -252,6 +252,17 @@ class InitialStock extends Component {
                       }
                     }}
                   />
+                  {this.state.dataExitst === true ? (
+                    <div className="col">
+                      <h6>
+                        {this.state.posted === "Y" ? (
+                          <span className="badge badge-success">Posted</span>
+                        ) : (
+                            <span className="badge badge-danger">Not Posted</span>
+                          )}
+                      </h6>
+                    </div>
+                  ) : null}
                 </div>
                 <div className="row" data-validate="IntialStock">
                   <AlagehAutoComplete
@@ -537,9 +548,9 @@ class InitialStock extends Component {
                             <i
                               style={{
                                 pointerEvents:
-                                  this.state.dataExitst === false ? "none" : "",
+                                  this.state.posted === "N" ? "none" : "",
                                 opacity:
-                                  this.state.dataExitst === false ? "0.1" : ""
+                                  this.state.posted === "N" ? "0.1" : ""
                               }}
                               onClick={printBarcode.bind(this, this, row)}
                               className="fas fa-barcode"
@@ -553,9 +564,9 @@ class InitialStock extends Component {
                             <i
                               style={{
                                 pointerEvents:
-                                  this.state.dataExitst === false ? "none" : "",
+                                  this.state.posted === "N" ? "none" : "",
                                 opacity:
-                                  this.state.dataExitst === false ? "0.1" : ""
+                                  this.state.posted === "N" ? "0.1" : ""
                               }}
                               onClick={printBarcode.bind(this, this, row)}
                               className="fas fa-barcode"
@@ -901,7 +912,7 @@ class InitialStock extends Component {
                   dataSource={{
                     data: this.state.pharmacy_stock_detail
                   }}
-                  isEditable={!this.state.dataExitst}
+                  isEditable={this.state.posted === "N" ? true : false}
                   byForceEvents={true}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
@@ -939,7 +950,7 @@ class InitialStock extends Component {
                     />
                   </button>
 
-                  {/*<button
+                  <button
                     type="button"
                     className="btn btn-other"
                     onClick={PostInitialStock.bind(this, this)}
@@ -951,7 +962,7 @@ class InitialStock extends Component {
                         returnText: true
                       }}
                     />
-                  </button>*/}
+                  </button>
                 </div>
               </div>
             </div>

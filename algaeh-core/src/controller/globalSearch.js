@@ -11,20 +11,20 @@ export default () => {
   api.get(
     "/get",
     searchData,
-    (req, res, next) => {
-      let result;
+    (req, res) => {
+      let result={};
       if (req.records !== undefined) {
-        result = new Object();
+        // result = new Object();
         result["totalPages"] = req.records[1][0].total_pages;
         result["data"] = req.records[0];
       }
+
       res.status(httpStatus.ok).json({
         success: true,
         records: result
-      });
-      next();
-    },
-    releaseConnection
+      }).end();
+
+    }
   );
   api.post(
     "/newSearch",

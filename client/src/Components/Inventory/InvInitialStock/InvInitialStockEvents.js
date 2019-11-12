@@ -107,6 +107,7 @@ const itemchangeText = ($this, e, ctrl) => {
     sales_uom: e.sales_uom_id,
     required_batchno: e.exp_date_required,
     item_code: e.item_code,
+    item_description: e.item_description,
     // unit_cost: e.selected.purchase_cost,
     sales_price: e.sales_price,
     purchase_uom_id: e.purchase_uom_id,
@@ -302,31 +303,13 @@ const getCtrlCode = ($this, docNumber) => {
 };
 
 const SaveInitialStock = $this => {
-  $this.state.posted = "Y";
-  $this.state.transaction_type = "INT";
-  $this.state.transaction_date = $this.state.docdate;
-
-  for (let i = 0; i < $this.state.inventory_stock_detail.length; i++) {
-    $this.state.inventory_stock_detail[i].net_total =
-      $this.state.inventory_stock_detail[i].extended_cost;
-    $this.state.inventory_stock_detail[i].operation = "+";
-  }
-
+  AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/inventoryinitialstock/addInventoryInitialStock",
     module: "inventory",
     data: $this.state,
     onSuccess: response => {
       if (response.data.success === true) {
-        // $this.setState({
-        //   document_number: response.data.records.document_number,
-        //   hims_f_inventory_stock_header_id:
-        //     response.data.records.hims_f_inventory_stock_header_id,
-        //   year: response.data.records.year,
-        //   period: response.data.records.period,
-        //   saveEnable: true,
-        //   postEnable: false
-        // });
         getCtrlCode($this, response.data.records.document_number);
         swalMessage({
           title: "Record Saved successfully . .",
@@ -385,6 +368,7 @@ const ClearData = $this => {
 };
 
 const PostInitialStock = $this => {
+  AlgaehLoader({ show: true });
   $this.state.posted = "Y";
   $this.state.transaction_type = "INT";
   $this.state.transaction_id = $this.state.hims_f_inventory_stock_header_id;
@@ -393,12 +377,9 @@ const PostInitialStock = $this => {
   for (let i = 0; i < $this.state.inventory_stock_detail.length; i++) {
     $this.state.inventory_stock_detail[i].net_total =
       $this.state.inventory_stock_detail[i].extended_cost;
-    $this.state.inventory_stock_detail[i].barcode =
-      $this.state.inventory_stock_detail[i].item_code +
-      "-" +
-      $this.state.inventory_stock_detail[i].batchno;
     $this.state.inventory_stock_detail[i].operation = "+";
   }
+
   algaehApiCall({
     uri: "/inventoryinitialstock/updateInventoryInitialStock",
     module: "inventory",
@@ -414,6 +395,7 @@ const PostInitialStock = $this => {
           type: "success"
         });
       }
+      AlgaehLoader({ show: false });
     },
     onFailure: error => {
       AlgaehLoader({ show: false });
@@ -504,7 +486,8 @@ const EditGrid = ($this, cancelRow) => {
     _inventory_stock_detail[cancelRow.rowIdx] = cancelRow;
   }
   $this.setState({
-    saveEnable: !$this.state.saveEnable,
+    saveEnable: $this.state.dataExitst === true ? true : !$this.state.saveEnable,
+    postEnable: !$this.state.postEnable,
     inventory_stock_detail: _inventory_stock_detail
   });
 };
