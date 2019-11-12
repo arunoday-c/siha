@@ -464,7 +464,6 @@ let getRoleBaseActiveModules = (req, res, next) => {
     if (req.userIdentity.role_type == "AD") {
       superUser = " and access_by <> 'SU'";
     }
-
     let from_assignment = "N";
     let role_id = req.userIdentity.role_id;
     if (req.query.from_assignment == "Y" && req.query.role_id > 0) {
@@ -484,7 +483,8 @@ let getRoleBaseActiveModules = (req, res, next) => {
            from algaeh_d_app_module where  record_status=md5('A') ${superUser} order by display_order;
           select algaeh_app_screens_id, screen_code, screen_name, page_to_redirect,S.other_language, module_id
           from algaeh_d_app_module M inner join algaeh_d_app_screens S on M.algaeh_d_module_id =S.module_id
-          where  M.record_status=md5('A') and S.record_status='A' ${superUser}  order by display_order `
+          where  M.record_status=md5('A') and S.record_status='A' ${superUser}  order by display_order `,
+
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -540,7 +540,8 @@ let getRoleBaseActiveModules = (req, res, next) => {
             algaeh_m_screen_role_privilage_mapping SRM on MRP.algaeh_m_module_role_privilage_mapping_id=SRM.module_role_map_id\
             inner join algaeh_d_app_screens S on SRM.screen_id=S.algaeh_app_screens_id\
             where MRP.record_status='A'  and SRM.record_status='A' and S.record_status='A' and  MRP.role_id =?",
-          values: [role_id, role_id]
+          values: [role_id, role_id],
+          printQuery:true
         })
         .then(result => {
           _mysql.releaseConnection();

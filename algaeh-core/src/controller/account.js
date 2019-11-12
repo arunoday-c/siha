@@ -102,7 +102,7 @@ export default ({ config, db }) => {
             records: {
               username: rowDetails["username"],
               user_display_name: rowDetails["user_display_name"],
-              token: createJWTToken(encrypDetsil, false),
+              token: createJWTToken({...encrypDetsil,...specfic_date,role_id:rowDetails.app_d_app_roles_id}, false),
               // keyResources: keyData,
               keyData: specfic_date,
               secureModels: req.secureModels,

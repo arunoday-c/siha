@@ -45,6 +45,7 @@ let searchData = (req, res, next) => {
     //       "%')";
 
     let whereCondition = " ";
+    console.log("Query",req.query);
     if (
       req.query.fieldName != null &&
       req.query.fieldContains != null &&
@@ -117,6 +118,7 @@ let searchData = (req, res, next) => {
         printQuery: true
       })
       .then(result => {
+        // console.log("result",result);
         _mysql.releaseConnection();
         req.records = result;
         next();

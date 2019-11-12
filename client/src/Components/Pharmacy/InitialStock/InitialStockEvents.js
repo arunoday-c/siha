@@ -92,7 +92,6 @@ const itemchangeText = ($this, e, ctrl) => {
     item_description: e.item_description,
     // unit_cost: e.selected.purchase_cost,
     sales_price: e.sales_price,
-    batchno: "B" + e.batch_no,
     purchase_uom_id: e.purchase_uom_id,
     stock_uom_desc: e.stock_uom_desc,
     sales_uom_desc: e.sales_uom_desc
@@ -283,32 +282,12 @@ const getCtrlCode = ($this, docNumber) => {
 
 const SaveInitialStock = $this => {
   AlgaehLoader({ show: true });
-  $this.state.posted = "Y";
-  $this.state.transaction_type = "INT";
-  $this.state.transaction_date = $this.state.docdate;
-
-  for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
-    $this.state.pharmacy_stock_detail[i].net_total =
-      $this.state.pharmacy_stock_detail[i].extended_cost;
-
-    $this.state.pharmacy_stock_detail[i].operation = "+";
-  }
-
   algaehApiCall({
     uri: "/initialstock/addPharmacyInitialStock",
     module: "pharmacy",
     data: $this.state,
     onSuccess: response => {
       if (response.data.success === true) {
-        // $this.setState({
-        //   document_number: response.data.records.document_number,
-        //   hims_f_pharmacy_stock_header_id:
-        //     response.data.records.hims_f_pharmacy_stock_header_id,
-        //   year: response.data.records.year,
-        //   period: response.data.records.period,
-        //   saveEnable: true,
-        //   postEnable: false
-        // });
         getCtrlCode($this, response.data.records.document_number);
         swalMessage({
           title: "Record Saved successfully . .",
@@ -366,6 +345,7 @@ const ClearData = $this => {
 };
 
 const PostInitialStock = $this => {
+  AlgaehLoader({ show: true });
   $this.state.posted = "Y";
   $this.state.transaction_type = "INT";
   $this.state.transaction_id = $this.state.hims_f_pharmacy_stock_header_id;
@@ -374,11 +354,6 @@ const PostInitialStock = $this => {
   for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
     $this.state.pharmacy_stock_detail[i].net_total =
       $this.state.pharmacy_stock_detail[i].extended_cost;
-
-    $this.state.pharmacy_stock_detail[i].barcode =
-      $this.state.pharmacy_stock_detail[i].batchno +
-      "-" +
-      $this.state.pharmacy_stock_detail[i].item_code;
     $this.state.pharmacy_stock_detail[i].operation = "+";
     // $this.state.pharmacy_stock_detail[i].operation = "+";
   }
@@ -398,6 +373,7 @@ const PostInitialStock = $this => {
           type: "success"
         });
       }
+      AlgaehLoader({ show: false });
     },
     onFailure: error => {
       AlgaehLoader({ show: false });
@@ -481,7 +457,8 @@ const EditGrid = ($this, cancelRow) => {
     _pharmacy_stock_detail[cancelRow.rowIdx] = cancelRow;
   }
   $this.setState({
-    saveEnable: !$this.state.saveEnable,
+    saveEnable: $this.state.dataExitst === true ? true : !$this.state.saveEnable,
+    postEnable: !$this.state.postEnable,
     pharmacy_stock_detail: _pharmacy_stock_detail
   });
 };

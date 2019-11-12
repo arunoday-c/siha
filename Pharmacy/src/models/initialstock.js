@@ -1,6 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import moment from "moment";
 import algaehUtilities from "algaeh-utilities/utilities";
+import mysql from "mysql";
 
 export default {
   generateNumber: (req, res, next) => {
@@ -116,15 +117,14 @@ export default {
         .executeQuery({
           query:
             "INSERT INTO `hims_f_pharmacy_stock_header` (document_number,docdate,`year`,period,\
-                description,posted,created_date,created_by,updated_date,updated_by,hospital_id) \
-                VALUE(?,?,?,?,?,?,?,?,?,?,?)",
+                description,created_date,created_by,updated_date,updated_by,hospital_id) \
+                VALUE(?,?,?,?,?,?,?,?,?,?)",
           values: [
             input.document_number,
             today,
             year,
             period,
             input.description,
-            input.posted,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
@@ -177,13 +177,17 @@ export default {
             .then(stock_detail => {
               utilities.logger().log("stock_detail: ");
 
-              req.records = {
-                document_number: input.document_number,
-                hims_f_pharmacy_stock_header_id: headerResult.insertId,
-                year: year,
-                period: period
-              };
-              next();
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = {
+                  document_number: input.document_number,
+                  hims_f_pharmacy_stock_header_id: headerResult.insertId,
+                  year: year,
+                  period: period
+                };
+                next();
+              });
+
             })
             .catch(error => {
               _mysql.rollBackTransaction(() => {
@@ -204,14 +208,14 @@ export default {
   },
 
   updatePharmacyInitialStock: (req, res, next) => {
-    const _mysql = new algaehMysql();
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
 
     try {
-      req.mySQl = _mysql;
       let inputParam = { ...req.body };
 
       _mysql
-        .executeQueryWithTransaction({
+        .executeQuery({
           query:
             "UPDATE `hims_f_pharmacy_stock_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
             WHERE `record_status`='A' and `hims_f_pharmacy_stock_header_id`=?",
@@ -224,14 +228,31 @@ export default {
           printQuery: true
         })
         .then(headerResult => {
-          req.connection = {
-            connection: _mysql.connection,
-            isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
-          };
-          // _mysql.releaseConnection();
-          // req.records = headerResult;
-          next();
+          let UpdateQry = ""
+          for (let i = 0; i < inputParam.pharmacy_stock_detail.length; i++) {
+            UpdateQry += mysql.format(
+              "UPDATE `hims_f_pharmacy_stock_detail` SET barcode=?, batchno=? \
+                where hims_f_pharmacy_stock_detail_id=?;",
+              [
+                inputParam.pharmacy_stock_detail[i].barcode,
+                inputParam.pharmacy_stock_detail[i].batchno,
+                inputParam.pharmacy_stock_detail[i].hims_f_pharmacy_stock_detail_id
+              ]
+            );
+          }
+          _mysql
+            .executeQuery({
+              query: UpdateQry,
+              printQuery: true
+            })
+            .then(result => {
+              next();
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {
