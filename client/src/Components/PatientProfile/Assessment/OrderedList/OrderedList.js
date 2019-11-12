@@ -1050,6 +1050,8 @@ class OrderedList extends PureComponent {
           approval_limit_yesno={this.state.approval_limit_yesno}
           preserviceInput={this.state.preserviceInput}
           addNew={true}
+          date_of_birth={this.props.date_of_birth}
+          gender={this.props.gender}
         />
 
         <OrderingPackages

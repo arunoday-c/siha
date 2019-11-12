@@ -131,6 +131,8 @@ class Assessment extends Component {
       .where(w => w.final_daignosis === "Y")
       .toArray();
 
+    debugger
+
     return (
       <div className="hptl-ehr-assetment-details">
         <div className="row margin-top-15">
@@ -254,7 +256,7 @@ class Assessment extends Component {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: deleteDiagnosis.bind(this, this),
-                        onEdit: row => {},
+                        onEdit: row => { },
                         onDone: updateDiagnosis.bind(this, this)
                       }}
                       // loading={this.state.showInitialDiagnosisLoader}
@@ -365,11 +367,11 @@ class Assessment extends Component {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: deleteFinalDiagnosis.bind(this, this),
-                        onEdit: row => {},
+                        onEdit: row => { },
 
                         onDone: updateDiagnosis.bind(this, this)
                       }}
-                      // loading={this.state.showFinalDiagnosisLoader}
+                    // loading={this.state.showFinalDiagnosisLoader}
                     />
                   </div>
                 </div>
@@ -442,7 +444,10 @@ class Assessment extends Component {
                 ) */}
             <div className="grid-section">
               {this.state.pageDisplay === "Orders" ? (
-                <OrderedList vat_applicable={this.props.vat_applicable} />
+                <OrderedList vat_applicable={this.props.vat_applicable}
+                  date_of_birth={this.props.date_of_birth}
+                  gender={this.props.gender}
+                />
               ) : this.state.pageDisplay === "LabResults" ? (
                 <LabResults />
               ) : this.state.pageDisplay === "RisResults" ? (
