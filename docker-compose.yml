@@ -9,3 +9,12 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+  billing:
+    container_name: ${CI_REGISTRY}/algaeh/algaeh-monorepo/algaeh-billing
+    env_file:
+      - ./env
+    build:
+      context: ./Billing
+      dockerfile: Dockerfile
+    ports:
+      - "3014:3014"
