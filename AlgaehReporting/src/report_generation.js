@@ -26,7 +26,7 @@ if (!fs.existsSync(outputFolder)) {
   fs.mkdirSync(outputFolder);
 }
 
-const compile = async function(templateName, data) {
+const compile = async function (templateName, data) {
   try {
     const filePath = path.join(
       process.cwd(),
@@ -41,7 +41,7 @@ const compile = async function(templateName, data) {
   }
 };
 
-const compileExcel = async function(templateName, data) {
+const compileExcel = async function (templateName, data) {
   const filePath = path.join(
     process.cwd(),
     "algaeh_report_tool/templates",
@@ -51,9 +51,9 @@ const compileExcel = async function(templateName, data) {
   return hbs.compile(html)(data);
 };
 
-hbs.registerHelper("sumOf", function(data, sumby, callBack) {
+hbs.registerHelper("sumOf", function (data, sumby, callBack) {
   data = Array.isArray(data) ? data : [];
-  const sumof = _.sumBy(data, function(s) {
+  const sumof = _.sumBy(data, function (s) {
     return s[sumby];
   });
   if (typeof callBack == "function") callBack(sumof);
@@ -61,16 +61,16 @@ hbs.registerHelper("sumOf", function(data, sumby, callBack) {
     return sumof;
   }
 });
-hbs.registerHelper("countOf", function(data) {
+hbs.registerHelper("countOf", function (data) {
   data = Array.isArray(data) ? data : [];
   return data.length;
 });
-hbs.registerHelper("if", function(value1, value2, options) {
+hbs.registerHelper("if", function (value1, value2, options) {
   if (value1 == value2) return options.fn(this);
   else return options.inverse(this);
 });
 
-hbs.registerHelper("dateTime", function(value, type) {
+hbs.registerHelper("dateTime", function (value, type) {
   type = type || "date";
 
   if (value == null) {
@@ -91,16 +91,16 @@ hbs.registerHelper("dateTime", function(value, type) {
   }
 });
 
-hbs.registerHelper("capitalization", function(value) {
+hbs.registerHelper("capitalization", function (value) {
   return _.startCase(_.toLower(value));
 });
 //created by irfan
-hbs.registerHelper("inc", function(value, options) {
+hbs.registerHelper("inc", function (value, options) {
   return parseInt(value) + 1;
 });
 
 //created by irfan:to check array has elements
-hbs.registerHelper("hasElement", function(conditional, options) {
+hbs.registerHelper("hasElement", function (conditional, options) {
   if (conditional.length > 0) {
     return options.fn(this);
   } else {
@@ -108,7 +108,7 @@ hbs.registerHelper("hasElement", function(conditional, options) {
   }
 });
 //created by irfan:
-hbs.registerHelper("dynamicSalary", function(searchKey, inputArray, comp_type) {
+hbs.registerHelper("dynamicSalary", function (searchKey, inputArray, comp_type) {
   if (comp_type == "E") {
     const obj = inputArray.find(item => {
       return item.earnings_id == searchKey;
@@ -127,7 +127,7 @@ hbs.registerHelper("dynamicSalary", function(searchKey, inputArray, comp_type) {
   }
 });
 
-hbs.registerHelper("importStyle", function(styleSheetName) {
+hbs.registerHelper("importStyle", function (styleSheetName) {
   const fullPath = path.join(
     process.cwd(),
     "algaeh_report_tool/templates",
@@ -137,7 +137,7 @@ hbs.registerHelper("importStyle", function(styleSheetName) {
   return "<style type='text/css'>" + style + "</style>";
 });
 
-hbs.registerHelper("loadPage", function(filePath, data) {
+hbs.registerHelper("loadPage", function (filePath, data) {
   const fullPath = path.join(
     process.cwd(),
     "algaeh_report_tool/templates",
@@ -147,7 +147,7 @@ hbs.registerHelper("loadPage", function(filePath, data) {
   return hbs.compile(html)(data);
 });
 
-hbs.registerHelper("imageSource", function(filePath) {
+hbs.registerHelper("imageSource", function (filePath) {
   const fullPath = path.join(
     process.cwd(),
     "algaeh_report_tool/templates",
@@ -158,10 +158,10 @@ hbs.registerHelper("imageSource", function(filePath) {
   return "data:image/" + _extention + ";base64," + img;
 });
 
-hbs.registerHelper("groupBy", function(data, groupby) {
+hbs.registerHelper("groupBy", function (data, groupby) {
   const groupBy = _.chain(data)
     .groupBy(groupby)
-    .map(function(detail, key) {
+    .map(function (detail, key) {
       return {
         [groupby]: key,
         groupDetail: detail
@@ -171,7 +171,7 @@ hbs.registerHelper("groupBy", function(data, groupby) {
 
   return groupBy;
 });
-hbs.registerHelper("currentDateTime", function(type) {
+hbs.registerHelper("currentDateTime", function (type) {
   if (type == null || type == "") {
     return moment().format("DD-MM-YYYY");
   } else if (type == "time") {
@@ -180,7 +180,7 @@ hbs.registerHelper("currentDateTime", function(type) {
     return moment().format("DD-MM-YYYY");
   }
 });
-hbs.registerHelper("firstElement", function(array, index, fieldName) {
+hbs.registerHelper("firstElement", function (array, index, fieldName) {
   array = array || [];
   index = index || 0;
   if (array.length > 0) {
@@ -189,7 +189,7 @@ hbs.registerHelper("firstElement", function(array, index, fieldName) {
     return null;
   }
 });
-hbs.registerHelper("consoleLog", function(data) {
+hbs.registerHelper("consoleLog", function (data) {
   if (typeof data == "string") {
     return data;
   } else {
@@ -197,7 +197,7 @@ hbs.registerHelper("consoleLog", function(data) {
   }
 });
 
-hbs.registerHelper("imageUrl", function(
+hbs.registerHelper("imageUrl", function (
   filename,
   index,
   name,
@@ -235,7 +235,7 @@ hbs.registerHelper("imageUrl", function(
   }
 });
 
-hbs.registerHelper("barcode", function(type, text, includetext) {
+hbs.registerHelper("barcode", function (type, text, includetext) {
   type = type || "code128";
   includetext = includetext || true;
   return `http://localhost:3018/barcode?bcid=${type}&text=${text}&includetext=${includetext}&guardwhitespace`;
@@ -244,7 +244,7 @@ hbs.registerHelper("barcode", function(type, text, includetext) {
 const groupBy = (data, groupby) => {
   const groupBy = _.chain(data)
     .groupBy(groupby)
-    .map(function(detail, key) {
+    .map(function (detail, key) {
       return {
         [groupby]: key,
         groupDetail: detail
@@ -412,8 +412,8 @@ export default {
                       _inputParam.pageOrentation == null
                         ? {}
                         : _inputParam.pageOrentation == "landscape"
-                        ? { landscape: true }
-                        : {};
+                          ? { landscape: true }
+                          : {};
 
                     const pageSize =
                       _inputParam.pageSize == null
@@ -526,7 +526,7 @@ export default {
                         result = resultReq;
                         startGenerate();
                       })
-                      .catch(error => {});
+                      .catch(error => { });
                   } else {
                     if (
                       _data.data_manupulation != null &&
@@ -578,7 +578,7 @@ export default {
             O.organization_name,O.business_registration_number,O.legal_name,O.tax_number,O.address1,O.address2 ,\
             O.email,O.phone1 from hims_d_hospital H,hims_d_organization O \
             where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
-          values: [_inputParam.reportName, req.userIdentity["x-branch"]],
+          values: [_inputParam.reportName, req.userIdentity.hospital_id],
           printQuery: true
         })
         .then(data => {
@@ -625,11 +625,11 @@ export default {
                         process.cwd(),
                         "algaeh_report_tool/templates/Output",
                         resourceTemplate.report_name +
-                          moment().format("YYYYMMDDHHmmss") +
-                          "_" +
-                          i +
-                          "_" +
-                          p
+                        moment().format("YYYYMMDDHHmmss") +
+                        "_" +
+                        i +
+                        "_" +
+                        p
                       );
                       const _outPath = _path + ".pdf";
                       subReportCollection.push(_outPath);
@@ -707,8 +707,8 @@ export default {
                           _inputParam.pageOrentation == null
                             ? {}
                             : _inputParam.pageOrentation == "landscape"
-                            ? { landscape: true }
-                            : {};
+                              ? { landscape: true }
+                              : {};
                         const pageSize =
                           _inputParam.pageSize == null
                             ? { format: "A4" }
@@ -754,7 +754,7 @@ export default {
                             result = resultReq;
                             startGenerate();
                           })
-                          .catch(error => {});
+                          .catch(error => { });
                       } else {
                         if (
                           resourceTemplate.data_manupulation != null &&
@@ -913,7 +913,7 @@ export default {
                 path.join(mainPath, _inputParam.reportName + ".js")
               );
               excelRun = executePDF;
-              const _input = { hospital_id: req.userIdentity["x-branch"] };
+              const _input = { hospital_id: req.userIdentity.hospital_id };
               for (let i = 0; i < _inputParam.reportParams.length; i++) {
                 const _inp = _inputParam.reportParams[i];
                 _input[_inp.name] = _inp.value;
@@ -976,12 +976,12 @@ export default {
                     }
                     var tables = $("table").length;
                     if (tables > 0) {
-                      $("table").each(function(tableIdx, table) {
+                      $("table").each(function (tableIdx, table) {
                         var rows = [];
                         var columns = [];
                         $(this)
                           .find("th")
-                          .map(function(theadIdx, thead) {
+                          .map(function (theadIdx, thead) {
                             let text = $(this).text();
                             let widthAttr = $(this).attr("excelwidth");
 
@@ -1022,12 +1022,12 @@ export default {
                         $(this)
                           .find("tbody")
                           .find("tr")
-                          .map(function(trIdx, tr) {
+                          .map(function (trIdx, tr) {
                             var rowID = worksheet.rowCount + 1;
                             const itemRow = worksheet.getRow(rowID);
                             $(this)
                               .find("td")
-                              .map(function(cellIndex, td) {
+                              .map(function (cellIndex, td) {
                                 const celllIdx = cellIndex + 1;
                                 const cell = itemRow.getCell(celllIdx);
                                 if ($(this).attr("excelfonts") !== undefined) {
@@ -1049,7 +1049,7 @@ export default {
                                       .split(":");
                                     const merge = `${_mergeCells[0]}${rowID}:${
                                       _mergeCells[1]
-                                    }${rowID}`;
+                                      }${rowID}`;
 
                                     const den = `${_mergeCells[0]}${rowID}`;
                                     worksheet.getCell(den).value = $(this)
@@ -1137,7 +1137,7 @@ export default {
                       "Content-Disposition",
                       "attachment; filename=" + "Report.xlsx"
                     );
-                    workbook.xlsx.write(res).then(function(data) {
+                    workbook.xlsx.write(res).then(function (data) {
                       res.end();
                       console.log("File write done........");
                     });
@@ -1345,7 +1345,7 @@ export default {
                         result = resultReq;
                         startGenerate();
                       })
-                      .catch(error => {});
+                      .catch(error => { });
                   } else {
                     if (
                       _data.data_manupulation != null &&

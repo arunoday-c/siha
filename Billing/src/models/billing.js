@@ -626,7 +626,7 @@ export default {
           tableName: "hims_f_app_numgen",
           identity: {
             algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity["x-branch"]
+            hospital_id: req.userIdentity.hospital_id
           }
         })
         .then(generatedNumbers => {
@@ -1776,7 +1776,7 @@ export default {
           tableName: "hims_f_app_numgen",
           identity: {
             algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity["x-branch"]
+            hospital_id: req.userIdentity.hospital_id
           }
         })
         .then(generatedNumbers => {
@@ -2114,7 +2114,7 @@ export default {
                               created_date: new Date(),
                               updated_by: req.userIdentity.algaeh_d_app_user_id,
                               updated_date: new Date(),
-                              hospital_id: req.userIdentity["x-branch"]
+                              hospital_id: req.userIdentity.hospital_id
                             },
                             bulkInsertOrUpdate: true,
                             printQuery: true
@@ -3265,263 +3265,324 @@ export default {
       const _options = req.connection == null ? {} : req.connection;
 
       const _mysql = new algaehMysql(_options);
+
       const utilities = new algaehUtilities();
-      const inputParam = req.body;
 
-
-      let narration = "OP BILLING RECIEPT";
-      let transaction_type = "BILL";
-      let amount = inputParam.receiveable_amount;
-      let control_account = "OP_CON";
-
-      if (inputParam.transaction_type == "AD") {
-        narration = "PATIENT ADVANCE";
-        transaction_type = "AD";
-        amount = inputParam.advance_amount;
-        control_account = "OP_DEP";
-      }
-
-
-      if (inputParam.advance_adjust > 0) {
-        transaction_type = "ADJUST";
-      }
-
-
-
-      console.log("ONE:");
-
-      utilities.logger().log("inputParamRR: ", inputParam);
       _mysql
-        .executeQueryWithTransaction({
+        .executeQuery({
           query:
-            "INSERT INTO finance_day_end_header (transaction_date,amount,control_account,document_type,document_id,\
-              document_number,from_screen,transaction_type,customer_type,narration,hospital_id) \
-              VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-          values: [
-            new Date(),
-            amount,
-            control_account,
-            "RECEIPT",
-            inputParam.receipt_header_id,
-            inputParam.receipt_number,
-            inputParam.ScreenCode,
-            transaction_type,
-            "P",
-            narration,
-            req.userIdentity.hospital_id
-          ],
+            "select product_type from hims_d_hospital where hims_d_hospital_id=? and \
+      (product_type='HIMS_ERP' or product_type='HRMS_ERP' or product_type='FINANCE_ERP');",
+          values: [req.userIdentity.hospital_id],
           printQuery: true
         })
-        .then(headerDayEnd => {
-          console.log("TWO:");
+        .then(appResult => {
+          if (appResult.length > 0) {
+            const inputParam = req.body;
 
-          const insertDetail = inputParam.receiptdetails.map(m => {
-            return {
-              amount: m.amount,
-              payment_mode: m.pay_type
-            };
-          });
-          const IncludeValues = ["amount", "payment_mode"];
-          _mysql
-            .executeQueryWithTransaction({
-              query:
-                "INSERT INTO finance_day_end_detail (??) \
-                VALUES ? ",
-              values: insertDetail,
-              includeValues: IncludeValues,
-              bulkInsertOrUpdate: true,
-              extraValues: {
-                day_end_header_id: headerDayEnd["insertId"]
-              },
-              printQuery: true
-            })
-            .then(detail => {
+            let narration = "OP BILLING RECIEPT";
+            let transaction_type = "BILL";
+            let amount = inputParam.receiveable_amount;
+            let control_account = "OP_CON";
 
-              let fetchServiceDetails = "";
-              if (inputParam.billdetails && inputParam.billdetails.length > 0) {
+            if (inputParam.transaction_type == "AD") {
+              narration = "PATIENT ADVANCE";
+              transaction_type = "AD";
+              amount = inputParam.total_amount;
+              control_account = "OP_DEP";
+            }
+            if (inputParam.transaction_type == "RF") {
+              narration = "PATIENT PERFUND";
+              transaction_type = "RF";
+              amount = inputParam.total_amount;
+              control_account = "OP_DEP";
+            }
 
-                const servicesIds = inputParam.billdetails.map(m => {
-                  return m.services_id;
-                })
-                fetchServiceDetails = ` SELECT hims_d_services_id,service_type_id,head_account,head_id,child_id FROM hims_d_services
-                where hims_d_services_id in(${servicesIds}); `
+            if (inputParam.advance_adjust > 0) {
+              transaction_type = "ADJUST";
+            }
+            if (inputParam.credit_amount > 0) {
+              transaction_type = "DUE";
+              control_account = "OP_REC";
+              amount = inputParam.credit_amount;
+            }
 
-              }
+            utilities.logger().log("inputParamRR: ", inputParam);
+            _mysql
+              .executeQueryWithTransaction({
+                query:
+                  "INSERT INTO finance_day_end_header (transaction_date,amount,control_account,document_type,document_id,\
+              document_number,from_screen,transaction_type,customer_type,narration,hospital_id) \
+              VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+                values: [
+                  new Date(),
+                  amount,
+                  control_account,
+                  "RECEIPT",
+                  inputParam.receipt_header_id,
+                  inputParam.receipt_number,
+                  inputParam.ScreenCode,
+                  transaction_type,
+                  "P",
+                  narration,
+                  req.userIdentity.hospital_id
+                ],
+                printQuery: true
+              })
+              .then(headerDayEnd => {
+                const insertDetail = inputParam.receiptdetails.map(m => {
+                  return {
+                    amount: m.amount,
+                    payment_mode: m.pay_type
+                  };
+                });
+                const IncludeValues = ["amount", "payment_mode"];
+                _mysql
+                  .executeQueryWithTransaction({
+                    query: "INSERT INTO finance_day_end_detail (??) VALUES ? ",
+                    values: insertDetail,
+                    includeValues: IncludeValues,
+                    bulkInsertOrUpdate: true,
+                    extraValues: {
+                      day_end_header_id: headerDayEnd["insertId"]
+                    },
+                    printQuery: true
+                  })
+                  .then(detail => {
+                    let fetchServiceDetails = "";
+                    if (
+                      inputParam.billdetails &&
+                      inputParam.billdetails.length > 0
+                    ) {
+                      const servicesIds = inputParam.billdetails.map(m => {
+                        return m.services_id;
+                      });
+                      fetchServiceDetails = ` SELECT hims_d_services_id,service_type_id,head_account,head_id,child_id FROM hims_d_services
+                        where hims_d_services_id in(${servicesIds}); `;
+                    }
 
-              console.log("THREE:");
-              _mysql
-                .executeQuery({
-                  query: "SELECT * FROM finance_accounts_maping;\
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "SELECT * FROM finance_accounts_maping;\
                   select * from finance_day_end_detail where day_end_header_id=?;\
                   SELECT head_id,child_id,head_account FROM hims_d_bank_card where hims_d_bank_card_id=?;\
-                  "+ fetchServiceDetails,
-                  values: [headerDayEnd.insertId, inputParam.bank_card_id],
-                  printQuery: true
-                })
-                .then(rest => {
-
-                  const controlResult = rest[0];
-                  const day_end_detail = rest[1];
-
-                  const OP_DEP = controlResult.find(f => {
-                    return f.account == "OP_DEP";
-                  });
-
-                  const CH_IN_HA = controlResult.find(f => {
-                    return f.account == "CH_IN_HA";
-                  });
-                  const OP_CON = controlResult.find(f => {
-                    return f.account == "OP_CON";
-                  });
-
-                  let insertSubDetail = [];
-
-
-                  //------------------------4444
-
-
-                  //finall insert
-                  new Promise((resolve, reject) => {
-                    try {
-
-
-                      if (inputParam.transaction_type == "AD") {
-
-
-                        insertSubDetail.push({
-                          day_end_header_id: headerDayEnd.insertId,
-                          payment_date: new Date(),
-                          head_account_code: OP_DEP.head_account_code,
-                          head_id: OP_DEP.head_id,
-                          child_id: OP_DEP.child_id,
-                          debit_amount: 0,
-                          payment_type: "CR",
-                          credit_amount: amount,
-                          narration: "PATIENT ADVANCE COLLECTED",
-                          hospital_id: req.userIdentity.hospital_id
-                        });
-                        day_end_detail.forEach(item => {
-
-
-                          if (item.payment_mode == "CA") {
-
-                            insertSubDetail.push({
-                              day_end_header_id: headerDayEnd.insertId,
-                              payment_date: new Date(),
-                              head_account_code: CH_IN_HA.head_account_code,
-                              head_id: CH_IN_HA.head_id,
-                              child_id: CH_IN_HA.child_id,
-                              debit_amount: item.amount,
-                              payment_type: "DR",
-                              credit_amount: 0,
-                              narration: " PATIENT ADVANCE COLLECTED BY CASH",
-                              hospital_id: req.userIdentity.hospital_id
-                            });
-
-                          }
-
-
-                          if (item.payment_mode == "CD") {
-                            insertSubDetail.push({
-                              day_end_header_id: headerDayEnd.insertId,
-                              payment_date: new Date(),
-                              head_account_code: rest[2][0].head_account,
-                              head_id: rest[2][0].head_id,
-                              child_id: rest[2][0].child_id,
-                              debit_amount: item.amount,
-                              payment_type: "DR",
-                              credit_amount: 0,
-                              narration: "PATIENT ADVANCE COLLECTED BY CARD",
-                              hospital_id: req.userIdentity.hospital_id
-                            });
-
-                          }
-                        });
-                        resolve({});
-                      } else
-                        if (inputParam.billdetails.length > 0) {
-
-                          const options = {
-                            hospital_id: req.userIdentity.hospital_id,
-                            insertId: headerDayEnd.insertId,
-                            CH_IN_HA: CH_IN_HA,
-                            OP_DEP: OP_DEP,
-                            OP_CON: OP_CON,
-                            card_details: rest[2] ? rest[2][0] : null
-                          };
-                          if (inputParam.insured == "N") {
-                            cashPatientFinance(rest[3], day_end_detail, inputParam, options).then(resul => {
-                              insertSubDetail = resul;
-                              resolve({});
-                            }).catch(error => {
-                              _mysql.rollBackTransaction(() => {
-                                next(error);
-                              });
-                            });
-                          }
-
-                        }
-                        else {
-                          next();
-                        }
-
-
-                    } catch (e) {
-                      reject(e);
-                    }
-                  }).then(rests => {
-
-
-                    const IncludeValuess = [
-                      "day_end_header_id",
-                      "payment_date",
-                      "head_account_code",
-                      "head_id",
-                      "child_id",
-                      "debit_amount",
-                      "payment_type",
-                      "credit_amount",
-                      "narration"
-                    ];
-                    _mysql
-                      .executeQueryWithTransaction({
-                        query:
-                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ",
-                        values: insertSubDetail,
-                        includeValues: IncludeValuess,
-                        bulkInsertOrUpdate: true,
+                  " +
+                          fetchServiceDetails,
+                        values: [headerDayEnd.insertId, inputParam.bank_card_id],
                         printQuery: true
                       })
-                      .then(subResult => {
-                        console.log("FOUR");
-                        next();
+                      .then(rest => {
+                        const controlResult = rest[0];
+                        const day_end_detail = rest[1];
+
+                        const OP_DEP = controlResult.find(f => {
+                          return f.account == "OP_DEP";
+                        });
+
+                        const CH_IN_HA = controlResult.find(f => {
+                          return f.account == "CH_IN_HA";
+                        });
+                        const OP_CON = controlResult.find(f => {
+                          return f.account == "OP_CON";
+                        });
+                        const OP_REC = controlResult.find(f => {
+                          return f.account == "OP_REC";
+                        });
+
+                        let insertSubDetail = [];
+
+                        //------------------------4444
+
+                        //finall insert
+                        new Promise((resolve, reject) => {
+                          try {
+                            if (inputParam.transaction_type == "AD") {
+                              insertSubDetail.push({
+                                day_end_header_id: headerDayEnd.insertId,
+                                payment_date: new Date(),
+                                head_account_code: OP_DEP.head_account_code,
+                                head_id: OP_DEP.head_id,
+                                child_id: OP_DEP.child_id,
+                                debit_amount: 0,
+                                payment_type: "CR",
+                                credit_amount: amount,
+                                narration: "PATIENT ADVANCE COLLECTED",
+                                hospital_id: req.userIdentity.hospital_id
+                              });
+                              day_end_detail.forEach(item => {
+                                if (item.payment_mode == "CA") {
+                                  insertSubDetail.push({
+                                    day_end_header_id: headerDayEnd.insertId,
+                                    payment_date: new Date(),
+                                    head_account_code: CH_IN_HA.head_account_code,
+                                    head_id: CH_IN_HA.head_id,
+                                    child_id: CH_IN_HA.child_id,
+                                    debit_amount: item.amount,
+                                    payment_type: "DR",
+                                    credit_amount: 0,
+                                    narration:
+                                      " PATIENT ADVANCE COLLECTED BY CASH",
+                                    hospital_id: req.userIdentity.hospital_id
+                                  });
+                                }
+
+                                if (item.payment_mode == "CD") {
+                                  insertSubDetail.push({
+                                    day_end_header_id: headerDayEnd.insertId,
+                                    payment_date: new Date(),
+                                    head_account_code: rest[2][0].head_account,
+                                    head_id: rest[2][0].head_id,
+                                    child_id: rest[2][0].child_id,
+                                    debit_amount: item.amount,
+                                    payment_type: "DR",
+                                    credit_amount: 0,
+                                    narration:
+                                      "PATIENT ADVANCE COLLECTED BY CARD",
+                                    hospital_id: req.userIdentity.hospital_id
+                                  });
+                                }
+                              });
+                              resolve({});
+                            } else if (inputParam.transaction_type == "RF") {
+                              insertSubDetail.push({
+                                day_end_header_id: headerDayEnd.insertId,
+                                payment_date: new Date(),
+                                head_account_code: OP_DEP.head_account_code,
+                                head_id: OP_DEP.head_id,
+                                child_id: OP_DEP.child_id,
+                                debit_amount: amount,
+                                payment_type: "DR",
+                                credit_amount: 0,
+                                narration: "PATIENT ADVANCE REFUNDED",
+                                hospital_id: req.userIdentity.hospital_id
+                              });
+                              day_end_detail.forEach(item => {
+                                if (item.payment_mode == "CA") {
+                                  insertSubDetail.push({
+                                    day_end_header_id: headerDayEnd.insertId,
+                                    payment_date: new Date(),
+                                    head_account_code: CH_IN_HA.head_account_code,
+                                    head_id: CH_IN_HA.head_id,
+                                    child_id: CH_IN_HA.child_id,
+                                    debit_amount: 0,
+                                    payment_type: "CR",
+                                    credit_amount: item.amount,
+                                    narration: " PATIENT REFUND BY CASH",
+                                    hospital_id: req.userIdentity.hospital_id
+                                  });
+                                }
+
+                                if (item.payment_mode == "CD") {
+                                  insertSubDetail.push({
+                                    day_end_header_id: headerDayEnd.insertId,
+                                    payment_date: new Date(),
+                                    head_account_code: rest[2][0].head_account,
+                                    head_id: rest[2][0].head_id,
+                                    child_id: rest[2][0].child_id,
+                                    debit_amount: 0,
+                                    payment_type: "CR",
+                                    credit_amount: item.amount,
+                                    narration: "PATIENT REFUND BY CARD",
+                                    hospital_id: req.userIdentity.hospital_id
+                                  });
+                                }
+                              });
+                              resolve({});
+                            }
+                            if (inputParam.billdetails.length > 0) {
+                              const options = {
+                                hospital_id: req.userIdentity.hospital_id,
+                                insertId: headerDayEnd.insertId,
+                                CH_IN_HA: CH_IN_HA,
+                                OP_DEP: OP_DEP,
+                                OP_CON: OP_CON,
+                                OP_REC: OP_REC,
+                                card_details: rest[2] ? rest[2][0] : null
+                              };
+                              if (inputParam.insured == "N") {
+                                cashPatientFinance(
+                                  rest[3],
+                                  day_end_detail,
+                                  inputParam,
+                                  options
+                                )
+                                  .then(resul => {
+                                    insertSubDetail = resul;
+                                    resolve({});
+                                  })
+                                  .catch(error => {
+                                    _mysql.rollBackTransaction(() => {
+                                      next(error);
+                                    });
+                                  });
+                              } else {
+                                next();
+                              }
+                            } else {
+                              next();
+                            }
+                          } catch (e) {
+                            reject(e);
+                          }
+                        })
+                          .then(rests => {
+                            const IncludeValuess = [
+                              "day_end_header_id",
+                              "payment_date",
+                              "head_account_code",
+                              "head_id",
+                              "child_id",
+                              "debit_amount",
+                              "payment_type",
+                              "credit_amount",
+                              "narration"
+                            ];
+                            _mysql
+                              .executeQueryWithTransaction({
+                                query:
+                                  "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ",
+                                values: insertSubDetail,
+                                includeValues: IncludeValuess,
+                                bulkInsertOrUpdate: true,
+                                printQuery: true
+                              })
+                              .then(subResult => {
+                                console.log("FOUR");
+                                next();
+                              })
+                              .catch(error => {
+                                _mysql.rollBackTransaction(() => {
+                                  next(error);
+                                });
+                              });
+                          })
+                          .catch(error => {
+                            _mysql.rollBackTransaction(() => {
+                              next(error);
+                            });
+                          });
                       })
                       .catch(error => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
                       });
-
                   })
-                    .catch(error => {
-                      _mysql.rollBackTransaction(() => {
-                        next(error);
-                      });
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
                     });
-
-
-                })
-                .catch(error => {
-                  _mysql.rollBackTransaction(() => {
-                    next(error);
                   });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
                 });
-            })
-            .catch(error => {
-              _mysql.rollBackTransaction(() => {
-                next(error);
               });
-            });
+          } else {
+            next();
+          }
         })
         .catch(error => {
           _mysql.rollBackTransaction(() => {
@@ -3533,7 +3594,7 @@ export default {
         next(e);
       });
     }
-  },
+  }
 
 
 };
@@ -4434,7 +4495,7 @@ function insertOrderServices(options) {
               created_date: new Date(),
               updated_by: req.userIdentity.algaeh_d_app_user_id,
               updated_date: new Date(),
-              hospital_id: req.userIdentity["x-branch"]
+              hospital_id: req.userIdentity.hospital_id
             },
             bulkInsertOrUpdate: true,
             printQuery: true
@@ -4527,6 +4588,22 @@ function cashPatientFinance(allServices, day_end_detail, inputParam, options) {
           hospital_id: options.hospital_id
         });
       }
+      if (inputParam.credit_amount > 0) {
+
+        insertSubDetail.push({
+          day_end_header_id: options.insertId,
+          payment_date: new Date(),
+          head_account_code: options.OP_REC.head_account_code,
+          head_id: options.OP_REC.head_id,
+          child_id: options.OP_REC.child_id,
+          debit_amount: inputParam.credit_amount,
+          payment_type: "DR",
+          credit_amount: 0,
+          narration: "OP BILL CREDIT",
+          hospital_id: options.hospital_id
+        });
+      }
+
 
       allServices.forEach(curService => {
 
