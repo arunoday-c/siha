@@ -112,7 +112,7 @@ class EmployeePayment extends Component {
         <div className="hptl-EmployeePayment-form">
           <div className="row  inner-top-search" data-validate="loadData">
             <AlagehAutoComplete
-              div={{ className: "col" }}
+              div={{ className: "col-2 mandatory form-group" }}
               label={{
                 forceLabel: "Select a Branch.",
                 isImp: true
@@ -135,7 +135,7 @@ class EmployeePayment extends Component {
               }}
             />
             <AlagehAutoComplete
-              div={{ className: "col" }}
+              div={{ className: "col-2 mandatory form-group" }}
               label={{
                 forceLabel: "Payment Type",
                 isImp: true
@@ -157,7 +157,7 @@ class EmployeePayment extends Component {
               }}
             />
 
-            <div className="col globalSearchCntr">
+            <div className="col-3 globalSearchCntr">
               <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
               <h6 onClick={employeeSearch.bind(this, this)}>
                 {this.state.employee_name ? this.state.employee_name : "------"}
@@ -177,7 +177,7 @@ class EmployeePayment extends Component {
               <button
                 type="button"
                 className="btn btn-default"
-                style={{ marginTop: 21, marginLeft: 10 }}
+                style={{ marginTop: 19, marginLeft: 10 }}
                 onClick={ClearData.bind(this, this)}
               >
                 Clear
