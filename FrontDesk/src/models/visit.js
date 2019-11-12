@@ -363,7 +363,7 @@ export default {
           });
         } else {
           req.options.onFailure(
-            httpStatus.generateError(
+            utilities.httpStatus().generateError(
               httpStatus.noContent,
               "Please select consultation type"
             )
