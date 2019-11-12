@@ -154,45 +154,77 @@ export default {
       next(e);
     }
   },
-
+  //created by:IRFAN
   addBankCards: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       _mysql
-        .executeQueryWithTransaction({
-          query: "INSERT INTO `finance_account_child` (child_name)  VALUE(?)",
-          values: [input.card_name],
+        .executeQuery({
+          query:
+            "select product_type from hims_d_hospital where hims_d_hospital_id=? and \
+                (product_type='HIMS_ERP' or product_type='HRMS_ERP' or product_type='FINANCE_ERP');",
+          values: [req.userIdentity.hospital_id],
           printQuery: true
         })
-        .then(result => {
-          if (result.insertId > 0) {
+        .then(appResult => {
+          if (appResult.length > 0) {
             _mysql
-              .executeQuery({
+              .executeQueryWithTransaction({
                 query:
-                  "INSERT INTO `finance_head_m_child` (head_id,child_id,created_from)  VALUE(?,?,?)",
-                values: [29, result.insertId, "S"],
+                  "INSERT INTO `finance_account_child` (child_name)  VALUE(?)",
+                values: [input.card_name],
                 printQuery: true
               })
-              .then(detail => {
-                _mysql
-                  .executeQuery({
-                    query:
-                      "INSERT INTO `hims_d_bank_card` (card_name,head_id,child_id,head_account)  VALUE(?,?,?,?)",
-                    values: [input.card_name, 29, result.insertId, "1.1.1.1"],
-                    printQuery: true
-                  })
-                  .then(detail => {
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = detail;
-                      next();
+              .then(result => {
+                if (result.insertId > 0) {
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "INSERT INTO `finance_head_m_child` (head_id,child_id,created_from)  VALUE(?,?,?)",
+                      values: [29, result.insertId, "S"],
+                      printQuery: true
+                    })
+                    .then(detail => {
+                      _mysql
+                        .executeQuery({
+                          query:
+                            "INSERT INTO `hims_d_bank_card` (card_name,head_id,child_id,head_account)  VALUE(?,?,?,?)",
+                          values: [
+                            input.card_name,
+                            29,
+                            result.insertId,
+                            "1.1.1.1"
+                          ],
+                          printQuery: true
+                        })
+                        .then(detail => {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = detail;
+                            next();
+                          });
+                        })
+                        .catch(e => {
+                          _mysql.rollBackTransaction(() => {
+                            next(e);
+                          });
+                        });
+                    })
+                    .catch(e => {
+                      _mysql.rollBackTransaction(() => {
+                        next(e);
+                      });
                     });
-                  })
-                  .catch(e => {
-                    _mysql.rollBackTransaction(() => {
-                      next(e);
-                    });
+                } else {
+                  req.records = {
+                    invalid_input: true,
+                    message: "Please provide valid input"
+                  };
+
+                  _mysql.rollBackTransaction(() => {
+                    next();
                   });
+                }
               })
               .catch(e => {
                 _mysql.rollBackTransaction(() => {
@@ -200,20 +232,26 @@ export default {
                 });
               });
           } else {
-            req.records = {
-              invalid_input: true,
-              message: "Please provide valid input"
-            };
-
-            _mysql.rollBackTransaction(() => {
-              next();
-            });
+            _mysql
+              .executeQuery({
+                query: "INSERT INTO `hims_d_bank_card` (card_name)  VALUE(?)",
+                values: [input.card_name],
+                printQuery: true
+              })
+              .then(detail => {
+                _mysql.releaseConnection();
+                req.records = detail;
+                next();
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
           }
         })
-        .catch(e => {
-          _mysql.rollBackTransaction(() => {
-            next(e);
-          });
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
         });
     } catch (e) {
       _mysql.releaseConnection();
