@@ -45,7 +45,7 @@ let searchData = (req, res, next) => {
     //       "%')";
 
     let whereCondition = " ";
-    console.log("Query",req.query);
+
     if (
       req.query.fieldName != null &&
       req.query.fieldContains != null &&
@@ -120,8 +120,19 @@ let searchData = (req, res, next) => {
       .then(result => {
         // console.log("result",result);
         _mysql.releaseConnection();
-        req.records = result;
-        next();
+        // req.records = result;
+        let rec={};
+        if (result !== undefined) {
+          // result = new Object();
+          rec["totalPages"] =result[1][0].total_pages;
+          rec["data"] = result[0];
+        }
+
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: rec
+        }).end();
+        // next();
       })
       .catch(e => {
         _mysql.releaseConnection();
