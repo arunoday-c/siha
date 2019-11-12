@@ -2953,12 +2953,36 @@ const HR_Payroll_Reports = [
         ]
       },
       {
-        subitem: "Employee Earnings & Dedection",
+        subitem: "Earnings & Deductions Report",
         reportName: "employeeE&D",
 
         requireIframe: true,
         pageOrentation: "landscape",
         reportParameters: [
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
+            }
+          },
           {
             className: "col-2 mandatory",
             type: "dropdown",
@@ -3005,52 +3029,7 @@ const HR_Payroll_Reports = [
               }
             }
           },
-          {
-            className: "col-2 mandatory",
-            type: "dropdown",
-            name: "hospital_id",
-            initialLoad: true,
-            isImp: true,
-            label: "branch",
-            link: {
-              uri: "/organization/getOrganization"
-            },
-            value: hospital_id,
-            dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
-            },
-            events: {
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined
-                });
-              }
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "employee_group_id",
-            initialLoad: true,
-            label: "Employee Group",
-            link: {
-              uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
-            },
-            dataSource: {
-              textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            },
-            events: {
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined
-                });
-              }
-            }
-          },
+
           {
             className: "col-2 mandatory",
             type: "dropdown",
@@ -3068,7 +3047,7 @@ const HR_Payroll_Reports = [
                   edTypeValue: "E"
                 },
                 {
-                  edType: "Dedections",
+                  edType: "Deductions",
                   edTypeValue: "D"
                 },
                 {
@@ -3118,6 +3097,28 @@ const HR_Payroll_Reports = [
                 reportState.setState({
                   [currentName]: undefined,
                   earning_deductions_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
                 });
               }
             }

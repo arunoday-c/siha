@@ -657,10 +657,7 @@ export default class MiscEarningsDeductionsNew extends Component {
                         <i className="fas fa-search fa-lg"></i>
                       </h6>
                     </div> */}
-                    <div
-                      className="col-12 margin-bottom-15"
-                      style={{ paddingTop: 19, textAlign: "right" }}
-                    >
+                    <div className="col-12 " style={{ textAlign: "right" }}>
                       <button
                         type="button"
                         className="btn btn-default"
