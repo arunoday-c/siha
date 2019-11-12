@@ -216,7 +216,7 @@ class InvInitialStock extends Component {
               <div className="portlet-body">
                 <div className="row inline">
                   <AlagehFormGroup
-                    div={{ className: "col-4 form-group" }}
+                    div={{ className: "col-6 form-group" }}
                     label={{
                       forceLabel: "Description Inventory"
                     }}
@@ -233,6 +233,17 @@ class InvInitialStock extends Component {
                       }
                     }}
                   />
+                  {this.state.dataExitst === true ? (
+                    <div className="col">
+                      <h6>
+                        {this.state.posted === "Y" ? (
+                          <span className="badge badge-success">Posted</span>
+                        ) : (
+                            <span className="badge badge-danger">Not Posted</span>
+                          )}
+                      </h6>
+                    </div>
+                  ) : null}
                 </div>
                 <div className="row" data-validate="InvIntialStock">
                   <AlagehAutoComplete
@@ -527,9 +538,9 @@ class InvInitialStock extends Component {
                             <i
                               style={{
                                 pointerEvents:
-                                  this.state.dataExitst === false ? "none" : "",
+                                  this.state.posted === "N" ? "none" : "",
                                 opacity:
-                                  this.state.dataExitst === false ? "0.1" : ""
+                                  this.state.posted === "N" ? "0.1" : ""
                               }}
                               onClick={printBarcode.bind(this, this, row)}
                               className="fas fa-barcode"
@@ -543,9 +554,9 @@ class InvInitialStock extends Component {
                             <i
                               style={{
                                 pointerEvents:
-                                  this.state.dataExitst === false ? "none" : "",
+                                  this.state.posted === "N" ? "none" : "",
                                 opacity:
-                                  this.state.dataExitst === false ? "0.1" : ""
+                                  this.state.posted === "N" ? "0.1" : ""
                               }}
                               onClick={printBarcode.bind(this, this, row)}
                               className="fas fa-barcode"
@@ -889,7 +900,7 @@ class InvInitialStock extends Component {
                   dataSource={{
                     data: this.state.inventory_stock_detail
                   }}
-                  isEditable={!this.state.dataExitst}
+                  isEditable={this.state.posted === "N" ? true : false}
                   byForceEvents={true}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
@@ -927,20 +938,20 @@ class InvInitialStock extends Component {
                     />
                   </button>
 
-                  {/*
-                    <button
-                      type="button"
-                      className="btn btn-other"
-                      onClick={PostInitialStock.bind(this, this)}
-                      disabled={this.state.postEnable}
-                    >
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Post",
-                          returnText: true
-                        }}
-                      />
-                    </button>*/}
+
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={PostInitialStock.bind(this, this)}
+                    disabled={this.state.postEnable}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Post",
+                        returnText: true
+                      }}
+                    />
+                  </button>
                 </div>
               </div>
             </div>

@@ -269,9 +269,7 @@ export default {
   },
 
   updateItemMaster: (req, res, next) => {
-    const _options = req.connection == null ? {} : req.connection;
-    const _mysql = new algaehMysql(_options);
-
+    const _mysql = new algaehMysql();
     const utilities = new algaehUtilities();
     utilities.logger().log("updateItemMaster: ", req.body);
 
@@ -283,13 +281,18 @@ export default {
 
       for (let i = 0; i < inputParam.pharmacy_stock_detail.length; i++) {
         _mysql
-          .executeQuery({
+          .executeQueryWithTransaction({
             query:
               "select  item_code from `hims_d_item_master` WHERE `hims_d_item_master_id`=?",
             values: [inputParam.pharmacy_stock_detail[i].item_id],
             printQuery: true
           })
           .then(result => {
+            req.connection = {
+              connection: _mysql.connection,
+              isTransactionConnection: _mysql.isTransactionConnection,
+              pool: _mysql.pool
+            };
             var date = new Date();
             var hours = date.getHours();
             var minutes = date.getMinutes();

@@ -27,9 +27,7 @@ export default () => {
   api.post(
     "/addPharmacyInitialStock",
     generateNumber,
-    updateItemMaster,
     addPharmacyInitialStock,
-    updateIntoItemLocation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
@@ -40,6 +38,7 @@ export default () => {
 
   api.put(
     "/updatePharmacyInitialStock",
+    updateItemMaster,
     updatePharmacyInitialStock,
     updateIntoItemLocation,
     (req, res, next) => {

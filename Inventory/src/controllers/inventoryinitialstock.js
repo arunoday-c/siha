@@ -29,9 +29,7 @@ export default () => {
   api.post(
     "/addInventoryInitialStock",
     generateNumber,
-    updateInventoryItemMaster,
     addInventoryInitialStock,
-    updateIntoInvItemLocation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
@@ -42,6 +40,7 @@ export default () => {
 
   api.put(
     "/updateInventoryInitialStock",
+    updateInventoryItemMaster,
     updateInventoryInitialStock,
     updateIntoInvItemLocation,
     (req, res, next) => {
