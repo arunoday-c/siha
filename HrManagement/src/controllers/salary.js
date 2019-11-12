@@ -10,7 +10,9 @@ const {
   SaveSalaryPayment,
   getWpsEmployees,
   newProcessSalary,
-  detailSalaryStatement
+  detailSalaryStatement,
+  getEmployeeMiscellaneous,
+  deleteMiscEarningsDeductions
 } = salaryModels;
 
 export default () => {
@@ -89,6 +91,28 @@ export default () => {
       });
     }
   });
+
+  api.get(
+    "/getEmployeeMiscellaneous",
+    getEmployeeMiscellaneous,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.delete(
+    "/deleteMiscEarningsDeductions",
+    deleteMiscEarningsDeductions,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
 
   return api;
 };
