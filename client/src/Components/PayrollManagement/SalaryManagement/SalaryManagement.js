@@ -6,6 +6,7 @@ import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import NewSalaryProcessing from "./SalaryProcessing/NewSalaryProcessing";
 import NewSalaryPayments from "./SalaryPayments/NewSalaryPayments";
 import MiscEarningsDeductions from "./MiscEarningsDeductions/MiscEarningsDeductions";
+import MiscEarningsDeductionsNew from "./MiscEarningsDeductionsNew/MiscEarningsDeductionsNew";
 
 export default class SalaryManagement extends Component {
   constructor(props) {
@@ -67,7 +68,20 @@ export default class SalaryManagement extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "miscellaneous Earnings & Deductions"
+                      forceLabel: "Miscellaneous E&D"
+                    }}
+                  />
+                }
+              </li>{" "}
+              <li
+                algaehtabs={"MiscEarningsDeductionsNew"}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Miscellaneous E&D Bulk"
                     }}
                   />
                 }
@@ -85,7 +99,6 @@ export default class SalaryManagement extends Component {
                   />
                 }
               </li> */}
-
               <li
                 algaehtabs={"NewSalaryPayments"}
                 className={"nav-item tab-button"}
@@ -115,6 +128,8 @@ export default class SalaryManagement extends Component {
             <NewSalaryPayments />
           ) : this.state.pageDisplay === "MiscEarningsDeductions" ? (
             <MiscEarningsDeductions />
+          ) : this.state.pageDisplay === "MiscEarningsDeductionsNew" ? (
+            <MiscEarningsDeductionsNew />
           ) : null}
         </div>
       </div>
