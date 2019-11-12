@@ -1,7 +1,7 @@
 version: "3"
 services:
   core:
-    container_name: hims-core
+    container_name: ${CI_REGISTRY}/algaeh/algaeh-monorepo/algaeh-core
     env_file:
       - ./env
     build:

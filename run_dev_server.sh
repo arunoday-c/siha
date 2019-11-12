@@ -29,9 +29,9 @@ startServer "./Radiology" "radiology_server"
 startServer "./Laboratory" "lab_server" 
 startServer "./Billing" "billing_server" 
 startServer "./MRD" "mrd_server" 
-startServer "./Procurement" "procurement_server"
-startServer "./AlgaehReporting" "report_server"
-startServer "./Sockets" "sockets"
+# startServer "./Procurement" "procurement_server"
+# startServer "./AlgaehReporting" "report_server"
+# startServer "./Sockets" "sockets"
 startServer "./client" "client"
 #add additional servers here if you want
 
