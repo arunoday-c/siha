@@ -172,13 +172,19 @@ class DisPatientForm extends Component {
                     {this.state.Billexists === true ? (
                       <div className="col">
                         <AlgaehLabel label={{ forceLabel: "Bill Status" }} />
-                        {this.state.cancelled === "Y" ? (
-                          <h6 style={{ color: "red" }}> Cancelled </h6>
-                        ) : this.state.balance_credit > 0 ? (
-                          <h6 style={{ color: "red" }}> Not Settled </h6>
-                        ) : (
-                          <h6 style={{ color: "green" }}> Settled </h6>
-                        )}
+                        <h6>
+                          {this.state.cancelled === "Y" ? (
+                            <span className="badge badge-secondary">
+                              Cancelled
+                            </span>
+                          ) : this.state.balance_credit > 0 ? (
+                            <span className="badge badge-danger">
+                              Not Settled
+                            </span>
+                          ) : (
+                            <span className="badge badge-success">Settled</span>
+                          )}
+                        </h6>
                       </div>
                     ) : null}
                     {this.state.due_amount > 0 ? (

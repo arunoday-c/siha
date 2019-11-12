@@ -3268,6 +3268,26 @@ export default {
       const utilities = new algaehUtilities();
       const inputParam = req.body;
 
+
+      let narration="OP BILLING RECIEPT";
+      let transaction_type="BILL";
+      let amount= inputParam.receiveable_amount;
+      let control_account= "OP_CON";
+
+      if (inputParam.transaction_type == "AD") {
+        narration="PATIENT ADVANCE";
+        transaction_type="AD";
+        amount=inputParam.advance_amount;
+        control_account= "OP_DEP";
+      }
+
+
+      if(inputParam.advance_adjust>0){
+        transaction_type="ADJUST";
+      }
+
+
+
       console.log("ONE:");
 
       utilities.logger().log("inputParamRR: ", inputParam);
@@ -3279,15 +3299,15 @@ export default {
               VALUES (?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             new Date(),
-            inputParam.receiveable_amount,
-            "OP_CON",
+            amount,
+            control_account,
             "RECEIPT",
             inputParam.receipt_header_id,
             inputParam.receipt_number,
             inputParam.ScreenCode,
-            inputParam.transaction_type,
+           transaction_type,
             "P",
-            "OP BILLING RECIEPT",
+            narration,
             req.userIdentity.hospital_id
           ],
           printQuery: true
@@ -3318,7 +3338,7 @@ export default {
             .then(detail => {
 
               let fetchServiceDetails = "";
-              if (inputParam.billdetails.length > 0) {
+              if (inputParam.billdetails&&inputParam.billdetails.length > 0) {
 
                 const servicesIds = inputParam.billdetails.map(m => {
                   return m.services_id;
@@ -3364,55 +3384,62 @@ export default {
                   new Promise((resolve, reject) => {
                     try {
 
-                      if (inputParam.billdetails.length > 0) {
 
-                        //full payment in cash
-
-                        // rest[2].forEach(curService => {
-                         
-                        //     const serviceData=inputParam.billdetails.find(f=>{
-                        //       if(f.services_id==curService.hims_d_services_id)
-                        //       return f;
-                        //     });
-                           
-                        //     console.log("ammount MY:",serviceData.patient_payable);
-                    
-                        //     insertSubDetail.push({
-                        //       day_end_header_id: headerDayEnd.insertId,
-                        //       payment_date: new Date(),
-                        //       head_account_code: curService.head_account,
-                        //       head_id: curService.head_id,
-                        //       child_id: curService.child_id,
-                        //       debit_amount: 0,
-                        //       payment_type: "CR",
-                        //       credit_amount: serviceData.patient_payable,
-                        //       narration: "OP BILL CASH COLLECTION  CREDIT",
-                        //       hospital_id: req.userIdentity.hospital_id
-                        //     });
-
-                        // });
+                       if (inputParam.transaction_type == "AD") {                     
 
 
-                        // day_end_detail.forEach(item => {
-                         
-                        //   if (item.payment_mode == "CA") {                                                  
-                        //       insertSubDetail.push({
-                        //         day_end_header_id: headerDayEnd.insertId,
-                        //         payment_date: new Date(),
-                        //         head_account_code: CH_IN_HA.head_account_code,
-                        //         head_id: CH_IN_HA.head_id,
-                        //         child_id: CH_IN_HA.child_id,
-                        //         debit_amount: item.amount,
-                        //         payment_type: "DR",
-                        //         credit_amount: 0,
-                        //         narration: "OP BILL CASH COLLECTION DEBIT",
-                        //         hospital_id: req.userIdentity.hospital_id
-                        //       });
+                        insertSubDetail.push({
+                          day_end_header_id:  headerDayEnd.insertId,
+                          payment_date: new Date(),
+                          head_account_code: OP_DEP.head_account_code,
+                          head_id: OP_DEP.head_id,
+                          child_id: OP_DEP.child_id,
+                          debit_amount: 0,
+                          payment_type: "CR",
+                          credit_amount: amount,
+                          narration: "PATIENT ADVANCE COLLECTED",
+                          hospital_id: req.userIdentity.hospital_id
+                        });
+                        day_end_detail.forEach(item => {                      
 
-                        //   }
-                        // });
+                          
+                          if (item.payment_mode == "CA") {
+                     
+                            insertSubDetail.push({
+                              day_end_header_id:  headerDayEnd.insertId,
+                              payment_date: new Date(),
+                              head_account_code: CH_IN_HA.head_account_code,
+                              head_id: CH_IN_HA.head_id,
+                              child_id: CH_IN_HA.child_id,
+                              debit_amount: item.amount,
+                              payment_type: "DR",
+                              credit_amount: 0 ,
+                              narration: " PATIENT ADVANCE COLLECTED BY CASH",
+                              hospital_id: req.userIdentity.hospital_id
+                            });
+    
+                          }
 
-                        // resolve({});
+
+                          if (item.payment_mode == "CD") {                                                  
+                            insertSubDetail.push({
+                              day_end_header_id: headerDayEnd.insertId,
+                              payment_date: new Date(),
+                              head_account_code:rest[2][0].head_account,
+                              head_id: rest[2][0].head_id,
+                              child_id: rest[2][0].child_id,
+                              debit_amount: item.amount,
+                              payment_type: "DR",
+                              credit_amount: 0,
+                              narration: "PATIENT ADVANCE COLLECTED BY CARD",
+                              hospital_id: req.userIdentity.hospital_id
+                            });
+                  
+                        }
+                        });
+                        resolve({});
+                      }else
+                      if (inputParam.billdetails.length > 0) {                       
 
                         const options={
                           hospital_id:req.userIdentity.hospital_id,
@@ -3434,37 +3461,7 @@ export default {
                         }
 
                       }
-                      else if (inputParam.transaction_type == "AD") {
-                        day_end_detail.forEach(item => {
-                          if (item.payment_mode == "CA") {
-                            insertSubDetail.push({
-                              day_end_detail_id: item.finance_day_end_detail_id,
-                              payment_date: new Date(),
-                              head_account_code: OP_DEP.head_account_code,
-                              head_id: OP_DEP.head_id,
-                              child_id: OP_DEP.child_id,
-                              debit_amount: item.amount,
-                              payment_type: "DR",
-                              credit_amount: 0,
-                              narration: "OP BILL CASH COLLECTION BEBIT",
-                              hospital_id: req.userIdentity.hospital_id
-                            });
-                            insertSubDetail.push({
-                              day_end_detail_id: item.finance_day_end_detail_id,
-                              payment_date: new Date(),
-                              head_account_code: CH_IN_HA.head_account_code,
-                              head_id: CH_IN_HA.head_id,
-                              child_id: CH_IN_HA.child_id,
-                              debit_amount: 0,
-                              payment_type: "CR",
-                              credit_amount: item.amount,
-                              narration: "OP BILL CASH COLLECTION  CREDIT",
-                              hospital_id: req.userIdentity.hospital_id
-                            });
-                          }
-                        });
-                        resolve({});
-                      } else {
+                       else {
                         next();
                       }
 
@@ -4512,6 +4509,25 @@ function cashPatientFinance(allServices, day_end_detail, inputParam,options) {
       
       
       const insertSubDetail = [];
+
+
+
+      if(inputParam.advance_adjust>0){
+        
+        insertSubDetail.push({
+          day_end_header_id: options.insertId,
+          payment_date: new Date(),
+          head_account_code:options. OP_DEP.head_account_code,
+          head_id: options.OP_DEP.head_id,
+          child_id: options.OP_DEP.child_id,
+          debit_amount: inputParam.advance_adjust,
+          payment_type: "DR",
+          credit_amount: 0,
+          narration: "PATIENT ADVANCE COLLECTED",
+          hospital_id: options.hospital_id
+        });
+      }
+
       allServices.forEach(curService => {
                          
         const serviceData=inputParam.billdetails.find(f=>{
@@ -4558,7 +4574,7 @@ function cashPatientFinance(allServices, day_end_detail, inputParam,options) {
           insertSubDetail.push({
             day_end_header_id: options.insertId,
             payment_date: new Date(),
-            head_account_code:null,
+            head_account_code:options.card_details.head_account,
             head_id: options.card_details.head_id,
             child_id: options.card_details.child_id,
             debit_amount: item.amount,
