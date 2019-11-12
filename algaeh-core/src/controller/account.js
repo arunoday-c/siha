@@ -170,7 +170,7 @@ export default ({ config, db }) => {
           let encrypDetsil = { ...result[0][0], ...result[1][0] };
           let hospitalDetails = { ...result[1][0] };
 
-          let keyData = encryption(encrypDetsil);
+          // let keyData = encryption(encrypDetsil);
           let specfic_date = {
             user_id: rowDetails.algaeh_d_app_user_id,
             roles_id: rowDetails.app_d_app_roles_id,
@@ -182,7 +182,8 @@ export default ({ config, db }) => {
             records: {
               username: rowDetails["username"],
               user_display_name: rowDetails["user_display_name"],
-              keyResources: keyData,
+              //keyResources: keyData,
+              token: createJWTToken(encrypDetsil, false),
               keyData: specfic_date,
               secureModels: req.secureModels,
               hospitalDetails: hospitalDetails,
