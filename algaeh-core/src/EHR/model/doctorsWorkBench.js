@@ -1417,7 +1417,7 @@ let getAllAllergies = (req, res, next) => {
       .executeQuery({
         query:
           "select hims_d_allergy_id, allergy_type, allergy_name \
-          from hims_d_allergy where record_status='A' " + strQuery,
+          from hims_d_allergy where record_status='A';",
         printQuery: true
       })
       .then(result => {
@@ -1445,7 +1445,8 @@ let getAllAllergies = (req, res, next) => {
   //   let db = req.db;
 
   //   let where = whereCondition(extend(selectWhere, req.query));
-
+  //   console.log("req.query", req.query)
+  //   console.log("where", where)
   //   db.getConnection((error, connection) => {
   //     connection.query(
   //       "select hims_d_allergy_id,allergy_type,\

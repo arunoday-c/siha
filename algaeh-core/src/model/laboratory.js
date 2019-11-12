@@ -467,7 +467,7 @@ let insertLadOrderedServicesBackUp = (req, res, next) => {
           newFieldToInsert: [
             req.userIdentity.algaeh_d_app_user_id,
             req.userIdentity.algaeh_d_app_user_id,
-            req.userIdentity["x-branch"]
+            req.userIdentity.hospital_id
           ]
         })
       ],

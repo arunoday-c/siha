@@ -446,7 +446,7 @@ export default {
         query: ` select finance_day_end_header_id,transaction_date,amount,control_account,document_type,
         document_number,from_screen,case H.transaction_type when 'AD' then 'ADVANCE' 
         when 'RF' then 'REFUND' when 'BILL' then 'OPBILL' when  'DUE' then 
-        'PATIENT DUE' end as transaction_type,S.screen_name,H.narration 
+        'PATIENT DUE'  when  'ADJUST' then 'ADVANCE ADJUST' end as transaction_type,S.screen_name,H.narration 
         from finance_day_end_header H inner join finance_day_end_sub_detail SD on
          H.finance_day_end_header_id=SD.day_end_header_id
         left join  algaeh_d_app_screens S on H.from_screen=S.screen_code  where  SD.posted='N'  ${strQry}
