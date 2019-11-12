@@ -325,12 +325,6 @@ class LoanAuthorization extends Component {
             <div className="col form-group" style={{ textAlign: "right" }}>
               {" "}
               <button
-                onClick={this.clearState.bind(this)}
-                className="btn btn-default"
-              >
-                Clear
-              </button>
-              <button
                 onClick={this.getLoanApplications.bind(this)}
                 style={{ marginLeft: 5 }}
                 className="btn btn-primary"
@@ -340,132 +334,14 @@ class LoanAuthorization extends Component {
                 ) : (
                   <i className="fas fa-spinner fa-spin" />
                 )}
+              </button>{" "}
+              <button
+                onClick={this.clearState.bind(this)}
+                className="btn btn-default"
+              >
+                Clear
               </button>
             </div>
-
-            {/* <AlagehAutoComplete
-              div={{ className: "col form-group" }}
-              label={{
-                forceLabel: "Authorization Level",
-                isImp: false
-              }}
-              selector={{
-                name: "auth_level",
-                value: this.state.auth_level,
-                className: "select-fld",
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: this.state.levels
-                },
-                onChange: this.dropDownHandler.bind(this),
-                onClear: () => {
-                  this.setState({
-                    auth_level: null,
-                    loan_applns: []
-                  });
-                }
-              }}
-            />
-
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{ forceLabel: "From Date", isImp: false }}
-              textBox={{
-                className: "txt-fld",
-                name: "from_date"
-              }}
-              maxDate={new Date()}
-              events={{
-                onChange: selDate => {
-                  this.setState({
-                    from_date: selDate
-                  });
-                }
-              }}
-              value={this.state.from_date}
-            />
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{ forceLabel: "To Date", isImp: false }}
-              textBox={{
-                className: "txt-fld",
-                name: "to_date"
-              }}
-              maxDate={new Date()}
-              events={{
-                onChange: selDate => {
-                  this.setState({
-                    to_date: selDate
-                  });
-                }
-              }}
-              value={this.state.to_date}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col form-group" }}
-              label={{
-                forceLabel: "Filter by Branch",
-                isImp: true
-              }}
-              selector={{
-                name: "hospital_id",
-                className: "select-fld",
-                value: this.state.hospital_id,
-                dataSource: {
-                  textField: "hospital_name",
-                  valueField: "hims_d_hospital_id",
-                  data: this.state.hospitals
-                },
-                onChange: this.dropDownHandler.bind(this),
-                onClear: () => {
-                  this.setState({
-                    hospital_id: null,
-                    loan_applns: []
-                  });
-                }
-              }}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col form-group" }}
-              label={{
-                forceLabel: "Filter by Employee",
-                isImp: true
-              }}
-              selector={{
-                name: "employee_id",
-                className: "select-fld",
-                value: this.state.employee_id,
-                dataSource: {
-                  textField: "full_name",
-                  valueField: "hims_d_employee_id",
-                  data: this.state.employees
-                },
-                onChange: this.dropDownHandler.bind(this),
-                onClear: () => {
-                  this.setState({
-                    employee_id: null,
-                    loan_applns: []
-                  });
-                }
-              }}
-            />
-
-            <div className="col form-group">
-              <button
-                onClick={this.getLoanApplications.bind(this)}
-                style={{ marginTop: 19 }}
-                className="btn btn-primary"
-              >
-                {!this.state.loading ? (
-                  <span>Load</span>
-                ) : (
-                  <i className="fas fa-spinner fa-spin" />
-                )}
-              </button>
-            </div> */}
           </div>
         </div>
 
