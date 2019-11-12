@@ -7,8 +7,7 @@ build_image:
     - build
     - hims
   script:
-    - cd "F:\LOCAL DEV\newrepository\algaeh-monorepo"
-    - $env:PATH += ";C:\Users\admin\AppData\Roaming\npm\"
+    - cd /d "F:\LOCAL DEV\newrepository\algaeh-monorepo"
     - git config --list
     - git pull
     - algaeh-cli build -a
