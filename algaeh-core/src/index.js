@@ -95,7 +95,7 @@ app.use((req, res, next) => {
             success: false,
             message: error,
             username: error === "false" ? undefined : username
-          });
+          }).end();
           return;
         });
       } else {
@@ -173,7 +173,7 @@ app.use((error, req, res, next) => {
               message:
                 error.sqlMessage != null ? error.sqlMessage : error.message,
               isSql: error.sqlMessage != null ? true : false
-            });
+            }).end();
           });
         } else {
           if (typeof connection.release === "function") connection.release();
@@ -182,28 +182,29 @@ app.use((error, req, res, next) => {
             message:
               error.sqlMessage != null ? error.sqlMessage : error.message,
             isSql: error.sqlMessage != null ? true : false
-          });
+          }).end();
         }
       } else {
         res.status(error.status).json({
           success: false,
           message: error.sqlMessage != null ? error.sqlMessage : error.message,
           isSql: error.sqlMessage != null ? true : false
-        });
+        }).end();
       }
     } else {
+      console.log("Here is an error",error);
       res.status(error.status).json({
         success: false,
         message: error.sqlMessage != null ? error.sqlMessage : error.message,
         isSql: error.sqlMessage != null ? true : false
-      });
+      }).end();
     }
   } else {
     res.status(error.status).json({
       success: false,
       message: error.sqlMessage != null ? error.sqlMessage : error.message,
       isSql: error.sqlMessage != null ? true : false
-    });
+    }).end();
   }
 
   const _error = {
