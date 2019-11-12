@@ -81,6 +81,7 @@ export default function() {
             method: "POST",
             onSuccess: response => {
               const { success, records, message } = response.data;
+
               if (success === true) {
                 setCookie("userName", records.user_display_name);
                 // setCookie("keyResources", records.keyResources, 30);
