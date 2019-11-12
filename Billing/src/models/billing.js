@@ -107,7 +107,7 @@ export default {
         inputParam.billdetails == null ||
         inputParam.billdetails.length == 0
       ) {
-        const errorGen = httpStatus.generateError(
+        const errorGen = utilities.httpStatus().generateError(
           httpStatus.badRequest,
           "Please select atleast one service."
         );
@@ -120,7 +120,7 @@ export default {
         inputParam.sheet_discount_amount != 0 &&
         inputParam.bill_comments == ""
       ) {
-        const errorGene = httpStatus.generateError(
+        const errorGene = utilities.httpStatus().generateError(
           httpStatus.badRequest,
           "Please enter sheet level discount comments. "
         );
@@ -375,7 +375,7 @@ export default {
         req.body.intCalculateall == undefined ? req.body.billdetails : req.body;
       if (inputParam.length == 0) {
         next(
-          httpStatus.generateError(
+          utilities.httpStatus().generateError(
             httpStatus.badRequest,
             "Please select atleast one service"
           )
@@ -604,7 +604,7 @@ export default {
         inputParam.receiptdetails.length == 0
       ) {
         next(
-          httpStatus.generateError(
+          utilities.httpStatus().generateError(
             httpStatus.badRequest,
             "Please select atleast one service."
           )
@@ -1756,7 +1756,7 @@ export default {
         inputParam.receiptdetails.length == 0
       ) {
         next(
-          httpStatus.generateError(
+          utilities.httpStatus().generateError(
             httpStatus.badRequest,
             "Please select atleast one service."
           )
@@ -3269,21 +3269,21 @@ export default {
       const inputParam = req.body;
 
 
-      let narration="OP BILLING RECIEPT";
-      let transaction_type="BILL";
-      let amount= inputParam.receiveable_amount;
-      let control_account= "OP_CON";
+      let narration = "OP BILLING RECIEPT";
+      let transaction_type = "BILL";
+      let amount = inputParam.receiveable_amount;
+      let control_account = "OP_CON";
 
       if (inputParam.transaction_type == "AD") {
-        narration="PATIENT ADVANCE";
-        transaction_type="AD";
-        amount=inputParam.advance_amount;
-        control_account= "OP_DEP";
+        narration = "PATIENT ADVANCE";
+        transaction_type = "AD";
+        amount = inputParam.advance_amount;
+        control_account = "OP_DEP";
       }
 
 
-      if(inputParam.advance_adjust>0){
-        transaction_type="ADJUST";
+      if (inputParam.advance_adjust > 0) {
+        transaction_type = "ADJUST";
       }
 
 
@@ -3305,7 +3305,7 @@ export default {
             inputParam.receipt_header_id,
             inputParam.receipt_number,
             inputParam.ScreenCode,
-           transaction_type,
+            transaction_type,
             "P",
             narration,
             req.userIdentity.hospital_id
@@ -3338,7 +3338,7 @@ export default {
             .then(detail => {
 
               let fetchServiceDetails = "";
-              if (inputParam.billdetails&&inputParam.billdetails.length > 0) {
+              if (inputParam.billdetails && inputParam.billdetails.length > 0) {
 
                 const servicesIds = inputParam.billdetails.map(m => {
                   return m.services_id;
@@ -3355,7 +3355,7 @@ export default {
                   select * from finance_day_end_detail where day_end_header_id=?;\
                   SELECT head_id,child_id,head_account FROM hims_d_bank_card where hims_d_bank_card_id=?;\
                   "+ fetchServiceDetails,
-                  values: [headerDayEnd.insertId,inputParam.bank_card_id],
+                  values: [headerDayEnd.insertId, inputParam.bank_card_id],
                   printQuery: true
                 })
                 .then(rest => {
@@ -3374,7 +3374,7 @@ export default {
                     return f.account == "OP_CON";
                   });
 
-                   let insertSubDetail = [];
+                  let insertSubDetail = [];
 
 
                   //------------------------4444
@@ -3385,11 +3385,11 @@ export default {
                     try {
 
 
-                       if (inputParam.transaction_type == "AD") {                     
+                      if (inputParam.transaction_type == "AD") {
 
 
                         insertSubDetail.push({
-                          day_end_header_id:  headerDayEnd.insertId,
+                          day_end_header_id: headerDayEnd.insertId,
                           payment_date: new Date(),
                           head_account_code: OP_DEP.head_account_code,
                           head_id: OP_DEP.head_id,
@@ -3400,32 +3400,32 @@ export default {
                           narration: "PATIENT ADVANCE COLLECTED",
                           hospital_id: req.userIdentity.hospital_id
                         });
-                        day_end_detail.forEach(item => {                      
+                        day_end_detail.forEach(item => {
 
-                          
+
                           if (item.payment_mode == "CA") {
-                     
+
                             insertSubDetail.push({
-                              day_end_header_id:  headerDayEnd.insertId,
+                              day_end_header_id: headerDayEnd.insertId,
                               payment_date: new Date(),
                               head_account_code: CH_IN_HA.head_account_code,
                               head_id: CH_IN_HA.head_id,
                               child_id: CH_IN_HA.child_id,
                               debit_amount: item.amount,
                               payment_type: "DR",
-                              credit_amount: 0 ,
+                              credit_amount: 0,
                               narration: " PATIENT ADVANCE COLLECTED BY CASH",
                               hospital_id: req.userIdentity.hospital_id
                             });
-    
+
                           }
 
 
-                          if (item.payment_mode == "CD") {                                                  
+                          if (item.payment_mode == "CD") {
                             insertSubDetail.push({
                               day_end_header_id: headerDayEnd.insertId,
                               payment_date: new Date(),
-                              head_account_code:rest[2][0].head_account,
+                              head_account_code: rest[2][0].head_account,
                               head_id: rest[2][0].head_id,
                               child_id: rest[2][0].child_id,
                               debit_amount: item.amount,
@@ -3434,36 +3434,36 @@ export default {
                               narration: "PATIENT ADVANCE COLLECTED BY CARD",
                               hospital_id: req.userIdentity.hospital_id
                             });
-                  
-                        }
+
+                          }
                         });
                         resolve({});
-                      }else
-                      if (inputParam.billdetails.length > 0) {                       
+                      } else
+                        if (inputParam.billdetails.length > 0) {
 
-                        const options={
-                          hospital_id:req.userIdentity.hospital_id,
-                          insertId: headerDayEnd.insertId,
-                          CH_IN_HA:CH_IN_HA,
-                          OP_DEP:OP_DEP,
-                          OP_CON:OP_CON,
-                          card_details:rest[2]?rest[2][0]:null
-                        };
-                        if(inputParam.insured=="N"){
-                          cashPatientFinance(rest[3], day_end_detail, inputParam,options).then(resul=>{
-                            insertSubDetail=resul;
-                            resolve({});
-                          }).catch(error => {
-                            _mysql.rollBackTransaction(() => {
-                              next(error);
+                          const options = {
+                            hospital_id: req.userIdentity.hospital_id,
+                            insertId: headerDayEnd.insertId,
+                            CH_IN_HA: CH_IN_HA,
+                            OP_DEP: OP_DEP,
+                            OP_CON: OP_CON,
+                            card_details: rest[2] ? rest[2][0] : null
+                          };
+                          if (inputParam.insured == "N") {
+                            cashPatientFinance(rest[3], day_end_detail, inputParam, options).then(resul => {
+                              insertSubDetail = resul;
+                              resolve({});
+                            }).catch(error => {
+                              _mysql.rollBackTransaction(() => {
+                                next(error);
+                              });
                             });
-                          });
-                        }
+                          }
 
-                      }
-                       else {
-                        next();
-                      }
+                        }
+                        else {
+                          next();
+                        }
 
 
                     } catch (e) {
@@ -4289,7 +4289,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
             })
             .catch(e => {
               _mysql.releaseConnection();
-              next(httpStatus.generateError(httpStatus.badRequest, e));
+              next(utilities.httpStatus().generateError(httpStatus.badRequest, e));
             });
         }
       })
@@ -4503,21 +4503,21 @@ function insertOrderServices(options) {
 }
 
 //created by :IRFAN to calculate the amount of account heads
-function cashPatientFinance(allServices, day_end_detail, inputParam,options) {
+function cashPatientFinance(allServices, day_end_detail, inputParam, options) {
   try {
     return new Promise((resolve, reject) => {
-      
-      
+
+
       const insertSubDetail = [];
 
 
 
-      if(inputParam.advance_adjust>0){
-        
+      if (inputParam.advance_adjust > 0) {
+
         insertSubDetail.push({
           day_end_header_id: options.insertId,
           payment_date: new Date(),
-          head_account_code:options. OP_DEP.head_account_code,
+          head_account_code: options.OP_DEP.head_account_code,
           head_id: options.OP_DEP.head_id,
           child_id: options.OP_DEP.child_id,
           debit_amount: inputParam.advance_adjust,
@@ -4529,13 +4529,13 @@ function cashPatientFinance(allServices, day_end_detail, inputParam,options) {
       }
 
       allServices.forEach(curService => {
-                         
-        const serviceData=inputParam.billdetails.find(f=>{
-          if(f.services_id==curService.hims_d_services_id)
-          return f;
+
+        const serviceData = inputParam.billdetails.find(f => {
+          if (f.services_id == curService.hims_d_services_id)
+            return f;
         });
-       
-        console.log("ammount MY:",serviceData.patient_payable);
+
+        console.log("ammount MY:", serviceData.patient_payable);
 
         insertSubDetail.push({
           day_end_header_id: options.insertId,
@@ -4550,16 +4550,16 @@ function cashPatientFinance(allServices, day_end_detail, inputParam,options) {
           hospital_id: options.hospital_id
         });
 
-    });
+      });
 
 
-    day_end_detail.forEach(item => {
-     
-      if (item.payment_mode == "CA") {                                                  
+      day_end_detail.forEach(item => {
+
+        if (item.payment_mode == "CA") {
           insertSubDetail.push({
             day_end_header_id: options.insertId,
             payment_date: new Date(),
-            head_account_code:options.CH_IN_HA.head_account_code,
+            head_account_code: options.CH_IN_HA.head_account_code,
             head_id: options.CH_IN_HA.head_id,
             child_id: options.CH_IN_HA.child_id,
             debit_amount: item.amount,
@@ -4569,12 +4569,12 @@ function cashPatientFinance(allServices, day_end_detail, inputParam,options) {
             hospital_id: options.hospital_id
           });
 
-      }
-      if (item.payment_mode == "CD") {                                                  
+        }
+        if (item.payment_mode == "CD") {
           insertSubDetail.push({
             day_end_header_id: options.insertId,
             payment_date: new Date(),
-            head_account_code:options.card_details.head_account,
+            head_account_code: options.card_details.head_account,
             head_id: options.card_details.head_id,
             child_id: options.card_details.child_id,
             debit_amount: item.amount,
@@ -4584,16 +4584,16 @@ function cashPatientFinance(allServices, day_end_detail, inputParam,options) {
             hospital_id: options.hospital_id
           });
 
-      }
+        }
 
 
 
 
-    });
+      });
 
 
-    console.log("HHHHHH")
-    resolve(insertSubDetail);
+      console.log("HHHHHH")
+      resolve(insertSubDetail);
 
 
     });
