@@ -1,0 +1,14 @@
+version: "2.1"
+
+services:
+  algaeh-monorepo:
+    image: algaeh-monorepo
+    build: .
+    volumes:
+      - node_modules:/app/node_modules
+    environment:
+      NODE_ENV: production
+    tty: true
+
+volumes:
+  node_modules:

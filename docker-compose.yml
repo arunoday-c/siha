@@ -1,12 +1,11 @@
 version: "3"
 services:
-  app:
-    container_name: docker-hims-erp
-    restart: always
-    build: .
-    volumes:
-      - ./:/apps
+  core:
+    container_name: ${CI_REGISTRY}/algaeh/algaeh-monorepo/algaeh-core
+    env_file:
+      - ./env
+    build:
+      context: ./algaeh-core
+      dockerfile: Dockerfile
     ports:
-      - "3004:3004"
       - "3000:3000"
-      - "3006:3006"
