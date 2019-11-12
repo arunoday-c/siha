@@ -1,0 +1,10 @@
+.bulkAmountStyle {
+  width: 74%;
+  display: inline-block;
+  margin: 0;
+}
+#MiscEarningsDeductionsGrid_CntrNew {
+  .ReactTable {
+    max-height: 46vh !important;
+  }
+}
