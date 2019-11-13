@@ -7,7 +7,7 @@ build_image:
     - build
     - hims
   script:
-    - cd /d "F:\LOCAL DEV\newrepository\algaeh-monorepo"
+    - cd /f/LOCAL\ DEV/newrepository/algaeh-monorepo/
     - git config --list
     - git pull
     - algaeh-cli build -a
