@@ -320,12 +320,12 @@ const Hims_Reports = [
                     : // : currentValue.value === "POS"
                     // ? "posReceipt"
                     currentValue.value === "AD"
-                      ? "advanceReceipt"
-                      : currentValue.value === "OPC"
-                        ? "opCreditReceipt"
-                        : // : currentValue.value === "POSC"
-                        // ? "posCreditReceipt"
-                        "";
+                    ? "advanceReceipt"
+                    : currentValue.value === "OPC"
+                    ? "opCreditReceipt"
+                    : // : currentValue.value === "POSC"
+                      // ? "posCreditReceipt"
+                      "";
                 callback({ reportQuery: reportQuery });
               }
             }
@@ -2075,7 +2075,7 @@ const HR_Payroll_Reports = [
               data: LEAVE_STATUS
             },
             events: {
-              onChange: (reportState, currentValue) => { }
+              onChange: (reportState, currentValue) => {}
             }
           }
         ]
@@ -2953,12 +2953,36 @@ const HR_Payroll_Reports = [
         ]
       },
       {
-        subitem: "Employee Earnings & Dedection",
+        subitem: "Earnings & Deductions Report",
         reportName: "employeeE&D",
 
         requireIframe: true,
         pageOrentation: "landscape",
         reportParameters: [
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
+            }
+          },
           {
             className: "col-2 mandatory",
             type: "dropdown",
@@ -3005,59 +3029,14 @@ const HR_Payroll_Reports = [
               }
             }
           },
-          {
-            className: "col-2 mandatory",
-            type: "dropdown",
-            name: "hospital_id",
-            initialLoad: true,
-            isImp: true,
-            label: "branch",
-            link: {
-              uri: "/organization/getOrganization"
-            },
-            value: hospital_id,
-            dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
-            },
-            events: {
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined
-                });
-              }
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "employee_group_id",
-            initialLoad: true,
-            label: "Employee Group",
-            link: {
-              uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
-            },
-            dataSource: {
-              textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            },
-            events: {
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined
-                });
-              }
-            }
-          },
+
           {
             className: "col-2 mandatory",
             type: "dropdown",
             name: "edType",
 
             isImp: true,
-            label: "Earnings & Deduction Type",
+            label: "Miscellaneous Category",
 
             dataSource: {
               textField: "edType",
@@ -3068,7 +3047,7 @@ const HR_Payroll_Reports = [
                   edTypeValue: "E"
                 },
                 {
-                  edType: "Dedections",
+                  edType: "Deductions",
                   edTypeValue: "D"
                 },
                 {
@@ -3122,13 +3101,35 @@ const HR_Payroll_Reports = [
               }
             }
           },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
+            }
+          },
 
           {
             className: "col-2",
             type: "dropdown",
             name: "earning_deductions_id",
             isImp: false,
-            label: "Earnings & Deduction Description",
+            label: "Miscellaneous Type",
             dataSource: {
               textField: "earning_deduction_description",
               valueField: "hims_d_earning_deduction_id",
@@ -5515,8 +5516,8 @@ export default function loadActiveReports() {
       const Activated_Modueles =
         sessionStorage.getItem("ModuleDetails") !== null
           ? JSON.parse(
-            AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-          )
+              AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+            )
           : [];
       let result = [];
       for (let i = 0; i < Activated_Modueles.length; i++) {

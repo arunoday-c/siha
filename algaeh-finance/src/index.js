@@ -7,7 +7,7 @@ import keys from "algaeh-keys";
 import utliites from "algaeh-utilities";
 import routes from "./routes";
 import compression from "compression";
-import { userSecurity } from "algaeh-utilities/checksecurity";
+// import { userSecurity } from "algaeh-utilities/checksecurity";
 import {authentication} from "algaeh-utilities/authentication";
 const app = express();
 app.server = http.createServer(app);

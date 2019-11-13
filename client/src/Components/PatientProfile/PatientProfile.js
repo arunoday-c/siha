@@ -68,7 +68,7 @@ class PatientProfile extends Component {
       patImg: "",
       patient_code:
         this.props.patient_profile !== undefined &&
-        this.props.patient_profile.length > 0
+          this.props.patient_profile.length > 0
           ? this.props.patient_profile[0].patient_code
           : "",
       openUCAF: false,
@@ -231,13 +231,13 @@ class PatientProfile extends Component {
     let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
+        this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy(g => g.visit_date)
-            .lastOrDefault()
+          .groupBy("$.visit_date", null, (k, g) => {
+            return g.getSource();
+          })
+          .orderBy(g => g.visit_date)
+          .lastOrDefault()
         : [];
 
     if (
@@ -306,12 +306,12 @@ class PatientProfile extends Component {
                 k === "F"
                   ? "Food"
                   : k === "A"
-                  ? "Airborne"
-                  : k === "AI"
-                  ? "Animal  &  Insect"
-                  : k === "C"
-                  ? "Chemical & Others"
-                  : "",
+                    ? "Airborne"
+                    : k === "AI"
+                      ? "Animal  &  Insect"
+                      : k === "C"
+                        ? "Chemical & Others"
+                        : "",
               allergyList: g.getSource()
             };
           })
@@ -337,13 +337,13 @@ class PatientProfile extends Component {
     let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
+        this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy(g => g.visit_date)
-            .lastOrDefault()
+          .groupBy("$.visit_date", null, (k, g) => {
+            return g.getSource();
+          })
+          .orderBy(g => g.visit_date)
+          .lastOrDefault()
         : [];
 
     if (chief_complaint === null || chief_complaint.length < 4) {
@@ -394,13 +394,13 @@ class PatientProfile extends Component {
     let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
+        this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy(g => g.visit_date)
-            .lastOrDefault()
+          .groupBy("$.visit_date", null, (k, g) => {
+            return g.getSource();
+          })
+          .orderBy(g => g.visit_date)
+          .lastOrDefault()
         : [];
 
     if (
@@ -455,13 +455,13 @@ class PatientProfile extends Component {
     let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
+        this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy(g => g.visit_date)
-            .lastOrDefault()
+          .groupBy("$.visit_date", null, (k, g) => {
+            return g.getSource();
+          })
+          .orderBy(g => g.visit_date)
+          .lastOrDefault()
         : [];
 
     if (
@@ -590,13 +590,13 @@ class PatientProfile extends Component {
     let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
+        this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy(g => g.visit_date)
-            .lastOrDefault()
+          .groupBy("$.visit_date", null, (k, g) => {
+            return g.getSource();
+          })
+          .orderBy(g => g.visit_date)
+          .lastOrDefault()
         : [];
 
     if (
@@ -653,17 +653,17 @@ class PatientProfile extends Component {
 
     const _pat_profile =
       this.props.patient_profile !== undefined &&
-      this.props.patient_profile.length > 0
+        this.props.patient_profile.length > 0
         ? this.props.patient_profile[0]
         : {};
 
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
+        this.props.patient_vitals.length > 0
         ? _.chain(this.props.patient_vitals)
-            .uniqBy(u => u.vital_id)
-            .orderBy(o => o.sequence_order)
-            .value()
+          .uniqBy(u => u.vital_id)
+          .orderBy(o => o.sequence_order)
+          .value()
         : [];
 
     // const _patient_allergies =
@@ -705,7 +705,7 @@ class PatientProfile extends Component {
             <button
               id="btn-outer-component-load"
               className="d-none"
-              //  onClick={this.setPatientGlobalParameters.bind(this)}
+            //  onClick={this.setPatientGlobalParameters.bind(this)}
             />
             <button
               onClick={this.renderBackButton.bind(this)}
@@ -744,7 +744,7 @@ class PatientProfile extends Component {
             </span>
 
             <span>
-              Nationality:{" "}
+              Nationality:
               <b patient_nationality="true">{_pat_profile.nationality}</b>
             </span>
             <span>
@@ -753,8 +753,8 @@ class PatientProfile extends Component {
                 {_pat_profile.payment_type === "I"
                   ? "Insurance"
                   : _pat_profile.payment_type === "S"
-                  ? "Self"
-                  : ""}
+                    ? "Self"
+                    : ""}
               </b>
             </span>
           </div>
@@ -831,10 +831,10 @@ class PatientProfile extends Component {
                   <span>OCAF Report</span>
                 </li>
               ) : (
-                <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
-                  <span>UCAF Report</span>
-                </li>
-              )}
+                    <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
+                      <span>UCAF Report</span>
+                    </li>
+                  )}
             </ul>
           </div>
         </div>
@@ -945,23 +945,23 @@ class PatientProfile extends Component {
                                     {allergy.onset === "O"
                                       ? allergy.onset_date
                                       : allergy.onset === "A"
-                                      ? "Adulthood"
-                                      : allergy.onset === "C"
-                                      ? "Childhood"
-                                      : allergy.onset === "P"
-                                      ? "Pre Terms"
-                                      : allergy.onset === "T"
-                                      ? "Teenage"
-                                      : ""}
+                                        ? "Adulthood"
+                                        : allergy.onset === "C"
+                                          ? "Childhood"
+                                          : allergy.onset === "P"
+                                            ? "Pre Terms"
+                                            : allergy.onset === "T"
+                                              ? "Teenage"
+                                              : ""}
                                   </td>
                                   <td>
                                     {allergy.severity === "MO"
                                       ? "Moderate"
                                       : allergy.severity === "MI"
-                                      ? "Mild"
-                                      : allergy.severity === "SE"
-                                      ? "Severe"
-                                      : ""}
+                                        ? "Mild"
+                                        : allergy.severity === "SE"
+                                          ? "Severe"
+                                          : ""}
                                   </td>
                                   <td>{allergy.comment}</td>
                                 </tr>
@@ -1020,7 +1020,7 @@ class PatientProfile extends Component {
                 <li>
                   <i className="fas fa-utensils" />
                   <section>
-                    <span className="top-nav-sec-hdg">Diet</span>{" "}
+                    <span className="top-nav-sec-hdg">Diet</span>
                     <div className="listofADDWrapper">
                       <table className="listofADDTable">
                         <tbody>
@@ -1039,201 +1039,201 @@ class PatientProfile extends Component {
               </ul>
             </ul>
           ) : (
-            <ul className="nav">
-              <li className="nav-item">
-                <span
-                  onClick={this.changeTabs}
-                  algaehsoap="subjective"
-                  className="nav-link active"
-                >
-                  Subjective
-                </span>
-              </li>
-
-              <li className="nav-item">
-                <span
-                  onClick={this.changeTabs}
-                  algaehsoap="exam_diagram"
-                  className="nav-link"
-                >
-                  Examination Diagram
-                </span>
-              </li>
-
-              {this.state.chart_type === "D" ? (
+              <ul className="nav">
                 <li className="nav-item">
                   <span
                     onClick={this.changeTabs}
-                    algaehsoap="dental"
-                    className="nav-link"
+                    algaehsoap="subjective"
+                    className="nav-link active"
                   >
-                    Dental
-                  </span>
+                    Subjective
+                </span>
                 </li>
-              ) : this.state.chart_type === "O" ? (
+
                 <li className="nav-item">
                   <span
                     onClick={this.changeTabs}
-                    algaehsoap="eye"
+                    algaehsoap="exam_diagram"
                     className="nav-link"
                   >
-                    Optometry
-                  </span>
+                    Examination Diagram
+                </span>
                 </li>
-              ) : null}
 
-              <li className="nav-item">
-                <span
-                  onClick={this.changeTabs}
-                  algaehsoap="summary"
-                  className="nav-link"
-                >
-                  Summary
+                {this.state.chart_type === "D" ? (
+                  <li className="nav-item">
+                    <span
+                      onClick={this.changeTabs}
+                      algaehsoap="dental"
+                      className="nav-link"
+                    >
+                      Dental
+                  </span>
+                  </li>
+                ) : this.state.chart_type === "O" ? (
+                  <li className="nav-item">
+                    <span
+                      onClick={this.changeTabs}
+                      algaehsoap="eye"
+                      className="nav-link"
+                    >
+                      Optometry
+                  </span>
+                  </li>
+                ) : null}
+
+                <li className="nav-item">
+                  <span
+                    onClick={this.changeTabs}
+                    algaehsoap="summary"
+                    className="nav-link"
+                  >
+                    Summary
                 </span>
-              </li>
-              <li className="nav-item">
-                <span
-                  onClick={this.OpenMrdHandler.bind(this)}
-                  algaehsoap="mrd"
-                  className="nav-link"
-                >
-                  MRD
-                </span>
-              </li>
-              <ul className="float-right patient-quick-info">
-                <li>
-                  <i className={"fas fa-allergies" + this.state.alergyExist} />
-                  <section>
-                    <span className="top-nav-sec-hdg">Allergies</span>
-                    <div className="listofADDWrapper">
-                      <table className="listofADDTable">
-                        <thead>
-                          <tr>
-                            <th>
-                              <b>Allergy</b>
-                            </th>
-                            <th>
-                              <b>Onset From</b>
-                            </th>
-                            <th>
-                              <b>Severity</b>
-                            </th>
-                            <th>
-                              <b>Comments</b>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {_patient_allergies.map((data, index) => (
-                            <React.Fragment key={index}>
-                              {data.allergyList.map((allergy, aIndex) => (
-                                <tr
-                                  key={aIndex}
-                                  className={
-                                    allergy.allergy_inactive === "Y"
-                                      ? "red"
-                                      : ""
-                                  }
-                                >
-                                  <td>{allergy.allergy_name}</td>
-                                  <td>
-                                    {allergy.onset === "O"
-                                      ? allergy.onset_date
-                                      : allergy.onset === "A"
-                                      ? "Adulthood"
-                                      : allergy.onset === "C"
-                                      ? "Childhood"
-                                      : allergy.onset === "P"
-                                      ? "Pre Terms"
-                                      : allergy.onset === "T"
-                                      ? "Teenage"
-                                      : ""}
-                                  </td>
-                                  <td>
-                                    {allergy.severity === "MO"
-                                      ? "Moderate"
-                                      : allergy.severity === "MI"
-                                      ? "Mild"
-                                      : allergy.severity === "SE"
-                                      ? "Severe"
-                                      : ""}
-                                  </td>
-                                  <td>{allergy.comment}</td>
-                                </tr>
-                              ))}
-                            </React.Fragment>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </section>
                 </li>
-                <li>
-                  <i className="fas fa-diagnoses" />
-                  <section>
-                    <span className="top-nav-sec-hdg">Diagnosis</span>
-                    <div className="listofADDWrapper">
-                      <table className="listofADDTable">
-                        <thead>
-                          <tr>
-                            <th>
-                              <b>ICD Code</b>
-                            </th>
-                            <th>
-                              <b>Description</b>
-                            </th>
-                            <th>
-                              <b>Diagnosis Type</b>
-                            </th>
-                            <th>
-                              <b>Diagnosis Level</b>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {_diagnosis.map((item, index) => (
-                            <tr key={index}>
-                              <td>{item.icd_code}</td>
-                              <td>{item.icd_description}</td>
-                              <td>
-                                {item.diagnosis_type === "S"
-                                  ? "Secondary"
-                                  : "Primary"}
-                              </td>
-                              <td>
-                                {item.final_daignosis === "Y"
-                                  ? "Final"
-                                  : "Not Final"}
-                              </td>
+                <li className="nav-item">
+                  <span
+                    onClick={this.OpenMrdHandler.bind(this)}
+                    algaehsoap="mrd"
+                    className="nav-link"
+                  >
+                    MRD
+                </span>
+                </li>
+                <ul className="float-right patient-quick-info">
+                  <li>
+                    <i className={"fas fa-allergies" + this.state.alergyExist} />
+                    <section>
+                      <span className="top-nav-sec-hdg">Allergies</span>
+                      <div className="listofADDWrapper">
+                        <table className="listofADDTable">
+                          <thead>
+                            <tr>
+                              <th>
+                                <b>Allergy</b>
+                              </th>
+                              <th>
+                                <b>Onset From</b>
+                              </th>
+                              <th>
+                                <b>Severity</b>
+                              </th>
+                              <th>
+                                <b>Comments</b>
+                              </th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </section>
-                </li>
-                <li>
-                  <i className="fas fa-utensils" />
-                  <section>
-                    <span className="top-nav-sec-hdg">Diet</span>{" "}
-                    <div className="listofADDWrapper">
-                      <table className="listofADDTable">
-                        <tbody>
-                          {_diet.map((item, index) => {
-                            return (
+                          </thead>
+                          <tbody>
+                            {_patient_allergies.map((data, index) => (
+                              <React.Fragment key={index}>
+                                {data.allergyList.map((allergy, aIndex) => (
+                                  <tr
+                                    key={aIndex}
+                                    className={
+                                      allergy.allergy_inactive === "Y"
+                                        ? "red"
+                                        : ""
+                                    }
+                                  >
+                                    <td>{allergy.allergy_name}</td>
+                                    <td>
+                                      {allergy.onset === "O"
+                                        ? allergy.onset_date
+                                        : allergy.onset === "A"
+                                          ? "Adulthood"
+                                          : allergy.onset === "C"
+                                            ? "Childhood"
+                                            : allergy.onset === "P"
+                                              ? "Pre Terms"
+                                              : allergy.onset === "T"
+                                                ? "Teenage"
+                                                : ""}
+                                    </td>
+                                    <td>
+                                      {allergy.severity === "MO"
+                                        ? "Moderate"
+                                        : allergy.severity === "MI"
+                                          ? "Mild"
+                                          : allergy.severity === "SE"
+                                            ? "Severe"
+                                            : ""}
+                                    </td>
+                                    <td>{allergy.comment}</td>
+                                  </tr>
+                                ))}
+                              </React.Fragment>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </li>
+                  <li>
+                    <i className="fas fa-diagnoses" />
+                    <section>
+                      <span className="top-nav-sec-hdg">Diagnosis</span>
+                      <div className="listofADDWrapper">
+                        <table className="listofADDTable">
+                          <thead>
+                            <tr>
+                              <th>
+                                <b>ICD Code</b>
+                              </th>
+                              <th>
+                                <b>Description</b>
+                              </th>
+                              <th>
+                                <b>Diagnosis Type</b>
+                              </th>
+                              <th>
+                                <b>Diagnosis Level</b>
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {_diagnosis.map((item, index) => (
                               <tr key={index}>
-                                <td>{item.hims_d_diet_note}</td>
+                                <td>{item.icd_code}</td>
+                                <td>{item.icd_description}</td>
+                                <td>
+                                  {item.diagnosis_type === "S"
+                                    ? "Secondary"
+                                    : "Primary"}
+                                </td>
+                                <td>
+                                  {item.final_daignosis === "Y"
+                                    ? "Final"
+                                    : "Not Final"}
+                                </td>
                               </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  </section>
-                </li>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </li>
+                  <li>
+                    <i className="fas fa-utensils" />
+                    <section>
+                      <span className="top-nav-sec-hdg">Diet</span>
+                      <div className="listofADDWrapper">
+                        <table className="listofADDTable">
+                          <tbody>
+                            {_diet.map((item, index) => {
+                              return (
+                                <tr key={index}>
+                                  <td>{item.hims_d_diet_note}</td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </section>
+                  </li>
+                </ul>
               </ul>
-            </ul>
-          )}
+            )}
         </div>
         <div className="patientContentArea">
           {module_plan === undefined || module_plan.module_plan === "G" ? (
@@ -1256,7 +1256,10 @@ class PatientProfile extends Component {
                 <ExamDiagramStandolone />
               </Suspense>
             ) : this.state.pageDisplay === "assesment" ? (
-              <Assesment vat_applicable={this.vatApplicable()} />
+              <Assesment vat_applicable={this.vatApplicable()}
+                date_of_birth={_pat_profile.date_of_birth}
+                gender={_pat_profile.gender}
+              />
             ) : this.state.pageDisplay === "summary" ? (
               <Summary />
             ) : this.state.pageDisplay === "dental" ? (
@@ -1270,7 +1273,10 @@ class PatientProfile extends Component {
           ) : this.state.pageDisplay === "overview" ? (
             <Overview />
           ) : this.state.pageDisplay === "subjective" ? (
-            <BasicSubjective vat_applicable={this.vatApplicable()} />
+            <BasicSubjective vat_applicable={this.vatApplicable()}
+              date_of_birth={_pat_profile.date_of_birth}
+              gender={_pat_profile.gender}
+            />
           ) : this.state.pageDisplay === "exam_diagram" ? (
             <Suspense
               fallback={

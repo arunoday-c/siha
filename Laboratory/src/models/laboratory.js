@@ -221,7 +221,7 @@ export default {
                     ) {
                       _mysql.rollBackTransaction(() => {
                         next(
-                          httpStatus.generateError(
+                          utilities.httpStatus().generateError(
                             httpStatus.forbidden,
                             "No Specimen Avilable"
                           )
@@ -261,7 +261,7 @@ export default {
                         ) {
                           _mysql.rollBackTransaction(() => {
                             next(
-                              httpStatus.generateError(
+                              utilities.httpStatus().generateError(
                                 httpStatus.forbidden,
                                 "No Analytes Avilable"
                               )

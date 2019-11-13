@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./MiscEarningsDeductions.scss";
+import "./MiscEarningsDeductionsNew.scss";
 import {
   AlagehFormGroup,
   AlgaehLabel,
@@ -19,9 +19,9 @@ import {
   AlgaehOpenContainer
 } from "../../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import swal from "sweetalert2";
+import Enumerable from "linq";
 
-export default class MiscEarningsDeductions extends Component {
+export default class MiscEarningsDeductionsNew extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -42,14 +42,11 @@ export default class MiscEarningsDeductions extends Component {
       emp_name: null,
       employee_group_id: null,
       department_id: null,
-      employee_id: null,
-      addBtnEnable: true,
-      employee_miscellaneous: [],
-      earning_deduction_id: null,
-      amount: 0
+      employee_id: null
     };
     this.getEarnDed("E");
     this.getHospitals();
+    this.getSubDepts();
   }
 
   componentDidMount() {
@@ -59,6 +56,27 @@ export default class MiscEarningsDeductions extends Component {
         allDepartments: data
       })
     );
+  }
+
+  getSubDepts() {
+    algaehApiCall({
+      uri: "/department/get/subdepartment",
+      method: "GET",
+      module: "masterSettings",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            sub_departments: response.data.records
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   changeGridEditors(row, e) {
@@ -82,6 +100,24 @@ export default class MiscEarningsDeductions extends Component {
 
       onFailure: err => {}
     });
+  }
+
+  changeChecks(e) {
+    switch (e.target.name) {
+      case "isBulk":
+        this.setState({
+          [e.target.name]: e.target.checked,
+          bulk_amount: null
+        });
+
+        break;
+
+      default:
+        this.setState({
+          [e.target.name]: e.target.checked
+        });
+        break;
+    }
   }
 
   addEarningsForEmployee(data) {
@@ -121,11 +157,77 @@ export default class MiscEarningsDeductions extends Component {
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).hims_d_hospital_id,
       lockEarnings: false,
-      emp_name: null,
-      addBtnEnable: true,
-      employee_miscellaneous: [],
-      amount: 0
+      emp_name: null
     });
+  }
+
+  getEmployeesForMiscED() {
+    if (this.state.year.length === 0 && this.state.month.length === 0) {
+      swalMessage({
+        title: "Please Select Month and Year",
+        type: "warning"
+      });
+    } else if (
+      this.state.earning_deduction_id === null ||
+      this.state.earning_deduction_id === undefined
+    ) {
+      swalMessage({
+        title: "Please select the Earning/ Deduction to Apply",
+        type: "warning"
+      });
+    } else {
+      this.setState({
+        loading: true
+      });
+
+      algaehApiCall({
+        uri: "/employee/getEmployeesForMisED",
+        method: "GET",
+        module: "hrManagement",
+        data: {
+          hospital_id: this.state.hospital_id,
+          year: this.state.year,
+          month: this.state.month,
+          earning_deductions_id: this.state.earning_deduction_id,
+          sub_department_id: this.state.sub_department_id,
+
+          department_id: this.state.department_id,
+          employee_id: this.state.employee_id,
+          employee_group_id: this.state.employee_group_id
+        },
+        onSuccess: res => {
+          if (res.data.success) {
+            res.data.records.length > 0
+              ? this.setState({
+                  employees: res.data.records,
+                  loading: false,
+                  lockEarnings: true
+                })
+              : swalMessage({
+                  title: "Sorry There are no Employees to Process",
+                  type: "warning"
+                });
+          } else if (!res.data.success) {
+            swalMessage({
+              title: res.data.records.message,
+              type: "warning"
+            });
+            this.setState({
+              loading: false
+            });
+          }
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err.message,
+            type: "error"
+          });
+          this.setState({
+            loading: false
+          });
+        }
+      });
+    }
   }
 
   dropDownHandler(value) {
@@ -134,36 +236,85 @@ export default class MiscEarningsDeductions extends Component {
     });
   }
 
-  ApplyEarningsDeds() {
-    if (this.state.earning_deduction_id === null) {
+  DeptdropDownHandler(e) {
+    this.setState(
+      {
+        [e.name]: e.value
+      },
+      () => {
+        const [reqDept] = this.state.allDepartments.filter(
+          dept => dept.hims_d_department_id === this.state.department_id
+        );
+        if (reqDept) {
+          // setSubDepts(reqDept.subDepts);
+
+          this.setState({ sub_departments: reqDept.subDepts });
+        } else {
+          swalMessage({
+            title: "Please contact the admin, Error Code: 007",
+            type: "error"
+          });
+        }
+      }
+    );
+  }
+
+  applyAmount() {
+    if (this.state.employees.length === 0) {
       swalMessage({
-        title: "Select Component",
+        title: "No Employees present to add the amount",
         type: "warning"
       });
-      document.querySelector("[name='earning_deduction_id']").focus();
-      return;
     } else if (
-      this.state.amount === null ||
-      this.state.amount === undefined ||
-      this.state.amount === 0
+      this.state.bulk_amount === 0 ||
+      this.state.bulk_amount === undefined ||
+      this.state.bulk_amount === null
     ) {
       swalMessage({
-        title: "Enter Amount",
+        title: "Please Enter the Amount to Apply",
         type: "warning"
       });
-      document.querySelector("[name='amount']").focus();
-      return;
-    }
+    } else {
+      let myArray = Enumerable.from(this.state.employees)
+        .where(w => w.salary_processed === "N" || w.salary_processed === null)
+        .toArray();
 
-    let sendData = {
-      earning_deduction_id: this.state.earning_deduction_id,
-      year: this.state.year,
-      month: this.state.month,
-      category: this.state.component_category,
-      employees: [
-        { employee_id: this.state.employee_id, amount: this.state.amount }
-      ]
-    };
+      if (myArray.length === 0) {
+        swalMessage({
+          title: "No Employees elligible to add Earnings/ Deductions",
+          type: "warning"
+        });
+      } else {
+        for (let i = 0; i < myArray.length; i++) {
+          myArray[i].amount = this.state.bulk_amount;
+        }
+        this.setState({
+          employees: myArray
+        });
+      }
+    }
+  }
+
+  ApplyEarningsDeds() {
+    let sendData = {};
+
+    this.state.isBulk
+      ? (sendData = {
+          earning_deduction_id: this.state.earning_deduction_id,
+          year: this.state.year,
+          month: this.state.month,
+          category: this.state.component_category,
+          employees: this.state.employees
+        })
+      : (sendData = {
+          earning_deduction_id: this.state.earning_deduction_id,
+          year: this.state.year,
+          month: this.state.month,
+          category: this.state.component_category,
+          employees: this.state.send_array
+        });
+
+    //  console.log("Data:", JSON.stringify(sendData));
 
     algaehApiCall({
       uri: "/employee/addMisEarnDedcToEmployees",
@@ -177,16 +328,7 @@ export default class MiscEarningsDeductions extends Component {
             type: "success"
           });
 
-          this.setState({
-            component_category: "E",
-            earning_deduction_id: null,
-            amount: 0
-          });
-          this.getEarnDed("E");
-          this.getEmployee({
-            hims_d_employee_id: this.state.employee_id,
-            full_name: this.state.emp_name
-          });
+          this.clearState();
         } else {
           swalMessage({
             title: res.data.records.message,
@@ -258,86 +400,28 @@ export default class MiscEarningsDeductions extends Component {
   openSearch = () => EmployeeSearch(this.state, this.getEmployee);
 
   getEmployee = row => {
-    algaehApiCall({
-      uri: "/salary/getEmployeeMiscellaneous",
-      module: "hrManagement",
-      method: "GET",
-      data: {
-        employee_id: row.hims_d_employee_id,
-        year: this.state.year,
-        month: this.state.month
-      },
-      onSuccess: res => {
-        if (res.data.success) {
-          this.setState({
-            employee_miscellaneous: res.data.records,
-            employee_id: row.hims_d_employee_id,
-            emp_name: row.full_name,
-            addBtnEnable: false
-          });
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
-        });
-      }
+    const {
+      sub_department_id,
+      employee_group_id,
+      hims_d_department_id: department_id,
+      full_name: emp_name,
+      hims_d_employee_id: employee_id
+    } = row;
+    this.setState({
+      sub_department_id,
+      employee_group_id,
+      department_id,
+      employee_id,
+      emp_name
     });
   };
-
-  deleteMiscEarningsDeductions(row) {
-    debugger;
-    swal({
-      title:
-        "Are you sure want to Delete " +
-        row.earning_deduction_description +
-        "?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
-      if (willDelete.value) {
-        algaehApiCall({
-          uri: "/salary/deleteMiscEarningsDeductions",
-          module: "hrManagement",
-          method: "DELETE",
-          data: {
-            hims_f_miscellaneous_earning_deduction_id:
-              row.hims_f_miscellaneous_earning_deduction_id
-          },
-          onSuccess: res => {
-            if (res.data.success) {
-              swalMessage({
-                title: "Deleted Successfully",
-                type: "success"
-              });
-              this.getEmployee({
-                hims_d_employee_id: this.state.employee_id,
-                full_name: this.state.emp_name
-              });
-            }
-          },
-          onFailure: err => {
-            swalMessage({
-              title: err.message,
-              type: "error"
-            });
-          }
-        });
-      }
-    });
-  }
 
   render() {
     let allYears = getYears();
     return (
       <React.Fragment>
-        <div className="misc_earn_dedc">
-          <div className="row" style={{ marginTop: 15 }}>
+        <div className="misc_earn_dedc" style={{ paddingTop: 15 }}>
+          <div className="row">
             <div className="col-3">
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
@@ -345,8 +429,10 @@ export default class MiscEarningsDeductions extends Component {
                     <h3 className="caption-subject">Add Miscellaneous</h3>
                   </div>
                 </div>
+
                 <div className="portlet-body">
                   <div className="row">
+                    {" "}
                     <AlagehAutoComplete
                       div={{ className: "col-12 form-group mandatory" }}
                       label={{
@@ -426,21 +512,15 @@ export default class MiscEarningsDeductions extends Component {
                         }
                       }}
                     />
-                    <div className="col-12 form-group mandatory globalSearchCntr">
-                      <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
-                      <h6 onClick={this.openSearch}>
-                        {this.state.emp_name
-                          ? this.state.emp_name
-                          : "Search Employee"}
-                        <i className="fas fa-search fa-lg"></i>
-                      </h6>
-                    </div>
                     <div
                       className="col-12  form-group"
                       style={{
                         pointerEvents: this.state.lockEarnings ? "none" : null
                       }}
                     >
+                      {/* <label>
+                Components<span className="imp">&nbsp;*</span>
+              </label> */}
                       <div className="customRadio" style={{ paddingBottom: 0 }}>
                         <label className="radio inline">
                           <input
@@ -476,7 +556,7 @@ export default class MiscEarningsDeductions extends Component {
                       </div>
                       <div className="row">
                         <AlagehAutoComplete
-                          div={{ className: "col mandatory" }}
+                          div={{ className: "col-12 mandatory" }}
                           selector={{
                             name: "earning_deduction_id",
                             className: "select-fld",
@@ -500,29 +580,84 @@ export default class MiscEarningsDeductions extends Component {
                         />
                       </div>
                     </div>
-                    <AlagehFormGroup
-                      div={{ className: "col-12 mandatory form-group " }}
-                      label={{
-                        forceLabel: "Enter Amount",
-                        isImp: true
-                      }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        className: "txt-fld",
-                        name: "amount",
-                        value: this.state.amount,
-                        events: {
-                          onChange: this.textHandler.bind(this)
+                    <AlagehAutoComplete
+                      div={{ className: "col-12 form-group" }}
+                      label={{ forceLabel: "Employee Group" }}
+                      selector={{
+                        name: "employee_group_id",
+                        value: this.state.employee_group_id,
+                        className: "select-fld",
+                        dataSource: {
+                          textField: "group_description",
+                          valueField: "hims_d_employee_group_id",
+                          data: this.state.empGroups
                         },
-                        others: {
-                          // disabled: !this.state.isBulk
+                        onChange: this.dropDownHandler.bind(this),
+                        onClear: () => {
+                          this.setState({
+                            employee_group_id: null
+                          });
                         }
                       }}
                     />
-                    <div
-                      className="col margin-bottom-15"
-                      style={{ textAlign: "right" }}
-                    >
+                    <AlagehAutoComplete
+                      div={{ className: "col-12 form-group" }}
+                      label={{ forceLabel: "Department", isImp: false }}
+                      selector={{
+                        name: "department_id",
+                        value: this.state.department_id,
+                        className: "select-fld",
+                        dataSource: {
+                          textField: "department_name",
+                          valueField: "hims_d_department_id",
+                          data: this.state.allDepartments
+                        },
+                        onChange: this.DeptdropDownHandler.bind(this),
+                        onClear: () => {
+                          this.setState({
+                            department_id: null,
+                            sub_department_id: null,
+                            sub_departments: []
+                          });
+                        }
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col-12 form-group" }}
+                      label={{
+                        forceLabel: "Sub Department",
+                        isImp: false
+                      }}
+                      selector={{
+                        name: "sub_department_id",
+                        className: "select-fld",
+                        value: this.state.sub_department_id,
+                        dataSource: {
+                          textField: "sub_department_name",
+                          valueField: "hims_d_sub_department_id",
+                          data: this.state.sub_departments
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                        onClear: () => {
+                          this.setState({
+                            sub_department_id: null
+                          });
+                        },
+                        others: {
+                          disabled: this.state.lockEarnings
+                        }
+                      }}
+                    />
+                    {/* <div className="col-12 globalSearchCntr">
+                      <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+                      <h6 onClick={this.openSearch}>
+                        {this.state.emp_name
+                          ? this.state.emp_name
+                          : "Search Employee"}
+                        <i className="fas fa-search fa-lg"></i>
+                      </h6>
+                    </div> */}
+                    <div className="col-12 " style={{ textAlign: "right" }}>
                       <button
                         type="button"
                         className="btn btn-default"
@@ -533,14 +668,17 @@ export default class MiscEarningsDeductions extends Component {
                           label={{ forceLabel: "Clear", returnText: true }}
                         />
                       </button>
-
                       <button
+                        onClick={this.getEmployeesForMiscED.bind(this)}
                         type="button"
                         className="btn btn-primary"
-                        onClick={this.ApplyEarningsDeds.bind(this)}
-                        disabled={this.state.addBtnEnable}
+                        disabled={this.state.lockEarnings}
                       >
-                        Add
+                        {!this.state.loading ? (
+                          <span>Load</span>
+                        ) : (
+                          <i className="fas fa-spinner fa-spin" />
+                        )}
                       </button>
                     </div>
                   </div>
@@ -548,6 +686,67 @@ export default class MiscEarningsDeductions extends Component {
               </div>
             </div>
             <div className="col-9">
+              <div className="portlet portlet-bordered margin-bottom-15">
+                {/* <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">Assign to All</h3>
+                  </div>
+                </div> */}
+                <div className="portlet-body">
+                  <div className="row">
+                    {/* <div className="col-2">
+                      <label>
+                        Select All<span className="imp">&nbsp;*</span>
+                      </label>
+                      <div className="customCheckbox">
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            value="E"
+                            name="isBulk"
+                            onChange={this.changeChecks.bind(this)}
+                            checked={this.state.isBulk}
+                          />
+                          <span>Yes</span>
+                        </label>
+                      </div>
+                    </div> */}
+
+                    <AlagehFormGroup
+                      div={{ className: "col-2" }}
+                      label={{
+                        forceLabel: "Enter Amount",
+                        isImp: this.state.isBulk
+                      }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        className: "txt-fld",
+                        name: "bulk_amount",
+                        value: this.state.bulk_amount,
+                        events: {
+                          onChange: this.textHandler.bind(this)
+                        },
+                        others: {
+                          disabled: !this.state.isBulk
+                        }
+                      }}
+                    />
+                    <div className="col" style={{ paddingTop: 19 }}>
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        //disabled={!this.state.isBulk}
+                        // style={{
+                        //   pointerEvents: !this.state.isBulk ? "none" : null
+                        // }}
+                        onClick={this.applyAmount.bind(this)}
+                      >
+                        Assign to all
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
                   <div className="caption">
@@ -559,44 +758,11 @@ export default class MiscEarningsDeductions extends Component {
                   <div className="row">
                     <div
                       className="col-lg-12"
-                      id="MiscEarningsDeductionsGrid_Cntr"
+                      id="MiscEarningsDeductionsGrid_CntrNew"
                     >
                       <AlgaehDataGrid
                         id="MiscEarningsDeductionsGrid"
                         columns={[
-                          {
-                            fieldName: "actions",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Action" }} />
-                            ),
-                            displayTemplate: row => {
-                              return (
-                                <span>
-                                  <i
-                                    style={{
-                                      pointerEvents:
-                                        row.salary_processed === "N"
-                                          ? "none"
-                                          : "",
-                                      opacity:
-                                        row.salary_processed === "N"
-                                          ? "0.1"
-                                          : ""
-                                    }}
-                                    onClick={this.deleteMiscEarningsDeductions.bind(
-                                      this,
-                                      row
-                                    )}
-                                    className="fas fa-trash-alt"
-                                  />
-                                </span>
-                              );
-                            },
-                            others: {
-                              maxWidth: 65,
-                              filterable: false
-                            }
-                          },
                           {
                             fieldName: "processed",
                             label: (
@@ -624,15 +790,9 @@ export default class MiscEarningsDeductions extends Component {
                             editorTemplate: row => {
                               return (
                                 <span>
-                                  {row.salary_processed === "Y" ? (
-                                    <span className="badge badge-success">
-                                      Processed
-                                    </span>
-                                  ) : (
-                                    <span className="badge badge-warning">
-                                      Not Processed
-                                    </span>
-                                  )}
+                                  {row.salary_processed === "Y"
+                                    ? "Processed"
+                                    : "Not Processed"}
                                 </span>
                               );
                             },
@@ -640,104 +800,49 @@ export default class MiscEarningsDeductions extends Component {
                               maxWidth: 150
                             }
                           },
+                          // {
+                          //   fieldName: "sub_department_name",
+
+                          //   label: (
+                          //     <AlgaehLabel
+                          //       label={{
+                          //         forceLabel: "Sub Department"
+                          //       }}
+                          //     />
+                          //   ),
+                          //   displayTemplate: row => {
+                          //     return (
+                          //       <span>
+                          //         {row.sub_department_name !== null
+                          //           ? row.sub_department_name
+                          //           : "Not Specified"}
+                          //       </span>
+                          //     );
+                          //   },
+                          //   disabled: true
+                          // },
                           {
-                            fieldName: "year",
+                            fieldName: "employee_code",
 
                             label: (
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Applied Year"
+                                  forceLabel: "Employee Code"
                                 }}
                               />
                             ),
-                            disabled: true,
                             others: {
-                              maxWidth: 110
-                            }
+                              maxWidth: 150
+                            },
+                            disabled: true
                           },
                           {
-                            fieldName: "month",
+                            fieldName: "employee_name",
 
                             label: (
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Applied Month"
-                                }}
-                              />
-                            ),
-                            displayTemplate: row => {
-                              let display = GlobalVariables.MONTHS.filter(
-                                f => f.value === row.month
-                              );
-
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? display[0].name
-                                    : ""}
-                                </span>
-                              );
-                            },
-                            editorTemplate: row => {
-                              let display = GlobalVariables.MONTHS.filter(
-                                f => f.value === row.month
-                              );
-
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? display[0].name
-                                    : ""}
-                                </span>
-                              );
-                            },
-                            others: {
-                              maxWidth: 110
-                            }
-                          },
-                          {
-                            fieldName: "category",
-
-                            label: (
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Miscellaneous Category"
-                                }}
-                              />
-                            ),
-                            displayTemplate: row => {
-                              return (
-                                <span>
-                                  {row.category === "D"
-                                    ? "Deduction"
-                                    : row.category === "E"
-                                    ? "Earning"
-                                    : "Bonus"}
-                                </span>
-                              );
-                            },
-                            editorTemplate: row => {
-                              return (
-                                <span>
-                                  {row.category === "D"
-                                    ? "Deduction"
-                                    : row.category === "E"
-                                    ? "Earning"
-                                    : "Bonus"}
-                                </span>
-                              );
-                            },
-                            others: {
-                              maxWidth: 180
-                            }
-                          },
-                          {
-                            fieldName: "earning_deduction_description",
-
-                            label: (
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Miscellaneous Type"
+                                  forceLabel: "Employee Name"
                                 }}
                               />
                             ),
@@ -755,12 +860,12 @@ export default class MiscEarningsDeductions extends Component {
                             ),
                             others: { maxWidth: 150 },
 
-                            // displayTemplate: row => {
-                            //   return (
-                            //     <span> {getAmountFormart(row.amount)}</span>
-                            //   );
-                            // },
                             displayTemplate: row => {
+                              return (
+                                <span> {getAmountFormart(row.amount)}</span>
+                              );
+                            },
+                            editorTemplate: row => {
                               return row.salary_processed === "N" ||
                                 row.salary_processed === null ? (
                                 <AlagehFormGroup
@@ -790,12 +895,15 @@ export default class MiscEarningsDeductions extends Component {
                         ]}
                         keyId="algaeh_d_module_id"
                         dataSource={{
-                          data: this.state.employee_miscellaneous
+                          data: this.state.employees
                         }}
                         isEditable={false}
                         filter={true}
                         loading={this.state.loading}
                         paging={{ page: 0, rowsPerPage: 10 }}
+                        actions={{
+                          allowDelete: false
+                        }}
                         events={{
                           onEdit: () => {},
                           onDelete: () => {},
@@ -805,6 +913,36 @@ export default class MiscEarningsDeductions extends Component {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="hptl-phase1-footer">
+            <div className="row">
+              <div className="col-lg-12">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.ApplyEarningsDeds.bind(this)}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Save", returnText: true }}
+                  />
+                </button>
+
+                {/* <button
+                  type="button"
+                  className="btn btn-other"
+                  //   onClick={PostDoctorCommission.bind(this, this)}
+                  // disabled={this.state.postEnable}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Generate Payslip PDF"
+                      //   returnText: true
+                    }}
+                  />
+                </button> */}
               </div>
             </div>
           </div>
