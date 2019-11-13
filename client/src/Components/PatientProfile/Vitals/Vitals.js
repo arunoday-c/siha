@@ -208,7 +208,7 @@ class Vitals extends Component {
   render() {
     const _department_viatals =
       this.props.department_vitals === undefined ||
-      this.props.department_vitals.length === 0
+        this.props.department_vitals.length === 0
         ? []
         : this.props.department_vitals;
     let _chartLabels = [];
@@ -217,14 +217,17 @@ class Vitals extends Component {
     const _vitalsGroup =
       this.props.patient_vitals !== undefined
         ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (key, g) => {
-              _chartLabels.push(key);
-              return {
-                dateTime: key,
-                list: g.getSource()
-              };
-            })
-            .toArray()
+          .groupBy("$.visit_date", null, (key, g) => {
+            debugger
+            let firstRecordSet = Enumerable.from(g).firstOrDefault();
+            _chartLabels.push(key);
+            return {
+              dateTime: key,
+              recorded_by: firstRecordSet.user_display_name,
+              list: g.getSource()
+            };
+          })
+          .toArray()
         : [];
 
     Enumerable.from(
@@ -368,22 +371,22 @@ class Vitals extends Component {
                           item.hims_d_vitals_header_id === 1
                             ? "col-2"
                             : item.hims_d_vitals_header_id >= 3
-                            ? "col-2"
-                            : item.hims_d_vitals_header_id === 5 ||
-                              item.hims_d_vitals_header_id === 6
-                            ? "col-2"
-                            : "col-2";
+                              ? "col-2"
+                              : item.hims_d_vitals_header_id === 5 ||
+                                item.hims_d_vitals_header_id === 6
+                                ? "col-2"
+                                : "col-2";
                         const _name = String(item.vitals_name)
                           .replace(/" "/g, "_")
                           .toLowerCase();
                         const _disable = _name === "bmi" ? true : false;
                         const _dependent =
                           item.hims_d_vitals_header_id === 8 ||
-                          item.hims_d_vitals_header_id === 9
+                            item.hims_d_vitals_header_id === 9
                             ? { dependent: "bp_position" }
                             : item.hims_d_vitals_header_id === 4
-                            ? { dependent: "temperature_from" }
-                            : {};
+                              ? { dependent: "temperature_from" }
+                              : {};
                         return (
                           <React.Fragment key={index}>
                             {item.hims_d_vitals_header_id === 4 ? (
@@ -440,8 +443,8 @@ class Vitals extends Component {
                                   item.uom === "C"
                                     ? "°C"
                                     : item.uom === "F"
-                                    ? "°F"
-                                    : item.vital_short_name +
+                                      ? "°F"
+                                      : item.vital_short_name +
                                       " (" +
                                       String(item.uom).trim() +
                                       ")",
@@ -568,7 +571,7 @@ class Vitals extends Component {
                               className="timelineContainer right"
                             >
                               <div className="content">
-                                <p className="dateStamp">{data.dateTime}</p>
+                                <p className="dateStamp">Recorded by:<span>{data.recorded_by}</span>Recorded on: <span>{data.dateTime}</span></p>
                                 <div className="vitalsCntr">
                                   <ul className="vitals-box">
                                     {_.orderBy(

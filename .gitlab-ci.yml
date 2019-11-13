@@ -1,4 +1,7 @@
 # gitlab ci/cd to build docker images
+before_script:
+  - export DOCKER_HOST=tcp://localhost:2375
+  - export PATH="/home/algaeh/.nvm/versions/node/v12.11.1/bin/:$PATH"
 build_image:
   only:
     refs:
@@ -7,9 +10,10 @@ build_image:
     - build
     - hims
   script:
-    - cd "F:\LOCAL DEV\newrepository\algaeh-monorepo"
-    - $env:PATH += ";C:\Users\admin\AppData\Roaming\npm\"
+    - cd /f/LOCAL\ DEV/newrepository/algaeh-monorepo/
+    - git config --list
     - git pull
+    - echo $PATH
     - algaeh-cli build -a
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker-compose -f docker-compose.yml build
