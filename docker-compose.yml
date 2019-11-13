@@ -7,6 +7,7 @@ services:
     build:
       context: ./algaeh-core
       dockerfile: $PWD/Dockerfile
+    image: ${CI_REGISTRY}/algaeh/algaeh-monorepo/algaeh-billing
     ports:
       - "3000:3000"
   billing:
@@ -15,6 +16,7 @@ services:
       - ./env
     build:
       context: ./Billing
-      dockerfile: Dockerfile
+      dockerfile: $PWD/Dockerfile
+    image: ${CI_REGISTRY}/algaeh/algaeh-monorepo/algaeh-billing
     ports:
       - "3014:3014"
