@@ -1,4 +1,6 @@
 # gitlab ci/cd to build docker images
+before_script:
+  - export PATH="/home/algaeh/.nvm/versions/node/v12.11.1/bin/:$PATH"
 build_image:
   only:
     refs:
@@ -6,8 +8,6 @@ build_image:
   tags:
     - build
     - hims
-  variables:
-    PATH: "/home/algaeh/.nvm/versions/node/v12.11.1/bin/:$$PATH"
   script:
     - cd /f/LOCAL\ DEV/newrepository/algaeh-monorepo/
     - git config --list
