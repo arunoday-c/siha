@@ -6,11 +6,12 @@ build_image:
   tags:
     - build
     - hims
+  variables:
+    PATH: "/home/algaeh/.nvm/versions/node/v12.11.1/bin/:$$PATH"
   script:
     - cd /f/LOCAL\ DEV/newrepository/algaeh-monorepo/
     - git config --list
     - git pull
-    - source /home/algaeh/.bashrc
     - echo $PATH
     - algaeh-cli build -a
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
