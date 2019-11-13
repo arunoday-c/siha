@@ -11,8 +11,8 @@ build_image:
     - git config --list
     - git pull
     - source /home/algaeh/.bashrc
-    - echo $PATH
-    - algaeh-cli build -a
+    - bash -c "echo $PATH"
+    - bash -c "algaeh-cli build -a"
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker-compose -f docker-compose.yml build
     - docker-compose -f docker-compose.yml push
