@@ -172,7 +172,7 @@ export default {
               .executeQueryWithTransaction({
                 query:
                   "INSERT INTO `finance_account_child` (child_name)  VALUE(?)",
-                values: [input.card_name],
+                values: [req.body.card_name],
                 printQuery: true
               })
               .then(result => {
@@ -190,7 +190,7 @@ export default {
                           query:
                             "INSERT INTO `hims_d_bank_card` (card_name,head_id,child_id,head_account)  VALUE(?,?,?,?)",
                           values: [
-                            input.card_name,
+                            req.body.card_name,
                             29,
                             result.insertId,
                             "1.1.1.1"
