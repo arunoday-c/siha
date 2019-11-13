@@ -6,7 +6,7 @@ services:
       - ./env
     build:
       context: ./algaeh-core
-      dockerfile: Dockerfile
+      dockerfile: $PWD/Dockerfile
     ports:
       - "3000:3000"
   billing:
