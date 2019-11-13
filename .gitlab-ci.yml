@@ -10,9 +10,8 @@ build_image:
     - cd /f/LOCAL\ DEV/newrepository/algaeh-monorepo/
     - git config --list
     - git pull
-    - source /home/algaeh/.bashrc
-    - sudo echo 1 > /proc/sys/fs/binfmt_misc/WSLInterop
     - bash -c "echo $PATH && echo $USER"
+    - sudo echo 1 > /proc/sys/fs/binfmt_misc/WSLInterop
     - bash -c "algaeh-cli build -a"
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker-compose -f docker-compose.yml build
