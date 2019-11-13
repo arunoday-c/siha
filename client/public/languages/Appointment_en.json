@@ -38,20 +38,14 @@
   "bookAppo": "Book an Appointment",
   "editAppo": "Edit an Appointment",
   "today": "Today",
-
   "registered_date": "Registered Date",
-
   "enter_eng_fullName": "Full Name in English",
-
   "religion_id": "Religion",
-
   "marital_status": "Marital Status",
   "address1": "Address 1",
   "address2": "Address 2",
-
   "mobile": "Mobile",
   "number": "Number",
-
   "visa_type_id": "Visa Type",
   "nationality_id": "Nationality",
   "postal_code": "Postal Code",
@@ -76,7 +70,6 @@
   "mlc_police_station": "Police Station Name",
   "mlc_wound_certified_date": "Wound Certified Date",
   "visit_code": "Visit Code",
-
   "btn_advance": "Advance",
   "btn_refund": "Refund",
   "tab_patdtls": "Patient Details",
@@ -88,7 +81,6 @@
   "tab_billdtls": "Billing Details",
   "tab_recipts": "Recipts",
   "form_patregister": "Patient Registration",
-
   "hijiri_date": "Hijiri Date",
   "attach_photo": "Attach Photo",
   "attach_idcard": "Attach ID Card",
@@ -152,18 +144,14 @@
   "advance_amount": "Available Advance",
   "advance_caption": "Advance",
   "refund_caption": "Refund",
-
   "responsibility_lbl": "Responsibility",
   "tax_lbl": "Vat",
   "payable_lbl": "Payable",
-
   "patient_lbl": "Patient Responsibility",
   "company_lbl": "Company Responsibility",
   "sec_comp_lbl": "Secondary Co.",
-
   "payment_number": "Payment Number",
   "payment_date": "Payment Date",
-
   "insurance_id": "Insurance Co.",
   "sub_insurance_id": "Sub Insurance Co.",
   "plan_id": "Policy No.",
@@ -182,9 +170,9 @@
   "NotGenerated": "Not Generated",
   "PastVisit": "Past Visit",
   "employee_id": "Employee ID",
-
   "card_holder_name": "Card Holder Name",
   "card_holder_age": "Holder Age",
   "card_holder_gender": "Holder Gender",
-  "card_class": "Card Class"
+  "card_class": "Card Class",
+  "eligible_reference_number": "Reference Number"
 }
