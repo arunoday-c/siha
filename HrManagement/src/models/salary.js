@@ -223,7 +223,7 @@ export default {
               loan_application_date, approved_amount\
               from  hims_f_loan_application where loan_authorized='APR' and loan_dispatch_from='SAL' and employee_id in (?);\
             select hims_d_earning_deduction_id from hims_d_earning_deduction where component_category = 'D' and component_type='AD';\
-            select hims_d_hrms_options_id,standard_working_hours,standard_break_hours,salary_calendar,salary_calendar_fixed_days from hims_d_hrms_options;\
+            select hims_d_hrms_options_id,standard_working_hours,standard_break_hours,salary_calendar,salary_calendar_fixed_days, ot_calculation from hims_d_hrms_options;\
             select hims_d_earning_deduction_id from hims_d_earning_deduction where component_type='OV';\
             select E.hims_d_employee_id as employee_id, OT.payment_type, OT.working_day_hour, OT. weekoff_day_hour, \
               OT.holiday_hour, OT.working_day_rate, OT.weekoff_day_rate, OT.holiday_rate  \
@@ -580,7 +580,7 @@ export default {
                                               empResult[i]["absent_days"],
                                               empResult[i]["total_work_days"],
                                               empResult[i][
-                                                "total_weekoff_days"
+                                              "total_weekoff_days"
                                               ],
                                               empResult[i]["total_holidays"],
                                               empResult[i]["total_leave"],
@@ -588,18 +588,18 @@ export default {
                                               empResult[i]["unpaid_leave"],
                                               empResult[i]["total_hours"],
                                               empResult[i][
-                                                "total_working_hours"
+                                              "total_working_hours"
                                               ],
                                               empResult[i]["ot_work_hours"],
                                               empResult[i]["ot_weekoff_hours"],
                                               empResult[i]["ot_holiday_hours"],
                                               leave_salary_accrual_amount,
                                               empResult[i][
-                                                "total_applied_days"
+                                              "total_applied_days"
                                               ],
                                               empResult[i]["shortage_hours"],
                                               empResult[i][
-                                                "display_present_days"
+                                              "display_present_days"
                                               ],
 
                                               total_loan_payable_amount,
@@ -974,7 +974,7 @@ export default {
                       val => !_salary_processed_salary_id.includes(val)
                     );
 
-                    let removal_index = _.findIndex(attandenceResult, function(
+                    let removal_index = _.findIndex(attandenceResult, function (
                       o
                     ) {
                       return o.employee_id == _salary_processed_emp;
@@ -1361,7 +1361,7 @@ export default {
                                                           return (
                                                             f.employee_id ==
                                                             empResult[i][
-                                                              "employee_id"
+                                                            "employee_id"
                                                             ]
                                                           );
                                                         }
@@ -1391,10 +1391,10 @@ export default {
 
                                                             let per_day_sal =
                                                               empResult[i][
-                                                                "gross_salary"
+                                                              "gross_salary"
                                                               ] /
                                                               empResult[i][
-                                                                "total_days"
+                                                              "total_days"
                                                               ];
 
                                                             let _salary_number = empResult[
@@ -1406,7 +1406,7 @@ export default {
                                                             _salary_number +=
                                                               req.query
                                                                 .leave_salary ==
-                                                              null
+                                                                null
                                                                 ? "-NS-"
                                                                 : "-LS-";
                                                             _salary_number +=
@@ -1446,61 +1446,61 @@ export default {
                                                                       year
                                                                     ),
                                                                     empResult[
-                                                                      i
+                                                                    i
                                                                     ][
-                                                                      "employee_id"
+                                                                    "employee_id"
                                                                     ],
                                                                     empResult[
-                                                                      i
+                                                                    i
                                                                     ][
-                                                                      "sub_department_id"
+                                                                    "sub_department_id"
                                                                     ],
                                                                     new Date(),
                                                                     per_day_sal,
                                                                     empResult[
-                                                                      i
+                                                                    i
                                                                     ][
-                                                                      "total_days"
+                                                                    "total_days"
                                                                     ],
                                                                     empResult[
-                                                                      i
+                                                                    i
                                                                     ][
-                                                                      "present_days"
+                                                                    "present_days"
                                                                     ],
                                                                     empResult[
-                                                                      i
+                                                                    i
                                                                     ][
-                                                                      "absent_days"
+                                                                    "absent_days"
                                                                     ],
                                                                     empResult[
-                                                                      i
+                                                                    i
                                                                     ][
-                                                                      "total_work_days"
+                                                                    "total_work_days"
                                                                     ],
                                                                     empResult[
-                                                                      i
+                                                                    i
                                                                     ][
-                                                                      "total_weekoff_days"
+                                                                    "total_weekoff_days"
                                                                     ],
                                                                     empResult[
-                                                                      i
+                                                                    i
                                                                     ][
-                                                                      "total_holidays"
+                                                                    "total_holidays"
                                                                     ],
                                                                     empResult[
-                                                                      i
+                                                                    i
                                                                     ][
-                                                                      "total_leave"
+                                                                    "total_leave"
                                                                     ],
                                                                     empResult[
-                                                                      i
+                                                                    i
                                                                     ][
-                                                                      "paid_leave"
+                                                                    "paid_leave"
                                                                     ],
                                                                     empResult[
-                                                                      i
+                                                                    i
                                                                     ][
-                                                                      "unpaid_leave"
+                                                                    "unpaid_leave"
                                                                     ],
                                                                     total_loan_payable_amount,
                                                                     total_loan_due_amount,
@@ -1511,13 +1511,13 @@ export default {
                                                                     final_contribution_amount,
                                                                     _net_salary,
                                                                     empResult[
-                                                                      i
+                                                                    i
                                                                     ][
-                                                                      "total_paid_days"
+                                                                    "total_paid_days"
                                                                     ],
                                                                     req.query
                                                                       .leave_salary ==
-                                                                    null
+                                                                      null
                                                                       ? "NS"
                                                                       : "LS"
                                                                   ],
@@ -1697,7 +1697,7 @@ export default {
                                                                                           if (
                                                                                             i ==
                                                                                             empResult.length -
-                                                                                              1
+                                                                                            1
                                                                                           ) {
                                                                                             if (
                                                                                               req.mySQl ==
@@ -3645,14 +3645,10 @@ function getOtManagement(options) {
       let final_earning_amount = 0;
       let current_ot_amt_array = [];
 
-      utilities.logger().log("over_time: ", options.over_time.length);
-      utilities.logger().log("ot_work_hours: ", empResult["ot_work_hours"]);
-      utilities
-        .logger()
-        .log("ot_weekoff_hours: ", empResult["ot_weekoff_hours"]);
-      utilities
-        .logger()
-        .log("ot_holiday_hours: ", empResult["ot_holiday_hours"]);
+      console.log("over_time: ", options.over_time.length);
+      console.log("ot_work_hours: ", empResult["ot_work_hours"]);
+      console.log("ot_weekoff_hours: ", empResult["ot_weekoff_hours"]);
+      console.log("ot_holiday_hours: ", empResult["ot_holiday_hours"]);
       if (options.over_time.length > 0) {
         let ot_hours =
           parseFloat(empResult["ot_work_hours"]) +
@@ -3661,16 +3657,10 @@ function getOtManagement(options) {
         let Noof_Working_Hours =
           parseFloat(hrms_option[0].standard_working_hours) -
           parseFloat(hrms_option[0].standard_break_hours);
-
-        utilities.logger().log("ot_hours: ", ot_hours);
-        utilities.logger().log("Noof_Working_Hours: ", Noof_Working_Hours);
-
-        utilities.logger().log("_earnings: ", _earnings);
         if (_earnings.length == 0) {
           resolve({ current_ot_amt_array, final_earning_amount });
         }
 
-        utilities.logger().log("payment_type: ", over_time["payment_type"]);
 
         if (over_time["payment_type"] === "RT") {
           let working_day_amt = 0;
@@ -3718,10 +3708,7 @@ function getOtManagement(options) {
               // let ot_hours =
               //   parseFloat(empResult["ot_work_hours"]) +
               //   parseFloat(empResult["ot_weekoff_hours"]) +
-              //   parseFloat(empResult["ot_holiday_hours"]);
-              utilities
-                .logger()
-                .log("salary_calendar: ", hrms_option[0].salary_calendar);
+              //   parseFloat(empResult["ot_holiday_hours"]);             
 
               let earn_amount = _.chain(_earnings)
                 .filter(f => {
@@ -3734,29 +3721,22 @@ function getOtManagement(options) {
               let _per_day_salary = 0;
               let per_hour_salary = 0;
 
-              if (hrms_option[0].salary_calendar == "F") {
+              console.log("hrms_option[0].ot_calculation", hrms_option[0].ot_calculation)
+              if (hrms_option[0].ot_calculation == "F") {
                 _per_day_salary = parseFloat(
                   parseFloat(earn_amount[0].amount) /
-                    parseFloat(hrms_option[0].salary_calendar_fixed_days)
+                  parseFloat(hrms_option[0].salary_calendar_fixed_days)
                 );
-              } else {
+              } else if (hrms_option[0].ot_calculation == "P") {
                 _per_day_salary = parseFloat(
                   parseFloat(earn_amount[0].amount) /
-                    parseFloat(empResult["total_days"])
+                  parseFloat(empResult["total_days"])
                 );
+              } else if (hrms_option[0].ot_calculation == "A") {
+                _per_day_salary = (parseFloat(earn_amount[0].amount) * 12) / 365;
               }
 
-              utilities.logger().log("_per_day_salary: ", _per_day_salary);
               per_hour_salary = _per_day_salary / Noof_Working_Hours;
-              utilities.logger().log("per_hour_salary: ", per_hour_salary);
-
-              utilities
-                .logger()
-                .log("working_day_hour: ", over_time["working_day_hour"]);
-
-              utilities
-                .logger()
-                .log("ot_work_hours: ", empResult["ot_work_hours"]);
 
               // let ot_work_hours = empResult["ot_work_hours"].split(".");
 
@@ -3764,21 +3744,17 @@ function getOtManagement(options) {
                 per_hour_salary * over_time["working_day_hour"];
               ot_hour_price = ot_hour_price * empResult["ot_work_hours"];
 
-              utilities.logger().log("ot_hour_price: ", ot_hour_price);
+
 
               let ot_weekoff_price =
                 per_hour_salary * over_time["weekoff_day_hour"];
               ot_weekoff_price =
                 ot_weekoff_price * empResult["ot_weekoff_hours"];
 
-              utilities.logger().log("per_hour_salary: ", per_hour_salary);
-
               let ot_holiday_price =
                 per_hour_salary * over_time["holiday_hour"];
               ot_holiday_price =
                 ot_holiday_price * empResult["ot_holiday_hours"];
-
-              utilities.logger().log("ot_holiday_price: ", ot_holiday_price);
 
               let final_price =
                 ot_hour_price + ot_weekoff_price + ot_holiday_price;
@@ -3789,9 +3765,6 @@ function getOtManagement(options) {
                   amount: final_price
                 });
               }
-              utilities
-                .logger()
-                .log("current_ot_amt_array: ", current_ot_amt_array);
             }
           });
 
@@ -3850,7 +3823,7 @@ function getShortAge(options) {
 
             let _per_day_salary = parseFloat(
               parseFloat(earn_amount[0].amount) /
-                parseFloat(empResult["total_days"])
+              parseFloat(empResult["total_days"])
             );
 
             let per_hour_salary = _per_day_salary / Noof_Working_Hours;
@@ -3981,7 +3954,7 @@ function getEarningComponents(options) {
             if (hrms_option[0].salary_calendar == "F") {
               current_earning_per_day_salary = parseFloat(
                 obj["amount"] /
-                  parseFloat(hrms_option[0].salary_calendar_fixed_days)
+                parseFloat(hrms_option[0].salary_calendar_fixed_days)
               );
 
               utilities
@@ -4262,7 +4235,7 @@ function getDeductionComponents(options) {
             if (hrms_option[0].salary_calendar == "F") {
               current_deduction_per_day_salary = parseFloat(
                 obj["amount"] /
-                  parseFloat(hrms_option[0].salary_calendar_fixed_days)
+                parseFloat(hrms_option[0].salary_calendar_fixed_days)
               );
 
               let days =
@@ -4373,7 +4346,7 @@ function getContrubutionsComponents(options) {
             if (hrms_option[0].salary_calendar == "F") {
               current_contribution_per_day_salary = parseFloat(
                 obj["amount"] /
-                  parseFloat(hrms_option[0].salary_calendar_fixed_days)
+                parseFloat(hrms_option[0].salary_calendar_fixed_days)
               );
 
               let days =
@@ -4738,43 +4711,43 @@ function InsertGratuityProvision(options) {
                     if (
                       _employee[k].endOfServiceYears >= 0 &&
                       _employee[k].endOfServiceYears <=
-                        _optionsDetals.from_service_range1
+                      _optionsDetals.from_service_range1
                     ) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
                         _optionsDetals.eligible_days1;
                     } else if (
                       _employee[k].endOfServiceYears >=
-                        _optionsDetals.from_service_range1 &&
+                      _optionsDetals.from_service_range1 &&
                       _employee[k].endOfServiceYears <=
-                        _optionsDetals.from_service_range2
+                      _optionsDetals.from_service_range2
                     ) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
                         _optionsDetals.eligible_days2;
                     } else if (
                       _employee[k].endOfServiceYears >=
-                        _optionsDetals.from_service_range2 &&
+                      _optionsDetals.from_service_range2 &&
                       _employee[k].endOfServiceYears <=
-                        _optionsDetals.from_service_range3
+                      _optionsDetals.from_service_range3
                     ) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
                         _optionsDetals.eligible_days3;
                     } else if (
                       _employee[k].endOfServiceYears >=
-                        _optionsDetals.from_service_range3 &&
+                      _optionsDetals.from_service_range3 &&
                       _employee[k].endOfServiceYears <=
-                        _optionsDetals.from_service_range4
+                      _optionsDetals.from_service_range4
                     ) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
                         _optionsDetals.eligible_days4;
                     } else if (
                       _employee[k].endOfServiceYears >=
-                        _optionsDetals.from_service_range4 &&
+                      _optionsDetals.from_service_range4 &&
                       _employee[k].endOfServiceYears <=
-                        _optionsDetals.from_service_range5
+                      _optionsDetals.from_service_range5
                     ) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *

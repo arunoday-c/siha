@@ -35,9 +35,11 @@ export default {
             salary_pay_before_end_date=?, payroll_payment_date=?, salary_calendar=?, salary_calendar_fixed_days=?, \
             attendance_type=?, fetch_punch_data_reporting=?, leave_level=?, loan_level=?, leave_encash_level=?, \
             review_auth_level=?, yearly_working_days=?, advance_deduction=?, overtime_type=?, overtime_payment=?, \
-            overtime_calculation=?, overtime_hourly_calculation=?, standard_intime=?, standard_outime=?,  standard_working_hours=?, standard_break_hours=?, biometric_database=?, biometric_server_name=?, \
-            biometric_port_no=?, biometric_database_name=?, biometric_database_login=?, biometric_database_password=?, biometric_swipe_id=?, manual_timesheet_entry=?, authorization_plan=?, updated_date=?, updated_by=? \
-            where hims_d_hrms_options_id=?",
+            overtime_calculation=?, overtime_hourly_calculation=?, standard_intime=?, standard_outime=?,  \
+            standard_working_hours=?, standard_break_hours=?, biometric_database=?, biometric_server_name=?, \
+            biometric_port_no=?, biometric_database_name=?, biometric_database_login=?, biometric_database_password=?, \
+            biometric_swipe_id=?, manual_timesheet_entry=?, authorization_plan=?, ot_calculation = ?, \
+            updated_date=?, updated_by=? where hims_d_hrms_options_id=?",
         values: [
           input.attendance_starts,
           input.at_st_date,
@@ -72,7 +74,7 @@ export default {
           input.biometric_swipe_id,
           input.manual_timesheet_entry,
           input.authorization_plan,
-
+          input.ot_calculation,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           input.hims_d_hrms_options_id
@@ -450,8 +452,8 @@ export default {
       review_auth_level, yearly_working_days, advance_deduction, overtime_type, overtime_payment, \
       overtime_calculation, overtime_hourly_calculation, standard_intime, standard_outime,  standard_working_hours, standard_break_hours, biometric_database, biometric_server_name, biometric_port_no, biometric_database_name, \
       biometric_database_login, biometric_database_password, biometric_swipe_id, manual_timesheet_entry, \
-      authorization_plan, created_date, created_by) \
-      values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      authorization_plan, ot_calculation,created_date, created_by) \
+      values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.attendance_starts,
           input.at_st_date,
@@ -486,6 +488,7 @@ export default {
           input.biometric_swipe_id,
           input.manual_timesheet_entry,
           input.authorization_plan,
+          input.ot_calculation,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id
         ],

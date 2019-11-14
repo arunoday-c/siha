@@ -112,13 +112,17 @@ export default {
 
     if (
       input.finance_account_head_id > 0 &&
-      input.finance_account_head_id < 5
+      input.finance_account_head_id < 6
     ) {
       const decimal_places = req.userIdentity.decimal_places;
 
       const default_total = parseFloat(0).toFixed(decimal_places);
       let trans_symbol = "Cr.";
-      if (input.finance_account_head_id == 1) {
+      if (
+        input.finance_account_head_id == 1 ||
+        input.finance_account_head_id == 5
+      ) {
+        console.log("AM HHHH");
         trans_symbol = "Dr.";
       }
 
@@ -222,7 +226,7 @@ export default {
   //created by irfan: to
   addAccountHeads: (req, res, next) => {
     const _mysql = new algaehMysql();
-    // const utilities = new algaehUtilities();
+    //. const utilities = new algaehUtilities();
     let input = req.body;
 
     if (input.leaf_node == "Y") {
@@ -446,7 +450,7 @@ export default {
         query: ` select finance_day_end_header_id,transaction_date,amount,control_account,document_type,
         document_number,from_screen,case H.transaction_type when 'AD' then 'ADVANCE' 
         when 'RF' then 'REFUND' when 'BILL' then 'OPBILL' when  'DUE' then 
-        'PATIENT DUE'  when  'ADJUST' then 'ADVANCE ADJUST' end as transaction_type,S.screen_name,H.narration 
+        'PATIENT DUE'  when  'ADJUST' then 'ADVANCE ADJUST'  when 'CREDIT_ST' then 'CREDIT SETTLEMENT' end as transaction_type,S.screen_name,H.narration 
         from finance_day_end_header H inner join finance_day_end_sub_detail SD on
          H.finance_day_end_header_id=SD.day_end_header_id
         left join  algaeh_d_app_screens S on H.from_screen=S.screen_code  where  SD.posted='N'  ${strQry}
@@ -485,8 +489,8 @@ export default {
       .executeQuery({
         query: `  WITH cte_  AS (
           SELECT finance_day_end_sub_detail_id, day_end_header_id, payment_date, head_account_code,
-          case when sum(debit_amount)= sum(credit_amount)then
-          'true' when transaction_type='ADJUST' then true  else 'false'end as is_equal,transaction_type FROM finance_day_end_header H inner join
+          case when sum(debit_amount)= sum(credit_amount)then 'true' when transaction_type='ADJUST' then true 
+          when transaction_type='CREDIT_ST' then 'true' else 'false'  end as is_equal,transaction_type FROM finance_day_end_header H inner join
           finance_day_end_sub_detail SD on H.finance_day_end_header_id=day_end_header_id
           where H.posted='N' and day_end_header_id in (?)
           group by day_end_header_id)

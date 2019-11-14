@@ -10,7 +10,6 @@ import {
 import {
   AUTH_LEVEL2,
   AUTH_LEVEL3,
-  AUTH_LEVEL5,
   ADV_DEDUCTION,
   OT_TYPE,
   ATTENDANCE_TYPE,
@@ -30,7 +29,8 @@ export default class AttendanceSettings extends Component {
     this.state = {
       earnings: [],
       authorization_plan: "R",
-      hims_d_hrms_options_id: null
+      hims_d_hrms_options_id: null,
+      ot_calculation: "P"
     };
     this.getOptions();
     this.getEarnings();
@@ -176,23 +176,23 @@ export default class AttendanceSettings extends Component {
       case "salary_calendar":
         e.target.value === "P"
           ? this.setState({
-              [e.target.name]: e.target.value,
-              salary_calendar_fixed_days: null
-            })
+            [e.target.name]: e.target.value,
+            salary_calendar_fixed_days: null
+          })
           : this.setState({
-              [e.target.name]: e.target.value
-            });
+            [e.target.name]: e.target.value
+          });
         break;
 
       case "airfare_factor":
         e.target.value === "FI"
           ? this.setState({
-              [e.target.name]: e.target.value,
-              airfare_percentage: null
-            })
+            [e.target.name]: e.target.value,
+            airfare_percentage: null
+          })
           : this.setState({
-              [e.target.name]: e.target.value
-            });
+            [e.target.name]: e.target.value
+          });
 
         break;
 
@@ -592,6 +592,42 @@ export default class AttendanceSettings extends Component {
                     }
                   }}
                 />
+                <div className="col">
+                  <label>OT Calculation</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="P"
+                        name="ot_calculation"
+                        checked={this.state.ot_calculation === "P"}
+                        onChange={this.textHandler.bind(this)}
+                      />
+                      <span>Periodical</span>
+                    </label>
+
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="F"
+                        name="ot_calculation"
+                        checked={this.state.ot_calculation === "F"}
+                        onChange={this.textHandler.bind(this)}
+                      />
+                      <span>Fixed</span>
+                    </label>
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="A"
+                        name="ot_calculation"
+                        checked={this.state.ot_calculation === "A"}
+                        onChange={this.textHandler.bind(this)}
+                      />
+                      <span>Anuual</span>
+                    </label>
+                  </div>
+                </div>
                 {/*
                 <div className="col-2">
                   <label>Allow Round Off</label>

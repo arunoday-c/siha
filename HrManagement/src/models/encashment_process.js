@@ -332,7 +332,7 @@ export default {
       .executeQuery({
         query:
           "select hims_f_leave_encash_header_id,encashment_number, employee_id, encashment_date, year, total_amount,\
-          emp.employee_code, emp.full_name, authorized, D.designation, L.leave_description \
+          emp.employee_code, emp.full_name, authorized, D.designation, L.leave_description, EH.leave_days \
           from hims_f_leave_encash_header EH \
           inner join hims_d_employee emp on EH.employee_id = emp.hims_d_employee_id \
           inner join hims_d_designation D on D.hims_d_designation_id = emp.employee_designation_id \

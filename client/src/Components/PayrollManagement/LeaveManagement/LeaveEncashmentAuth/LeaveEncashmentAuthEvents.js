@@ -123,15 +123,14 @@ const getLeaveEncashDetails = ($this, row) => {
   //   .toArray();
 
   debugger;
+  row.auth_level = $this.state.auth_level
   $this.setState({
     isOpen: true,
-    emp_name: row.full_name,
-    EncashDetailPer: row,
-    encash_authorized: row.authorized
+    EncashDetailPer: row
   });
 };
 
-const AuthorizeLEaveEncash = ($this, data, row) => {
+const AuthorizeLEaveEncash = ($this, data) => {
   let message = "";
   if (data === "CAN") {
     message = "Are you sure you want to Cancel?";
@@ -152,7 +151,7 @@ const AuthorizeLEaveEncash = ($this, data, row) => {
     if (willDelete.value) {
       let inputObj = {
         auth_level: $this.state.auth_level,
-        hims_f_leave_encash_header_id: row.leave_encash_header_id,
+        hims_f_leave_encash_header_id: $this.state.hims_f_leave_encash_header_id,
         authorized: data,
         leave_encash_level: $this.state.leave_encash_level
       };
@@ -176,11 +175,7 @@ const AuthorizeLEaveEncash = ($this, data, row) => {
             title: Succmsg,
             type: "success"
           });
-          LoadEncashment($this);
-          // $this.setState({
-          //   EncashHeader: response.data.result.leaveEncash_header,
-          //   EncashDetail: response.data.result.leaveEncash_detail
-          // });
+          $this.props.onClose()
         },
         onFailure: error => {
           swalMessage({
