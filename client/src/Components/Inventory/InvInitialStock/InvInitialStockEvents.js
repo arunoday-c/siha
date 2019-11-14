@@ -453,19 +453,22 @@ const salesPriceEvent = ($this, ctrl, e) => {
 const onChamgeGridQuantity = ($this, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+  let inventory_stock_detail = $this.state.inventory_stock_detail
+  let _index = inventory_stock_detail.indexOf(row)
   let extended_cost = 0;
   if (value !== "") {
     extended_cost = parseFloat(row.unit_cost) * value;
-
     extended_cost = extended_cost.toFixed(2);
     row[name] = value;
     row["extended_cost"] = extended_cost;
-    row.update();
   } else {
     row[name] = value;
     row["extended_cost"] = extended_cost;
-    row.update();
   }
+  inventory_stock_detail[_index] = row
+  $this.setState({
+    inventory_stock_detail: inventory_stock_detail
+  })
 };
 
 const updateInitialStock = ($this, row) => {

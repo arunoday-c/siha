@@ -3274,7 +3274,7 @@ export default {
             "select product_type from hims_d_hospital where hims_d_hospital_id=? and \
       (product_type='HIMS_ERP' or product_type='HRMS_ERP' or product_type='FINANCE_ERP');",
           values: [req.userIdentity.hospital_id],
-          printQuery: true
+          printQuery: false
         })
         .then(appResult => {
           if (appResult.length > 0) {
@@ -3302,7 +3302,7 @@ export default {
               transaction_type = "ADJUST";
             }
             if (inputParam.credit_amount > 0) {
-              transaction_type = "DUE";
+              transaction_type = "CREDIT";
               control_account = "OP_REC";
               amount = inputParam.credit_amount;
             }
@@ -3327,7 +3327,7 @@ export default {
                   narration,
                   req.userIdentity.hospital_id
                 ],
-                printQuery: true
+                printQuery: false
               })
               .then(headerDayEnd => {
                 const insertDetail = inputParam.receiptdetails.map(m => {
@@ -3346,7 +3346,7 @@ export default {
                     extraValues: {
                       day_end_header_id: headerDayEnd["insertId"]
                     },
-                    printQuery: true
+                    printQuery: false
                   })
                   .then(detail => {
                     let fetchServiceDetails = "";
@@ -3490,7 +3490,7 @@ export default {
                               });
                               resolve({});
                             }
-                            if (inputParam.billdetails.length > 0) {
+                            else if (inputParam.billdetails.length > 0) {
                               const options = {
                                 hospital_id: req.userIdentity.hospital_id,
                                 insertId: headerDayEnd.insertId,
@@ -3545,7 +3545,7 @@ export default {
                                 values: insertSubDetail,
                                 includeValues: IncludeValuess,
                                 bulkInsertOrUpdate: true,
-                                printQuery: true
+                                printQuery: false
                               })
                               .then(subResult => {
                                 console.log("FOUR");

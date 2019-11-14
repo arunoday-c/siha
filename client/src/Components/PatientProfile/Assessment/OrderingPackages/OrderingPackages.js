@@ -46,7 +46,7 @@ class OrderingPackages extends Component {
       vat_applicable: this.props.vat_applicable,
       provider_id: this.props.provider_id,
 
-      orderservicesdata: [],
+      orderpackagedata: [],
       approval_amt: 0,
       preapp_limit_amount: 0,
       preserviceInput: [],
@@ -211,21 +211,21 @@ class OrderingPackages extends Component {
   }
 
   ClosePackageDetail(e) {
-    let orderservicesdata = this.state.orderservicesdata;
+    let orderpackagedata = this.state.orderpackagedata;
 
-    orderservicesdata[this.state.selected_row_index] = e;
+    orderpackagedata[this.state.selected_row_index] = e;
     this.setState({
       isOpenItems: !this.state.isOpenItems,
       package_detail: null,
       select_package_type: null,
       selected_row_index: null,
-      orderservicesdata: orderservicesdata
+      orderpackagedata: orderpackagedata
     });
   }
 
   ShowPackageDetail(row) {
-    let orderservicesdata = this.state.orderservicesdata;
-    // let selected_row_index = orderservicesdata.indexOf(row);
+    let orderpackagedata = this.state.orderpackagedata;
+    // let selected_row_index = orderpackagedata.indexOf(row);
     this.setState({
       isOpenItems: !this.state.isOpenItems,
       package_detail: row,
@@ -246,7 +246,7 @@ class OrderingPackages extends Component {
         provider_id: this.props.provider_id,
         vat_applicable: this.props.vat_applicable,
 
-        orderservicesdata: [],
+        orderpackagedata: [],
         approval_amt: 0,
         preapp_limit_amount: 0,
         preserviceInput: [],
@@ -448,10 +448,10 @@ class OrderingPackages extends Component {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -468,10 +468,10 @@ class OrderingPackages extends Component {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -504,8 +504,8 @@ class OrderingPackages extends Component {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.services_id
-                                );
+                                f => f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -522,8 +522,8 @@ class OrderingPackages extends Component {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.services_id
-                                );
+                                f => f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -621,7 +621,7 @@ class OrderingPackages extends Component {
                     ]}
                     keyId="service_type_id"
                     dataSource={{
-                      data: this.state.orderservicesdata
+                      data: this.state.orderpackagedata
                     }}
                     // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}

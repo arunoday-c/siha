@@ -537,20 +537,14 @@ class InvInitialStock extends Component {
                           <span>
                             <i
                               style={{
-                                pointerEvents:
-                                  this.state.posted === "N" ? "none" : "",
-                                opacity:
-                                  this.state.posted === "N" ? "0.1" : ""
+                                pointerEvents: this.state.saveEnable === true
+                                  ? "none"
+                                  : "",
+                                opacity: this.state.saveEnable === true ? "0.1" : ""
                               }}
-                              onClick={printBarcode.bind(this, this, row)}
-                              className="fas fa-barcode"
+                              onClick={deleteInitialStock.bind(this, this)}
+                              className="fas fa-trash-alt"
                             />
-                          </span>
-                        );
-                      },
-                      editorTemplate: row => {
-                        return (
-                          <span>
                             <i
                               style={{
                                 pointerEvents:
@@ -572,24 +566,6 @@ class InvInitialStock extends Component {
                       fieldName: "location_id",
                       label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
                       displayTemplate: row => {
-                        let display =
-                          this.props.inventorylocations === undefined
-                            ? []
-                            : this.props.inventorylocations.filter(
-                              f =>
-                                f.hims_d_inventory_location_id ===
-                                row.location_id
-                            );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].location_description
-                              : ""}
-                          </span>
-                        );
-                      },
-                      editorTemplate: row => {
                         let display =
                           this.props.inventorylocations === undefined
                             ? []
@@ -636,24 +612,6 @@ class InvInitialStock extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
-                        let display =
-                          this.props.inventoryitemcategory === undefined
-                            ? []
-                            : this.props.inventoryitemcategory.filter(
-                              f =>
-                                f.hims_d_inventory_tem_category_id ===
-                                row.item_category_id
-                            );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].category_desc
-                              : ""}
-                          </span>
-                        );
-                      },
                       others: {
                         minWidth: 250,
                         filterable: false
@@ -666,24 +624,6 @@ class InvInitialStock extends Component {
                         <AlgaehLabel label={{ forceLabel: "Item Group" }} />
                       ),
                       displayTemplate: row => {
-                        let display =
-                          this.props.inventoryitemgroup === undefined
-                            ? []
-                            : this.props.inventoryitemgroup.filter(
-                              f =>
-                                f.hims_d_inventory_item_group_id ===
-                                row.item_group_id
-                            );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].group_description
-                              : ""}
-                          </span>
-                        );
-                      },
-                      editorTemplate: row => {
                         let display =
                           this.props.inventoryitemgroup === undefined
                             ? []
@@ -731,25 +671,6 @@ class InvInitialStock extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
-                        let display =
-                          this.props.inventoryitemlist === undefined
-                            ? []
-                            : this.props.inventoryitemlist.filter(
-                              f =>
-                                f.hims_d_inventory_item_master_id ===
-                                row.item_id
-                            );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].item_description
-                              : ""}
-                          </span>
-                        );
-                      },
-
                       others: {
                         minWidth: 250
                       }
@@ -775,21 +696,13 @@ class InvInitialStock extends Component {
                       displayTemplate: row => {
                         return <span>{dateFormater(row.expiry_date)}</span>;
                       },
-                      editorTemplate: row => {
-                        return <span>{dateFormater(row.expiry_date)}</span>;
-                      },
                       others: { filterable: false }
                     },
                     {
                       fieldName: "quantity",
                       label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
                       displayTemplate: row => {
-                        return row.quantity !== ""
-                          ? parseFloat(row.quantity)
-                          : "";
-                      },
-                      editorTemplate: row => {
-                        return (
+                        return this.state.posted === "N" ? (
                           <AlagehFormGroup
                             div={{}}
                             textBox={{
@@ -816,7 +729,7 @@ class InvInitialStock extends Component {
                               }
                             }}
                           />
-                        );
+                        ) : row.quantity;
                       },
                       others: { filterable: false }
                     },
@@ -826,15 +739,6 @@ class InvInitialStock extends Component {
                         <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
                       ),
                       displayTemplate: row => {
-                        return (
-                          <span>
-                            {getAmountFormart(row.unit_cost, {
-                              appendSymbol: false
-                            })}
-                          </span>
-                        );
-                      },
-                      editorTemplate: row => {
                         return (
                           <span>
                             {getAmountFormart(row.unit_cost, {
@@ -859,15 +763,6 @@ class InvInitialStock extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
-                        return (
-                          <span>
-                            {getAmountFormart(row.sales_price, {
-                              appendSymbol: false
-                            })}
-                          </span>
-                        );
-                      },
                       others: { filterable: false }
                     },
                     {
@@ -884,15 +779,6 @@ class InvInitialStock extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
-                        return (
-                          <span>
-                            {getAmountFormart(row.extended_cost, {
-                              appendSymbol: false
-                            })}
-                          </span>
-                        );
-                      },
                       others: { filterable: false }
                     }
                   ]}
@@ -900,7 +786,7 @@ class InvInitialStock extends Component {
                   dataSource={{
                     data: this.state.inventory_stock_detail
                   }}
-                  isEditable={this.state.posted === "N" ? true : false}
+                  isEditable={false}
                   byForceEvents={true}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}

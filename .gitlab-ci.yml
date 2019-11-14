@@ -6,6 +6,7 @@ build_image:
   only:
     refs:
       - deployment
+      - development
   tags:
     - build
     - hims
