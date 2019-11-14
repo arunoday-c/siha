@@ -1,13 +1,9 @@
 import React, { Component } from "react";
 
-
 import "./LeaveEncashmentAuth.scss";
 import { AuthorizeLEaveEncash } from "./LeaveEncashmentAuthEvents.js";
 
-import {
-  AlgaehLabel,
-  AlgaehModalPopUp
-} from "../../../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlgaehModalPopUp } from "../../../Wrapper/algaehWrapper";
 import {
   getAmountFormart,
   AlgaehOpenContainer
@@ -34,7 +30,6 @@ export default class EncashmentAuthDtls extends Component {
   componentWillReceiveProps(newProps) {
     debugger;
     this.setState({ ...newProps.EncashDetailPer });
-
   }
 
   render() {
@@ -45,11 +40,12 @@ export default class EncashmentAuthDtls extends Component {
         events={{
           onClose: this.props.onClose
         }}
+        title="Encashment Request Details"
       >
         <div className="popupInner LeaveAuthPopup">
           <div className="popRightDiv">
             <div className="leave_en_auth row">
-              <div className="col-3 form-group">
+              <div className="col-6 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Encashment Date"
@@ -57,7 +53,7 @@ export default class EncashmentAuthDtls extends Component {
                 />
                 <h6>{this.state.encashment_date}</h6>
               </div>
-              <div className="col-3 form-group">
+              <div className="col-6 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Encashment No."
@@ -65,7 +61,7 @@ export default class EncashmentAuthDtls extends Component {
                 />
                 <h6>{this.state.encashment_number}</h6>
               </div>
-              <div className="col-2 form-group">
+              <div className="col-6 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Employee Code"
@@ -73,7 +69,7 @@ export default class EncashmentAuthDtls extends Component {
                 />
                 <h6>{this.state.employee_code}</h6>
               </div>
-              <div className="col-4 form-group">
+              <div className="col-6 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Employee Name"
@@ -81,7 +77,7 @@ export default class EncashmentAuthDtls extends Component {
                 />
                 <h6>{this.state.full_name}</h6>
               </div>
-              <div className="col-3 form-group">
+              <div className="col-6 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Leave Description"
@@ -89,7 +85,7 @@ export default class EncashmentAuthDtls extends Component {
                 />
                 <h6>{this.state.leave_description}</h6>
               </div>
-              <div className="col-3 form-group">
+              <div className="col-6 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Applied Days"
@@ -97,7 +93,7 @@ export default class EncashmentAuthDtls extends Component {
                 />
                 <h6>{this.state.leave_days}</h6>
               </div>
-              <div className="col-3 form-group">
+              <div className="col-6 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Encashment Amount"
@@ -110,15 +106,20 @@ export default class EncashmentAuthDtls extends Component {
         </div>
         <div className="popupFooter">
           <div className="col-12">
-
-            <button onClick={AuthorizeLEaveEncash.bind(this, this, "APR")} className="btn btn-primary">
+            <button
+              onClick={AuthorizeLEaveEncash.bind(this, this, "APR")}
+              className="btn btn-primary"
+            >
               Authorize
             </button>
-            <button onClick={AuthorizeLEaveEncash.bind(this, this, "REJ")} className="btn btn-default">
+            <button
+              onClick={AuthorizeLEaveEncash.bind(this, this, "REJ")}
+              className="btn btn-default"
+            >
               Reject
             </button>
-            <button onClick={AuthorizeLEaveEncash.bind(this, this, "CAN")} className="btn btn-default">
-              Cancel
+            <button onClick={this.props.onClose} className="btn btn-default">
+              Close
             </button>
           </div>
         </div>
