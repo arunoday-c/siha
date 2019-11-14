@@ -43,7 +43,7 @@ class OrderConsumables extends Component {
       doctor_id: null,
       vat_applicable: this.props.vat_applicable,
 
-      orderservicesdata: [],
+      orderconsumabledata: [],
       approval_amt: 0,
       preapp_limit_amount: 0,
       preserviceInput: [],
@@ -132,12 +132,12 @@ class OrderConsumables extends Component {
   componentWillReceiveProps(nextProps) {
     let Location_name =
       this.props.inventorylocations !== undefined &&
-      this.props.inventorylocations.length > 0
+        this.props.inventorylocations.length > 0
         ? _.filter(this.props.inventorylocations, f => {
-            return (
-              f.hims_d_inventory_location_id === nextProps.inventory_location_id
-            );
-          })
+          return (
+            f.hims_d_inventory_location_id === nextProps.inventory_location_id
+          );
+        })
         : [];
 
     if (
@@ -176,7 +176,7 @@ class OrderConsumables extends Component {
         doctor_id: null,
         vat_applicable: this.props.vat_applicable,
 
-        orderservicesdata: [],
+        orderconsumabledata: [],
         approval_amt: 0,
         preapp_limit_amount: 0,
         preserviceInput: [],
@@ -392,10 +392,10 @@ class OrderConsumables extends Component {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -412,10 +412,10 @@ class OrderConsumables extends Component {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -439,8 +439,8 @@ class OrderConsumables extends Component {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.services_id
-                                );
+                                f => f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -457,8 +457,8 @@ class OrderConsumables extends Component {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.services_id
-                                );
+                                f => f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -655,7 +655,7 @@ class OrderConsumables extends Component {
                     ]}
                     keyId="service_type_id"
                     dataSource={{
-                      data: this.state.orderservicesdata
+                      data: this.state.orderconsumabledata
                     }}
                     // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
