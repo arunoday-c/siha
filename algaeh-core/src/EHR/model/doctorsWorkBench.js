@@ -937,10 +937,12 @@ let getPatientVitals = (req, res, next) => {
         const _limit = (rec.length > 0 ? rec[0]["cnt"] : 0) * 5;
 
         let sqlQuery = _mysql.mysqlQueryFormat(
-          "select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time,PV.updated_Date,\
-case_type, vital_id,PH.vitals_name,vital_short_name,PH.uom, vital_value, vital_value_one, vital_value_two, formula_value,PH.sequence_order,PH.display from \
-hims_f_patient_vitals PV,hims_d_vitals_header PH where PV.record_status='A' and \
-PH.record_status='A' and PV.vital_id=PH.hims_d_vitals_header_id  "
+          "select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time, PV.updated_by, PV.updated_Date,\
+            case_type, vital_id, PH.vitals_name, vital_short_name, PH.uom, vital_value, vital_value_one, vital_value_two, \
+            formula_value, PH.sequence_order, PH.display, AU.user_display_name from hims_f_patient_vitals PV \
+            inner join hims_d_vitals_header PH on PV.vital_id=PH.hims_d_vitals_header_id  \
+            left join algaeh_d_app_user AU on AU.algaeh_d_app_user_id=PV.updated_by  \
+            where PV.record_status='A' and PH.record_status='A'  "
         );
         if (inputs.visit_id != null) {
           sqlQuery += _mysql.mysqlQueryFormat(" and visit_id=?", [
@@ -2003,20 +2005,20 @@ let addPatientVitals = (req, res, next) => {
         "vital_value",
         "vital_value_one",
         "vital_value_two",
-        "formula_value",
-        "created_by",
-        "updated_by"
+        "formula_value"
       ];
 
       const _query = mysql.format(
         "INSERT INTO hims_f_patient_vitals(" +
         insurtColumns.join(",") +
-        ",created_date,updated_date,hospital_id) VALUES ?",
+        ",created_by,updated_by,created_date,updated_date,hospital_id) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
             arrayObj: req.body,
             newFieldToInsert: [
+              req.userIdentity.algaeh_d_app_user_id,
+              req.userIdentity.algaeh_d_app_user_id,
               new Date(),
               new Date(),
               req.userIdentity.hospital_id

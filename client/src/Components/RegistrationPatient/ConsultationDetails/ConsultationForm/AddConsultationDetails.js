@@ -221,6 +221,7 @@ const selectedHandeler = ($this, context, e) => {
 };
 
 const doctorselectedHandeler = ($this, context, e) => {
+  let primary_policy_num = $this.state.primary_policy_num
   SetBulkState({
     state: $this,
     callback: () => {
@@ -232,7 +233,9 @@ const doctorselectedHandeler = ($this, context, e) => {
             $this.state.insured === "Y" &&
             ($this.state.primary_insurance_provider_id == null ||
               $this.state.primary_network_office_id == null ||
-              $this.state.primary_network_id == null)
+              $this.state.primary_network_id == null ||
+              $this.state.primary_card_number === null ||
+              $this.state.primary_card_number === "")
           ) {
             $this.setState(
               {
@@ -240,7 +243,8 @@ const doctorselectedHandeler = ($this, context, e) => {
               },
               () => {
                 context.updateState({
-                  [e.name]: null
+                  [e.name]: null,
+                  primary_policy_num: primary_policy_num
                 });
                 swalMessage({
                   title:
@@ -294,7 +298,8 @@ const doctorselectedHandeler = ($this, context, e) => {
                           billdetail: false,
                           sub_department_id: sub_department_id,
                           department_type: department_type,
-                          department_id: department_id
+                          department_id: department_id,
+                          primary_policy_num: primary_policy_num
                         },
                         () => {
                           if ($this.state.existing_plan !== "Y") {
@@ -314,7 +319,8 @@ const doctorselectedHandeler = ($this, context, e) => {
                           billdetail: false,
                           sub_department_id: sub_department_id,
                           department_type: department_type,
-                          department_id: department_id
+                          department_id: department_id,
+                          primary_policy_num: primary_policy_num
                         });
                       }
                     }
@@ -362,7 +368,8 @@ const doctorselectedHandeler = ($this, context, e) => {
                   billdetail: false,
                   sub_department_id: sub_department_id,
                   department_type: department_type,
-                  department_id: department_id
+                  department_id: department_id,
+                  primary_policy_num: primary_policy_num
                 },
                 () => {
                   generateBillDetails($this, context);
@@ -380,7 +387,8 @@ const doctorselectedHandeler = ($this, context, e) => {
                   billdetail: false,
                   sub_department_id: sub_department_id,
                   department_type: department_type,
-                  department_id: department_id
+                  department_id: department_id,
+                  primary_policy_num: primary_policy_num
                 });
               }
             } else {
@@ -389,7 +397,8 @@ const doctorselectedHandeler = ($this, context, e) => {
               });
               if (context !== null) {
                 context.updateState({
-                  [e.name]: e.value
+                  [e.name]: e.value,
+                  primary_policy_num: primary_policy_num
                 });
               }
               swalMessage({
