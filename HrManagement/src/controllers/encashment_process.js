@@ -8,7 +8,8 @@ const {
   InsertLeaveEncashment,
   getLeaveEncash,
   UpdateLeaveEncash,
-  calculateEncashmentAmount
+  calculateEncashmentAmount,
+  getEncashmentApplied
 } = encashment_process;
 
 export default () => {
@@ -56,7 +57,17 @@ export default () => {
     });
   });
 
-  api.get("/calculateEncashmentAmount", calculateEncashmentAmount, (req, res, next) => {
+  api.get(
+    "/calculateEncashmentAmount",
+    calculateEncashmentAmount,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
+  );
+  api.get("/getEncashmentApplied", getEncashmentApplied, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       result: req.records

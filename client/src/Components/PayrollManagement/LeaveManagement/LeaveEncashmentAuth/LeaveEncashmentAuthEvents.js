@@ -95,17 +95,12 @@ const LoadEncashment = $this => {
         method: "GET",
         onSuccess: response => {
           if (response.data.result.length > 0) {
-            let data = response.data.result[0];
             $this.setState({
-              EncashHeader: data.leaveEncash_header,
-              EncashDetail: data.leaveEncash_detail,
-              EncashDetailPer: []
+              EncashHeader: response.data.result
             });
           } else {
             $this.setState({
-              EncashHeader: [],
-              EncashDetail: [],
-              EncashDetailPer: []
+              EncashHeader: []
             });
           }
           AlgaehLoader({ show: false });
@@ -123,21 +118,20 @@ const LoadEncashment = $this => {
 };
 
 const getLeaveEncashDetails = ($this, row) => {
+  // const EncashDetailPer = Enumerable.from($this.state.EncashDetail)
+  //   .where(w => w.leave_encash_header_id === row.hims_f_leave_encash_header_id)
+  //   .toArray();
 
-  const EncashDetailPer = Enumerable.from($this.state.EncashDetail)
-    .where(w => w.leave_encash_header_id === row.hims_f_leave_encash_header_id)
-    .toArray();
-
+  debugger;
   $this.setState({
     isOpen: true,
     emp_name: row.full_name,
-    EncashDetailPer: EncashDetailPer,
+    EncashDetailPer: row,
     encash_authorized: row.authorized
   });
 };
 
 const AuthorizeLEaveEncash = ($this, data, row) => {
-
   let message = "";
   if (data === "CAN") {
     message = "Are you sure you want to Cancel?";
@@ -156,7 +150,6 @@ const AuthorizeLEaveEncash = ($this, data, row) => {
     cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
-
       let inputObj = {
         auth_level: $this.state.auth_level,
         hims_f_leave_encash_header_id: row.leave_encash_header_id,
@@ -201,7 +194,6 @@ const AuthorizeLEaveEncash = ($this, data, row) => {
 };
 
 const getLeaveLevels = $this => {
-
   let leave_encash_level = JSON.parse(
     AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
   ).leave_encash_level;
@@ -212,7 +204,6 @@ const getLeaveLevels = $this => {
     data: { leave_encash_level: leave_encash_level },
     onSuccess: res => {
       if (res.data.success) {
-
         let auth_level =
           res.data.result.auth_levels.length > 0
             ? Enumerable.from(res.data.result.auth_levels).maxBy(w => w.value)

@@ -190,7 +190,7 @@ class LeaveEncashmentProcess extends Component {
                 }
               }}
             /> */}
-            {this.props.from_screen === "ES" ? (
+            {this.props.from_screen !== "SS" ? (
               <div className="col globalSearchCntr">
                 <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
                 <h6 onClick={employeeSearch.bind(this, this)}>

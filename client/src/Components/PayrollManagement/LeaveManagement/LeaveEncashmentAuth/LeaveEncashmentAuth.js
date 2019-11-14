@@ -449,6 +449,15 @@ class LeaveEncashmentAuth extends Component {
                         }
                       },
                       {
+                        fieldName: "leave_description",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Applied Leave" }}
+                          />
+                        )
+                      },
+
+                      {
                         fieldName: "encashment_date",
                         label: (
                           <AlgaehLabel
