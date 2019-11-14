@@ -157,7 +157,7 @@ const selectItemHandeler = ($this, e) => {
                       }
 
                       $this.setState({
-                        orderservicesdata: data.billdetails,
+                        orderconsumabledata: data.billdetails,
                         approval_amt: approval_amt,
                         preserviceInput: preserviceInput,
                         approval_limit_yesno: approval_limit_yesno,
@@ -219,7 +219,7 @@ const selectItemHandeler = ($this, e) => {
               }
             });
           } else {
-            let existingservices = $this.state.orderservicesdata;
+            let existingservices = $this.state.orderconsumabledata;
 
             data.billdetails[0].visit_id = $this.state.visit_id;
             data.billdetails[0].patient_id = $this.state.patient_id;
@@ -287,7 +287,7 @@ const selectItemHandeler = ($this, e) => {
 
             preserviceInput.push(serviceInput[0]);
             $this.setState({
-              orderservicesdata: existingservices,
+              orderconsumabledata: existingservices,
               approval_amt: approval_amt,
               preserviceInput: preserviceInput,
               preapp_limit_amount: preapp_limit_amount,
@@ -491,7 +491,7 @@ const ProcessService = ($this, e) => {
                       }
 
                       $this.setState({
-                        orderservicesdata: Service_data.billdetails,
+                        orderconsumabledata: Service_data.billdetails,
                         approval_amt: approval_amt,
                         preserviceInput: preserviceInput,
                         approval_limit_yesno: approval_limit_yesno,
@@ -553,7 +553,7 @@ const ProcessService = ($this, e) => {
               }
             });
           } else {
-            let existingservices = $this.state.orderservicesdata;
+            let existingservices = $this.state.orderconsumabledata;
 
             data.billdetails[0].visit_id = $this.state.visit_id;
             data.billdetails[0].patient_id = $this.state.patient_id;
@@ -626,7 +626,7 @@ const ProcessService = ($this, e) => {
 
             preserviceInput.push(serviceInput[0]);
             $this.setState({
-              orderservicesdata: existingservices,
+              orderconsumabledata: existingservices,
               approval_amt: approval_amt,
               preserviceInput: preserviceInput,
               preapp_limit_amount: preapp_limit_amount,
@@ -693,7 +693,7 @@ const ProcessService = ($this, e) => {
 
 //if services got delete and if pre apprival limit exceed
 const deleteServices = ($this, row, rowId) => {
-  let orderservicesdata = $this.state.orderservicesdata;
+  let orderconsumabledata = $this.state.orderconsumabledata;
   let preserviceInput = $this.state.preserviceInput;
 
   const get_selected_row = _.find(
@@ -703,10 +703,10 @@ const deleteServices = ($this, row, rowId) => {
 
   const _index = preserviceInput.indexOf(get_selected_row);
   let saved = false;
-  const _order_index = orderservicesdata.indexOf(row);
+  const _order_index = orderconsumabledata.indexOf(row);
 
-  orderservicesdata.splice(_order_index, 1);
-  if (orderservicesdata.length === 0) {
+  orderconsumabledata.splice(_order_index, 1);
+  if (orderconsumabledata.length === 0) {
     saved = true;
 
     $this.setState({
@@ -744,7 +744,7 @@ const deleteServices = ($this, row, rowId) => {
               onSuccess: response => {
                 if (response.data.success) {
                   $this.setState({
-                    orderservicesdata: data.billdetails,
+                    orderconsumabledata: data.billdetails,
                     approval_amt: app_amt,
                     preserviceInput: preserviceInput,
                     approval_limit_yesno: "N",
@@ -777,7 +777,7 @@ const deleteServices = ($this, row, rowId) => {
       });
     } else {
       $this.setState({
-        orderservicesdata: orderservicesdata,
+        orderconsumabledata: orderconsumabledata,
         preserviceInput: preserviceInput,
         approval_amt: app_amt,
         saved: saved
@@ -785,7 +785,7 @@ const deleteServices = ($this, row, rowId) => {
     }
   } else {
     $this.setState({
-      orderservicesdata: orderservicesdata,
+      orderconsumabledata: orderconsumabledata,
       preserviceInput: preserviceInput,
       approval_amt: app_amt,
       saved: saved
@@ -801,7 +801,7 @@ const SaveOrdersServices = ($this, e) => {
     incharge_or_provider: Window.global["provider_id"],
     doctor_id: Window.global["provider_id"],
     billed: "N",
-    billdetails: $this.state.orderservicesdata
+    billdetails: $this.state.orderconsumabledata
   };
   algaehApiCall({
     uri: "/orderAndPreApproval/insertInvOrderedServices",
@@ -813,7 +813,7 @@ const SaveOrdersServices = ($this, e) => {
         $this.state.transaction_type = "CS";
         $this.state.location_id = $this.state.inventory_location_id;
         $this.state.location_type = $this.state.location_type;
-        $this.state.inventory_stock_detail = $this.state.orderservicesdata;
+        $this.state.inventory_stock_detail = $this.state.orderconsumabledata;
         $this.state.provider_id = Window.global["provider_id"];
         $this.state.transaction_date = new Date();
         algaehApiCall({
@@ -838,7 +838,7 @@ const SaveOrdersServices = ($this, e) => {
                   doctor_id: null,
                   vat_applicable: $this.props.vat_applicable,
 
-                  orderservicesdata: [],
+                  orderconsumabledata: [],
                   approval_amt: 0,
                   preapp_limit_amount: 0,
                   preserviceInput: [],
@@ -895,7 +895,7 @@ const SaveOrdersServices = ($this, e) => {
 };
 
 const calculateAmount = ($this, row, e) => {
-  let orderservicesdata = $this.state.orderservicesdata;
+  let orderconsumabledata = $this.state.orderconsumabledata;
 
   let discount_percentage = 0;
   let discount_amout = 0;
@@ -954,17 +954,17 @@ const calculateAmount = ($this, row, e) => {
       if (response.data.success) {
         let data = response.data.records;
         extend(row, data.billdetails[0]);
-        orderservicesdata[row.rowIdx] = row;
+        orderconsumabledata[row.rowIdx] = row;
         algaehApiCall({
           uri: "/billing/billingCalculations",
           module: "billing",
           method: "POST",
-          data: { billdetails: orderservicesdata },
+          data: { billdetails: orderconsumabledata },
           onSuccess: response => {
             if (response.data.success) {
               let header_data = response.data.records;
               $this.setState({
-                orderservicesdata: orderservicesdata,
+                orderconsumabledata: orderconsumabledata,
                 sub_total_amount: header_data.sub_total_amount,
                 discount_amount: header_data.discount_amount,
                 net_total: header_data.net_total,
@@ -1000,7 +1000,7 @@ const updateBillDetail = ($this, e) => {
     uri: "/billing/billingCalculations",
     module: "billing",
     method: "POST",
-    data: { billdetails: $this.state.orderservicesdata },
+    data: { billdetails: $this.state.orderconsumabledata },
     redux: {
       type: "BILL_HEADER_GEN_GET_DATA",
       mappingName: "genbill"
@@ -1031,16 +1031,16 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const EditGrid = ($this, cancelRow) => {
-  let _orderservicesdata = $this.state.orderservicesdata;
+  let _orderconsumabledata = $this.state.orderconsumabledata;
 
   if (cancelRow !== undefined) {
-    _orderservicesdata[cancelRow.rowIdx] = cancelRow;
+    _orderconsumabledata[cancelRow.rowIdx] = cancelRow;
   }
 
   $this.setState({
     saved: !$this.state.saved,
     addNewService: !$this.state.addNewService,
-    orderservicesdata: _orderservicesdata
+    orderconsumabledata: _orderconsumabledata
   });
 };
 
@@ -1057,14 +1057,14 @@ const ItemChargable = ($this, e) => {
 
 const makeZeroIngrid = ($this, row, e) => {
   if (e.target.value === "") {
-    let orderservicesdata = $this.state.orderservicesdata;
-    let _index = orderservicesdata.indexOf(row);
+    let orderconsumabledata = $this.state.orderconsumabledata;
+    let _index = orderconsumabledata.indexOf(row);
     row["discount_amout"] = 0;
     row["discount_percentage"] = 0;
 
-    orderservicesdata[_index] = row;
+    orderconsumabledata[_index] = row;
     $this.setState({
-      orderservicesdata: orderservicesdata
+      orderconsumabledata: orderconsumabledata
     });
   }
 };
