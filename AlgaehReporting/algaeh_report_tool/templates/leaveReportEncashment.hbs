@@ -1,0 +1,47 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Employee Code</th>
+                        <th>Employee Name</th>
+                        <th>Encashment No.</th>
+                        <th>Encashment Request Date</th>
+                        <th>Employee Group</th>
+                        <th>Leave Type</th>
+                        <th>Requested Days</th>
+                        <th>Encash Amt.</th>
+                        <th>Payment Status</th>
+                    </tr>
+                </thead>
+                <tbody>{{#hasElement detail}}
+                    {{#each detail}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{full_name}}</td>
+                        <td>{{encashment_number}}</td>
+                        <td>{{encashment_date}}</td>
+                        <td>{{group_description}}</td>
+                        <td>{{leave_description}}</td>
+                        <td>{{leave_days}}</td>
+                        <td>{{total_amount}}</td>
+                        <td>{{paid}}</td>
+                    </tr>
+                    {{/each }}
+                    {{else}}
+                    <tr>
+                        <td colspan="12" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
+
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

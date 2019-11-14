@@ -3144,6 +3144,131 @@ const HR_Payroll_Reports = [
             }
           }
         ]
+      },
+      {
+        subitem: "Leave Encashment Reports",
+        reportName: "leaveReportEncashment",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            },
+
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/branchMaster/getBranchWiseDepartments",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  department_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "year",
+            sort: "off",
+            isImp: true,
+            initialLoad: true,
+            label: "year",
+            value: moment().year(),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
+            }
+          },
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: true,
+            initialLoad: true,
+            value: moment().format("M"),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "hims_d_leave_id",
+            initialLoad: true,
+            // isImp: true,
+            link: {
+              uri: "/selfService/getLeaveMaster",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "leave_description",
+              valueField: "hims_d_leave_id",
+              data: undefined
+            }
+          }
+        ]
       }
     ]
   },
