@@ -223,7 +223,7 @@ export default {
               loan_application_date, approved_amount\
               from  hims_f_loan_application where loan_authorized='APR' and loan_dispatch_from='SAL' and employee_id in (?);\
             select hims_d_earning_deduction_id from hims_d_earning_deduction where component_category = 'D' and component_type='AD';\
-            select hims_d_hrms_options_id,standard_working_hours,standard_break_hours,salary_calendar,salary_calendar_fixed_days from hims_d_hrms_options;\
+            select hims_d_hrms_options_id,standard_working_hours,standard_break_hours,salary_calendar,salary_calendar_fixed_days, ot_calculation from hims_d_hrms_options;\
             select hims_d_earning_deduction_id from hims_d_earning_deduction where component_type='OV';\
             select E.hims_d_employee_id as employee_id, OT.payment_type, OT.working_day_hour, OT. weekoff_day_hour, \
               OT.holiday_hour, OT.working_day_rate, OT.weekoff_day_rate, OT.holiday_rate  \
@@ -2043,9 +2043,10 @@ export default {
       utilities
         .logger()
         .log("_leave_salary_acc: ", inputParam._leave_salary_acc.length);
-      let strQuery = ""
+      let strQuery = "";
       if (inputParam.annual_leave_calculation === "A") {
-        strQuery = "select E.hims_d_employee_id as employee_id,EG.monthly_accrual_days as leave_days, " +
+        strQuery =
+          "select E.hims_d_employee_id as employee_id,EG.monthly_accrual_days as leave_days, " +
           inputParam.year +
           " as year," +
           inputParam.month +
@@ -2055,9 +2056,10 @@ export default {
         from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, hims_d_employee_earnings EE ,hims_d_earning_deduction ED\
         where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
         EE.earnings_id=ED.hims_d_earning_deduction_id and \
-        ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';"
+        ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';";
       } else if (inputParam.annual_leave_calculation === "M") {
-        strQuery = "select E.hims_d_employee_id as employee_id,EG.monthly_accrual_days as leave_days, " +
+        strQuery =
+          "select E.hims_d_employee_id as employee_id,EG.monthly_accrual_days as leave_days, " +
           inputParam.year +
           " as year," +
           inputParam.month +
@@ -2067,7 +2069,7 @@ export default {
           from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, hims_d_employee_earnings EE ,hims_d_earning_deduction ED\
           where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
           EE.earnings_id=ED.hims_d_earning_deduction_id and \
-          ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';"
+          ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';";
       }
       _mysql
         .executeQuery({
@@ -3268,6 +3270,58 @@ export default {
       next();
       return;
     }
+  },
+
+  getEmployeeMiscellaneous: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      const inputParam = req.query;
+
+      _mysql
+        .executeQuery({
+          query:
+            "select MED.*, ED.earning_deduction_description, S.salary_processed from  hims_f_miscellaneous_earning_deduction MED \
+            inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = MED.earning_deductions_id \
+            left join hims_f_salary S on S.employee_id = MED.employee_id and S.`year`=? and S.`month`=? \
+            where MED.employee_id=?",
+          values: [inputParam.year, inputParam.month, inputParam.employee_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+  deleteMiscEarningsDeductions: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      const inputParam = req.body;
+
+      _mysql
+        .executeQuery({
+          query:
+            "delete from hims_f_miscellaneous_earning_deduction where hims_f_miscellaneous_earning_deduction_id = ?;",
+          values: [inputParam.hims_f_miscellaneous_earning_deduction_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
   }
 };
 
@@ -3591,14 +3645,10 @@ function getOtManagement(options) {
       let final_earning_amount = 0;
       let current_ot_amt_array = [];
 
-      utilities.logger().log("over_time: ", options.over_time.length);
-      utilities.logger().log("ot_work_hours: ", empResult["ot_work_hours"]);
-      utilities
-        .logger()
-        .log("ot_weekoff_hours: ", empResult["ot_weekoff_hours"]);
-      utilities
-        .logger()
-        .log("ot_holiday_hours: ", empResult["ot_holiday_hours"]);
+      console.log("over_time: ", options.over_time.length);
+      console.log("ot_work_hours: ", empResult["ot_work_hours"]);
+      console.log("ot_weekoff_hours: ", empResult["ot_weekoff_hours"]);
+      console.log("ot_holiday_hours: ", empResult["ot_holiday_hours"]);
       if (options.over_time.length > 0) {
         let ot_hours =
           parseFloat(empResult["ot_work_hours"]) +
@@ -3607,16 +3657,10 @@ function getOtManagement(options) {
         let Noof_Working_Hours =
           parseFloat(hrms_option[0].standard_working_hours) -
           parseFloat(hrms_option[0].standard_break_hours);
-
-        utilities.logger().log("ot_hours: ", ot_hours);
-        utilities.logger().log("Noof_Working_Hours: ", Noof_Working_Hours);
-
-        utilities.logger().log("_earnings: ", _earnings);
         if (_earnings.length == 0) {
           resolve({ current_ot_amt_array, final_earning_amount });
         }
 
-        utilities.logger().log("payment_type: ", over_time["payment_type"]);
 
         if (over_time["payment_type"] === "RT") {
           let working_day_amt = 0;
@@ -3664,10 +3708,7 @@ function getOtManagement(options) {
               // let ot_hours =
               //   parseFloat(empResult["ot_work_hours"]) +
               //   parseFloat(empResult["ot_weekoff_hours"]) +
-              //   parseFloat(empResult["ot_holiday_hours"]);
-              utilities
-                .logger()
-                .log("salary_calendar: ", hrms_option[0].salary_calendar);
+              //   parseFloat(empResult["ot_holiday_hours"]);             
 
               let earn_amount = _.chain(_earnings)
                 .filter(f => {
@@ -3680,29 +3721,22 @@ function getOtManagement(options) {
               let _per_day_salary = 0;
               let per_hour_salary = 0;
 
-              if (hrms_option[0].salary_calendar == "F") {
+              console.log("hrms_option[0].ot_calculation", hrms_option[0].ot_calculation)
+              if (hrms_option[0].ot_calculation == "F") {
                 _per_day_salary = parseFloat(
                   parseFloat(earn_amount[0].amount) /
                   parseFloat(hrms_option[0].salary_calendar_fixed_days)
                 );
-              } else {
+              } else if (hrms_option[0].ot_calculation == "P") {
                 _per_day_salary = parseFloat(
                   parseFloat(earn_amount[0].amount) /
                   parseFloat(empResult["total_days"])
                 );
+              } else if (hrms_option[0].ot_calculation == "A") {
+                _per_day_salary = (parseFloat(earn_amount[0].amount) * 12) / 365;
               }
 
-              utilities.logger().log("_per_day_salary: ", _per_day_salary);
               per_hour_salary = _per_day_salary / Noof_Working_Hours;
-              utilities.logger().log("per_hour_salary: ", per_hour_salary);
-
-              utilities
-                .logger()
-                .log("working_day_hour: ", over_time["working_day_hour"]);
-
-              utilities
-                .logger()
-                .log("ot_work_hours: ", empResult["ot_work_hours"]);
 
               // let ot_work_hours = empResult["ot_work_hours"].split(".");
 
@@ -3710,21 +3744,17 @@ function getOtManagement(options) {
                 per_hour_salary * over_time["working_day_hour"];
               ot_hour_price = ot_hour_price * empResult["ot_work_hours"];
 
-              utilities.logger().log("ot_hour_price: ", ot_hour_price);
+
 
               let ot_weekoff_price =
                 per_hour_salary * over_time["weekoff_day_hour"];
               ot_weekoff_price =
                 ot_weekoff_price * empResult["ot_weekoff_hours"];
 
-              utilities.logger().log("per_hour_salary: ", per_hour_salary);
-
               let ot_holiday_price =
                 per_hour_salary * over_time["holiday_hour"];
               ot_holiday_price =
                 ot_holiday_price * empResult["ot_holiday_hours"];
-
-              utilities.logger().log("ot_holiday_price: ", ot_holiday_price);
 
               let final_price =
                 ot_hour_price + ot_weekoff_price + ot_holiday_price;
@@ -3735,9 +3765,6 @@ function getOtManagement(options) {
                   amount: final_price
                 });
               }
-              utilities
-                .logger()
-                .log("current_ot_amt_array: ", current_ot_amt_array);
             }
           });
 

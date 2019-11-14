@@ -183,7 +183,7 @@ class LeaveEncashmentAuth extends Component {
             employee_name: row.full_name,
             employee_id: row.hims_d_employee_id
           },
-          () => {}
+          () => { }
         );
       }
     });
@@ -192,6 +192,8 @@ class LeaveEncashmentAuth extends Component {
   closePopup() {
     this.setState({
       isOpen: false
+    }, () => {
+      LoadEncashment(this, this)
     });
   }
   render() {
@@ -319,8 +321,8 @@ class LeaveEncashmentAuth extends Component {
                 {!this.state.loading ? (
                   <span>Load</span>
                 ) : (
-                  <i className="fas fa-spinner fa-spin" />
-                )}
+                    <i className="fas fa-spinner fa-spin" />
+                  )}
               </button>
             </div>
           </div>
@@ -391,8 +393,8 @@ class LeaveEncashmentAuth extends Component {
                                   Cancelled
                                 </span>
                               ) : (
-                                "------"
-                              )}
+                                        "------"
+                                      )}
                             </span>
                           );
                         }
@@ -404,22 +406,6 @@ class LeaveEncashmentAuth extends Component {
                             label={{ forceLabel: "Employee Code" }}
                           />
                         )
-                        // displayTemplate: row => {
-                        //   return (
-                        //     <span
-                        //       onClick={getLeaveEncashDetails.bind(
-                        //         this,
-                        //         this,
-                        //         row
-                        //       )}
-                        //     >
-                        //       {row.employee_code}
-                        //     </span>
-                        //   );
-                        // },
-                        // className: drow => {
-                        //   return "greenCell";
-                        // }
                       },
                       {
                         fieldName: "full_name",
@@ -449,6 +435,15 @@ class LeaveEncashmentAuth extends Component {
                         }
                       },
                       {
+                        fieldName: "leave_description",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Applied Leave" }}
+                          />
+                        )
+                      },
+
+                      {
                         fieldName: "encashment_date",
                         label: (
                           <AlgaehLabel
@@ -461,6 +456,15 @@ class LeaveEncashmentAuth extends Component {
                           );
                         }
                       },
+                      {
+                        fieldName: "leave_days",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Applied Days" }}
+                          />
+                        )
+                      },
+
                       {
                         fieldName: "total_amount",
                         label: (
@@ -554,8 +558,6 @@ class LeaveEncashmentAuth extends Component {
           open={this.state.isOpen}
           onClose={this.closePopup.bind(this)}
           EncashDetailPer={this.state.EncashDetailPer}
-          emp_name={this.state.emp_name}
-          auth_level={this.state.auth_level}
           encash_authorized={this.state.encash_authorized}
         />
       </div>

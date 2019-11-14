@@ -25,11 +25,14 @@ class BankMaster extends Component {
       bank_short_name: null,
       address1: null,
       contact_person: null,
-      contact_number: null
+      contact_number: null,
+      card_name:"",
+      card_list:[]
     };
     if (this.props.banks === undefined || this.props.banks.length === 0) {
       this.getBankMaster();
     }
+    this.getCardkMaster();
   }
 
   texthandle(e) {
@@ -62,6 +65,28 @@ class BankMaster extends Component {
         mappingName: "banks"
       }
     });
+  }
+
+  getCardkMaster() {
+    algaehApiCall({
+      uri: "/bankmaster/getBankCards",
+      module: "masterSettings",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            card_list:response.data.records
+          });
+        }
+      },
+      onCatch: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+
   }
   addBank(e) {
     e.preventDefault();
@@ -186,6 +211,44 @@ class BankMaster extends Component {
     row[name] = value;
     row.update();
   }
+
+  addCardMaster(e) {
+    if(this.state.card_name ===""){
+      swalMessage({
+        type:"warning",
+        title:"Card Number can't blank."
+      });
+      return ;
+    }
+    algaehApiCall({
+      uri: "/bankmaster/addBankCards",
+      module: "masterSettings",
+      data: {
+        card_name:this.state.card_name
+      },
+      method: "POST",
+      onSuccess: response => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success"
+          });
+        }else{
+          swalMessage({
+            title: response.data.message,
+            type: "error"
+          });
+        }
+      },
+      onCatch: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   render() {
     return (
       <div className="row BankMasterScreen" style={{ paddingTop: 15 }}>
@@ -548,22 +611,22 @@ class BankMaster extends Component {
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-body">
               <div className="row">
-                <AlagehFormGroup
-                  div={{ className: "col-12 form-group mandatory" }}
-                  label={{
-                    forceLabel: "Card Format",
-                    isImp: false
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "bank_name",
-                    value: this.state.bank_name,
-                    events: { onChange: this.texthandle.bind(this) },
-                    option: {
-                      type: "text"
-                    }
-                  }}
-                />
+                {/*<AlagehFormGroup*/}
+                {/*  div={{ className: "col-12 form-group mandatory" }}*/}
+                {/*  label={{*/}
+                {/*    forceLabel: "Card Format",*/}
+                {/*    isImp: false*/}
+                {/*  }}*/}
+                {/*  textBox={{*/}
+                {/*    className: "txt-fld",*/}
+                {/*    name: "bank_name",*/}
+                {/*    value: this.state.bank_name,*/}
+                {/*    events: { onChange: this.texthandle.bind(this) },*/}
+                {/*    option: {*/}
+                {/*      type: "text"*/}
+                {/*    }*/}
+                {/*  }}*/}
+                {/*/>*/}
                 <AlagehFormGroup
                   div={{ className: "col-8 mandatory" }}
                   label={{
@@ -572,8 +635,8 @@ class BankMaster extends Component {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "bank_short_name",
-                    value: this.state.bank_short_name,
+                    name: "card_name",
+                    value: this.state.card_name,
                     events: { onChange: this.texthandle.bind(this) },
                     option: {
                       type: "text"
@@ -585,9 +648,9 @@ class BankMaster extends Component {
                   <button
                     style={{ marginTop: 19 }}
                     className="btn btn-primary"
-                    onClick={this.addBank.bind(this)}
+                    onClick={this.addCardMaster.bind(this)}
                   >
-                    Add to List
+                    Add to Card List
                   </button>
                 </div>
               </div>
@@ -664,8 +727,8 @@ class BankMaster extends Component {
                       ]}
                       keyId="CardMasterGrid"
                       dataSource={{
-                        data:
-                          this.props.banks === undefined ? [] : this.props.banks
+                        data: this.state.card_list
+
                       }}
                       filter={true}
                       isEditable={true}

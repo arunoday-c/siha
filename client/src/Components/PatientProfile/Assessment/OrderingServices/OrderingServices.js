@@ -36,7 +36,6 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
-import ButtonType from "../../../Wrapper/algaehButton";
 import _ from "lodash";
 import sockets from "../../../../sockets";
 import FavouriteOrder from "../../../FavouriteOrderList/FavouriteOrder/FavouriteOrder";
@@ -57,6 +56,8 @@ class OrderingServices extends Component {
       visit_id: Window.global["visit_id"],
       doctor_id: null,
       vat_applicable: this.props.vat_applicable,
+      date_of_birth: this.props.date_of_birth,
+      gender: this.props.gender,
 
       orderservicesdata: [],
       approval_amt: 0,
@@ -198,7 +199,7 @@ class OrderingServices extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger
+    // debugger
     const orderservicesdata = _.filter(
       nextProps.orderedList,
       f => {

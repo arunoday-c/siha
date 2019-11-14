@@ -111,21 +111,8 @@ class AddBillingForm extends Component {
                           Process Insurance
                         </button>
                       </div> */}
-                      <div className="col-12">
-                        <h6 className="billStatusMsg">
-                          {" "}
-                          {this.state.from_package === true
-                            ? "Utilized From Package"
-                            : null}
-                          {this.state.follow_up === true
-                            ? "Follow Up Visit"
-                            : null}
-                          {this.state.existing_treat === true
-                            ? "Utilized From Existing Treatment"
-                            : null}
-                        </h6>
-                      </div>
-                      <div className="col-lg-6">
+
+                      <div className="col-6">
                         <button
                           className="btn btn-default btn-sm"
                           type="button"
@@ -157,6 +144,21 @@ class AddBillingForm extends Component {
                           show={this.state.isOpen}
                           onClose={this.ShowBillDetails.bind(this)}
                         />
+                      </div> <div className="col-6" style={{
+                        textAlign: "right",
+                        paddingTop: 4
+                      }}>
+                        {this.state.from_package === true
+                          ? <span className="alert alert-warning animated flash slow infinite utalizeStatus"
+                            role="alert">Utilized From Package</span>
+                          : null}
+                        {this.state.follow_up === true
+                          ? <span className="alert alert-warning animated flash slow infinite utalizeStatus"
+                            role="alert">Follow Up Visit</span>
+                          : null}
+                        {this.state.existing_treat === true
+                          ? <span className="alert alert-warning animated flash slow infinite utalizeStatus">Utilized From Existing Treatment</span>
+                          : null}
                       </div>
                       {this.state.due_amount > 0 ? (
                         <div className="col">

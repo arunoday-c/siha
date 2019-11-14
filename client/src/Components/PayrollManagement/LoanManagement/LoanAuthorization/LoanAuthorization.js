@@ -349,7 +349,7 @@ class LoanAuthorization extends Component {
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">List of Loan Requested</h3>
+                <h3 className="caption-subject">Loan Request List</h3>
               </div>
               <div className="actions">
                 {/* <a className="btn btn-primary btn-circle active">

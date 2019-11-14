@@ -15,10 +15,14 @@ export default {
             sum( ((empEarn.amount *12/365)*(leaEncash.percent/100))*close_balance) as leave_amount , \
             close_balance as leave_days from hims_f_employee_monthly_leave ML, hims_d_leave lea, \
             hims_d_leave_encashment leaEncash, hims_d_employee_earnings empEarn where ML.employee_id=? and \
-            `year`=? and ML.leave_id = lea.hims_d_leave_id and lea.leave_encash='Y' and \
+            `year`=? and  ML.leave_id = ? and ML.leave_id = lea.hims_d_leave_id and lea.leave_encash='Y' and \
             ML.leave_id = leaEncash.leave_header_id and leaEncash.earnings_id = empEarn.earnings_id and \
             empEarn.employee_id=ML.employee_id group by leave_id ;",
-        values: [_EncashDetails.employee_id, _EncashDetails.year]
+        values: [
+          _EncashDetails.employee_id,
+          _EncashDetails.year,
+          _EncashDetails.leave_id
+        ]
         // printQuery: true
       })
       .then(monthlyLeaves => {
@@ -146,7 +150,7 @@ export default {
     }
   },
 
-  InsertLeaveEncashment: (req, res, next) => {
+  InsertLeaveEncashment_old: (req, res, next) => {
     const _mysql = new algaehMysql();
     let inputParam = { ...req.body };
     let encashment_number = "";
@@ -240,6 +244,76 @@ export default {
       });
   },
 
+  InsertLeaveEncashment: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let inputParam = { ...req.body };
+    let encashment_number = "";
+
+    _mysql
+      .generateRunningNumber({
+        modules: ["LEAVE_ENCASH"],
+        tableName: "hims_f_app_numgen",
+        identity: {
+          algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+          hospital_id: req.userIdentity.hospital_id
+        }
+      })
+      .then(generatedNumbers => {
+        encashment_number = generatedNumbers[0];
+        let strQuery = "";
+
+        let close_balance =
+          parseFloat(inputParam.close_balance) -
+          parseFloat(inputParam.leave_days);
+        strQuery += _mysql.mysqlQueryFormat(
+          "UPDATE hims_f_employee_monthly_leave set close_balance=? where  hims_f_employee_monthly_leave_id=?;",
+          [close_balance, inputParam.hims_f_employee_monthly_leave_id]
+        );
+
+        _mysql
+          .executeQuery({
+            query:
+              "INSERT INTO `hims_f_leave_encash_header` (encashment_number, employee_id, encashment_date,\
+                year, leave_id, close_balance, leave_days, leave_amount, airfare_amount, airfare_months, total_amount, \
+                hospital_id)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?); " +
+              strQuery,
+            values: [
+              generatedNumbers[0],
+              inputParam.employee_id,
+              new Date(),
+              inputParam.year,
+              inputParam.leave_id,
+              inputParam.close_balance,
+              inputParam.leave_days,
+              inputParam.leave_amount,
+              inputParam.airfare_amount,
+              inputParam.airfare_months,
+              inputParam.total_amount,
+              req.userIdentity.hospital_id
+            ],
+            printQuery: true
+          })
+          .then(result => {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = { encashment_number: encashment_number };
+              next();
+            });
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+      })
+      .catch(e => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
+  },
+
   getLeaveEncash: (req, res, next) => {
     const _mysql = new algaehMysql();
     const inputParam = req.query;
@@ -258,53 +332,58 @@ export default {
       .executeQuery({
         query:
           "select hims_f_leave_encash_header_id,encashment_number, employee_id, encashment_date, year, total_amount,\
-          emp.employee_code, emp.full_name, authorized, D.designation from hims_f_leave_encash_header EH \
+          emp.employee_code, emp.full_name, authorized, D.designation, L.leave_description, EH.leave_days \
+          from hims_f_leave_encash_header EH \
           inner join hims_d_employee emp on EH.employee_id = emp.hims_d_employee_id \
           inner join hims_d_designation D on D.hims_d_designation_id = emp.employee_designation_id \
+          inner join hims_d_leave L on L.hims_d_leave_id = EH.leave_id \
           where EH.hospital_id = ? and date(encashment_date) between date(?) and date(?) and authorized=?" +
           _stringData,
         values: _.valuesIn(inputParam),
         printQuery: true
       })
       .then(leave_Encash => {
-        if (leave_Encash.length > 0) {
-          const Encash_header_id = leave_Encash.map(item => {
-            return item.hims_f_leave_encash_header_id;
-          });
-          leaveEncash_header = leave_Encash;
+        _mysql.releaseConnection();
+        req.records = leave_Encash;
+        next();
+        // if (leave_Encash.length > 0) {
+        //   const Encash_header_id = leave_Encash.map(item => {
+        //     return item.hims_f_leave_encash_header_id;
+        //   });
+        //   leaveEncash_header = leave_Encash;
 
-          _mysql
-            .executeQuery({
-              query:
-                "select * from hims_f_leave_encash_detail, hims_d_leave leavems where leave_encash_header_id in (?) \
-                and leavems.hims_d_leave_id = hims_f_leave_encash_detail.leave_id;",
-              values: [Encash_header_id],
-              printQuery: true
-            })
-            .then(result => {
-              _mysql.commitTransaction(() => {
-                _mysql.releaseConnection();
-                req.records = [
-                  {
-                    leaveEncash_header: leaveEncash_header,
-                    leaveEncash_detail: result
-                  }
-                ];
-                next();
-              });
-            })
-            .catch(e => {
-              _mysql.rollBackTransaction(() => {
-                next(e);
-              });
-            });
-        } else {
-          _mysql.commitTransaction(() => {
-            _mysql.releaseConnection();
-            req.records = leaveEncash_header;
-            next();
-          });
-        }
+        //   _mysql
+        //     .executeQuery({
+        //       query:
+        //         "select * from hims_f_leave_encash_detail, hims_d_leave leavems where leave_encash_header_id in (?) \
+        //         and leavems.hims_d_leave_id = hims_f_leave_encash_detail.leave_id;",
+        //       values: [Encash_header_id],
+        //       printQuery: true
+        //     })
+        //     .then(result => {
+        //       _mysql.commitTransaction(() => {
+        //         _mysql.releaseConnection();
+        //         req.records = [
+        //           {
+        //             leaveEncash_header: leaveEncash_header,
+        //             leaveEncash_detail: result
+        //           }
+        //         ];
+        //         next();
+        //       });
+        //     })
+        //     .catch(e => {
+        //       _mysql.rollBackTransaction(() => {
+        //         next(e);
+        //       });
+        //     });
+        // } else {
+        //   _mysql.commitTransaction(() => {
+        //     _mysql.releaseConnection();
+        //     req.records = leaveEncash_header;
+        //     next();
+        //   });
+        // }
       })
       .catch(e => {
         _mysql.rollBackTransaction(() => {
@@ -409,6 +488,31 @@ export default {
           };
         });
 
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+  getEncashmentApplied: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const inputParam = req.query;
+
+    /* Select statemwnt  */
+    _mysql
+      .executeQuery({
+        query:
+          "select EH.*, L.leave_description from hims_f_leave_encash_header EH \
+          inner join hims_d_leave L on EH.leave_id = L.hims_d_leave_id \
+          where employee_id = ? ;",
+        values: [inputParam.employee_id]
+        // printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+
+        req.records = result;
         next();
       })
       .catch(e => {

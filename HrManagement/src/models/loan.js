@@ -232,7 +232,11 @@ export default {
       employee = ` and employee_id=${req.query.employee_id} `;
     }
 
-    if (req.query.loan_authorized !== null) {
+    console.log("req.query.loan_authorized ", req.query.loan_authorized);
+    if (
+      req.query.loan_authorized !== null &&
+      req.query.loan_authorized !== undefined
+    ) {
       employee += ` and loan_authorized= '${req.query.loan_authorized}'`;
     }
 

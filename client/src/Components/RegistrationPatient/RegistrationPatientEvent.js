@@ -10,6 +10,7 @@ import extend from "extend";
 import moment from "moment";
 import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import _ from "lodash";
+import Enumerable from "linq";
 
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
@@ -18,12 +19,32 @@ const emptyObject = extend(
 
 const generateBillDetails = $this => {
   let zeroBill = false;
-  if ($this.state.from_package === true) {
+  let DoctorVisits = Enumerable.from($this.state.visitDetails)
+    .where(w => w.doctor_id === $this.state.doctor_id)
+    .toArray();
+
+  let FollowUp = false;
+  let currentDate = moment(new Date()).format("YYYY-MM-DD");
+  let expiryDate = 0;
+  if (DoctorVisits.length > 0) {
+    expiryDate = Enumerable.from(DoctorVisits).max(s => s.visit_expiery_date);
+  }
+
+  if (
+    ($this.state.department_type === "D" &&
+      $this.state.existing_plan === "Y") ||
+    $this.state.from_package === true
+  ) {
     zeroBill = true;
+  } else {
+    if (expiryDate > currentDate) {
+      FollowUp = true;
+    }
   }
   let serviceInput = [
     {
       zeroBill: zeroBill,
+      FollowUp: FollowUp,
       insured: $this.state.insured,
       vat_applicable: $this.state.vat_applicable,
       service_type_id: $this.state.service_type_id,
@@ -47,6 +68,8 @@ const generateBillDetails = $this => {
     data: serviceInput,
     onSuccess: response => {
       if (response.data.success) {
+        response.data.records.follow_up = FollowUp;
+        response.data.records.existing_treat = zeroBill;
         $this.setState({ ...response.data.records });
 
         algaehApiCall({
@@ -419,7 +442,7 @@ const getCtrlCode = ($this, patcode, row) => {
         if (
           hospitaldetails.local_vat_applicable === "N" &&
           hospitaldetails.default_nationality ===
-            data.patientRegistration.nationality_id
+          data.patientRegistration.nationality_id
         ) {
           data.patientRegistration.vat_applicable = "N";
         }

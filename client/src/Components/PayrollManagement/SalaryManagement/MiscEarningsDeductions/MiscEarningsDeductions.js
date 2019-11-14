@@ -19,7 +19,7 @@ import {
   AlgaehOpenContainer
 } from "../../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import Enumerable from "linq";
+import swal from "sweetalert2";
 
 export default class MiscEarningsDeductions extends Component {
   constructor(props) {
@@ -42,11 +42,14 @@ export default class MiscEarningsDeductions extends Component {
       emp_name: null,
       employee_group_id: null,
       department_id: null,
-      employee_id: null
+      employee_id: null,
+      addBtnEnable: true,
+      employee_miscellaneous: [],
+      earning_deduction_id: null,
+      amount: 0
     };
     this.getEarnDed("E");
     this.getHospitals();
-    this.getSubDepts();
   }
 
   componentDidMount() {
@@ -56,27 +59,6 @@ export default class MiscEarningsDeductions extends Component {
         allDepartments: data
       })
     );
-  }
-
-  getSubDepts() {
-    algaehApiCall({
-      uri: "/department/get/subdepartment",
-      method: "GET",
-      module: "masterSettings",
-      onSuccess: response => {
-        if (response.data.success) {
-          this.setState({
-            sub_departments: response.data.records
-          });
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
   }
 
   changeGridEditors(row, e) {
@@ -100,24 +82,6 @@ export default class MiscEarningsDeductions extends Component {
 
       onFailure: err => {}
     });
-  }
-
-  changeChecks(e) {
-    switch (e.target.name) {
-      case "isBulk":
-        this.setState({
-          [e.target.name]: e.target.checked,
-          bulk_amount: null
-        });
-
-        break;
-
-      default:
-        this.setState({
-          [e.target.name]: e.target.checked
-        });
-        break;
-    }
   }
 
   addEarningsForEmployee(data) {
@@ -157,77 +121,11 @@ export default class MiscEarningsDeductions extends Component {
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).hims_d_hospital_id,
       lockEarnings: false,
-      emp_name: null
+      emp_name: null,
+      addBtnEnable: true,
+      employee_miscellaneous: [],
+      amount: 0
     });
-  }
-
-  getEmployeesForMiscED() {
-    if (this.state.year.length === 0 && this.state.month.length === 0) {
-      swalMessage({
-        title: "Please Select Month and Year",
-        type: "warning"
-      });
-    } else if (
-      this.state.earning_deduction_id === null ||
-      this.state.earning_deduction_id === undefined
-    ) {
-      swalMessage({
-        title: "Please select the Earning/ Deduction to Apply",
-        type: "warning"
-      });
-    } else {
-      this.setState({
-        loading: true
-      });
-
-      algaehApiCall({
-        uri: "/employee/getEmployeesForMisED",
-        method: "GET",
-        module: "hrManagement",
-        data: {
-          hospital_id: this.state.hospital_id,
-          year: this.state.year,
-          month: this.state.month,
-          earning_deductions_id: this.state.earning_deduction_id,
-          sub_department_id: this.state.sub_department_id,
-
-          department_id: this.state.department_id,
-          employee_id: this.state.employee_id,
-          employee_group_id: this.state.employee_group_id
-        },
-        onSuccess: res => {
-          if (res.data.success) {
-            res.data.records.length > 0
-              ? this.setState({
-                  employees: res.data.records,
-                  loading: false,
-                  lockEarnings: true
-                })
-              : swalMessage({
-                  title: "Sorry There are no Employees to Process",
-                  type: "warning"
-                });
-          } else if (!res.data.success) {
-            swalMessage({
-              title: res.data.records.message,
-              type: "warning"
-            });
-            this.setState({
-              loading: false
-            });
-          }
-        },
-        onFailure: err => {
-          swalMessage({
-            title: err.message,
-            type: "error"
-          });
-          this.setState({
-            loading: false
-          });
-        }
-      });
-    }
   }
 
   dropDownHandler(value) {
@@ -236,85 +134,36 @@ export default class MiscEarningsDeductions extends Component {
     });
   }
 
-  DeptdropDownHandler(e) {
-    this.setState(
-      {
-        [e.name]: e.value
-      },
-      () => {
-        const [reqDept] = this.state.allDepartments.filter(
-          dept => dept.hims_d_department_id === this.state.department_id
-        );
-        if (reqDept) {
-          // setSubDepts(reqDept.subDepts);
-
-          this.setState({ sub_departments: reqDept.subDepts });
-        } else {
-          swalMessage({
-            title: "Please contact the admin, Error Code: 007",
-            type: "error"
-          });
-        }
-      }
-    );
-  }
-
-  applyAmount() {
-    if (this.state.employees.length === 0) {
+  ApplyEarningsDeds() {
+    if (this.state.earning_deduction_id === null) {
       swalMessage({
-        title: "No Employees present to add the amount",
+        title: "Select Component",
         type: "warning"
       });
+      document.querySelector("[name='earning_deduction_id']").focus();
+      return;
     } else if (
-      this.state.bulk_amount === 0 ||
-      this.state.bulk_amount === undefined ||
-      this.state.bulk_amount === null
+      this.state.amount === null ||
+      this.state.amount === undefined ||
+      this.state.amount === 0
     ) {
       swalMessage({
-        title: "Please Enter the Amount to Apply",
+        title: "Enter Amount",
         type: "warning"
       });
-    } else {
-      let myArray = Enumerable.from(this.state.employees)
-        .where(w => w.salary_processed === "N" || w.salary_processed === null)
-        .toArray();
-
-      if (myArray.length === 0) {
-        swalMessage({
-          title: "No Employees elligible to add Earnings/ Deductions",
-          type: "warning"
-        });
-      } else {
-        for (let i = 0; i < myArray.length; i++) {
-          myArray[i].amount = this.state.bulk_amount;
-        }
-        this.setState({
-          employees: myArray
-        });
-      }
+      document.querySelector("[name='amount']").focus();
+      return;
     }
-  }
 
-  ApplyEarningsDeds() {
-    let sendData = {};
-
-    this.state.isBulk
-      ? (sendData = {
-          earning_deduction_id: this.state.earning_deduction_id,
-          year: this.state.year,
-          month: this.state.month,
-          category: this.state.component_category,
-          employees: this.state.employees
-        })
-      : (sendData = {
-          earning_deduction_id: this.state.earning_deduction_id,
-          year: this.state.year,
-          month: this.state.month,
-          category: this.state.component_category,
-          employees: this.state.send_array
-        });
-
-    //  console.log("Data:", JSON.stringify(sendData));
+    let sendData = {
+      earning_deduction_id: this.state.earning_deduction_id,
+      year: this.state.year,
+      month: this.state.month,
+      category: this.state.component_category,
+      employees: [
+        { employee_id: this.state.employee_id, amount: this.state.amount }
+      ]
+    };
 
     algaehApiCall({
       uri: "/employee/addMisEarnDedcToEmployees",
@@ -328,7 +177,16 @@ export default class MiscEarningsDeductions extends Component {
             type: "success"
           });
 
-          this.clearState();
+          this.setState({
+            component_category: "E",
+            earning_deduction_id: null,
+            amount: 0
+          });
+          this.getEarnDed("E");
+          this.getEmployee({
+            hims_d_employee_id: this.state.employee_id,
+            full_name: this.state.emp_name
+          });
         } else {
           swalMessage({
             title: res.data.records.message,
@@ -400,21 +258,79 @@ export default class MiscEarningsDeductions extends Component {
   openSearch = () => EmployeeSearch(this.state, this.getEmployee);
 
   getEmployee = row => {
-    const {
-      sub_department_id,
-      employee_group_id,
-      hims_d_department_id: department_id,
-      full_name: emp_name,
-      hims_d_employee_id: employee_id
-    } = row;
-    this.setState({
-      sub_department_id,
-      employee_group_id,
-      department_id,
-      employee_id,
-      emp_name
+    algaehApiCall({
+      uri: "/salary/getEmployeeMiscellaneous",
+      module: "hrManagement",
+      method: "GET",
+      data: {
+        employee_id: row.hims_d_employee_id,
+        year: this.state.year,
+        month: this.state.month
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            employee_miscellaneous: res.data.records,
+            employee_id: row.hims_d_employee_id,
+            emp_name: row.full_name,
+            addBtnEnable: false
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
     });
   };
+
+  deleteMiscEarningsDeductions(row) {
+    debugger;
+    swal({
+      title:
+        "Are you sure want to Delete " +
+        row.earning_deduction_description +
+        "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/salary/deleteMiscEarningsDeductions",
+          module: "hrManagement",
+          method: "DELETE",
+          data: {
+            hims_f_miscellaneous_earning_deduction_id:
+              row.hims_f_miscellaneous_earning_deduction_id
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Deleted Successfully",
+                type: "success"
+              });
+              this.getEmployee({
+                hims_d_employee_id: this.state.employee_id,
+                full_name: this.state.emp_name
+              });
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
+        });
+      }
+    });
+  }
 
   render() {
     let allYears = getYears();
@@ -510,7 +426,6 @@ export default class MiscEarningsDeductions extends Component {
                         }
                       }}
                     />
-
                     <div className="col-12 form-group mandatory globalSearchCntr">
                       <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
                       <h6 onClick={this.openSearch}>
@@ -526,9 +441,6 @@ export default class MiscEarningsDeductions extends Component {
                         pointerEvents: this.state.lockEarnings ? "none" : null
                       }}
                     >
-                      {/* <label>
-                Components<span className="imp">&nbsp;*</span>
-              </label> */}
                       <div className="customRadio" style={{ paddingBottom: 0 }}>
                         <label className="radio inline">
                           <input
@@ -597,13 +509,13 @@ export default class MiscEarningsDeductions extends Component {
                       textBox={{
                         decimal: { allowNegative: false },
                         className: "txt-fld",
-                        name: "bulk_amount",
-                        value: this.state.bulk_amount,
+                        name: "amount",
+                        value: this.state.amount,
                         events: {
                           onChange: this.textHandler.bind(this)
                         },
                         others: {
-                          disabled: !this.state.isBulk
+                          // disabled: !this.state.isBulk
                         }
                       }}
                     />
@@ -621,31 +533,15 @@ export default class MiscEarningsDeductions extends Component {
                           label={{ forceLabel: "Clear", returnText: true }}
                         />
                       </button>
+
                       <button
-                        onClick={this.getEmployeesForMiscED.bind(this)}
                         type="button"
                         className="btn btn-primary"
-                        style={{
-                          pointerEvents: this.state.lockEarnings ? "none" : null
-                        }}
+                        onClick={this.ApplyEarningsDeds.bind(this)}
+                        disabled={this.state.addBtnEnable}
                       >
-                        {!this.state.loading ? (
-                          <span>Add</span>
-                        ) : (
-                          <i className="fas fa-spinner fa-spin" />
-                        )}
+                        Add
                       </button>
-                      {/* <button
-                        type="button"
-                        className="btn btn-default"
-                        style={{
-                          float: "right",
-                          pointerEvents: !this.state.isBulk ? "none" : null
-                        }}
-                        onClick={this.applyAmount.bind(this)}
-                      >
-                        Apply
-                      </button> */}
                     </div>
                   </div>
                 </div>
@@ -668,6 +564,39 @@ export default class MiscEarningsDeductions extends Component {
                       <AlgaehDataGrid
                         id="MiscEarningsDeductionsGrid"
                         columns={[
+                          {
+                            fieldName: "actions",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Action" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  <i
+                                    style={{
+                                      pointerEvents:
+                                        row.salary_processed === "N"
+                                          ? "none"
+                                          : "",
+                                      opacity:
+                                        row.salary_processed === "N"
+                                          ? "0.1"
+                                          : ""
+                                    }}
+                                    onClick={this.deleteMiscEarningsDeductions.bind(
+                                      this,
+                                      row
+                                    )}
+                                    className="fas fa-trash-alt"
+                                  />
+                                </span>
+                              );
+                            },
+                            others: {
+                              maxWidth: 65,
+                              filterable: false
+                            }
+                          },
                           {
                             fieldName: "processed",
                             label: (
@@ -695,53 +624,123 @@ export default class MiscEarningsDeductions extends Component {
                             editorTemplate: row => {
                               return (
                                 <span>
-                                  {row.salary_processed === "Y"
-                                    ? "Processed"
-                                    : "Not Processed"}
+                                  {row.salary_processed === "Y" ? (
+                                    <span className="badge badge-success">
+                                      Processed
+                                    </span>
+                                  ) : (
+                                    <span className="badge badge-warning">
+                                      Not Processed
+                                    </span>
+                                  )}
                                 </span>
                               );
+                            },
+                            others: {
+                              maxWidth: 150
                             }
                           },
                           {
-                            fieldName: "sub_department_name",
+                            fieldName: "year",
 
                             label: (
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Misc Description"
+                                  forceLabel: "Applied Year"
                                 }}
                               />
                             ),
-                            displayTemplate: row => {
-                              return (
-                                <span>
-                                  {row.sub_department_name !== null
-                                    ? row.sub_department_name
-                                    : "Not Specified"}
-                                </span>
-                              );
-                            },
-                            disabled: true
+                            disabled: true,
+                            others: {
+                              maxWidth: 110
+                            }
                           },
                           {
-                            fieldName: "sub_department_name",
+                            fieldName: "month",
 
                             label: (
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Misc Type"
+                                  forceLabel: "Applied Month"
+                                }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              let display = GlobalVariables.MONTHS.filter(
+                                f => f.value === row.month
+                              );
+
+                              return (
+                                <span>
+                                  {display !== undefined && display.length !== 0
+                                    ? display[0].name
+                                    : ""}
+                                </span>
+                              );
+                            },
+                            editorTemplate: row => {
+                              let display = GlobalVariables.MONTHS.filter(
+                                f => f.value === row.month
+                              );
+
+                              return (
+                                <span>
+                                  {display !== undefined && display.length !== 0
+                                    ? display[0].name
+                                    : ""}
+                                </span>
+                              );
+                            },
+                            others: {
+                              maxWidth: 110
+                            }
+                          },
+                          {
+                            fieldName: "category",
+
+                            label: (
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Miscellaneous Category"
                                 }}
                               />
                             ),
                             displayTemplate: row => {
                               return (
                                 <span>
-                                  {row.sub_department_name !== null
-                                    ? row.sub_department_name
-                                    : "Not Specified"}
+                                  {row.category === "D"
+                                    ? "Deduction"
+                                    : row.category === "E"
+                                    ? "Earning"
+                                    : "Bonus"}
                                 </span>
                               );
                             },
+                            editorTemplate: row => {
+                              return (
+                                <span>
+                                  {row.category === "D"
+                                    ? "Deduction"
+                                    : row.category === "E"
+                                    ? "Earning"
+                                    : "Bonus"}
+                                </span>
+                              );
+                            },
+                            others: {
+                              maxWidth: 180
+                            }
+                          },
+                          {
+                            fieldName: "earning_deduction_description",
+
+                            label: (
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Miscellaneous Type"
+                                }}
+                              />
+                            ),
                             disabled: true
                           },
                           {
@@ -756,12 +755,12 @@ export default class MiscEarningsDeductions extends Component {
                             ),
                             others: { maxWidth: 150 },
 
+                            // displayTemplate: row => {
+                            //   return (
+                            //     <span> {getAmountFormart(row.amount)}</span>
+                            //   );
+                            // },
                             displayTemplate: row => {
-                              return (
-                                <span> {getAmountFormart(row.amount)}</span>
-                              );
-                            },
-                            editorTemplate: row => {
                               return row.salary_processed === "N" ||
                                 row.salary_processed === null ? (
                                 <AlagehFormGroup
@@ -791,15 +790,12 @@ export default class MiscEarningsDeductions extends Component {
                         ]}
                         keyId="algaeh_d_module_id"
                         dataSource={{
-                          data: this.state.employees
+                          data: this.state.employee_miscellaneous
                         }}
-                        isEditable={true}
+                        isEditable={false}
                         filter={true}
                         loading={this.state.loading}
                         paging={{ page: 0, rowsPerPage: 10 }}
-                        actions={{
-                          allowDelete: false
-                        }}
                         events={{
                           onEdit: () => {},
                           onDelete: () => {},
@@ -809,36 +805,6 @@ export default class MiscEarningsDeductions extends Component {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="hptl-phase1-footer">
-            <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.ApplyEarningsDeds.bind(this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Save", returnText: true }}
-                  />
-                </button>
-
-                {/* <button
-                  type="button"
-                  className="btn btn-other"
-                  //   onClick={PostDoctorCommission.bind(this, this)}
-                  // disabled={this.state.postEnable}
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Generate Payslip PDF"
-                      //   returnText: true
-                    }}
-                  />
-                </button> */}
               </div>
             </div>
           </div>
