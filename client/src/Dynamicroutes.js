@@ -372,6 +372,11 @@ const PageToPlot = {
       import("./Components/Pharmacy/POSCreditSettlement/POSCreditSettlement")
     )
   ),
+  StockAdjustment: React.lazy(() =>
+    retry(() =>
+      import("./Components/Pharmacy/StockAdjustment/StockAdjustment")
+    )
+  ),
   // VisitClose: React.lazy(() =>
   //   retry(() => import("./Components/VisitClose/VisitClose"))
   // ),
