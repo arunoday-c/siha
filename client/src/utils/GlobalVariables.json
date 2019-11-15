@@ -5180,5 +5180,31 @@
       "name": "Issued",
       "value": "IS"
     }
+  ],
+  "ADJUSTMENT_TYPE": [
+    {
+      "name": "Increase Qunatity",
+      "value": "IQ"
+    },
+    {
+      "name": "Decrease Qunatity",
+      "value": "DQ"
+    },
+    {
+      "name": "Increase Amount",
+      "value": "IA"
+    },
+    {
+      "name": "Decrease Amount",
+      "value": "DA"
+    },
+    {
+      "name": "Both Increase",
+      "value": "BI"
+    },
+    {
+      "name": "Both Decrease",
+      "value": "BD"
+    }
   ]
 }

@@ -511,7 +511,7 @@ export default {
                               _mysql.isTransactionConnection,
                             pool: _mysql.pool
                           };
-                          // req.flag = 1;
+                          req.flag = 1;
 
                           // _mysql.commitTransaction(() => {
                           //   _mysql.releaseConnection();

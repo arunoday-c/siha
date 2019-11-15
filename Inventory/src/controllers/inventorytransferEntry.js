@@ -35,6 +35,7 @@ export default () => {
     addtransferEntry,
     updateinvreqEntryOnceTranfer,
     updateIntoInvItemLocation,
+    updateIntoInvItemLocation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

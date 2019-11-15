@@ -113,14 +113,14 @@ let updateIntoInvItemLocation = (req, res, next) => {
               utilities.logger().log("req.flag: ");
               for (let i = 0; i < req.body.inventory_stock_detail.length; i++) {
                 req.body.inventory_stock_detail[i].location_id =
-                  req.body.to_location_id;
+                  req.body.git_location_id;
                 req.body.inventory_stock_detail[i].location_type =
-                  req.body.to_location_type;
+                  req.body.git_location_type;
 
                 req.body.inventory_stock_detail[i].sales_uom =
                   req.body.inventory_stock_detail[i].uom_transferred_id;
 
-                req.body.inventory_stock_detail[i].operation = "+";
+                req.body.inventory_stock_detail[i].operation = req.body.operation;
                 req.body.inventory_stock_detail[i].git_qty = 0;
               }
               req.flag = 0;
@@ -137,14 +137,14 @@ let updateIntoInvItemLocation = (req, res, next) => {
             utilities.logger().log("req.flag: ");
             for (let i = 0; i < req.body.inventory_stock_detail.length; i++) {
               req.body.inventory_stock_detail[i].location_id =
-                req.body.to_location_id;
+                req.body.git_location_id;
               req.body.inventory_stock_detail[i].location_type =
-                req.body.to_location_type;
+                req.body.git_location_type;
 
               req.body.inventory_stock_detail[i].sales_uom =
                 req.body.inventory_stock_detail[i].uom_transferred_id;
 
-              req.body.inventory_stock_detail[i].operation = "+";
+              req.body.inventory_stock_detail[i].operation = req.body.operation;
               req.body.inventory_stock_detail[i].git_qty = 0;
             }
             req.flag = 0;

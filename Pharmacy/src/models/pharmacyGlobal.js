@@ -17,7 +17,7 @@ export default {
              ITU.item_master_id=? ;\
              SELECT hims_m_item_location_id, item_id, pharmacy_location_id, item_location_status, batchno, \
              expirydt,barcode, qtyhand, qtypo, cost_uom,avgcost, last_purchase_cost, item_type, \
-             grn_id, grnno, sale_price, mrp_price, sales_uom,PU.uom_description \
+             grn_id, grnno, sale_price, mrp_price, sales_uom,PU.uom_description, git_qty \
              from hims_m_item_location IL,hims_d_pharmacy_uom PU, hims_d_item_master IM where\
              IL.sales_uom = PU.hims_d_pharmacy_uom_id and IL.item_id = IM.hims_d_item_master_id and \
              IL.record_status='A'  and item_id=? and pharmacy_location_id=? and qtyhand>0 \
@@ -192,6 +192,10 @@ export default {
             }
             if (req.query.allow_pos == "Y") {
               _strQry += " and allow_pos='Y' ";
+            }
+
+            if (req.query.git_location == "N") {
+              _strQry += " and git_location='N' ";
             }
 
             _mysql

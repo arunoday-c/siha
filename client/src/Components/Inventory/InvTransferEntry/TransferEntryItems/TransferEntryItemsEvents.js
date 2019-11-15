@@ -554,6 +554,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
               data.locationResult[i].qtyhand = qtyhand_batch;
             }
 
+
             $this.setState({
               [name]: value,
               item_category: e.category_id,
@@ -700,6 +701,13 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.sales_price
       : $this.state.sales_price;
 
+  let barcode =
+    e !== undefined
+      ? e.selected === true
+        ? e.barcode
+        : $this.state.barcode
+      : $this.state.barcode;
+
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,
@@ -708,7 +716,8 @@ const CloseItemBatch = ($this, context, e) => {
     grn_no: grn_no,
     qtyhand: qtyhand,
     unit_cost: unit_cost,
-    sales_price: sale_price
+    sales_price: sale_price,
+    barcode: barcode
   });
 
   if (context !== null) {
@@ -718,7 +727,8 @@ const CloseItemBatch = ($this, context, e) => {
       grn_no: grn_no,
       qtyhand: qtyhand,
       unit_cost: unit_cost,
-      sales_price: sale_price
+      sales_price: sale_price,
+      barcode: barcode
     });
   }
 };

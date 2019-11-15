@@ -35,6 +35,7 @@ export default () => {
     addtransferEntry,
     updaterequisitionEntryOnceTranfer,
     updateIntoItemLocation,
+    updateIntoItemLocation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
