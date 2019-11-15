@@ -22,6 +22,18 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const updateLocation = ($this, data) => {
+  let gitLoaction_Exists = _.find($this.props.location,
+    f => f.git_location === "Y"
+  );
+
+  if (data.git_location === "Y" && gitLoaction_Exists !== undefined) {
+    swalMessage({
+      title: "GIT Location can be only one.",
+      type: "warning"
+    });
+    return
+  }
+
   algaehApiCall({
     uri: "/pharmacy/updatePharmacyLocation",
     module: "pharmacy",
@@ -72,7 +84,7 @@ const showconfirmDialog = ($this, row) => {
             getLocation($this);
           }
         },
-        onFailure: error => {}
+        onFailure: error => { }
       });
     } else {
       swalMessage({
@@ -129,6 +141,19 @@ const Validations = $this => {
 const insertLocation = ($this, e) => {
   e.preventDefault();
 
+  debugger
+  let gitLoaction_Exists = _.find($this.props.location,
+    f => f.git_location === "Y"
+  );
+
+  if ($this.state.git_location === "Y" && gitLoaction_Exists !== undefined) {
+    swalMessage({
+      title: "GIT Location can be only one",
+      type: "warning"
+    });
+    return
+  }
+
   AlgaehValidation({
     alertTypeIcon: "warning",
     onSuccess: () => {
@@ -167,6 +192,29 @@ const insertLocation = ($this, e) => {
 };
 
 const getLocation = $this => {
+  algaehApiCall({
+    uri: "/pharmacy/getPharmacyLocation",
+    module: "pharmacy",
+    method: "GET",
+    onSuccess: response => {
+      if (response.data.success === true) {
+        $this.setState({
+          phar_loactions: response.data.records
+        })
+      } else {
+        swalMessage({
+          title: response.data.message,
+          type: "error"
+        });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
   $this.props.getLocation({
     uri: "/pharmacy/getPharmacyLocation",
     module: "pharmacy",
@@ -174,14 +222,6 @@ const getLocation = $this => {
     redux: {
       type: "ANALYTES_GET_DATA",
       mappingName: "location"
-    },
-    afterSuccess: data => {
-      if (data.length === 0 || data.length === undefined) {
-        swalMessage({
-          title: "No Records Found",
-          type: "warning"
-        });
-      }
     }
   });
 };
@@ -197,6 +237,17 @@ const allowPos = ($this, e) => {
   });
 };
 
+const GITLoacation = ($this, e) => {
+  let git_location = "N";
+  if (!$this.state.gitloaction === true) {
+    git_location = "Y";
+  }
+  $this.setState({
+    git_location: git_location,
+    gitloaction: !$this.state.gitloaction
+  });
+};
+
 export {
   changeTexts,
   onchangegridcol,
@@ -204,5 +255,6 @@ export {
   updateLocation,
   deleteLocation,
   getLocation,
-  allowPos
+  allowPos,
+  GITLoacation
 };

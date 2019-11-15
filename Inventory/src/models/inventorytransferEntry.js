@@ -468,7 +468,7 @@ export default {
                               _mysql.isTransactionConnection,
                             pool: _mysql.pool
                           };
-                          // req.flag = 1;
+                          req.flag = 1;
 
                           req.records = {
                             transfer_number: transfer_number,

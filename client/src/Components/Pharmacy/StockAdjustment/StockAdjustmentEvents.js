@@ -2,8 +2,8 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import ReactDOM from "react-dom";
-import swal from "sweetalert2";
-import POSIOputs from "../../../Models/POS";
+// import swal from "sweetalert2";
+
 import {
   algaehApiCall,
   swalMessage,
@@ -18,6 +18,45 @@ import _ from "lodash";
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value
+  });
+};
+
+const batchEventHandaler = ($this, e) => {
+  debugger
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value,
+    qtyhand: e.selected.qtyhand,
+    sale_price: e.selected.sale_price,
+    git_qty: e.selected.git_qty
+  });
+};
+
+const adjustQtyHandaler = ($this, e) => {
+  debugger
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  if ($this.state.adjustment_type === null) {
+    swalMessage({
+      title: "Please select Adjustment Type",
+      type: "warning"
+    });
+    return;
+  }
+  if ($this.state.adjustment_type === "DQ" || $this.state.adjustment_type === "BD") {
+    if (parseFloat(value) > parseFloat($this.state.qtyhand)) {
+      swalMessage({
+        title: "Cannot be less than Quantity in Hand",
+        type: "warning"
+      });
+      return;
+    }
+  }
 
   $this.setState({
     [name]: value
@@ -191,23 +230,19 @@ const getCtrlCode = ($this, docNumber) => {
 };
 
 const ClearData = ($this, e) => {
-  let IOputs = POSIOputs.inputParam();
+  let IOputs = {
+    location_type: null,
+    location_id: null,
+    adjustment_number: null,
+    adjustment_date: new Date(),
+    selectEnable: true,
+    Batch_Items: [],
+    adjust_qty: 0,
+    adjust_amount: 0,
+    stocking_uom: null,
+    item_description: null
+  }
 
-  IOputs.patient_payable_h = 0;
-  IOputs.mode_of_pa = "";
-  IOputs.pay_cash = "CA";
-  IOputs.pay_card = "CD";
-  IOputs.pay_cheque = "CH";
-  IOputs.cash_amount = 0;
-  IOputs.card_check_number = "";
-  IOputs.card_date = null;
-  IOputs.card_amount = 0;
-  IOputs.cheque_number = "";
-  IOputs.cheque_date = null;
-  IOputs.cheque_amount = 0;
-  IOputs.advance = 0;
-  IOputs.total_quantity = 0;
-  IOputs.dataExitst = false;
 
   let _screenName = getCookie("ScreenName").replace("/", "");
 
@@ -233,12 +268,7 @@ const ClearData = ($this, e) => {
           if (response.data.records.selectedValue !== undefined) {
             IOputs.location_type = response.data.records.selectedValue;
           }
-          $this.setState(IOputs, () => {
-            const element = ReactDOM.findDOMNode(
-              document.getElementById("root")
-            ).querySelector("input[name='item_id']");
-            element.focus();
-          });
+          $this.setState(IOputs);
 
         },
         onFailure: error => {
@@ -593,6 +623,76 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
   });
 };
 
+const itemchangeText = ($this, e, ctrl) => {
+  let name = ctrl;
+  if ($this.state.location_id !== null) {
+    let value = e.hims_d_item_master_id;
+
+    algaehApiCall({
+      uri: "/pharmacyGlobal/getUomLocationStock",
+      module: "pharmacy",
+      method: "GET",
+      data: {
+        location_id: $this.state.location_id,
+        item_id: value
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          let data = response.data.records;
+          if (data.locationResult.length > 0) {
+            $this.setState({
+              [name]: value,
+              item_category: e.category_id,
+              uom_id: e.stocking_uom_id,
+              sales_uom: e.sales_uom_id,
+              stocking_uom: e.stocking_uom,
+              service_id: e.service_id,
+              item_group_id: e.group_id,
+              Batch_Items: data.locationResult,
+              addItemButton: false,
+              item_description: e.item_description,
+            });
+          } else {
+            swalMessage({
+              title: "No stock available for selected Item.",
+              type: "warning"
+            });
+            $this.setState({
+              item_description: $this.state.item_description,
+              item_id: $this.state.item_id
+            });
+          }
+        } else {
+          swalMessage({
+            title: response.data.message,
+            type: "error"
+          });
+        }
+        AlgaehLoader({ show: false });
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  } else {
+    $this.setState(
+      {
+        [name]: null
+      },
+      () => {
+        swalMessage({
+          title: "Please select Location.",
+          type: "warning"
+        });
+      }
+    );
+  }
+};
+
 export {
   texthandle,
   getCtrlCode,
@@ -601,5 +701,8 @@ export {
   LocationchangeTexts,
   DocumentSearch,
   getPosEntry,
-  generateReport
+  generateReport,
+  itemchangeText,
+  batchEventHandaler,
+  adjustQtyHandaler
 };

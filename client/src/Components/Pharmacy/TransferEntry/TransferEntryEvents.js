@@ -147,6 +147,7 @@ const AcknowledgeTransferEntry = $this => {
     f => f.ack_quantity === 0 || f.ack_quantity === ""
   );
 
+
   if (Quantity_zero.length > 0) {
     swalMessage({
       type: "warning",
@@ -155,44 +156,63 @@ const AcknowledgeTransferEntry = $this => {
     return;
   }
 
-  $this.state.ack_done = "Y";
-  $this.state.transaction_type = "ACK";
-  $this.state.transaction_id = $this.state.hims_f_pharmacy_transfer_header_id;
-  $this.state.transaction_date = $this.state.transfer_date;
-  for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
-    $this.state.pharmacy_stock_detail[i].location_id =
-      $this.state.from_location_id;
-    $this.state.pharmacy_stock_detail[i].location_type =
-      $this.state.from_location_type;
-    $this.state.pharmacy_stock_detail[i].operation = "-";
+  let gitLoaction_Exists = {};
 
-    $this.state.pharmacy_stock_detail[i].uom_id =
-      $this.state.pharmacy_stock_detail[i].uom_transferred_id;
+  if ($this.props.git_locations.length === 0) {
+    swalMessage({
+      title: "Please Enter GIT Loaction to transfer item",
+      type: "warning"
+    });
+    return
+  } else {
+    gitLoaction_Exists = $this.props.git_locations[0]
+  }
 
-    $this.state.pharmacy_stock_detail[i].quantity =
-      $this.state.pharmacy_stock_detail[i].ack_quantity;
 
-    $this.state.pharmacy_stock_detail[i].grn_number =
-      $this.state.pharmacy_stock_detail[i].grnno;
+  let InputObj = $this.state
 
-    $this.state.pharmacy_stock_detail[i].net_total = (
-      parseFloat($this.state.pharmacy_stock_detail[i].unit_cost) *
-      parseFloat($this.state.pharmacy_stock_detail[i].ack_quantity)
-    ).toFixed($this.state.decimal_places);
+  InputObj.operation = "-";
+  InputObj.ack_done = "Y";
+  InputObj.transaction_type = "ACK";
+  InputObj.transaction_id = InputObj.hims_f_pharmacy_transfer_header_id;
+  InputObj.transaction_date = InputObj.transfer_date;
+  InputObj.git_location_type = gitLoaction_Exists.location_type;
+  InputObj.git_location_id = gitLoaction_Exists.hims_d_pharmacy_location_id;
 
-    $this.state.pharmacy_stock_detail[i].extended_cost = (
-      parseFloat($this.state.pharmacy_stock_detail[i].unit_cost) *
-      parseFloat($this.state.pharmacy_stock_detail[i].ack_quantity)
-    ).toFixed($this.state.decimal_places);
+  for (let i = 0; i < InputObj.pharmacy_stock_detail.length; i++) {
+    InputObj.pharmacy_stock_detail[i].location_id =
+      InputObj.to_location_id;
+    InputObj.pharmacy_stock_detail[i].location_type =
+      InputObj.to_location_type;
+    InputObj.pharmacy_stock_detail[i].operation = "+";
 
-    $this.state.pharmacy_stock_detail[i].git_qty =
-      $this.state.pharmacy_stock_detail[i].ack_quantity;
+    InputObj.pharmacy_stock_detail[i].uom_id =
+      InputObj.pharmacy_stock_detail[i].uom_transferred_id;
+
+    InputObj.pharmacy_stock_detail[i].quantity =
+      InputObj.pharmacy_stock_detail[i].ack_quantity;
+
+    InputObj.pharmacy_stock_detail[i].grn_number =
+      InputObj.pharmacy_stock_detail[i].grnno;
+
+    InputObj.pharmacy_stock_detail[i].net_total = (
+      parseFloat(InputObj.pharmacy_stock_detail[i].unit_cost) *
+      parseFloat(InputObj.pharmacy_stock_detail[i].ack_quantity)
+    ).toFixed(InputObj.decimal_places);
+
+    InputObj.pharmacy_stock_detail[i].extended_cost = (
+      parseFloat(InputObj.pharmacy_stock_detail[i].unit_cost) *
+      parseFloat(InputObj.pharmacy_stock_detail[i].ack_quantity)
+    ).toFixed(InputObj.decimal_places);
+
+    InputObj.pharmacy_stock_detail[i].git_qty =
+      InputObj.pharmacy_stock_detail[i].ack_quantity;
   }
 
   algaehApiCall({
     uri: "/transferEntry/updatetransferEntry",
     module: "pharmacy",
-    data: $this.state,
+    data: InputObj,
     method: "PUT",
     onSuccess: response => {
       if (response.data.success === true) {
@@ -217,58 +237,76 @@ const AcknowledgeTransferEntry = $this => {
 };
 
 const SaveTransferEntry = $this => {
-  AlgaehLoader({ show: true });
-  $this.state.completed = "Y";
-  $this.state.transaction_type = "ST";
-  $this.state.transaction_id = $this.state.hims_f_pharmacy_transfer_header_id;
-  $this.state.transaction_date = $this.state.transfer_date;
-  for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
-    $this.state.pharmacy_stock_detail[i].location_id =
-      $this.state.from_location_id;
-    $this.state.pharmacy_stock_detail[i].location_type =
-      $this.state.from_location_type;
-    $this.state.pharmacy_stock_detail[i].operation = "-";
 
-    $this.state.pharmacy_stock_detail[i].uom_id =
-      $this.state.pharmacy_stock_detail[i].uom_transferred_id;
+  debugger
+  let gitLoaction_Exists = {};
 
-    $this.state.pharmacy_stock_detail[i].quantity =
-      $this.state.pharmacy_stock_detail[i].quantity_transfer;
-
-    $this.state.pharmacy_stock_detail[i].grn_number =
-      $this.state.pharmacy_stock_detail[i].grnno;
-
-    $this.state.pharmacy_stock_detail[i].net_total = (
-      parseFloat($this.state.pharmacy_stock_detail[i].unit_cost) *
-      parseFloat($this.state.pharmacy_stock_detail[i].quantity_transfer)
-    ).toFixed($this.state.decimal_places);
-
-    $this.state.pharmacy_stock_detail[i].extended_cost = (
-      parseFloat($this.state.pharmacy_stock_detail[i].unit_cost) *
-      parseFloat($this.state.pharmacy_stock_detail[i].quantity_transfer)
-    ).toFixed($this.state.decimal_places);
+  if ($this.props.git_locations.length === 0) {
+    swalMessage({
+      title: "Please Enter GIT Loaction to transfer item",
+      type: "warning"
+    });
+    return
+  } else {
+    gitLoaction_Exists = $this.props.git_locations[0]
   }
 
-  delete $this.state.item_details;
+  let InputObj = $this.state
+  AlgaehLoader({ show: true });
+  InputObj.operation = "+";
+  InputObj.completed = "Y";
+  InputObj.transaction_type = "ST";
+  InputObj.transaction_id = InputObj.hims_f_pharmacy_transfer_header_id;
+  InputObj.transaction_date = InputObj.transfer_date;
+  InputObj.git_location_type = gitLoaction_Exists.location_type;
+  InputObj.git_location_id = gitLoaction_Exists.hims_d_pharmacy_location_id;
+  for (let i = 0; i < InputObj.pharmacy_stock_detail.length; i++) {
+    InputObj.pharmacy_stock_detail[i].location_id =
+      InputObj.from_location_id;
+    InputObj.pharmacy_stock_detail[i].location_type =
+      InputObj.from_location_type;
+    InputObj.pharmacy_stock_detail[i].operation = "-";
 
-  for (let j = 0; j < $this.state.stock_detail.length; j++) {
-    if ($this.state.stock_detail[j].pharmacy_stock_detail === undefined) {
-      $this.state.stock_detail[j].removed = "Y";
+    InputObj.pharmacy_stock_detail[i].uom_id =
+      InputObj.pharmacy_stock_detail[i].uom_transferred_id;
+
+    InputObj.pharmacy_stock_detail[i].quantity =
+      InputObj.pharmacy_stock_detail[i].quantity_transfer;
+
+    InputObj.pharmacy_stock_detail[i].grn_number =
+      InputObj.pharmacy_stock_detail[i].grnno;
+
+    InputObj.pharmacy_stock_detail[i].net_total = (
+      parseFloat(InputObj.pharmacy_stock_detail[i].unit_cost) *
+      parseFloat(InputObj.pharmacy_stock_detail[i].quantity_transfer)
+    ).toFixed(InputObj.decimal_places);
+
+    InputObj.pharmacy_stock_detail[i].extended_cost = (
+      parseFloat(InputObj.pharmacy_stock_detail[i].unit_cost) *
+      parseFloat(InputObj.pharmacy_stock_detail[i].quantity_transfer)
+    ).toFixed(InputObj.decimal_places);
+  }
+
+  delete InputObj.item_details;
+
+  for (let j = 0; j < InputObj.stock_detail.length; j++) {
+    if (InputObj.stock_detail[j].pharmacy_stock_detail === undefined) {
+      InputObj.stock_detail[j].removed = "Y";
     } else {
-      delete $this.state.stock_detail[j].batches;
+      delete InputObj.stock_detail[j].batches;
     }
   }
 
-  let stock_detail = _.filter($this.state.stock_detail, f => {
+  let stock_detail = _.filter(InputObj.stock_detail, f => {
     return f.removed === "N";
   });
 
-  $this.state.stock_detail = stock_detail;
+  InputObj.stock_detail = stock_detail;
 
   algaehApiCall({
     uri: "/transferEntry/addtransferEntry",
     module: "pharmacy",
-    data: $this.state,
+    data: InputObj,
     onSuccess: response => {
       if (response.data.success === true) {
         $this.setState({

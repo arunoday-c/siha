@@ -20,7 +20,8 @@ import {
   updateLocation,
   deleteLocation,
   getLocation,
-  allowPos
+  allowPos,
+  GITLoacation
 } from "./LocationEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -37,7 +38,10 @@ class Location extends Component {
       hospital_id: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).hims_d_hospital_id,
-      allow_pos: "N"
+      allow_pos: "N",
+      gitloaction: false,
+      git_location: "N",
+      inv_loactions: []
     };
     this.baseState = this.state;
     // console.log("Currency Detail:",JSON.parse(
@@ -52,12 +56,9 @@ class Location extends Component {
       selectedLang: prevLang
     });
 
-    if (
-      this.props.inventorylocation === undefined ||
-      this.props.inventorylocation.length === 0
-    ) {
-      getLocation(this, this);
-    }
+
+    getLocation(this, this);
+
     if (
       this.props.organizations === undefined ||
       this.props.organizations.length === 0
@@ -164,6 +165,22 @@ class Location extends Component {
             </div>
           </div>
 
+          <div className="col-2">
+            <label>GIT Location</label>
+            <div className="customCheckbox">
+              <label className="checkbox inline">
+                <input
+                  type="checkbox"
+                  value="yes"
+                  name="GIT"
+                  checked={this.state.gitloaction}
+                  onChange={GITLoacation.bind(this, this)}
+                />
+                <span>Yes</span>
+              </label>
+            </div>
+          </div>
+
           <div className="col" style={{ paddingTop: 19 }}>
             <button
               onClick={insertLocation.bind(this, this)}
@@ -219,19 +236,19 @@ class Location extends Component {
                         return row.location_type === "WH"
                           ? "Warehouse"
                           : row.location_type === "MS"
-                          ? "Main Store"
-                          : row.location_type === "SS"
-                          ? "Sub Store"
-                          : null;
+                            ? "Main Store"
+                            : row.location_type === "SS"
+                              ? "Sub Store"
+                              : null;
                       },
                       editorTemplate: row => {
                         return row.location_type === "WH"
                           ? "Warehouse"
                           : row.location_type === "MS"
-                          ? "Main Store"
-                          : row.location_type === "SS"
-                          ? "Sub Store"
-                          : null;
+                            ? "Main Store"
+                            : row.location_type === "SS"
+                              ? "Sub Store"
+                              : null;
                       }
                     },
                     {
@@ -242,8 +259,8 @@ class Location extends Component {
                           this.props.organizations === undefined
                             ? []
                             : this.props.organizations.filter(
-                                f => f.hims_d_hospital_id === row.hospital_id
-                              );
+                              f => f.hims_d_hospital_id === row.hospital_id
+                            );
 
                         return (
                           <span>
@@ -286,8 +303,8 @@ class Location extends Component {
                         return row.allow_pos === "N"
                           ? "No"
                           : row.allow_pos === "Y"
-                          ? "Yes"
-                          : null;
+                            ? "Yes"
+                            : null;
                       },
                       editorTemplate: row => {
                         return (
@@ -312,6 +329,41 @@ class Location extends Component {
                         );
                       }
                     },
+                    {
+                      fieldName: "git_location",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "GIT Location" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.git_location === "N"
+                          ? "No"
+                          : row.git_location === "Y"
+                            ? "Yes"
+                            : null;
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            div={{}}
+                            selector={{
+                              name: "git_location",
+                              className: "select-fld",
+                              value: row.git_location,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.FORMAT_YESNO
+                              },
+                              onChange: onchangegridcol.bind(this, this, row),
+                              others: {
+                                errormessage: "GIT Location - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      }
+                    },
 
                     {
                       fieldName: "created_by",
@@ -323,8 +375,8 @@ class Location extends Component {
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                                f => f.algaeh_d_app_user_id === row.created_by
-                              );
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
 
                         return (
                           <span>
@@ -340,8 +392,8 @@ class Location extends Component {
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                                f => f.algaeh_d_app_user_id === row.created_by
-                              );
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
 
                         return (
                           <span>
@@ -405,10 +457,7 @@ class Location extends Component {
                   ]}
                   keyId="hims_d_inventory_location_id"
                   dataSource={{
-                    data:
-                      this.props.inventorylocation === undefined
-                        ? []
-                        : this.props.inventorylocation
+                    data: this.state.inv_loactions
                   }}
                   filter={true}
                   isEditable={true}
@@ -416,7 +465,7 @@ class Location extends Component {
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     onDelete: deleteLocation.bind(this, this),
-                    onEdit: row => {},
+                    onEdit: row => { },
 
                     onDone: updateLocation.bind(this, this)
                   }}
