@@ -15,10 +15,19 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import _ from "lodash";
 
 class BankMaster extends Component {
   constructor(props) {
     super(props);
+    let Activated_Modueles = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+    );
+    const HIMS_Active = _.filter(Activated_Modueles, f => {
+      return f.module_code === "FTDSK";
+    });
+
     this.state = {
       bank_name: null,
       bank_code: null,
@@ -26,13 +35,16 @@ class BankMaster extends Component {
       address1: null,
       contact_person: null,
       contact_number: null,
-      card_name:"",
-      card_list:[]
+      card_name: "",
+      card_list: [],
+      HIMS_Active: HIMS_Active.length > 0 ? true : false
     };
     if (this.props.banks === undefined || this.props.banks.length === 0) {
       this.getBankMaster();
     }
-    this.getCardkMaster();
+    if (HIMS_Active.length > 0) {
+      this.getCardkMaster();
+    }
   }
 
   texthandle(e) {
@@ -75,7 +87,7 @@ class BankMaster extends Component {
       onSuccess: response => {
         if (response.data.success) {
           this.setState({
-            card_list:response.data.records
+            card_list: response.data.records
           });
         }
       },
@@ -86,7 +98,6 @@ class BankMaster extends Component {
         });
       }
     });
-
   }
   addBank(e) {
     e.preventDefault();
@@ -213,18 +224,18 @@ class BankMaster extends Component {
   }
 
   addCardMaster(e) {
-    if(this.state.card_name ===""){
+    if (this.state.card_name === "") {
       swalMessage({
-        type:"warning",
-        title:"Card Number can't blank."
+        type: "warning",
+        title: "Card Number can't blank."
       });
-      return ;
+      return;
     }
     algaehApiCall({
       uri: "/bankmaster/addBankCards",
       module: "masterSettings",
       data: {
-        card_name:this.state.card_name
+        card_name: this.state.card_name
       },
       method: "POST",
       onSuccess: response => {
@@ -233,7 +244,7 @@ class BankMaster extends Component {
             title: "Record updated successfully",
             type: "success"
           });
-        }else{
+        } else {
           swalMessage({
             title: response.data.message,
             type: "error"
@@ -250,9 +261,10 @@ class BankMaster extends Component {
   }
 
   render() {
+    const col_setup = this.state.HIMS_Active === true ? "col-8" : "col-12";
     return (
       <div className="row BankMasterScreen" style={{ paddingTop: 15 }}>
-        <div className="col-8">
+        <div className={col_setup}>
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-body">
               <div className="row">
@@ -607,148 +619,136 @@ class BankMaster extends Component {
             </div>
           </div>
         </div>
-        <div className="col-4">
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-body">
-              <div className="row">
-                {/*<AlagehFormGroup*/}
-                {/*  div={{ className: "col-12 form-group mandatory" }}*/}
-                {/*  label={{*/}
-                {/*    forceLabel: "Card Format",*/}
-                {/*    isImp: false*/}
-                {/*  }}*/}
-                {/*  textBox={{*/}
-                {/*    className: "txt-fld",*/}
-                {/*    name: "bank_name",*/}
-                {/*    value: this.state.bank_name,*/}
-                {/*    events: { onChange: this.texthandle.bind(this) },*/}
-                {/*    option: {*/}
-                {/*      type: "text"*/}
-                {/*    }*/}
-                {/*  }}*/}
-                {/*/>*/}
-                <AlagehFormGroup
-                  div={{ className: "col-8 mandatory" }}
-                  label={{
-                    forceLabel: "Card Name",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "card_name",
-                    value: this.state.card_name,
-                    events: { onChange: this.texthandle.bind(this) },
-                    option: {
-                      type: "text"
-                    }
-                  }}
-                />
+        {this.state.HIMS_Active === true ? (
+          <div className="col-4">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-body">
+                <div className="row">
+                  <AlagehFormGroup
+                    div={{ className: "col-8 mandatory" }}
+                    label={{
+                      forceLabel: "Card Name",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "card_name",
+                      value: this.state.card_name,
+                      events: { onChange: this.texthandle.bind(this) },
+                      option: {
+                        type: "text"
+                      }
+                    }}
+                  />
 
-                <div className="col-4">
-                  <button
-                    style={{ marginTop: 19 }}
-                    className="btn btn-primary"
-                    onClick={this.addCardMaster.bind(this)}
-                  >
-                    Add to Card List
-                  </button>
+                  <div className="col-4">
+                    <button
+                      style={{ marginTop: 19 }}
+                      className="btn btn-primary"
+                      onClick={this.addCardMaster.bind(this)}
+                    >
+                      Add to Card List
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-body">
-              <div className="row">
-                <div className="col-12">
-                  <div data-validate="cardDiv" id="CardMasterGrid_Cntr">
-                    <AlgaehDataGrid
-                      id="CardMasterGrid"
-                      datavalidate="data-validate='cardDiv'"
-                      columns={[
-                        {
-                          fieldName: "card_name",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Card Name" }} />
-                          ),
-                          editorTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                div={{ className: "col" }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "card_name",
-                                  value: row.bank_name,
-                                  events: {
-                                    onChange: this.changeGridEditors.bind(
-                                      this,
-                                      row
-                                    )
-                                  },
-                                  others: {
-                                    errormessage: "Card Name - cannot be blank",
-                                    required: true
-                                  }
-                                }}
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12">
+                    <div data-validate="cardDiv" id="CardMasterGrid_Cntr">
+                      <AlgaehDataGrid
+                        id="CardMasterGrid"
+                        datavalidate="data-validate='cardDiv'"
+                        columns={[
+                          {
+                            fieldName: "card_name",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Card Name" }}
                               />
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "card_format_no",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Card Format" }}
-                            />
-                          ),
-                          editorTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                div={{ className: "col" }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "card_format_no",
-                                  value: row.bank_short_name,
-                                  events: {
-                                    onChange: this.changeGridEditors.bind(
-                                      this,
-                                      row
-                                    )
-                                  },
-                                  others: {
-                                    errormessage:
-                                      "Card Format - cannot be blank",
-                                    required: true
-                                  }
-                                }}
+                            ),
+                            editorTemplate: row => {
+                              return (
+                                <AlagehFormGroup
+                                  div={{ className: "col" }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "card_name",
+                                    value: row.bank_name,
+                                    events: {
+                                      onChange: this.changeGridEditors.bind(
+                                        this,
+                                        row
+                                      )
+                                    },
+                                    others: {
+                                      errormessage:
+                                        "Card Name - cannot be blank",
+                                      required: true
+                                    }
+                                  }}
+                                />
+                              );
+                            }
+                          },
+                          {
+                            fieldName: "card_format_no",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Card Format" }}
                               />
-                            );
+                            ),
+                            editorTemplate: row => {
+                              return (
+                                <AlagehFormGroup
+                                  div={{ className: "col" }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "card_format_no",
+                                    value: row.bank_short_name,
+                                    events: {
+                                      onChange: this.changeGridEditors.bind(
+                                        this,
+                                        row
+                                      )
+                                    },
+                                    others: {
+                                      errormessage:
+                                        "Card Format - cannot be blank",
+                                      required: true
+                                    }
+                                  }}
+                                />
+                              );
+                            }
                           }
-                        }
-                      ]}
-                      keyId="CardMasterGrid"
-                      dataSource={{
-                        data: this.state.card_list
-
-                      }}
-                      filter={true}
-                      isEditable={true}
-                      actions={{
-                        allowDelete: false
-                      }}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{
-                        onEdit: () => {},
-                        onDelete: this.deleteBankMaster.bind(this),
-                        onDone: this.updateBankMaster.bind(this)
-                      }}
-                      others={{}}
-                    />
+                        ]}
+                        keyId="CardMasterGrid"
+                        dataSource={{
+                          data: this.state.card_list
+                        }}
+                        filter={true}
+                        isEditable={true}
+                        actions={{
+                          allowDelete: false
+                        }}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                        events={{
+                          onEdit: () => {},
+                          onDelete: this.deleteBankMaster.bind(this),
+                          onDone: this.updateBankMaster.bind(this)
+                        }}
+                        others={{}}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        ) : null}
       </div>
     );
   }
@@ -770,8 +770,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(BankMaster)
+  connect(mapStateToProps, mapDispatchToProps)(BankMaster)
 );
