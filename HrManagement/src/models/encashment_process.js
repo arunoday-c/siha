@@ -262,13 +262,13 @@ export default {
         encashment_number = generatedNumbers[0];
         let strQuery = "";
 
-        let close_balance =
-          parseFloat(inputParam.close_balance) -
-          parseFloat(inputParam.leave_days);
-        strQuery += _mysql.mysqlQueryFormat(
-          "UPDATE hims_f_employee_monthly_leave set close_balance=? where  hims_f_employee_monthly_leave_id=?;",
-          [close_balance, inputParam.hims_f_employee_monthly_leave_id]
-        );
+        // let close_balance =
+        //   parseFloat(inputParam.close_balance) -
+        //   parseFloat(inputParam.leave_days);
+        // strQuery += _mysql.mysqlQueryFormat(
+        //   "UPDATE hims_f_employee_monthly_leave set close_balance=? where  hims_f_employee_monthly_leave_id=?;",
+        //   [close_balance, inputParam.hims_f_employee_monthly_leave_id]
+        // );
 
         _mysql
           .executeQuery({
@@ -276,8 +276,7 @@ export default {
               "INSERT INTO `hims_f_leave_encash_header` (encashment_number, employee_id, encashment_date,\
                 year, leave_id, close_balance, leave_days, leave_amount, airfare_amount, airfare_months, total_amount, \
                 hospital_id)\
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?); " +
-              strQuery,
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?); ",
             values: [
               generatedNumbers[0],
               inputParam.employee_id,

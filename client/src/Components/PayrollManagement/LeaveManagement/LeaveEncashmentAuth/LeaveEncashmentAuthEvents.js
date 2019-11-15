@@ -122,8 +122,7 @@ const getLeaveEncashDetails = ($this, row) => {
   //   .where(w => w.leave_encash_header_id === row.hims_f_leave_encash_header_id)
   //   .toArray();
 
-  debugger;
-  row.auth_level = $this.state.auth_level
+  row.auth_level = $this.state.auth_level;
   $this.setState({
     isOpen: true,
     EncashDetailPer: row
@@ -151,9 +150,14 @@ const AuthorizeLEaveEncash = ($this, data) => {
     if (willDelete.value) {
       let inputObj = {
         auth_level: $this.state.auth_level,
-        hims_f_leave_encash_header_id: $this.state.hims_f_leave_encash_header_id,
+        hims_f_leave_encash_header_id:
+          $this.state.hims_f_leave_encash_header_id,
         authorized: data,
-        leave_encash_level: $this.state.leave_encash_level
+        leave_encash_level: $this.state.leave_encash_level,
+        leave_days: $this.state.leave_days,
+        year: $this.state.year,
+        employee_id: $this.state.employee_id,
+        leave_id: $this.state.leave_id
       };
 
       let Succmsg = "";
@@ -175,7 +179,7 @@ const AuthorizeLEaveEncash = ($this, data) => {
             title: Succmsg,
             type: "success"
           });
-          $this.props.onClose()
+          $this.props.onClose();
         },
         onFailure: error => {
           swalMessage({

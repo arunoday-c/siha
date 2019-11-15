@@ -42,7 +42,7 @@ export default class EncashmentAuthDtls extends Component {
         }}
         title="Encashment Request Details"
       >
-        <div className="popupInner LeaveAuthPopup">
+        <div className="popupInner LeaveAuthPopup" styl={{ marginTop: 15 }}>
           <div className="popRightDiv">
             <div className="leave_en_auth row">
               <div className="col-6 form-group">
