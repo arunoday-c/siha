@@ -236,7 +236,10 @@ class EmployeePayment extends Component {
                                   <AlgaehLabel
                                     label={{ forceLabel: "Request No." }}
                                   />
-                                )
+                                ),
+                                className: drow => {
+                                  return "greenCell";
+                                }
                               },
                               {
                                 fieldName: "employee_code",

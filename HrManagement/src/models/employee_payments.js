@@ -398,10 +398,10 @@ export default {
                     _mysql
                       .executeQuery({
                         query:
-                          "select H.employee_id, H.`year`, D.leave_id,D.leave_days,(M.close_balance-D.leave_days) as close_balance \
-                    from hims_f_leave_encash_header H,hims_f_leave_encash_detail D,hims_f_employee_monthly_leave M\
-                    where H.hims_f_leave_encash_header_id =D.leave_encash_header_id and M.employee_id=H.employee_id and M.`year`=H.`year`and \
-                    M.leave_id = D.leave_id and H.hims_f_leave_encash_header_id=?;",
+                          "select H.employee_id, H.`year`, H.leave_id,H.leave_days,(M.close_balance-H.leave_days) as close_balance \
+                    from hims_f_leave_encash_header H,hims_f_employee_monthly_leave M\
+                    where M.employee_id=H.employee_id and M.`year`=H.`year`and \
+                    M.leave_id = H.leave_id and H.hims_f_leave_encash_header_id=?;",
                         values: [inputParam.employee_leave_encash_id],
                         printQuery: true
                       })
@@ -728,8 +728,9 @@ export default {
                         inputParam.employee_id
                       );
 
-                      strQuery += "UPDATE `hims_d_employee` SET  `suspend_salary`='Y', `last_salary_process_date`=? \
-                      where hims_d_employee_id=?; UPDATE `hims_f_salary` SET `salary_paid`='Y' where hims_f_salary_id in (?);"
+                      strQuery +=
+                        "UPDATE `hims_d_employee` SET  `suspend_salary`='Y', `last_salary_process_date`=? \
+                      where hims_d_employee_id=?; UPDATE `hims_f_salary` SET `salary_paid`='Y' where hims_f_salary_id in (?);";
 
                       values.push(
                         moment(leave_salary.leave_end_date).format(
