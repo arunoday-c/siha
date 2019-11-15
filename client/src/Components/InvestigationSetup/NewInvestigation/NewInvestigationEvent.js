@@ -35,8 +35,16 @@ const texthandle = ($this, ctrl, e) => {
 
 const Validations = $this => {
   let isError = false;
+  if ($this.state.test_code === null) {
+    isError = true;
+    swalMessage({
+      type: "error",
+      title: "Test Code Cannot be blank."
+    });
 
-  if ($this.state.description === null) {
+    document.querySelector("[name='test_code']").focus();
+  }
+  else if ($this.state.description === null) {
     isError = true;
     swalMessage({
       type: "error",

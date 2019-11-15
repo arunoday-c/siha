@@ -123,6 +123,25 @@ class NewInvestigation extends PureComponent {
                   <AlagehFormGroup
                     div={{ className: "col-3 mandatory" }}
                     label={{
+                      forceLabel: "Test Code",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "test_code",
+                      value: this.state.test_code,
+                      events: {
+                        onChange: texthandle.bind(this, this)
+                      },
+                      others: {
+                        tabIndex: "2",
+
+                      }
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-3 mandatory" }}
+                    label={{
                       fieldName: "test_name",
                       isImp: true
                     }}
