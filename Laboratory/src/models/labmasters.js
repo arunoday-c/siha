@@ -1061,5 +1061,213 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
+
+
+  selectMachineAnalytesMap: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let _strAppend = "";
+      let intValue = [];
+
+      if (req.query.hims_m_machine_analytes_header_id != null) {
+        _strAppend += "and H.hims_m_machine_analytes_header_id=?";
+        intValue.push(req.query.hims_m_machine_analytes_header_id);
+      }
+
+      if (req.query.machine_analyte_code != null) {
+        _strAppend += "and D.machine_analyte_code=?";
+        intValue.push(req.query.machine_analyte_code);
+      }
+
+      if (req.query.machine_id != null) {
+        _strAppend += "and D.machine_id=?";
+        intValue.push(req.query.machine_id);
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT H.*, D.*, LC.machine_name, HO.hospital_name, LA.description as analyte_name from hims_m_machine_analytes_header H \
+            inner join hims_m_machine_analytes_detail D on H.hims_m_machine_analytes_header_id = D.machine_analytes_header_id \
+            inner join hims_d_lab_analytes LA on LA.hims_d_lab_analytes_id = D.analyte_id \
+            inner join hims_d_lis_configuration LC on H.machine_id = LC.hims_d_lis_configuration_id \
+            inner join hims_d_hospital HO on HO.hims_d_hospital_id = LC.hospital_id where 1=1  " +
+            _strAppend +
+            "order by hims_m_machine_analytes_header_id desc",
+          values: intValue,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  insertMachineAnalytesMap: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = { ...req.body };
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "INSERT INTO `hims_m_machine_analytes_header` (`machine_id`, `created_by` ,`created_date`) \
+          VALUES (?, ?, ?)",
+          values: [
+            inputParam.machine_id,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date()
+          ],
+          printQuery: true
+        })
+        .then(header_result => {
+          const analyts_data = [
+            "machine_analyte_code",
+            "machine_analyte_name",
+            "analyte_id"
+          ];
+
+          _mysql
+            .executeQuery({
+              query:
+                "INSERT INTO hims_m_machine_analytes_detail(??) VALUES ?",
+              values: inputParam.analytes_data,
+              includeValues: analyts_data,
+              extraValues: {
+                machine_analytes_header_id: header_result.insertId
+              },
+              bulkInsertOrUpdate: true,
+              printQuery: true
+            })
+            .then(ord_analytes => {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = ord_analytes;
+                next();
+              });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+  updateMachineAnalytesMap: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = { ...req.body };
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "UPDATE `hims_m_machine_analytes_header` SET `updated_by`=?, `updated_date`=? \
+            WHERE `hims_m_machine_analytes_header_id`=?",
+          values: [
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            inputParam.hims_m_machine_analytes_header_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          new Promise((resolve, reject) => {
+            if (inputParam.insert_analytes_data.length > 0) {
+              const analyts_data = [
+                "machine_analytes_header_id",
+                "machine_analyte_code",
+                "machine_analyte_name",
+                "analyte_id"
+              ];
+              _mysql
+                .executeQuery({
+                  query:
+                    "INSERT INTO hims_m_machine_analytes_detail(??) VALUES ?",
+                  values: inputParam.insert_analytes_data,
+                  includeValues: analyts_data,
+                  bulkInsertOrUpdate: true,
+                  printQuery: true
+                })
+                .then(insert_data => {
+                  resolve(insert_data);
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            } else {
+              resolve({});
+            }
+          })
+            .then(result => {
+              console.log("DeleteQry", inputParam.delete_analytes_data.length)
+              if (inputParam.delete_analytes_data.length > 0) {
+
+
+                let DeleteQry = "";
+                for (let i = 0; i < inputParam.delete_analytes_data.length; i++) {
+                  DeleteQry += _mysql.mysqlQueryFormat(
+                    "DELETE from `hims_m_machine_analytes_detail`  where hims_m_machine_analytes_detail_id=?;",
+                    [
+                      inputParam.delete_analytes_data[i].hims_m_machine_analytes_detail_id
+                    ]
+                  );
+                }
+                console.log("DeleteQry", DeleteQry)
+                _mysql
+                  .executeQuery({
+                    query: DeleteQry,
+                    printQuery: true
+                  })
+                  .then(result => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = result;
+                      next();
+                    });
+                  })
+                  .catch(e => {
+                    _mysql.rollBackTransaction(() => {
+                      next(e);
+                    });
+                  });
+              } else {
+                console.log("DeleteQry", inputParam.delete_analytes_data.length)
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = result;
+                  next();
+                });
+              }
+            });
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
 };
