@@ -11,7 +11,8 @@ const {
   updateMicroResultEntry,
   getMicroResult,
   getPatientTestList,
-  getComparedLabResult
+  getComparedLabResult,
+  updateResultFromMachine
 } = labModels;
 
 export default () => {
@@ -91,6 +92,17 @@ export default () => {
       });
     }
   });
+
+  api.put(
+    "/updateResultFromMachine",
+    updateResultFromMachine,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
 
   return api;
 };

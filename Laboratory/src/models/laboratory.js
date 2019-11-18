@@ -5,6 +5,7 @@ import appsettings from "algaeh-utilities/appsettings.json";
 import pad from "node-string-pad";
 import moment from "moment";
 import mysql from "mysql";
+import _ from "lodash";
 
 export default {
   getLabOrderedServices: (req, res, next) => {
@@ -1190,6 +1191,125 @@ export default {
           _mysql.releaseConnection();
 
           next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  updateResultFromMachine: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      let input = req.body;
+
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_f_lab_order_id from hims_f_lab_order where lab_id_number=?;",
+          values: [
+            input.sampleNo
+          ],
+          printQuery: true
+        })
+        .then(lab_order => {
+          // MachineId          
+          if (lab_order.length > 0) {
+            _mysql
+              .executeQuery({
+                query:
+                  "select hims_f_ord_analytes_id, analyte_id, critical_low, normal_low, normal_high, critical_high \
+                  from hims_f_ord_analytes where order_id=?;",
+                values: [
+                  lab_order[0].hims_f_lab_order_id
+                ],
+                printQuery: true
+              })
+              .then(ord_analytes => {
+                let strResultUpdate = ""
+                for (let i = 0; i < input.result.length; i++) {
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "select D.analyte_id from hims_m_machine_analytes_header H, hims_m_machine_analytes_detail D \
+                      where H.hims_m_machine_analytes_header_id = D.machine_analytes_header_id and \
+                      H.machine_id = ? and machine_analyte_code=?;",
+                      values: [
+                        input.MachineId,
+                        input.result[i].tesCode
+                      ],
+                      printQuery: true
+                    })
+                    .then(analyte_data => {
+                      let selected_analyte = _.find(
+                        ord_analytes,
+                        f =>
+                          f.analyte_id === analyte_data[0].analyte_id
+                      );
+
+                      let critical_type = ""
+                      if (parseFloat(input.result[i].rawResult) <= parseFloat(selected_analyte.critical_low)) {
+                        critical_type = "CL";
+                      } else if (parseFloat(input.result[i].rawResult) < parseFloat(selected_analyte.normal_low)) {
+                        critical_type = "L";
+                      } else if (parseFloat(input.result[i].rawResult) < parseFloat(selected_analyte.normal_high)) {
+                        critical_type = "N";
+                      } else if (parseFloat(input.result[i].rawResult) < parseFloat(selected_analyte.critical_high)) {
+                        critical_type = "H";
+                      } else {
+                        critical_type = "CH";
+                      }
+
+                      strResultUpdate += mysql.format(
+                        "UPDATE `hims_f_ord_analytes` SET result=?, critical_type=? where hims_f_ord_analytes_id=?;",
+                        [
+                          input.result[i].rawResult,
+                          critical_type,
+                          selected_analyte.hims_f_ord_analytes_id
+                        ]
+                      );
+
+
+
+                      if (i == input.result.length - 1) {
+                        _mysql
+                          .executeQuery({
+                            query: strResultUpdate,
+                            printQuery: true
+                          })
+                          .then(update_result => {
+                            _mysql.releaseConnection();
+                            req.records = update_result;
+                            next();
+                          })
+                          .catch(e => {
+                            _mysql.releaseConnection();
+                            next(e);
+                          });
+                      }
+                    })
+                    .catch(e => {
+                      _mysql.releaseConnection();
+                      next(e);
+                    });
+                }
+
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
+          } else {
+            _mysql.releaseConnection();
+            req.records = lab_order;
+            next();
+          }
+
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
         });
     } catch (e) {
       _mysql.releaseConnection();

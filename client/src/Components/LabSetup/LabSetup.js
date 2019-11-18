@@ -8,7 +8,7 @@ import "../../index.scss";
 // import LabSection from "./LabSection/LabSection";
 import LabContainer from "./LabContainer/LabContainer";
 import LabSpecimen from "./LabSpecimen/LabSpecimen";
-// import Equipment from "./Equipment/Equipment";
+import Equipment from "./Equipment/Equipment";
 import Analyte from "./Analyte/Analyte";
 import TestCategory from "./TestCategory/TestCategory";
 import AntiBioMaster from "./AntiBioMaster/AntiBioMaster";
@@ -118,20 +118,6 @@ class LabSetup extends Component {
                   />
                 }
               </li>
-              {/* <li
-              algaehtabs={"Equipment"}
-
-              className={"nav-item tab-button "}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    fieldName: "lab_equipment"
-                  }}
-                />
-              }
-            </li> */}
 
               <li
                 algaehtabs={"TestCategory"}
@@ -172,6 +158,22 @@ class LabSetup extends Component {
                   />
                 }
               </li>
+
+              <li
+                algaehtabs={"Equipment"}
+
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Machine Mapping"
+                    }}
+                  />
+                }
+              </li>
+
             </ul>
           </div>
         </div>
@@ -191,7 +193,12 @@ class LabSetup extends Component {
             <AntiBioMaster />
           ) : this.state.pageDisplay === "MicroGroupType" ? (
             <MicroGroupType />
+          ) : this.state.pageDisplay === "Equipment" ? (
+            <Equipment />
           ) : null}
+
+
+
 
           {/* : this.state.pageDisplay === "Equipment" ? (
             <Equipment />

@@ -10,7 +10,7 @@ const {
   getDayEndData,
   postDayEndData,
   removeAccountHead,
-  test
+  previewDayEndEntries
 } = finance;
 
 export default () => {
@@ -163,7 +163,7 @@ export default () => {
         .end();
     }
   });
-  api.post("/test", test, (req, res, next) => {
+  api.get("/previewDayEndEntries", previewDayEndEntries, (req, res, next) => {
     res
       .status(utlities.AlgaehUtilities().httpStatus().ok)
       .json({

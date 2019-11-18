@@ -246,11 +246,19 @@ export default {
                 printQuery: true
               })
               .then(detail => {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = detail;
-                  next();
-                });
+                if (input.opening_bal > 0) {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = detail;
+                    next();
+                  });
+                } else {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = detail;
+                    next();
+                  });
+                }
               })
               .catch(e => {
                 _mysql.rollBackTransaction(() => {
@@ -774,98 +782,33 @@ export default {
       });
   },
   //created by irfan: to
-  test: (req, res, next) => {
+  previewDayEndEntries: (req, res, next) => {
     const _mysql = new algaehMysql();
     const utilities = new algaehUtilities();
-    let input = req.body;
-    let decimal_places = 4;
 
     _mysql
       .executeQuery({
-        query: `SELECT * FROM  finance_account_head_relation where direct_Under='Y';
-        select finance_account_head_id,account_code,coalesce(parent_acc_id,'root') as parent_acc_id ,head_account_code,account_name ,account_level,finance_voucher_id,
-        coalesce(sum(debit_amount),0.0000)as debit_amount,coalesce(sum(credit_amount),0.000)as credit_amount
-        from finance_account_head  H left join finance_voucher_details VD
-        on H.finance_account_head_id=VD.head_id        
-        where account_code like'1%' group by finance_account_head_id order by account_level;
-        select max(account_level) as account_level FROM finance_account_head where account_code like '1%';`,
-        values: [],
+        query: `select finance_day_end_sub_detail_id ,payment_date,head_id,head_account_code,account_name,
+        child_id,child_name,debit_amount,case payment_type when 'CR' then 'CREDIT' else 'DEBIT' end
+         as payment_type,credit_amount,narration
+        from finance_day_end_sub_detail SD left join finance_account_head H on SD.head_id=H.finance_account_head_id
+        left join finance_account_child C on SD.child_id=C.finance_account_child_id where day_end_header_id=?;
+        select coalesce(sum(cash),0)as cash,coalesce(sum(card),0)as card,coalesce(sum(cheque),0)as cheque
+        from (select  case when payment_mode = "CA" then amount end as cash,
+        case when payment_mode = "CD" then amount end as card,
+        case when payment_mode = "CH" then amount end as cheque
+        from finance_day_end_detail where day_end_header_id=?) as A ;`,
+        values: [req.query.day_end_header_id, req.query.day_end_header_id],
         printQuery: true
       })
       .then(result => {
         _mysql.releaseConnection();
-        let head_relations = result[0];
-        let account_head = result[1];
 
-        let max_account_level = parseInt(result[2][0]["account_level"]);
-        let levels_group = _.chain(account_head)
-          .groupBy(g => g.account_level)
-          .value();
-
-        levels_group[max_account_level].map(m => {
-          m["total_debit_amount"] = m["debit_amount"];
-          m["total_credit_amount"] = m["credit_amount"];
-
-          m["cred_minus_deb"] = parseFloat(
-            parseFloat(m["credit_amount"]) - parseFloat(m["debit_amount"])
-          ).toFixed(decimal_places);
-          m["deb_minus_cred"] = parseFloat(
-            parseFloat(m["debit_amount"]) - parseFloat(m["credit_amount"])
-          ).toFixed(decimal_places);
-          return m;
-        });
-
-        for (let i = max_account_level - 1; i >= 0; i--) {
-          for (let k = 0; k < levels_group[i].length; k++) {
-            levels_group[i].map(item => {
-              let immediate_childs = levels_group[i + 1].filter(child => {
-                if (item.finance_account_head_id == child.parent_acc_id) {
-                  return item;
-                }
-              });
-
-              const total_debit_amount = _.chain(immediate_childs)
-                .sumBy(s => parseFloat(s.total_debit_amount))
-                .value()
-                .toFixed(decimal_places);
-
-              const total_credit_amount = _.chain(immediate_childs)
-                .sumBy(s => parseFloat(s.total_credit_amount))
-                .value()
-                .toFixed(decimal_places);
-
-              item["total_debit_amount"] = parseFloat(
-                parseFloat(item["debit_amount"]) +
-                  parseFloat(total_debit_amount)
-              ).toFixed(decimal_places);
-
-              item["total_credit_amount"] = parseFloat(
-                parseFloat(item["credit_amount"]) +
-                  parseFloat(total_credit_amount)
-              ).toFixed(decimal_places);
-
-              item["cred_minus_deb"] = parseFloat(
-                parseFloat(item["total_credit_amount"]) -
-                  parseFloat(item["total_debit_amount"])
-              ).toFixed(decimal_places);
-              item["deb_minus_cred"] = parseFloat(
-                parseFloat(item["total_debit_amount"]) -
-                  parseFloat(item["total_credit_amount"])
-              ).toFixed(decimal_places);
-
-              return item;
-            });
-          }
-        }
-        const final_res = [];
-
-        let len = Object.keys(levels_group).length;
-
-        for (let i = 0; i < len; i++) {
-          final_res.push(...levels_group[i]);
-        }
-
-        utilities.logger().log("final_res: ", final_res);
+        req.records = {
+          ...result[1][0],
+          entries: result[0]
+        };
+        next();
       })
       .catch(e => {
         _mysql.releaseConnection();
