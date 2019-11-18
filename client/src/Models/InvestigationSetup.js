@@ -4,6 +4,7 @@ export default {
 
     output = {
       hims_d_investigation_test_id: null,
+      test_code: null,
       short_description: null,
       description: null,
       investigation_type: "L",

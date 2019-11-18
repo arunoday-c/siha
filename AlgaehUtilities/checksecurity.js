@@ -40,6 +40,7 @@ module.exports = {
         redis.mset(options);
         resolve();
       } catch (e) {
+        process.exit(1);
         reject(e);
       }
     });
@@ -51,6 +52,7 @@ module.exports = {
         redis.incr(`usersCount`);
         resolve();
       } catch (e) {
+        process.exit(1);
         reject(e);
       }
     });

@@ -40,7 +40,9 @@ class ApplyLeaveEncashment extends Component {
       airfare_months: 0,
       leave_amount: 0,
       total_amount: 0,
-      encashDetail: []
+      encashDetail: [],
+      leave_id: null,
+      leave_days: 0
     };
     this.getLeaveTypes();
   }
@@ -84,7 +86,20 @@ class ApplyLeaveEncashment extends Component {
         this.setState(
           {
             employee_name: row.full_name,
-            employee_id: row.hims_d_employee_id
+            employee_id: row.hims_d_employee_id,
+            emp_leaves_data: [],
+            available_balance: 0.0,
+            total_applied_days: 0.0,
+            Request_enable: true,
+            loading_Process: false,
+            year: moment().year(),
+            airfare_amount: 0,
+            airfare_months: 0,
+            leave_amount: 0,
+            total_amount: 0,
+            encashDetail: [],
+            leave_id: null,
+            leave_days: 0
           },
           () => {
             this.getEmployeeLeaveData();

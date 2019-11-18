@@ -33,11 +33,22 @@ export default {
             let inputObj = req.query
             _mysql
                 .executeQuery({
-                    query: "select LO.*, P.patient_code, P.full_name, P.date_of_birth, P.gender, LS.sample_id, DLS.description\
-                    from hims_f_lab_order LO inner join hims_f_patient P on P.hims_d_patient_id = LO.patient_id  \
-                    inner join hims_f_lab_sample LS on LS.order_id = LO.hims_f_lab_order_id  \
-                    inner join hims_d_lab_specimen DLS on LS.sample_id = DLS.hims_d_lab_specimen_id  \
-                    where lab_id_number = ?",
+                    query: "select LO.hims_f_lab_order_id, LO.ordered_services_id,LO.patient_id,LO.visit_id, \
+                    LO.provider_id,LO.service_id,LO.status,LO.billed,LO.cancelled, \
+                    date_format(LO.ordered_date,'%Y%m%d') as ordered_date, LO.test_type, LO.lab_id_number, LO.run_type, \
+                    date_format(LO.confirmed_date,'%Y%m%d') as confirmed_date, P.patient_code, P.full_name,  \
+                    SUBSTRING_INDEX(SUBSTRING_INDEX(full_name, ' ', 1), ' ', -1) AS  first_name, \
+                    If(  length(full_name) - length(replace(full_name, ' ', ''))>1,   \
+                    SUBSTRING_INDEX(SUBSTRING_INDEX(full_name, ' ', 2), ' ', -1) ,NULL) as middle_name, \
+                    SUBSTRING_INDEX(SUBSTRING_INDEX(full_name, ' ', -1), ' ', -1) AS last_name, \
+                    date_format(P.date_of_birth,'%Y%m%d') as date_of_birth, \
+                    CASE P.gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' else 'U' END as gender, LS.sample_id, \
+                    DLS.description, IT.test_code from hims_f_lab_order LO \
+                    inner join hims_f_patient P on P.hims_d_patient_id = LO.patient_id \
+                    inner join hims_d_investigation_test IT on IT.services_id = LO.service_id \
+                    inner join hims_f_lab_sample LS on LS.order_id = LO.hims_f_lab_order_id \
+                    inner join hims_d_lab_specimen DLS on LS.sample_id = DLS.hims_d_lab_specimen_id \
+                    where lab_id_number = ?;",
                     values: [inputObj.lab_id_number],
                     printQuery: true
                 })
