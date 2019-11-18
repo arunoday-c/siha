@@ -7,8 +7,12 @@ import SortableTree, {
 } from "react-sortable-tree";
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
 import { AlgaehConfirm, AlgaehMessagePop } from "algaeh-react-components";
-import "antd/dist/antd.css";
-import { getAccounts, removeAccount,isPositive } from ".././FinanceAccountEvent";
+// import "antd/dist/antd.css";
+import {
+  getAccounts,
+  removeAccount,
+  isPositive
+} from ".././FinanceAccountEvent";
 export default function Assets() {
   const [symbol, setSymbol] = useState("");
   const [assetAmount, setAssetAmount] = useState("");
@@ -210,7 +214,10 @@ export default function Assets() {
                               <ul className="NodeActionButton">
                                 <li
                                   label="Add"
-                                  className={"NodeAddButton "+(node.leafnode==="Y"?"disabled":"")}
+                                  className={
+                                    "NodeAddButton " +
+                                    (node.leafnode === "Y" ? "disabled" : "")
+                                  }
                                   onClick={event => {
                                     setShowPopup(true);
                                     setSelectedNode(rowInfo);
@@ -219,7 +226,12 @@ export default function Assets() {
                                   Add
                                 </li>
                                 <li
-                                  className={"NodeDeleteButton "+(node.created_status ==="S"?"disabled":"")}
+                                  className={
+                                    "NodeDeleteButton " +
+                                    (node.created_status === "S"
+                                      ? "disabled"
+                                      : "")
+                                  }
                                   label="Delete"
                                 >
                                   <AlgaehConfirm
@@ -261,9 +273,10 @@ export default function Assets() {
                           title: (
                             <>
                               <span>
-                                {node.title} {" "}
+                                {node.title}{" "}
                                 {node.leafnode === "Y" ? null : (
-                                  <>/
+                                  <>
+                                    /
                                     {node.children === undefined
                                       ? 0
                                       : node.children.length}
@@ -276,7 +289,10 @@ export default function Assets() {
                             <div
                               style={{ fontSize: "medium", marginTop: "7px" }}
                             >
-                             <span className={isPositive(node.subtitle)}>{node.subtitle}</span>  <small>{node.trans_symbol}</small>
+                              <span className={isPositive(node.subtitle)}>
+                                {node.subtitle}
+                              </span>{" "}
+                              <small>{node.trans_symbol}</small>
                             </div>
                           )
                         };
