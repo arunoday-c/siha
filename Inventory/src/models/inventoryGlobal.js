@@ -155,6 +155,10 @@ export default {
               intValues.push(req.query.hospital_id);
             }
 
+            if (req.query.git_location == "N") {
+              _strQry += " and git_location='N' ";
+            }
+
             _mysql
               .executeQuery({
                 query:

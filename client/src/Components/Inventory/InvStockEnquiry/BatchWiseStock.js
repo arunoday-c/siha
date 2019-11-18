@@ -258,17 +258,6 @@ class BatchWiseStock extends Component {
                       others: { filterable: false }
                     },
                     {
-                      fieldName: "git_qty",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "GIT Quantity" }} />
-                      ),
-                      displayTemplate: row => {
-                        return parseFloat(row.git_qty);
-                      },
-                      disabled: true,
-                      others: { filterable: false }
-                    },
-                    {
                       fieldName: "avgcost",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />

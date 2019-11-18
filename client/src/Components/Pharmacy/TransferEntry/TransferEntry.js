@@ -67,10 +67,22 @@ class TransferEntry extends Component {
     this.props.getLocation({
       uri: "/pharmacy/getPharmacyLocation",
       module: "pharmacy",
+      data: { git_location: "N" },
       method: "GET",
       redux: {
         type: "LOCATIOS_GET_DATA",
         mappingName: "locations"
+      }
+    });
+
+    this.props.getLocation({
+      uri: "/pharmacy/getPharmacyLocation",
+      module: "pharmacy",
+      data: { git_location: "Y" },
+      method: "GET",
+      redux: {
+        type: "GIT_LOCATIOS_GET_DATA",
+        mappingName: "git_locations"
       }
     });
 
@@ -80,7 +92,8 @@ class TransferEntry extends Component {
       method: "GET",
       data: {
         location_status: "A",
-        hospital_id: hospital.hims_d_hospital_id
+        hospital_id: hospital.hims_d_hospital_id,
+        git_location: "N"
       },
       redux: {
         type: "LOCATIOS_GET_DATA",
@@ -517,6 +530,7 @@ class TransferEntry extends Component {
 
 function mapStateToProps(state) {
   return {
+    git_locations: state.git_locations,
     itemlist: state.itemlist,
     locations: state.locations,
     requisitionentry: state.requisitionentry,

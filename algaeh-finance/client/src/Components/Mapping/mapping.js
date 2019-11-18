@@ -99,7 +99,7 @@ export default function (props) {
               <div className="row">
                   <AlgaehTreeDropDown
                       div={{ className: "col-3 form-group" }}
-                      label={{ forceLabel: "OP CONTROL A/C",isImp:true}}
+                      label={{ forceLabel: "OP CONTROL A/C",isImp:true,align:"ltr"}}
                       value={opControlLabel}
                       onChange ={(currentNode, selectedNodes) => {
                           setOpControl({head_id:currentNode.head_id,child_id:currentNode.finance_account_child_id,account:"OP_CON"});
@@ -115,7 +115,7 @@ export default function (props) {
 
                   <AlgaehTreeDropDown
                       div={{ className: "col-3 form-group" }}
-                      label={{ forceLabel: "OP Patient Deposit",isImp:true}}
+                      label={{ forceLabel: "OP Patient Deposit",isImp:true,align:"ltr"}}
                       value={opDepositLabel}
                       onChange ={(currentNode, selectedNodes) => {
                           setOpPatientDeposit({head_id:currentNode.head_id,child_id:currentNode.finance_account_child_id,account:"OP_DEP"});
@@ -129,7 +129,7 @@ export default function (props) {
                   />
                   <AlgaehTreeDropDown
                       div={{ className: "col-3 form-group" }}
-                      label={{ forceLabel: "OP Patient Receivable A/C",isImp:true}}
+                      label={{ forceLabel: "OP Patient Receivable A/C",isImp:true,align:"ltr"}}
                       value={opReceviableLable}
                       onChange ={(currentNode, selectedNodes) => {
                           setOPReceviable({head_id:currentNode.head_id,child_id:currentNode.finance_account_child_id,account:"OP_REC"});
@@ -142,7 +142,7 @@ export default function (props) {
                   />
                   <AlgaehTreeDropDown
                       div={{ className: "col-3 form-group" }}
-                      label={{ forceLabel: "Cash In Hand A/C",isImp:true}}
+                      label={{ forceLabel: "Cash In Hand A/C",isImp:true,align:"ltr"}}
                       value={opCashInHandLabel}
                       onChange ={(currentNode, selectedNodes) => {
                           setOPCashInHand({head_id:currentNode.head_id,child_id:currentNode.finance_account_child_id,account:"CH_IN_HA"});

@@ -199,13 +199,14 @@ export default {
         .executeQuery({
           query:
             "INSERT INTO `hims_d_inventory_location` (`location_description`,  `location_type`, \
-              `hospital_id`, `allow_pos`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
-          VALUE(?,?,?,?,?,?,?,?)",
+              `hospital_id`, `allow_pos`, `git_location`,`created_date`, `created_by`, `updated_date`, `updated_by`)\
+          VALUE(?,?,?,?,?,?,?,?,?)",
           values: [
             input.location_description,
             input.location_type,
             input.hospital_id,
             input.allow_pos,
+            input.git_location,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
@@ -476,6 +477,14 @@ export default {
         intValues.push(req.query.hospital_id);
       }
 
+      if (req.query.allow_pos == "Y") {
+        _strQry += " and allow_pos='Y' ";
+      }
+
+      if (req.query.git_location !== null && req.query.git_location !== undefined) {
+        _strQry += `and git_location= '${req.query.git_location}'`;
+      }
+
       _mysql
         .executeQuery({
           query:
@@ -644,7 +653,7 @@ export default {
         .executeQuery({
           query:
             "UPDATE `hims_d_inventory_location` SET `location_description`=?, `location_status`=?, \
-            `location_type`=?, `hospital_id`=?, `allow_pos`=?, `updated_date`=?,`updated_by`=?, `record_status`=? \
+            `location_type`=?, `hospital_id`=?, `allow_pos`=?, `git_location` = ?, `updated_date`=?,`updated_by`=?, `record_status`=? \
             WHERE `record_status`='A' and `hims_d_inventory_location_id`=?;",
           values: [
             input.location_description,
@@ -652,6 +661,7 @@ export default {
             input.location_type,
             input.hospital_id,
             input.allow_pos,
+            input.git_location,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.record_status,

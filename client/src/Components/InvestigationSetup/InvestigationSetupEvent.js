@@ -50,6 +50,7 @@ const getInvestigations = $this => {
           .groupBy("$.hims_d_investigation_test_id", null, (k, g) => {
             let firstRecordSet = Enumerable.from(g).firstOrDefault();
             return {
+              test_code: firstRecordSet.test_code,
               available_in_house: firstRecordSet.available_in_house,
               category_id: firstRecordSet.category_id,
               cpt_id: firstRecordSet.cpt_id,

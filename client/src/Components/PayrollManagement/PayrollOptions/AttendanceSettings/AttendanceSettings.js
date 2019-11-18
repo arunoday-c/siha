@@ -176,23 +176,23 @@ export default class AttendanceSettings extends Component {
       case "salary_calendar":
         e.target.value === "P"
           ? this.setState({
-            [e.target.name]: e.target.value,
-            salary_calendar_fixed_days: null
-          })
+              [e.target.name]: e.target.value,
+              salary_calendar_fixed_days: null
+            })
           : this.setState({
-            [e.target.name]: e.target.value
-          });
+              [e.target.name]: e.target.value
+            });
         break;
 
       case "airfare_factor":
         e.target.value === "FI"
           ? this.setState({
-            [e.target.name]: e.target.value,
-            airfare_percentage: null
-          })
+              [e.target.name]: e.target.value,
+              airfare_percentage: null
+            })
           : this.setState({
-            [e.target.name]: e.target.value
-          });
+              [e.target.name]: e.target.value
+            });
 
         break;
 
@@ -624,7 +624,7 @@ export default class AttendanceSettings extends Component {
                         checked={this.state.ot_calculation === "A"}
                         onChange={this.textHandler.bind(this)}
                       />
-                      <span>Anuual</span>
+                      <span>Annual</span>
                     </label>
                   </div>
                 </div>

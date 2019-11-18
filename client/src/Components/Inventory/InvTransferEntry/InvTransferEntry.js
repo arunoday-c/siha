@@ -71,6 +71,7 @@ class InvTransferEntry extends Component {
       uri: "/inventory/getInventoryLocation",
       module: "inventory",
       method: "GET",
+      data: { git_location: "N" },
       redux: {
         type: "LOCATIOS_GET_DATA",
         mappingName: "inventorylocations"
@@ -81,11 +82,24 @@ class InvTransferEntry extends Component {
       uri: "/inventory/getInventoryUom",
       module: "inventory",
       method: "GET",
+
       redux: {
         type: "ITEM_UOM_GET_DATA",
         mappingName: "inventoryitemuom"
       }
     });
+
+    this.props.getLocation({
+      uri: "/inventory/getInventoryLocation",
+      module: "inventory",
+      data: { git_location: "Y" },
+      method: "GET",
+      redux: {
+        type: "GIT_LOCATIOS_GET_DATA",
+        mappingName: "git_locations"
+      }
+    });
+
 
     if (
       this.props.invuserwiselocations === undefined ||
@@ -97,7 +111,8 @@ class InvTransferEntry extends Component {
         method: "GET",
         data: {
           location_status: "A",
-          hospital_id: hospital.hims_d_hospital_id
+          hospital_id: hospital.hims_d_hospital_id,
+          git_location: "N"
         },
         redux: {
           type: "LOCATIOS_GET_DATA",
@@ -551,6 +566,7 @@ class InvTransferEntry extends Component {
 
 function mapStateToProps(state) {
   return {
+    git_locations: state.git_locations,
     inventoryitemlist: state.inventoryitemlist,
     inventorylocations: state.inventorylocations,
     invuserwiselocations: state.invuserwiselocations,

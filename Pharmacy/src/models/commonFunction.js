@@ -37,8 +37,8 @@ let updateIntoItemLocation = (req, res, next) => {
       .Select(s => {
         let unit_cost =
           req.body.transaction_type == "DNA" ||
-          req.body.transaction_type == "POS" ||
-          req.body.transaction_type == "SRT"
+            req.body.transaction_type == "POS" ||
+            req.body.transaction_type == "SRT"
             ? s.average_cost
             : s.unit_cost;
         xmlQuery += "<hims_m_item_location>";
@@ -120,14 +120,14 @@ let updateIntoItemLocation = (req, res, next) => {
               utilities.logger().log("req.flag: ");
               for (let i = 0; i < req.body.pharmacy_stock_detail.length; i++) {
                 req.body.pharmacy_stock_detail[i].location_id =
-                  req.body.to_location_id;
+                  req.body.git_location_id;
                 req.body.pharmacy_stock_detail[i].location_type =
-                  req.body.to_location_type;
+                  req.body.git_location_type;
 
                 req.body.pharmacy_stock_detail[i].sales_uom =
                   req.body.pharmacy_stock_detail[i].uom_transferred_id;
 
-                req.body.pharmacy_stock_detail[i].operation = "+";
+                req.body.pharmacy_stock_detail[i].operation = req.body.operation;
                 req.body.pharmacy_stock_detail[i].git_qty = 0;
               }
               req.flag = 0;
@@ -144,14 +144,14 @@ let updateIntoItemLocation = (req, res, next) => {
             utilities.logger().log("req.flag: ");
             for (let i = 0; i < req.body.pharmacy_stock_detail.length; i++) {
               req.body.pharmacy_stock_detail[i].location_id =
-                req.body.to_location_id;
+                req.body.git_location_id;
               req.body.pharmacy_stock_detail[i].location_type =
-                req.body.to_location_type;
+                req.body.git_location_type;
 
               req.body.pharmacy_stock_detail[i].sales_uom =
                 req.body.pharmacy_stock_detail[i].uom_transferred_id;
 
-              req.body.pharmacy_stock_detail[i].operation = "+";
+              req.body.pharmacy_stock_detail[i].operation = req.body.operation;
               req.body.pharmacy_stock_detail[i].git_qty = 0;
             }
             req.flag = 0;
