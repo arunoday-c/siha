@@ -142,11 +142,21 @@ const insertLabContainer = ($this, e) => {
 
 const testData = ($this, e) => {
 
+  let inputObj = {
+    sampleNo: "101929713001",
+    MachineId: "1",
+    result: [
+      { tesCode: "RBC", rawResult: "14.04", resultUnit: "Mg/ml" },
+      { tesCode: "WBC", rawResult: "14044", resultUnit: "count" }
+    ]
+
+  }
+  debugger
   algaehApiCall({
-    uri: "/LisIntegration/getTestDetails",
+    uri: "/laboratory/updateResultFromMachine",
     module: "laboratory",
-    method: "GET",
-    data: { lab_id_number: "101929713001" },
+    method: "PUT",
+    data: inputObj,
     onSuccess: response => {
       if (response.data.success === true) {
         debugger

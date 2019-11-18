@@ -43,3 +43,9 @@ td {
   cursor: pointer;
   margin-top: 15px;
 }
+
+.analyte_grid_cntr {
+  .ReactTable {
+    max-height: 30vh !important;
+  }
+}
