@@ -32,7 +32,10 @@ const {
   updateMicroGroup,
   selectGroupAntiMap,
   insertGroupAntiMap,
-  updateGroupAntiMap
+  updateGroupAntiMap,
+  selectMachineAnalytesMap,
+  insertMachineAnalytesMap,
+  updateMachineAnalytesMap
 } = labModels;
 
 export default () => {
@@ -250,6 +253,29 @@ export default () => {
   });
 
   api.put("/updateGroupAntiMap", updateGroupAntiMap, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+
+  //Group Antibiotic Map
+  api.get("/selectMachineAnalytesMap", selectMachineAnalytesMap, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.post("/insertMachineAnalytesMap", insertMachineAnalytesMap, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put("/updateMachineAnalytesMap", updateMachineAnalytesMap, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records
