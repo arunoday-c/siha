@@ -275,7 +275,8 @@ export default {
             sub_department_id, hospital_id, service_type_id, standard_fee , discount, vat_applicable, vat_percent, \
             effective_start_date, effectice_end_date, procedure_type, physiotherapy_service,\
             P.account_name as cash_head_account,C.child_name as cash_child_account,\
-            H.account_name as insurance_head_account,CH.child_name as insurance_child_account\
+            H.account_name as insurance_head_account,CH.child_name as insurance_child_account,\
+            S.head_account,S.head_id,S.child_id,S.insurance_head_account,S.insurance_head_id,S.insurance_child_id \
             from \
             hims_d_services S left join hims_d_cpt_code CPT on CPT.hims_d_cpt_code_id = S.cpt_code \
             left join finance_account_head P on S.head_id=P.finance_account_head_id\
