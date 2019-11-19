@@ -23,6 +23,14 @@
                     </tr>
                 </thead>
                 <tbody>{{#hasElement details}}
+                    <tr class="numberFld numberFldTotalBottom">
+                        <td class="" colspan="8"></td>
+                        <td class="numberFld" colspan="">{{total_loan_amount}}</td>
+                        <td class="numberFld" colspan="">{{total_approved_amount}}</td>
+                        <td class="numberFld" colspan="">{{total_installment_amount}}</td>
+                        <td class="" colspan=""></td>
+                        <td class="numberFld" colspan="">{{total_pending_loan}}</td>
+                    </tr>
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
@@ -33,11 +41,11 @@
                         <td>{{sub_department_name}}</td>
                         <td>{{loan_description}}</td>
                         <td>{{loan_application_date}}</td>
-                        <td>{{loan_amount}}</td>
-                        <td>{{approved_amount}}</td>
-                        <td>{{installment_amount}}</td>
+                        <td class="numberFld ">{{loan_amount}}</td>
+                        <td class="numberFld ">{{approved_amount}}</td>
+                        <td class="numberFld numberFldTotal">{{installment_amount}}</td>
                         <td>{{pending_tenure}}</td>
-                        <td>{{pending_loan}}</td>
+                        <td class="numberFld">{{pending_loan}}</td>
                     </tr>
                     {{/each }}
                     {{else}}
