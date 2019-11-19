@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AlgaehActions } from "../../../../actions/algaehActions";
 import "./LoanRequest.scss";
 import {
   getAmountFormart,
@@ -11,28 +15,41 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
-import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
+// import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import { getYears } from "../../../../utils/GlobalFunctions";
+import {
+  getYears,
+  AlgaehOpenContainer
+} from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
+import AlgaehSearch from "../../../Wrapper/globalSearch";
 
 class LoanRequest extends Component {
   constructor(props) {
     super(props);
 
     this.inputRef = React.createRef();
+    const hospital = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    ).hims_d_hospital_id;
 
     this.state = {
+      hospital_id: hospital,
       hims_d_employee_id: null,
       selectedLang: this.props.SelectLanguage,
       loan_master: [],
       employee_loans: [],
       loan_limit: 0,
-      start_year: parseInt(moment().year(), 10),
+      start_year: moment().year(), //parseInt(moment().year(), 10),
       deducting_year: moment().year(),
-      deducting_month: parseInt(moment().format("M"), 10) + 1
+      deducting_month: moment()
+        .add(1, "months")
+        .format("M"), //parseInt(, 10) + 1
       // request_type: "LO"
+      start_month: moment()
+        .add(1, "months")
+        .format("M")
     };
     this.getLoanMaster();
   }
@@ -46,6 +63,19 @@ class LoanRequest extends Component {
   // }
 
   componentDidMount() {
+    if (
+      this.props.organizations === undefined ||
+      this.props.organizations.length === 0
+    ) {
+      this.props.getOrganizations({
+        uri: "/organization/getOrganization",
+        method: "GET",
+        redux: {
+          type: "ORGS_GET_DATA",
+          mappingName: "organizations"
+        }
+      });
+    }
     let request_type = this.props.type;
     this.setState({
       request_type
@@ -68,7 +98,7 @@ class LoanRequest extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.request_type !== prevState.request_type) {
-      this.inputRef.current.onClearHandler();
+      // this.inputRef.current.onClearHandler();
       if (this.state.request_type === "LO") {
         this.clearEmployee();
         this.clearAdvanceState();
@@ -104,6 +134,28 @@ class LoanRequest extends Component {
     });
   }
 
+  employeeSearch() {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.Employee_details.employee
+      },
+      searchName: "employee_branch_wise",
+      uri: "/gloabelSearch/get",
+      inputs: "hospital_id = " + this.state.hospital_id,
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        this.setState(
+          {
+            employee_name: row.full_name,
+            employee_id: row.hims_d_employee_id
+          },
+          () => this.getEmployees()
+        );
+      }
+    });
+  }
   getEmployeeLoans() {
     algaehApiCall({
       uri: "/loan/getLoanApplication",
@@ -736,7 +788,6 @@ class LoanRequest extends Component {
       return null;
     }
   }
-
   render() {
     let allYears = getYears();
     return (
@@ -750,7 +801,40 @@ class LoanRequest extends Component {
             </div>
             <div className="portlet-body" data-validate="loanApplyDiv">
               <div className="row">
-                <AlgaehAutoSearch
+                <AlagehAutoComplete
+                  div={{ className: "col-12 form-group mandatory" }}
+                  label={{
+                    forceLabel: "Select Branch",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "hospital_id",
+                    className: "select-fld",
+                    value: this.state.hospital_id,
+                    dataSource: {
+                      textField: "hospital_name",
+                      valueField: "hims_d_hospital_id",
+                      data: this.props.organizations
+                    },
+                    onChange: this.dropDownHandler.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        hospital_id: null
+                      });
+                    }
+                  }}
+                />
+                <div className="col-12 globalSearchCntr form-group mandatory">
+                  <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+                  <h6 onClick={this.employeeSearch.bind(this)}>
+                    {this.state.employee_name
+                      ? this.state.employee_name
+                      : "Search Employee"}
+                    <i className="fas fa-search fa-lg" />
+                  </h6>
+                </div>
+
+                {/* <AlgaehAutoSearch
                   div={{ className: "col-12 form-group mandatory" }}
                   label={{
                     forceLabel: "Employee",
@@ -778,32 +862,7 @@ class LoanRequest extends Component {
                   value={this.state.full_name}
                   searchName="employee"
                   onClick={this.searchSelect.bind(this)}
-                />
-                {/* <div className="col">
-                  <label>Request Type</label>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        name="request_type"
-                        value="LO"
-                        checked={this.state.request_type === "LO"}
-                        onChange={this.textHandle.bind(this)}
-                      />
-                      <span>Loan</span>
-                    </label>
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        name="request_type"
-                        value="AD"
-                        checked={this.state.request_type === "AD"}
-                        onChange={this.textHandle.bind(this)}
-                      />
-                      <span>Advance</span>
-                    </label>
-                  </div>
-                </div> */}
+                /> */}
               </div>
               <div className="myDiv">
                 {this.state.request_type === "LO" ? (
@@ -1003,7 +1062,10 @@ class LoanRequest extends Component {
                         sort: "off",
                         name: "deducting_month",
                         className: "select-fld",
-                        value: this.state.deducting_month,
+                        value:
+                          typeof this.state.deducting_month === "number"
+                            ? String(this.state.deducting_month)
+                            : this.state.deducting_month,
                         dataSource: {
                           textField: "name",
                           valueField: "value",
@@ -1050,5 +1112,20 @@ class LoanRequest extends Component {
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    organizations: state.organizations
+  };
+}
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getOrganizations: AlgaehActions
+    },
+    dispatch
+  );
+}
 
-export default LoanRequest;
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(LoanRequest)
+);
