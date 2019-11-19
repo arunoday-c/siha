@@ -206,17 +206,12 @@ class DayEndProcess extends Component {
                   id="dayEndProcessDetailsGrid"
                   columns={[
                     {
-                      fieldName: "account_name",
+                      fieldName: "to_account",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Account Name" }} />
+                        <AlgaehLabel label={{ forceLabel: "To Account" }} />
                       )
                     },
-                    {
-                      fieldName: "child_name",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Child Name" }} />
-                      )
-                    },
+
                     {
                       fieldName: "payment_type",
                       label: (

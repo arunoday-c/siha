@@ -267,7 +267,7 @@ export default {
                       values: [
                         new Date(),
                         input.account_code,
-                        input.head_id,
+                        input.finance_account_head_id,
                         input.child_id,
                         debit_amount,
                         payment_type,
@@ -385,9 +385,13 @@ export default {
               printQuery: true
             })
             .then(resul => {
-              console.log("resul", resul);
+
               _mysql.releaseConnection();
-              req.records = resul;
+              req.records = {
+                account_code:account_code,
+                finance_account_head_id:resul.insertId
+
+              };
               next();
             })
             .catch(e => {

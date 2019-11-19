@@ -9,7 +9,6 @@ export function AddNewAccountDetails(data, error, result) {
         data: data,
         module: "finance",
         onSuccess: res => {
-            debugger
             if (res.data.success) {
                 result(res.data.result);
             } else {
