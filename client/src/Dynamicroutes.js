@@ -298,6 +298,9 @@ const PageToPlot = {
   InvPointOfSale: React.lazy(() =>
     retry(() => import("./Components/Inventory/InvPointOfSale/InvPointOfSale"))
   ),
+  InvStockAdjustment: React.lazy(() =>
+    retry(() => import("./Components/Inventory/InvStockAdjustment/InvStockAdjustment"))
+  ),
   InvAcknowledgeList: InvAcknowledgeList,
   VendorSetup: React.lazy(() =>
     retry(() => import("./Components/VendorSetup/VendorSetup"))

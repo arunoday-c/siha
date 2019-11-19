@@ -21,9 +21,9 @@ import {
     adjustQtyHandaler,
     AddItemtoList
     // generateReport,
-} from "./StockAdjustmentEvents";
+} from "./InvStockAdjustmentEvents";
 
-import "./StockAdjustment.scss";
+import "./InvStockAdjustment.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
@@ -33,7 +33,7 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
-class StockAdjustment extends Component {
+class InvStockAdjustment extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -47,7 +47,7 @@ class StockAdjustment extends Component {
             adjust_amount: 0,
 
             uom_description: null,
-            pharmacy_stock_detail: [],
+            inventory_stock_detail: [],
             location_selected: false,
             saveEnable: true,
             location_name: null,
@@ -55,13 +55,14 @@ class StockAdjustment extends Component {
         };
     }
     componentDidMount() {
+
         this.props.getLocation({
-            uri: "/pharmacyGlobal/getUserLocationPermission",
-            module: "pharmacy",
+            uri: "/inventoryGlobal/getUserLocationPermission",
+            module: "inventory",
             method: "GET",
             redux: {
                 type: "LOCATIOS_GET_DATA",
-                mappingName: "poslocations"
+                mappingName: "invuserwiselocations"
             }
         });
     }
@@ -111,7 +112,7 @@ class StockAdjustment extends Component {
                                 fileName: "spotlightSearch",
                                 fieldName: "AdjustmentEntry.AdjEntry"
                             },
-                            searchName: "ADJEntry"
+                            searchName: "InvADJEntry"
                         }}
                         userArea={
                             <div className="row">
@@ -164,8 +165,8 @@ class StockAdjustment extends Component {
                                                 value: this.state.location_id,
                                                 dataSource: {
                                                     textField: "location_description",
-                                                    valueField: "hims_d_pharmacy_location_id",
-                                                    data: this.props.poslocations
+                                                    valueField: "hims_d_inventory_location_id",
+                                                    data: this.props.invuserwiselocations
                                                 },
                                                 onChange: LocationchangeTexts.bind(this, this),
                                                 autoComplete: "off",
@@ -213,12 +214,12 @@ class StockAdjustment extends Component {
                                                 );
                                             }}
                                             name="item_id"
-                                            columns={spotlightSearch.pharmacy.itemmaster}
+                                            columns={spotlightSearch.Items.Invitemmaster}
                                             displayField="item_description"
                                             value={this.state.item_description}
-                                            searchName="itemmaster"
+                                            searchName="tranitemmaster"
                                             extraParameters={{
-                                                pharmacy_location_id: this.state.location_id
+                                                inventory_location_id: this.state.location_id
                                             }}
                                             onClick={itemchangeText.bind(this, this)}
                                             others={{
@@ -543,7 +544,7 @@ class StockAdjustment extends Component {
                                                             }
                                                         ]}
                                                         keyId="stockAdjustGrid"
-                                                        dataSource={{ data: this.state.pharmacy_stock_detail }}
+                                                        dataSource={{ data: this.state.inventory_stock_detail }}
                                                         isEditable={false}
                                                         paging={{ page: 0, rowsPerPage: 10 }}
                                                         events={{
@@ -623,7 +624,7 @@ class StockAdjustment extends Component {
 
 function mapStateToProps(state) {
     return {
-        poslocations: state.poslocations
+        invuserwiselocations: state.invuserwiselocations
     };
 }
 
@@ -640,5 +641,5 @@ export default withRouter(
     connect(
         mapStateToProps,
         mapDispatchToProps
-    )(StockAdjustment)
+    )(InvStockAdjustment)
 );

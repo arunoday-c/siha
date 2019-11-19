@@ -8,6 +8,7 @@ import requisitionEntry from "../controllers/requisitionEntry";
 import transferEntry from "../controllers/transferEntry";
 import POSCreditSettlement from "../controllers/POSCreditSettlement";
 import consumptionEntry from "../controllers/consumptionEntry";
+import stockAdjustment from "../controllers/stockAdjustment";
 
 const router = express();
 router.use("/initialstock", initialstock());
@@ -19,5 +20,6 @@ router.use("/requisitionEntry", requisitionEntry());
 router.use("/transferEntry", transferEntry());
 router.use("/POSCreditSettlement", POSCreditSettlement());
 router.use("/consumptionEntry", consumptionEntry());
+router.use("/stockAdjustment", stockAdjustment());
 
 export default router;
