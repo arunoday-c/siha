@@ -56,7 +56,8 @@ const executePDF = function executePDFMethod(options) {
 				nationality_id from hims_d_earning_deduction where record_status='A' and print_report='Y' order by print_order_by ;\
 				select E.employee_code,E.full_name,E.employee_designation_id,S.employee_id,E.sub_department_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
 				E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
-				S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.total_days,S.display_present_days,S.net_salary,S.total_earnings,S.total_deductions,S.salary_paid_date,\
+        S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.total_days,S.display_present_days,S.net_salary, \
+        case S.loan_due_amount when '0.000' then '-' else S.loan_due_amount end as loan_due_amount, S.total_earnings,S.total_deductions,S.salary_paid_date,\
         S.total_contributions,coalesce(S.ot_work_hours,0.0) as ot_work_hours,    coalesce(S.ot_weekoff_hours,0.0) as ot_weekoff_hours,\
         coalesce(S.ot_holiday_hours,0.0) as ot_holiday_hours,H.hospital_name,SD.sub_department_name
 				from hims_d_employee E\
@@ -73,7 +74,7 @@ const executePDF = function executePDFMethod(options) {
             input.month,
             input.year
           ],
-          printQuery: false
+          printQuery: true
         })
         .then(result => {
           const components = result[0];
@@ -93,7 +94,8 @@ const executePDF = function executePDFMethod(options) {
           let sum_earnings = 0;
           let sum_deductions = 0;
           let sum_contributions = 0;
-          let sum_net_salary = 0;
+          let sum_net_salary = 0,
+            sum_loan_emi = 0;
 
           if (salary.length > 0) {
             //--------first part------
@@ -109,6 +111,7 @@ const executePDF = function executePDFMethod(options) {
             );
 
             sum_net_salary = _.sumBy(salary, s => parseFloat(s.net_salary));
+            sum_loan_emi = _.sumBy(salary, s => parseFloat(s.loan_due_amount));
 
             const salary_header_ids = salary.map(s => s.hims_f_salary_id);
 
@@ -365,6 +368,7 @@ const executePDF = function executePDFMethod(options) {
                   sum_deductions: sum_deductions.toFixed(decimal_places),
                   sum_contributions: sum_contributions.toFixed(decimal_places),
                   sum_net_salary: sum_net_salary.toFixed(decimal_places),
+                  sum_loan_emi: sum_loan_emi.toFixed(decimal_places),
                   sum_employe_plus_emplyr: sum_employe_plus_emplyr,
                   sum_gratuity: sum_gratuity,
                   sum_leave_salary: sum_leave_salary,

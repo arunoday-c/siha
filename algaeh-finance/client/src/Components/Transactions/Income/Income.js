@@ -69,9 +69,9 @@ export default function Income() {
                 <h6>Source Account</h6>
                 <div className="row">
                   <AlgaehAutoComplete
-                    div={{ className: "col-6 form-group" }}
+                    div={{ className: "col-5 form-group" }}
                     label={{
-                      forceLabel: "branch",
+                      forceLabel: "Source Account 1",
                       isImp: true
                     }}
                     selector={{
@@ -94,11 +94,11 @@ export default function Income() {
                       isImp: true
                     }}
                     textBox={{
-                      type: "text",
+                      type: "number",
                       value: "",
                       className: "form-control",
                       id: "name",
-                      placeholder: "Income Amount"
+                      placeholder: "0.00"
                       //autocomplete: false
                     }}
                   />{" "}
@@ -122,7 +122,11 @@ export default function Income() {
                 <h6>Destination Account</h6>
                 <div className="row">
                   <AlgaehAutoComplete
-                    label={{ forceLabel: "ABC" }}
+                    div={{ className: "col-5 form-group" }}
+                    label={{
+                      forceLabel: "Destination Account 1",
+                      isImp: true
+                    }}
                     selector={{
                       name: "",
                       placeholder: "",
@@ -134,25 +138,6 @@ export default function Income() {
                       }
                     }}
                   />
-                  {/* <AlgaehDropDown
-                    div={{
-                      className: "form-group algaeh-select-fld col-5"
-                    }}
-                    label={{
-                      forceLabel: "Select Account",
-                      isImp: true
-                    }}
-                    selector={{
-                      className: "form-control",
-                      name: "country",
-                      onChange: "value"
-                    }}
-                    dataSource={{
-                      textField: "name",
-                      valueField: "value",
-                      data: incomeDestination
-                    }}
-                  />{" "} */}
                   <AlgaehFormGroup
                     div={{
                       className: "form-group algaeh-text-fld col-4"
@@ -162,16 +147,15 @@ export default function Income() {
                       isImp: true
                     }}
                     textBox={{
-                      type: "text",
+                      type: "number",
                       value: "",
                       className: "form-control",
                       id: "name",
-                      placeholder: "Income Amount"
-                      // autocomplete: false
+                      placeholder: "0.00"
+                      //autocomplete: false
                     }}
                   />{" "}
                   <div className="col-3">
-                    {" "}
                     <button
                       className="btn  btn-default"
                       style={{ marginTop: 21 }}
@@ -186,7 +170,7 @@ export default function Income() {
                     </button>{" "}
                   </div>
                 </div>
-              </div>
+              </div>{" "}
             </div>
             <div className="portlet-footer">
               <button className="btn btn-default">Clear</button>
@@ -199,15 +183,13 @@ export default function Income() {
         <div className="portlet portlet-bordered margin-bottom-15">
           <div className="portlet-title">
             <div className="caption">
-              <h3 className="caption-subject">
-                All Incomes between October 1, 2019 and October 31, 2019
-              </h3>
+              <h3 className="caption-subject">Income by MTD</h3>
             </div>{" "}
             <div className="actions">
               {" "}
-              <a className="btn btn-primary btn-circle active">
+              <button className="btn btn-primary btn-circle active">
                 <i className="fas fa-plus" />
-              </a>
+              </button>
             </div>
           </div>
           <div className="portlet-body">
@@ -215,19 +197,95 @@ export default function Income() {
               columns={[
                 {
                   key: "id",
-                  title: "ID",
+                  title: "Sl No.",
                   sortable: true,
                   filtered: false
                 },
                 {
-                  key: "title",
-                  title: "Title",
+                  key: "id",
+                  title: "Account ID",
                   filtered: true,
                   align: "left",
                   editorTemplate: (text, records) => {
                     return (
                       <input
                         type="text"
+                        value={text}
+                        onChange={e => {
+                          console.log("text", text);
+                          console.log("records", records);
+                          records["title"] = "Hello";
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  key: "desc",
+                  title: "Account Description",
+                  filtered: true,
+                  align: "left",
+                  editorTemplate: (text, records) => {
+                    return (
+                      <input
+                        type="text"
+                        value={text}
+                        onChange={e => {
+                          console.log("text", text);
+                          console.log("records", records);
+                          records["title"] = "Hello";
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  key: "debitAmt",
+                  title: "Debit Amount",
+                  filtered: true,
+                  align: "left",
+                  editorTemplate: (text, records) => {
+                    return (
+                      <input
+                        type="number"
+                        value={text}
+                        onChange={e => {
+                          console.log("text", text);
+                          console.log("records", records);
+                          records["title"] = "Hello";
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  key: "creditAmt",
+                  title: "Credit Amount",
+                  filtered: true,
+                  align: "left",
+                  editorTemplate: (text, records) => {
+                    return (
+                      <input
+                        type="number"
+                        value={text}
+                        onChange={e => {
+                          console.log("text", text);
+                          console.log("records", records);
+                          records["title"] = "Hello";
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  key: "narration",
+                  title: "Narration",
+                  filtered: true,
+                  align: "left",
+                  editorTemplate: (text, records) => {
+                    return (
+                      <input
+                        type="number"
                         value={text}
                         onChange={e => {
                           console.log("text", text);

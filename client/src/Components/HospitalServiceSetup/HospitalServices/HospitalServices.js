@@ -26,6 +26,8 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie, algaehApiCall } from "../../../utils/algaehApiCall";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 
+import AccountDropDown from "../accountsDropdown";
+
 class HospitalServices extends PureComponent {
   constructor(props) {
     super(props);
@@ -353,6 +355,36 @@ class HospitalServices extends PureComponent {
                             this.state.Applicable === true ? false : true
                         }
                       }}
+                    />
+                    <AccountDropDown
+                        labelText="Account mapping cash patient"
+                        accountHeadeId={1}
+                      value={""}
+                      onChange={(currentNode, selectedNode) => {}}
+                      others={{
+                        data: [],
+                        texts: {
+                          placeholder: "Please select account",
+                          noMatches: "No records found",
+                          label: "Visa"
+                        },
+                        mode: "radioSelect"
+                      }}
+                    />
+                    <AccountDropDown
+                        accountHeadeId={1}
+                        labelText="Account mapping insurance patient"
+                        value={""}
+                        onChange={(currentNode, selectedNode) => {}}
+                        others={{
+                          data: [],
+                          texts: {
+                            placeholder: "Please select account",
+                            noMatches: "No records found",
+                            label: "Visa"
+                          },
+                          mode: "radioSelect"
+                        }}
                     />
                   </div>
                 </div>

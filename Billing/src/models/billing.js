@@ -3501,6 +3501,17 @@ export default {
                                 card_details: rest[2] ? rest[2][0] : null
                               };
                               if (inputParam.insured == "N") {
+
+                                options["OP_CONSULT_TAX"]= controlResult.find(f => {
+                                  return f.account == "OP_CONSULT_TAX";
+                                });
+                                options["OP_LAB_TAX"]= controlResult.find(f => {
+                                  return f.account == "OP_LAB_TAX";
+                                });
+                                options["OP_RAD_TAX"]= controlResult.find(f => {
+                                  return f.account == "OP_RAD_TAX";
+                                });
+
                                 cashPatientFinance(
                                   rest[3],
                                   day_end_detail,
@@ -4612,8 +4623,7 @@ function cashPatientFinance(allServices, day_end_detail, inputParam, options) {
             return f;
         });
 
-        console.log("ammount MY:", serviceData.patient_payable);
-
+        //increase income account
         insertSubDetail.push({
           day_end_header_id: options.insertId,
           payment_date: new Date(),
@@ -4627,9 +4637,58 @@ function cashPatientFinance(allServices, day_end_detail, inputParam, options) {
           hospital_id: options.hospital_id
         });
 
+        //consultaion 
+        if(serviceData.service_type_id==1&&serviceData.patient_tax>0){
+          insertSubDetail.push({
+            day_end_header_id: options.insertId,
+            payment_date: new Date(),
+            head_account_code: options.OP_CONSULT_TAX.head_account,
+            head_id: options.OP_CONSULT_TAX.head_id,
+            child_id: options.OP_CONSULT_TAX.child_id,
+            debit_amount: 0,
+            payment_type: "CR",
+            credit_amount: serviceData.patient_tax,
+            narration: "OP BILL CASH PATIENT CONSULTAION TAX",
+            hospital_id: options.hospital_id
+          });
+
+        }
+        //laboratory
+        if(serviceData.service_type_id==5&&serviceData.patient_tax>0){
+
+          insertSubDetail.push({
+            day_end_header_id: options.insertId,
+            payment_date: new Date(),
+            head_account_code: options.OP_LAB_TAX.head_account,
+            head_id: options.OP_LAB_TAX.head_id,
+            child_id: options.OP_LAB_TAX.child_id,
+            debit_amount: 0,
+            payment_type: "CR",
+            credit_amount: serviceData.patient_tax,
+            narration: "OP BILL CASH PATIENT LABORATORY TAX",
+            hospital_id: options.hospital_id
+          });
+        }
+          //radiology
+        if(serviceData.service_type_id==11&&serviceData.patient_tax>0){
+          insertSubDetail.push({
+            day_end_header_id: options.insertId,
+            payment_date: new Date(),
+            head_account_code: options.OP_RAD_TAX.head_account,
+            head_id: options.OP_RAD_TAX.head_id,
+            child_id: options.OP_RAD_TAX.child_id,
+            debit_amount: 0,
+            payment_type: "CR",
+            credit_amount: serviceData.patient_tax,
+            narration: "OP BILL CASH PATIENT RADIOLOGY TAX",
+            hospital_id: options.hospital_id
+          });
+
+        }
+
       });
 
-
+      //increasing cash in hand
       day_end_detail.forEach(item => {
 
         if (item.payment_mode == "CA") {

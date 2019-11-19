@@ -95,150 +95,151 @@ class RequisitionItems extends Component {
           {context => (
             <div className="hptl-phase1-requisition-item-form">
               <div className="row">
-                <div className="col-lg-12">
+                <div className="col-3">
                   <div className="portlet portlet-bordered margin-bottom-15">
-                    <div className="row">
-                      <AlagehAutoComplete
-                        div={{ className: "col-3" }}
-                        label={{ forceLabel: "Item Name" }}
-                        selector={{
-                          name: "item_id",
-                          className: "select-fld",
-                          value: this.state.item_id,
-                          dataSource: {
-                            textField: "item_description",
-                            valueField: "hims_d_inventory_item_master_id",
-                            data: this.props.inventoryitemlist
-                          },
-                          others: {
-                            disabled: this.state.ItemDisable
-                          },
-                          onChange: itemchangeText.bind(this, this, context)
-                        }}
-                      />
-                      <AlagehAutoComplete
-                        div={{ className: "col-1" }}
-                        label={{ forceLabel: "UOM", isImp: true }}
-                        selector={{
-                          name: "item_uom",
-                          className: "select-fld",
-                          value: this.state.item_uom,
-                          dataSource: {
-                            textField: "uom_description",
-                            valueField: "uom_id",
-                            data: this.state.ItemUOM
-                          },
-                          others: {
-                            disabled: true
-                          },
-
-                          onChange: UomchangeTexts.bind(this, this)
-                        }}
-                      />
-
-                      <AlagehAutoComplete
-                        div={{ className: "col-2" }}
-                        label={{ forceLabel: "Item Category" }}
-                        selector={{
-                          name: "item_category_id",
-                          className: "select-fld",
-                          value: this.state.item_category_id,
-                          dataSource: {
-                            textField: "category_desc",
-                            valueField: "hims_d_inventory_tem_category_id",
-                            data: this.props.inventoryitemcategory
-                          },
-                          others: {
-                            disabled: true
-                          },
-                          onChange: null
-                        }}
-                      />
-                      <AlagehAutoComplete
-                        div={{ className: "col-2" }}
-                        label={{ forceLabel: "Item Group" }}
-                        selector={{
-                          name: "item_group_id",
-                          className: "select-fld",
-                          value: this.state.item_group_id,
-                          dataSource: {
-                            textField: "group_description",
-                            valueField: "hims_d_inventory_item_group_id",
-                            data: this.props.inventoryitemgroup
-                          },
-                          others: {
-                            disabled: true
-                          },
-                          onChange: null
-                        }}
-                      />
-
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        label={{
-                          forceLabel: "Quantity Required"
-                        }}
-                        textBox={{
-                          number: {
-                            allowNegative: false,
-                            thousandSeparator: ","
-                          },
-                          dontAllowKeys: ["-", "e", "."],
-                          className: "txt-fld",
-                          name: "quantity_required",
-                          value: this.state.quantity_required,
-                          events: {
-                            onChange: numberchangeTexts.bind(
-                              this,
-                              this,
-                              context
-                            )
-                          },
-                          others: {
-                            disabled: this.state.ItemDisable
-                          }
-                        }}
-                      />
-
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "From Loc. In Hand"
+                    <div className="portlet-body">
+                      <div className="row">
+                        <AlagehAutoComplete
+                          div={{ className: "col-12 form-group mandatory" }}
+                          label={{ forceLabel: "Item Name" }}
+                          selector={{
+                            name: "item_id",
+                            className: "select-fld",
+                            value: this.state.item_id,
+                            dataSource: {
+                              textField: "item_description",
+                              valueField: "hims_d_inventory_item_master_id",
+                              data: this.props.inventoryitemlist
+                            },
+                            others: {
+                              disabled: this.state.ItemDisable
+                            },
+                            onChange: itemchangeText.bind(this, this, context)
                           }}
                         />
-                        <h6>
-                          {this.state.from_qtyhand
-                            ? this.state.from_qtyhand
-                            : "-----------"}
-                        </h6>
-                      </div>
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "To Loc. In Hand"
-                          }}
-                        />
-                        <h6>
-                          {this.state.to_qtyhand
-                            ? this.state.to_qtyhand
-                            : "-----------"}
-                        </h6>
-                      </div>
-                      {this.props.requisition_auth === true ? null : (
-                        <div className="col">
+                        <div className="col-6">
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Last 3 Month Consumption"
-                              //forceLabel: "Consumption Done In " + month_name
+                              forceLabel: "From Loc. In Hand"
                             }}
                           />
                           <h6>
-                            {this.state.transaction_qty
-                              ? this.state.transaction_qty
-                              : "0"}
+                            {this.state.from_qtyhand
+                              ? this.state.from_qtyhand
+                              : "-----------"}
                           </h6>
                         </div>
-                      )}
+                        <div className="col-6">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "To Loc. In Hand"
+                            }}
+                          />
+                          <h6>
+                            {this.state.to_qtyhand
+                              ? this.state.to_qtyhand
+                              : "-----------"}
+                          </h6>
+                        </div>
+                        <AlagehAutoComplete
+                          div={{ className: "col-6" }}
+                          label={{ forceLabel: "UOM", isImp: true }}
+                          selector={{
+                            name: "item_uom",
+                            className: "select-fld",
+                            value: this.state.item_uom,
+                            dataSource: {
+                              textField: "uom_description",
+                              valueField: "uom_id",
+                              data: this.state.ItemUOM
+                            },
+                            others: {
+                              disabled: true
+                            },
+
+                            onChange: UomchangeTexts.bind(this, this)
+                          }}
+                        />
+
+                        <AlagehAutoComplete
+                          div={{ className: "col-6" }}
+                          label={{ forceLabel: "Item Category" }}
+                          selector={{
+                            name: "item_category_id",
+                            className: "select-fld",
+                            value: this.state.item_category_id,
+                            dataSource: {
+                              textField: "category_desc",
+                              valueField: "hims_d_inventory_tem_category_id",
+                              data: this.props.inventoryitemcategory
+                            },
+                            others: {
+                              disabled: true
+                            },
+                            onChange: null
+                          }}
+                        />
+                        <AlagehAutoComplete
+                          div={{ className: "col-6" }}
+                          label={{ forceLabel: "Item Group" }}
+                          selector={{
+                            name: "item_group_id",
+                            className: "select-fld",
+                            value: this.state.item_group_id,
+                            dataSource: {
+                              textField: "group_description",
+                              valueField: "hims_d_inventory_item_group_id",
+                              data: this.props.inventoryitemgroup
+                            },
+                            others: {
+                              disabled: true
+                            },
+                            onChange: null
+                          }}
+                        />
+
+                        {this.props.requisition_auth === true ? null : (
+                          <div className="col-3">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Last 3 Month Consumption"
+                                //forceLabel: "Consumption Done In " + month_name
+                              }}
+                            />
+                            <h6>
+                              {this.state.transaction_qty
+                                ? this.state.transaction_qty
+                                : "0"}
+                            </h6>
+                          </div>
+                        )}
+                        <AlagehFormGroup
+                          div={{ className: "col-6" }}
+                          label={{
+                            forceLabel: "Quantity Required"
+                          }}
+                          textBox={{
+                            number: {
+                              allowNegative: false,
+                              thousandSeparator: ","
+                            },
+                            dontAllowKeys: ["-", "e", "."],
+                            className: "txt-fld",
+                            name: "quantity_required",
+                            value: this.state.quantity_required,
+                            events: {
+                              onChange: numberchangeTexts.bind(
+                                this,
+                                this,
+                                context
+                              )
+                            },
+                            others: {
+                              disabled: this.state.ItemDisable
+                            }
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                   <div className="row">
@@ -253,8 +254,7 @@ class RequisitionItems extends Component {
                     </div>
                   </div>
                 </div>
-
-                <div className="col-lg-12">
+                <div className="col-9">
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="row">
                       <div className="col-lg-12">
@@ -311,15 +311,15 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemlist === undefined
                                     ? []
                                     : this.props.inventoryitemlist.filter(
-                                      f =>
-                                        f.hims_d_inventory_item_master_id ===
-                                        row.item_id
-                                    );
+                                        f =>
+                                          f.hims_d_inventory_item_master_id ===
+                                          row.item_id
+                                      );
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                      display.length !== 0
+                                    display.length !== 0
                                       ? display[0].item_description
                                       : ""}
                                   </span>
@@ -330,15 +330,15 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemlist === undefined
                                     ? []
                                     : this.props.inventoryitemlist.filter(
-                                      f =>
-                                        f.hims_d_inventory_item_master_id ===
-                                        row.item_id
-                                    );
+                                        f =>
+                                          f.hims_d_inventory_item_master_id ===
+                                          row.item_id
+                                      );
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                      display.length !== 0
+                                    display.length !== 0
                                       ? display[0].item_description
                                       : ""}
                                   </span>
@@ -359,10 +359,10 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemcategory === undefined
                                     ? []
                                     : this.props.inventoryitemcategory.filter(
-                                      f =>
-                                        f.hims_d_inventory_tem_category_id ===
-                                        row.item_category_id
-                                    );
+                                        f =>
+                                          f.hims_d_inventory_tem_category_id ===
+                                          row.item_category_id
+                                      );
 
                                 return (
                                   <span>
@@ -377,10 +377,10 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemcategory === undefined
                                     ? []
                                     : this.props.inventoryitemcategory.filter(
-                                      f =>
-                                        f.hims_d_inventory_tem_category_id ===
-                                        row.item_category_id
-                                    );
+                                        f =>
+                                          f.hims_d_inventory_tem_category_id ===
+                                          row.item_category_id
+                                      );
 
                                 return (
                                   <span>
@@ -405,10 +405,10 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemgroup === undefined
                                     ? []
                                     : this.props.inventoryitemgroup.filter(
-                                      f =>
-                                        f.hims_d_inventory_item_group_id ===
-                                        row.item_group_id
-                                    );
+                                        f =>
+                                          f.hims_d_inventory_item_group_id ===
+                                          row.item_group_id
+                                      );
 
                                 return (
                                   <span>
@@ -423,10 +423,10 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemgroup === undefined
                                     ? []
                                     : this.props.inventoryitemgroup.filter(
-                                      f =>
-                                        f.hims_d_inventory_item_group_id ===
-                                        row.item_group_id
-                                    );
+                                        f =>
+                                          f.hims_d_inventory_item_group_id ===
+                                          row.item_group_id
+                                      );
 
                                 return (
                                   <span>
@@ -449,10 +449,10 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemuom === undefined
                                     ? []
                                     : this.props.inventoryitemuom.filter(
-                                      f =>
-                                        f.hims_d_inventory_uom_id ===
-                                        row.item_uom
-                                    );
+                                        f =>
+                                          f.hims_d_inventory_uom_id ===
+                                          row.item_uom
+                                      );
 
                                 return (
                                   <span>
@@ -467,10 +467,10 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemuom === undefined
                                     ? []
                                     : this.props.inventoryitemuom.filter(
-                                      f =>
-                                        f.hims_d_inventory_uom_id ===
-                                        row.item_uom
-                                    );
+                                        f =>
+                                          f.hims_d_inventory_uom_id ===
+                                          row.item_uom
+                                      );
 
                                 return (
                                   <span>
@@ -679,8 +679,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(RequisitionItems)
+  connect(mapStateToProps, mapDispatchToProps)(RequisitionItems)
 );
