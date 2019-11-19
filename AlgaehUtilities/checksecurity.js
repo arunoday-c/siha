@@ -8,6 +8,15 @@ if (process.env.REDIS_HOST) {
   redis = new Redis(6379, "127.0.0.1");
 }
 
+redis.on("error", error => {
+  if (error.code === "ECONNREFUSED") {
+    console.log(error);
+    process.exit(1);
+  } else {
+    console.log(error);
+  }
+});
+
 module.exports = {
   getFromRedis: name => {
     return new Promise((resolve, reject) => {
