@@ -27,11 +27,9 @@ let updateIntoItemLocation = (req, res, next) => {
     let xmlQuery = "";
     const decimal_places = req.userIdentity.decimal_places;
     const utilities = new algaehUtilities();
-    utilities
-      .logger()
-      .log("updateIntoItemLocation: ", inputParam.pharmacy_stock_detail);
+    // console.log("updateIntoItemLocation: ", inputParam.pharmacy_stock_detail);
 
-    utilities.logger().log("transaction_type: ", req.body.transaction_type);
+    console.log("transaction_type: ", req.body.transaction_type);
 
     new LINQ(inputParam.pharmacy_stock_detail)
       .Select(s => {
@@ -86,7 +84,6 @@ let updateIntoItemLocation = (req, res, next) => {
           discount_amount: s.discount_amount || 0,
           net_total: utilities.decimalPoints(s.net_total || 0, decimal_places),
           landing_cost: s.landing_cost || 0,
-          git_qty: s.git_qty || 0,
           average_cost: unit_cost,
           created_by: req.userIdentity.algaeh_d_app_user_id,
           updated_by: req.userIdentity.algaeh_d_app_user_id,
@@ -99,15 +96,15 @@ let updateIntoItemLocation = (req, res, next) => {
       .ToArray();
     // xmlQuery += "</hims_m_item_location>";
 
-    utilities.logger().log("xmlQuery: ", xmlQuery);
+    // console.logger().log("xmlQuery: ", xmlQuery);
     _mysql
       .executeQuery({
         query: "call algaeh_proc_item_location ('" + xmlQuery + "')",
         printQuery: true
       })
       .then(result => {
-        utilities.logger().log("result: ", result);
-        utilities.logger().log("req.flag: ", req.flag);
+        // utilities.logger().log("result: ", result);
+        // utilities.logger().log("req.flag: ", req.flag);
         if (Array.isArray(result)) {
           if (result[0][0].Error != null) {
             const error = new Error();
@@ -117,7 +114,7 @@ let updateIntoItemLocation = (req, res, next) => {
             });
           } else {
             if (req.flag == 1) {
-              utilities.logger().log("req.flag: ");
+              // utilities.logger().log("req.flag: ");
               for (let i = 0; i < req.body.pharmacy_stock_detail.length; i++) {
                 req.body.pharmacy_stock_detail[i].location_id =
                   req.body.git_location_id;
@@ -141,7 +138,7 @@ let updateIntoItemLocation = (req, res, next) => {
           }
         } else {
           if (req.flag == 1) {
-            utilities.logger().log("req.flag: ");
+            // utilities.logger().log("req.flag: ");
             for (let i = 0; i < req.body.pharmacy_stock_detail.length; i++) {
               req.body.pharmacy_stock_detail[i].location_id =
                 req.body.git_location_id;
@@ -165,7 +162,7 @@ let updateIntoItemLocation = (req, res, next) => {
         }
       })
       .catch(e => {
-        utilities.logger().log("error: ", e);
+        // utilities.logger().log("error: ", e);
         _mysql.rollBackTransaction(() => {
           next(e);
         });

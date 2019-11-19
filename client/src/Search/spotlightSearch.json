@@ -271,6 +271,23 @@
       }
     ]
   },
+  "AdjustmentEntry": {
+    "AdjEntry": [
+      {
+        "fieldName": "adjustment_number",
+        "label": "Adjustment Number"
+      },
+      {
+        "fieldName": "adjustment_date",
+        "label": "Adjustment Date"
+      },
+      {
+        "fieldName": "location_name",
+        "label": "Location Name",
+        "required": "N"
+      }
+    ]
+  },
   "SalesReturnEntry": {
     "ReturnEntry": [
       {

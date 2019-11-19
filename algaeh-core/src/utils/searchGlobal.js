@@ -565,12 +565,13 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "tranitemmaster",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS IM.hims_d_inventory_item_master_id, IM.item_description, IM.category_id, IM.sales_uom_id, IM.service_id, IM.group_id, IC.category_desc, IG.group_description, PU.uom_description,\
-          SR.standard_fee,IL.sale_price,IL.avgcost from hims_d_inventory_item_master IM, hims_d_inventory_tem_category IC,\
+          SR.standard_fee,IL.sale_price,IL.avgcost, IM.stocking_uom_id, STOCK_UOM.uom_description as stocking_uom \
+          from hims_d_inventory_item_master IM, hims_d_inventory_tem_category IC,\
           hims_d_inventory_item_group IG, hims_d_inventory_uom PU, hims_d_services SR, \
-          hims_m_inventory_item_location IL where IL.item_id = IM.hims_d_inventory_item_master_id and \
-          IM.category_id = IC.hims_d_inventory_tem_category_id and IM.group_id = IG.hims_d_inventory_item_group_id\
+          hims_m_inventory_item_location IL, hims_d_inventory_uom STOCK_UOM where IL.item_id = IM.hims_d_inventory_item_master_id and \
+          IM.category_id = IC.hims_d_inventory_tem_category_id and IM.group_id = IG.hims_d_inventory_item_group_id \
           and IM.sales_uom_id=PU.hims_d_inventory_uom_id and IM.service_id= SR.hims_d_services_id and\
-          IM.item_status='A' and IM.record_status='A' and \
+          IM.stocking_uom_id=STOCK_UOM.hims_d_inventory_uom_id and IM.item_status='A' and IM.record_status='A' and \
           IC.record_status='A' and IG.record_status='A' and IL.inventory_location_id=? ",
         orderBy: "IM.hims_d_inventory_item_master_id desc",
         groupBy: " GROUP By hims_d_inventory_item_master_id",
@@ -778,7 +779,26 @@ let algaehSearchConfig = (searchName, req) => {
           left join hims_d_designation DS  on  E.employee_designation_id = DS.hims_d_designation_id \
           WHERE E.record_status = 'A' ",
         orderBy: "hims_d_employee_id desc"
-      }
+      },
+
+      {
+        searchName: "ADJEntry",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS AH.*,date(AH.adjustment_date) as adjustment_date,  \
+          L.location_description as location_name from hims_f_pharmacy_stock_adjust_header AH, hims_d_pharmacy_location L \
+          where L.hims_d_pharmacy_location_id = AH.location_id and  AH.hospital_id=?" +
+          hospitalId,
+        orderBy: "hims_f_pharmacy_stock_adjust_header_id desc"
+      },
+      {
+        searchName: "InvADJEntry",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS AH.*,date(AH.adjustment_date) as adjustment_date,  \
+          L.location_description as location_name from hims_f_inventory_stock_adjust_header AH, hims_d_inventory_location L \
+          where L.hims_d_inventory_location_id = AH.location_id and  AH.hospital_id=?" +
+          hospitalId,
+        orderBy: "hims_f_inventory_stock_adjust_header_id desc"
+      },
     ]
   };
 

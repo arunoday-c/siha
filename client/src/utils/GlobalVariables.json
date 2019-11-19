@@ -2449,6 +2449,10 @@
     {
       "name": "Purchase Return",
       "value": "PR"
+    },
+    {
+      "name": "Stock Adjustment",
+      "value": "AD"
     }
   ],
   "MODULE_PLAN": [
@@ -5183,11 +5187,11 @@
   ],
   "ADJUSTMENT_TYPE": [
     {
-      "name": "Increase Qunatity",
+      "name": "Increase Quantity",
       "value": "IQ"
     },
     {
-      "name": "Decrease Qunatity",
+      "name": "Decrease Quantity",
       "value": "DQ"
     },
     {
