@@ -53,8 +53,12 @@ class HospitalServices extends PureComponent {
       record_status: "A",
       direct_call: true,
       PhyService: false,
-      physiotherapy_service: "N"
+      physiotherapy_service: "N",
+      cashPatientAccount:"",
+      insurancePatientAccount:""
     };
+    this.cashPatientMap ={};
+    this.insurancePatientMap={};
   }
 
   initCall() {
@@ -358,9 +362,13 @@ class HospitalServices extends PureComponent {
                     />
                     <AccountDropDown
                         labelText="Account mapping cash patient"
-                        accountHeadeId={1}
-                      value={""}
-                      onChange={(currentNode, selectedNode) => {}}
+                        accountHeadeId={4}
+                      value={this.state.cashPatientAccount}
+                      onChange={(currentNode, selectedNode) => {
+                        const {head_id,child_id,label} = currentNode;
+                        this.cashPatientMap = {head_id,child_id};
+                        this.setState({cashPatientAccount:label});
+                      }}
                       others={{
                         data: [],
                         texts: {
@@ -372,10 +380,14 @@ class HospitalServices extends PureComponent {
                       }}
                     />
                     <AccountDropDown
-                        accountHeadeId={1}
+                        accountHeadeId={4}
                         labelText="Account mapping insurance patient"
-                        value={""}
-                        onChange={(currentNode, selectedNode) => {}}
+                        value={this.state.insurancePatientAccount}
+                        onChange={(currentNode, selectedNode) => {
+                          const {head_id,child_id,label} = currentNode;
+                          this.insurancePatientMap = {insurance_head_id:head_id,insurance_child_id:child_id};
+                          this.setState({insurancePatientAccount:label})
+                        }}
                         others={{
                           data: [],
                           texts: {
