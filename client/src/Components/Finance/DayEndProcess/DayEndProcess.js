@@ -166,7 +166,7 @@ class DayEndProcess extends Component {
     return (
       <div className="day_end_prc">
         <AlgaehModalPopUp
-          title="Day &amp; Process Details"
+          title="Accounting Entries"
           openPopup={this.state.openPopup}
           events={{
             onClose: () => {
