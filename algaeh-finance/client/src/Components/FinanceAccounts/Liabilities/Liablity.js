@@ -12,6 +12,7 @@ import {getAccounts, isPositive, removeAccount} from ".././FinanceAccountEvent";
 import {AlgaehConfirm, AlgaehMessagePop} from "algaeh-react-components";
 
 export default function Liablity() {
+  const [symbol, setSymbol] = useState("");
   const [treeData, setTreeData] = useState([]);
   const [labilityAmount,setLabilityAmount]=useState("");
   const [showPopup, setShowPopup] = useState(false);
@@ -19,21 +20,26 @@ export default function Liablity() {
   const[searchQuery,setSearchQuery] = useState("");
   const [searchFocusIndex,setSearchFocusIndex] = useState(0);
   const [searchFoundCount,setSearchFoundCount]=useState(undefined);
-
-  useEffect(() => {
-
-      getAccounts("2", data => {
+  const [isAccountHead,setIsAccountHead]= useState(false);
+  const [financeHeadId,setFinanceHeadId] = useState(undefined);
+  function loadAccount(){
+    getAccounts("2", data => {
       if(Array.isArray(data)){
         if(data.length >0){
+          setFinanceHeadId(data[0].finance_account_head_id);
           setTreeData(data[0]["children"]);
           setLabilityAmount(data[0]["subtitle"]);
+          setSymbol(data[0]["trans_symbol"]);
         }else{
           setTreeData([]);
         }
       }else{
         setTreeData([]);
       }});
+  }
 
+  useEffect(() => {
+    loadAccount();
   }, []);
 
   function addNode(rowInfo, options, addedNode) {
@@ -71,7 +77,6 @@ export default function Liablity() {
   function removeNode(rowInfo) {
     return new Promise((resolve, reject) => {
       try {
-
         let { node,  path } = rowInfo;
         const  {head_id,finance_account_child_id,leafnode,finance_account_head_id}=node;
         removeAccount({ head_id: leafnode ==="N"?finance_account_head_id: head_id,child_id:finance_account_child_id,leaf_node:leafnode})
@@ -99,12 +104,18 @@ export default function Liablity() {
         selectedNode={selectedNode}
         onClose={e => {
           setShowPopup(false);
-          if (e !== undefined) {
-            addNode(selectedNode, { treeData }, e).then(newTree => {
-
-              setTreeData(newTree.treeData);
-            });
+          if(isAccountHead){
+            loadAccount();
+            setIsAccountHead(false);
+          }else{
+            if (e !== undefined) {
+              addNode(selectedNode, { treeData }, e).then(newTree => {
+                setTreeData(newTree.treeData);
+                setIsAccountHead(false);
+              });
+            }
           }
+
         }}
       />
 
@@ -139,8 +150,9 @@ export default function Liablity() {
                 <button
                   className="btn btn-primary btn-circle active"
                   onClick={() => {
-
+                    setSelectedNode({node:{finance_account_head_id:financeHeadId}});
                     setShowPopup(true);
+                    setIsAccountHead(true);
                   }}
                 >
                   <i className="fas fa-plus" />
@@ -249,7 +261,10 @@ export default function Liablity() {
                               <div
                                   style={{ fontSize: "medium", marginTop: "7px" }}
                               >
-                                <span className={isPositive(node.subtitle)}>{node.subtitle}</span>  <small>{node.trans_symbol}</small>
+                              <span className={node.subtitle !==undefined? isPositive(node.subtitle):""}>
+                                {node.subtitle === undefined ?"0.00": node.subtitle}
+                              </span>{" "}
+                                <small>{node.trans_symbol === undefined?symbol:node.trans_symbol}</small>
                               </div>
                           )
                         };

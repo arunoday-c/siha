@@ -53,8 +53,15 @@ class HospitalServices extends PureComponent {
       record_status: "A",
       direct_call: true,
       PhyService: false,
-      physiotherapy_service: "N"
+      physiotherapy_service: "N",
+      cashPatientAccount:"",
+      insurancePatientAccount:"",
+      head_id:null,
+      child_id:null,
+      insurance_head_id:null,
+      insurance_child_id:null
     };
+
   }
 
   initCall() {
@@ -103,7 +110,8 @@ class HospitalServices extends PureComponent {
         IOputs.PhyService = false;
       }
 
-      this.setState({ ...this.state, ...IOputs });
+      this.setState({ ...this.state, ...IOputs,cashPatientAccount:IOputs.cash_child_account,
+        insurancePatientAccount:IOputs.insurance_child_account  });
     } else {
       clearData(this, this);
     }
@@ -152,7 +160,7 @@ class HospitalServices extends PureComponent {
             {/* <div className="popupInner"> */}
             <div
               className="col-12 popRightDiv margin-top-15 margin-bottom-15"
-              data-validate="HospitalServices"
+              data-validate="HospitalServices" style={{minHeight:"72vh"}}
             >
               <div className="row">
                 <AlagehFormGroup
@@ -358,9 +366,12 @@ class HospitalServices extends PureComponent {
                     />
                     <AccountDropDown
                         labelText="Account mapping cash patient"
-                        accountHeadeId={1}
-                      value={""}
-                      onChange={(currentNode, selectedNode) => {}}
+                        accountHeadeId={4}
+                      value={this.state.cashPatientAccount}
+                      onChange={(currentNode, selectedNode) => {
+                        const {head_id,finance_account_child_id,label} = currentNode;
+                        this.setState({cashPatientAccount:label,...{head_id,child_id:finance_account_child_id}});
+                      }}
                       others={{
                         data: [],
                         texts: {
@@ -372,10 +383,13 @@ class HospitalServices extends PureComponent {
                       }}
                     />
                     <AccountDropDown
-                        accountHeadeId={1}
+                        accountHeadeId={4}
                         labelText="Account mapping insurance patient"
-                        value={""}
-                        onChange={(currentNode, selectedNode) => {}}
+                        value={this.state.insurancePatientAccount}
+                        onChange={(currentNode, selectedNode) => {
+                          const {head_id,finance_account_child_id,label} = currentNode;
+                          this.setState({insurancePatientAccount:label,...{insurance_head_id:head_id,insurance_child_id:finance_account_child_id}})
+                        }}
                         others={{
                           data: [],
                           texts: {
