@@ -1,4 +1,6 @@
-FROM nginx:1.17.5-alpine
+FROM node:12.13.0-alpine
 WORKDIR /var/www
+RUN npm init -y && npm i express
+COPY ./server.js ./server.js
 COPY ["./build", "./build"]
-COPY ./nginx-docker.conf /etc/nginx/nginx.conf
+CMD ["node","server.js"]

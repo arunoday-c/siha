@@ -6,125 +6,99 @@ services:
       context: ./algaeh-core
       dockerfile: $PWD/docker/Dockerfile
     image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-core
-    ports:
-      - "3000:3000"
   billing:
     container_name: algaeh-billing
     build:
       context: ./Billing
       dockerfile: $PWD/docker/Dockerfile
     image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-billing
-    ports:
-      - "3014:3014"
   reports:
     container_name: algaeh-reports
     build:
       context: ./AlgaehReporting
       dockerfile: $PWD/docker/Reports.Dockerfile
     image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-reports
-    ports:
-      - "3018:3018"
   clinicaldesk:
     container_name: algaeh-clinicaldesk
     build:
       context: ./ClinicalDesk
       dockerfile: $PWD/docker/Dockerfile
     image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-clinicaldesk
-    ports:
-      - "3011:3011"
   documentserver:
     container_name: algaeh-documentserver
     build:
       context: ./DocumentManagement
       dockerfile: $PWD/docker/Dockerfile
     image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-documentserver
-    ports:
-      - "3006:3006"
   frontdesk:
     container_name: algaeh-frontdesk
     build:
       context: ./FrontDesk
       dockerfile: $PWD/docker/Dockerfile
     image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-frontdesk
-    ports:
-      - "3001:3001"
   hrserver:
     container_name: algaeh-hrserver
     build:
       context: ./HrManagement
       dockerfile: $PWD/docker/Dockerfile
     image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-hrserver
-    ports:
-      - "3004:3004"
   insurance:
     container_name: algaeh-insurance
     build:
       context: ./Insurance
       dockerfile: $PWD/docker/Dockerfile
     image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-insurance
-    ports:
-      - "3010:3010"
   inventory:
     container_name: algaeh-inventory
     build:
       context: ./Inventory
       dockerfile: $PWD/docker/Dockerfile
     image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-inventory
-    ports:
-      - "3008:3008"
   laboratory:
     container_name: algaeh-laboratory
     build:
       context: ./Laboratory
       dockerfile: $PWD/docker/Dockerfile
     image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-laboratory
-    ports:
-      - "3013:3013"
   mastersettings:
     container_name: algaeh-mastersettings
     build:
       context: ./MasterSettings
       dockerfile: $PWD/docker/Dockerfile
     image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-mastersettings
-    ports:
-      - "3003:3003"
   mrd:
     container_name: algaeh-mrd
     build:
       context: ./MRD
       dockerfile: $PWD/docker/Dockerfile
     image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-mrd
-    ports:
-      - "3016:3016"
   pharmacy:
     container_name: algaeh-pharmacy
     build:
       context: ./Pharmacy
       dockerfile: $PWD/docker/Dockerfile
     image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-pharmacy
-    ports:
-      - "3009:3009"
   procurement:
     container_name: algaeh-procurement
     build:
       context: ./Procurement
       dockerfile: $PWD/docker/Dockerfile
     image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-procurement
-    ports:
-      - "3017:3017"
   radiology:
     container_name: algaeh-radiology
     build:
       context: ./Radiology
       dockerfile: $PWD/docker/Dockerfile
     image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-radiology
-    ports:
-      - "3012:3012"
-  reverse:
-    container_name: algaeh-reverse
+  client:
+    container_name: algaeh-client
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-client
     build:
       context: ./client
       dockerfile: $PWD/docker/Client.Dockerfile
-    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-reverse
-    ports:
-      - "80:80"
+  algaeh-finance:
+    container_name: algaeh-finance
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-finance
+    build:
+      context: ./algaeh-finance
+      dockerfile: $PWD/docker/Finance.Dockerfile
