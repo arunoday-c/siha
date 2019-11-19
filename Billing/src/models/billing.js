@@ -3357,7 +3357,8 @@ export default {
                       const servicesIds = inputParam.billdetails.map(m => {
                         return m.services_id;
                       });
-                      fetchServiceDetails = ` SELECT hims_d_services_id,service_type_id,head_account,head_id,child_id FROM hims_d_services
+                      fetchServiceDetails = ` SELECT hims_d_services_id,service_type_id,head_account,head_id,child_id, \
+                      insurance_head_account,insurance_head_id,insurance_child_id FROM hims_d_services
                         where hims_d_services_id in(${servicesIds}); `;
                     }
 
@@ -3367,14 +3368,17 @@ export default {
                           "SELECT * FROM finance_accounts_maping;\
                   select * from finance_day_end_detail where day_end_header_id=?;\
                   SELECT head_id,child_id,head_account FROM hims_d_bank_card where hims_d_bank_card_id=?;\
-                  " +
+                  select hims_d_insurance_sub_id,head_account,head_id,child_id from \
+                  hims_d_insurance_sub where hims_d_insurance_sub_id in (?,?);\ " +
                           fetchServiceDetails,
-                        values: [headerDayEnd.insertId, inputParam.bank_card_id],
+                        values: [headerDayEnd.insertId, inputParam.bank_card_id,inputParam.primary_sub_id,inputParam.sub_insurance_provider_id],
                         printQuery: true
                       })
                       .then(rest => {
                         const controlResult = rest[0];
                         const day_end_detail = rest[1];
+                        const INS_ACC_REC = rest[3]?rest[3][0]:null;
+
 
                         const OP_DEP = controlResult.find(f => {
                           return f.account == "OP_DEP";
@@ -3500,7 +3504,7 @@ export default {
                                 OP_REC: OP_REC,
                                 card_details: rest[2] ? rest[2][0] : null
                               };
-                              if (inputParam.insured == "N") {
+                            
 
                                 options["OP_CONSULT_TAX"]= controlResult.find(f => {
                                   return f.account == "OP_CONSULT_TAX";
@@ -3512,11 +3516,22 @@ export default {
                                   return f.account == "OP_RAD_TAX";
                                 });
 
-                                cashPatientFinance(
-                                  rest[3],
+                                options["OP_INS_CONSULT_TAX"]= controlResult.find(f => {
+                                  return f.account == "OP_INS_CONSULT_TAX";
+                                });
+                                options["OP_INS_LAB_TAX"]= controlResult.find(f => {
+                                  return f.account == "OP_INS_LAB_TAX";
+                                });
+                                options["OP_INS_RAD_TAX"]= controlResult.find(f => {
+                                  return f.account == "OP_INS_RAD_TAX";
+                                });
+
+                                generateAccountingEntries(
+                                  rest[4],
                                   day_end_detail,
                                   inputParam,
-                                  options
+                                  options,
+                                  INS_ACC_REC
                                 )
                                   .then(resul => {
                                     insertSubDetail = resul;
@@ -3527,9 +3542,7 @@ export default {
                                       next(error);
                                     });
                                   });
-                              } else {
-                                next();
-                              }
+                             
                             } else {
                               next();
                             }
@@ -4574,18 +4587,21 @@ function insertOrderServices(options) {
   });
 }
 
+
 //created by :IRFAN to calculate the amount of account heads
-function cashPatientFinance(allServices, day_end_detail, inputParam, options) {
+function generateAccountingEntries(
+  allServices,
+  day_end_detail,
+  inputParam,
+  options,
+  INS_ACC_REC
+) {
   try {
     return new Promise((resolve, reject) => {
-
-
       const insertSubDetail = [];
 
-
-
+      //reducing from Advance
       if (inputParam.advance_adjust > 0) {
-
         insertSubDetail.push({
           day_end_header_id: options.insertId,
           payment_date: new Date(),
@@ -4595,12 +4611,12 @@ function cashPatientFinance(allServices, day_end_detail, inputParam, options) {
           debit_amount: inputParam.advance_adjust,
           payment_type: "DR",
           credit_amount: 0,
-          narration: "PATIENT ADVANCE COLLECTED",
+          narration: "Adjusting patient advance amount",
           hospital_id: options.hospital_id
         });
       }
+      //credit patient
       if (inputParam.credit_amount > 0) {
-
         insertSubDetail.push({
           day_end_header_id: options.insertId,
           payment_date: new Date(),
@@ -4610,20 +4626,32 @@ function cashPatientFinance(allServices, day_end_detail, inputParam, options) {
           debit_amount: inputParam.credit_amount,
           payment_type: "DR",
           credit_amount: 0,
-          narration: "OP BILL CREDIT",
+          narration: "providing OP service as credit",
           hospital_id: options.hospital_id
         });
       }
 
-
       allServices.forEach(curService => {
-
         const serviceData = inputParam.billdetails.find(f => {
-          if (f.services_id == curService.hims_d_services_id)
-            return f;
+          if (f.services_id == curService.hims_d_services_id) return f;
         });
-
-        //increase income account
+        //ST--increase income account
+        if (serviceData.insurance_yesno == "Y") {
+          //insurance company Income
+          insertSubDetail.push({
+            day_end_header_id: options.insertId,
+            payment_date: new Date(),
+            head_account_code: curService.insurance_head_account,
+            head_id: curService.insurance_head_id,
+            child_id: curService.insurance_child_id,
+            debit_amount: 0,
+            payment_type: "CR",
+            credit_amount: serviceData.comapany_resp,
+            narration: "Booking insurance income for OP service --> "+serviceData.service_name,
+            hospital_id: options.hospital_id
+          });
+        }
+        //patient payble
         insertSubDetail.push({
           day_end_header_id: options.insertId,
           payment_date: new Date(),
@@ -4632,65 +4660,131 @@ function cashPatientFinance(allServices, day_end_detail, inputParam, options) {
           child_id: curService.child_id,
           debit_amount: 0,
           payment_type: "CR",
-          credit_amount: serviceData.patient_payable,
-          narration: "OP BILL CASH COLLECTION  CREDIT",
+          credit_amount: serviceData.patient_resp,
+          narration: "Booking cash income for OP service --> "+serviceData.service_name,
           hospital_id: options.hospital_id
         });
 
-        //consultaion 
-        if(serviceData.service_type_id==1&&serviceData.patient_tax>0){
-          insertSubDetail.push({
-            day_end_header_id: options.insertId,
-            payment_date: new Date(),
-            head_account_code: options.OP_CONSULT_TAX.head_account,
-            head_id: options.OP_CONSULT_TAX.head_id,
-            child_id: options.OP_CONSULT_TAX.child_id,
-            debit_amount: 0,
-            payment_type: "CR",
-            credit_amount: serviceData.patient_tax,
-            narration: "OP BILL CASH PATIENT CONSULTAION TAX",
-            hospital_id: options.hospital_id
-          });
+        //END--increase income account
 
+        //ST--consultaion TAX
+        if (serviceData.service_type_id == 1) {
+          //insurance company TAX
+          if (
+            serviceData.insurance_yesno == "Y" &&
+            serviceData.company_tax > 0
+          ) {
+            insertSubDetail.push({
+              day_end_header_id: options.insertId,
+              payment_date: new Date(),
+              head_account_code: options.OP_INS_CONSULT_TAX.head_account_code,
+              head_id: options.OP_INS_CONSULT_TAX.head_id,
+              child_id: options.OP_INS_CONSULT_TAX.child_id,
+              debit_amount: 0,
+              payment_type: "CR",
+              credit_amount: serviceData.company_tax,
+              narration: " Insurance company payable tax for Consultation service --> "+serviceData.service_name,
+              hospital_id: options.hospital_id
+            });
+          }
+          //patient TAX
+          if (serviceData.patient_tax > 0) {
+            insertSubDetail.push({
+              day_end_header_id: options.insertId,
+              payment_date: new Date(),
+              head_account_code: options.OP_CONSULT_TAX.head_account_code,
+              head_id: options.OP_CONSULT_TAX.head_id,
+              child_id: options.OP_CONSULT_TAX.child_id,
+              debit_amount: 0,
+              payment_type: "CR",
+              credit_amount: serviceData.patient_tax,
+              narration: "Patient payable tax for Consultation service --> "+serviceData.service_name,
+              hospital_id: options.hospital_id
+            });
+          }
         }
-        //laboratory
-        if(serviceData.service_type_id==5&&serviceData.patient_tax>0){
+        //END--consultaion
 
-          insertSubDetail.push({
-            day_end_header_id: options.insertId,
-            payment_date: new Date(),
-            head_account_code: options.OP_LAB_TAX.head_account,
-            head_id: options.OP_LAB_TAX.head_id,
-            child_id: options.OP_LAB_TAX.child_id,
-            debit_amount: 0,
-            payment_type: "CR",
-            credit_amount: serviceData.patient_tax,
-            narration: "OP BILL CASH PATIENT LABORATORY TAX",
-            hospital_id: options.hospital_id
-          });
+        //ST-Laboratory TAX
+        if (serviceData.service_type_id == 5) {
+          // Insurance Comapny payable TAX
+          if (
+            serviceData.insurance_yesno == "Y" &&
+            serviceData.company_tax > 0
+          ) {
+            insertSubDetail.push({
+              day_end_header_id: options.insertId,
+              payment_date: new Date(),
+              head_account_code: options.OP_INS_LAB_TAX.head_account_code,
+              head_id: options.OP_INS_LAB_TAX.head_id,
+              child_id: options.OP_INS_LAB_TAX.child_id,
+              debit_amount: 0,
+              payment_type: "CR",
+              credit_amount: serviceData.company_tax,
+              narration: "Insurance company payable tax for Laboratory service --> "+serviceData.service_name,
+              hospital_id: options.hospital_id
+            });
+          }
+
+          // patient payable TAX
+          if (serviceData.patient_tax > 0) {
+            insertSubDetail.push({
+              day_end_header_id: options.insertId,
+              payment_date: new Date(),
+              head_account_code: options.OP_LAB_TAX.head_account_code,
+              head_id: options.OP_LAB_TAX.head_id,
+              child_id: options.OP_LAB_TAX.child_id,
+              debit_amount: 0,
+              payment_type: "CR",
+              credit_amount: serviceData.patient_tax,
+              narration: "Patient payable tax for Laboratory service --> "+serviceData.service_name,
+              hospital_id: options.hospital_id
+            });
+          }
         }
-          //radiology
-        if(serviceData.service_type_id==11&&serviceData.patient_tax>0){
-          insertSubDetail.push({
-            day_end_header_id: options.insertId,
-            payment_date: new Date(),
-            head_account_code: options.OP_RAD_TAX.head_account,
-            head_id: options.OP_RAD_TAX.head_id,
-            child_id: options.OP_RAD_TAX.child_id,
-            debit_amount: 0,
-            payment_type: "CR",
-            credit_amount: serviceData.patient_tax,
-            narration: "OP BILL CASH PATIENT RADIOLOGY TAX",
-            hospital_id: options.hospital_id
-          });
+        //END-laboratory
+        //ST-radiology TAX
+        if (serviceData.service_type_id == 11) {
+          // Insurance Comapny payable TAX
+          if (
+            serviceData.insurance_yesno == "Y" &&
+            serviceData.company_tax > 0
+          ) {
+            insertSubDetail.push({
+              day_end_header_id: options.insertId,
+              payment_date: new Date(),
+              head_account_code: options.OP_INS_RAD_TAX.head_account_code,
+              head_id: options.OP_INS_RAD_TAX.head_id,
+              child_id: options.OP_INS_RAD_TAX.child_id,
+              debit_amount: 0,
+              payment_type: "CR",
+              credit_amount: serviceData.company_tax,
+              narration: "Insurance company payable tax for Radiology service --> "+serviceData.service_name,
+              hospital_id: options.hospital_id
+            });
+          }
 
+          // patient payable TAX
+          if (serviceData.patient_tax > 0) {
+            insertSubDetail.push({
+              day_end_header_id: options.insertId,
+              payment_date: new Date(),
+              head_account_code: options.OP_RAD_TAX.head_account_code,
+              head_id: options.OP_RAD_TAX.head_id,
+              child_id: options.OP_RAD_TAX.child_id,
+              debit_amount: 0,
+              payment_type: "CR",
+              credit_amount: serviceData.patient_tax,
+              narration: "Patient payable tax for Radiology service --> "+serviceData.service_name,
+              hospital_id: options.hospital_id
+            });
+          }
         }
-
+        //END-radiology TAX
       });
 
       //increasing cash in hand
       day_end_detail.forEach(item => {
-
         if (item.payment_mode == "CA") {
           insertSubDetail.push({
             day_end_header_id: options.insertId,
@@ -4701,10 +4795,9 @@ function cashPatientFinance(allServices, day_end_detail, inputParam, options) {
             debit_amount: item.amount,
             payment_type: "DR",
             credit_amount: 0,
-            narration: "OP BILL CASH COLLECTION DEBIT",
+            narration: "Cash collected from patient--> "+inputParam.full_name,
             hospital_id: options.hospital_id
           });
-
         }
         if (item.payment_mode == "CD") {
           insertSubDetail.push({
@@ -4716,22 +4809,29 @@ function cashPatientFinance(allServices, day_end_detail, inputParam, options) {
             debit_amount: item.amount,
             payment_type: "DR",
             credit_amount: 0,
-            narration: "OP BILL CASH COLLECTION DEBIT",
+            narration: "Amount collected by CARD from patient--> "+inputParam.full_name,
             hospital_id: options.hospital_id
           });
-
         }
-
-
-
-
       });
 
+      //insurance company Account Recievable
 
-      console.log("HHHHHH")
+      if (inputParam.insured == "Y") {
+        insertSubDetail.push({
+          day_end_header_id: options.insertId,
+          payment_date: new Date(),
+          head_account_code: INS_ACC_REC.head_account,
+          head_id: INS_ACC_REC.head_id,
+          child_id: INS_ACC_REC.child_id,
+          debit_amount: inputParam.company_payble,
+          payment_type: "DR",
+          credit_amount: 0,
+          narration: "Insurance Recievable amount for BILL_NO: "+inputParam.bill_number,
+          hospital_id: options.hospital_id
+        });
+      }
       resolve(insertSubDetail);
-
-
     });
   } catch (e) {
     console.log("am55:", e);

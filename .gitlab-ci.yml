@@ -4,18 +4,40 @@ before_script:
   - export PATH="/home/algaeh/.nvm/versions/node/v12.11.1/bin/:$PATH"
 build_image:
   only:
+    - schedules
     refs:
-      - deployment
       - development
   tags:
     - build
     - hims
   script:
     - cd /f/LOCAL\ DEV/newrepository/algaeh-monorepo/
-    - git config --list
     - git pull
     - echo $PATH
     - algaeh-cli build -a
+
+build_docker:
+  only:
+    - schedules
+    refs:
+      - development
+  tags:
+    - build
+    - hims
+  script:
+    - cd /f/LOCAL\ DEV/newrepository/algaeh-monorepo/
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker-compose -f docker-compose.yml build
     - docker-compose -f docker-compose.yml push
+
+start_stack:
+  only:
+    - schedules
+    refs:
+      - development
+  tags:
+    - build
+    - hims
+  script:
+    - cd /f/LOCAL\ DEV/newrepository/algaeh-monorepo/
+    - docker stack deploy --compose-file=docker-compose.deploy.yml algaeh --with-registry-auth

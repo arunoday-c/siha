@@ -48,7 +48,7 @@ export default ({ config, db }) => {
     (req, res, next) => {
       const { post } = req.body;
       const bodyDetails = JSON.parse(clientDecrypt(post));
-
+      console.log("bodyDetails", bodyDetails);
       req.body = bodyDetails;
       next();
     },
@@ -102,7 +102,14 @@ export default ({ config, db }) => {
             records: {
               username: rowDetails["username"],
               user_display_name: rowDetails["user_display_name"],
-              token: createJWTToken({ ...encrypDetsil, ...specfic_date, role_id: rowDetails.app_d_app_roles_id }, false),
+              token: createJWTToken(
+                {
+                  ...encrypDetsil,
+                  ...specfic_date,
+                  role_id: rowDetails.app_d_app_roles_id
+                },
+                false
+              ),
               // keyResources: keyData,
               keyData: specfic_date,
               secureModels: req.secureModels,
@@ -117,8 +124,8 @@ export default ({ config, db }) => {
             httpStatus.generateError(
               httpStatus.locked,
               "user ' " +
-              inputData.username.toUpperCase() +
-              " ' locked please\
+                inputData.username.toUpperCase() +
+                " ' locked please\
                         contact administrator."
             )
           );
@@ -183,7 +190,14 @@ export default ({ config, db }) => {
               username: rowDetails["username"],
               user_display_name: rowDetails["user_display_name"],
               //keyResources: keyData,
-              token: createJWTToken({ ...encrypDetsil, ...specfic_date, role_id: rowDetails.app_d_app_roles_id }, false),
+              token: createJWTToken(
+                {
+                  ...encrypDetsil,
+                  ...specfic_date,
+                  role_id: rowDetails.app_d_app_roles_id
+                },
+                false
+              ),
               keyData: specfic_date,
               secureModels: req.secureModels,
               hospitalDetails: hospitalDetails,
@@ -197,8 +211,8 @@ export default ({ config, db }) => {
             httpStatus.generateError(
               httpStatus.locked,
               "user ' " +
-              inputData.username.toUpperCase() +
-              " ' locked please\
+                inputData.username.toUpperCase() +
+                " ' locked please\
                         contact administrator."
             )
           );
@@ -299,8 +313,8 @@ export default ({ config, db }) => {
           httpStatus.generateError(
             httpStatus.locked,
             "user ' " +
-            inputData.username.toUpperCase() +
-            " ' locked please\
+              inputData.username.toUpperCase() +
+              " ' locked please\
                         contact administrator."
           )
         );

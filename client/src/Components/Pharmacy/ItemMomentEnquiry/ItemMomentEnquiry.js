@@ -269,7 +269,8 @@ class ItemMomentEnquiry extends Component {
                                             ? "Transfer Acknowledge"
                                             : row.transaction_type === "PR"
                                               ? "Purchase Return"
-                                              : "";
+                                              : row.transaction_type === "AD"
+                                                ? "Stock Adjustment" : "";
                       }
                     },
                     {

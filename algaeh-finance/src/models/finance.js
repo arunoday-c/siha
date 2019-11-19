@@ -154,7 +154,7 @@ export default {
               coalesce(sum(credit_amount) ,0.0000) as credit_amount, 
               (coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) )as cred_minus_deb,
               (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)) as deb_minus_cred
-              from finance_voucher_details group by child_id; 
+              from finance_voucher_details group by head_id,child_id; 
                   
               with recursive cte  as (select finance_account_head_id,account_level
                 FROM finance_account_head where finance_account_head_id=?
@@ -241,21 +241,65 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "INSERT INTO `finance_head_m_child` (head_id,child_id,created_from)  VALUE(?,?,?)",
+                  "INSERT INTO `finance_head_m_child` (head_id,child_id,created_from)  VALUE(?,?,?);",
                 values: [input.finance_account_head_id, result.insertId, "U"],
                 printQuery: true
               })
               .then(detail => {
                 if (input.opening_bal > 0) {
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = detail;
-                    next();
-                  });
+                  let debit_amount = 0;
+                  let credit_amount = input.opening_bal;
+                  let payment_type = "CR";
+
+                  if (
+                    input.chart_of_account == 1 ||
+                    input.chart_of_account == 5
+                  ) {
+                    payment_type = "DR";
+                    credit_amount = 0;
+                    debit_amount = input.opening_bal;
+                  }
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "insert into finance_voucher_details ( payment_date,head_account_code,head_id,child_id,debit_amount,\
+                        payment_type,credit_amount,narration,enteredby,entered_date)  VALUE(?,?,?,?,?,?,?,?,?,?);",
+                      values: [
+                        new Date(),
+                        input.account_code,
+                        input.head_id,
+                        input.child_id,
+                        debit_amount,
+                        payment_type,
+                        credit_amount,
+                        "Opening Balance",
+                        req.userIdentity.algaeh_d_app_user_id,
+                        new Date()
+                      ],
+                      printQuery: true
+                    })
+                    .then(subdetail => {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = {
+                          head_id: input.finance_account_head_id,
+                          child_id: result.insertId
+                        };
+                        next();
+                      });
+                    })
+                    .catch(e => {
+                      _mysql.rollBackTransaction(() => {
+                        next(e);
+                      });
+                    });
                 } else {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
-                    req.records = detail;
+                    req.records = {
+                      head_id: input.finance_account_head_id,
+                      child_id: result.insertId
+                    };
                     next();
                   });
                 }
@@ -326,7 +370,7 @@ export default {
               query:
                 "INSERT INTO `finance_account_head` (account_code,account_name,account_parent,\
                 group_type,account_level,created_from,sort_order,parent_acc_id,hierarchy_path)\
-        VALUE(?,?,?,?,?,?,?,?,?)",
+                VALUE(?,?,?,?,?,?,?,?,?)",
               values: [
                 account_code,
                 input.account_name,
@@ -485,27 +529,22 @@ export default {
     let input = req.body;
 
     // WITH cte_  AS (
-    //   SELECT finance_day_end_sub_detail_id, day_end_detail_id, payment_date, head_account_code,
-    //   sum(debit_amount),sum(credit_amount) ,case when sum(debit_amount)= sum(credit_amount)then
-    //   'true' else 'false'end as is_equal FROM finance_day_end_sub_detail
-    //   where posted='N' and day_end_detail_id in (?)
-    //   group by day_end_detail_id)
-    //   select * from finance_day_end_sub_detail where day_end_detail_id in (SELECT day_end_detail_id
-    //    FROM cte_ where is_equal='true')
+    //   SELECT finance_day_end_sub_detail_id, day_end_header_id, payment_date, head_account_code,
+    //   case when sum(debit_amount)= sum(credit_amount)then 'true' when transaction_type='ADJUST' then true
+    //   when transaction_type='CREDIT_ST' then 'true' else 'false'  end as is_equal,transaction_type FROM finance_day_end_header H inner join
+    //   finance_day_end_sub_detail SD on H.finance_day_end_header_id=day_end_header_id
+    //   where H.posted='N' and day_end_header_id in (?)
+    //   group by day_end_header_id)
+    //   select finance_day_end_sub_detail_id,day_end_header_id,payment_date,head_account_code,
+    //   head_id,child_id,debit_amount,payment_type,credit_amount,narration,hospital_id
+    //   from finance_day_end_sub_detail where day_end_header_id in (SELECT day_end_header_id
+    //   FROM cte_ where is_equal='true');
 
     _mysql
       .executeQuery({
-        query: `  WITH cte_  AS (
-          SELECT finance_day_end_sub_detail_id, day_end_header_id, payment_date, head_account_code,
-          case when sum(debit_amount)= sum(credit_amount)then 'true' when transaction_type='ADJUST' then true 
-          when transaction_type='CREDIT_ST' then 'true' else 'false'  end as is_equal,transaction_type FROM finance_day_end_header H inner join
-          finance_day_end_sub_detail SD on H.finance_day_end_header_id=day_end_header_id
-          where H.posted='N' and day_end_header_id in (?)
-          group by day_end_header_id)
-          select finance_day_end_sub_detail_id,day_end_header_id,payment_date,head_account_code,
-          head_id,child_id,debit_amount,payment_type,credit_amount,narration,hospital_id 
-          from finance_day_end_sub_detail where day_end_header_id in (SELECT day_end_header_id
-          FROM cte_ where is_equal='true');`,
+        query: `  select finance_day_end_sub_detail_id,day_end_header_id,payment_date,head_account_code,
+        head_id,child_id,debit_amount,payment_type,credit_amount,narration,hospital_id 
+        from finance_day_end_sub_detail where day_end_header_id in (?);`,
         values: [input.finance_day_end_header_ids],
         printQuery: true
       })
@@ -789,7 +828,8 @@ export default {
     _mysql
       .executeQuery({
         query: `select finance_day_end_sub_detail_id ,payment_date,head_id,head_account_code,account_name,
-        child_id,child_name,debit_amount,case payment_type when 'CR' then 'CREDIT' else 'DEBIT' end
+        child_id,child_name,concat(account_name,'-->',child_name ) as to_account,debit_amount,
+        case payment_type when 'CR' then 'Credit' else 'Debit' end
          as payment_type,credit_amount,narration
         from finance_day_end_sub_detail SD left join finance_account_head H on SD.head_id=H.finance_account_head_id
         left join finance_account_child C on SD.child_id=C.finance_account_child_id where day_end_header_id=?;

@@ -69,8 +69,8 @@ const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
   // ClearData($this)
   algaehApiCall({
-    uri: "/stockAdjustment/getStockAdjustment",
-    module: "pharmacy",
+    uri: "/inventorystockAdjustment/getStockAdjustment",
+    module: "inventory",
     method: "GET",
     data: { adjustment_number: docNumber },
     onSuccess: response => {
@@ -98,59 +98,6 @@ const getCtrlCode = ($this, docNumber) => {
       });
     }
   });
-  // $this.props.getPosEntry({
-  //   uri: "/posEntry/getPosEntry",
-  //   // module:"pharmacy",
-  //   method: "GET",
-  //   printInput: true,
-  //   data: { adjustment_number: docNumber },
-  //   redux: {
-  //     type: "POS_ENTRY_GET_DATA",
-  //     mappingName: "posentry"
-  //   },
-  //   afterSuccess: data => {
-  //     data.saveEnable = true;
-  //     data.patient_payable_h = data.patient_payable;
-  //     data.pos_customer_type = "OT";
-  //     if (data.posted === "Y") {
-  //       data.postEnable = true;
-  //       data.InvoiceEnable = true;
-  //     } else {
-  //       data.postEnable = false;
-  //     }
-
-  //     if (data.cancelled === "Y") {
-  //       data.posCancelled = true;
-  //     } else {
-  //       data.posCancelled = false;
-  //     }
-  //     if (data.visit_id !== null) {
-  //       data.pos_customer_type = "OP";
-  //     }
-  //     data.dataExitst = true;
-
-  //     if (data.receiptdetails.length !== 0) {
-  //       for (let i = 0; i < data.receiptdetails.length; i++) {
-  //         if (data.receiptdetails[i].pay_type === "CA") {
-  //           data.Cashchecked = true;
-  //           data.cash_amount = data.receiptdetails[i].amount;
-  //         }
-
-  //         if (data.receiptdetails[i].pay_type === "CD") {
-  //           data.Cardchecked = true;
-  //           data.card_amount = data.receiptdetails[i].amount;
-  //         }
-
-  //         if (data.receiptdetails[i].pay_type === "CH") {
-  //           data.Checkchecked = true;
-  //           data.cheque_amount = data.receiptdetails[i].amount;
-  //         }
-  //       }
-  //     }
-  //     $this.setState(data);
-  //     AlgaehLoader({ show: false });
-  //   }
-  // });
 };
 
 const ClearData = ($this) => {
@@ -175,13 +122,11 @@ const ClearData = ($this) => {
     addItemButton: true,
     Batch_Items: [],
     batchno: null,
-    uom_description: null,
     item_description: "",
     adjustment_type: null,
     reason: null,
-    uom_id: null,
     sales_uom: null,
-    pharmacy_stock_detail: [],
+    inventory_stock_detail: [],
     location_selected: false,
     qtyhand: 0,
     sales_price: 0,
@@ -198,8 +143,8 @@ const SaveAdjustment = $this => {
   $this.state.posted = "Y";
   $this.state.transaction_type = "AD";
   algaehApiCall({
-    uri: "/stockAdjustment/addStockAdjustment",
-    module: "pharmacy",
+    uri: "/inventorystockAdjustment/addStockAdjustment",
+    module: "inventory",
     method: "POST",
     data: $this.state,
     onSuccess: response => {
@@ -264,8 +209,8 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
         reportName: rpt_name,
         reportParams: [
           {
-            name: "hims_f_pharmacy_pos_header_id",
-            value: $this.state.hims_f_pharmacy_pos_header_id
+            name: "hims_f_inventory_pos_header_id",
+            value: $this.state.hims_f_inventory_pos_header_id
           },
           {
             name: "pos_customer_type",
@@ -291,13 +236,14 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
 };
 
 const itemchangeText = ($this, e, ctrl) => {
+  debugger
   let name = ctrl;
   if ($this.state.location_id !== null) {
-    let value = e.hims_d_item_master_id;
+    let value = e.hims_d_inventory_item_master_id;
 
     algaehApiCall({
-      uri: "/pharmacyGlobal/getUomLocationStock",
-      module: "pharmacy",
+      uri: "/inventoryGlobal/getUomLocationStock",
+      module: "inventory",
       method: "GET",
       data: {
         location_id: $this.state.location_id,
@@ -306,7 +252,6 @@ const itemchangeText = ($this, e, ctrl) => {
       onSuccess: response => {
         if (response.data.success) {
           let data = response.data.records;
-          debugger
           if (data.locationResult.length > 0) {
             $this.setState({
               [name]: value,
@@ -395,7 +340,7 @@ const AddItemtoList = ($this) => {
         }
       }
 
-      let pharmacy_stock_detail = $this.state.pharmacy_stock_detail
+      let inventory_stock_detail = $this.state.inventory_stock_detail
 
       let operation = "+", extended_cost = 0;
       if ($this.state.adjustment_type === "DQ" || $this.state.adjustment_type === "BD") {
@@ -427,10 +372,10 @@ const AddItemtoList = ($this) => {
         extended_cost: 0,
         description: $this.state.description
       }
-      pharmacy_stock_detail.push(InsertObj)
+      inventory_stock_detail.push(InsertObj)
       debugger
       $this.setState({
-        pharmacy_stock_detail: pharmacy_stock_detail,
+        inventory_stock_detail: inventory_stock_detail,
         adjust_qty: 0,
         adjust_amount: 0,
         item_id: null,
