@@ -6,7 +6,8 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDateHandler,AlgaehModalPopUp
+  AlgaehDateHandler,
+  AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
@@ -136,21 +137,21 @@ class DayEndProcess extends Component {
         break;
     }
   }
-  onOpenPreviewPopUP(row,that){
+  onOpenPreviewPopUP(row, that) {
     try {
       algaehApiCall({
         uri: "/finance/previewDayEndEntries",
-        data: { day_end_header_id:row.finance_day_end_header_id },
+        data: { day_end_header_id: row.finance_day_end_header_id },
         method: "GET",
         module: "finance",
         onSuccess: response => {
-        const {result,success,message} = response.data;
-if(success===true){
-  that.setState({popUpRecords:result,openPopup:true});
-}else{
-  that.setState({popUpRecords:{},openPopup:false});
-  swalMessage({ title: message, type: "error" });
-}
+          const { result, success, message } = response.data;
+          if (success === true) {
+            that.setState({ popUpRecords: result, openPopup: true });
+          } else {
+            that.setState({ popUpRecords: {}, openPopup: false });
+            swalMessage({ title: message, type: "error" });
+          }
         },
         onCatch: error => {
           swalMessage({ title: error, type: "error" });
@@ -165,80 +166,113 @@ if(success===true){
     return (
       <div className="day_end_prc">
         <AlgaehModalPopUp
-            title="Details"
-            openPopup={this.state.openPopup}
-            events={{
-              onClose:()=>{
-                this.setState({popUpRecords:{},openPopup:false});
-              }
-            }}
+          title="Day &amp; Process Details"
+          openPopup={this.state.openPopup}
+          events={{
+            onClose: () => {
+              this.setState({ popUpRecords: {}, openPopup: false });
+            }
+          }}
         >
- <div className="col-lg-6">
-     <div className="col-lg-2">
-       Cash : {this.state.popUpRecords.cash}
-     </div>
-     <div className="col-lg-2">
-       Card : {this.state.popUpRecords.card}
-     </div>
-     <div className="col-lg-2">
-       Cheque : {this.state.popUpRecords.cheque}
-     </div>
-   <div className="col-lg-12">
-     <AlgaehDataGrid
-         id="dayEndProcessDetailsGrid"
-         columns={[
-          { fieldName:"account_name",
-           label: (
-           <AlgaehLabel
-           label={{ forceLabel: "Account Name" }}
-           />
-           )},
-           { fieldName:"child_name",
-             label: (
-                 <AlgaehLabel
-                     label={{ forceLabel: "Child Name" }}
-                 />
-             )},
-           { fieldName:"payment_type",
-             label: (
-                 <AlgaehLabel
-                     label={{ forceLabel: "Payment Type" }}
-                 />
-             )},
-           { fieldName:"payment_date",
-             label: (
-                 <AlgaehLabel
-                     label={{ forceLabel: "Payment Date" }}
-                 />
-             )},
-           { fieldName:"credit_amount",
-             label: (
-                 <AlgaehLabel
-                     label={{ forceLabel: "Credit Amount" }}
-                 />
-             )},
-           { fieldName:"debit_amount",
-             label: (
-                 <AlgaehLabel
-                     label={{ forceLabel: "Debit Amount" }}
-                 />
-             )},
-           { fieldName:"narration",
-             label: (
-                 <AlgaehLabel
-                     label={{ forceLabel: "Narration" }}
-                 />
-             )}
-         ]}
-         dataSource={{
-           data:this.state.popUpRecords.entries ===undefined?[]:this.state.popUpRecords.entries
-         }}
-         isEditable={false}
-         paging={{ page: 0, rowsPerPage: 10 }}
-     />
-
-   </div>
- </div>
+          {" "}
+          <div className="col-lg-12 popupInner">
+            <div className="row" style={{ paddingTop: 15 }}>
+              <div className="col-2">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Cash"
+                  }}
+                />
+                <h6>{this.state.popUpRecords.cash}</h6>
+              </div>
+              <div className="col-2">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Card"
+                  }}
+                />
+                <h6>{this.state.popUpRecords.card}</h6>
+              </div>
+              <div className="col-2">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Cheque"
+                  }}
+                />
+                <h6>{this.state.popUpRecords.cheque}</h6>
+              </div>
+              <div className="col-12" id="dayEndProcessDetailsGrid_Cntr">
+                <AlgaehDataGrid
+                  id="dayEndProcessDetailsGrid"
+                  columns={[
+                    {
+                      fieldName: "account_name",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Account Name" }} />
+                      )
+                    },
+                    {
+                      fieldName: "child_name",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Child Name" }} />
+                      )
+                    },
+                    {
+                      fieldName: "payment_type",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Payment Type" }} />
+                      )
+                    },
+                    {
+                      fieldName: "payment_date",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Payment Date" }} />
+                      )
+                    },
+                    {
+                      fieldName: "credit_amount",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Credit Amount" }} />
+                      )
+                    },
+                    {
+                      fieldName: "debit_amount",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Debit Amount" }} />
+                      )
+                    },
+                    {
+                      fieldName: "narration",
+                      label: <AlgaehLabel label={{ forceLabel: "Narration" }} />
+                    }
+                  ]}
+                  dataSource={{
+                    data:
+                      this.state.popUpRecords.entries === undefined
+                        ? []
+                        : this.state.popUpRecords.entries
+                  }}
+                  isEditable={false}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                />
+              </div>{" "}
+            </div>
+          </div>{" "}
+          <div className="popupFooter">
+            <div className="col-lg-12">
+              <div className="row" style={{ textAlign: "right" }}>
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={e => {
+                    this.onClose(e);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
         </AlgaehModalPopUp>
         <div
           className="row inner-top-search margin-bottom-15"
@@ -351,7 +385,10 @@ if(success===true){
           <div className="col-lg-12">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="row">
-                <div className="col-lg-12" id="dayEndProcessCntr">
+                <div
+                  className="col-lg-12 customCheckboxGrid"
+                  id="dayEndProcessCntr"
+                >
                   <AlgaehDataGrid
                     id="dayEndProcessGrid"
                     columns={[
@@ -359,26 +396,36 @@ if(success===true){
                         fieldName: "select_id",
                         label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
                         displayTemplate: row => (
-                         <> <input
-                            type="checkbox"
-                            onClick={e => {
-                              if (e.target.checked === true) {
-                                this.selectedDayEndIds.push(
-                                  row.finance_day_end_header_id
-                                );
-                              } else {
-                                const itemExists = this.selectedDayEndIds.findIndex(
-                                  f => f === row.finance_day_end_header_id
-                                );
-                                this.selectedDayEndIds.splice(itemExists, 1);
-                              }
-                            }}
-                          />
-                           <button onClick={()=>{
-
-                             this.onOpenPreviewPopUP(row,this);
-                             // this.setState({openPopup:true});
-                           }} > Open </button>
+                          <>
+                            {" "}
+                            <span style={{ padding: 6 }}>
+                              <input
+                                type="checkbox"
+                                onClick={e => {
+                                  if (e.target.checked === true) {
+                                    this.selectedDayEndIds.push(
+                                      row.finance_day_end_header_id
+                                    );
+                                  } else {
+                                    const itemExists = this.selectedDayEndIds.findIndex(
+                                      f => f === row.finance_day_end_header_id
+                                    );
+                                    this.selectedDayEndIds.splice(
+                                      itemExists,
+                                      1
+                                    );
+                                  }
+                                }}
+                              />
+                              {/* <label for="">gfgh</label> */}
+                            </span>
+                            <i
+                              className="fas fa-eye"
+                              onClick={() => {
+                                this.onOpenPreviewPopUP(row, this);
+                                // this.setState({openPopup:true});
+                              }}
+                            ></i>
                           </>
                         ),
                         other: {

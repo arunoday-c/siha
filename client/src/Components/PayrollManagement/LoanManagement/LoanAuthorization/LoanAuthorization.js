@@ -107,6 +107,7 @@ class LoanAuthorization extends Component {
       data: {
         auth_level: "AL" + this.state.auth_level,
         employee_id: this.state.employee_id,
+        hospital_id: this.state.hospital_id,
         from_date: this.state.from_date,
         to_date: this.state.to_date,
         loan_authorized: this.state.loan_status
