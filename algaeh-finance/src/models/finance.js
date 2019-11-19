@@ -281,7 +281,10 @@ export default {
                     .then(subdetail => {
                       _mysql.commitTransaction(() => {
                         _mysql.releaseConnection();
-                        req.records = subdetail;
+                        req.records = {
+                          head_id: input.finance_account_head_id,
+                          child_id: result.insertId
+                        };
                         next();
                       });
                     })
@@ -293,7 +296,10 @@ export default {
                 } else {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
-                    req.records = detail;
+                    req.records = {
+                      head_id: input.finance_account_head_id,
+                      child_id: result.insertId
+                    };
                     next();
                   });
                 }
@@ -364,7 +370,7 @@ export default {
               query:
                 "INSERT INTO `finance_account_head` (account_code,account_name,account_parent,\
                 group_type,account_level,created_from,sort_order,parent_acc_id,hierarchy_path)\
-        VALUE(?,?,?,?,?,?,?,?,?)",
+                VALUE(?,?,?,?,?,?,?,?,?)",
               values: [
                 account_code,
                 input.account_name,
@@ -822,7 +828,8 @@ export default {
     _mysql
       .executeQuery({
         query: `select finance_day_end_sub_detail_id ,payment_date,head_id,head_account_code,account_name,
-        child_id,child_name,debit_amount,case payment_type when 'CR' then 'CREDIT' else 'DEBIT' end
+        child_id,child_name,concat(account_name,'-->',child_name ) as to_account,debit_amount,
+        case payment_type when 'CR' then 'Credit' else 'Debit' end
          as payment_type,credit_amount,narration
         from finance_day_end_sub_detail SD left join finance_account_head H on SD.head_id=H.finance_account_head_id
         left join finance_account_child C on SD.child_id=C.finance_account_child_id where day_end_header_id=?;
