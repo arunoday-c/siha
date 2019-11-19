@@ -305,7 +305,7 @@ class FamilyAndIdentification extends Component {
               </div>
             </div>
 
-            <div className="col-12" data-validate="dependentGrid">
+            <div className="col-6" data-validate="dependentGrid">
               <h5>
                 <span>Family Details</span>
               </h5>
@@ -569,8 +569,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(FamilyAndIdentification)
+  connect(mapStateToProps, mapDispatchToProps)(FamilyAndIdentification)
 );

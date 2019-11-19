@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./POReturnItemList.scss";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -14,7 +15,7 @@ import MyContext from "../../../../utils/MyContext";
 import {
   dateFormater,
   deletePOReturnDetail,
-  onchangegridcol,
+  onchangegridcol
 } from "./POReturnItemListEvents";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
@@ -30,7 +31,6 @@ class POReturnItemList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-
     this.setState(nextProps.POReturnEntry);
   }
 
@@ -44,9 +44,9 @@ class POReturnItemList extends Component {
                 <div className="col-lg-12">
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="row">
-                      <div className="col-lg-12" id="POGrid">
+                      <div className="col-lg-12" id="PoReturnEntryGrid_Cntr">
                         <AlgaehDataGrid
-                          id="PO_details"
+                          id="PoReturnEntryGrid"
                           columns={[
                             {
                               fieldName: "item_description",
@@ -181,7 +181,9 @@ class POReturnItemList extends Component {
                                       // }
                                     }}
                                   />
-                                ) : parseFloat(row.return_qty);
+                                ) : (
+                                  parseFloat(row.return_qty)
+                                );
                               }
                             },
                             {
@@ -312,9 +314,13 @@ class POReturnItemList extends Component {
                           byForceEvents={true}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onDelete: deletePOReturnDetail.bind(this, this, context),
-                            onEdit: row => { },
-                            onDone: row => { }
+                            onDelete: deletePOReturnDetail.bind(
+                              this,
+                              this,
+                              context
+                            ),
+                            onEdit: row => {},
+                            onDone: row => {}
                           }}
                         />
                       </div>
@@ -322,59 +328,51 @@ class POReturnItemList extends Component {
                   </div>
                 </div>
                 <div className="col-lg-12">
-                  <div style={{ marginBottom: 73 }}>
-                    <div className="row">
-                      <div className="col" />
+                  <div className="row" style={{ textAlign: "right" }}>
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Return Sub Total"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.sub_total)}</h6>
+                    </div>
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Receipt Net Total"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.receipt_net_total)}</h6>
+                    </div>
 
-                      <div className="col-lg-7" style={{ textAlign: "right" }}>
-                        <div className="row">
-                          <div className="col-lg-3">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Return Sub Total"
-                              }}
-                            />
-                            <h6>{getAmountFormart(this.state.sub_total)}</h6>
-                          </div>
-                          <div className="col-lg-3">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Receipt Net Total"
-                              }}
-                            />
-                            <h6>
-                              {getAmountFormart(this.state.receipt_net_total)}
-                            </h6>
-                          </div>
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Receipt Net Payable"
+                        }}
+                      />
+                      <h6>
+                        {getAmountFormart(this.state.receipt_net_payable)}
+                      </h6>
+                    </div>
 
-                          <div className="col-lg-3">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Receipt Net Payable"
-                              }}
-                            />
-                            <h6>{getAmountFormart(this.state.receipt_net_payable)}</h6>
-                          </div>
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Return Net Total"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.net_total)}</h6>
+                    </div>
 
-                          <div className="col-lg-3">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Return Net Total"
-                              }}
-                            />
-                            <h6>{getAmountFormart(this.state.net_total)}</h6>
-                          </div>
-
-                          <div className="col-lg-3">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Return Total"
-                              }}
-                            />
-                            <h6>{getAmountFormart(this.state.return_total)}</h6>
-                          </div>
-                        </div>
-                      </div>
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Return Total"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.return_total)}</h6>
                     </div>
                   </div>
                 </div>
@@ -446,8 +444,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(POReturnItemList)
+  connect(mapStateToProps, mapDispatchToProps)(POReturnItemList)
 );

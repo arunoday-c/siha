@@ -5,6 +5,7 @@ const executePDF = function executePDFMethod(options) {
     try {
       let input = {};
       let params = options.args.reportParams;
+      const decimal_places = options.args.crypto.decimal_places;
       // const utilities = new algaehUtilities();
       params.forEach(para => {
         input[para["name"]] = para["value"];
@@ -26,7 +27,7 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select loan_application_number, employee_id, loan_id, L.loan_description, application_reason, loan_application_date, \
+          query: `select loan_application_number, employee_id, loan_id, L.loan_description, application_reason, date_format(loan_application_date,'%d-%m-%Y') as loan_application_date, \
 						loan_authorized, loan_closed, loan_amount, approved_amount, start_month, start_year, loan_tenure, \
 						pending_tenure, installment_amount, pending_loan, loan_dispatch_from, E.employee_code, \
 						E.full_name as employee_name, SD.sub_department_code, SD.sub_department_name, D.department_name, \
@@ -42,8 +43,32 @@ const executePDF = function executePDFMethod(options) {
         })
         .then(ress => {
           if (ress.length > 0) {
+            let total_loan_amount = 0;
+            total_loan_amount = _.sumBy(ress, s =>
+              parseFloat(s.loan_amount)
+            ).toFixed(decimal_places);
+
+            let total_approved_amount = 0;
+            total_approved_amount = _.sumBy(ress, s =>
+              parseFloat(s.approved_amount)
+            ).toFixed(decimal_places);
+
+            let total_installment_amount = 0;
+            total_installment_amount = _.sumBy(ress, s =>
+              parseFloat(s.installment_amount)
+            ).toFixed(decimal_places);
+
+            let total_pending_loan = 0;
+            total_pending_loan = _.sumBy(ress, s =>
+              parseFloat(s.pending_loan)
+            ).toFixed(decimal_places);
+
             const result = {
-              details: ress
+              details: ress,
+              total_loan_amount: total_loan_amount,
+              total_approved_amount: total_approved_amount,
+              total_installment_amount: total_installment_amount,
+              total_pending_loan: total_pending_loan
             };
 
             // utilities.logger().log("outputArray:", result);

@@ -1,51 +1,43 @@
 .hptl-phase1-requisition-list-form {
-	.go-button {
-		cursor: pointer;
-		margin-bottom: -9px;
-		margin-top: 20px;
-	}
+  .go-button {
+    cursor: pointer;
+    margin-bottom: -9px;
+    margin-top: 20px;
+  }
 
-	.form-group {
-		margin-bottom: 0;
+  .bk-bn {
+    z-index: 1031;
+    position: fixed;
+    top: 56px;
+    right: 85px;
+    display: block;
+    height: 65px;
+    border: 1px solid #53ccd0;
+    width: 110px;
+    white-space: unset;
+    background: #dcfeff;
 
-		padding: 0;
-		padding-top: 20px;
-		cursor: pointer;
-	}
+    i {
+      display: block;
+      margin-bottom: 5px;
+    }
+  }
 
-	.bk-bn {
-		z-index: 1031;
-		position: fixed;
-		top: 56px;
-		right: 85px;
-		display: block;
-		height: 65px;
-		border: 1px solid #53ccd0;
-		width: 110px;
-		white-space: unset;
-		background: #dcfeff;
+  th,
+  td {
+    border-right: 1px solid #e6e6e6;
+  }
 
-		i {
-			display: block;
-			margin-bottom: 5px;
-		}
-	}
+  #RequisitionListCntr {
+    .ReactTable {
+      max-width: 95vw !important;
+      max-height: 62vh !important;
+    }
 
-	th,
-	td {
-		border-right: 1px solid #e6e6e6;
-	}
-
-	#RequisitionListCntr {
-		.ReactTable {
-			max-width: 95vw !important;
-			max-height: 62vh !important;
-		}
-
-		@media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
-			.ReactTable {
-				max-width: 94vw !important;
-			}
-		}
-	}
+    @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
+      .ReactTable {
+        max-width: 94vw !important;
+      }
+    }
+  }
 }

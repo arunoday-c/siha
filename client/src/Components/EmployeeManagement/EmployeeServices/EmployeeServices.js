@@ -74,7 +74,7 @@ export default class SelfService extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Apply Leave"
+                      forceLabel: "Request Leave"
                     }}
                   />
                 }
@@ -87,7 +87,7 @@ export default class SelfService extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Loan Request"
+                      forceLabel: "Request Loan"
                     }}
                   />
                 }
@@ -100,7 +100,23 @@ export default class SelfService extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Advance Request"
+                      forceLabel: "Request Advance"
+                    }}
+                  />
+                }
+              </li>{" "}
+              <li
+                algaehtabs={"ApplyLeaveEncashment"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+                ref={attReg => {
+                  this.attReg = attReg;
+                }}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Request Leave Encashment"
                     }}
                   />
                 }
@@ -134,22 +150,6 @@ export default class SelfService extends Component {
                   />
                 }
               </li> */}
-              <li
-                algaehtabs={"ApplyLeaveEncashment"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-                ref={attReg => {
-                  this.attReg = attReg;
-                }}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Request Leave Encashment"
-                    }}
-                  />
-                }
-              </li>
             </ul>
           </div>
         </div>
