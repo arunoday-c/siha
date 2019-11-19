@@ -18,14 +18,29 @@ export default function FinanceFragment(props) {
       .then(res => res.data)
       .then(manifest => {
         const {
-          micro: { js },
+          micro: { js, css },
           metadata: { componentName }
         } = manifest;
+        if (process.env.REACT_APP_CDN === "production.min") {
+          const css_hash = css.split(".")[1];
+          const style = document.getElementById("finance-style");
+          const stylehashAttr = script.getAttribute("data-hash");
+          if (stylehashAttr !== css_hash) {
+            style.remove();
+            const newStyle = document.createElement("link");
+            newStyle.href = `${PREFIX}${css}`;
+            newStyle.type = "text/css";
+            newStyle.rel = "stylesheet";
+            newStyle.setAttribute("data-hash", css_hash);
+            newStyle.id = "finance-style";
+            document.body.appendChild(newStyle);
+          }
+        }
+
         const hash = js.split(".")[1];
-        // console.log(hash, "hash");
         const script = document.getElementById("finance-script");
         const hashAttr = script.getAttribute("data-hash");
-        // console.log(hashAttr !== hash, "the truth");
+
         if (hashAttr !== hash) {
           script.remove();
           const newScript = document.createElement("script");
