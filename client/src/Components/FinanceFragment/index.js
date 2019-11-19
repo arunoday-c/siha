@@ -24,7 +24,7 @@ export default function FinanceFragment(props) {
         if (process.env.REACT_APP_CDN === "production.min") {
           const css_hash = css.split(".")[1];
           const style = document.getElementById("finance-style");
-          const stylehashAttr = script.getAttribute("data-hash");
+          const stylehashAttr = style.getAttribute("data-hash");
           if (stylehashAttr !== css_hash) {
             style.remove();
             const newStyle = document.createElement("link");
@@ -33,7 +33,7 @@ export default function FinanceFragment(props) {
             newStyle.rel = "stylesheet";
             newStyle.setAttribute("data-hash", css_hash);
             newStyle.id = "finance-style";
-            document.body.appendChild(newStyle);
+            document.head.appendChild(newStyle);
           }
         }
 
