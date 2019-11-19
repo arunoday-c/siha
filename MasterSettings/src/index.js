@@ -7,7 +7,7 @@ import utliites from "algaeh-utilities";
 import routes from "./routes";
 import compression from "compression";
 // import { userSecurity } from "algaeh-utilities/checksecurity";
-import {authentication} from "algaeh-utilities/authentication";
+import { authentication } from "algaeh-utilities/authentication";
 const app = express();
 app.server = http.createServer(app);
 app.use(cors());
@@ -17,10 +17,13 @@ app.use(
     limit: keys.bodyLimit
   })
 );
+
+process.env.MYSQL_KEYS = JSON.stringify(keys.default);
+
 app.use(compression());
 
-app.use((req,res,next)=>{
-    authentication(req,res,next);
+app.use((req, res, next) => {
+  authentication(req, res, next);
 });
 // app.use((req, res, next) => {
 //   const reqH = req.headers;

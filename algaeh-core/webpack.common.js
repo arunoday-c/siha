@@ -23,7 +23,7 @@ module.exports = {
   },
   resolve: {
     extensions: [".js", ".json"],
-    symlinks: true,
+    symlinks: false,
     alias: resolvePaths(moduleList)
   },
   module: {

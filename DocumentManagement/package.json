@@ -11,6 +11,7 @@
     "lint": "eslint src && eslint test",
     "test": "echo \"Error: no test specified\" && exit 1",
     "run-prod": "cross-env PORT=3006 NODE_ENV=production  pm2 start  --max-memory-restart 850M -i 2 build/app.js --name 'document-management'",
+    "run-docker": "cross-env PORT=3006 NODE_ENV=production node build/app.js",
     "start": "run-s build run-prod",
     "run-dev": "cross-env PORT=3006 NODE_ENV=development nodemon --exec 'node build/app.js'"
   },

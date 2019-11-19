@@ -6,13 +6,15 @@ import compression from "compression";
 import moment from "moment";
 import fs from "fs";
 import path from "path";
+import algaehKeys from "algaeh-keys";
 import reportGen from "./report_generation";
 // import algaehUtilities from "algaeh-utilities/utilities";
 // import { userSecurity } from "algaeh-utilities/checksecurity";
-import {authentication} from "algaeh-utilities/authentication";
+import { authentication } from "algaeh-utilities/authentication";
 const bwipjs = require("bwip-js");
 const exec = require("child_process").exec;
 const app = exxpress();
+const keys = algaehKeys.default;
 app.server = http.createServer(app);
 
 const {
@@ -22,6 +24,8 @@ const {
   getExcelReport,
   getRawReport
 } = reportGen;
+
+process.env.MYSQL_KEYS = JSON.stringify(keys);
 
 app.use(cors());
 const _port = process.env.PORT;
@@ -57,8 +61,8 @@ app.use("/barcode", (req, res) => {
     bwipjs(req, res);
   }
 });
-app.use((req,res,next)=>{
-    authentication(req,res,next);
+app.use((req, res, next) => {
+  authentication(req, res, next);
 });
 
 // app.use((req, res, next) => {

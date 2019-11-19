@@ -17,6 +17,9 @@ app.use(
   })
 );
 app.use(compression());
+
+process.env.MYSQL_KEYS = JSON.stringify(keys.default);
+
 if (process.env.NODE_ENV == "production") {
   app.set("view cache", true);
 }
