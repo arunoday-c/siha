@@ -130,7 +130,10 @@ export default {
 
       _mysql
         .executeQuery({
-          query: `select * from hims_d_insurance_sub where record_status='A' ${qryStr} `,
+          query: `select I.*, P.account_name as insurance_head_account,C.child_name as insurance_child_account  from hims_d_insurance_sub I \
+          left join finance_account_head P on I.head_id=P.finance_account_head_id\
+          left join finance_account_child C on I.child_id=C.finance_account_child_id \ 
+          where record_status='A' ${qryStr} `,
 
           printQuery: true
         })
