@@ -3,9 +3,10 @@ import DropdownTreeSelect from "react-dropdown-tree-select";
 import {
     AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
-import "react-dropdown-tree-select/dist/styles.css";
+
 import {getHeaders} from "../accountsDropdown/events";
 import "./treeDropdownAlgaeh.scss";
+import "react-dropdown-tree-select/dist/styles.css";
 function AccountsDropDown(props){
     const {value, others,onChange,labelText,accountHeadeId} = props;
     const [textAreaVisable, setTextAreaVisable] = useState("1");

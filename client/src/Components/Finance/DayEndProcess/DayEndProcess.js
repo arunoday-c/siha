@@ -260,7 +260,7 @@ class DayEndProcess extends Component {
                   type="button"
                   className="btn btn-default"
                   onClick={e => {
-                    this.onClose(e);
+                    this.setState({ popUpRecords: {}, openPopup: false });
                   }}
                 >
                   Cancel

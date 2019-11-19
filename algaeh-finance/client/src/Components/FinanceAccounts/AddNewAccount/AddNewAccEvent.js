@@ -2,7 +2,7 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 
 export function AddNewAccountDetails(data, error, result) {
-    debugger
+
     algaehApiCall({
         uri: "/finance/addAccountHeads",
         method: "POST",

@@ -152,7 +152,7 @@ class HospitalServices extends PureComponent {
             {/* <div className="popupInner"> */}
             <div
               className="col-12 popRightDiv margin-top-15 margin-bottom-15"
-              data-validate="HospitalServices"
+              data-validate="HospitalServices" style={{minHeight:"72vh"}}
             >
               <div className="row">
                 <AlagehFormGroup
