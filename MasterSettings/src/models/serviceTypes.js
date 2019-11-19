@@ -13,9 +13,9 @@ export default {
           query:
             "INSERT INTO `hims_d_services` (`service_code`, `cpt_code`,`service_name`, `hospital_id`,`service_type_id`, \
           `physiotherapy_service`,`sub_department_id`,`standard_fee`, `discount`, `vat_applicable`, \
-          `vat_percent`, `effective_start_date`\
-          , `created_by` ,`created_date`,`service_status`) \
-       VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          `vat_percent`, `effective_start_date` , `created_by` ,`created_date`,`service_status`, \
+          head_account,head_id,child_id,insurance_head_account,insurance_head_id,insurance_child_id ) \
+       VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
           values: [
             inputParam.service_code,
             inputParam.cpt_code,
@@ -31,7 +31,13 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            inputParam.service_status
+            inputParam.service_status,
+            inputParam.head_account,
+            inputParam.head_id,
+            inputParam.child_id,
+            inputParam.insurance_head_account,
+            inputParam.insurance_head_id,
+            inputParam.insurance_child_id
           ],
           printQuery: true
         })
@@ -147,7 +153,8 @@ export default {
             "UPDATE `hims_d_services` \
           SET `service_code`=?,  `cpt_code`=?,`service_name`=?, `hospital_id`=?,  `service_type_id`=?,`sub_department_id` = ?, \
           `standard_fee`=?, `discount`=?,  `vat_applicable`=?,`vat_percent`=?, `physiotherapy_service`=?, \
-          `updated_by`=?, `updated_date`=?, `service_status`=? ,  `record_status`=?\
+          `updated_by`=?, `updated_date`=?, `service_status`=? ,  `record_status`=? ,\
+          head_account=?,head_id=?,child_id=?,insurance_head_account=?,insurance_head_id=?,insurance_child_id=?\
           WHERE `hims_d_services_id`=?",
           values: [
             inputParam.service_code,
@@ -167,6 +174,12 @@ export default {
             new Date(),
             inputParam.service_status,
             inputParam.record_status,
+            inputParam.head_account,
+            inputParam.head_id,
+            inputParam.child_id,
+            inputParam.insurance_head_account,
+            inputParam.insurance_head_id,
+            inputParam.insurance_child_id,
             inputParam.hims_d_services_id
           ],
           printQuery: true
@@ -260,8 +273,15 @@ export default {
           query:
             "select hims_d_services_id, service_code, S.cpt_code, CPT.cpt_code as cpt_p_code, service_name, service_desc, \
             sub_department_id, hospital_id, service_type_id, standard_fee , discount, vat_applicable, vat_percent, \
-            effective_start_date, effectice_end_date, procedure_type, physiotherapy_service from \
+            effective_start_date, effectice_end_date, procedure_type, physiotherapy_service,\
+            P.account_name as cash_head_account,C.child_name as cash_child_account,\
+            H.account_name as insurance_head_account,CH.child_name as insurance_child_account\
+            from \
             hims_d_services S left join hims_d_cpt_code CPT on CPT.hims_d_cpt_code_id = S.cpt_code \
+            left join finance_account_head P on S.head_id=P.finance_account_head_id\
+            left join finance_account_child C on S.child_id=C.finance_account_child_id \
+            left join finance_account_head H on S.insurance_head_id=H.finance_account_head_id\
+            left join finance_account_child CH on S.insurance_child_id=CH.finance_account_child_id \
             WHERE S.record_status ='A' " +
             _strAppend +
             " order by hims_d_services_id desc",
