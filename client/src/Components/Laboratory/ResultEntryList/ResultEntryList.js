@@ -44,7 +44,8 @@ class ResultEntryList extends Component {
       isOpen: false,
       proiorty: null,
       status: null,
-      isMicroOpen: false
+      isMicroOpen: false,
+      comments_data: []
     };
   }
 
@@ -202,8 +203,8 @@ class ResultEntryList extends Component {
                                     row.status === "O"
                                       ? ""
                                       : row.sample_status === "N"
-                                      ? "none"
-                                      : ""
+                                        ? "none"
+                                        : ""
                                 }}
                                 className="fas fa-file-signature"
                                 aria-hidden="true"
@@ -248,10 +249,10 @@ class ResultEntryList extends Component {
                           return row.test_type === "S" ? (
                             <span className="badge badge-danger">Stat</span>
                           ) : (
-                            <span className="badge badge-secondary">
-                              Routine
+                              <span className="badge badge-secondary">
+                                Routine
                             </span>
-                          );
+                            );
                         },
                         disabled: true,
                         others: {
@@ -351,10 +352,10 @@ class ResultEntryList extends Component {
                               Confirmed
                             </span>
                           ) : (
-                            <span className="badge badge-success">
-                              Validated
+                                  <span className="badge badge-success">
+                                    Validated
                             </span>
-                          );
+                                );
                         },
                         disabled: true,
                         others: {
@@ -394,6 +395,7 @@ class ResultEntryList extends Component {
             open={this.state.isOpen}
             onClose={closeResultEntry.bind(this, this)}
             selectedPatient={this.state.selectedPatient}
+            comments_data={this.state.comments_data}
           />
 
           <MicrobiologyResultEntry
