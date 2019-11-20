@@ -461,6 +461,18 @@ const onchangeAmend = ($this, row, e) => {
   );
 };
 
+const addComments = ($this) => {
+  debugger
+  let comment_list = $this.state.comment_list
+  let sl_no = comment_list.length + 1
+  let comment_append = sl_no + "." + $this.state.selcted_comments
+  comment_list.push({ comment_data: comment_append })
+
+  $this.setState({
+    comment_list: comment_list
+  })
+}
+
 export {
   texthandle,
   onvalidate,
@@ -471,5 +483,6 @@ export {
   onReRun,
   resultEntryUpdate,
   onchangegridresult,
-  onchangeAmend
+  onchangeAmend,
+  addComments
 };
