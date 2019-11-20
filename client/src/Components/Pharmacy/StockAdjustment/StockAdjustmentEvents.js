@@ -397,13 +397,14 @@ const AddItemtoList = ($this) => {
 
       let pharmacy_stock_detail = $this.state.pharmacy_stock_detail
 
-      let operation = "+", extended_cost = 0;
-      if ($this.state.adjustment_type === "DQ" || $this.state.adjustment_type === "BD") {
+      let operation = "+";
+      if ($this.state.adjustment_type === "DQ" || $this.state.adjustment_type === "BD" || $this.state.adjustment_type === "DA") {
         operation = "-";
-        extended_cost = parseFloat($this.state.adjust_qty) * parseFloat($this.state.unit_cost)
-      } else {
-        extended_cost = $this.state.adjust_amount
+        // extended_cost = parseFloat($this.state.adjust_qty) * parseFloat($this.state.unit_cost)
       }
+      // else {
+      //   extended_cost = $this.state.adjust_amount
+      // }
       let InsertObj = {
         location_id: $this.state.location_id,
         location_type: $this.state.location_type,
@@ -422,6 +423,7 @@ const AddItemtoList = ($this) => {
         operation: operation,
         qtyhand: $this.state.qtyhand,
         expirydate: $this.state.expirydate,
+        expiry_date: $this.state.expirydate,
         barcode: $this.state.barcode,
         unit_cost: $this.state.unit_cost,
         extended_cost: 0,
