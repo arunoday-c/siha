@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../Assets/assets.scss";
+
 
 import SortableTree, {
   getNodeAtPath,
@@ -8,6 +8,7 @@ import SortableTree, {
 } from "react-sortable-tree";
 import "react-sortable-tree/style.css"; // This only needs to be imported once in your app
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
+import "../alice.scss";
 import {
   getAccounts,
   isPositive,
@@ -356,7 +357,8 @@ export default function Income() {
                                   : node.trans_symbol}
                               </small>
                             </div>
-                          )
+                          ),
+                          className:node.leafnode === "Y" ?"":"accGroup"
                         };
                       }}
                       searchMethod={({ node, searchQuery }) => {

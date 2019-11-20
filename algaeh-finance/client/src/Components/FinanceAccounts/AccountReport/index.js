@@ -1,24 +1,58 @@
-import React,{memo} from "react";
-import {AlgaehModal,AlgaehDateHandler} from "algaeh-react-components"
+import React,{memo,useState} from "react";
+import {AlgaehModal,AlgaehDateHandler,Spin,Switch} from "algaeh-react-components";
+import moment from "moment";
 export default  memo( function Modal(props){
-   const{branches,title,onCancel,visible} = props;
+   const{selectedNode,title,onCancel,visible,onOk} = props;
+   const[checkedType,setCheckType]= useState(false);
+   const [dateRange,setDateRange]= useState([]);
+   const[loading,setLoading] = useState(false);
+
    return (<AlgaehModal
        title={title}
-       onCancel={onCancel}
+       onCancel={(e)=>{
+           setLoading(false);
+           onCancel(e)}}
+       onOk={(e)=>{
+           setLoading(true);
+           onOk(e);
+       }}
+       okButtonProps={{
+           loading:loading
+       }}
        visible={visible}
+       maskClosable={false}
+       closable={false}
+       destroyOnClose={true}
+       afterClose={()=>{
+           setLoading(false);
+       }}
        >
-       <div>
-<AlgaehDateHandler div={{className:"col-lg-3"}}  type="range"
+       <Spin tip="Please wait report is preparing.." spinning={loading}>
+<AlgaehDateHandler  type="range"
+                    div={{
+                        className: "col"
+                    }}
+                    label={{
+                        forceLabel:"Select Date Range"
+                    }}
                    textBox={{
                        name: "selectRange",
-                       value: new Date()
+                       value:dateRange
                    }}
+                    maxDate={ moment()}
                    events={{
-                       onChange: e => {
-                           console.log("Text", e);
+                       onChange: dateSelected => {
+                           setDateRange(dateSelected);
                        }
                    }}
 />
-       </div>
+<div className="col">
+    <Switch checkedChildren="Month wise" unCheckedChildren="Date Wise"
+            onChange={check=>{
+                setCheckType(check);
+            }}  checked={checkedType} />
+</div>
+
+       </Spin>
    </AlgaehModal>)
 });

@@ -6,13 +6,12 @@ import SortableTree, {
 } from "react-sortable-tree";
 import "react-sortable-tree/style.css"; // This only needs to be imported once in your app
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
-import "../Assets/assets.scss";
 import {
   getAccounts,
   isPositive,
   removeAccount
 } from ".././FinanceAccountEvent";
-
+import "../alice.scss";
 import { AlgaehConfirm, AlgaehMessagePop } from "algaeh-react-components";
 
 export default function Liablity() {
@@ -355,7 +354,8 @@ export default function Liablity() {
                                   : node.trans_symbol}
                               </small>
                             </div>
-                          )
+                          ),
+                          className:node.leafnode === "Y" ?"":"accGroup"
                         };
                       }}
                       searchMethod={({ node, searchQuery }) => {
