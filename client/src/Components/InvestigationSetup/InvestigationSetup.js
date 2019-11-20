@@ -17,6 +17,8 @@ import {
 import moment from "moment";
 import Options from "../../Options.json";
 import NewInvestigation from "./NewInvestigation/NewInvestigation";
+import InvestigationComments from "./InvestigationComments/InvestigationComments"
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 
 class InvestigationSetup extends Component {
   constructor(props) {
@@ -32,7 +34,11 @@ class InvestigationSetup extends Component {
       specimen_id: null,
       hims_d_investigation_test_id: null,
       InvestigationPop: {},
-      investigations_data: []
+      investigations_data: [],
+      isCommentsOpen: false,
+      investigation_test_id: null,
+      test_name: null,
+      comments_data: []
     };
   }
 
@@ -114,6 +120,37 @@ class InvestigationSetup extends Component {
         }
       }
     );
+  }
+
+  CloseCommentModel(e) {
+    this.setState({
+      isCommentsOpen: !this.state.isCommentsOpen,
+      investigation_test_id: null,
+      test_name: null,
+      comments_data: []
+    });
+  }
+
+  OpenComments(row) {
+    debugger
+    algaehApiCall({
+      uri: "/investigation/getTestComments",
+      module: "laboratory",
+      data: { investigation_test_id: row.hims_d_investigation_test_id },
+      method: "GET",
+      onSuccess: response => {
+        debugger
+        if (response.data.success === true) {
+          this.setState({
+            isCommentsOpen: !this.state.isCommentsOpen,
+            investigation_test_id: row.hims_d_investigation_test_id,
+            test_name: row.description,
+            comments_data: response.data.records
+          });
+        }
+      }
+    });
+
   }
 
   changeDateFormat = date => {
@@ -204,6 +241,22 @@ class InvestigationSetup extends Component {
                 onClose={this.CloseModel.bind(this)}
                 InvestigationPop={this.state.InvestigationPop}
               />
+
+              <InvestigationComments
+                HeaderCaption={
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Test Comments",
+                      align: "ltr"
+                    }}
+                  />
+                }
+                open={this.state.isCommentsOpen}
+                onClose={this.CloseCommentModel.bind(this)}
+                investigation_test_id={this.state.investigation_test_id}
+                test_name={this.state.test_name}
+                comments_data={this.state.comments_data}
+              />
             </div>
           </div>
           <div className="portlet-body">
@@ -226,11 +279,25 @@ class InvestigationSetup extends Component {
                                 row
                               )}
                             />
+                            <i
+                              className="fas fa-plus"
+                              style={{
+                                pointerEvents:
+                                  row.investigation_type === "R"
+                                    ? "none"
+                                    : "",
+                                opacity:
+                                  row.investigation_type === "R"
+                                    ? "0.1"
+                                    : ""
+                              }}
+                              onClick={this.OpenComments.bind(this, row)}
+                            />
                           </span>
                         );
                       },
                       others: {
-                        maxWidth: 65,
+                        maxWidth: 90,
                         resizable: false,
                         filterable: false,
                         style: { textAlign: "center" }

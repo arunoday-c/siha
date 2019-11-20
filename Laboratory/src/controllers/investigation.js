@@ -7,7 +7,10 @@ const {
   getInvestigTestList,
   updateInvestigationTest,
   deleteLabAnalyte,
-  deleteRadTemplate
+  deleteRadTemplate,
+  addTestComments,
+  updateTestComments,
+  getTestComments
 } = invModels;
 
 export default () => {
@@ -63,6 +66,29 @@ export default () => {
       });
     }
   });
+
+  api.get("/getTestComments", getTestComments, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.post("/addTestComments", addTestComments, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put(
+    "/updateTestComments", updateTestComments, (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
 
   return api;
 };
