@@ -65,7 +65,7 @@ const InsertServices = $this => {
       algaehApiCall({
         uri: "/serviceType/addServices",
         module: "masterSettings",
-        data: {...$this.state,...$this.cashPatientMap,...$this.insurancePatientMap},
+        data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
             clearData($this);
@@ -138,7 +138,11 @@ const clearData = $this => {
     cpt_code_data: null,
     sub_department_id: null,
     cashPatientAccount:"",
-    insurancePatientAccount:""
+    insurancePatientAccount:"",
+    head_id:null,
+    child_id:null,
+    insurance_head_id:null,
+    insurance_child_id:null
   });
 };
 

@@ -13,7 +13,7 @@ import jwtDecode from "jwt-decode";
 import cryptoUtils from "./utils/cryptography";
 import algaehKeys from "algaeh-keys";
 import { userSecurity } from "algaeh-utilities/checksecurity";
-import {authentication} from "algaeh-utilities/authentication";
+import { authentication } from "algaeh-utilities/authentication";
 const keys = algaehKeys.default;
 let app = express();
 const _port = process.env.PORT;
@@ -26,6 +26,8 @@ if (process.env.NODE_ENV === "production") {
   const dist = path.resolve("../", "client", "build");
   app.use(express.static(dist));
 }
+
+process.env.MYSQL_KEYS = JSON.stringify(keys);
 
 app.use(
   cors({
@@ -64,22 +66,21 @@ passport.deserializeUser((id, done) => {
   done(null, { id: id, msg: "done" });
 });
 
-
-app.use((req,res,next)=>{
-  if( req.url.includes("/apiAuth") ===true ){
-    if(req.url.includes("/logout")){
+app.use((req, res, next) => {
+  if (req.url.includes("/apiAuth") === true) {
+    if (req.url.includes("/logout")) {
       let reqH = req.headers;
       let header = reqH["x-api-key"];
       if (header != null && header !== "" && header !== "null") {
-        header =jwtDecode(reqH["x-api-key"]);
+        header = jwtDecode(reqH["x-api-key"]);
         req.userIdentity = { ...header, "x-branch": reqH["x-branch"] };
         next();
       }
-    }else{
+    } else {
       next();
     }
-  }else{
-    authentication(req,res,next);
+  } else {
+    authentication(req, res, next);
   }
 });
 
@@ -160,12 +161,6 @@ app.use((req,res,next)=>{
 //   next();
 // });
 
-
-
-
-
-
-
 app.set("trust proxy", true);
 //api routeres v1
 app.use("/api/v1", routes);
@@ -190,43 +185,59 @@ app.use((error, req, res, next) => {
           connection.rollback(() => {
             if (typeof connection.release === "function") connection.release();
 
-            res.status(error.status).json({
+            res
+              .status(error.status)
+              .json({
+                success: false,
+                message:
+                  error.sqlMessage != null ? error.sqlMessage : error.message,
+                isSql: error.sqlMessage != null ? true : false
+              })
+              .end();
+          });
+        } else {
+          if (typeof connection.release === "function") connection.release();
+          res
+            .status(error.status)
+            .json({
               success: false,
               message:
                 error.sqlMessage != null ? error.sqlMessage : error.message,
               isSql: error.sqlMessage != null ? true : false
-            }).end();
-          });
-        } else {
-          if (typeof connection.release === "function") connection.release();
-          res.status(error.status).json({
+            })
+            .end();
+        }
+      } else {
+        res
+          .status(error.status)
+          .json({
             success: false,
             message:
               error.sqlMessage != null ? error.sqlMessage : error.message,
             isSql: error.sqlMessage != null ? true : false
-          }).end();
-        }
-      } else {
-        res.status(error.status).json({
+          })
+          .end();
+      }
+    } else {
+      console.log("Here is an error", error);
+      res
+        .status(error.status)
+        .json({
           success: false,
           message: error.sqlMessage != null ? error.sqlMessage : error.message,
           isSql: error.sqlMessage != null ? true : false
-        }).end();
-      }
-    } else {
-      console.log("Here is an error",error);
-      res.status(error.status).json({
+        })
+        .end();
+    }
+  } else {
+    res
+      .status(error.status)
+      .json({
         success: false,
         message: error.sqlMessage != null ? error.sqlMessage : error.message,
         isSql: error.sqlMessage != null ? true : false
-      }).end();
-    }
-  } else {
-    res.status(error.status).json({
-      success: false,
-      message: error.sqlMessage != null ? error.sqlMessage : error.message,
-      isSql: error.sqlMessage != null ? true : false
-    }).end();
+      })
+      .end();
   }
 
   const _error = {

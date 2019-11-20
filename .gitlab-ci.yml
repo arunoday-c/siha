@@ -4,8 +4,8 @@ before_script:
   - export PATH="/home/algaeh/.nvm/versions/node/v12.11.1/bin/:$PATH"
 build_image:
   only:
-    - schedules
     refs:
+      - schedules
       - development
   tags:
     - build
@@ -18,8 +18,8 @@ build_image:
 
 build_docker:
   only:
-    - schedules
     refs:
+      - schedules
       - development
   tags:
     - build
@@ -32,8 +32,8 @@ build_docker:
 
 start_stack:
   only:
-    - schedules
     refs:
+      - schedules
       - development
   tags:
     - build
