@@ -267,8 +267,8 @@ export default {
                       values: [
                         new Date(),
                         input.account_code,
-                        input.head_id,
-                        input.child_id,
+                        input.finance_account_head_id,
+                        result.insertId,
                         debit_amount,
                         payment_type,
                         credit_amount,
@@ -385,9 +385,11 @@ export default {
               printQuery: true
             })
             .then(resul => {
-              console.log("resul", resul);
               _mysql.releaseConnection();
-              req.records = resul;
+              req.records = {
+                account_code: account_code,
+                finance_account_head_id: resul.insertId
+              };
               next();
             })
             .catch(e => {
@@ -697,11 +699,29 @@ export default {
     } else if (input.leaf_node == "N") {
       _mysql
         .executeQuery({
-          query: `SELECT finance_account_head_id, created_from FROM hims_test_db.finance_account_head\
+          query: `SELECT finance_account_head_id, created_from FROM finance_account_head\
                    where finance_account_head_id=?;\
-                select finance_voucher_id from finance_voucher_details where head_id=?  limit 1;`,
-          values: [input.head_id, input.head_id],
-          printQuery: true
+                select finance_voucher_id from finance_voucher_details where head_id in  (
+                  with recursive cte  as (          
+                    select  finance_account_head_id
+                    from finance_account_head where finance_account_head_id=?
+                    union                  
+                    select H.finance_account_head_id
+                    from finance_account_head  H inner join cte
+                    on H.parent_acc_id = cte.finance_account_head_id    
+                    )select * from cte
+                ); with recursive cte  as (          
+                  select  finance_account_head_id,PC.child_id
+                  from finance_account_head P left join finance_head_m_child PC on P.finance_account_head_id
+                  =PC.head_id where finance_account_head_id=?
+                  union                  
+                  select H.finance_account_head_id,PC.child_id
+                  from finance_account_head  H inner join cte
+                  on H.parent_acc_id = cte.finance_account_head_id   left join finance_head_m_child PC on H.finance_account_head_id
+                  =PC.head_id 
+                  )select * from cte`,
+          values: [input.head_id, input.head_id, input.head_id],
+          printQuery: false
         })
         .then(result => {
           if (result[0][0]["created_from"] == "S") {
@@ -720,11 +740,17 @@ export default {
               };
               next();
             } else {
+              const head_ids = result[2].map(m => m.finance_account_head_id);
+              const child_ids = result[2]
+                .filter(f => {
+                  return f.child_id > 0;
+                })
+                .map(m => m.child_id);
               _mysql
                 .executeQueryWithTransaction({
-                  query: `delete FROM finance_head_m_child where head_id=?;            
-                    delete from finance_account_child where finance_account_child_id=?;
-                    delete from finance_account_head  where finance_account_head_id=?;`,
+                  query: `delete FROM finance_head_m_child where head_id in (${head_ids});            
+                    delete from finance_account_child where finance_account_child_id in (${child_ids});
+                    delete from finance_account_head  where finance_account_head_id in (${head_ids});`,
                   values: [input.head_id, input.child_id, input.head_id],
                   printQuery: true
                 })
@@ -827,8 +853,8 @@ export default {
 
     _mysql
       .executeQuery({
-        query: `select finance_day_end_sub_detail_id ,payment_date,head_id,head_account_code,account_name,
-        child_id,child_name,concat(account_name,'-->',child_name ) as to_account,debit_amount,
+        query: `select finance_day_end_sub_detail_id ,payment_date,head_id,head_account_code,
+        child_id,concat(account_name,'-->',child_name ) as to_account,debit_amount,
         case payment_type when 'CR' then 'Credit' else 'Debit' end
          as payment_type,credit_amount,narration
         from finance_day_end_sub_detail SD left join finance_account_head H on SD.head_id=H.finance_account_head_id

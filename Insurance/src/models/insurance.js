@@ -2,7 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import extend from "extend";
 import mysql from "mysql";
 
-export default{
+export default {
   //Addded by noor code modification
   addPatientInsuranceData: (req, res, next) => {
     const _mysql = req.options == null ? req.db : new algaehMysql();
@@ -95,7 +95,7 @@ export default{
 
       _mysql
         .executeQuery({
-          query: `select * from hims_d_insurance_provider where record_status='A' ${qryStr} order by hims_d_insurance_provider_id desc`,
+          query: `select * from hims_d_insurance_provider where record_status='A'\ ${qryStr} order by hims_d_insurance_provider_id desc`,
 
           printQuery: false
         })
@@ -130,7 +130,10 @@ export default{
 
       _mysql
         .executeQuery({
-          query: `select * from hims_d_insurance_sub where record_status='A' ${qryStr} `,
+          query: `select I.*, P.account_name as insurance_head_account,C.child_name as insurance_child_account  from hims_d_insurance_sub I \
+          left join finance_account_head P on I.head_id=P.finance_account_head_id\
+          left join finance_account_child C on I.child_id=C.finance_account_child_id \ 
+          where record_status='A' ${qryStr} `,
 
           printQuery: true
         })
@@ -283,7 +286,10 @@ export default{
         "card_format",
         "transaction_number",
         "effective_start_date",
-        "effective_end_date"
+        "effective_end_date",
+        "head_account",
+        "head_id",
+        "child_id"
       ];
 
       _mysql
@@ -326,7 +332,8 @@ export default{
           query:
             "update hims_d_insurance_sub SET `insurance_sub_code`=?,`insurance_sub_name`=?,\
             `arabic_sub_name`=?,`insurance_provider_id`=?,`card_format`=?,\
-            `transaction_number`=?,`effective_start_date`=?,`effective_end_date`=?,`updated_by`=?\
+            `transaction_number`=?,`effective_start_date`=?,`effective_end_date`=?,`updated_by`=?,\
+            head_account=?,head_id=?,child_id=?\
              WHERE  `hims_d_insurance_sub_id`=? AND `record_status`='A'",
           values: [
             inputparam.insurance_sub_code,
@@ -338,6 +345,9 @@ export default{
             inputparam.effective_start_date,
             inputparam.effective_end_date,
             req.userIdentity.algaeh_d_app_user_id,
+            inputparam.head_account,
+            inputparam.head_id,
+            inputparam.child_id,
             inputparam.hims_d_insurance_sub_id
           ],
 
@@ -1315,7 +1325,11 @@ export default{
         .executeQuery({
           query:
             " SELECT hims_d_insurance_sub_id, insurance_sub_code, insurance_sub_name, arabic_sub_name,\
-            insurance_provider_id  from hims_d_insurance_sub where record_status='A' " +
+            P.account_name as insurance_head_account,C.child_name as insurance_child_account ,\
+            insurance_provider_id  from hims_d_insurance_sub  I \
+            left join finance_account_head P on I.head_id=P.finance_account_head_id\
+            left join finance_account_child C on I.child_id=C.finance_account_child_id \
+            where record_status='A' " +
             _stringData,
           printQuery: true
         })

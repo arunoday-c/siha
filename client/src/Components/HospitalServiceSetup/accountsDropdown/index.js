@@ -3,8 +3,8 @@ import DropdownTreeSelect from "react-dropdown-tree-select";
 import {
     AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
-import "react-dropdown-tree-select/dist/styles.css";
 import {getHeaders} from "../accountsDropdown/events";
+import "react-dropdown-tree-select/dist/styles.css";
 import "./treeDropdownAlgaeh.scss";
 function AccountsDropDown(props){
     const {value, others,onChange,labelText,accountHeadeId} = props;
@@ -63,7 +63,7 @@ console.error(error);
                         onChange(currentNode, selectedNodes);
                     }
                 }}
-                {...{others,data:data}}
+                {...{others,data:data, mode: "radioSelect"}}
             />
         </div>
     </div>)

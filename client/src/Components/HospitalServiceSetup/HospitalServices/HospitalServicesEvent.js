@@ -117,6 +117,8 @@ const CptCodesSearch = $this => {
 };
 
 const clearData = $this => {
+  $this.cashPatientMap ={};
+  $this.insurancePatientMap={};
   $this.setState({
     open: false,
 
@@ -134,7 +136,13 @@ const clearData = $this => {
     vat_applicable: "N",
     vat_percent: 0,
     cpt_code_data: null,
-    sub_department_id: null
+    sub_department_id: null,
+    cashPatientAccount:"",
+    insurancePatientAccount:"",
+    head_id:null,
+    child_id:null,
+    insurance_head_id:null,
+    insurance_child_id:null
   });
 };
 

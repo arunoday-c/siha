@@ -17,6 +17,7 @@ app.use(
   })
 );
 
+process.env.MYSQL_KEYS = JSON.stringify(keys.default);
 //api routeres v1
 app.use("/api/v1", router);
 process.on("warning", warning => {

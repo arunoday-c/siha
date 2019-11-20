@@ -166,7 +166,7 @@ class DayEndProcess extends Component {
     return (
       <div className="day_end_prc">
         <AlgaehModalPopUp
-          title="Day &amp; Process Details"
+          title="Accounting Entries"
           openPopup={this.state.openPopup}
           events={{
             onClose: () => {
@@ -206,17 +206,12 @@ class DayEndProcess extends Component {
                   id="dayEndProcessDetailsGrid"
                   columns={[
                     {
-                      fieldName: "account_name",
+                      fieldName: "to_account",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Account Name" }} />
+                        <AlgaehLabel label={{ forceLabel: "To Account" }} />
                       )
                     },
-                    {
-                      fieldName: "child_name",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Child Name" }} />
-                      )
-                    },
+
                     {
                       fieldName: "payment_type",
                       label: (
@@ -265,7 +260,7 @@ class DayEndProcess extends Component {
                   type="button"
                   className="btn btn-default"
                   onClick={e => {
-                    this.onClose(e);
+                    this.setState({ popUpRecords: {}, openPopup: false });
                   }}
                 >
                   Cancel

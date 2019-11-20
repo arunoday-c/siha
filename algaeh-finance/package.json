@@ -12,6 +12,7 @@
     "build:client": "npm run build --prefix client",
     "build:server": "webpack --config webpack.prod.js",
     "start": "cross-env NODE_ENV=production PORT=3007 pm2 start -i 2 build/app.js --name 'finance'",
+    "run-docker": "cross-env PORT=3007 NODE_ENV=production node build/app.js",
     "run-webpack": "webpack --watch --config webpack.dev.js",
     "run-dev": "cross-env PORT=3007 NODE_ENV=development nodemon --exec 'node build/app.js'"
   },

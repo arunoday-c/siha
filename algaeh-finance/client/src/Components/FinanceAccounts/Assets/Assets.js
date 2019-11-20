@@ -15,6 +15,7 @@ import {
 } from ".././FinanceAccountEvent";
 export default function Assets() {
   const [symbol, setSymbol] = useState("");
+  const [financeHeadId,setFinanceHeadId] = useState(undefined);
   const [assetAmount, setAssetAmount] = useState("");
   const [treeData, setTreeData] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
@@ -22,13 +23,16 @@ export default function Assets() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchFocusIndex, setSearchFocusIndex] = useState(0);
   const [searchFoundCount, setSearchFoundCount] = useState(undefined);
-
+const [isAccountHead,setIsAccountHead]= useState(false);
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
       try {
         const { treeData } = options;
         // let NEW_NODE = { title: addedNode.account_name };
         let { path } = rowInfo;
+        if(path ===undefined){
+          path =[0];
+        }
         let parentNode = getNodeAtPath({
           treeData: treeData,
           path: path,
@@ -87,10 +91,11 @@ export default function Assets() {
       }
     });
   }
-  useEffect(() => {
+  function loadAccount(){
     getAccounts("1", data => {
       if (Array.isArray(data)) {
         if (data.length > 0) {
+          setFinanceHeadId(data[0].finance_account_head_id);
           setTreeData(data[0].children);
           setAssetAmount(data[0]["subtitle"]);
           setSymbol(data[0]["trans_symbol"]);
@@ -101,6 +106,10 @@ export default function Assets() {
         setTreeData([]);
       }
     });
+  }
+
+  useEffect(() => {
+    loadAccount();
   }, []);
 
   return (
@@ -108,13 +117,20 @@ export default function Assets() {
       <AddNewAccount
         showPopup={showPopup}
         selectedNode={selectedNode}
-        onClose={e => {
+        onClose={(e) => {
           setShowPopup(false);
+        if(isAccountHead){
+          loadAccount();
+          setIsAccountHead(false);
+        }else{
           if (e !== undefined) {
             addNode(selectedNode, { treeData }, e).then(newTree => {
               setTreeData(newTree.treeData);
+              setIsAccountHead(false);
             });
           }
+        }
+
         }}
       />
       <div className="row">
@@ -150,7 +166,12 @@ export default function Assets() {
                 <button className="btn btn-default btn-circle active">
                   <i className="fas fa-print" />
                 </button>
-                <button className="btn btn-primary btn-circle active">
+                <button className="btn btn-primary btn-circle active"
+                onClick={()=>{
+                  setSelectedNode({node:{finance_account_head_id:financeHeadId}});
+                  setShowPopup(true);
+                  setIsAccountHead(true);
+                }} >
                   <i className="fas fa-plus" />
                 </button>{" "}
               </div>
@@ -219,6 +240,7 @@ export default function Assets() {
                                     (node.leafnode === "Y" ? "disabled" : "")
                                   }
                                   onClick={event => {
+                                    debugger;
                                     setShowPopup(true);
                                     setSelectedNode(rowInfo);
                                   }}
@@ -289,10 +311,10 @@ export default function Assets() {
                             <div
                               style={{ fontSize: "medium", marginTop: "7px" }}
                             >
-                              <span className={isPositive(node.subtitle)}>
-                                {node.subtitle}
+                              <span className={node.subtitle !==undefined? isPositive(node.subtitle):""}>
+                                {node.subtitle === undefined ?"0.00": node.subtitle}
                               </span>{" "}
-                              <small>{node.trans_symbol}</small>
+                              <small>{node.trans_symbol === undefined?symbol:node.trans_symbol}</small>
                             </div>
                           )
                         };

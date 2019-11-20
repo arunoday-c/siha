@@ -41,12 +41,16 @@ export default function AddNewAccount(props) {
       }}
         onOk={()=>{
             setLoadingAddtoList(true);
+            const {finance_account_head_id,account_code,parent_acc_id} = selectedNode.node;
             AddNewAccountDetails(
                 {
                     finance_account_head_id:
-                    selectedNode.node.finance_account_head_id,
+                    finance_account_head_id,
                     account_name: account_name,
-                    leaf_node: account_type === "G" ? "N" : "Y"
+                    account_code:account_code,
+                    chart_of_account:parent_acc_id,
+                    leaf_node: account_type === "G" ? "N" : "Y",
+                    opening_bal: opening_balance
                 },
                 errorMessage => {
                     setAccountCode("");
@@ -66,11 +70,15 @@ export default function AddNewAccount(props) {
                     setAccountName("");
                     setAccountType("G");
                     setOpeningBalance(0);
+                    const {finance_account_head_id,account_code,head_id,child_id} = result;
                     onClose({
                         title: account_name,
                         leafnode: account_type === "G" ? "N" : "Y",
                         head_created_from: "U",
-                        finance_account_head_id: result.insertId
+                        finance_account_head_id: finance_account_head_id,
+                        account_code:account_code,
+                        head_id,
+                        finance_account_child_id:child_id
                     });
                     setLoadingAddtoList(false);
                     AlgaehMessagePop({
@@ -145,7 +153,6 @@ export default function AddNewAccount(props) {
                   className: "form-control",
                   id: "name",
                   onChange: e => {
-                    debugger;
                     setOpeningBalance(e.target.value);
                   },
                   placeholder: " Enter Opening Balance",
@@ -156,83 +163,7 @@ export default function AddNewAccount(props) {
 
       </div>
       </Spin>
-      {/*<div className="popupInner" data-validate="LvEdtGrd">*/}
-      {/*  <div className="container-fluid addnewaccountModuleScreen">*/}
-      {/*    <h5 className="card-header">New Asset Account</h5>*/}
-      {/*    <div className="card-body">*/}
 
-      {/*    </div>*/}
-      {/*  </div>*/}
-        {/*<div className="popupFooter">*/}
-        {/*  <div className="col-lg-12">*/}
-        {/*    <div className="row">*/}
-        {/*      <div className="col-lg-4"> &nbsp;</div>*/}
-        {/*      <ButtonType*/}
-        {/*        classname="btn-primary"*/}
-        {/*        loading={lodingAddtoList}*/}
-        {/*        onClick={() => {*/}
-        {/*          setLoadingAddtoList(true);*/}
-        {/*          AddNewAccountDetails(*/}
-        {/*            {*/}
-        {/*              finance_account_head_id:*/}
-        {/*                selectedNode.node.finance_account_head_id,*/}
-        {/*              account_name: account_name,*/}
-        {/*              leaf_node: account_type === "G" ? "N" : "Y"*/}
-        {/*            },*/}
-        {/*            errorMessage => {*/}
-        {/*              setAccountCode("");*/}
-        {/*              setAccountName("");*/}
-        {/*              setAccountType("G");*/}
-        {/*              setOpeningBalance(0);*/}
-        {/*              onClose();*/}
-        {/*              setLoadingAddtoList(false);*/}
-        {/*              swalMessage({*/}
-        {/*                type: "error",*/}
-        {/*                title: errorMessage*/}
-        {/*              });*/}
-        {/*            },*/}
-        {/*            result => {*/}
-        {/*              setAccountCode("");*/}
-        {/*              setAccountName("");*/}
-        {/*              setAccountType("G");*/}
-        {/*              setOpeningBalance(0);*/}
-        {/*              onClose({*/}
-        {/*                title: account_name,*/}
-        {/*                leafnode: account_type === "G" ? "N" : "Y",*/}
-        {/*                head_created_from: "U",*/}
-        {/*                finance_account_head_id: result.insertId*/}
-        {/*              });*/}
-        {/*              setLoadingAddtoList(false);*/}
-        {/*              swalMessage({*/}
-        {/*                type: "success",*/}
-        {/*                title: "Added Successfully ..."*/}
-        {/*              });*/}
-        {/*            }*/}
-        {/*          );*/}
-        {/*        }}*/}
-
-        {/*        label={{*/}
-        {/*          forceLabel: "Add to List",*/}
-        {/*          returnText: true*/}
-        {/*        }}*/}
-        {/*      />*/}
-        {/*      <button*/}
-        {/*        onClick={() => {*/}
-        {/*          setAccountCode("");*/}
-        {/*          setAccountName("");*/}
-        {/*          setAccountType("G");*/}
-        {/*          setOpeningBalance(0);*/}
-        {/*          onClose();*/}
-        {/*        }}*/}
-        {/*        type="button"*/}
-        {/*        className="btn btn-default"*/}
-        {/*      >*/}
-        {/*        CANCEL*/}
-        {/*      </button>*/}
-        {/*    </div>*/}
-        {/*  </div>*/}
-        {/*</div>*/}
-      {/*</div>*/}
     </AlgaehModal>
   );
 }
