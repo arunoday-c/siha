@@ -1,0 +1,105 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+        {{#hasElement employees}}
+
+
+        <section>
+
+
+
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Branch Name</th>
+                        <th>Voucher No</th>
+                        <th>Date</th>
+                        <th>Particulars</th>
+                        <th>Debit</th>
+                        <th>Credit</th>
+                        <th>Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {{#each employees}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td class="txtFld"><span class="textTruncate" style="width: 200px;">{{branchName}}</span></td>
+                        <td class="txtFld"><span class="textTruncate" style="width: 100px;">{{voucherNo}}</span></td>
+                        <td>{{nationality}}</td>
+                        <td class="txtFld">{{particulars}}</td>
+                        <td class="numberFld numberFldTotal">{{debit_amt}}</td>
+                        <td class="numberFld numberFldTotal">{{credit_amt}}</td>
+                        <td class="numberFld numberFldTotal">{{balance_amt}}</td>
+                    </tr>
+                    {{/each }}<tr class="numberFld numberFldTotalBottom">
+                        <td class="numberFld" colspan="5">Total</td>
+                        <td class="numberFld numberFldTotal">{{total_debit}}</td>
+                        <td class="numberFld numberFldTotal">{{total_credit}}</td>
+                        <td class="numberFld numberFldTotal"></td>
+                    </tr>
+
+                    <tr class="numberFld numberFldTotalBottom">
+                        <td class="numberFld" colspan="5">Balance</td>
+                        <td class="numberFld" colspan="2">{{total_debit_credit}}</td>
+                        <td class="numberFld"></td>
+                    </tr>
+                    <tr class="numberFld numberFldTotalBottom">
+                        <td class="numberFld" colspan="7">Closing Balance</td>
+                        <td class="numberFld">{{closingBalance}}</td>
+                    </tr>
+                    {{else}}
+                    <tr>
+                        <td class="noResultTextReport">No Records Found</td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+        </section>
+
+        {{/hasElement }}
+
+
+
+
+        {{!-- <table class="tableTotal">
+            <tr>
+                <td>
+                    Grand Total Earnings
+                </td>
+                <td>
+                    {{sum_earnings}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Grand Total Deduction
+                </td>
+                <td>
+                    {{sum_deductions}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Grand Total Contribution
+                </td>
+                <td>
+                    {{sum_contributions}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Grand Net Salary
+                </td>
+                <td>
+                    {{sum_net_salary}}
+                </td>
+            </tr>
+        </table> --}}
+    </div>
+
+</body>
