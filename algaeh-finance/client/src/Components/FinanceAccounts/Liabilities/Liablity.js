@@ -6,36 +6,41 @@ import SortableTree, {
 } from "react-sortable-tree";
 import "react-sortable-tree/style.css"; // This only needs to be imported once in your app
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
-import "../alice.scss";
-import {getAccounts, isPositive, removeAccount} from ".././FinanceAccountEvent";
+import "../Assets/assets.scss";
+import {
+  getAccounts,
+  isPositive,
+  removeAccount
+} from ".././FinanceAccountEvent";
 
-import {AlgaehConfirm, AlgaehMessagePop} from "algaeh-react-components";
+import { AlgaehConfirm, AlgaehMessagePop } from "algaeh-react-components";
 
 export default function Liablity() {
   const [symbol, setSymbol] = useState("");
   const [treeData, setTreeData] = useState([]);
-  const [labilityAmount,setLabilityAmount]=useState("");
+  const [labilityAmount, setLabilityAmount] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [selectedNode, setSelectedNode] = useState({});
-  const[searchQuery,setSearchQuery] = useState("");
-  const [searchFocusIndex,setSearchFocusIndex] = useState(0);
-  const [searchFoundCount,setSearchFoundCount]=useState(undefined);
-  const [isAccountHead,setIsAccountHead]= useState(false);
-  const [financeHeadId,setFinanceHeadId] = useState(undefined);
-  function loadAccount(){
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchFocusIndex, setSearchFocusIndex] = useState(0);
+  const [searchFoundCount, setSearchFoundCount] = useState(undefined);
+  const [isAccountHead, setIsAccountHead] = useState(false);
+  const [financeHeadId, setFinanceHeadId] = useState(undefined);
+  function loadAccount() {
     getAccounts("2", data => {
-      if(Array.isArray(data)){
-        if(data.length >0){
+      if (Array.isArray(data)) {
+        if (data.length > 0) {
           setFinanceHeadId(data[0].finance_account_head_id);
           setTreeData(data[0]["children"]);
           setLabilityAmount(data[0]["subtitle"]);
           setSymbol(data[0]["trans_symbol"]);
-        }else{
+        } else {
           setTreeData([]);
         }
-      }else{
+      } else {
         setTreeData([]);
-      }});
+      }
+    });
   }
 
   useEffect(() => {
@@ -46,7 +51,7 @@ export default function Liablity() {
     return new Promise((resolve, reject) => {
       try {
         const { treeData } = options;
-        let {  path } = rowInfo;
+        let { path } = rowInfo;
         let parentNode = getNodeAtPath({
           treeData: treeData,
           path: path,
@@ -77,21 +82,29 @@ export default function Liablity() {
   function removeNode(rowInfo) {
     return new Promise((resolve, reject) => {
       try {
-        let { node,  path } = rowInfo;
-        const  {head_id,finance_account_child_id,leafnode,finance_account_head_id}=node;
-        removeAccount({ head_id: leafnode ==="N"?finance_account_head_id: head_id,child_id:finance_account_child_id,leaf_node:leafnode})
-            .then(()=>{
-              const removeNodeData = removeNodeAtPath({
-                treeData: treeData,
-                path: path,
-                getNodeKey: ({  treeIndex }) => treeIndex,
-              });
-              resolve(removeNodeData);
-            }).catch(error=>{
-
-          reject(error);
-        });
-
+        let { node, path } = rowInfo;
+        const {
+          head_id,
+          finance_account_child_id,
+          leafnode,
+          finance_account_head_id
+        } = node;
+        removeAccount({
+          head_id: leafnode === "N" ? finance_account_head_id : head_id,
+          child_id: finance_account_child_id,
+          leaf_node: leafnode
+        })
+          .then(() => {
+            const removeNodeData = removeNodeAtPath({
+              treeData: treeData,
+              path: path,
+              getNodeKey: ({ treeIndex }) => treeIndex
+            });
+            resolve(removeNodeData);
+          })
+          .catch(error => {
+            reject(error);
+          });
       } catch (e) {
         reject(e);
       }
@@ -104,10 +117,10 @@ export default function Liablity() {
         selectedNode={selectedNode}
         onClose={e => {
           setShowPopup(false);
-          if(isAccountHead){
+          if (isAccountHead) {
             loadAccount();
             setIsAccountHead(false);
-          }else{
+          } else {
             if (e !== undefined) {
               addNode(selectedNode, { treeData }, e).then(newTree => {
                 setTreeData(newTree.treeData);
@@ -115,7 +128,6 @@ export default function Liablity() {
               });
             }
           }
-
         }}
       />
 
@@ -144,13 +156,17 @@ export default function Liablity() {
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Liability accounts <small>{labilityAmount}</small> </h3>
+                <h3 className="caption-subject">
+                  Liability accounts <small>{labilityAmount}</small>{" "}
+                </h3>
               </div>
               <div className="actions">
                 <button
                   className="btn btn-primary btn-circle active"
                   onClick={() => {
-                    setSelectedNode({node:{finance_account_head_id:financeHeadId}});
+                    setSelectedNode({
+                      node: { finance_account_head_id: financeHeadId }
+                    });
                     setShowPopup(true);
                     setIsAccountHead(true);
                   }}
@@ -159,19 +175,43 @@ export default function Liablity() {
                 </button>
               </div>
               <div className="searchCntr">
-                <input type="text" placeholder="Search Account Heads" value={searchQuery}
-                       onChange={(e)=>{
-                         setSearchQuery(e.target.value);
-                       }} />
-                <button onClick={()=>{
-                  const values=searchFocusIndex !==undefined ?(searchFoundCount + searchFocusIndex - 1) % searchFoundCount:searchFoundCount - 1;
-                  setSearchFocusIndex(values )
-                }} >  &lt; </button>
-                <button onClick={()=>{
-                  const values=searchFocusIndex !== undefined ?(searchFocusIndex + 1) % searchFoundCount:0;
-                  setSearchFocusIndex(values);
-                }}>  &gt; </button>
-                <label>{searchFoundCount >0 ?searchFocusIndex+1:0} / {searchFoundCount || 0} </label>
+                <input
+                  type="text"
+                  placeholder="Search Account Heads"
+                  value={searchQuery}
+                  onChange={e => {
+                    setSearchQuery(e.target.value);
+                  }}
+                />
+                <button
+                  onClick={() => {
+                    const values =
+                      searchFocusIndex !== undefined
+                        ? (searchFoundCount + searchFocusIndex - 1) %
+                          searchFoundCount
+                        : searchFoundCount - 1;
+                    setSearchFocusIndex(values);
+                  }}
+                >
+                  {" "}
+                  &lt;{" "}
+                </button>
+                <button
+                  onClick={() => {
+                    const values =
+                      searchFocusIndex !== undefined
+                        ? (searchFocusIndex + 1) % searchFoundCount
+                        : 0;
+                    setSearchFocusIndex(values);
+                  }}
+                >
+                  {" "}
+                  &gt;{" "}
+                </button>
+                <label>
+                  {searchFoundCount > 0 ? searchFocusIndex + 1 : 0} /{" "}
+                  {searchFoundCount || 0}{" "}
+                </label>
               </div>
             </div>
             <div className="portlet-body">
@@ -194,46 +234,82 @@ export default function Liablity() {
                             <div className="box">
                               <ul className="NodeActionButton">
                                 <li
-                                    label="Add"
-                                    className={"NodeAddButton "+(node.leafnode==="Y"?"disabled":"")}
-                                    onClick={event => {
-                                      setShowPopup(true);
-                                      setSelectedNode(rowInfo);
-                                    }}
+                                  label="Add"
+                                  className={
+                                    "NodeAddButton " +
+                                    (node.leafnode === "Y" ? "disabled" : "")
+                                  }
+                                  onClick={event => {
+                                    debugger;
+                                    setShowPopup(true);
+                                    setSelectedNode(rowInfo);
+                                  }}
                                 >
-                                  Add
+                                  <i className="fas fa-plus"></i>
                                 </li>
                                 <li
-                                    className={"NodeDeleteButton "+(node.created_status ==="S"?"disabled":"")}
-                                    label="Delete"
+                                  label="Add"
+                                  className={
+                                    "NodeEditButton " +
+                                    (node.leafnode === "Y" ? "disabled" : "")
+                                  }
+                                  onClick={event => {
+                                    debugger;
+                                    setShowPopup(true);
+                                    setSelectedNode(rowInfo);
+                                  }}
+                                >
+                                  <i className="fas fa-pen"></i>
+                                </li>
+                                <li
+                                  label="Add"
+                                  className={
+                                    "NodePrintButton " +
+                                    (node.leafnode === "Y" ? "disabled" : "")
+                                  }
+                                  onClick={event => {
+                                    debugger;
+                                    setShowPopup(true);
+                                    setSelectedNode(rowInfo);
+                                  }}
+                                >
+                                  <i className="fas fa-print"></i>
+                                </li>
+                                <li
+                                  className={
+                                    "NodeDeleteButton " +
+                                    (node.created_status === "S"
+                                      ? "disabled"
+                                      : "")
+                                  }
+                                  label="Delete"
                                 >
                                   <AlgaehConfirm
-                                      title="Are you sure want to delete ?"
-                                      placement="topLeft"
-                                      onConfirm={e => {
-                                        removeNode(rowInfo)
-                                            .then(newTree => {
-                                              setTreeData(newTree);
-                                              AlgaehMessagePop({
-                                                type: "success",
-                                                display:
-                                                    "Account deleted successfully"
-                                              });
-                                            })
-                                            .catch(error => {
-                                              AlgaehMessagePop({
-                                                type: "error",
-                                                display: error
-                                              });
-                                            });
-                                      }}
-                                      okButtonProps={{ label: "Delete" }}
-                                      // disabled={node.children !==undefined && node.children.length > 0?true:false}
-                                      okText="Yes, delete it!"
-                                      cancelText="No"
+                                    title="Are you sure want to delete ?"
+                                    placement="topLeft"
+                                    onConfirm={e => {
+                                      removeNode(rowInfo)
+                                        .then(newTree => {
+                                          setTreeData(newTree);
+                                          AlgaehMessagePop({
+                                            type: "success",
+                                            display:
+                                              "Account deleted successfully"
+                                          });
+                                        })
+                                        .catch(error => {
+                                          AlgaehMessagePop({
+                                            type: "error",
+                                            display: error
+                                          });
+                                        });
+                                    }}
+                                    okButtonProps={{ label: "Delete" }}
+                                    // disabled={node.children !==undefined && node.children.length > 0?true:false}
+                                    okText="Yes, delete it!"
+                                    cancelText="No"
                                   >
-                                    {" "}
-                                    Remove{" "}
+                                    <i className="fas fa-times"></i>
                                   </AlgaehConfirm>{" "}
                                 </li>
                               </ul>
@@ -244,40 +320,60 @@ export default function Liablity() {
                             minWidth: "150px"
                           },
                           title: (
-                              <>
+                            <>
                               <span>
-                                {node.title} {" "}
+                                {node.title}{" "}
                                 {node.leafnode === "Y" ? null : (
-                                    <>/
-                                      {node.children === undefined
-                                          ? 0
-                                          : node.children.length}
-                                    </>
+                                  <>
+                                    /
+                                    {node.children === undefined
+                                      ? 0
+                                      : node.children.length}
+                                  </>
                                 )}
                               </span>
-                              </>
+                            </>
                           ),
                           subtitle: (
-                              <div
-                                  style={{ fontSize: "medium", marginTop: "7px" }}
+                            <div
+                              style={{ fontSize: "medium", marginTop: "7px" }}
+                            >
+                              <span
+                                className={
+                                  node.subtitle !== undefined
+                                    ? isPositive(node.subtitle)
+                                    : ""
+                                }
                               >
-                              <span className={node.subtitle !==undefined? isPositive(node.subtitle):""}>
-                                {node.subtitle === undefined ?"0.00": node.subtitle}
+                                {node.subtitle === undefined
+                                  ? "0.00"
+                                  : node.subtitle}
                               </span>{" "}
-                                <small>{node.trans_symbol === undefined?symbol:node.trans_symbol}</small>
-                              </div>
-                          ),
-                          className: node.leafnode === "Y"?"":"accGroup"
+                              <small>
+                                {node.trans_symbol === undefined
+                                  ? symbol
+                                  : node.trans_symbol}
+                              </small>
+                            </div>
+                          )
                         };
                       }}
-                      searchMethod={({node, searchQuery})=>{
-                        return  searchQuery &&
-                            node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1;
+                      searchMethod={({ node, searchQuery }) => {
+                        return (
+                          searchQuery &&
+                          node.title
+                            .toLowerCase()
+                            .indexOf(searchQuery.toLowerCase()) > -1
+                        );
                       }}
                       searchQuery={searchQuery}
                       searchFocusOffset={searchFocusIndex}
-                      searchFinishCallback={matches=>{
-                        setSearchFocusIndex (matches.length > 0 ? searchFocusIndex % matches.length : 0);
+                      searchFinishCallback={matches => {
+                        setSearchFocusIndex(
+                          matches.length > 0
+                            ? searchFocusIndex % matches.length
+                            : 0
+                        );
                         setSearchFoundCount(matches.length);
                       }}
                     />

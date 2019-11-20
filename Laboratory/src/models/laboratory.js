@@ -54,7 +54,7 @@ export default {
             lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender, LS.sample_id,  LS.collected, LS.collected_by, LS.remarks, LS.collected_date, LS.hims_d_lab_sample_id, \
             LS.status as sample_status, LO.comments, TC.test_section,DLS.urine_specimen from hims_f_lab_order LO \
             inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
-            inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id and  V.record_status='A'\
+            inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id \
             inner join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\
             inner join hims_f_patient P on LO.patient_id=P.hims_d_patient_id and  P.record_status='A'\
             left outer join hims_f_lab_sample LS on  LO.hims_f_lab_order_id = LS.order_id  and LS.record_status='A' \

@@ -601,5 +601,101 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
+
+
+  addTestComments: (req, res, next) => {
+    let inputParam = req.body;
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO `hims_d_investigation_test_comments` (investigation_test_id, commnet_name, commet,  \
+              created_date, created_by, updated_date, updated_by)\
+            VALUE(?,?,?,?,?,?,?)",
+          values: [
+            inputParam.investigation_test_id,
+            inputParam.commnet_name,
+            inputParam.commet,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  updateTestComments: (req, res, next) => {
+    let inputParam = req.body;
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE `hims_d_investigation_test_comments` SET  commet=?, comment_status=?, updated_date=?, updated_by=? \
+            WHERE  hims_d_investigation_test_comments_id=?;",
+          values: [
+            inputParam.commet,
+            inputParam.comment_status,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            inputParam.hims_d_investigation_test_comments_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  getTestComments: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select * FROM hims_d_investigation_test_comments where investigation_test_id = ? order by hims_d_investigation_test_comments_id desc ",
+          values: [req.query.investigation_test_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
 };
