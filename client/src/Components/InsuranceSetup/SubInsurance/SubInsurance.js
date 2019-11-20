@@ -24,12 +24,11 @@ import {
   updateSubInsurance,
   onchangegridcol,
   getSubInsuranceDetails,
-  dateValidate
+  dateValidate,loadAccounts
 } from "./SubInsuranceHandaler";
 import MyContext from "../../../utils/MyContext";
-
 import Options from "../../../Options.json";
-
+import TreeDropDown from "../treeDropdown";
 class SubInsurance extends PureComponent {
   constructor(props) {
     super(props);
@@ -42,11 +41,22 @@ class SubInsurance extends PureComponent {
       card_format: null,
       effective_start_date: null,
       effective_end_date: null,
-      maxDate_end_date: null
+      maxDate_end_date: null,
+      accounts:[]
       // sub_insurance: []
       // created_by: getCookie("UserID")
     };
     this.baseState = this.state;
+  }
+
+  loadAccounts(){
+    loadAccounts({finance_account_head_id:"1"}).then(result=>{
+      if(result.length >0){
+        this.setState({accounts:result[0].children});
+      }else{
+        this.setState({accounts:[]});
+      }
+    })
   }
 
   componentWillMount() {
@@ -56,6 +66,7 @@ class SubInsurance extends PureComponent {
   }
 
   componentDidMount() {
+    this.loadAccounts();
     if (this.state.insurance_provider_id !== null) {
       getSubInsuranceDetails(this, this);
     }
@@ -450,7 +461,8 @@ class SubInsurance extends PureComponent {
                             />
                           ),
                           disabled: true
-                        }
+                        },
+
                       ]}
                       keyId="insurance_sub_code"
                       dataSource={{

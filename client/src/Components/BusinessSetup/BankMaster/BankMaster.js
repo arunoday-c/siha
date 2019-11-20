@@ -104,6 +104,7 @@ class BankMaster extends Component {
 
     AlgaehValidation({
       alertTypeIcon: "warning",
+      querySelector:"id='bankMaster'",
       onSuccess: () => {
         algaehApiCall({
           uri: "/bankmaster/addBank",
@@ -265,7 +266,7 @@ class BankMaster extends Component {
     return (
       <div className="row BankMasterScreen" style={{ paddingTop: 15 }}>
         <div className={col_setup}>
-          <div className="portlet portlet-bordered margin-bottom-15">
+          <div id="bankMaster" className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-body">
               <div className="row">
                 <AlagehFormGroup
