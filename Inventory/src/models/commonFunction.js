@@ -63,7 +63,7 @@ let updateIntoInvItemLocation = (req, res, next) => {
           period: req.body.period,
           to_location_id: s.to_location_id || "~",
           to_location_type: s.to_location_type || "~",
-          description: req.body.description,
+          description: s.description,
           item_category_id: s.item_category_id,
           item_group_id: s.item_group_id,
           item_code_id: s.item_id,

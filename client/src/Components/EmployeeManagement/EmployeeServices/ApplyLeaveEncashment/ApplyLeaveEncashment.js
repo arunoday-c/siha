@@ -1,4 +1,9 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AlgaehActions } from "../../../../actions/algaehActions";
+
 import "./ApplyLeaveEncashment.scss";
 import {
   AlagehFormGroup,
@@ -63,6 +68,19 @@ class ApplyLeaveEncashment extends Component {
         }
       );
     }
+    if (
+      this.props.organizations === undefined ||
+      this.props.organizations.length === 0
+    ) {
+      this.props.getOrganizations({
+        uri: "/organization/getOrganization",
+        method: "GET",
+        redux: {
+          type: "ORGS_GET_DATA",
+          mappingName: "organizations"
+        }
+      });
+    }
   }
 
   dateFormater(value) {
@@ -76,9 +94,9 @@ class ApplyLeaveEncashment extends Component {
       searchGrid: {
         columns: spotlightSearch.Employee_details.employee
       },
-      searchName: "employee",
+      searchName: "employee_branch_wise",
       uri: "/gloabelSearch/get",
-
+      inputs: "hospital_id = " + this.state.hospital_id,
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
@@ -144,7 +162,14 @@ class ApplyLeaveEncashment extends Component {
         );
 
         break;
+      case "hospital_id":
+        this.setState(
+          {
+            [value.name]: value.value
+          }
+        );
 
+        break;
       default:
         this.setState(
           {
@@ -354,6 +379,30 @@ class ApplyLeaveEncashment extends Component {
               <div className="portlet-body" style={{ minHeight: "70.6vh" }}>
                 <div className="row">
                   {this.props.from_screen === "ES" ? (
+                    <AlagehAutoComplete
+                      div={{ className: "col-12 form-group mandatory" }}
+                      label={{
+                        forceLabel: "Select Branch",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "hospital_id",
+                        className: "select-fld",
+                        value: this.state.hospital_id,
+                        dataSource: {
+                          textField: "hospital_name",
+                          valueField: "hims_d_hospital_id",
+                          data: this.props.organizations
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                        onClear: () => {
+                          this.setState({
+                            hospital_id: null
+                          });
+                        }
+                      }}
+                    />) : null}
+                  {this.props.from_screen === "ES" ? (
                     <div className="col-12 globalSearchCntr  form-group">
                       <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
                       <h6 onClick={this.employeeSearch.bind(this)}>
@@ -505,8 +554,8 @@ class ApplyLeaveEncashment extends Component {
                                 Rejected
                               </span>
                             ) : (
-                              "-------"
-                            );
+                                    "-------"
+                                  );
                           }
                         },
                         {
@@ -608,8 +657,8 @@ class ApplyLeaveEncashment extends Component {
                       </div>
                     ))
                   ) : (
-                    <div className="noResult">Not Eligible for any Leaves</div>
-                  )}
+                      <div className="noResult">Not Eligible for any Leaves</div>
+                    )}
                 </div>
               </div>
             </div>
@@ -620,4 +669,21 @@ class ApplyLeaveEncashment extends Component {
   }
 }
 
-export default ApplyLeaveEncashment;
+function mapStateToProps(state) {
+  return {
+    organizations: state.organizations
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getOrganizations: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(ApplyLeaveEncashment)
+);

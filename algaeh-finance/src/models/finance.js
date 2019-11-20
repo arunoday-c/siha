@@ -746,10 +746,16 @@ export default {
                   return f.child_id > 0;
                 })
                 .map(m => m.child_id);
+
+              let delete_childs = "";
+
+              if (child_ids.length > 0) {
+                delete_childs = `   delete from finance_account_child where finance_account_child_id in (${child_ids});`;
+              }
               _mysql
                 .executeQueryWithTransaction({
-                  query: `delete FROM finance_head_m_child where head_id in (${head_ids});            
-                    delete from finance_account_child where finance_account_child_id in (${child_ids});
+                  query: `delete FROM finance_head_m_child where head_id in (${head_ids});          
+                    ${delete_childs}
                     delete from finance_account_head  where finance_account_head_id in (${head_ids});`,
                   values: [input.head_id, input.child_id, input.head_id],
                   printQuery: true
