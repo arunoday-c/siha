@@ -2,7 +2,7 @@
 
 <body>
     <div class="print-body">
-        {{#hasElement employees}}
+        {{#hasElement details}}
 
 
         <section>
@@ -13,10 +13,11 @@
                 <thead>
                     <tr>
                         <th>Sl No.</th>
-                        <th>Branch Name</th>
-                        <th>Voucher No</th>
+                        {{!-- <th>Branch Name</th>
+                        <th>Voucher No</th> --}}
                         <th>Date</th>
-                        <th>Particulars</th>
+                        <th>Narration</th>
+                        <th>Account</th>
                         <th>Debit</th>
                         <th>Credit</th>
                         <th>Balance</th>
@@ -24,32 +25,34 @@
                 </thead>
                 <tbody>
 
-                    {{#each employees}}
+                    {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td class="txtFld"><span class="textTruncate" style="width: 200px;">{{branchName}}</span></td>
-                        <td class="txtFld"><span class="textTruncate" style="width: 100px;">{{voucherNo}}</span></td>
-                        <td>{{nationality}}</td>
-                        <td class="txtFld">{{particulars}}</td>
-                        <td class="numberFld numberFldTotal">{{debit_amt}}</td>
-                        <td class="numberFld numberFldTotal">{{credit_amt}}</td>
-                        <td class="numberFld numberFldTotal">{{balance_amt}}</td>
+                        {{!-- <td class="txtFld"><span class="textTruncate" style="width: 200px;">{{branchName}}</span></td>
+                        <td class="txtFld"><span class="textTruncate" style="width: 100px;">{{voucherNo}}</span></td> --}}
+                        <td>{{payment_date}}</td>
+                        <td class="txtFld">{{narration}}</td>
+                        <td class="numberFld numberFldTotal">{{account_details}}</td>
+                        <td class="numberFld numberFldTotal">{{debit_amount}}</td>
+                        <td class="numberFld numberFldTotal">{{credit_amount}}</td>
+                        <td class="numberFld numberFldTotal">{{balance_amount}}</td>
                     </tr>
-                    {{/each }}<tr class="numberFld numberFldTotalBottom">
+                    {{/each }}
+                    <tr class="numberFld numberFldTotalBottom">
                         <td class="numberFld" colspan="5">Total</td>
-                        <td class="numberFld numberFldTotal">{{total_debit}}</td>
-                        <td class="numberFld numberFldTotal">{{total_credit}}</td>
+                        <td class="numberFld numberFldTotal">{{000}}</td>
+                        <td class="numberFld numberFldTotal">{{000}}</td>
                         <td class="numberFld numberFldTotal"></td>
                     </tr>
 
                     <tr class="numberFld numberFldTotalBottom">
                         <td class="numberFld" colspan="5">Balance</td>
-                        <td class="numberFld" colspan="2">{{total_debit_credit}}</td>
+                        <td class="numberFld" colspan="2">{{000}}</td>
                         <td class="numberFld"></td>
                     </tr>
                     <tr class="numberFld numberFldTotalBottom">
                         <td class="numberFld" colspan="7">Closing Balance</td>
-                        <td class="numberFld">{{closingBalance}}</td>
+                        <td class="numberFld">{{000}}</td>
                     </tr>
                     {{else}}
                     <tr>
