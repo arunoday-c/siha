@@ -545,7 +545,7 @@ export default {
     _mysql
       .executeQuery({
         query: `  select finance_day_end_sub_detail_id,day_end_header_id,payment_date,head_account_code,
-        head_id,child_id,debit_amount,payment_type,credit_amount,narration,hospital_id 
+        head_id,child_id,debit_amount,payment_type,credit_amount,narration,year,month,hospital_id 
         from finance_day_end_sub_detail where day_end_header_id in (?);`,
         values: [input.finance_day_end_header_ids],
         printQuery: true
@@ -572,7 +572,9 @@ export default {
             "credit_amount",
             "payment_type",
             "narration",
-            "hospital_id"
+            "hospital_id",
+            "year",
+            "month"
           ];
           _mysql
             .executeQueryWithTransaction({
