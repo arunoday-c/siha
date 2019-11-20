@@ -532,9 +532,9 @@ class LeaveMaster extends Component {
           leave_type: null,
           leave_category: null,
           calculation_type: null,
-          encashment_percentage: "",
+          encashment_percentage: 0,
           leave_carry_forward: "",
-          carry_forward_percentage: "",
+          carry_forward_percentage: 0,
           religion_required: "",
           religion_id: null,
           holiday_reimbursement: "",
@@ -557,9 +557,9 @@ class LeaveMaster extends Component {
     this.props.onClose();
   };
 
-  updateLeaveDetail(data) {}
-  updateLeaveEncash(data) {}
-  updateLeaveRule(data) {}
+  updateLeaveDetail(data) { }
+  updateLeaveEncash(data) { }
+  updateLeaveRule(data) { }
 
   render() {
     return (

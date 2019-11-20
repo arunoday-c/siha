@@ -22,7 +22,7 @@ import swal from "sweetalert2";
 import moment from "moment";
 import _ from "lodash";
 
-class DeptMaster extends Component {
+class MicroGroupType extends Component {
   constructor(props) {
     super(props);
 
@@ -366,9 +366,9 @@ class DeptMaster extends Component {
                             this.props.antibiotic === undefined
                               ? []
                               : this.props.antibiotic.filter(
-                                  f =>
-                                    f.hims_d_antibiotic_id === row.antibiotic_id
-                                );
+                                f =>
+                                  f.hims_d_antibiotic_id === row.antibiotic_id
+                              );
 
                           return (
                             <span>
@@ -484,7 +484,7 @@ class DeptMaster extends Component {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       //onDelete: this.deleteSubDepartment.bind(this),
-                      onEdit: row => {},
+                      onEdit: row => { },
                       onDone: this.updateGroupAntiMap.bind(this)
                     }}
                   />
@@ -774,7 +774,7 @@ class DeptMaster extends Component {
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    onEdit: row => {},
+                    onEdit: row => { },
                     onDone: this.updateMicroGroup.bind(this)
                   }}
                 />
@@ -806,5 +806,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(DeptMaster)
+  )(MicroGroupType)
 );

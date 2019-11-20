@@ -642,21 +642,3 @@ export default withRouter(
         mapDispatchToProps
     )(StockAdjustment)
 );
-
-
-// {
-//   "name": "Increase Amount",
-//   "value": "IA"
-// },
-// {
-//   "name": "Decrease Amount",
-//   "value": "DA"
-// },
-// {
-//   "name": "Both Increase",
-//   "value": "BI"
-// },
-// {
-//   "name": "Both Decrease",
-//   "value": "BD"
-// }
