@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./assets.scss";
+import "../alice.scss";
 import SortableTree, {
   getNodeAtPath,
   addNodeUnderParent,
@@ -7,12 +7,12 @@ import SortableTree, {
 } from "react-sortable-tree";
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
 import { AlgaehConfirm, AlgaehMessagePop } from "algaeh-react-components";
-// import "antd/dist/antd.css";
 import {
   getAccounts,
   removeAccount,
   isPositive
 } from ".././FinanceAccountEvent";
+import ReportLauncher from "../AccountReport";
 export default function Assets() {
   const [symbol, setSymbol] = useState("");
   const [financeHeadId,setFinanceHeadId] = useState(undefined);
@@ -130,8 +130,11 @@ const [isAccountHead,setIsAccountHead]= useState(false);
             });
           }
         }
-
         }}
+      />
+      <ReportLauncher
+          title="Accounts report printing"
+
       />
       <div className="row">
         <div className="col-4">
@@ -316,7 +319,8 @@ const [isAccountHead,setIsAccountHead]= useState(false);
                               </span>{" "}
                               <small>{node.trans_symbol === undefined?symbol:node.trans_symbol}</small>
                             </div>
-                          )
+                          ),
+                          className: node.leafnode === "Y"?"":"accGroup"
                         };
                       }}
                       searchMethod={({ node, searchQuery }) => {

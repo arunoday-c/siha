@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import "../Assets/assets.scss";
-
 import SortableTree, {
   getNodeAtPath,
   addNodeUnderParent,
   removeNodeAtPath
 } from "react-sortable-tree";
 import "react-sortable-tree/style.css"; // This only needs to be imported once in your app
+import "../alice.scss";
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
 import {getAccounts, isPositive, removeAccount} from ".././FinanceAccountEvent";
 
@@ -267,7 +266,8 @@ export default function Income() {
                               </span>{" "}
                                 <small>{node.trans_symbol === undefined?symbol:node.trans_symbol}</small>
                               </div>
-                          )
+                          ),
+                          className: node.leafnode === "Y"?"":"accGroup"
                         };
                       }}
                       searchMethod={({node, searchQuery})=>{

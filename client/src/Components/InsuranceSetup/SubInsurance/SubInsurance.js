@@ -66,7 +66,7 @@ class SubInsurance extends PureComponent {
   }
 
   componentDidMount() {
-    this.loadAccounts();
+   // this.loadAccounts();
     if (this.state.insurance_provider_id !== null) {
       getSubInsuranceDetails(this, this);
     }
