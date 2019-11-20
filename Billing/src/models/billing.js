@@ -5,6 +5,7 @@ import { LINQ } from "node-linq";
 import extend from "extend";
 import _ from "lodash";
 import mysql from "mysql";
+import moment from "moment";
 
 export default {
   newReceiptData: (req, res, next) => {
@@ -3551,6 +3552,9 @@ export default {
                           }
                         })
                           .then(rests => {
+
+                            const month=moment().format("M");
+                            const year=moment().format("YYYY");
                             const IncludeValuess = [
                               "day_end_header_id",
                               "payment_date",
@@ -3569,6 +3573,10 @@ export default {
                                 values: insertSubDetail,
                                 includeValues: IncludeValuess,
                                 bulkInsertOrUpdate: true,
+                                extraValues: {
+                                  year:year,
+                                  month:month                             
+                                },
                                 printQuery: false
                               })
                               .then(subResult => {
@@ -4647,7 +4655,7 @@ function generateAccountingEntries(
             debit_amount: 0,
             payment_type: "CR",
             credit_amount: serviceData.comapany_resp,
-            narration: "Booking insurance income for OP service --> "+serviceData.service_name,
+            narration: "Booking insurance income for OP service : "+serviceData.service_name,
             hospital_id: options.hospital_id
           });
         }
@@ -4661,7 +4669,7 @@ function generateAccountingEntries(
           debit_amount: 0,
           payment_type: "CR",
           credit_amount: serviceData.patient_resp,
-          narration: "Booking cash income for OP service --> "+serviceData.service_name,
+          narration: "Booking cash income for OP service : "+serviceData.service_name,
           hospital_id: options.hospital_id
         });
 
@@ -4683,7 +4691,7 @@ function generateAccountingEntries(
               debit_amount: 0,
               payment_type: "CR",
               credit_amount: serviceData.company_tax,
-              narration: " Insurance company payable tax for Consultation service --> "+serviceData.service_name,
+              narration: " Insurance company payable tax for Consultation service : "+serviceData.service_name,
               hospital_id: options.hospital_id
             });
           }
@@ -4698,7 +4706,7 @@ function generateAccountingEntries(
               debit_amount: 0,
               payment_type: "CR",
               credit_amount: serviceData.patient_tax,
-              narration: "Patient payable tax for Consultation service --> "+serviceData.service_name,
+              narration: "Patient payable tax for Consultation service : "+serviceData.service_name,
               hospital_id: options.hospital_id
             });
           }
@@ -4721,7 +4729,7 @@ function generateAccountingEntries(
               debit_amount: 0,
               payment_type: "CR",
               credit_amount: serviceData.company_tax,
-              narration: "Insurance company payable tax for Laboratory service --> "+serviceData.service_name,
+              narration: "Insurance company payable tax for Laboratory service : "+serviceData.service_name,
               hospital_id: options.hospital_id
             });
           }
@@ -4737,7 +4745,7 @@ function generateAccountingEntries(
               debit_amount: 0,
               payment_type: "CR",
               credit_amount: serviceData.patient_tax,
-              narration: "Patient payable tax for Laboratory service --> "+serviceData.service_name,
+              narration: "Patient payable tax for Laboratory service : "+serviceData.service_name,
               hospital_id: options.hospital_id
             });
           }
@@ -4759,7 +4767,7 @@ function generateAccountingEntries(
               debit_amount: 0,
               payment_type: "CR",
               credit_amount: serviceData.company_tax,
-              narration: "Insurance company payable tax for Radiology service --> "+serviceData.service_name,
+              narration: "Insurance company payable tax for Radiology service : "+serviceData.service_name,
               hospital_id: options.hospital_id
             });
           }
@@ -4775,7 +4783,7 @@ function generateAccountingEntries(
               debit_amount: 0,
               payment_type: "CR",
               credit_amount: serviceData.patient_tax,
-              narration: "Patient payable tax for Radiology service --> "+serviceData.service_name,
+              narration: "Patient payable tax for Radiology service : "+serviceData.service_name,
               hospital_id: options.hospital_id
             });
           }
@@ -4795,7 +4803,7 @@ function generateAccountingEntries(
             debit_amount: item.amount,
             payment_type: "DR",
             credit_amount: 0,
-            narration: "Cash collected from patient--> "+inputParam.full_name,
+            narration: "Cash collected from patient : "+inputParam.full_name,
             hospital_id: options.hospital_id
           });
         }
@@ -4809,7 +4817,7 @@ function generateAccountingEntries(
             debit_amount: item.amount,
             payment_type: "DR",
             credit_amount: 0,
-            narration: "Amount collected by CARD from patient--> "+inputParam.full_name,
+            narration: "Amount collected by CARD from patient : "+inputParam.full_name,
             hospital_id: options.hospital_id
           });
         }
@@ -4827,7 +4835,7 @@ function generateAccountingEntries(
           debit_amount: inputParam.company_payble,
           payment_type: "DR",
           credit_amount: 0,
-          narration: "Insurance Recievable amount for BILL_NO: "+inputParam.bill_number,
+          narration: "Insurance Recievable amount for BILL_NO : "+inputParam.bill_number,
           hospital_id: options.hospital_id
         });
       }

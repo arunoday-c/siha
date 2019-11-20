@@ -90,7 +90,7 @@ const cashtexthandle = ($this, context, ctrl, e) => {
 
     if (context !== null) {
       context.updateState({
-        [e.target.name]: e.target.value,
+        [e.target.name]: e.target.value
         // saveEnable: true
       });
     }
@@ -125,7 +125,7 @@ const cardtexthandle = ($this, context, ctrl, e) => {
 
     if (context !== null) {
       context.updateState({
-        [e.target.name]: e.target.value,
+        [e.target.name]: e.target.value
         // saveEnable: true
       });
     }
@@ -161,7 +161,7 @@ const chequetexthandle = ($this, context, ctrl, e) => {
 
     if (context !== null) {
       context.updateState({
-        [e.target.name]: e.target.value,
+        [e.target.name]: e.target.value
         // saveEnable: true
       });
     }
@@ -482,7 +482,7 @@ const credittexthandle = ($this, context, ctrl, e) => {
 
   if (parseFloat(e.target.value) > parseFloat($this.state.net_amount)) {
     swalMessage({
-      title: "Criedt amount cannot be greater than Net amount",
+      title: "Credit amount cannot be greater than Net amount",
       type: "warning"
     });
     $this.setState({

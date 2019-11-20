@@ -17,7 +17,7 @@ import {
 import moment from "moment";
 import Options from "../../Options.json";
 import NewInvestigation from "./NewInvestigation/NewInvestigation";
-import InvestigationComments from "./InvestigationComments/InvestigationComments"
+import InvestigationComments from "./InvestigationComments/InvestigationComments";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 
 class InvestigationSetup extends Component {
@@ -86,7 +86,6 @@ class InvestigationSetup extends Component {
       });
     }
     getInvestigations(this, this);
-
   }
 
   ShowModel(e) {
@@ -132,14 +131,14 @@ class InvestigationSetup extends Component {
   }
 
   OpenComments(row) {
-    debugger
+    debugger;
     algaehApiCall({
       uri: "/investigation/getTestComments",
       module: "laboratory",
       data: { investigation_test_id: row.hims_d_investigation_test_id },
       method: "GET",
       onSuccess: response => {
-        debugger
+        debugger;
         if (response.data.success === true) {
           this.setState({
             isCommentsOpen: !this.state.isCommentsOpen,
@@ -150,7 +149,6 @@ class InvestigationSetup extends Component {
         }
       }
     });
-
   }
 
   changeDateFormat = date => {
@@ -283,13 +281,9 @@ class InvestigationSetup extends Component {
                               className="fas fa-plus"
                               style={{
                                 pointerEvents:
-                                  row.investigation_type === "R"
-                                    ? "none"
-                                    : "",
+                                  row.investigation_type === "R" ? "none" : "",
                                 opacity:
-                                  row.investigation_type === "R"
-                                    ? "0.1"
-                                    : ""
+                                  row.investigation_type === "R" ? "0.1" : ""
                               }}
                               onClick={this.OpenComments.bind(this, row)}
                             />
@@ -331,9 +325,9 @@ class InvestigationSetup extends Component {
                           this.props.invtestcategory === undefined
                             ? []
                             : this.props.invtestcategory.filter(
-                              f =>
-                                f.hims_d_test_category_id === row.category_id
-                            );
+                                f =>
+                                  f.hims_d_test_category_id === row.category_id
+                              );
 
                         return (
                           <span>
@@ -356,9 +350,9 @@ class InvestigationSetup extends Component {
                           this.props.labspecimen === undefined
                             ? []
                             : this.props.labspecimen.filter(
-                              f =>
-                                f.hims_d_lab_specimen_id === row.specimen_id
-                            );
+                                f =>
+                                  f.hims_d_lab_specimen_id === row.specimen_id
+                              );
 
                         return (
                           <span>
@@ -410,8 +404,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(InvestigationSetup)
+  connect(mapStateToProps, mapDispatchToProps)(InvestigationSetup)
 );
