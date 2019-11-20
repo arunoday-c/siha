@@ -27,7 +27,8 @@ import {
   onchangegridresult,
   onchangeAmend,
   generateLabResultReport,
-  addComments
+  addComments,
+  deleteComment
 } from "./ResultEntryEvents";
 import AlgaehReport from "../../Wrapper/printReports";
 
@@ -40,7 +41,8 @@ class ResultEntry extends Component {
       comments: "",
       comments_data: [],
       test_comments_id: null,
-      comment_list: []
+      comment_list: [],
+      selcted_comments: ""
     };
   }
 
@@ -166,8 +168,8 @@ class ResultEntry extends Component {
       this.props.providers === undefined
         ? []
         : this.props.providers.filter(
-            f => f.hims_d_employee_id === this.state.provider_id
-          );
+          f => f.hims_d_employee_id === this.state.provider_id
+        );
     return (
       <div>
         <AlgaehModalPopUp
@@ -330,10 +332,10 @@ class ResultEntry extends Component {
                                 Validated
                               </span>
                             ) : (
-                              <span className="badge badge-light">
-                                Result Not Entered
+                                    <span className="badge badge-light">
+                                      Result Not Entered
                               </span>
-                            );
+                                  );
                           },
                           others: {
                             maxWidth: 150,
@@ -351,10 +353,10 @@ class ResultEntry extends Component {
                               this.props.labanalytes === undefined
                                 ? []
                                 : this.props.labanalytes.filter(
-                                    f =>
-                                      f.hims_d_lab_analytes_id ===
-                                      row.analyte_id
-                                  );
+                                  f =>
+                                    f.hims_d_lab_analytes_id ===
+                                    row.analyte_id
+                                );
 
                             return (
                               <span>
@@ -381,8 +383,8 @@ class ResultEntry extends Component {
                             return row.analyte_type === "QU"
                               ? "Quality"
                               : row.analyte_type === "QN"
-                              ? "Quantity"
-                              : "Text";
+                                ? "Quantity"
+                                : "Text";
                           },
                           others: {
                             resizable: false,
@@ -426,8 +428,8 @@ class ResultEntry extends Component {
                                     }}
                                   />
                                 ) : (
-                                  row.result
-                                )}
+                                    row.result
+                                  )}
                               </span>
                             );
                           },
@@ -522,26 +524,26 @@ class ResultEntry extends Component {
                           displayTemplate: row => {
                             return !row.critical_type ? null : row.critical_type ===
                               "N" ? (
-                              <span className="badge badge-success">
-                                Normal
+                                <span className="badge badge-success">
+                                  Normal
                               </span>
-                            ) : row.critical_type === "CL" ? (
-                              <span className="badge badge-danger">
-                                Critical Low
+                              ) : row.critical_type === "CL" ? (
+                                <span className="badge badge-danger">
+                                  Critical Low
                               </span>
-                            ) : row.critical_type === "CH" ? (
-                              <span className="badge badge-danger">
-                                Critical High
+                              ) : row.critical_type === "CH" ? (
+                                <span className="badge badge-danger">
+                                  Critical High
                               </span>
-                            ) : row.critical_type === "L" ? (
-                              <span className="badge badge-warning">Low</span>
-                            ) : (
-                              row.critical_type === "H" && (
-                                <span className="badge badge-warning">
-                                  High
+                              ) : row.critical_type === "L" ? (
+                                <span className="badge badge-warning">Low</span>
+                              ) : (
+                                      row.critical_type === "H" && (
+                                        <span className="badge badge-warning">
+                                          High
                                 </span>
-                              )
-                            );
+                                      )
+                                    );
                           }
                         },
                         {
@@ -628,8 +630,8 @@ class ResultEntry extends Component {
                                 ) : row.confirm === "N" ? (
                                   "No"
                                 ) : (
-                                  "Yes"
-                                )}
+                                      "Yes"
+                                    )}
                               </span>
                             );
                           },
@@ -670,8 +672,8 @@ class ResultEntry extends Component {
                                 ) : row.confirm === "N" ? (
                                   "No"
                                 ) : (
-                                  "Yes"
-                                )}
+                                      "Yes"
+                                    )}
                               </span>
                             );
                           },
@@ -713,8 +715,8 @@ class ResultEntry extends Component {
                                 ) : row.amended === "N" ? (
                                   "No"
                                 ) : (
-                                  "Yes"
-                                )}
+                                      "Yes"
+                                    )}
                               </span>
                             );
                           },
@@ -756,8 +758,8 @@ class ResultEntry extends Component {
                                 ) : row.remarks !== "null" ? (
                                   row.remarks
                                 ) : (
-                                  ""
-                                )}
+                                      ""
+                                    )}
                               </span>
                             );
                           },
@@ -792,13 +794,18 @@ class ResultEntry extends Component {
                             valueField: "hims_d_investigation_test_comments_id",
                             data: this.state.comments_data
                           },
-                          onChange: this.selectCommentEvent.bind(this)
+                          onChange: this.selectCommentEvent.bind(this),
+                          onClear: () => {
+                            this.setState({
+                              test_comments_id: null
+                            })
+                          }
                         }}
                       />
                       <div className="col-12">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Remarks"
+                            forceLabel: "Enter Comment"
                           }}
                         />
 
@@ -826,15 +833,15 @@ class ResultEntry extends Component {
                       <ol>
                         {this.state.comment_list.length > 0
                           ? this.state.comment_list.map((row, index) => {
-                              return (
-                                <React.Fragment key={index}>
-                                  <li key={index}>
-                                    <a>{row.comment_data}</a>
-                                    <i className="fas fa-times"></i>
-                                  </li>
-                                </React.Fragment>
-                              );
-                            })
+                            return (
+                              <React.Fragment key={index}>
+                                <li key={index}>
+                                  <a>{row}</a>
+                                  <i className="fas fa-times" onClick={deleteComment.bind(this, this, row)}></i>
+                                </li>
+                              </React.Fragment>
+                            );
+                          })
                           : null}
                       </ol>
                     </div>
@@ -898,8 +905,8 @@ class ResultEntry extends Component {
                   this.state.status === "C"
                     ? true
                     : this.state.status === "V"
-                    ? true
-                    : false
+                      ? true
+                      : false
                 }
               >
                 Confirm All
