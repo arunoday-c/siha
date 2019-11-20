@@ -117,8 +117,7 @@ const getSampleCollectionDetails = $this => {
 };
 
 const ResultEntryModel = ($this, row) => {
-  debugger
-
+  row.comment_list = row.comments !== null ? row.comments.split("<br/>") : []
   if (row.test_section === "M") {
     row.microopen = true;
     $this.setState(
@@ -141,7 +140,6 @@ const ResultEntryModel = ($this, row) => {
           type: "warning"
         });
       } else {
-        debugger
         algaehApiCall({
           uri: "/investigation/getTestComments",
           module: "laboratory",

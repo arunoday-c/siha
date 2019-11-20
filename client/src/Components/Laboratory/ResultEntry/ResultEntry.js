@@ -27,7 +27,8 @@ import {
   onchangegridresult,
   onchangeAmend,
   generateLabResultReport,
-  addComments
+  addComments,
+  deleteComment
 } from "./ResultEntryEvents";
 import AlgaehReport from "../../Wrapper/printReports";
 
@@ -40,7 +41,8 @@ class ResultEntry extends Component {
       comments: "",
       comments_data: [],
       test_comments_id: null,
-      comment_list: []
+      comment_list: [],
+      selcted_comments: ""
     };
   }
 
@@ -62,7 +64,6 @@ class ResultEntry extends Component {
       [name]: value
     });
   }
-
 
   showReport(refBy) {
     // console.log("test_analytes:", this.state.test_analytes);
@@ -144,14 +145,17 @@ class ResultEntry extends Component {
   }
 
   onClose = e => {
-    this.setState({
-      test_analytes: [],
-      comments_data: [],
-      test_comments_id: null,
-      comment_list: []
-    }, () => {
-      this.props.onClose && this.props.onClose(e);
-    });
+    this.setState(
+      {
+        test_analytes: [],
+        comments_data: [],
+        test_comments_id: null,
+        comment_list: []
+      },
+      () => {
+        this.props.onClose && this.props.onClose(e);
+      }
+    );
   };
 
   dateFormater({ value }) {
@@ -774,61 +778,73 @@ class ResultEntry extends Component {
                       paging={{ page: 0, rowsPerPage: 30 }}
                     />
                   </div>
-                  <div className="col-12">
-                    <AlagehAutoComplete
-                      div={{ className: "col-2" }}
-                      label={{
-                        forceLabel: "Select Comment"
-                      }}
-                      selector={{
-                        name: "test_comments_id",
-                        className: "select-fld",
-                        value: this.state.test_comments_id,
-                        dataSource: {
-                          textField: "commnet_name",
-                          valueField: "hims_d_investigation_test_comments_id",
-                          data: this.state.comments_data
-                        },
-                        onChange: this.selectCommentEvent.bind(this)
-                      }}
-                    />
-                    <div className="col-8">
-                      <AlgaehLabel
+                  <div className="col-5">
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{ className: "col-12" }}
                         label={{
-                          forceLabel: "Remarks"
+                          forceLabel: "Select Comment"
+                        }}
+                        selector={{
+                          name: "test_comments_id",
+                          className: "select-fld",
+                          value: this.state.test_comments_id,
+                          dataSource: {
+                            textField: "commnet_name",
+                            valueField: "hims_d_investigation_test_comments_id",
+                            data: this.state.comments_data
+                          },
+                          onChange: this.selectCommentEvent.bind(this),
+                          onClear: () => {
+                            this.setState({
+                              test_comments_id: null
+                            })
+                          }
                         }}
                       />
+                      <div className="col-12">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Enter Comment"
+                          }}
+                        />
 
-                      <textarea
-                        value={this.state.selcted_comments}
-                        name="selcted_comments"
-                        onChange={this.textAreaEvent.bind(this)}
-                      />
+                        <textarea
+                          value={this.state.selcted_comments}
+                          name="selcted_comments"
+                          onChange={this.textAreaEvent.bind(this)}
+                        />
+                      </div>
+
+                      <div className="col-12">
+                        <button
+                          onClick={addComments.bind(this, this)}
+                          className="btn btn-primary"
+                          style={{ marginBottom: 15 }}
+                        >
+                          Add
+                        </button>
+                      </div>
                     </div>
-
-                    <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
-                      <button
-                        onClick={addComments.bind(this, this)}
-                        className="btn btn-primary"
-                      >
-                        Add
-                      </button>
+                  </div>
+                  <div className="col-7">
+                    <div className="row finalCommentsSection">
+                      <h6>View Final Comments</h6>
+                      <ol>
+                        {this.state.comment_list.length > 0
+                          ? this.state.comment_list.map((row, index) => {
+                            return (
+                              <React.Fragment key={index}>
+                                <li key={index}>
+                                  <a>{row}</a>
+                                  <i className="fas fa-times" onClick={deleteComment.bind(this, this, row)}></i>
+                                </li>
+                              </React.Fragment>
+                            );
+                          })
+                          : null}
+                      </ol>
                     </div>
-
-                    <ul>
-                      {this.state.comment_list.length > 0
-                        ? this.state.comment_list.map((row, index) => {
-                          return (
-                            <React.Fragment key={index}>
-                              <li key={index}>
-                                <a>{row.comment_data}</a>
-                              </li>
-                            </React.Fragment>
-                          );
-                        })
-                        : null}
-                    </ul>
-
                   </div>
                 </div>
               </div>
@@ -942,8 +958,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ResultEntry)
+  connect(mapStateToProps, mapDispatchToProps)(ResultEntry)
 );

@@ -52,6 +52,9 @@ export function generateLabResultReport(data) {
 }
 
 const UpdateLabOrder = ($this, value, status) => {
+
+  value[0].comments = $this.state.comment_list.join("<br/>")
+
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",
     module: "laboratory",
@@ -462,11 +465,29 @@ const onchangeAmend = ($this, row, e) => {
 };
 
 const addComments = ($this) => {
-  debugger
+
+  if ($this.state.selcted_comments === "") {
+    swalMessage({
+      type: "warning",
+      title: "Comment cannot be blank."
+    });
+    return
+  }
   let comment_list = $this.state.comment_list
-  let sl_no = comment_list.length + 1
-  let comment_append = sl_no + "." + $this.state.selcted_comments
-  comment_list.push({ comment_data: comment_append })
+  comment_list.push($this.state.selcted_comments)
+
+  $this.setState({
+    comment_list: comment_list,
+    selcted_comments: "",
+    test_comments_id: null
+  })
+}
+
+const deleteComment = ($this, row) => {
+
+  let comment_list = $this.state.comment_list
+  let _index = comment_list.indexOf(row)
+  comment_list.splice(_index, 1)
 
   $this.setState({
     comment_list: comment_list
@@ -484,5 +505,6 @@ export {
   resultEntryUpdate,
   onchangegridresult,
   onchangeAmend,
-  addComments
+  addComments,
+  deleteComment
 };

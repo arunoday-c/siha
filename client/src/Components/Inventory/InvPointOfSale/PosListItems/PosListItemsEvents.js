@@ -1046,7 +1046,7 @@ const credittexthandle = ($this, context, ctrl, e) => {
 
   if (e.target.value > $this.state.net_amount) {
     swalMessage({
-      title: "Criedt amount cannot be greater than Net amount",
+      title: "Credit amount cannot be greater than Net amount",
       type: "warning"
     });
   } else {
