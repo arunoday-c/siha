@@ -23,9 +23,12 @@
   height: 74vh;
   width: 100vw;
 }
-.rst__rowContents{
-  border-left:2px solid #000;
+.rst__rowContents {
+  border-left: 2px solid #000;
 }
+.accGroup{
+border-left: 5px solid #d88a14;
+border-radius: 9px;}
 .rst__rowTitleWithSubtitle {
   text-transform: uppercase !important;
   margin-bottom: 5px !important;
@@ -52,15 +55,17 @@
     height: 50px;
     overflow: hidden;
     border-radius: 0 5px 5px 0;
+    width: 52px;
     li {
       list-style: none;
       padding: 1px 5px;
       text-align: center;
-      width: 50px;
+      width: 25px;
       line-height: 22px;
       height: 25px;
       font-size: 10px;
       text-transform: uppercase;
+      float: left;
       &:hover {
         cursor: pointer;
       }
@@ -74,9 +79,26 @@
     }
     li.NodeAddButton {
       border-bottom: 1px solid #dddddd;
+      border-right: 1px solid #ddd;
       &:hover {
         cursor: pointer;
         background: green;
+        color: white;
+      }
+    }
+    li.NodeEditButton {
+      border-bottom: 1px solid #dddddd;
+      &:hover {
+        cursor: pointer;
+        background: blue;
+        color: white;
+      }
+    }
+    li.NodePrintButton {
+      border-right: 1px solid #ddd;
+      &:hover {
+        cursor: pointer;
+        background: orange;
         color: white;
       }
     }
@@ -121,9 +143,9 @@
     }
   }
 }
-.negitive{
-  color:#9f3a38!important;
+.negitive {
+  color: #9f3a38 !important;
 }
-.rst__rowSearchFocus{
-  outline: solid 3px #00a796  !important;
+.rst__rowSearchFocus {
+  outline: solid 3px #00a796 !important;
 }

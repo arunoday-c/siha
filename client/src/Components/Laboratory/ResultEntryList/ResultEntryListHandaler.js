@@ -4,7 +4,7 @@ import moment from "moment";
 import Options from "../../../Options.json";
 // import Enumerable from "linq";
 
-import { swalMessage } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -117,6 +117,8 @@ const getSampleCollectionDetails = $this => {
 };
 
 const ResultEntryModel = ($this, row) => {
+  debugger
+
   if (row.test_section === "M") {
     row.microopen = true;
     $this.setState(
@@ -124,7 +126,7 @@ const ResultEntryModel = ($this, row) => {
         isMicroOpen: !$this.state.isMicroOpen,
         selectedPatient: row
       },
-      () => {}
+      () => { }
     );
   } else {
     if (row.status === "O") {
@@ -139,11 +141,24 @@ const ResultEntryModel = ($this, row) => {
           type: "warning"
         });
       } else {
-        row.open = true;
-        $this.setState({
-          isOpen: !$this.state.isOpen,
-          selectedPatient: row
+        debugger
+        algaehApiCall({
+          uri: "/investigation/getTestComments",
+          module: "laboratory",
+          data: { investigation_test_id: row.hims_d_investigation_test_id },
+          method: "GET",
+          onSuccess: response => {
+            if (response.data.success === true) {
+              row.open = true;
+              row.comments_data = response.data.records
+              $this.setState({
+                isOpen: !$this.state.isOpen,
+                selectedPatient: row
+              });
+            }
+          }
         });
+
       }
     }
   }
