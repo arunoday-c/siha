@@ -50,14 +50,14 @@ const discounthandle = ($this, context, ctrl, e) => {
         value === ""
           ? 0
           : (parseFloat($this.state.extended_price) * sub_discount_percentage) /
-            100;
+          100;
     } else {
       sub_discount_amount = value === "" ? "" : parseFloat(value);
       sub_discount_percentage =
         value === ""
           ? 0
           : (sub_discount_amount / parseFloat($this.state.extended_price)) *
-            100;
+          100;
 
       sub_discount_percentage = sub_discount_percentage.toFixed(3);
     }
@@ -735,6 +735,7 @@ const onchhangegriddiscount = ($this, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let discount_amount = 0;
+
   if (name === "sub_discount_percentage") {
     sub_discount_percentage = value === "" ? "" : parseFloat(value);
 
@@ -758,6 +759,7 @@ const onchhangegriddiscount = ($this, row, e) => {
 
     sub_discount_amount =
       (parseFloat(extended_price) * parseFloat(sub_discount_percentage)) / 100;
+    discount_amount = sub_discount_amount
   }
   if (sub_discount_percentage > 100) {
     swalMessage({
