@@ -610,9 +610,10 @@ const onchangegridcol = ($this, context, row, e) => {
       ? $this.state.pharmacy_stock_detail
       : $this.state.inventory_stock_detail;
   let _index = _stock_detail.indexOf(row);
-  if (parseFloat(value) > parseFloat(row.qtyhand)) {
+  // IU.conversion_factor
+  if (parseFloat(value) > (parseFloat(row.qtyhand) / parseFloat(row.conversion_factor))) {
     swalMessage({
-      title: "Return Quantity cannot be Greater than Qty In Hand.",
+      title: "Return Quantity cannot be Greater than Qty In Hand / Deliverd Quantity.",
       type: "warning"
     });
     return;
