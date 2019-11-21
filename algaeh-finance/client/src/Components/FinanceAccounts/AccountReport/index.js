@@ -10,7 +10,7 @@ import moment from "moment";
 import {algaehApiCall} from "../../../utils/algaehApiCall";
 
 export default memo(function Modal(props) {
-  const { selectedNode, title, onCancel, visible, onOk } = props;
+  const { selectedNode, title, onCancel, visible, onOk,parentId } = props;
   const [plaseWait, setPleaseWait] = useState(
     "Please wait report is preparing.."
   );
@@ -91,7 +91,7 @@ export default memo(function Modal(props) {
               {name:"child_id",
                 value:finance_account_child_id,
                 label:"Child",labelValue:label},
-              {name:"leafnode",value:leafnode},from_date,to_date,monthwise]
+              {name:"leafnode",value:leafnode},{name:"parent_id",value:parentId},from_date,to_date,monthwise]
           }
         };
         algaehApiCall({
