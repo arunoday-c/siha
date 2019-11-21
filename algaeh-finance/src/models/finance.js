@@ -786,74 +786,7 @@ export default {
         });
     }
   },
-  //created by irfan: to
-  testBKUP: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    const utilities = new algaehUtilities();
-    let input = req.body;
 
-    _mysql
-      .executeQuery({
-        query: `select finance_account_head_id,account_code,coalesce(parent_acc_id,'root') as parent_acc_id ,head_account_code,account_name ,account_level,finance_voucher_id,
-        coalesce(sum(debit_amount),0.0000)as debit_amount,coalesce(sum(credit_amount),0.000)as credit_amount
-        from finance_account_head  H left join finance_voucher_details VD
-        on H.finance_account_head_id=VD.head_id        
-        where account_code like'1%' group by finance_account_head_id order by account_level;`,
-        values: [],
-        printQuery: true
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        let children = _.chain(result)
-          .groupBy(g => g.parent_acc_id)
-          .value();
-        // utilities.logger().log("children: ", children);
-
-        let roots = children["root"];
-
-        // // function to recursively build the tree
-        let findChildren = function(parent) {
-          if (children[parent.finance_account_head_id]) {
-            const tempchilds = children[parent.finance_account_head_id];
-
-            parent.children = tempchilds;
-            //-----------------
-
-            console.log("children:", children[parent.finance_account_head_id]);
-
-            let new_debit_amount =
-              _.sumBy(children[parent.finance_account_head_id], s =>
-                parseFloat(s.debit_amount)
-              ) + parseFloat(parent["debit_amount"]);
-            console.log("new_debit_amount:", new_debit_amount);
-
-            parent["new_debit_amount"] = new_debit_amount;
-            //-----------------
-
-            for (let i = 0, len = parent.children.length; i < len; ++i) {
-              findChildren(parent.children[i]);
-            }
-          } else {
-            parent["new_debit_amount"] = parent["debit_amount"];
-          }
-        };
-
-        // enumerate through to handle the case where there are multiple roots
-        for (let i = 0, len = roots.length; i < len; ++i) {
-          findChildren(roots[i]);
-        }
-
-        //let val = initialize(roots[0], children);
-
-        req.records = roots;
-
-        next();
-      })
-      .catch(e => {
-        _mysql.releaseConnection();
-        next(e);
-      });
-  },
   //created by irfan: to
   previewDayEndEntries: (req, res, next) => {
     const _mysql = new algaehMysql();
