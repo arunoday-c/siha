@@ -311,34 +311,15 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemlist === undefined
                                     ? []
                                     : this.props.inventoryitemlist.filter(
-                                        f =>
-                                          f.hims_d_inventory_item_master_id ===
-                                          row.item_id
-                                      );
+                                      f =>
+                                        f.hims_d_inventory_item_master_id ===
+                                        row.item_id
+                                    );
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                    display.length !== 0
-                                      ? display[0].item_description
-                                      : ""}
-                                  </span>
-                                );
-                              },
-                              editorTemplate: row => {
-                                let display =
-                                  this.props.inventoryitemlist === undefined
-                                    ? []
-                                    : this.props.inventoryitemlist.filter(
-                                        f =>
-                                          f.hims_d_inventory_item_master_id ===
-                                          row.item_id
-                                      );
-
-                                return (
-                                  <span>
-                                    {display !== undefined &&
-                                    display.length !== 0
+                                      display.length !== 0
                                       ? display[0].item_description
                                       : ""}
                                   </span>
@@ -359,28 +340,10 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemcategory === undefined
                                     ? []
                                     : this.props.inventoryitemcategory.filter(
-                                        f =>
-                                          f.hims_d_inventory_tem_category_id ===
-                                          row.item_category_id
-                                      );
-
-                                return (
-                                  <span>
-                                    {display !== null && display.length !== 0
-                                      ? display[0].category_desc
-                                      : ""}
-                                  </span>
-                                );
-                              },
-                              editorTemplate: row => {
-                                let display =
-                                  this.props.inventoryitemcategory === undefined
-                                    ? []
-                                    : this.props.inventoryitemcategory.filter(
-                                        f =>
-                                          f.hims_d_inventory_tem_category_id ===
-                                          row.item_category_id
-                                      );
+                                      f =>
+                                        f.hims_d_inventory_tem_category_id ===
+                                        row.item_category_id
+                                    );
 
                                 return (
                                   <span>
@@ -405,28 +368,10 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemgroup === undefined
                                     ? []
                                     : this.props.inventoryitemgroup.filter(
-                                        f =>
-                                          f.hims_d_inventory_item_group_id ===
-                                          row.item_group_id
-                                      );
-
-                                return (
-                                  <span>
-                                    {display !== null && display.length !== 0
-                                      ? display[0].group_description
-                                      : ""}
-                                  </span>
-                                );
-                              },
-                              editorTemplate: row => {
-                                let display =
-                                  this.props.inventoryitemgroup === undefined
-                                    ? []
-                                    : this.props.inventoryitemgroup.filter(
-                                        f =>
-                                          f.hims_d_inventory_item_group_id ===
-                                          row.item_group_id
-                                      );
+                                      f =>
+                                        f.hims_d_inventory_item_group_id ===
+                                        row.item_group_id
+                                    );
 
                                 return (
                                   <span>
@@ -449,28 +394,10 @@ class RequisitionItems extends Component {
                                   this.props.inventoryitemuom === undefined
                                     ? []
                                     : this.props.inventoryitemuom.filter(
-                                        f =>
-                                          f.hims_d_inventory_uom_id ===
-                                          row.item_uom
-                                      );
-
-                                return (
-                                  <span>
-                                    {display !== null && display.length !== 0
-                                      ? display[0].uom_description
-                                      : ""}
-                                  </span>
-                                );
-                              },
-                              editorTemplate: row => {
-                                let display =
-                                  this.props.inventoryitemuom === undefined
-                                    ? []
-                                    : this.props.inventoryitemuom.filter(
-                                        f =>
-                                          f.hims_d_inventory_uom_id ===
-                                          row.item_uom
-                                      );
+                                      f =>
+                                        f.hims_d_inventory_uom_id ===
+                                        row.item_uom
+                                    );
 
                                 return (
                                   <span>
@@ -506,15 +433,6 @@ class RequisitionItems extends Component {
                                       : parseFloat(row.from_qtyhand)}
                                   </span>
                                 );
-                              },
-                              editorTemplate: row => {
-                                return (
-                                  <span>
-                                    {row.from_qtyhand === null
-                                      ? 0
-                                      : parseFloat(row.from_qtyhand)}
-                                  </span>
-                                );
                               }
                             },
 
@@ -526,15 +444,6 @@ class RequisitionItems extends Component {
                                 />
                               ),
                               displayTemplate: row => {
-                                return (
-                                  <span>
-                                    {row.quantity_required === null
-                                      ? 0
-                                      : parseFloat(row.quantity_required)}
-                                  </span>
-                                );
-                              },
-                              editorTemplate: row => {
                                 return (
                                   <span>
                                     {row.quantity_required === null
@@ -554,16 +463,7 @@ class RequisitionItems extends Component {
                                 />
                               ),
                               displayTemplate: row => {
-                                return (
-                                  <span>
-                                    {row.quantity_authorized === null
-                                      ? 0
-                                      : parseFloat(row.quantity_authorized)}
-                                  </span>
-                                );
-                              },
-                              editorTemplate: row => {
-                                return (
+                                return this.state.authorizeEnable ? parseFloat(row.quantity_authorized) : (
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
@@ -582,15 +482,6 @@ class RequisitionItems extends Component {
                                           context,
                                           row
                                         )
-                                      },
-                                      others: {
-                                        disabled: this.state.authorizeEnable,
-
-                                        algaeh_required: "true",
-                                        errormessage:
-                                          "Please enter Authorized Quantity ..",
-                                        checkvalidation:
-                                          "value ==='' || value ==='0'"
                                       }
                                     }}
                                   />
@@ -612,15 +503,6 @@ class RequisitionItems extends Component {
                                       : parseFloat(row.quantity_outstanding)}
                                   </span>
                                 );
-                              },
-                              editorTemplate: row => {
-                                return (
-                                  <span>
-                                    {row.quantity_outstanding === null
-                                      ? 0
-                                      : parseFloat(row.quantity_outstanding)}
-                                  </span>
-                                );
                               }
                             }
                           ]}
@@ -628,7 +510,7 @@ class RequisitionItems extends Component {
                           dataSource={{
                             data: this.state.inventory_stock_detail
                           }}
-                          isEditable={this.state.requisition_auth}
+                          isEditable={false}
                           byForceEvents={true}
                           datavalidate="id='REQ_details'"
                           paging={{ page: 0, rowsPerPage: 10 }}

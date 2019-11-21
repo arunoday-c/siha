@@ -319,25 +319,6 @@ class RequisitionItems extends Component {
                                       : ""}
                                   </span>
                                 );
-                              },
-                              editorTemplate: row => {
-                                let display =
-                                  this.props.itemlist === undefined
-                                    ? []
-                                    : this.props.itemlist.filter(
-                                      f =>
-                                        f.hims_d_item_master_id ===
-                                        row.item_id
-                                    );
-
-                                return (
-                                  <span>
-                                    {display !== undefined &&
-                                      display.length !== 0
-                                      ? display[0].item_description
-                                      : ""}
-                                  </span>
-                                );
                               }
                             },
 
@@ -349,24 +330,6 @@ class RequisitionItems extends Component {
                                 />
                               ),
                               displayTemplate: row => {
-                                let display =
-                                  this.props.itemcategory === undefined
-                                    ? []
-                                    : this.props.itemcategory.filter(
-                                      f =>
-                                        f.hims_d_item_category_id ===
-                                        row.item_category_id
-                                    );
-
-                                return (
-                                  <span>
-                                    {display !== null && display.length !== 0
-                                      ? display[0].category_desc
-                                      : ""}
-                                  </span>
-                                );
-                              },
-                              editorTemplate: row => {
                                 let display =
                                   this.props.itemcategory === undefined
                                     ? []
@@ -410,24 +373,6 @@ class RequisitionItems extends Component {
                                       : ""}
                                   </span>
                                 );
-                              },
-                              editorTemplate: row => {
-                                let display =
-                                  this.props.itemgroup === undefined
-                                    ? []
-                                    : this.props.itemgroup.filter(
-                                      f =>
-                                        f.hims_d_item_group_id ===
-                                        row.item_group_id
-                                    );
-
-                                return (
-                                  <span>
-                                    {display !== null && display.length !== 0
-                                      ? display[0].group_description
-                                      : ""}
-                                  </span>
-                                );
                               }
                             },
 
@@ -437,24 +382,6 @@ class RequisitionItems extends Component {
                                 <AlgaehLabel label={{ forceLabel: "UOM" }} />
                               ),
                               displayTemplate: row => {
-                                let display =
-                                  this.props.itemuom === undefined
-                                    ? []
-                                    : this.props.itemuom.filter(
-                                      f =>
-                                        f.hims_d_pharmacy_uom_id ===
-                                        row.item_uom
-                                    );
-
-                                return (
-                                  <span>
-                                    {display !== null && display.length !== 0
-                                      ? display[0].uom_description
-                                      : ""}
-                                  </span>
-                                );
-                              },
-                              editorTemplate: row => {
                                 let display =
                                   this.props.itemuom === undefined
                                     ? []
@@ -489,15 +416,6 @@ class RequisitionItems extends Component {
                                       : parseFloat(row.to_qtyhand)}
                                   </span>
                                 );
-                              },
-                              editorTemplate: row => {
-                                return (
-                                  <span>
-                                    {row.to_qtyhand === null
-                                      ? 0
-                                      : parseFloat(row.to_qtyhand)}
-                                  </span>
-                                );
                               }
                             },
                             {
@@ -508,15 +426,6 @@ class RequisitionItems extends Component {
                                 />
                               ),
                               displayTemplate: row => {
-                                return (
-                                  <span>
-                                    {row.from_qtyhand === null
-                                      ? 0
-                                      : parseFloat(row.from_qtyhand)}
-                                  </span>
-                                );
-                              },
-                              editorTemplate: row => {
                                 return (
                                   <span>
                                     {row.from_qtyhand === null
@@ -542,15 +451,6 @@ class RequisitionItems extends Component {
                                       : parseFloat(row.quantity_required)}
                                   </span>
                                 );
-                              },
-                              editorTemplate: row => {
-                                return (
-                                  <span>
-                                    {row.quantity_required === null
-                                      ? 0
-                                      : parseFloat(row.quantity_required)}
-                                  </span>
-                                );
                               }
                             },
                             {
@@ -563,16 +463,7 @@ class RequisitionItems extends Component {
                                 />
                               ),
                               displayTemplate: row => {
-                                return (
-                                  <span>
-                                    {row.quantity_authorized === null
-                                      ? 0
-                                      : parseFloat(row.quantity_authorized)}
-                                  </span>
-                                );
-                              },
-                              editorTemplate: row => {
-                                return (
+                                return this.state.authorizeEnable ? parseFloat(row.quantity_authorized) : (
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
@@ -591,15 +482,6 @@ class RequisitionItems extends Component {
                                           context,
                                           row
                                         )
-                                      },
-                                      others: {
-                                        disabled: this.state.authorizeEnable,
-                                        min: 0,
-                                        algaeh_required: "true",
-                                        errormessage:
-                                          "Please enter Authorized Quantity ..",
-                                        checkvalidation:
-                                          "value ==='' || value ==='0'"
                                       }
                                     }}
                                   />
@@ -621,15 +503,6 @@ class RequisitionItems extends Component {
                                       : parseFloat(row.quantity_outstanding)}
                                   </span>
                                 );
-                              },
-                              editorTemplate: row => {
-                                return (
-                                  <span>
-                                    {row.quantity_outstanding === null
-                                      ? 0
-                                      : parseFloat(row.quantity_outstanding)}
-                                  </span>
-                                );
                               }
                             }
                           ]}
@@ -637,10 +510,10 @@ class RequisitionItems extends Component {
                           dataSource={{
                             data: this.state.pharmacy_stock_detail
                           }}
-                          isEditable={this.state.requisition_auth}
+                          isEditable={false}
                           paging={{ page: 0, rowsPerPage: 20 }}
-                          datavalidate="id='PHRREQ_details'"
-                          byForceEvents={true}
+                          // datavalidate="id='PHRREQ_details'"
+                          // byForceEvents={true}
                           events={{
                             onDelete: deleteRequisitionDetail.bind(
                               this,
