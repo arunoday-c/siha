@@ -876,6 +876,103 @@ export default {
       };
       next();
     }
+  },
+  //created by irfan:
+  getLedgerDataForChart: (req, res, next) => {
+    const utilities = new algaehUtilities();
+    const _mysql = new algaehMysql();
+    let input = req.query;
+
+    if (
+      input.finance_account_head_id > 0 &&
+      input.finance_account_head_id < 6 &&
+      input.period > 0 &&
+      input.period < 6
+    ) {
+      const monthArray = [];
+      let year = "";
+
+      if (input.year > 0) {
+        year = input.year;
+      } else {
+        year = moment().format("YYYY");
+      }
+
+      switch (input.period.toString()) {
+        case "1":
+          monthArray.push(1, 2, 3);
+          break;
+        case "2":
+          monthArray.push(4, 5, 6);
+          break;
+        case "3":
+          monthArray.push(8, 8, 9);
+          break;
+        case "4":
+          monthArray.push(10, 11, 12);
+          break;
+        default:
+          monthArray.push(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+      }
+      _mysql
+        .executeQuery({
+          query: `with cte as(
+            select head_id,month,monthname(concat('1999-',month,'-01')) as month_name,
+            coalesce(sum(debit_amount)-sum(credit_amount),0)as debit_minus_credit,
+            coalesce(sum(credit_amount)-sum(debit_amount),0)as credit_minus_debit from 
+            finance_voucher_details where  year=? and month in(?) and head_id in (with recursive heads  as (          
+            select  finance_account_head_id
+            from finance_account_head where finance_account_head_id=?
+            union                  
+            select H.finance_account_head_id
+            from finance_account_head  H inner join heads
+            on H.parent_acc_id = heads.finance_account_head_id    
+            )select  finance_account_head_id from heads) group by month
+            ) select t.*,(100 * (t.debit_minus_credit - t2.debit_minus_credit) / t2.debit_minus_credit) as dr_growth_percent,
+            (100 * (t.credit_minus_debit - t2.credit_minus_debit) / t2.credit_minus_debit) as cr_growth_percent
+             from cte as t left join cte t2 on  t2.month=(t.month-1);  `,
+
+          printQuery: false,
+          values: [year, monthArray, input.finance_account_head_id]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          let outputArray = [];
+          if (
+            input.finance_account_head_id == 1 ||
+            input.finance_account_head_id == 5
+          ) {
+            outputArray = result.map(m => {
+              return {
+                ...m,
+                amount: m.debit_minus_credit,
+                growth_percent: m.dr_growth_percent
+              };
+            });
+          } else {
+            outputArray = result.map(m => {
+              return {
+                ...m,
+                amount: m.credit_minus_debit,
+                growth_percent: m.cr_growth_percent
+              };
+            });
+          }
+
+          req.records = outputArray;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please provide Valid Input"
+      };
+      next();
+    }
   }
 };
 //created by :IRFAN to build tree hierarchy
