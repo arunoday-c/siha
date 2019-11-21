@@ -4,16 +4,16 @@ import SortableTree, {
   addNodeUnderParent,
   removeNodeAtPath
 } from "react-sortable-tree";
-import "../alice.scss";
+
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
-import { AlgaehConfirm, AlgaehMessagePop } from "algaeh-react-components";
-// import "antd/dist/antd.css";
+import { AlgaehConfirm, AlgaehMessagePop,Input,Icon } from "algaeh-react-components";
+import ReportLauncher from "../AccountReport";
 import {
   getAccounts,
   removeAccount,
   isPositive
 } from ".././FinanceAccountEvent";
-import ReportLauncher from "../AccountReport";
+import "../alice.scss";
 export default function Assets() {
   const [symbol, setSymbol] = useState("");
   const [financeHeadId, setFinanceHeadId] = useState(undefined);
@@ -26,6 +26,7 @@ export default function Assets() {
   const [searchFoundCount, setSearchFoundCount] = useState(undefined);
   const [isAccountHead, setIsAccountHead] = useState(false);
   const [reportVisible,setReportVisible]= useState(false);
+  const [editorRecord,setEditorRecord]= useState({});
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
       try {
@@ -93,6 +94,7 @@ export default function Assets() {
       }
     });
   }
+
   function loadAccount() {
     getAccounts("1", data => {
       if (Array.isArray(data)) {
@@ -255,8 +257,8 @@ export default function Assets() {
                                     "NodeAddButton " +
                                     (node.leafnode === "Y" ? "disabled" : "")
                                   }
-                                  onClick={event => {
-                                    debugger;
+                                  onClick={() => {
+
                                     setShowPopup(true);
                                     setSelectedNode(rowInfo);
                                   }}
@@ -264,24 +266,27 @@ export default function Assets() {
                                   <i className="fas fa-plus"></i>
                                 </li>
                                 <li
-                                  label="Add"
+                                  label="edit"
                                   className={
                                     "NodeEditButton " +
-                                    (node.leafnode === "Y" ? "disabled" : "")
+                                    (node.created_status === "S" ? "disabled" : "")
                                   }
-                                  onClick={event => {
+                                  onClick={() => {
+                                    if(Object.keys(editorRecord).length >0 ){
+                                      setEditorRecord({});
+                                    }else{
+                                      setEditorRecord(rowInfo);
+                                    }
 
-                                    setShowPopup(true);
-                                    setSelectedNode(rowInfo);
                                   }}
                                 >
-                                  <i className="fas fa-pen"></i>
+                                 {JSON.stringify(editorRecord) === JSON.stringify(rowInfo)? <i className="fas fa-times" />:
+                                     <i className="fas fa-pen" />}
                                 </li>
                                 <li
-                                  label="Add"
+                                  label="print"
                                   className={
-                                    "NodePrintButton " +
-                                    (node.leafnode === "Y" ? "disabled" : "")
+                                    "NodePrintButton "
                                   }
                                   onClick={() => {
 
@@ -321,11 +326,10 @@ export default function Assets() {
                                         });
                                     }}
                                     okButtonProps={{ label: "Delete" }}
-                                    // disabled={node.children !==undefined && node.children.length > 0?true:false}
                                     okText="Yes, delete it!"
                                     cancelText="No"
                                   >
-                                    <i className="fas fa-times"></i>
+                                    <i className="fas fa-trash"></i>
                                   </AlgaehConfirm>{" "}
                                 </li>
                               </ul>
@@ -338,7 +342,13 @@ export default function Assets() {
                           title: (
                             <>
                               <span>
-                                {node.title}{" "}
+                                { JSON.stringify(editorRecord) === JSON.stringify(rowInfo)?(<Input
+                                    suffix={(<Icon type="save"  onClick={(e)=>{
+                                      const editedValue= e.currentTarget.offsetParent.previousElementSibling.value;
+                                      setEditorRecord({});
+                                    }} />)}
+                                    defaultValue={node.title}
+                                />): node.title}{" "}
                                 {node.leafnode === "Y" ? null : (
                                   <>
                                     /
@@ -372,7 +382,7 @@ export default function Assets() {
                               </small>
                             </div>
                           ),
-                          className:node.leafnode === "Y" ?"":"accGroup"
+                          className:node.created_status === "S" ?"systemGen" :node.leafnode === "Y" ?"":"accGroup"
                         };
                       }}
                       searchMethod={({ node, searchQuery }) => {
