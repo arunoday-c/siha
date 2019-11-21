@@ -12,7 +12,8 @@ const {
   getMicroResult,
   getPatientTestList,
   getComparedLabResult,
-  updateResultFromMachine
+  updateResultFromMachine,
+  getLabOrderedComment
 } = labModels;
 
 export default () => {
@@ -23,6 +24,14 @@ export default () => {
       records: req.records
     });
   });
+
+  api.get("/getLabOrderedComment", getLabOrderedComment, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
   api.get("/getPatientTestList", getPatientTestList, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,

@@ -677,12 +677,10 @@ export default {
     const _mysql = new algaehMysql();
     let strQuery = ""
 
-    console.log("comment_status", req.query.comment_status)
-
     if (req.query.comment_status !== null && req.query.comment_status !== undefined) {
       strQuery = ` and comment_status = '${req.query.comment_status}'`
     }
-    console.log("strQuery", strQuery)
+
     try {
       _mysql
         .executeQuery({
@@ -706,5 +704,5 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  },
+  }
 };

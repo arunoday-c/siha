@@ -19,7 +19,8 @@ import {
     itemchangeText,
     batchEventHandaler,
     adjustQtyHandaler,
-    AddItemtoList
+    AddItemtoList,
+    adjustAmtHandaler
     // generateReport,
 } from "./InvStockAdjustmentEvents";
 
@@ -269,7 +270,11 @@ class InvStockAdjustment extends Component {
                                                 },
                                                 onClear: () => {
                                                     this.setState({
-                                                        batchno: null
+                                                        batchno: null,
+                                                        adjust_qty: 0,
+                                                        adjust_amount: 0,
+                                                        qtyhand: null,
+                                                        sales_price: null
                                                     });
                                                 }
                                             }}
@@ -346,7 +351,7 @@ class InvStockAdjustment extends Component {
                                             this.state.adjustment_type === "BD" ?
 
                                             <AlagehFormGroup
-                                                div={{ className: "col-6 form-group " }}
+                                                div={{ className: "col-6 form-group mandatory" }}
                                                 label={{
                                                     forceLabel: "Adjust Qty", isImp: this.state.adjustment_type === "IQ" ||
                                                         this.state.adjustment_type === "DQ" ||
@@ -377,7 +382,7 @@ class InvStockAdjustment extends Component {
                                             this.state.adjustment_type === "BI" ||
                                             this.state.adjustment_type === "BD" ?
                                             <AlagehFormGroup
-                                                div={{ className: "col-6 form-group " }}
+                                                div={{ className: "col-6 form-group mandatory" }}
                                                 label={{
                                                     forceLabel: "Adjust Amt.", isImp: this.state.adjustment_type === "IA" ||
                                                         this.state.adjustment_type === "DA" ||
@@ -393,7 +398,8 @@ class InvStockAdjustment extends Component {
                                                         onChange: texthandle.bind(this, this)
                                                     },
                                                     others: {
-                                                        disabled: this.state.dataExists
+                                                        disabled: this.state.dataExists,
+                                                        onBlur: adjustAmtHandaler.bind(this, this)
                                                     }
                                                 }}
                                             /> : null}
@@ -561,10 +567,9 @@ class InvStockAdjustment extends Component {
                                         <div className="portlet-body">
                                             <div className="row">
                                                 <AlagehFormGroup
-                                                    div={{ className: "col mandatory" }}
+                                                    div={{ className: "col" }}
                                                     label={{
-                                                        forceLabel: "Comments",
-                                                        isImp: true
+                                                        forceLabel: "Comments"
                                                     }}
                                                     textBox={{
                                                         className: "txt-fld",

@@ -170,6 +170,7 @@ class ResultEntry extends Component {
         : this.props.providers.filter(
           f => f.hims_d_employee_id === this.state.provider_id
         );
+    let color_display = this.state.critical_status === "N" ? "badge badge-primary" : "badge badge-danger"
     return (
       <div>
         <AlgaehModalPopUp
@@ -243,8 +244,23 @@ class ResultEntry extends Component {
                             : "------"}
                         </h6>
                       </div>
+                      <div className="col-lg-2">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Critical"
+                          }}
+                        />
+
+                        <h6 className={color_display}>
+                          {this.state.critical_status === "N"
+                            ? "No"
+                            : "Yes"}
+                        </h6>
+                      </div>
+
+
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col-lg-2" }}
                         label={{
                           forceLabel: "Entered By"
                         }}
@@ -265,7 +281,7 @@ class ResultEntry extends Component {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col-lg-2" }}
                         label={{
                           forceLabel: "Confirmed By"
                         }}
@@ -285,7 +301,7 @@ class ResultEntry extends Component {
                         }}
                       />
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col-lg-2" }}
                         label={{
                           forceLabel: "Validtaed By"
                         }}
@@ -797,7 +813,8 @@ class ResultEntry extends Component {
                           onChange: this.selectCommentEvent.bind(this),
                           onClear: () => {
                             this.setState({
-                              test_comments_id: null
+                              test_comments_id: null,
+                              selcted_comments: ""
                             })
                           }
                         }}

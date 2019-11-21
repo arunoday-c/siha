@@ -4,9 +4,11 @@
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
+      console.log("am here baba :");
+
       const _ = options.loadash;
 
-      const utilities = options.utilitites();
+     const  moment=options.moment;
       let input = {};
 
       const params = options.args.reportParams;
@@ -15,6 +17,9 @@ const executePDF = function executePDFMethod(options) {
       params.forEach(para => {
         input[para["name"]] = para["value"];
       });
+
+
+      console.log("input:",input)
 
       let strQry = "";
 
@@ -30,7 +35,11 @@ const executePDF = function executePDFMethod(options) {
       if (input.monthwise == "Y") {
         group_str = " group by month ";
       }
-      if (input.leaf_node == "Y") {
+
+      if (input.leafnode == "Y") {
+
+        console.log("leaf:");
+
         options.mysql
           .executeQuery({
             query: `SELECT finance_voucher_id,payment_date ,credit_amount, debit_amount,
@@ -44,6 +53,7 @@ const executePDF = function executePDFMethod(options) {
             printQuery: true
           })
           .then(result => {
+            console.log("result:",result)
             resolve({ details: result });
           })
           .catch(e => {
@@ -51,6 +61,8 @@ const executePDF = function executePDFMethod(options) {
             reject(e);
           });
       } else {
+
+        console.log("NON LEAF:")
         options.mysql
           .executeQuery({
             query: ` with recursive cte  as (          
@@ -69,7 +81,7 @@ const executePDF = function executePDFMethod(options) {
             // _mysql.releaseConnection();
             // req.records = result;
             // next();
-
+            console.log("result:",result)
             const head_ids = result.map(m => m.finance_account_head_id);
             const child_ids = result
               .filter(f => {
