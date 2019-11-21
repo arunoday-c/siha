@@ -135,7 +135,7 @@ class InvestigationSetup extends Component {
     algaehApiCall({
       uri: "/investigation/getTestComments",
       module: "laboratory",
-      data: { investigation_test_id: row.hims_d_investigation_test_id },
+      data: { investigation_test_id: row.hims_d_investigation_test_id, comment_status: "A" },
       method: "GET",
       onSuccess: response => {
         debugger;
@@ -325,9 +325,9 @@ class InvestigationSetup extends Component {
                           this.props.invtestcategory === undefined
                             ? []
                             : this.props.invtestcategory.filter(
-                                f =>
-                                  f.hims_d_test_category_id === row.category_id
-                              );
+                              f =>
+                                f.hims_d_test_category_id === row.category_id
+                            );
 
                         return (
                           <span>
@@ -350,9 +350,9 @@ class InvestigationSetup extends Component {
                           this.props.labspecimen === undefined
                             ? []
                             : this.props.labspecimen.filter(
-                                f =>
-                                  f.hims_d_lab_specimen_id === row.specimen_id
-                              );
+                              f =>
+                                f.hims_d_lab_specimen_id === row.specimen_id
+                            );
 
                         return (
                           <span>

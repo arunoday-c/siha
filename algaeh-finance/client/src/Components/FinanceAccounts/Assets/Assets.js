@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import "./assets.scss";
 import SortableTree, {
   getNodeAtPath,
   addNodeUnderParent,
   removeNodeAtPath
 } from "react-sortable-tree";
+import "../alice.scss";
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
 import { AlgaehConfirm, AlgaehMessagePop } from "algaeh-react-components";
 // import "antd/dist/antd.css";
@@ -13,6 +13,7 @@ import {
   removeAccount,
   isPositive
 } from ".././FinanceAccountEvent";
+import ReportLauncher from "../AccountReport";
 export default function Assets() {
   const [symbol, setSymbol] = useState("");
   const [financeHeadId, setFinanceHeadId] = useState(undefined);
@@ -24,6 +25,7 @@ export default function Assets() {
   const [searchFocusIndex, setSearchFocusIndex] = useState(0);
   const [searchFoundCount, setSearchFoundCount] = useState(undefined);
   const [isAccountHead, setIsAccountHead] = useState(false);
+  const [reportVisible,setReportVisible]= useState(false);
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
       try {
@@ -131,6 +133,17 @@ export default function Assets() {
             }
           }
         }}
+      />
+      <ReportLauncher
+          title="Ledger Report"
+          visible={reportVisible}
+          selectedNode={selectedNode}
+          onCancel={()=>{
+            setReportVisible(false);
+          }}
+          onOk={()=>{
+            setReportVisible(false);
+          }}
       />
       <div className="row">
         <div className="col-4">
@@ -257,7 +270,7 @@ export default function Assets() {
                                     (node.leafnode === "Y" ? "disabled" : "")
                                   }
                                   onClick={event => {
-                                    debugger;
+
                                     setShowPopup(true);
                                     setSelectedNode(rowInfo);
                                   }}
@@ -270,9 +283,9 @@ export default function Assets() {
                                     "NodePrintButton " +
                                     (node.leafnode === "Y" ? "disabled" : "")
                                   }
-                                  onClick={event => {
-                                    debugger;
-                                    setShowPopup(true);
+                                  onClick={() => {
+
+                                    setReportVisible(true);
                                     setSelectedNode(rowInfo);
                                   }}
                                 >
@@ -358,7 +371,8 @@ export default function Assets() {
                                   : node.trans_symbol}
                               </small>
                             </div>
-                          )
+                          ),
+                          className:node.leafnode === "Y" ?"":"accGroup"
                         };
                       }}
                       searchMethod={({ node, searchQuery }) => {

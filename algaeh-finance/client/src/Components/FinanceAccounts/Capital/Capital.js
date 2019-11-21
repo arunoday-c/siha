@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../Assets/assets.scss";
+import "../alice.scss";
 
 import SortableTree, {
   getNodeAtPath,
@@ -354,7 +354,8 @@ export default function Capital() {
                                   : node.trans_symbol}
                               </small>
                             </div>
-                          )
+                          ),
+                          className:node.leafnode === "Y" ?"":"accGroup"
                         };
                       }}
                       searchMethod={({ node, searchQuery }) => {
