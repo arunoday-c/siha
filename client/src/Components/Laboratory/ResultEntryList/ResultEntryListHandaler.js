@@ -143,7 +143,7 @@ const ResultEntryModel = ($this, row) => {
         algaehApiCall({
           uri: "/investigation/getTestComments",
           module: "laboratory",
-          data: { investigation_test_id: row.hims_d_investigation_test_id },
+          data: { investigation_test_id: row.hims_d_investigation_test_id, comment_status: "A" },
           method: "GET",
           onSuccess: response => {
             if (response.data.success === true) {
