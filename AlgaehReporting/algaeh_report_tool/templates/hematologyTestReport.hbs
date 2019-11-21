@@ -21,7 +21,9 @@
             </tr>
             <tr>
                 <td><label>اسم اختبار / Test Name</label></td>
-                <td colspan="3"> <span>{{header.service_name}}</span></td>
+                <td colspan="3"> <span>{{header.service_name}} {{#if header.critical_status "Y"}} <b style="color:red;">
+                            (Critical Result)
+                        </b> {{/if}}</span></td>
             </tr>
         </table>
     </section>
@@ -61,7 +63,10 @@
         <table class="tableForData">
             <tbody>
                 <tr>
-                    <td class="txtFld">Comments: {{header.comments}}</td>
+                    <td class="txtFld">Comments:<ol> {{#each (commentBreakUp header.comments commentBreakUp)}}
+                            <li>{{this}}</li>{{/each}}
+                        </ol>
+                    </td>
 
                 </tr>
                 <tr>

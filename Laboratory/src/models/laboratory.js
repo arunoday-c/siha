@@ -49,10 +49,10 @@ export default {
       _mysql
         .executeQuery({
           query:
-            " select hims_f_lab_order_id, LO.patient_id, entered_by, confirmed_by, validated_by, visit_id, \
+            " select hims_f_lab_order_id, LO.patient_id, entered_by, confirmed_by, validated_by, visit_id, critical_status,\
             group_id, organism_type, bacteria_name, bacteria_type, V.visit_code, provider_id, concat(T.title,' ',E.full_name)  as doctor_name, billed, service_id,  S.service_code, S.service_name, LO.status, cancelled, provider_id, ordered_date, test_type,\
             lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender, LS.sample_id,  LS.collected, LS.collected_by, LS.remarks, LS.collected_date, LS.hims_d_lab_sample_id, \
-            LS.status as sample_status, LO.comments, TC.test_section,DLS.urine_specimen, IT.hims_d_investigation_test_id from hims_f_lab_order LO \
+            LS.status as sample_status, TC.test_section,DLS.urine_specimen, IT.hims_d_investigation_test_id from hims_f_lab_order LO \
             inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
             inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id \
             inner join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\
@@ -71,6 +71,31 @@ export default {
           utilities.logger().log("result: ", result);
           _mysql.releaseConnection();
           req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  getLabOrderedComment: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            " select comments from hims_f_lab_order WHERE hims_f_lab_order_id = ?",
+          values: [req.query.hims_f_lab_order_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result[0];
           next();
         })
         .catch(error => {
@@ -681,7 +706,7 @@ export default {
         .Select(s => s.run_type)
         .ToArray();
 
-      utilities.logger().log("inputParam: ", inputParam);
+      console.log("inputParam: ", inputParam[0].critical_status);
 
       let ref = null;
       let entered_by = null;
@@ -789,7 +814,7 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "update hims_f_lab_order set `status`=?, run_type=?, updated_date= ?, updated_by=?, comments=?" +
+                  "update hims_f_lab_order set `status`=?, run_type=?, updated_date= ?, updated_by=?, comments=?, `critical_status`=?" +
                   strQuery +
                   "where hims_f_lab_order_id=? ",
                 values: [
@@ -798,6 +823,7 @@ export default {
                   moment().format("YYYY-MM-DD HH:mm"),
                   req.userIdentity.algaeh_d_app_user_id,
                   inputParam[0].comments,
+                  inputParam[0].critical_status,
                   inputParam[0].order_id
                 ],
                 printQuery: true

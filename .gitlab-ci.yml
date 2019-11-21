@@ -6,7 +6,6 @@ build_image:
   only:
     refs:
       - schedules
-      - development
   tags:
     - build
     - hims
@@ -20,7 +19,6 @@ build_docker:
   only:
     refs:
       - schedules
-      - development
   tags:
     - build
     - hims
@@ -34,7 +32,6 @@ start_stack:
   only:
     refs:
       - schedules
-      - development
   tags:
     - build
     - hims

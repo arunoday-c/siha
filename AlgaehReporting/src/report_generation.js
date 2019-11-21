@@ -241,6 +241,10 @@ hbs.registerHelper("barcode", function (type, text, includetext) {
   return `http://localhost:3018/barcode?bcid=${type}&text=${text}&includetext=${includetext}&guardwhitespace`;
 });
 
+hbs.registerHelper("commentBreakUp", function (comment_data) {
+  return comment_data.split("<br/>");
+});
+
 const groupBy = (data, groupby) => {
   const groupBy = _.chain(data)
     .groupBy(groupby)
