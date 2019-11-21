@@ -15,7 +15,6 @@ import {
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
-import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
 import {
   texthandle,
   onvalidate,
@@ -24,7 +23,10 @@ import {
   onchangegridcol,
   generateLabResultReport,
   radioChange,
-  getMicroResult
+  getMicroResult,
+  addComments,
+  selectCommentEvent,
+  deleteComment
 } from "./MicrobiologyResultEntryEvents";
 import AlgaehReport from "../../Wrapper/printReports";
 
@@ -38,7 +40,10 @@ class MicrobiologyResultEntry extends Component {
       radioNoGrowth: true,
       organism_type: null,
       microAntbiotic: [],
-      data_exists: false
+      data_exists: false,
+      group_comments_id: null,
+      comment_list: [],
+      selcted_comments: ""
     };
   }
 
@@ -156,8 +161,8 @@ class MicrobiologyResultEntry extends Component {
       this.props.providers === undefined
         ? []
         : this.props.providers.filter(
-            f => f.hims_d_employee_id === this.state.provider_id
-          );
+          f => f.hims_d_employee_id === this.state.provider_id
+        );
     return (
       <div>
         <AlgaehModalPopUp
@@ -531,7 +536,77 @@ class MicrobiologyResultEntry extends Component {
                       </div>
                     ) : null}
                   </div>
+
                   <div className="col">
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{ className: "col-10" }}
+                        label={{
+                          forceLabel: "Select Comment"
+                        }}
+                        selector={{
+                          name: "group_comments_id",
+                          className: "select-fld",
+                          value: this.state.group_comments_id,
+                          dataSource: {
+                            textField: "commnet_name",
+                            valueField: "hims_d_group_comment_id",
+                            data: this.state.comments_data
+                          },
+                          onChange: selectCommentEvent.bind(this, this),
+                          onClear: () => {
+                            this.setState({
+                              group_comments_id: null,
+                              selcted_comments: ""
+                            })
+                          }
+                        }}
+                      />
+                      <div className="col-2">
+                        <button
+                          onClick={addComments.bind(this, this)}
+                          className="btn btn-primary"
+                          style={{ marginBottom: 15 }}
+                        >
+                          Add
+                        </button>
+                      </div>
+                      <div className="col-12">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Enter Comment"
+                          }}
+                        />
+
+                        <textarea
+                          value={this.state.selcted_comments}
+                          name="selcted_comments"
+                          onChange={this.textAreaEvent.bind(this)}
+                        />
+                      </div>
+
+
+                    </div>
+
+                    <div className="row finalCommentsSection">
+                      <h6>View Final Comments</h6>
+                      <ol>
+                        {this.state.comment_list.length > 0
+                          ? this.state.comment_list.map((row, index) => {
+                            return (
+                              <React.Fragment key={index}>
+                                <li key={index}>
+                                  <a>{row}</a>
+                                  <i className="fas fa-times" onClick={deleteComment.bind(this, this, row)}></i>
+                                </li>
+                              </React.Fragment>
+                            );
+                          })
+                          : null}
+                      </ol>
+                    </div>
+                  </div>
+                  {/* <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Remarks"
@@ -544,7 +619,7 @@ class MicrobiologyResultEntry extends Component {
                       name="comments"
                       onChange={this.textAreaEvent.bind(this)}
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -577,8 +652,8 @@ class MicrobiologyResultEntry extends Component {
                   this.state.status === "C"
                     ? true
                     : this.state.status === "V"
-                    ? true
-                    : false
+                      ? true
+                      : false
                 }
               >
                 Confirm

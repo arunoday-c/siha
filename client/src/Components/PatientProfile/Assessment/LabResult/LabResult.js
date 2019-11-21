@@ -110,13 +110,35 @@ class LabResult extends Component {
                         ) : row.status === "CF" ? (
                           <span className="badge badge-primary">Confirmed</span>
                         ) : (
-                          <span className="badge badge-success">
-                            Result Available
+                                  <span className="badge badge-success">
+                                    Result Available
                           </span>
-                        );
+                                );
                       },
                       others: {
                         maxWidth: 90,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "critical_status",
+                      label: <AlgaehLabel label={{ forceLabel: "Critical" }} />,
+                      displayTemplate: row => {
+                        return row.critical_status === "N" ? (
+                          <span className="badge badge-primary">
+                            No
+                          </span>
+                        ) : (
+                            <span className="badge badge-danger">
+                              Yes
+                          </span>
+
+                          );
+                      },
+                      disabled: true,
+                      others: {
+                        maxWidth: 130,
                         resizable: false,
                         style: { textAlign: "center" }
                       }

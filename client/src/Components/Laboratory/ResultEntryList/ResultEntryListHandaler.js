@@ -101,32 +101,71 @@ const getSampleCollectionDetails = $this => {
     inputobj.test_type = $this.state.proiorty;
   }
 
-  $this.props.getSampleCollection({
+  algaehApiCall({
     uri: "/laboratory/getLabOrderedServices",
     module: "laboratory",
     method: "GET",
     data: inputobj,
-    redux: {
-      type: "SAMPLE_COLLECT_GET_DATA",
-      mappingName: "samplecollection"
-    },
-    afterSuccess: data => {
-      $this.setState({ sample_collection: data });
+    onSuccess: response => {
+      if (response.data.success) {
+        debugger
+        $this.setState({ sample_collection: response.data.records });
+      }
     }
   });
+
+  // $this.props.getSampleCollection({
+  //   uri: "/laboratory/getLabOrderedServices",
+  //   module: "laboratory",
+  //   method: "GET",
+  //   data: inputobj,
+  //   redux: {
+  //     type: "SAMPLE_COLLECT_GET_DATA",
+  //     mappingName: "samplecollection"
+  //   },
+  //   afterSuccess: data => {
+  //     $this.setState({ sample_collection: data });
+  //   }
+  // });
 };
 
 const ResultEntryModel = ($this, row) => {
-  row.comment_list = row.comments !== null ? row.comments.split("<br/>") : []
+
+  // row.comment_list = row.comments !== null ? row.comments.split("<br/>") : []
   if (row.test_section === "M") {
-    row.microopen = true;
-    $this.setState(
-      {
+    if (row.group_id !== null) {
+      algaehApiCall({
+        uri: "/labmasters/getGroupComments",
+        module: "laboratory",
+        data: { micro_group_id: row.group_id },
+        method: "GET",
+        onSuccess: response => {
+
+          if (response.data.success) {
+            row.comments_data = response.data.records
+            row.microopen = true;
+            $this.setState({
+              isMicroOpen: !$this.state.isMicroOpen,
+              selectedPatient: row
+            });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
+    } else {
+      row.comments_data = []
+      row.microopen = true;
+      $this.setState({
         isMicroOpen: !$this.state.isMicroOpen,
         selectedPatient: row
-      },
-      () => { }
-    );
+      });
+    }
+
   } else {
     if (row.status === "O") {
       swalMessage({

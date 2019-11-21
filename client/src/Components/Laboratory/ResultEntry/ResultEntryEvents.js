@@ -1,5 +1,6 @@
 import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import _ from "lodash";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -52,8 +53,15 @@ export function generateLabResultReport(data) {
 }
 
 const UpdateLabOrder = ($this, value, status) => {
-
+  debugger
   value[0].comments = $this.state.comment_list.join("<br/>")
+  const critical_exit = _.filter(value, f => {
+    return f.critical_status === "Y";
+  });
+  if (critical_exit.length > 0) {
+    value[0].critical_status = "Y"
+  }
+
 
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",
@@ -160,14 +168,24 @@ const getAnalytes = $this => {
         }
         $this.setState({ test_analytes: data });
       }
-    },
-    onFailure: error => {
-      swalMessage({
-        title: error.message,
-        type: "error"
-      });
     }
   });
+
+  algaehApiCall({
+    uri: "/laboratory/getLabOrderedComment",
+    module: "laboratory",
+    method: "GET",
+    data: { hims_f_lab_order_id: $this.state.hims_f_lab_order_id },
+    onSuccess: response => {
+      if (response.data.success) {
+        $this.setState({
+          comment_list: response.data.records.comments !== null ? response.data.records.comments.split("<br/>") : []
+        })
+      }
+    }
+  });
+
+
 };
 
 const confirmedgridcol = ($this, row, e) => {
@@ -368,20 +386,28 @@ const onReRun = $this => {
 };
 
 const onchangegridresult = ($this, row, e) => {
+  debugger
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let test_analytes = $this.state.test_analytes;
-
+  let critical_status = "N"
   row[name] = value;
   for (let l = 0; l < test_analytes.length; l++) {
     if (
       test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
     ) {
       row["critical_type"] = checkRange(row);
-      test_analytes[l] = row;
     }
+    if (row["critical_type"] === "CH" || row["critical_type"] === "CL") {
+      row["critical_status"] = "Y"
+      critical_status = "Y"
+    }
+    test_analytes[l] = row;
   }
-  $this.setState({ test_analytes: test_analytes });
+  $this.setState({
+    test_analytes: test_analytes,
+    critical_status: critical_status
+  });
 };
 
 function checkRange(row) {
@@ -405,7 +431,6 @@ function checkRange(row) {
     return "H";
   } else {
     return "CH";
-    console.log(result);
   }
 }
 

@@ -95,25 +95,18 @@ const getSampleCollectionDetails = $this => {
     inputobj.test_type = $this.state.proiorty;
   }
 
-  $this.props.getSampleCollection({
+  algaehApiCall({
     uri: "/laboratory/getLabOrderedServices",
     module: "laboratory",
     method: "GET",
     data: inputobj,
-    redux: {
-      type: "SAMPLE_COLLECT_GET_DATA",
-      mappingName: "samplecollection"
-    },
-    afterSuccess: data => {
-      if (data.length > 0) {
-        // let sample_collection = Enumerable.from(data)
-        //   .Where(w => w.status !== "O")
-        //   .ToArray();
-
-        $this.setState({ sample_collection: data });
+    onSuccess: response => {
+      if (response.data.success) {
+        $this.setState({ sample_collection: response.data.records });
       }
     }
   });
+
 };
 
 const AcceptandRejectSample = ($this, row, AccRej) => {
@@ -123,7 +116,7 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
       type: "warning"
     });
   } else {
-    
+
 
     if (row.sample_status === "N") {
       if (AccRej === "R") {
