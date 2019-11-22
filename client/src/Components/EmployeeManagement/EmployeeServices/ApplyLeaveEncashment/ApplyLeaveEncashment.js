@@ -137,7 +137,7 @@ class ApplyLeaveEncashment extends Component {
         employee_id: this.state.employee_id
       },
       onSuccess: res => {
-        debugger;
+
         if (res.data.success) {
           this.setState({
             encashDetail: res.data.result
@@ -185,7 +185,7 @@ class ApplyLeaveEncashment extends Component {
 
   LoadLeaveEncashment(e) {
     AlgaehLoader({ show: true });
-    debugger;
+
     let inputObj = {
       employee_id: this.state.employee_id,
       year: this.state.year,
@@ -245,7 +245,7 @@ class ApplyLeaveEncashment extends Component {
   }
 
   applyLeave() {
-    debugger;
+
     AlgaehValidation({
       alertTypeIcon: "warning",
       querySelector: "data-validate='apply-leave-div'",

@@ -377,10 +377,10 @@ class AddOPBillingForm extends Component {
                               this.props.servicetype === undefined
                                 ? []
                                 : this.props.servicetype.filter(
-                                    f =>
-                                      f.hims_d_service_type_id ===
-                                      row.service_type_id
-                                  );
+                                  f =>
+                                    f.hims_d_service_type_id ===
+                                    row.service_type_id
+                                );
 
                             return (
                               <span>
@@ -404,9 +404,9 @@ class AddOPBillingForm extends Component {
                               this.props.opserviceslist === undefined
                                 ? []
                                 : this.props.opserviceslist.filter(
-                                    f =>
-                                      f.hims_d_services_id === row.services_id
-                                  );
+                                  f =>
+                                    f.hims_d_services_id === row.services_id
+                                );
 
                             return (
                               <span>
@@ -872,7 +872,15 @@ class AddOPBillingForm extends Component {
                           <h6>{getAmountFormart(this.state.net_amount)}</h6>
                         </div>
 
-                        <AlagehFormGroup
+                        <div className="col-3 highlightGrey">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "balance_due"
+                            }}
+                          />
+                          <h6>{getAmountFormart(this.state.balance_due)}</h6>
+                        </div>
+                        {/* <AlagehFormGroup
                           div={{ className: "col-lg-3 highlightGrey" }}
                           label={{
                             fieldName: "balance_due"
@@ -897,7 +905,7 @@ class AddOPBillingForm extends Component {
                               }
                             }
                           }}
-                        />
+                        /> */}
 
                         <div
                           className="col-3"
