@@ -35,7 +35,11 @@ const {
   updateGroupAntiMap,
   selectMachineAnalytesMap,
   insertMachineAnalytesMap,
-  updateMachineAnalytesMap
+  updateMachineAnalytesMap,
+
+  addGroupComments,
+  updateGroupComments,
+  getGroupComments
 } = labModels;
 
 export default () => {
@@ -281,6 +285,30 @@ export default () => {
       records: req.records
     });
   });
+
+
+  api.get("/getGroupComments", getGroupComments, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.post("/addGroupComments", addGroupComments, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put(
+    "/updateGroupComments", updateGroupComments, (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
 
   return api;
 };

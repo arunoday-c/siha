@@ -81,7 +81,7 @@ class RequisitionEntry extends Component {
       uri: "/pharmacy/getPharmacyLocation",
       module: "pharmacy",
       method: "GET",
-
+      data: { git_location: "N", location_status: "A" },
       redux: {
         type: "LOCATIOS_GET_DATA",
         mappingName: "reqlocations"
@@ -93,6 +93,7 @@ class RequisitionEntry extends Component {
       module: "pharmacy",
       method: "GET",
       data: {
+        git_location: "N",
         location_status: "A",
         hospital_id: hospital.hims_d_hospital_id
       },

@@ -363,19 +363,30 @@ class ResultEntryList extends Component {
                           resizable: false,
                           style: { textAlign: "center" }
                         }
+                      },
+                      {
+                        fieldName: "critical_status",
+                        label: <AlgaehLabel label={{ forceLabel: "Critical" }} />,
+                        displayTemplate: row => {
+                          return row.critical_status === "N" ? (
+                            <span className="badge badge-primary">
+                              No
+                            </span>
+                          ) : (
+                              <span className="badge badge-danger">
+                                Yes
+                            </span>
+
+                            );
+                        },
+                        disabled: true,
+                        others: {
+                          maxWidth: 130,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
                       }
                     ]}
-                    // rowClassName={row => {
-                    //   return row.status === "CF"
-                    //     ? "confirmedClass"
-                    //     : row.status === "CL"
-                    //     ? "collectedClass"
-                    //     : row.status === "CN"
-                    //     ? "cancelledClass"
-                    //     : row.status === "V"
-                    //     ? "validateClass"
-                    //     : null;
-                    // }}
                     keyId="patient_code"
                     dataSource={{
                       data: Enumerable.from(this.state.sample_collection)

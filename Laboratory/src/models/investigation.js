@@ -675,12 +675,19 @@ export default {
 
   getTestComments: (req, res, next) => {
     const _mysql = new algaehMysql();
+    let strQuery = ""
+
+    if (req.query.comment_status !== null && req.query.comment_status !== undefined) {
+      strQuery = ` and comment_status = '${req.query.comment_status}'`
+    }
 
     try {
       _mysql
         .executeQuery({
           query:
-            "select * FROM hims_d_investigation_test_comments where investigation_test_id = ? order by hims_d_investigation_test_comments_id desc ",
+            "select * FROM hims_d_investigation_test_comments where investigation_test_id = ?" +
+            strQuery +
+            "order by hims_d_investigation_test_comments_id desc ",
           values: [req.query.investigation_test_id],
           printQuery: true
         })
@@ -697,5 +704,5 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  },
+  }
 };

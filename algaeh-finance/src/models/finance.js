@@ -786,74 +786,7 @@ export default {
         });
     }
   },
-  //created by irfan: to
-  testBKUP: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    const utilities = new algaehUtilities();
-    let input = req.body;
 
-    _mysql
-      .executeQuery({
-        query: `select finance_account_head_id,account_code,coalesce(parent_acc_id,'root') as parent_acc_id ,head_account_code,account_name ,account_level,finance_voucher_id,
-        coalesce(sum(debit_amount),0.0000)as debit_amount,coalesce(sum(credit_amount),0.000)as credit_amount
-        from finance_account_head  H left join finance_voucher_details VD
-        on H.finance_account_head_id=VD.head_id        
-        where account_code like'1%' group by finance_account_head_id order by account_level;`,
-        values: [],
-        printQuery: true
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        let children = _.chain(result)
-          .groupBy(g => g.parent_acc_id)
-          .value();
-        // utilities.logger().log("children: ", children);
-
-        let roots = children["root"];
-
-        // // function to recursively build the tree
-        let findChildren = function(parent) {
-          if (children[parent.finance_account_head_id]) {
-            const tempchilds = children[parent.finance_account_head_id];
-
-            parent.children = tempchilds;
-            //-----------------
-
-            console.log("children:", children[parent.finance_account_head_id]);
-
-            let new_debit_amount =
-              _.sumBy(children[parent.finance_account_head_id], s =>
-                parseFloat(s.debit_amount)
-              ) + parseFloat(parent["debit_amount"]);
-            console.log("new_debit_amount:", new_debit_amount);
-
-            parent["new_debit_amount"] = new_debit_amount;
-            //-----------------
-
-            for (let i = 0, len = parent.children.length; i < len; ++i) {
-              findChildren(parent.children[i]);
-            }
-          } else {
-            parent["new_debit_amount"] = parent["debit_amount"];
-          }
-        };
-
-        // enumerate through to handle the case where there are multiple roots
-        for (let i = 0, len = roots.length; i < len; ++i) {
-          findChildren(roots[i]);
-        }
-
-        //let val = initialize(roots[0], children);
-
-        req.records = roots;
-
-        next();
-      })
-      .catch(e => {
-        _mysql.releaseConnection();
-        next(e);
-      });
-  },
   //created by irfan: to
   previewDayEndEntries: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -889,42 +822,47 @@ export default {
         next(e);
       });
   },
-  //created by irfan: to
-  printLedgerReport: (req, res, next) => {
-    const _mysql = new algaehMysql();
+  //created by irfan:
+  getAccountHeadsForDropdown: (req, res, next) => {
     const utilities = new algaehUtilities();
-    const input = req.query;
-    let strQry = "";
+    const _mysql = new algaehMysql();
+    let input = req.query;
 
     if (
-      moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD") > 0 &&
-      moment(input.to_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
+      input.finance_account_head_id > 0 &&
+      input.finance_account_head_id < 6
     ) {
-      strQry = ` and payment_date between date('${input.from_date}') and date('${input.to_date}') `;
-    }
-
-    let group_str = " group by payment_date ";
-
-    if (input.monthwise == "Y") {
-      group_str = " group by month ";
-    }
-    if (input.leaf_node == "Y") {
       _mysql
         .executeQuery({
-          query: `SELECT finance_voucher_id,payment_date ,sum(credit_amount)as 
-        credit_amount,sum(debit_amount) as debit_amount,
-        coalesce(sum( credit_amount)-sum(debit_amount),0)as balance_amount,
-        case payment_type when 'CR' then 'Credit' else 'Debit' end as payment_type,
-        narration,concat(H.account_name,' -> ',C.child_name) as account_details FROM finance_voucher_details VD inner join finance_account_head H on
-         VD.head_id=H.finance_account_head_id inner join finance_account_child C on 
-         VD.child_id=C.finance_account_child_id where 
-        head_id=? and child_id=? ${strQry} ${group_str};`,
-          values: [input.head_id, input.child_id],
-          printQuery: true
+          query: `with recursive cte (finance_account_head_id,account_code, account_name, parent_acc_id,
+              finance_account_child_id,child_name,child_created_from,account_level,sort_order,head_id,created_status) as (              
+              select finance_account_head_id,H.account_code,account_name,parent_acc_id,
+              C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
+              ,account_level,H.sort_order,CM.head_id,H.created_from as created_status
+              FROM finance_account_head H left join 
+              finance_head_m_child CM on H.finance_account_head_id=CM.head_id
+              left join finance_account_child C on CM.child_id=C.finance_account_child_id
+              where finance_account_head_id=?              
+              union                  
+              select   H.finance_account_head_id,H.account_code,H.account_name,H.parent_acc_id,
+              C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
+              ,H.account_level,H.sort_order,CM.head_id,H.created_from as created_status
+              FROM finance_account_head H left join 
+              finance_head_m_child CM on H.finance_account_head_id=CM.head_id
+              left join finance_account_child C on CM.child_id=C.finance_account_child_id
+              inner join 
+              cte
+              on H.parent_acc_id = cte.finance_account_head_id )
+              select * from cte order by account_level,sort_order;    `,
+
+          printQuery: false,
+
+          values: [input.finance_account_head_id]
         })
         .then(result => {
           _mysql.releaseConnection();
-          req.records = result;
+          const outputArray = createHierarchyForDropdown(result);
+          req.records = outputArray;
           next();
         })
         .catch(e => {
@@ -932,60 +870,108 @@ export default {
           next(e);
         });
     } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please provide Valid Input"
+      };
+      next();
+    }
+  },
+  //created by irfan:
+  getLedgerDataForChart: (req, res, next) => {
+    const utilities = new algaehUtilities();
+    const _mysql = new algaehMysql();
+    let input = req.query;
+
+    if (
+      input.finance_account_head_id > 0 &&
+      input.finance_account_head_id < 6 &&
+      input.period > 0 &&
+      input.period < 6
+    ) {
+      const monthArray = [];
+      let year = "";
+
+      if (input.year > 0) {
+        year = input.year;
+      } else {
+        year = moment().format("YYYY");
+      }
+
+      switch (input.period.toString()) {
+        case "1":
+          monthArray.push(1, 2, 3);
+          break;
+        case "2":
+          monthArray.push(4, 5, 6);
+          break;
+        case "3":
+          monthArray.push(8, 8, 9);
+          break;
+        case "4":
+          monthArray.push(10, 11, 12);
+          break;
+        default:
+          monthArray.push(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+      }
       _mysql
         .executeQuery({
-          query: `    with recursive cte  as (          
-          select  finance_account_head_id,PC.child_id
-          from finance_account_head P left join finance_head_m_child PC on P.finance_account_head_id
-          =PC.head_id where finance_account_head_id=?
-          union                  
-          select H.finance_account_head_id,PC.child_id
-          from finance_account_head  H inner join cte
-          on H.parent_acc_id = cte.finance_account_head_id   left join finance_head_m_child PC on H.finance_account_head_id
-          =PC.head_id )select * from cte;`,
-          values: [input.head_id],
-          printQuery: true
+          query: `with cte as(
+            select head_id,month,monthname(concat('1999-',month,'-01')) as month_name,
+            coalesce(sum(debit_amount)-sum(credit_amount),0)as debit_minus_credit,
+            coalesce(sum(credit_amount)-sum(debit_amount),0)as credit_minus_debit from 
+            finance_voucher_details where  year=? and month in(?) and head_id in (with recursive heads  as (          
+            select  finance_account_head_id
+            from finance_account_head where finance_account_head_id=?
+            union                  
+            select H.finance_account_head_id
+            from finance_account_head  H inner join heads
+            on H.parent_acc_id = heads.finance_account_head_id    
+            )select  finance_account_head_id from heads) group by month
+            ) select t.*,(100 * (t.debit_minus_credit - t2.debit_minus_credit) / t2.debit_minus_credit) as dr_growth_percent,
+            (100 * (t.credit_minus_debit - t2.credit_minus_debit) / t2.credit_minus_debit) as cr_growth_percent
+             from cte as t left join cte t2 on  t2.month=(t.month-1);  `,
+
+          printQuery: false,
+          values: [year, monthArray, input.finance_account_head_id]
         })
         .then(result => {
-          // _mysql.releaseConnection();
-          // req.records = result;
-          // next();
-
-          const head_ids = result.map(m => m.finance_account_head_id);
-          const child_ids = result
-            .filter(f => {
-              return f.child_id > 0;
-            })
-            .map(m => m.child_id);
-
-          _mysql
-            .executeQuery({
-              query: `    with recursive cte  as (          
-              select  finance_account_head_id,PC.child_id
-              from finance_account_head P left join finance_head_m_child PC on P.finance_account_head_id
-              =PC.head_id where finance_account_head_id=?
-              union                  
-              select H.finance_account_head_id,PC.child_id
-              from finance_account_head  H inner join cte
-              on H.parent_acc_id = cte.finance_account_head_id   left join finance_head_m_child PC on H.finance_account_head_id
-              =PC.head_id )select * from cte;`,
-              values: [input.head_id],
-              printQuery: true
-            })
-            .then(result => {
-              // _mysql.releaseConnection();
-              // req.records = result;
-              // next();
-            })
-            .catch(e => {
-              _mysql.releaseConnection();
-              next(e);
+          _mysql.releaseConnection();
+          let outputArray = [];
+          if (
+            input.finance_account_head_id == 1 ||
+            input.finance_account_head_id == 5
+          ) {
+            outputArray = result.map(m => {
+              return {
+                ...m,
+                amount: m.debit_minus_credit,
+                growth_percent: m.dr_growth_percent
+              };
             });
+          } else {
+            outputArray = result.map(m => {
+              return {
+                ...m,
+                amount: m.credit_minus_debit,
+                growth_percent: m.cr_growth_percent
+              };
+            });
+          }
+
+          req.records = outputArray;
+          next();
         })
         .catch(e => {
           _mysql.releaseConnection();
           next(e);
         });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please provide Valid Input"
+      };
+      next();
     }
   }
 };
@@ -1228,33 +1214,84 @@ function calcAmount(account_heads, levels, decimal_places) {
   }
 }
 
-// select H.account_code,M.head_id,	M.child_id,coalesce(sum(debit_amount) ,0.0000) as debit_amount,
-// coalesce(sum(credit_amount) ,0.0000) as credit_amount,
-// (coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) )as cred_minus_deb,
-// (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)) as deb_minus_cred
-// from finance_head_m_child M inner join
-// finance_account_head H on M.head_id=H.finance_account_head_id
-// left join finance_voucher_details VD on H.finance_account_head_id=VD.head_id
-// group by M.head_id,M.child_id;
+//created by :IRFAN to build tree hierarchy
+function createHierarchyForDropdown(arry) {
+  try {
+    // const onlyChilds = [];
+    const utilities = new algaehUtilities();
+    let roots = [],
+      children = {};
 
-// with recursive cte  as (select finance_account_head_id,account_level
-//   FROM finance_account_head where finance_account_head_id=2
-//   union
-//   select H.finance_account_head_id,H.account_level FROM finance_account_head H
-//   inner join cte on H.parent_acc_id = cte.finance_account_head_id
-//   )
-//   select max(account_level)from cte ;
+    // find the top level nodes and hash the children based on parent_acc_id
+    for (let i = 0, len = arry.length; i < len; ++i) {
+      let item = arry[i],
+        p = item.parent_acc_id,
+        //if it has no parent_acc_id
+        //seprating roots to roots array childerens to childeren array
+        target = !p ? roots : children[p] || (children[p] = []);
 
-// select finance_account_head_id,account_code,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level,
-// coalesce(sum(debit_amount),0.0000)as debit_amount,coalesce(sum(credit_amount),0.000)as credit_amount
-// from finance_account_head  H left join finance_voucher_details VD on H.finance_account_head_id=VD.head_id
-// where finance_account_head_id
-// in ( with recursive cte  as (
-// select  finance_account_head_id
-// from finance_account_head where finance_account_head_id=1
-// union
-// select H.finance_account_head_id
-// from finance_account_head  H inner join cte
-// on H.parent_acc_id = cte.finance_account_head_id
-// )select * from cte)
-// group by finance_account_head_id order by account_level;
+      if (
+        item.finance_account_child_id > 0 &&
+        item.finance_account_head_id == item.head_id
+      ) {
+        let child =
+          children[item.finance_account_head_id] ||
+          (children[item.finance_account_head_id] = []);
+
+        child.push({
+          finance_account_child_id: item["finance_account_child_id"],
+
+          title: item.child_name,
+          label: item.child_name,
+          head_id: item["head_id"],
+          disabled: false,
+          leafnode: "Y",
+          created_status: item["child_created_from"]
+        });
+
+        //if children array doesnt contain this non-leaf node then push
+        const data = target.find(val => {
+          return val.finance_account_head_id == item.finance_account_head_id;
+        });
+
+        if (!data) {
+          target.push({
+            ...item,
+            title: item.account_name,
+            label: item.account_name,
+            disabled: true,
+            leafnode: "N"
+          });
+        }
+      } else {
+        target.push({
+          ...item,
+          title: item.account_name,
+          label: item.account_name,
+          disabled: true,
+          leafnode: "N"
+        });
+      }
+    }
+
+    // function to recursively build the tree
+    let findChildren = function(parent) {
+      if (children[parent.finance_account_head_id]) {
+        const tempchilds = children[parent.finance_account_head_id];
+        parent.children = tempchilds;
+        for (let i = 0, len = parent.children.length; i < len; ++i) {
+          findChildren(parent.children[i]);
+        }
+      }
+    };
+
+    // enumerate through to handle the case where there are multiple roots
+    for (let i = 0, len = roots.length; i < len; ++i) {
+      findChildren(roots[i]);
+    }
+
+    return roots;
+  } catch (e) {
+    console.log("MY-ERORR:", e);
+  }
+}

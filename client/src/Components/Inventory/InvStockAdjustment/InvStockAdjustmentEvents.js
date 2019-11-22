@@ -14,7 +14,9 @@ const texthandle = ($this, e) => {
   if (name === "adjustment_type") {
     $this.setState({
       [name]: value,
-      description: e.selected.name
+      description: e.selected.name,
+      adjust_qty: 0,
+      adjust_amount: 0
     });
   } else {
     $this.setState({
@@ -400,6 +402,23 @@ const AddItemtoList = ($this) => {
   });
 }
 
+const adjustAmtHandaler = ($this, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  if ($this.state.adjustment_type === "DA" || $this.state.adjustment_type === "BD") {
+    if (parseFloat(value) > parseFloat($this.state.sales_price)) {
+      swalMessage({
+        title: "Cannot be less than Item Amount",
+        type: "warning"
+      });
+      e.target.focus();
+      $this.setState({
+        [name]: 0
+      });
+    }
+  }
+}
+
 export {
   texthandle,
   getCtrlCode,
@@ -410,5 +429,6 @@ export {
   itemchangeText,
   batchEventHandaler,
   adjustQtyHandaler,
-  AddItemtoList
+  AddItemtoList,
+  adjustAmtHandaler
 };

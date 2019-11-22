@@ -4,16 +4,18 @@ import SortableTree, {
   addNodeUnderParent,
   removeNodeAtPath
 } from "react-sortable-tree";
-import "react-sortable-tree/style.css"; // This only needs to be imported once in your app
+import {AlgaehConfirm, AlgaehMessagePop, Input, Icon, DatePicker} from "algaeh-react-components";
+import ReportLauncher from "../AccountReport";
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
 import {
   getAccounts,
   isPositive,
-  removeAccount
+  removeAccount,getChartData
 } from ".././FinanceAccountEvent";
+import "react-sortable-tree/style.css";
 import "../alice.scss";
-import { AlgaehConfirm, AlgaehMessagePop } from "algaeh-react-components";
-
+import moment from "moment";
+import Charts from "../Charts";
 export default function Liablity() {
   const [symbol, setSymbol] = useState("");
   const [treeData, setTreeData] = useState([]);
@@ -25,14 +27,21 @@ export default function Liablity() {
   const [searchFoundCount, setSearchFoundCount] = useState(undefined);
   const [isAccountHead, setIsAccountHead] = useState(false);
   const [financeHeadId, setFinanceHeadId] = useState(undefined);
+  const [reportVisible,setReportVisible]= useState(false);
+  const [editorRecord,setEditorRecord]= useState({});
+  const [period, setPeriod] = useState("4");
+  const [accountChart, setAccountChart] = useState([]);
+  const [year, setYear] = useState(moment());
   function loadAccount() {
     getAccounts("2", data => {
       if (Array.isArray(data)) {
         if (data.length > 0) {
-          setFinanceHeadId(data[0].finance_account_head_id);
-          setTreeData(data[0]["children"]);
-          setLabilityAmount(data[0]["subtitle"]);
-          setSymbol(data[0]["trans_symbol"]);
+          const firstData = data[0];
+          setFinanceHeadId(firstData.finance_account_head_id);
+          setTreeData(firstData["children"]);
+          setLabilityAmount(firstData["subtitle"]);
+          setSymbol(firstData["trans_symbol"]);
+          loadChartData(firstData.finance_account_head_id);
         } else {
           setTreeData([]);
         }
@@ -45,7 +54,20 @@ export default function Liablity() {
   useEffect(() => {
     loadAccount();
   }, []);
-
+  function loadChartData(finheadId) {
+    getChartData({
+      finance_account_head_id:
+          finheadId === undefined ? financeHeadId : finheadId,
+      period: period,
+      year: moment(year).format("YYYY")
+    })
+        .then(result => {
+          setAccountChart(result);
+        })
+        .catch(error => {
+          AlgaehMessagePop({ type: "error", display: error });
+        });
+  }
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
       try {
@@ -129,7 +151,18 @@ export default function Liablity() {
           }
         }}
       />
-
+      <ReportLauncher
+          title="Ledger Report"
+          visible={reportVisible}
+          parentId="2"
+          selectedNode={selectedNode}
+          onCancel={()=>{
+            setReportVisible(false);
+          }}
+          onOk={()=>{
+            setReportVisible(false);
+          }}
+      />
       <div className="row">
         <div className="col-4">
           <div className="portlet portlet-bordered margin-bottom-15">
@@ -137,9 +170,38 @@ export default function Liablity() {
               <div className="caption">
                 <h3 className="caption-subject">Liability accounts</h3>
               </div>
-              <div className="actions"></div>
+              <div className="actions">
+                <select
+                    value={period}
+                    onChange={e => {
+                      setPeriod(e.target.value);
+                    }}
+                >
+                  <option value="1">Jan - Mar</option>
+                  <option value="2">Apr - Jun</option>
+                  <option value="3">Jul - Sep</option>
+                  <option value="4">Oct - Dec</option>
+                  <option value="5">By Year</option>
+                </select>
+                <DatePicker
+                    mode="year"
+                    size="small"
+                    value={year}
+                    format="YYYY"
+                    onPanelChange={selectedDate => {
+                      setYear(selectedDate);
+                    }}
+                />
+              </div>
             </div>
-            <div className="portlet-body"></div>
+            <div className="portlet-body">
+              <Charts
+                  data={accountChart}
+                  xAxis={"month_name"}
+                  yAxisBar={"amount"}
+                  yAxisLine={"growth_percent"}
+              />
+            </div>
           </div>
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
@@ -148,7 +210,9 @@ export default function Liablity() {
               </div>
               <div className="actions"></div>
             </div>
-            <div className="portlet-body"></div>
+            <div className="portlet-body">
+              <Charts data={[]} xAxis={""} yAxisBar={""} yAxisLine={""} />
+            </div>
           </div>
         </div>
         <div className="col-8">
@@ -233,82 +297,84 @@ export default function Liablity() {
                             <div className="box">
                               <ul className="NodeActionButton">
                                 <li
-                                  label="Add"
-                                  className={
-                                    "NodeAddButton " +
-                                    (node.leafnode === "Y" ? "disabled" : "")
-                                  }
-                                  onClick={event => {
-                                    debugger;
-                                    setShowPopup(true);
-                                    setSelectedNode(rowInfo);
-                                  }}
+                                    label="Add"
+                                    className={
+                                      "NodeAddButton " +
+                                      (node.leafnode === "Y" ? "disabled" : "")
+                                    }
+                                    onClick={() => {
+
+                                      setShowPopup(true);
+                                      setSelectedNode(rowInfo);
+                                    }}
                                 >
                                   <i className="fas fa-plus"></i>
                                 </li>
                                 <li
-                                  label="Add"
-                                  className={
-                                    "NodeEditButton " +
-                                    (node.leafnode === "Y" ? "disabled" : "")
-                                  }
-                                  onClick={event => {
-                                    debugger;
-                                    setShowPopup(true);
-                                    setSelectedNode(rowInfo);
-                                  }}
+                                    label="edit"
+                                    className={
+                                      "NodeEditButton " +
+                                      (node.created_status === "S" ? "disabled" : "")
+                                    }
+                                    onClick={() => {
+                                      if(Object.keys(editorRecord).length >0 ){
+                                        setEditorRecord({});
+                                      }else{
+                                        setEditorRecord(rowInfo);
+                                      }
+
+                                    }}
                                 >
-                                  <i className="fas fa-pen"></i>
+                                  {JSON.stringify(editorRecord) === JSON.stringify(rowInfo)? <i className="fas fa-times" />:
+                                      <i className="fas fa-pen" />}
                                 </li>
                                 <li
-                                  label="Add"
-                                  className={
-                                    "NodePrintButton " +
-                                    (node.leafnode === "Y" ? "disabled" : "")
-                                  }
-                                  onClick={event => {
-                                    debugger;
-                                    setShowPopup(true);
-                                    setSelectedNode(rowInfo);
-                                  }}
+                                    label="print"
+                                    className={
+                                      "NodePrintButton "
+                                    }
+                                    onClick={() => {
+
+                                      setReportVisible(true);
+                                      setSelectedNode(rowInfo);
+                                    }}
                                 >
                                   <i className="fas fa-print"></i>
                                 </li>
                                 <li
-                                  className={
-                                    "NodeDeleteButton " +
-                                    (node.created_status === "S"
-                                      ? "disabled"
-                                      : "")
-                                  }
-                                  label="Delete"
+                                    className={
+                                      "NodeDeleteButton " +
+                                      (node.created_status === "S"
+                                          ? "disabled"
+                                          : "")
+                                    }
+                                    label="Delete"
                                 >
                                   <AlgaehConfirm
-                                    title="Are you sure want to delete ?"
-                                    placement="topLeft"
-                                    onConfirm={e => {
-                                      removeNode(rowInfo)
-                                        .then(newTree => {
-                                          setTreeData(newTree);
-                                          AlgaehMessagePop({
-                                            type: "success",
-                                            display:
-                                              "Account deleted successfully"
-                                          });
-                                        })
-                                        .catch(error => {
-                                          AlgaehMessagePop({
-                                            type: "error",
-                                            display: error
-                                          });
-                                        });
-                                    }}
-                                    okButtonProps={{ label: "Delete" }}
-                                    // disabled={node.children !==undefined && node.children.length > 0?true:false}
-                                    okText="Yes, delete it!"
-                                    cancelText="No"
+                                      title="Are you sure want to delete ?"
+                                      placement="topLeft"
+                                      onConfirm={e => {
+                                        removeNode(rowInfo)
+                                            .then(newTree => {
+                                              setTreeData(newTree);
+                                              AlgaehMessagePop({
+                                                type: "success",
+                                                display:
+                                                    "Account deleted successfully"
+                                              });
+                                            })
+                                            .catch(error => {
+                                              AlgaehMessagePop({
+                                                type: "error",
+                                                display: error
+                                              });
+                                            });
+                                      }}
+                                      okButtonProps={{ label: "Delete" }}
+                                      okText="Yes, delete it!"
+                                      cancelText="No"
                                   >
-                                    <i className="fas fa-times"></i>
+                                    <i className="fas fa-trash"></i>
                                   </AlgaehConfirm>{" "}
                                 </li>
                               </ul>
@@ -319,43 +385,49 @@ export default function Liablity() {
                             minWidth: "150px"
                           },
                           title: (
-                            <>
+                              <>
                               <span>
-                                {node.title}{" "}
+                                { JSON.stringify(editorRecord) === JSON.stringify(rowInfo)?(<Input
+                                    suffix={(<Icon type="save"  onClick={(e)=>{
+                                      const editedValue= e.currentTarget.offsetParent.previousElementSibling.value;
+                                      setEditorRecord({});
+                                    }} />)}
+                                    defaultValue={node.title}
+                                />): node.title}{" "}
                                 {node.leafnode === "Y" ? null : (
-                                  <>
-                                    /
-                                    {node.children === undefined
-                                      ? 0
-                                      : node.children.length}
-                                  </>
+                                    <>
+                                      /
+                                      {node.children === undefined
+                                          ? 0
+                                          : node.children.length}
+                                    </>
                                 )}
                               </span>
-                            </>
+                              </>
                           ),
                           subtitle: (
-                            <div
-                              style={{ fontSize: "medium", marginTop: "7px" }}
-                            >
+                              <div
+                                  style={{ fontSize: "medium", marginTop: "7px" }}
+                              >
                               <span
-                                className={
-                                  node.subtitle !== undefined
-                                    ? isPositive(node.subtitle)
-                                    : ""
-                                }
+                                  className={
+                                    node.subtitle !== undefined
+                                        ? isPositive(node.subtitle)
+                                        : ""
+                                  }
                               >
                                 {node.subtitle === undefined
-                                  ? "0.00"
-                                  : node.subtitle}
+                                    ? "0.00"
+                                    : node.subtitle}
                               </span>{" "}
-                              <small>
-                                {node.trans_symbol === undefined
-                                  ? symbol
-                                  : node.trans_symbol}
-                              </small>
-                            </div>
+                                <small>
+                                  {node.trans_symbol === undefined
+                                      ? symbol
+                                      : node.trans_symbol}
+                                </small>
+                              </div>
                           ),
-                          className:node.leafnode === "Y" ?"":"accGroup"
+                          className:node.created_status === "S" ?"systemGen" :node.leafnode === "Y" ?"":"accGroup"
                         };
                       }}
                       searchMethod={({ node, searchQuery }) => {

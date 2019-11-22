@@ -40,19 +40,19 @@
                     {{/each }}
                     <tr class="numberFld numberFldTotalBottom">
                         <td class="numberFld" colspan="5">Total</td>
-                        <td class="numberFld numberFldTotal">{{000}}</td>
-                        <td class="numberFld numberFldTotal">{{000}}</td>
+                        <td class="numberFld numberFldTotal">{{total_amount}}</td>
+                        
                         <td class="numberFld numberFldTotal"></td>
                     </tr>
-
+{{!-- 
                     <tr class="numberFld numberFldTotalBottom">
                         <td class="numberFld" colspan="5">Balance</td>
-                        <td class="numberFld" colspan="2">{{000}}</td>
+                        <td class="numberFld" colspan="2">{{"000"}}</td>
                         <td class="numberFld"></td>
-                    </tr>
+                    </tr> --}}
                     <tr class="numberFld numberFldTotalBottom">
                         <td class="numberFld" colspan="7">Closing Balance</td>
-                        <td class="numberFld">{{000}}</td>
+                        <td class="numberFld">{{total_amount}}</td>
                     </tr>
                     {{else}}
                     <tr>
@@ -69,13 +69,13 @@
 
 
 
-        {{!-- <table class="tableTotal">
+        <table class="tableTotal">
             <tr>
                 <td>
                     Grand Total Earnings
                 </td>
                 <td>
-                    {{sum_earnings}}
+                    {{000}}
                 </td>
             </tr>
             <tr>
@@ -83,7 +83,7 @@
                     Grand Total Deduction
                 </td>
                 <td>
-                    {{sum_deductions}}
+                    {{00}}
                 </td>
             </tr>
             <tr>
@@ -91,7 +91,7 @@
                     Grand Total Contribution
                 </td>
                 <td>
-                    {{sum_contributions}}
+                    {{00}}
                 </td>
             </tr>
             <tr>
@@ -99,10 +99,10 @@
                     Grand Net Salary
                 </td>
                 <td>
-                    {{sum_net_salary}}
+                    {{00}}
                 </td>
             </tr>
-        </table> --}}
+        </table>
     </div>
 
 </body>

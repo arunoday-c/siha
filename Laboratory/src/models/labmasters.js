@@ -1270,4 +1270,106 @@ export default {
       });
     }
   },
+
+
+  addGroupComments: (req, res, next) => {
+    let inputParam = req.body;
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO `hims_d_group_comment` (micro_group_id, commnet_name, commet,  \
+              created_date, created_by, updated_date, updated_by)\
+            VALUE(?,?,?,?,?,?,?)",
+          values: [
+            inputParam.micro_group_id,
+            inputParam.commnet_name,
+            inputParam.commet,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  updateGroupComments: (req, res, next) => {
+    let inputParam = req.body;
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE `hims_d_group_comment` SET  commet=?, comment_status=?, updated_date=?, updated_by=? \
+            WHERE  hims_d_group_comment_id=?;",
+          values: [
+            inputParam.commet,
+            inputParam.comment_status,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            inputParam.hims_d_group_comment_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  getGroupComments: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let strQuery = ""
+
+    if (req.query.comment_status !== null && req.query.comment_status !== undefined) {
+      strQuery = ` and comment_status = '${req.query.comment_status}'`
+    }
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select * FROM hims_d_group_comment where micro_group_id = ?" +
+            strQuery +
+            "order by hims_d_group_comment_id desc ",
+          values: [req.query.micro_group_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  }
 };

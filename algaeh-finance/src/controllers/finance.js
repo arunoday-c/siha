@@ -10,7 +10,9 @@ const {
   getDayEndData,
   postDayEndData,
   removeAccountHead,
-  previewDayEndEntries
+  previewDayEndEntries,
+  getAccountHeadsForDropdown,
+  getLedgerDataForChart
 } = finance;
 
 export default () => {
@@ -19,10 +21,10 @@ export default () => {
   api.get("/getAccountHeads", getAccountHeads, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res
-        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .status(utlities.AlgaehUtilities().httpStatus().internalServer)
         .json({
           success: false,
-          result: req.records
+          message: req.records.message
         })
         .end();
     } else {
@@ -171,6 +173,49 @@ export default () => {
         result: req.records
       })
       .end();
+  });
+
+  api.get(
+    "/getAccountHeadsForDropdown",
+    getAccountHeadsForDropdown,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res
+          .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+          .json({
+            success: false,
+            message: req.records.message
+          })
+          .end();
+      } else {
+        res
+          .status(utlities.AlgaehUtilities().httpStatus().ok)
+          .json({
+            success: true,
+            result: req.records
+          })
+          .end();
+      }
+    }
+  );
+  api.get("/getLedgerDataForChart", getLedgerDataForChart, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+        .json({
+          success: false,
+          message: req.records.message
+        })
+        .end();
+    } else {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records
+        })
+        .end();
+    }
   });
 
   return api;
