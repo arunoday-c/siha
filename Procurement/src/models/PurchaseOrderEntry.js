@@ -200,6 +200,7 @@ export default {
                 "expected_arrival_date",
                 "pharmacy_requisition_id",
                 "inventory_requisition_id",
+                "authorize_quantity",
                 "tax_percentage",
                 "tax_amount",
                 "total_amount",

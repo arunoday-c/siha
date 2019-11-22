@@ -26,29 +26,29 @@ const changeTexts = ($this, ctrl, e) => {
     case "pos_customer_type":
       value === "OT"
         ? $this.setState({
-            [name]: value,
-            mode_of_pay: "1",
-            OTItemAddDis: false
-          })
+          [name]: value,
+          mode_of_pay: "1",
+          OTItemAddDis: false
+        })
         : $this.setState({
-            [name]: value,
-            mode_of_pay: "",
-            OTItemAddDis: false
-          });
+          [name]: value,
+          mode_of_pay: "",
+          OTItemAddDis: false
+        });
       break;
 
     case "mode_of_pay":
       value === "1"
         ? $this.setState({
-            [name]: value,
-            insurance_yesno: "N",
-            insured: "N"
-          })
+          [name]: value,
+          insurance_yesno: "N",
+          insured: "N"
+        })
         : $this.setState({
-            [name]: value,
-            insurance_yesno: "Y",
-            insured: "Y"
-          });
+          [name]: value,
+          insurance_yesno: "Y",
+          insured: "Y"
+        });
       break;
 
     default:
@@ -434,6 +434,17 @@ const SavePosEnrty = $this => {
   const err = Validations($this);
 
   if (!err) {
+    const batch_exists = _.filter(
+      $this.state.pharmacy_stock_detail,
+      f => f.batchno === null
+    );
+    if (batch_exists.length > 0) {
+      swalMessage({
+        title: "Please select Batch",
+        type: "warning"
+      });
+      return;
+    }
     AlgaehLoader({ show: true });
 
     const PreApprovalExists = _.find(
@@ -570,9 +581,10 @@ const PostPosEntry = $this => {
       return;
     }
 
+    debugger
     const Quantity_zero = _.filter(
       $this.state.pharmacy_stock_detail,
-      f => f.quantity === 0 || f.quantity === null
+      f => parseFloat(f.quantity) === 0 || f.quantity === null
     );
 
     if (Quantity_zero.length > 0) {
