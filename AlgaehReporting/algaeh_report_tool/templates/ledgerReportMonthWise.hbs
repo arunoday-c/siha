@@ -8,6 +8,7 @@
                 <thead>
                     <tr>
                         <th>Sl No.</th>
+                        <th>Month</th>
                         <th>Account</th>
                         <th>Debit</th>
                         <th>Credit</th>
@@ -17,18 +18,11 @@
                 </thead>
                 <tbody>
                     {{#hasElement details}}
-                    {{#each dateMonthTotal}}
-                    <tr>
-                        <td colspan="6" class="tableSubHdg">Date: {{payment_date}}
-                            <span class="textFloatRight">Total Debit: <b>{{}}</b></span>
-                            <span class="textFloatRight">Total Credit: <b>{{}}</b></span><span
-                                class="textFloatRight">Closing Balance: <b>{{}}</b></span>
-                        </td>
-                    </tr>
+
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
-
+                        <td class="txtFld">{{month}}</td>
                         <td class="numberFld numberFldTotal">{{account_details}}</td>
                         <td class="numberFld numberFldTotal">{{debit_amount}}</td>
                         <td class="numberFld numberFldTotal">{{credit_amount}}</td>
