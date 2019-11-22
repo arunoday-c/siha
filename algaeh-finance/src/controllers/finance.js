@@ -12,7 +12,8 @@ const {
   removeAccountHead,
   previewDayEndEntries,
   getAccountHeadsForDropdown,
-  getLedgerDataForChart
+  getLedgerDataForChart,
+  test
 } = finance;
 
 export default () => {
@@ -199,6 +200,25 @@ export default () => {
     }
   );
   api.get("/getLedgerDataForChart", getLedgerDataForChart, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+        .json({
+          success: false,
+          message: req.records.message
+        })
+        .end();
+    } else {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records
+        })
+        .end();
+    }
+  });
+  api.get("/test", test, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res
         .status(utlities.AlgaehUtilities().httpStatus().internalServer)

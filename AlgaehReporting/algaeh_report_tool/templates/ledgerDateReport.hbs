@@ -17,34 +17,34 @@
                 </thead>
                 <tbody>
                     {{#hasElement details}}
-                    {{#each dateMonthTotal}}
-                    <tr>
-                        <td colspan="6" class="tableSubHdg">Date: {{payment_date}}
-                            <span class="textFloatRight">Total Debit: <b>{{}}</b></span>
-                            <span class="textFloatRight">Total Credit: <b>{{}}</b></span><span
-                                class="textFloatRight">Closing Balance: <b>{{}}</b></span>
-                        </td>
-                    </tr>
                     {{#each details}}
+                    <tr>
+                        <td colspan="2" class="tableSubHdg">{{../date_or_account}}: {{date}} </td>
+                        <td class="tableSubHdg  ">{{total_debit_amount}} </td>
+                          <td class="tableSubHdg">{{total_credit_amount}} </td>
+                          <td class="tableSubHdg">{{balance}}</td>
+                         <td  class="tableSubHdg"></td>
+                    </tr>
+                    {{#each entries}}
+
+    
+           
                     <tr>
                         <td>{{inc @index}}</td>
 
-                        <td class="numberFld numberFldTotal">{{account_details}}</td>
-                        <td class="numberFld numberFldTotal">{{debit_amount}}</td>
-                        <td class="numberFld numberFldTotal">{{credit_amount}}</td>
+                        <td class="">{{account_details}}</td>
+                        <td class="numberFld ">{{debit_amount}}</td>
+                        <td class="numberFld ">{{credit_amount}}</td>
                         <td class="numberFld numberFldTotal">{{balance_amount}}</td>
                         <td class="txtFld">{{narration}}</td>
                     </tr>
                     {{/each }}
-                    {{!-- <tr class="numberFld numberFldTotalBottom">
-                            <td class="numberFld" colspan="5">Total</td>
-                            <td class="numberFld numberFldTotal">{{total_amount}}</td>
-                            <td class="numberFld numberFldTotal"></td>
-                        </tr>
-                        <tr class="numberFld numberFldTotalBottom">
-                            <td class="numberFld" colspan="5">Closing Balance</td>
-                            <td class="numberFld">{{total_amount}}</td>
-                        </tr> --}}
+
+
+  
+
+                
+                                    {{/each }}
                     {{else}}
                     <tr>
                         <td class="noResultTextReport">No Records Found</td>
@@ -65,7 +65,7 @@
                     Grand Total Debit
                 </td>
                 <td>
-                    {{000}}
+                    {{final_debit_amount}}
                 </td>
             </tr>
             <tr>
@@ -73,7 +73,7 @@
                     Grand Total Credit
                 </td>
                 <td>
-                    {{00}}
+                    {{final_credit_amount}}
                 </td>
             </tr>
             <tr>
@@ -81,7 +81,7 @@
                     Grand Closing Balance
                 </td>
                 <td>
-                    {{00}}
+                    {{final_balance}}
                 </td>
             </tr>
 
