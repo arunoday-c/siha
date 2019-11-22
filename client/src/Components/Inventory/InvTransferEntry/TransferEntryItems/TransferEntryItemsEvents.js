@@ -708,6 +708,12 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.barcode
       : $this.state.barcode;
 
+  let quantity = e !== undefined
+    ? e.selected === true
+      ? 0
+      : $this.state.quantity
+    : $this.state.quantity;
+
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,
@@ -717,7 +723,8 @@ const CloseItemBatch = ($this, context, e) => {
     qtyhand: qtyhand,
     unit_cost: unit_cost,
     sales_price: sale_price,
-    barcode: barcode
+    barcode: barcode,
+    quantity: quantity
   });
 
   if (context !== null) {
@@ -728,7 +735,8 @@ const CloseItemBatch = ($this, context, e) => {
       qtyhand: qtyhand,
       unit_cost: unit_cost,
       sales_price: sale_price,
-      barcode: barcode
+      barcode: barcode,
+      quantity: quantity
     });
   }
 };
