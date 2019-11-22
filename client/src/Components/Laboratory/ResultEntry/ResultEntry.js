@@ -168,9 +168,12 @@ class ResultEntry extends Component {
       this.props.providers === undefined
         ? []
         : this.props.providers.filter(
-          f => f.hims_d_employee_id === this.state.provider_id
-        );
-    let color_display = this.state.critical_status === "N" ? "badge badge-primary" : "badge badge-danger"
+            f => f.hims_d_employee_id === this.state.provider_id
+          );
+    let color_display =
+      this.state.critical_status === "N"
+        ? "badge badge-primary"
+        : "badge badge-danger";
     return (
       <div>
         <AlgaehModalPopUp
@@ -229,9 +232,9 @@ class ResultEntry extends Component {
 
               <div className="col-lg-12">
                 <div className="row">
-                  <div className="col-lg-12">
+                  <div className="col-12">
                     <div className="row">
-                      <div className="col-lg-3">
+                      <div className="col">
                         <AlgaehLabel
                           label={{
                             forceLabel: "Test Name"
@@ -244,23 +247,23 @@ class ResultEntry extends Component {
                             : "------"}
                         </h6>
                       </div>
-                      <div className="col-lg-2">
+                      <div className="col-2">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Critical"
+                            forceLabel: "Critical Result"
                           }}
                         />
 
-                        <h6 className={color_display}>
-                          {this.state.critical_status === "N"
-                            ? "No"
-                            : "Yes"}
+                        <h6>
+                          <small className={color_display}>
+                            {" "}
+                            {this.state.critical_status === "N" ? "No" : "Yes"}
+                          </small>
                         </h6>
                       </div>
 
-
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-2" }}
+                        div={{ className: "col-2" }}
                         label={{
                           forceLabel: "Entered By"
                         }}
@@ -281,7 +284,7 @@ class ResultEntry extends Component {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-2" }}
+                        div={{ className: "col-2" }}
                         label={{
                           forceLabel: "Confirmed By"
                         }}
@@ -301,7 +304,7 @@ class ResultEntry extends Component {
                         }}
                       />
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-2" }}
+                        div={{ className: "col-2" }}
                         label={{
                           forceLabel: "Validtaed By"
                         }}
@@ -348,10 +351,10 @@ class ResultEntry extends Component {
                                 Validated
                               </span>
                             ) : (
-                                    <span className="badge badge-light">
-                                      Result Not Entered
+                              <span className="badge badge-light">
+                                Result Not Entered
                               </span>
-                                  );
+                            );
                           },
                           others: {
                             maxWidth: 150,
@@ -369,10 +372,10 @@ class ResultEntry extends Component {
                               this.props.labanalytes === undefined
                                 ? []
                                 : this.props.labanalytes.filter(
-                                  f =>
-                                    f.hims_d_lab_analytes_id ===
-                                    row.analyte_id
-                                );
+                                    f =>
+                                      f.hims_d_lab_analytes_id ===
+                                      row.analyte_id
+                                  );
 
                             return (
                               <span>
@@ -399,8 +402,8 @@ class ResultEntry extends Component {
                             return row.analyte_type === "QU"
                               ? "Quality"
                               : row.analyte_type === "QN"
-                                ? "Quantity"
-                                : "Text";
+                              ? "Quantity"
+                              : "Text";
                           },
                           others: {
                             resizable: false,
@@ -444,8 +447,8 @@ class ResultEntry extends Component {
                                     }}
                                   />
                                 ) : (
-                                    row.result
-                                  )}
+                                  row.result
+                                )}
                               </span>
                             );
                           },
@@ -540,26 +543,26 @@ class ResultEntry extends Component {
                           displayTemplate: row => {
                             return !row.critical_type ? null : row.critical_type ===
                               "N" ? (
-                                <span className="badge badge-success">
-                                  Normal
+                              <span className="badge badge-success">
+                                Normal
                               </span>
-                              ) : row.critical_type === "CL" ? (
-                                <span className="badge badge-danger">
-                                  Critical Low
+                            ) : row.critical_type === "CL" ? (
+                              <span className="badge badge-danger">
+                                Critical Low
                               </span>
-                              ) : row.critical_type === "CH" ? (
-                                <span className="badge badge-danger">
-                                  Critical High
+                            ) : row.critical_type === "CH" ? (
+                              <span className="badge badge-danger">
+                                Critical High
                               </span>
-                              ) : row.critical_type === "L" ? (
-                                <span className="badge badge-warning">Low</span>
-                              ) : (
-                                      row.critical_type === "H" && (
-                                        <span className="badge badge-warning">
-                                          High
+                            ) : row.critical_type === "L" ? (
+                              <span className="badge badge-warning">Low</span>
+                            ) : (
+                              row.critical_type === "H" && (
+                                <span className="badge badge-warning">
+                                  High
                                 </span>
-                                      )
-                                    );
+                              )
+                            );
                           }
                         },
                         {
@@ -646,8 +649,8 @@ class ResultEntry extends Component {
                                 ) : row.confirm === "N" ? (
                                   "No"
                                 ) : (
-                                      "Yes"
-                                    )}
+                                  "Yes"
+                                )}
                               </span>
                             );
                           },
@@ -688,8 +691,8 @@ class ResultEntry extends Component {
                                 ) : row.confirm === "N" ? (
                                   "No"
                                 ) : (
-                                      "Yes"
-                                    )}
+                                  "Yes"
+                                )}
                               </span>
                             );
                           },
@@ -731,8 +734,8 @@ class ResultEntry extends Component {
                                 ) : row.amended === "N" ? (
                                   "No"
                                 ) : (
-                                      "Yes"
-                                    )}
+                                  "Yes"
+                                )}
                               </span>
                             );
                           },
@@ -774,8 +777,8 @@ class ResultEntry extends Component {
                                 ) : row.remarks !== "null" ? (
                                   row.remarks
                                 ) : (
-                                      ""
-                                    )}
+                                  ""
+                                )}
                               </span>
                             );
                           },
@@ -797,7 +800,7 @@ class ResultEntry extends Component {
                   <div className="col-5">
                     <div className="row">
                       <AlagehAutoComplete
-                        div={{ className: "col-12" }}
+                        div={{ className: "col-12  form-group" }}
                         label={{
                           forceLabel: "Select Comment"
                         }}
@@ -815,7 +818,7 @@ class ResultEntry extends Component {
                             this.setState({
                               test_comments_id: null,
                               selcted_comments: ""
-                            })
+                            });
                           }
                         }}
                       />
@@ -833,10 +836,10 @@ class ResultEntry extends Component {
                         />
                       </div>
 
-                      <div className="col-12">
+                      <div className="col-12" style={{ textAlign: "right" }}>
                         <button
                           onClick={addComments.bind(this, this)}
-                          className="btn btn-primary"
+                          className="btn btn-default"
                           style={{ marginBottom: 15 }}
                         >
                           Add
@@ -850,15 +853,22 @@ class ResultEntry extends Component {
                       <ol>
                         {this.state.comment_list.length > 0
                           ? this.state.comment_list.map((row, index) => {
-                            return (
-                              <React.Fragment key={index}>
-                                <li key={index}>
-                                  <a>{row}</a>
-                                  <i className="fas fa-times" onClick={deleteComment.bind(this, this, row)}></i>
-                                </li>
-                              </React.Fragment>
-                            );
-                          })
+                              return (
+                                <React.Fragment key={index}>
+                                  <li key={index}>
+                                    <span>{row}</span>
+                                    <i
+                                      className="fas fa-times"
+                                      onClick={deleteComment.bind(
+                                        this,
+                                        this,
+                                        row
+                                      )}
+                                    ></i>
+                                  </li>
+                                </React.Fragment>
+                              );
+                            })
                           : null}
                       </ol>
                     </div>
@@ -922,8 +932,8 @@ class ResultEntry extends Component {
                   this.state.status === "C"
                     ? true
                     : this.state.status === "V"
-                      ? true
-                      : false
+                    ? true
+                    : false
                 }
               >
                 Confirm All

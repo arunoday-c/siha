@@ -203,8 +203,8 @@ class ResultEntryList extends Component {
                                     row.status === "O"
                                       ? ""
                                       : row.sample_status === "N"
-                                        ? "none"
-                                        : ""
+                                      ? "none"
+                                      : ""
                                 }}
                                 className="fas fa-file-signature"
                                 aria-hidden="true"
@@ -249,10 +249,10 @@ class ResultEntryList extends Component {
                           return row.test_type === "S" ? (
                             <span className="badge badge-danger">Stat</span>
                           ) : (
-                              <span className="badge badge-secondary">
-                                Routine
+                            <span className="badge badge-secondary">
+                              Routine
                             </span>
-                            );
+                          );
                         },
                         disabled: true,
                         others: {
@@ -352,10 +352,10 @@ class ResultEntryList extends Component {
                               Confirmed
                             </span>
                           ) : (
-                                  <span className="badge badge-success">
-                                    Validated
+                            <span className="badge badge-success">
+                              Validated
                             </span>
-                                );
+                          );
                         },
                         disabled: true,
                         others: {
@@ -366,18 +366,17 @@ class ResultEntryList extends Component {
                       },
                       {
                         fieldName: "critical_status",
-                        label: <AlgaehLabel label={{ forceLabel: "Critical" }} />,
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Critical Result" }}
+                          />
+                        ),
                         displayTemplate: row => {
                           return row.critical_status === "N" ? (
-                            <span className="badge badge-primary">
-                              No
-                            </span>
+                            <span className="badge badge-primary">No</span>
                           ) : (
-                              <span className="badge badge-danger">
-                                Yes
-                            </span>
-
-                            );
+                            <span className="badge badge-danger">Yes</span>
+                          );
                         },
                         disabled: true,
                         others: {
@@ -436,8 +435,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ResultEntryList)
+  connect(mapStateToProps, mapDispatchToProps)(ResultEntryList)
 );
