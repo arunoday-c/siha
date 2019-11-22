@@ -543,7 +543,8 @@ const deletePOReturnDetail = ($this, context, row) => {
         discount_amount: discount_amount,
         net_total: net_total,
         tax_amount: tax_amount,
-        return_total: return_total
+        return_total: return_total,
+        saveEnable: pharmacy_stock_detail.length > 0 ? false : true
       });
     }
 
@@ -589,7 +590,8 @@ const deletePOReturnDetail = ($this, context, row) => {
           discount_amount: discount_amount,
           net_total: net_total,
           tax_amount: tax_amount,
-          return_total: return_total
+          return_total: return_total,
+          saveEnable: inventory_stock_detail.length > 0 ? false : true
         });
       }
     }
