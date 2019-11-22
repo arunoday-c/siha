@@ -28,7 +28,7 @@ import {
   addComments,
   updateComments,
   onchangegridcol
-} from "./MicroGroupEvent"
+} from "./MicroGroupEvent";
 import _ from "lodash";
 
 class MicroGroupType extends Component {
@@ -54,7 +54,6 @@ class MicroGroupType extends Component {
     getmicroGroups(this, this);
   }
 
-
   render() {
     return (
       <div className="MicroGroup">
@@ -66,365 +65,358 @@ class MicroGroupType extends Component {
           openPopup={this.state.showGroupAntibiotic}
         >
           <div className="popupInner">
-            <div className="row">
-              <div className="col-6">
-                <div className="row popLeftDiv" data-validate="subdepDiv">
-                  <div className="col-12">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Group Name"
-                      }}
-                    />
-                    <h6>
-                      {this.state.selected_group_name
-                        ? this.state.selected_group_name
-                        : "--------"}
-                    </h6>
-                  </div>
-                  <AlagehAutoComplete
-                    div={{ className: "col-4 form-group mandatory" }}
-                    label={{ forceLabel: "Select Antibiotic", isImp: true }}
-                    selector={{
-                      name: "antibiotic_id",
-                      className: "select-fld",
-                      value: this.state.antibiotic_id,
-                      dataSource: {
-                        textField: "antibiotic_name",
-                        valueField: "hims_d_antibiotic_id",
-                        data: this.props.antibiotic
-                      },
-
-                      onChange: textHandle.bind(this, this),
-                      onClear: () => {
-                        this.setState({
-                          antibiotic_id: null
-                        });
-                      }
+            <div className="popLeftDiv" data-validate="subdepDiv">
+              <div className="row">
+                <div className="col-12">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Group Name"
                     }}
                   />
-
-                  <AlagehAutoComplete
-                    div={{ className: "col-4 form-group mandatory" }}
-                    label={{ forceLabel: "Select Group", isImp: true }}
-                    selector={{
-                      name: "group_types",
-                      className: "select-fld",
-                      value: this.state.group_types,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: GlobalVariables.ANTI_GROUP_TYPE
-                      },
-
-                      onChange: textHandle.bind(this, this),
-                      onClear: () => {
-                        this.setState({
-                          group_types: null
-                        });
-                      }
-                    }}
-                  />
-
-                  <div className="col align-middle">
-                    <br />
-
-                    <button
-                      className="btn btn-primary"
-                      onClick={addGroupAntiMap.bind(this, this)}
-                    >
-                      Add to List
-                  </button>
-                  </div>
+                  <h6>
+                    {this.state.selected_group_name
+                      ? this.state.selected_group_name
+                      : "--------"}
+                  </h6>
                 </div>
-                <div className="row popLeftDiv">
-                  <div
-                    className="col-lg-12"
-                    data-validate="subdepdd"
-                    id="subdepddCntr"
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{ forceLabel: "Select Antibiotic", isImp: true }}
+                  selector={{
+                    name: "antibiotic_id",
+                    className: "select-fld",
+                    value: this.state.antibiotic_id,
+                    dataSource: {
+                      textField: "antibiotic_name",
+                      valueField: "hims_d_antibiotic_id",
+                      data: this.props.antibiotic
+                    },
+
+                    onChange: textHandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        antibiotic_id: null
+                      });
+                    }
+                  }}
+                />
+
+                <AlagehAutoComplete
+                  div={{ className: "col form-group" }}
+                  label={{ forceLabel: "Select Group", isImp: true }}
+                  selector={{
+                    name: "group_types",
+                    className: "select-fld",
+                    value: this.state.group_types,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.ANTI_GROUP_TYPE
+                    },
+
+                    onChange: textHandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        group_types: null
+                      });
+                    }
+                  }}
+                />
+
+                <div className="col-3" style={{ textAlign: "right" }}>
+                  <button
+                    className="btn btn-primary"
+                    onClick={addGroupAntiMap.bind(this, this)}
+                    style={{ marginTop: 19 }}
                   >
-                    <AlgaehDataGrid
-                      datavalidate="data-validate='subdepdd'"
-                      id="sub_dep_grid"
-                      columns={[
-                        {
-                          fieldName: "antibiotic_id",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Antibiotics Name" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            let display =
-                              this.props.antibiotic === undefined
-                                ? []
-                                : this.props.antibiotic.filter(
+                    Add to List
+                  </button>
+                </div>
+                <div
+                  className="col-12"
+                  data-validate="subdepdd"
+                  id="subdepddCntr"
+                >
+                  <AlgaehDataGrid
+                    datavalidate="data-validate='subdepdd'"
+                    id="sub_dep_grid"
+                    columns={[
+                      {
+                        fieldName: "antibiotic_id",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Antibiotics Name" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.antibiotic === undefined
+                              ? []
+                              : this.props.antibiotic.filter(
                                   f =>
                                     f.hims_d_antibiotic_id === row.antibiotic_id
                                 );
 
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].antibiotic_name
-                                  : ""}
-                              </span>
-                            );
-                          },
-
-                          editorTemplate: row => {
-                            return (
-                              <AlagehAutoComplete
-                                div={{}}
-                                selector={{
-                                  name: "antibiotic_id",
-                                  className: "select-fld",
-                                  value: row.antibiotic_id,
-                                  dataSource: {
-                                    textField: "antibiotic_name",
-                                    valueField: "hims_d_antibiotic_id",
-                                    data: this.props.antibiotic
-                                  },
-
-                                  onChange: changeGridEditors.bind(this, this, row)
-                                }}
-                              />
-                            );
-                          }
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? display[0].antibiotic_name
+                                : ""}
+                            </span>
+                          );
                         },
 
-                        {
-                          fieldName: "group_types",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Group Type" }} />
-                          ),
-                          displayTemplate: row => {
-                            let display = GlobalVariables.ANTI_GROUP_TYPE.filter(
-                              f => f.value === row.group_types
-                            );
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "antibiotic_id",
+                                className: "select-fld",
+                                value: row.antibiotic_id,
+                                dataSource: {
+                                  textField: "antibiotic_name",
+                                  valueField: "hims_d_antibiotic_id",
+                                  data: this.props.antibiotic
+                                },
 
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].name
-                                  : ""}
-                              </span>
-                            );
-                          },
-
-                          editorTemplate: row => {
-                            return (
-                              <AlagehAutoComplete
-                                div={{}}
-                                selector={{
-                                  name: "group_types",
-                                  className: "select-fld",
-                                  value: row.group_types,
-                                  dataSource: {
-                                    textField: "name",
-                                    valueField: "value",
-                                    data: GlobalVariables.ANTI_GROUP_TYPE
-                                  },
-
-                                  onChange: changeGridEditors.bind(this, this, row)
-                                }}
-                              />
-                            );
-                          }
-                        },
-
-                        {
-                          fieldName: "map_status",
-                          label: <label className="style_Label">Status</label>,
-                          displayTemplate: row => {
-                            return row.map_status === "A" ? "Active" : "Inactive";
-                          },
-                          editorTemplate: row => {
-                            return (
-                              <AlagehAutoComplete
-                                div={{}}
-                                selector={{
-                                  name: "map_status",
-                                  className: "select-fld",
-                                  value: row.map_status,
-                                  dataSource: {
-                                    textField: "name",
-                                    valueField: "value",
-                                    data: GlobalVariables.FORMAT_STATUS
-                                  },
-                                  others: {
-                                    errormessage: "Status - cannot be blank",
-                                    required: true
-                                  },
-                                  onChange: changeGridEditors.bind(this, this, row)
-                                }}
-                              />
-                            );
-                          },
-                          others: {
-                            maxWidth: 100
-                          }
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                )
+                              }}
+                            />
+                          );
                         }
-                      ]}
-                      keyId="hims_d_sub_department_id"
-                      dataSource={{
-                        data: this.state.microAntbiotic
-                      }}
-                      isEditable={true}
-                      actions={{
-                        allowDelete: false
-                      }}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{
-                        //onDelete: this.deleteSubDepartment.bind(this),
-                        onEdit: row => { },
-                        onDone: updateGroupAntiMap.bind(this, this)
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
+                      },
 
-              <div className="col-6">
-                <div className="row popRightDiv" data-validate="group_comments_data">
-                  <AlagehFormGroup
-                    div={{ className: "col-10 form-group mandatory" }}
-                    label={{
-                      forceLabel: "Comment Name",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "commnet_name",
-                      value: this.state.commnet_name,
-                      events: {
-                        onChange: textHandle.bind(this, this)
+                      {
+                        fieldName: "group_types",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Group Type" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display = GlobalVariables.ANTI_GROUP_TYPE.filter(
+                            f => f.value === row.group_types
+                          );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? display[0].name
+                                : ""}
+                            </span>
+                          );
+                        },
+
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "group_types",
+                                className: "select-fld",
+                                value: row.group_types,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.ANTI_GROUP_TYPE
+                                },
+
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                )
+                              }}
+                            />
+                          );
+                        }
+                      },
+
+                      {
+                        fieldName: "map_status",
+                        label: <label className="style_Label">Status</label>,
+                        displayTemplate: row => {
+                          return row.map_status === "A" ? "Active" : "Inactive";
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "map_status",
+                                className: "select-fld",
+                                value: row.map_status,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_STATUS
+                                },
+                                others: {
+                                  errormessage: "Status - cannot be blank",
+                                  required: true
+                                },
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                )
+                              }}
+                            />
+                          );
+                        },
+                        others: {
+                          maxWidth: 100
+                        }
                       }
+                    ]}
+                    keyId="hims_d_sub_department_id"
+                    dataSource={{
+                      data: this.state.microAntbiotic
+                    }}
+                    isEditable={true}
+                    actions={{
+                      allowDelete: false
+                    }}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{
+                      //onDelete: this.deleteSubDepartment.bind(this),
+                      onEdit: row => {},
+                      onDone: updateGroupAntiMap.bind(this, this)
                     }}
                   />
-
-                  <div className="col-2">
-                    <button
-                      onClick={addComments.bind(this, this)}
-                      className="btn btn-primary"
-                    >
-                      Add Comments
-                    </button>
-                  </div>
-
-                  <div className="col-12 form-group mandatory">
-                    <AlgaehLabel
-                      label={{ forceLabel: "Comment", isImp: true }}
-                    />
-                    <textarea
-                      value={this.state.commet}
-                      name="commet"
-                      onChange={textHandle.bind(this, this)}
-                    />
-                  </div>
-
-
                 </div>
-                <div className="row popRightDiv">
-                  <div
-                    className="col-lg-12"
-                    data-validate="group_comments"
-                    id="groupcomments"
+              </div>
+            </div>
+
+            <div className="popRightDiv" data-validate="group_comments_data">
+              <div className="row">
+                <AlagehFormGroup
+                  div={{ className: "col-12 form-group" }}
+                  label={{
+                    forceLabel: "Comment Name",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "commnet_name",
+                    value: this.state.commnet_name,
+                    events: {
+                      onChange: textHandle.bind(this, this)
+                    }
+                  }}
+                />
+                <div className="col-12">
+                  <AlgaehLabel label={{ forceLabel: "Comment", isImp: true }} />
+                  <textarea
+                    value={this.state.commet}
+                    name="commet"
+                    onChange={textHandle.bind(this, this)}
+                  />
+                </div>{" "}
+                <div className="col-12" style={{ textAlign: "right" }}>
+                  <button
+                    onClick={addComments.bind(this, this)}
+                    className="btn btn-primary"
                   >
-                    <AlgaehDataGrid
-                      datavalidate="data-validate='group_comments'"
-                      id="hims_d_group_comment"
-                      columns={[
-                        {
-                          fieldName: "commnet_name",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Comment Name" }}
-                            />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "commet",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Comment" }} />
-                          ),
-                          editorTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  value: row.commet,
-                                  className: "txt-fld",
-                                  name: "commet",
-                                  events: {
-                                    onChange: onchangegridcol.bind(
-                                      this, this,
-                                      row
-                                    )
-                                  },
-                                  others: {
-                                    errormessage: "Comment - cannot be blank",
-                                    required: true
-                                  }
-                                }}
-                              />
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "comment_status",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "status" }} />
-                          ),
-                          displayTemplate: row => {
-                            return row.comment_status === "A"
-                              ? "Active"
-                              : "Inactive";
-                          },
-                          editorTemplate: row => {
-                            return (
-                              <AlagehAutoComplete
-                                div={{}}
-                                selector={{
-                                  name: "comment_status",
-                                  className: "select-fld",
-                                  value: row.comment_status,
-                                  dataSource: {
-                                    textField: "name",
-                                    valueField: "value",
-                                    data: GlobalVariables.FORMAT_STATUS
-                                  },
+                    Add Comments
+                  </button>
+                </div>
+                <div
+                  className="col-12"
+                  data-validate="group_comments"
+                  id="groupcomments"
+                >
+                  <AlgaehDataGrid
+                    datavalidate="data-validate='group_comments'"
+                    id="hims_d_group_comment"
+                    columns={[
+                      {
+                        fieldName: "commnet_name",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Comment Name" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "commet",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Comment" }} />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                value: row.commet,
+                                className: "txt-fld",
+                                name: "commet",
+                                events: {
                                   onChange: onchangegridcol.bind(
-                                    this, this,
+                                    this,
+                                    this,
                                     row
-                                  ),
-                                  others: {
-                                    errormessage: "Status - cannot be blank",
-                                    required: true
-                                  }
-                                }}
-                              />
-                            );
-                          }
+                                  )
+                                },
+                                others: {
+                                  errormessage: "Comment - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
                         }
-                      ]}
-                      keyId="hims_d_group_comment_id"
-                      dataSource={{
-                        data: this.state.comments_data
-                      }}
-                      filter={false}
-                      isEditable={true}
-                      actions={{
-                        allowDelete: false
-                      }}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{
-                        // onDelete: this.deleteIDType.bind(this),
-                        onEdit: row => { },
-                        onDone: updateComments.bind(this, this)
-                      }}
-                    />
-                  </div>
+                      },
+                      {
+                        fieldName: "comment_status",
+                        label: <AlgaehLabel label={{ forceLabel: "status" }} />,
+                        displayTemplate: row => {
+                          return row.comment_status === "A"
+                            ? "Active"
+                            : "Inactive";
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "comment_status",
+                                className: "select-fld",
+                                value: row.comment_status,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_STATUS
+                                },
+                                onChange: onchangegridcol.bind(this, this, row),
+                                others: {
+                                  errormessage: "Status - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      }
+                    ]}
+                    keyId="hims_d_group_comment_id"
+                    dataSource={{
+                      data: this.state.comments_data
+                    }}
+                    filter={false}
+                    isEditable={true}
+                    actions={{
+                      allowDelete: false
+                    }}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{
+                      // onDelete: this.deleteIDType.bind(this),
+                      onEdit: row => {},
+                      onDone: updateComments.bind(this, this)
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -454,7 +446,7 @@ class MicroGroupType extends Component {
         {/*Group Details*/}
         <div className="row inner-top-search">
           <AlagehAutoComplete
-            div={{ className: "col-2 form-group mandatory" }}
+            div={{ className: "col-2 form-group" }}
             label={{
               forceLabel: "Organism Type",
               isImp: true
@@ -473,7 +465,7 @@ class MicroGroupType extends Component {
           />
 
           <AlagehFormGroup
-            div={{ className: "col-2 form-group mandatory" }}
+            div={{ className: "col-2 form-group" }}
             label={{
               forceLabel: "Group Code",
               isImp: true
@@ -489,7 +481,7 @@ class MicroGroupType extends Component {
           />
 
           <AlagehFormGroup
-            div={{ className: "col form-group mandatory" }}
+            div={{ className: "col form-group" }}
             label={{
               forceLabel: "Group Name",
               isImp: true
@@ -505,7 +497,7 @@ class MicroGroupType extends Component {
           />
 
           <AlagehFormGroup
-            div={{ className: "col form-group arabic-txt-fld mandatory" }}
+            div={{ className: "col form-group arabic-txt-fld" }}
             label={{
               forceLabel: "Group Arabic Name",
               isImp: true
@@ -625,7 +617,11 @@ class MicroGroupType extends Component {
                               name: "group_name",
                               value: row.group_name,
                               events: {
-                                onChange: changeGridEditors.bind(this, this, row)
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                )
                               },
                               others: {
                                 errormessage: "Name - cannot be blank",
@@ -652,7 +648,11 @@ class MicroGroupType extends Component {
                               name: "arabic_group_name",
                               value: row.arabic_group_name,
                               events: {
-                                onChange: changeGridEditors.bind(this, this, row)
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                )
                               },
                               others: {
                                 errormessage: "Arabic Name - cannot be blank",
@@ -711,7 +711,7 @@ class MicroGroupType extends Component {
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    onEdit: row => { },
+                    onEdit: row => {},
                     onDone: updateMicroGroup.bind(this, this)
                   }}
                 />
@@ -740,8 +740,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(MicroGroupType)
+  connect(mapStateToProps, mapDispatchToProps)(MicroGroupType)
 );
