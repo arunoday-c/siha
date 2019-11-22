@@ -1,8 +1,6 @@
 import moment from "moment";
 import Options from "../../Options.json";
 import Enumerable from "linq";
-import AlgaehSearch from "../Wrapper/globalSearch";
-import FrontDesk from "../../Search/FrontDesk.json";
 
 const getBillPatientList = $this => {
   let inputobj = {};
@@ -43,43 +41,6 @@ const getBillPatientList = $this => {
   });
 };
 
-const PatientSearch = ($this, e) => {
-  AlgaehSearch({
-    searchGrid: {
-      columns: FrontDesk
-    },
-    searchName: "patients",
-    uri: "/gloabelSearch/get",
-    onContainsChange: (text, serchBy, callBack) => {
-      callBack(text);
-    },
-    onRowSelect: row => {
-      $this.setState(
-        {
-          patient_code: row.patient_code,
-          patient_id: row.hims_d_patient_id
-        },
-        () => {
-          getBillPatientList($this);
-        }
-      );
-    }
-  });
-};
-
-const Refresh = $this => {
-  $this.setState(
-    {
-      today_date: new Date(),
-      patient_id: null,
-      patient_code: null
-    },
-    () => {
-      getBillPatientList($this);
-    }
-  );
-};
-
 const datehandle = ($this, ctrl, e) => {
   $this.setState(
     {
@@ -91,4 +52,4 @@ const datehandle = ($this, ctrl, e) => {
   );
 };
 
-export { getBillPatientList, PatientSearch, Refresh, datehandle };
+export { getBillPatientList, datehandle };

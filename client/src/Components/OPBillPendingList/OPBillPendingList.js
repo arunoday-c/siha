@@ -15,8 +15,6 @@ import {
 
 import {
   getBillPatientList,
-  PatientSearch,
-  Refresh,
   datehandle
 } from "./OPBillPendingListEvents";
 
@@ -78,7 +76,7 @@ class OPBillPendingList extends Component {
           />
 
           <div className="row inner-top-search" style={{ marginTop: 78 }}>
-            <div className="col-lg-3">
+            {/* <div className="col-lg-3">
               <div
                 className="row"
                 style={{
@@ -111,7 +109,7 @@ class OPBillPendingList extends Component {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
 
             <AlgaehDateHandler
               div={{ className: "col-lg-3" }}
@@ -133,7 +131,7 @@ class OPBillPendingList extends Component {
               </button>
             </div>
 
-            <div className="col" style={{ paddingTop: 21, paddingBottom: 10 }}>
+            {/* <div className="col" style={{ paddingTop: 21, paddingBottom: 10 }}>
               <button
                 className="btn btn-default btn-sm"
                 type="button"
@@ -141,7 +139,7 @@ class OPBillPendingList extends Component {
               >
                 Refresh Data
               </button>
-            </div>
+            </div> */}
           </div>
 
           <div className="portlet portlet-bordered ">
@@ -175,9 +173,10 @@ class OPBillPendingList extends Component {
                           );
                         },
                         others: {
-                          maxWidth: 70,
+                          maxWidth: 100,
                           resizable: false,
-                          style: { textAlign: "center" }
+                          style: { textAlign: "center" },
+                          filterable: false
                         }
                       },
                       {
@@ -204,6 +203,7 @@ class OPBillPendingList extends Component {
                     dataSource={{
                       data: this.state.patient_list
                     }}
+                    filter={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                   />
                 </div>
