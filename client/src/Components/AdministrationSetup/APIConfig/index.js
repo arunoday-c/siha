@@ -1,17 +1,17 @@
-import React, {useEffect, useState} from "react";
-import {algaehApiCall, swalMessage} from "../../../utils/algaehApiCall";
-import {AlagehAutoComplete} from "../../Wrapper/algaehWrapper";
-export default  function (props){
-    const [users,setUsers] = useState([]);
-    const [selecttedUser,setSelectedUser] = useState(undefined);
-    useEffect(()=>{
+import React, { useEffect, useState } from "react";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
+export default function (props) {
+    const [users, setUsers] = useState([]);
+    const [selecttedUser, setSelectedUser] = useState(undefined);
+    useEffect(() => {
         algaehApiCall({
             uri: "/algaehappuser/getLoginUserMaster",
             method: "GET",
             onSuccess: response => {
                 if (response.data.success) {
                     setUsers(response.data.records);
-                }else{
+                } else {
                     setUsers([]);
                 }
             },
@@ -23,8 +23,8 @@ export default  function (props){
                 setUsers([]);
             }
         });
-    },[]);
-    return(<div className="login_users">
+    }, []);
+    return (<div className="login_users">
         <div className="row">
             <div className="col-6">
                 <div className="portlet portlet-bordered margin-bottom-15">
@@ -44,8 +44,8 @@ export default  function (props){
                                     valueField: "app_d_app_roles_id",
                                     data: users
                                 },
-                                onChange: (e)=>{
-                                    debugger;
+                                onChange: (e) => {
+                                    // debugger;
                                 }
                             }}
                         />

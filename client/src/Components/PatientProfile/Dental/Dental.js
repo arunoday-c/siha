@@ -207,6 +207,7 @@ class Dental extends Component {
   }
 
   saveBill() {
+    debugger
     let inputObj = {
       visit_id: Window.global["visit_is"],
       patient_id: Window.global["current_patient"],
@@ -338,6 +339,7 @@ class Dental extends Component {
               }
             ],
             onSuccess: res => {
+              debugger
               if (res.data.success) {
                 let dataOutput = res.data.records.billdetails[0];
                 if (dataOutput.pre_approval === "Y") {
@@ -348,11 +350,11 @@ class Dental extends Component {
                 }
                 dataOutput.teeth_number = row.teeth_number;
 
-                dataOutput.insurance_provider_id = this.state.ins_details.insurance_provider_id;
-                dataOutput.insurance_sub_id = this.state.ins_details.sub_insurance_provider_id;
-                dataOutput.network_id = this.state.ins_details.network_id;
-                dataOutput.insurance_network_office_id = this.state.ins_details.hims_d_insurance_network_office_id;
-                dataOutput.policy_number = this.state.ins_details.policy_number;
+                dataOutput.insurance_provider_id = ins !== null ? ins.insurance_provider_id : null;
+                dataOutput.insurance_sub_id = ins !== null ? ins.sub_insurance_provider_id : null;
+                dataOutput.network_id = ins !== null ? ins.network_id : null;
+                dataOutput.insurance_network_office_id = ins !== null ? ins.hims_d_insurance_network_office_id : null;
+                dataOutput.policy_number = ins !== null ? ins.policy_number : null;
                 dataOutput.requested_quantity = dataOutput.quantity;
                 dataOutput.insurance_service_name = dataOutput.service_name;
 
@@ -629,8 +631,8 @@ class Dental extends Component {
         type === "Y"
           ? "Approve plan?"
           : type === "C"
-          ? "Cancel Plan?"
-          : "Update?",
+            ? "Cancel Plan?"
+            : "Update?",
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
@@ -648,7 +650,7 @@ class Dental extends Component {
           },
           onSuccess: response => {
             if (response.data.success) {
-              this.setState({ approval_status: type }, () => {});
+              this.setState({ approval_status: type }, () => { });
 
               this.getTreatementPlans();
               swalMessage({
@@ -656,8 +658,8 @@ class Dental extends Component {
                   type === "Y"
                     ? "Plan Approved"
                     : type === "C"
-                    ? "Plan Cancelled"
-                    : "Done",
+                      ? "Plan Cancelled"
+                      : "Done",
                 type: "success"
               });
             }
@@ -686,14 +688,14 @@ class Dental extends Component {
           i === 5
             ? 51
             : i === 4
-            ? 52
-            : i === 3
-            ? 53
-            : i === 2
-            ? 54
-            : i === 1
-            ? 55
-            : null;
+              ? 52
+              : i === 3
+                ? 53
+                : i === 2
+                  ? 54
+                  : i === 1
+                    ? 55
+                    : null;
         let _marking = undefined;
         if (teeth !== undefined) {
           const selectedTooth = Enumerable.from(teeth)
@@ -735,10 +737,10 @@ class Dental extends Component {
               (i <= 3
                 ? "molar-up-"
                 : i <= 5
-                ? "premolar-up-"
-                : i === 6
-                ? "canine-up-"
-                : "incisors-up-up-") +
+                  ? "premolar-up-"
+                  : i === 6
+                    ? "canine-up-"
+                    : "incisors-up-up-") +
               i
             }
           >
@@ -827,20 +829,20 @@ class Dental extends Component {
             i === 8
               ? 11
               : i === 7
-              ? 12
-              : i === 6
-              ? 13
-              : i === 5
-              ? 14
-              : i === 4
-              ? 15
-              : i === 3
-              ? 16
-              : i === 2
-              ? 17
-              : i === 1
-              ? 18
-              : null;
+                ? 12
+                : i === 6
+                  ? 13
+                  : i === 5
+                    ? 14
+                    : i === 4
+                      ? 15
+                      : i === 3
+                        ? 16
+                        : i === 2
+                          ? 17
+                          : i === 1
+                            ? 18
+                            : null;
           let _marking = undefined;
           if (teeth !== undefined) {
             const selectedTooth = Enumerable.from(teeth)
@@ -882,10 +884,10 @@ class Dental extends Component {
                 (i <= 3
                   ? "molar-up-"
                   : i <= 5
-                  ? "premolar-up-"
-                  : i === 6
-                  ? "canine-up-"
-                  : "incisors-up-up-") +
+                    ? "premolar-up-"
+                    : i === 6
+                      ? "canine-up-"
+                      : "incisors-up-up-") +
                 i
               }
             >
@@ -979,14 +981,14 @@ class Dental extends Component {
           i === 9
             ? 61
             : i === 10
-            ? 62
-            : i === 11
-            ? 63
-            : i === 12
-            ? 64
-            : i === 13
-            ? 65
-            : null;
+              ? 62
+              : i === 11
+                ? 63
+                : i === 12
+                  ? 64
+                  : i === 13
+                    ? 65
+                    : null;
         let _marking = undefined;
         if (teeth !== undefined) {
           const selectedTooth = Enumerable.from(teeth)
@@ -1033,10 +1035,10 @@ class Dental extends Component {
               (i <= 10
                 ? "incisors-up-up-"
                 : i === 11
-                ? "canine-up-"
-                : i <= 13
-                ? "premolar-up-"
-                : "i molar-up-") +
+                  ? "canine-up-"
+                  : i <= 13
+                    ? "premolar-up-"
+                    : "i molar-up-") +
               i
             }
           >
@@ -1124,20 +1126,20 @@ class Dental extends Component {
           i === 9
             ? 21
             : i === 10
-            ? 22
-            : i === 11
-            ? 23
-            : i === 12
-            ? 24
-            : i === 13
-            ? 25
-            : i === 14
-            ? 26
-            : i === 15
-            ? 27
-            : i === 16
-            ? 28
-            : null;
+              ? 22
+              : i === 11
+                ? 23
+                : i === 12
+                  ? 24
+                  : i === 13
+                    ? 25
+                    : i === 14
+                      ? 26
+                      : i === 15
+                        ? 27
+                        : i === 16
+                          ? 28
+                          : null;
         let _marking = undefined;
         if (teeth !== undefined) {
           const selectedTooth = Enumerable.from(teeth)
@@ -1184,10 +1186,10 @@ class Dental extends Component {
               (i <= 10
                 ? "incisors-up-up-"
                 : i === 11
-                ? "canine-up-"
-                : i <= 13
-                ? "premolar-up-"
-                : "i molar-up-") +
+                  ? "canine-up-"
+                  : i <= 13
+                    ? "premolar-up-"
+                    : "i molar-up-") +
               i
             }
           >
@@ -1282,14 +1284,14 @@ class Dental extends Component {
           i === 28
             ? 81
             : i === 29
-            ? 82
-            : i === 30
-            ? 83
-            : i === 31
-            ? 84
-            : i === 32
-            ? 85
-            : null;
+              ? 82
+              : i === 30
+                ? 83
+                : i === 31
+                  ? 84
+                  : i === 32
+                    ? 85
+                    : null;
         let _marking = undefined;
         if (teeth !== undefined) {
           const selectedTooth = Enumerable.from(teeth)
@@ -1337,10 +1339,10 @@ class Dental extends Component {
               (counter <= 3
                 ? "molar-down-"
                 : counter <= 5
-                ? "premolar-down-"
-                : counter === 6
-                ? "canine-down-"
-                : "incisors-down-") +
+                  ? "premolar-down-"
+                  : counter === 6
+                    ? "canine-down-"
+                    : "incisors-down-") +
               counter
             }
           >
@@ -1429,20 +1431,20 @@ class Dental extends Component {
           i === 25
             ? 41
             : i === 26
-            ? 42
-            : i === 27
-            ? 43
-            : i === 28
-            ? 44
-            : i === 29
-            ? 45
-            : i === 30
-            ? 46
-            : i === 31
-            ? 47
-            : i === 32
-            ? 48
-            : null;
+              ? 42
+              : i === 27
+                ? 43
+                : i === 28
+                  ? 44
+                  : i === 29
+                    ? 45
+                    : i === 30
+                      ? 46
+                      : i === 31
+                        ? 47
+                        : i === 32
+                          ? 48
+                          : null;
         let _marking = undefined;
         if (teeth !== undefined) {
           const selectedTooth = Enumerable.from(teeth)
@@ -1490,10 +1492,10 @@ class Dental extends Component {
               (counter <= 3
                 ? "molar-down-"
                 : counter <= 5
-                ? "premolar-down-"
-                : counter === 6
-                ? "canine-down-"
-                : "incisors-down-") +
+                  ? "premolar-down-"
+                  : counter === 6
+                    ? "canine-down-"
+                    : "incisors-down-") +
               counter
             }
           >
@@ -1589,14 +1591,14 @@ class Dental extends Component {
           i === 24
             ? 71
             : i === 23
-            ? 72
-            : i === 22
-            ? 73
-            : i === 21
-            ? 74
-            : i === 20
-            ? 75
-            : null;
+              ? 72
+              : i === 22
+                ? 73
+                : i === 21
+                  ? 74
+                  : i === 20
+                    ? 75
+                    : null;
         let _marking = undefined;
         if (teeth !== undefined) {
           const selectedTooth = Enumerable.from(teeth)
@@ -1644,10 +1646,10 @@ class Dental extends Component {
               (counter <= 10
                 ? "incisors-down-"
                 : counter === 11
-                ? "canine-down-"
-                : counter < 14
-                ? "premolar-down-"
-                : "i molar-down-") +
+                  ? "canine-down-"
+                  : counter < 14
+                    ? "premolar-down-"
+                    : "i molar-down-") +
               counter
             }
           >
@@ -1736,20 +1738,20 @@ class Dental extends Component {
           i === 24
             ? 31
             : i === 23
-            ? 32
-            : i === 22
-            ? 33
-            : i === 21
-            ? 34
-            : i === 20
-            ? 35
-            : i === 19
-            ? 36
-            : i === 18
-            ? 37
-            : i === 17
-            ? 38
-            : null;
+              ? 32
+              : i === 22
+                ? 33
+                : i === 21
+                  ? 34
+                  : i === 20
+                    ? 35
+                    : i === 19
+                      ? 36
+                      : i === 18
+                        ? 37
+                        : i === 17
+                          ? 38
+                          : null;
         let _marking = undefined;
         if (teeth !== undefined) {
           const selectedTooth = Enumerable.from(teeth)
@@ -1797,10 +1799,10 @@ class Dental extends Component {
               (counter <= 10
                 ? "incisors-down-"
                 : counter === 11
-                ? "canine-down-"
-                : counter < 14
-                ? "premolar-down-"
-                : "i molar-down-") +
+                  ? "canine-down-"
+                  : counter < 14
+                    ? "premolar-down-"
+                    : "i molar-down-") +
               counter
             }
           >
@@ -2048,10 +2050,10 @@ class Dental extends Component {
                     {row.treatment_status === "PL"
                       ? "Planned"
                       : row.treatment_status === "WIP"
-                      ? "Work in Progress"
-                      : row.treatment_status === "CP"
-                      ? "Completed"
-                      : null}
+                        ? "Work in Progress"
+                        : row.treatment_status === "CP"
+                          ? "Completed"
+                          : null}
                   </span>
                 );
               },
@@ -2123,7 +2125,7 @@ class Dental extends Component {
           paging={{ page: 0, rowsPerPage: 5 }}
           isEditable={true}
           events={{
-            onEdit: () => {},
+            onEdit: () => { },
             onDelete: this.deleteDentalPlan,
             onDone: this.updateDentalTreatmentStatus
           }}
@@ -2135,45 +2137,45 @@ class Dental extends Component {
   loadDentalTreatment(data) {
     data !== undefined
       ? this.setState(
-          {
-            hims_f_treatment_plan_id: data.hims_f_treatment_plan_id
-          },
-          () => {
-            algaehApiCall({
-              uri: "/dental/getDentalTreatment",
-              method: "GET",
-              data: {
-                treatment_plan_id: this.state.hims_f_treatment_plan_id
-              },
-              onSuccess: response => {
-                if (response.data.success) {
-                  this.setState({
-                    dentalTreatments: response.data.records,
-                    selected_plan: data.plan_name,
-                    approval_status: data.approve_status
-                  });
-                }
-              },
-              onError: error => {}
+        {
+          hims_f_treatment_plan_id: data.hims_f_treatment_plan_id
+        },
+        () => {
+          algaehApiCall({
+            uri: "/dental/getDentalTreatment",
+            method: "GET",
+            data: {
+              treatment_plan_id: this.state.hims_f_treatment_plan_id
+            },
+            onSuccess: response => {
+              if (response.data.success) {
+                this.setState({
+                  dentalTreatments: response.data.records,
+                  selected_plan: data.plan_name,
+                  approval_status: data.approve_status
+                });
+              }
+            },
+            onError: error => { }
+          });
+        }
+      )
+      : algaehApiCall({
+        uri: "/dental/getDentalTreatment",
+        method: "GET",
+        data: {
+          treatment_plan_id: this.state.hims_f_treatment_plan_id
+        },
+        onSuccess: response => {
+          if (response.data.success) {
+            this.setState({
+              dentalTreatments: response.data.records,
+              approval_status: data.approve_status
             });
           }
-        )
-      : algaehApiCall({
-          uri: "/dental/getDentalTreatment",
-          method: "GET",
-          data: {
-            treatment_plan_id: this.state.hims_f_treatment_plan_id
-          },
-          onSuccess: response => {
-            if (response.data.success) {
-              this.setState({
-                dentalTreatments: response.data.records,
-                approval_status: data.approve_status
-              });
-            }
-          },
-          onError: error => {}
-        });
+        },
+        onError: error => { }
+      });
   }
 
   openAddModal(data) {
@@ -2196,7 +2198,7 @@ class Dental extends Component {
               });
             }
           },
-          onError: error => {}
+          onError: error => { }
         });
       }
     );
@@ -2907,7 +2909,7 @@ class Dental extends Component {
                       displayTemplate: row => {
                         const isDisable =
                           this.state.hims_f_treatment_plan_id ===
-                          row.hims_f_treatment_plan_id
+                            row.hims_f_treatment_plan_id
                             ? false
                             : true;
                         return (
@@ -3027,8 +3029,8 @@ class Dental extends Component {
                             {row.plan_status === "O"
                               ? "Open"
                               : row.plan_status === "C"
-                              ? "Closed"
-                              : null}
+                                ? "Closed"
+                                : null}
                           </span>
                         );
                       }
@@ -3051,9 +3053,9 @@ class Dental extends Component {
                   //   }
                   // }}
                   events={{
-                    onEdit: () => {},
-                    onDelete: () => {},
-                    onDone: () => {}
+                    onEdit: () => { },
+                    onDelete: () => { },
+                    onDone: () => { }
                   }}
                 />
               </div>
@@ -3154,10 +3156,10 @@ class Dental extends Component {
                             {row.treatment_status === "PL"
                               ? "Planned"
                               : row.treatment_status === "WIP"
-                              ? "Work in Progress"
-                              : row.treatment_status === "CP"
-                              ? "Completed"
-                              : null}
+                                ? "Work in Progress"
+                                : row.treatment_status === "CP"
+                                  ? "Completed"
+                                  : null}
                           </span>
                         );
                       },
@@ -3223,21 +3225,21 @@ class Dental extends Component {
                   paging={{ page: 0, rowsPerPage: 10 }}
                   isEditable={true}
                   events={{
-                    onEdit: () => {},
+                    onEdit: () => { },
                     onDelete: row => {
                       const status =
                         row.treatment_status === "PL"
                           ? "Planned"
                           : row.treatment_status === "WIP"
-                          ? "Work in Progress"
-                          : row.treatment_status === "CP"
-                          ? "Completed"
-                          : "";
+                            ? "Work in Progress"
+                            : row.treatment_status === "CP"
+                              ? "Completed"
+                              : "";
                       row.billed === "SB" || row.billed === "Y"
                         ? swalMessage({
-                            title: `Treatment is in ${status}, cannot delete`,
-                            type: "warning"
-                          })
+                          title: `Treatment is in ${status}, cannot delete`,
+                          type: "warning"
+                        })
                         : this.deleteDentalPlan(row);
                     },
                     onDone: this.updateDentalTreatmentStatus

@@ -111,7 +111,7 @@ export default class ReportUI extends Component {
         .forEach(item => {
           item.removeEventListener(
             "scroll",
-            function(e) {
+            function (e) {
               e.target.previousElementSibling.scrollLeft = e.target.scrollLeft;
               e.target.nextElementSibling.scrollLeft = e.target.scrollLeft;
             },
@@ -179,7 +179,7 @@ export default class ReportUI extends Component {
       document
         .querySelectorAll("[algaeh-report-table='true']")
         .forEach(item => {
-          item.addEventListener("scroll", function(e) {
+          item.addEventListener("scroll", function (e) {
             e.target.previousElementSibling.scrollLeft = e.target.scrollLeft;
             e.target.nextElementSibling.scrollLeft = e.target.scrollLeft;
           });
@@ -194,7 +194,7 @@ export default class ReportUI extends Component {
       pageState: this,
       clickedElement: loader.props,
       onSuccess: that => {
-        debugger;
+
         const report_type = loader.props.others.reporttype;
         if (
           that.props.options !== undefined &&
@@ -224,9 +224,9 @@ export default class ReportUI extends Component {
                 labelValue === ""
                   ? {}
                   : {
-                      label: label.replace("*", ""),
-                      labelValue: labelValue
-                    };
+                    label: label.replace("*", ""),
+                    labelValue: labelValue
+                  };
               parameters.push({
                 name: item.name,
                 value: data,
@@ -282,17 +282,17 @@ export default class ReportUI extends Component {
                 a.href = url;
                 a.download = `${that.props.options.report.displayName}.${
                   report_type === "excel" ? "xlsx" : "pdf"
-                }`;
+                  }`;
                 a.click();
               }
             },
             onCatch: error => {
-              debugger;
+
               loader.setState({
                 loading: false
               });
               var reader = new FileReader();
-              reader.onload = function() {
+              reader.onload = function () {
                 //AlgaehLoader({ show: false });
                 const parse = JSON.parse(reader.result);
                 swalMessage({
@@ -759,69 +759,69 @@ export default class ReportUI extends Component {
             <div />
             <div>
               {this.props.options !== undefined &&
-              this.props.options.plotUI !== undefined ? (
-                <React.Fragment>
-                  <div id="report_generation_interface">
-                    {/* {this.props.options.plotUI.paramters()} */}
+                this.props.options.plotUI !== undefined ? (
+                  <React.Fragment>
+                    <div id="report_generation_interface">
+                      {/* {this.props.options.plotUI.paramters()} */}
 
-                    <div
-                      className="col-lg-12 margin-top-15"
-                      data-validate="parameters-data"
-                    >
-                      <div className="row">
-                        {this.generateInputParameters()}
+                      <div
+                        className="col-lg-12 margin-top-15"
+                        data-validate="parameters-data"
+                      >
+                        <div className="row">
+                          {this.generateInputParameters()}
+                        </div>
                       </div>
-                    </div>
-                    <div className="reportActionBtns">
-                      <ButtonType
-                        others={{ style: { float: "right" } }}
-                        classname="btn-primary"
-                        onClick={this.generateReport.bind(this, this)}
-                        label={{
-                          forceLabel: "  Preview Report",
-                          returnText: true
-                        }}
-                        others={{
-                          reporttype: "preview"
-                        }}
-                      />
-                      <ButtonType
-                        others={{ style: { float: "right" } }}
-                        classname="btn-default"
-                        onClick={this.generateReport.bind(this, this)}
-                        label={{
-                          forceLabel: "  Download as PDF",
-                          returnText: true
-                        }}
-                        others={{
-                          reporttype: "pdf"
-                        }}
-                      />
-                      {this.props.options.report.excel === "true" ? (
+                      <div className="reportActionBtns">
+                        <ButtonType
+                          others={{ style: { float: "right" } }}
+                          classname="btn-primary"
+                          onClick={this.generateReport.bind(this, this)}
+                          label={{
+                            forceLabel: "  Preview Report",
+                            returnText: true
+                          }}
+                          others={{
+                            reporttype: "preview"
+                          }}
+                        />
                         <ButtonType
                           others={{ style: { float: "right" } }}
                           classname="btn-default"
                           onClick={this.generateReport.bind(this, this)}
                           label={{
-                            forceLabel: "  Download as Excel",
+                            forceLabel: "  Download as PDF",
                             returnText: true
                           }}
                           others={{
-                            reporttype: "excel"
+                            reporttype: "pdf"
                           }}
                         />
-                      ) : null}
-                      <button
-                        value="Cancel Generate"
-                        className="btn btn-default"
-                        onClick={this.cancelReportRequest.bind(this)}
-                      >
-                        Cancel Generate
+                        {this.props.options.report.excel === "true" ? (
+                          <ButtonType
+                            others={{ style: { float: "right" } }}
+                            classname="btn-default"
+                            onClick={this.generateReport.bind(this, this)}
+                            label={{
+                              forceLabel: "  Download as Excel",
+                              returnText: true
+                            }}
+                            others={{
+                              reporttype: "excel"
+                            }}
+                          />
+                        ) : null}
+                        <button
+                          value="Cancel Generate"
+                          className="btn btn-default"
+                          onClick={this.cancelReportRequest.bind(this)}
+                        >
+                          Cancel Generate
                       </button>
+                      </div>
                     </div>
-                  </div>
-                </React.Fragment>
-              ) : null}
+                  </React.Fragment>
+                ) : null}
               {this.props.plotui !== undefined ? this.props.plotui : null}
             </div>
             <div
