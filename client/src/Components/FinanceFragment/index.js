@@ -33,7 +33,7 @@ export default function FinanceFragment(props) {
             newStyle.rel = "stylesheet";
             newStyle.setAttribute("data-hash", css_hash);
             newStyle.id = "finance-style";
-            document.head.appendChild(newStyle);
+            document.head.prepend(newStyle);
           }
         }
 
