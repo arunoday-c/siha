@@ -18,14 +18,10 @@ import {
   serviceHandeler,
   discounthandle,
   adjustadvance,
-  // billheaderCalculation,
-  // onchangegridcol,
   credittexthandle,
   EditGrid,
   CancelGrid,
-  // onquantitycol,
   ondiscountgridcol,
-  // calculateAmount,
   makeZero,
   makeDiscountZero,
   makeZeroIngrid
@@ -497,10 +493,10 @@ class AddOPBillingForm extends Component {
                               this.props.servicetype === undefined
                                 ? []
                                 : this.props.servicetype.filter(
-                                    f =>
-                                      f.hims_d_service_type_id ===
-                                      row.service_type_id
-                                  );
+                                  f =>
+                                    f.hims_d_service_type_id ===
+                                    row.service_type_id
+                                );
 
                             return (
                               <span>
@@ -517,10 +513,10 @@ class AddOPBillingForm extends Component {
                               this.props.servicetype === undefined
                                 ? []
                                 : this.props.servicetype.filter(
-                                    f =>
-                                      f.hims_d_service_type_id ===
-                                      row.service_type_id
-                                  );
+                                  f =>
+                                    f.hims_d_service_type_id ===
+                                    row.service_type_id
+                                );
 
                             return (
                               <span>
@@ -548,9 +544,9 @@ class AddOPBillingForm extends Component {
                               this.props.serviceslist === undefined
                                 ? []
                                 : this.props.serviceslist.filter(
-                                    f =>
-                                      f.hims_d_services_id === row.services_id
-                                  );
+                                  f =>
+                                    f.hims_d_services_id === row.services_id
+                                );
 
                             return (
                               <span>
@@ -570,9 +566,9 @@ class AddOPBillingForm extends Component {
                               this.props.serviceslist === undefined
                                 ? []
                                 : this.props.serviceslist.filter(
-                                    f =>
-                                      f.hims_d_services_id === row.services_id
-                                  );
+                                  f =>
+                                    f.hims_d_services_id === row.services_id
+                                );
 
                             return (
                               <span>
@@ -665,8 +661,8 @@ class AddOPBillingForm extends Component {
                                       this.state.insurance_yesno === "Y"
                                         ? true
                                         : row.trans_package_detail_id > 0
-                                        ? true
-                                        : this.state.Billexists,
+                                          ? true
+                                          : this.state.Billexists,
                                     onBlur: makeZeroIngrid.bind(
                                       this,
                                       this,
@@ -713,8 +709,8 @@ class AddOPBillingForm extends Component {
                                       this.state.insurance_yesno === "Y"
                                         ? true
                                         : row.trans_package_detail_id > 0
-                                        ? true
-                                        : this.state.Billexists,
+                                          ? true
+                                          : this.state.Billexists,
                                     onBlur: makeZeroIngrid.bind(
                                       this,
                                       this,

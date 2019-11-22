@@ -241,8 +241,8 @@ class PosListItems extends Component {
                               <h6>
                                 {this.state.expiry_date
                                   ? moment(this.state.expiry_date).format(
-                                      Options.dateFormat
-                                    )
+                                    Options.dateFormat
+                                  )
                                   : "-----------"}
                               </h6>
                             </div>
@@ -256,8 +256,8 @@ class PosListItems extends Component {
                               <h6>
                                 {this.state.qtyhand
                                   ? this.state.qtyhand +
-                                    " " +
-                                    this.state.uom_description
+                                  " " +
+                                  this.state.uom_description
                                   : "-----------"}
                               </h6>
                             </div>
@@ -381,15 +381,15 @@ class PosListItems extends Component {
 
                             <div>
                               {this.state.insured === "Y" &&
-                              this.state.insurance_yesno === "N" ? (
-                                <button
-                                  className="btn btn-default"
-                                  onClick={ViewInsurance.bind(this, this)}
+                                this.state.insurance_yesno === "N" ? (
+                                  <button
+                                    className="btn btn-default"
+                                    onClick={ViewInsurance.bind(this, this)}
                                   // disabled={this.state.mode_of_pay === 2 ? false? true}
-                                >
-                                  View Insurance
+                                  >
+                                    View Insurance
                                 </button>
-                              ) : null}
+                                ) : null}
                             </div>
 
                             <ItemBatchs
@@ -452,15 +452,15 @@ class PosListItems extends Component {
                                         this.props.positemlist === undefined
                                           ? []
                                           : this.props.positemlist.filter(
-                                              f =>
-                                                f.hims_d_item_master_id ===
-                                                row.item_id
-                                            );
+                                            f =>
+                                              f.hims_d_item_master_id ===
+                                              row.item_id
+                                          );
 
                                       return (
                                         <span>
                                           {display !== undefined &&
-                                          display.length !== 0
+                                            display.length !== 0
                                             ? display[0].item_description
                                             : ""}
                                         </span>
@@ -471,15 +471,15 @@ class PosListItems extends Component {
                                         this.props.positemlist === undefined
                                           ? []
                                           : this.props.positemlist.filter(
-                                              f =>
-                                                f.hims_d_item_master_id ===
-                                                row.item_id
-                                            );
+                                            f =>
+                                              f.hims_d_item_master_id ===
+                                              row.item_id
+                                          );
 
                                       return (
                                         <span>
                                           {display !== undefined &&
-                                          display.length !== 0
+                                            display.length !== 0
                                             ? display[0].item_description
                                             : ""}
                                         </span>
@@ -544,8 +544,8 @@ class PosListItems extends Component {
                                           }}
                                         />
                                       ) : (
-                                        row.batchno
-                                      );
+                                          row.batchno
+                                        );
                                     },
                                     disabled: true,
                                     others: {
@@ -604,8 +604,8 @@ class PosListItems extends Component {
                                           }}
                                         />
                                       ) : (
-                                        row.quantity
-                                      );
+                                          row.quantity
+                                        );
                                     },
                                     others: {
                                       minWidth: 80
@@ -640,17 +640,17 @@ class PosListItems extends Component {
                                       return row.pre_approval === "N" ? (
                                         <span>Not Required</span>
                                       ) : (
-                                        <span
-                                          className="pat-code"
-                                          onClick={getMedicationAprovalList.bind(
-                                            this,
-                                            this,
-                                            row
-                                          )}
-                                        >
-                                          Required
+                                          <span
+                                            className="pat-code"
+                                            onClick={getMedicationAprovalList.bind(
+                                              this,
+                                              this,
+                                              row
+                                            )}
+                                          >
+                                            Required
                                         </span>
-                                      );
+                                        );
                                     },
                                     disabled: true
                                   },
@@ -666,15 +666,15 @@ class PosListItems extends Component {
                                         this.props.itemuom === undefined
                                           ? []
                                           : this.props.itemuom.filter(
-                                              f =>
-                                                f.hims_d_pharmacy_uom_id ===
-                                                row.uom_id
-                                            );
+                                            f =>
+                                              f.hims_d_pharmacy_uom_id ===
+                                              row.uom_id
+                                          );
 
                                       return (
                                         <span>
                                           {display !== null &&
-                                          display.length !== 0
+                                            display.length !== 0
                                             ? display[0].uom_description
                                             : ""}
                                         </span>
@@ -685,15 +685,15 @@ class PosListItems extends Component {
                                         this.props.itemuom === undefined
                                           ? []
                                           : this.props.itemuom.filter(
-                                              f =>
-                                                f.hims_d_pharmacy_uom_id ===
-                                                row.uom_id
-                                            );
+                                            f =>
+                                              f.hims_d_pharmacy_uom_id ===
+                                              row.uom_id
+                                          );
 
                                       return (
                                         <span>
                                           {display !== null &&
-                                          display.length !== 0
+                                            display.length !== 0
                                             ? display[0].uom_description
                                             : ""}
                                         </span>
@@ -783,11 +783,11 @@ class PosListItems extends Component {
                                             }}
                                           />
                                         ) : (
-                                          row.discount_percentage
-                                        )
+                                            row.discount_percentage
+                                          )
                                       ) : (
-                                        row.discount_percentage
-                                      );
+                                          row.discount_percentage
+                                        );
                                     }
                                   },
                                   {
@@ -827,11 +827,11 @@ class PosListItems extends Component {
                                             }}
                                           />
                                         ) : (
-                                          row.discount_amount
-                                        )
+                                            row.discount_amount
+                                          )
                                       ) : (
-                                        row.discount_amount
-                                      );
+                                          row.discount_amount
+                                        );
                                     }
                                   },
 
@@ -881,9 +881,9 @@ class PosListItems extends Component {
                                   )
                                 }}
 
-                                // onRowSelect={row => {
-                                //   getItemLocationStock(this, row);
-                                // }}
+                              // onRowSelect={row => {
+                              //   getItemLocationStock(this, row);
+                              // }}
                               />
                             </div>
                           </div>
