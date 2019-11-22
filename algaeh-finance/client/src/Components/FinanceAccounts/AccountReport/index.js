@@ -95,12 +95,12 @@ export default memo(function Modal(props) {
             : { name: "monthwise", value: checkedType ? "Y" : "N" };
         const data = {
           report: {
-            displayName: "Ledger Report",
-            reportName: "ledgerReport",
+            displayName: "Ledger Report - Date Wise",
+            reportName: "ledgerDateReport",
             template_name: null,
             reportQuery: null,
             pageSize: "A4",
-            pageOrentation: "landscape",
+            pageOrentation: "portrait",
             reportParams: [
               {
                 name: "head_id",
