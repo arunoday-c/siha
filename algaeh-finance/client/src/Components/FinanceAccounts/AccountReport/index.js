@@ -213,9 +213,9 @@ export default memo(function Modal(props) {
                 type="radio"
                 name="d_m_wise"
                 onChange={check => {
-                  setCheckType(check);
+                  setCheckType(!check);
                 }}
-                checked={checkedType}
+                checked={!checkedType}
               />
               Date Wise
             </label>
