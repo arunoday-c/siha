@@ -1292,6 +1292,12 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.average_cost
       : $this.state.average_cost;
 
+  let quantity = e !== undefined
+    ? e.selected === true
+      ? 0
+      : $this.state.quantity
+    : $this.state.quantity;
+
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,
@@ -1303,7 +1309,8 @@ const CloseItemBatch = ($this, context, e) => {
     uom_id: uom_id,
     unit_cost: sale_price,
     uom_description: uom_description,
-    average_cost: average_cost
+    average_cost: average_cost,
+    quantity: quantity
   });
 
   if (context !== null) {
@@ -1316,7 +1323,8 @@ const CloseItemBatch = ($this, context, e) => {
       uom_id: uom_id,
       unit_cost: sale_price,
       uom_description: uom_description,
-      average_cost: average_cost
+      average_cost: average_cost,
+      quantity: quantity
     });
   }
 };
@@ -1409,7 +1417,7 @@ const qtyonchangegridcol = ($this, context, row, e) => {
       title: "Quantity cannot be less than Zero",
       type: "warning"
     });
-  } else if (parseFloat(value) > row.qtyhand) {
+  } else if (parseFloat(value) > parseFloat(row.qtyhand)) {
     swalMessage({
       title: "Quantity cannot be greater than Quantity in hand",
       type: "warning"

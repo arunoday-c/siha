@@ -20,7 +20,7 @@ export default class SelfService extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "AttendanceRegularization",
+      pageDisplay: "ApplyLeave",
       regularize: {},
       leave: {},
       employee_details: {}
@@ -84,18 +84,18 @@ export default class SelfService extends Component {
     });
   }
 
-  ChangeRenderTabs(options) {
-    if (options.pageDisplay === "AttendanceRegularization") {
-      this.attReg.click();
-    } else if (options.pageDisplay === "ApplyLeave") {
-      this.attlv.click();
-    }
+  // ChangeRenderTabs(options) {
+  //   if (options.pageDisplay === "AttendanceRegularization") {
+  //     this.attReg.click();
+  //   } else if (options.pageDisplay === "ApplyLeave") {
+  //     this.attlv.click();
+  //   }
 
-    this.setState({
-      ...this.state,
-      ...options
-    });
-  }
+  //   this.setState({
+  //     ...this.state,
+  //     ...options
+  //   });
+  // }
 
   render() {
     let empDetails =
@@ -210,7 +210,7 @@ export default class SelfService extends Component {
                   />
                 }
               </li> */}
-              <li
+              {/* <li
                 algaehtabs={"AttendanceRegularization"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
@@ -225,10 +225,10 @@ export default class SelfService extends Component {
                     }}
                   />
                 }
-              </li>
+              </li> */}
               <li
                 algaehtabs={"ApplyLeave"}
-                className={"nav-item tab-button"}
+                className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
                 ref={attlv => {
                   this.attlv = attlv;
@@ -255,33 +255,6 @@ export default class SelfService extends Component {
                   />
                 }
               </li>
-
-              <li
-                algaehtabs={"SelfPersonalDetails"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Personal Info"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"HolidayListSelf"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Holiday List"
-                    }}
-                  />
-                }
-              </li>
               {/* <li
                 algaehtabs={"LeaveEncashmentProcess"}
                 className={"nav-item tab-button"}
@@ -298,7 +271,6 @@ export default class SelfService extends Component {
                   />
                 }
               </li> */}
-
               <li
                 algaehtabs={"ApplyLeaveEncashment"}
                 className={"nav-item tab-button"}
@@ -311,6 +283,32 @@ export default class SelfService extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Request Leave Encashment"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"HolidayListSelf"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Holiday List"
+                    }}
+                  />
+                }
+              </li>{" "}
+              <li
+                algaehtabs={"SelfPersonalDetails"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Personal Info"
                     }}
                   />
                 }
