@@ -1,0 +1,84 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th width="40px">Sl No.</th>
+                        <th>Sub Account Name</th>
+                        <th width="80px">Debit Amt</th>
+                        <th width="80px">Credit Amt</th>
+                        <th width="80px">Balance Amt.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#hasElement data}}
+                    {{#each data}}
+                    <tr>
+                        <td colspan="4" class="tableSubHdg txtFld">{{payment_date}}</td>
+                        <td class="tableSubHdg numberFld">{{day_closing_bal}}</td>
+                    </tr>
+                    {{#each details}}
+                    <tr>
+                        <td colspan="4" class="tableSubHdg2 txtFld">{{head_account}}</td>
+                        <td class="tableSubHdg2 numberFld">{{total_of_head_account}}</td>
+                    </tr>
+                    {{#each entries}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td class="txtFld">{{child_name}}</td>
+                        <td class="numberFld ">{{debit_amount}}</td>
+                        <td class="numberFld ">{{credit_amount}}</td>
+                        <td class="numberFld numberFldTotal">{{balance_amount}}</td>
+                    </tr>
+                    {{/each }}
+                    {{/each }}
+                    {{/each }}
+                    {{!-- {{else}}
+                    <tr>
+                        <td class="noResultTextReport">No Records Found</td>
+                    </tr> --}}
+                    {{/hasElement }}
+                </tbody>
+            </table>
+
+
+        </section>
+
+
+
+
+        <table class="tableTotal">
+            <tr>
+                <td>
+                    Grand Total Debit
+                </td>
+                <td>
+                    {{final_debit_amount}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Grand Total Credit
+                </td>
+                <td>
+                    {{final_credit_amount}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Grand Closing Balance
+                </td>
+                <td>
+                    {{final_balance}}
+                </td>
+            </tr>
+
+            </tr>
+        </table>
+    </div>
+
+</body>
