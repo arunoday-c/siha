@@ -3976,9 +3976,6 @@ function getEarningComponents(options) {
               utilities.logger().log("amount: ", amount);
               current_earning_amt = obj["amount"] - amount;
               current_earning_amt = current_earning_amt + annual_per_day_sal;
-              utilities
-                .logger()
-                .log("current_earning_amt: ", current_earning_amt);
             } else {
               let total_paid_days =
                 parseFloat(empResult["total_paid_days"]) - leave_period;
@@ -3997,9 +3994,9 @@ function getEarningComponents(options) {
 
               current_earning_amt = current_earning_amt + annual_per_day_sal;
 
-              if (obj["limit_applicable"] === "Y" && parseFloat(current_earning_amt) > parseFloat(obj["limit_amount"])) {
-                current_earning_amt = obj["limit_amount"];
-              }
+            }
+            if (obj["limit_applicable"] === "Y" && parseFloat(current_earning_amt) > parseFloat(obj["limit_amount"])) {
+              current_earning_amt = obj["limit_amount"];
             }
           } else if (leave_salary == "N") {
             leave_salary_days =
