@@ -7,48 +7,40 @@
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
-                        <th>Sl No.</th>
-                        <th>Account</th>
-                        <th>Debit</th>
-                        <th>Credit</th>
-                        <th>Balance</th>
-                        <th>Narration</th>
+                        <th width="40px">Sl No.</th>
+                        <th>Sub Account Name</th>
+                        <th width="80px">Debit Amt</th>
+                        <th width="80px">Credit Amt</th>
+                        <th width="80px">Balance Amt.</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{#hasElement details}}
+                    {{#hasElement data}}
+                    {{#each data}}
+                    <tr>
+                        <td colspan="4" class="tableSubHdg txtFld">{{payment_date}}</td>
+                        <td class="tableSubHdg numberFld">{{day_closing_bal}}</td>
+                    </tr>
                     {{#each details}}
                     <tr>
-                        <td colspan="2" class="tableSubHdg">{{../date_or_account}}: {{date}} </td>
-                        <td class="tableSubHdg  ">{{total_debit_amount}} </td>
-                          <td class="tableSubHdg">{{total_credit_amount}} </td>
-                          <td class="tableSubHdg">{{balance}}</td>
-                         <td  class="tableSubHdg"></td>
+                        <td colspan="4" class="tableSubHdg2 txtFld">{{head_account}}</td>
+                        <td class="tableSubHdg2 numberFld">{{total_of_head_account}}</td>
                     </tr>
                     {{#each entries}}
-
-    
-           
                     <tr>
                         <td>{{inc @index}}</td>
-
-                        <td class="">{{account_details}}</td>
+                        <td class="txtFld">{{child_name}}</td>
                         <td class="numberFld ">{{debit_amount}}</td>
                         <td class="numberFld ">{{credit_amount}}</td>
                         <td class="numberFld numberFldTotal">{{balance_amount}}</td>
-                        <td class="txtFld">{{narration}}</td>
                     </tr>
                     {{/each }}
-
-
-  
-
-                
-                                    {{/each }}
-                    {{else}}
+                    {{/each }}
+                    {{/each }}
+                    {{!-- {{else}}
                     <tr>
                         <td class="noResultTextReport">No Records Found</td>
-                    </tr>
+                    </tr> --}}
                     {{/hasElement }}
                 </tbody>
             </table>
