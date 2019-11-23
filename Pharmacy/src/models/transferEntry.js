@@ -363,11 +363,12 @@ export default {
     const _mysql = new algaehMysql();
 
     try {
+      console.log("addtransferEntry", req.body)
       let input = { ...req.body };
       let transfer_number = "";
 
-      const utilities = new algaehUtilities();
-      utilities.logger().log("addtransferEntry: ");
+      // const utilities = new algaehUtilities();
+      // utilities.logger().log("addtransferEntry: ");
 
       _mysql
         .generateRunningNumber({

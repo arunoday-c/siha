@@ -583,7 +583,9 @@ class PosListItems extends Component {
                                               allowNegative: false,
                                               thousandSeparator: ","
                                             },
-                                            value: row.quantity,
+                                            value: row.quantity !== ""
+                                              ? parseFloat(row.quantity)
+                                              : "",
                                             className: "txt-fld",
                                             name: "quantity",
                                             dontAllowKeys: ["-", "e", "."],

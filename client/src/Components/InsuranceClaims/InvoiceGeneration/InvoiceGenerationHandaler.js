@@ -247,7 +247,8 @@ const ClearData = $this => {
       secondary_effective_end_date: "---",
       select_invoice: "CH",
       creidt_invoice: false,
-      cash_invoice: true
+      cash_invoice: true,
+      dataExists: false
     },
     () => {
       $this.props.initialStateOrders({

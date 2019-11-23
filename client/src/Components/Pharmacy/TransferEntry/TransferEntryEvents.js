@@ -303,10 +303,16 @@ const SaveTransferEntry = $this => {
 
   InputObj.stock_detail = stock_detail;
 
+  delete InputObj.Batch_Items
+  delete InputObj.ItemUOM
+  debugger
   algaehApiCall({
     uri: "/transferEntry/addtransferEntry",
     module: "pharmacy",
     data: InputObj,
+    // headers: {
+    //   Accept: "blob"
+    // },
     onSuccess: response => {
       if (response.data.success === true) {
         $this.setState({
