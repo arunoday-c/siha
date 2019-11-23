@@ -93,10 +93,19 @@ export default memo(function Modal(props) {
           dateRange.length === 0
             ? {}
             : { name: "monthwise", value: checkedType ? "Y" : "N" };
+ 
+          let reportName="";
+          if(leafnode==="N"){
+            reportName= checkedType? "ledgerMonthReportGroupNode":"ledgerDateReportGroupNode";
+          }else{
+            reportName= checkedType? "ledgerMonthReportLeafNode":"ledgerDateReportLeafNode";
+          }
+
+
         const data = {
           report: {
             displayName: "Ledger Report - Date Wise",
-            reportName: "ledgerDateReport",
+            reportName: reportName,//"ledgerDateReport",
             template_name: null,
             reportQuery: null,
             pageSize: "A4",
@@ -204,9 +213,9 @@ export default memo(function Modal(props) {
                 type="radio"
                 name="d_m_wise"
                 onChange={check => {
-                  setCheckType(check);
+                  setCheckType(!check);
                 }}
-                checked={checkedType}
+                checked={!checkedType}
               />
               Date Wise
             </label>

@@ -56,7 +56,13 @@ class PayRollDetails extends Component {
       earn_calculation_type: null,
       deduct_calculation_type: null,
       contribut_calculation_type: null,
-      dataExists: false
+      dataExists: false,
+      earn_limit_applicable: null,
+      earn_limit_amount: null,
+      contribut_limit_applicable: null,
+      contribut_limit_amount: null,
+      deduct_limit_applicable: null,
+      deduct_limit_amount: null
     };
   }
 
@@ -290,10 +296,10 @@ class PayRollDetails extends Component {
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                  f =>
-                                    f.hims_d_earning_deduction_id ===
-                                    row.earnings_id
-                                );
+                                f =>
+                                  f.hims_d_earning_deduction_id ===
+                                  row.earnings_id
+                              );
 
                           return (
                             <span>
@@ -308,10 +314,10 @@ class PayRollDetails extends Component {
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                  f =>
-                                    f.hims_d_earning_deduction_id ===
-                                    row.earnings_id
-                                );
+                                f =>
+                                  f.hims_d_earning_deduction_id ===
+                                  row.earnings_id
+                              );
 
                           return (
                             <span>
@@ -331,7 +337,8 @@ class PayRollDetails extends Component {
                         fieldName: "amount",
                         label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
                         editorTemplate: row => {
-                          return (
+                          debugger
+                          return row.calculation_method === "FO" ? row.amount : (
                             <AlagehFormGroup
                               div={{}}
                               textBox={{
@@ -401,7 +408,7 @@ class PayRollDetails extends Component {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: deleteEarningComponent.bind(this, this),
-                      onEdit: row => {},
+                      onEdit: row => { },
                       onDone: updateEarningComponent.bind(this, this)
                     }}
                   />
@@ -409,7 +416,7 @@ class PayRollDetails extends Component {
               </div>
             </div>
             <div className="col-4 primary-details">
-          {/*      <h5>
+              {/*      <h5>
                 <span>Deduction Details</span>
               </h5>       */}
               <div
@@ -492,10 +499,10 @@ class PayRollDetails extends Component {
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                  f =>
-                                    f.hims_d_earning_deduction_id ===
-                                    row.deductions_id
-                                );
+                                f =>
+                                  f.hims_d_earning_deduction_id ===
+                                  row.deductions_id
+                              );
 
                           return (
                             <span>
@@ -510,10 +517,10 @@ class PayRollDetails extends Component {
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                  f =>
-                                    f.hims_d_earning_deduction_id ===
-                                    row.deductions_id
-                                );
+                                f =>
+                                  f.hims_d_earning_deduction_id ===
+                                  row.deductions_id
+                              );
 
                           return (
                             <span>
@@ -533,7 +540,7 @@ class PayRollDetails extends Component {
                         fieldName: "amount",
                         label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
                         editorTemplate: row => {
-                          return (
+                          return row.calculation_method === "FO" ? row.amount : (
                             <AlagehFormGroup
                               div={{}}
                               textBox={{
@@ -569,7 +576,7 @@ class PayRollDetails extends Component {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: deleteDeductionComponent.bind(this, this),
-                      onEdit: row => {},
+                      onEdit: row => { },
                       onDone: updateDeductionComponent.bind(this, this)
                     }}
                   />
@@ -577,7 +584,7 @@ class PayRollDetails extends Component {
               </div>
             </div>
             <div className="col-4 secondary-details">
-             {/*   <h5>
+              {/*   <h5>
                 <span>Contribution Details</span>
               </h5>       */}
               <div
@@ -663,10 +670,10 @@ class PayRollDetails extends Component {
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                  f =>
-                                    f.hims_d_earning_deduction_id ===
-                                    row.contributions_id
-                                );
+                                f =>
+                                  f.hims_d_earning_deduction_id ===
+                                  row.contributions_id
+                              );
 
                           return (
                             <span>
@@ -681,10 +688,10 @@ class PayRollDetails extends Component {
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                  f =>
-                                    f.hims_d_earning_deduction_id ===
-                                    row.contributions_id
-                                );
+                                f =>
+                                  f.hims_d_earning_deduction_id ===
+                                  row.contributions_id
+                              );
 
                           return (
                             <span>
@@ -704,7 +711,7 @@ class PayRollDetails extends Component {
                         fieldName: "amount",
                         label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
                         editorTemplate: row => {
-                          return (
+                          return row.calculation_method === "FO" ? row.amount : (
                             <AlagehFormGroup
                               div={{}}
                               textBox={{
@@ -740,7 +747,7 @@ class PayRollDetails extends Component {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: deleteContibuteComponent.bind(this, this),
-                      onEdit: row => {},
+                      onEdit: row => { },
                       onDone: updateContibuteComponent.bind(this, this)
                     }}
                   />
