@@ -6,7 +6,7 @@ export default function FinanceFragment(props) {
   const [Component, setComp] = useState(null);
   const [err, setErr] = useState(null);
   const PREFIX = window.location.port
-    ? "http://localhost:3007/finbuild"
+    ? `http://${window.location.hostname}:3007/finbuild`
     : "/finance/finbuild";
 
   useEffect(() => {
