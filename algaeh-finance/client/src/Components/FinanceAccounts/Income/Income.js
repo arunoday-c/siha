@@ -4,16 +4,18 @@ import SortableTree, {
   addNodeUnderParent,
   removeNodeAtPath
 } from "react-sortable-tree";
-import { AlgaehConfirm, AlgaehMessagePop,Input,Icon } from "algaeh-react-components";
+import {AlgaehConfirm, AlgaehMessagePop, Input, Icon, DatePicker} from "algaeh-react-components";
 import ReportLauncher from "../AccountReport";
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
 import {
   getAccounts,
   isPositive,
-  removeAccount
+  removeAccount,getChartData
 } from ".././FinanceAccountEvent";
 import "react-sortable-tree/style.css";
 import "../alice.scss";
+import moment from "moment";
+import Charts from "../Charts";
 
 export default function Income() {
   const [symbol, setSymbol] = useState("");
@@ -28,14 +30,19 @@ export default function Income() {
   const [financeHeadId, setFinanceHeadId] = useState(undefined);
   const [reportVisible,setReportVisible]= useState(false);
   const [editorRecord,setEditorRecord]= useState({});
+  const [period, setPeriod] = useState("4");
+  const [accountChart, setAccountChart] = useState([]);
+  const [year, setYear] = useState(moment());
   function loadAccount() {
     getAccounts("4", data => {
       if (Array.isArray(data)) {
         if (data.length > 0) {
-          setFinanceHeadId(data[0].finance_account_head_id);
-          setTreeData(data[0].children);
-          setIncomeAmount(data[0]["subtitle"]);
-          setSymbol(data[0]["trans_symbol"]);
+          const firstData = data[0];
+          setFinanceHeadId(firstData.finance_account_head_id);
+          setTreeData(firstData.children);
+          setIncomeAmount(firstData["subtitle"]);
+          setSymbol(firstData["trans_symbol"]);
+          loadChartData(firstData.finance_account_head_id);
         } else {
           setTreeData([]);
         }
@@ -43,6 +50,20 @@ export default function Income() {
         setTreeData([]);
       }
     });
+  }
+  function loadChartData(finheadId) {
+    getChartData({
+      finance_account_head_id:
+          finheadId === undefined ? financeHeadId : finheadId,
+      period: period,
+      year: moment(year).format("YYYY")
+    })
+        .then(result => {
+          setAccountChart(result);
+        })
+        .catch(error => {
+          AlgaehMessagePop({ type: "error", display: error });
+        });
   }
   useEffect(() => {
     loadAccount();
@@ -135,6 +156,7 @@ export default function Income() {
       <ReportLauncher
           title="Ledger Report"
           visible={reportVisible}
+          parentId="4"
           selectedNode={selectedNode}
           onCancel={()=>{
             setReportVisible(false);
@@ -150,9 +172,38 @@ export default function Income() {
               <div className="caption">
                 <h3 className="caption-subject">Income accounts</h3>
               </div>
-              <div className="actions"></div>
+              <div className="actions">
+                <select
+                    value={period}
+                    onChange={e => {
+                      setPeriod(e.target.value);
+                    }}
+                >
+                  <option value="1">Jan - Mar</option>
+                  <option value="2">Apr - Jun</option>
+                  <option value="3">Jul - Sep</option>
+                  <option value="4">Oct - Dec</option>
+                  <option value="5">By Year</option>
+                </select>
+                <DatePicker
+                    mode="year"
+                    size="small"
+                    value={year}
+                    format="YYYY"
+                    onPanelChange={selectedDate => {
+                      setYear(selectedDate);
+                    }}
+                />
+              </div>
             </div>
-            <div className="portlet-body"></div>
+            <div className="portlet-body">
+              <Charts
+                  data={accountChart}
+                  xAxis={"month_name"}
+                  yAxisBar={"amount"}
+                  yAxisLine={"growth_percent"}
+              />
+            </div>
           </div>
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
@@ -161,7 +212,9 @@ export default function Income() {
               </div>
               <div className="actions"></div>
             </div>
-            <div className="portlet-body"></div>
+            <div className="portlet-body">
+              <Charts data={[]} xAxis={""} yAxisBar={""} yAxisLine={""} />
+            </div>
           </div>
         </div>
         <div className="col-8">

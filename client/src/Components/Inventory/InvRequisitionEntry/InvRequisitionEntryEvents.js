@@ -141,7 +141,7 @@ const generateMaterialReqInv = (data, rpt_name, rpt_desc) => {
 
 const AuthorizeRequisitionEntry = ($this, authorize) => {
   let auth_qty = Enumerable.from($this.state.inventory_stock_detail).any(
-    w => parseFloat(w.authorize_quantity) === 0 || w.authorize_quantity === null
+    w => parseFloat(w.quantity_authorized) === 0 || w.quantity_authorized === null
   );
   if (auth_qty === true) {
     swalMessage({

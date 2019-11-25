@@ -311,7 +311,7 @@ const onchangegridcol = ($this, context, row, e) => {
     // row[name] = oldvalue
     // row.update();
   } else {
-    row[name] = value;
+    row[name] = value === "" ? null : value;
     row["quantity_outstanding"] = value === "" ? 0 : value;
 
     pharmacy_stock_detail[row.rowIdx] = row;

@@ -242,7 +242,9 @@ hbs.registerHelper("barcode", function (type, text, includetext) {
 });
 
 hbs.registerHelper("commentBreakUp", function (comment_data) {
-  return comment_data.split("<br/>");
+  if (comment_data === "" || comment_data === null) {
+    return []
+  } else { return comment_data.split("<br/>"); }
 });
 
 const groupBy = (data, groupby) => {

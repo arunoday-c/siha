@@ -147,7 +147,7 @@ const generateMaterialReqPhar = (data, rpt_name, rpt_desc) => {
 
 const AuthorizeRequisitionEntry = ($this, authorize) => {
   let auth_qty = Enumerable.from($this.state.pharmacy_stock_detail).any(
-    w => parseFloat(w.authorize_quantity) === 0 || w.authorize_quantity === null
+    w => parseFloat(w.quantity_authorized) === 0 || w.quantity_authorized === null
   );
 
   if (auth_qty === true) {
@@ -208,66 +208,65 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
   });
 };
 
-const
-  LocationchangeTexts = ($this, location, ctrl, e) => {
-    e = ctrl || e;
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
-    let type = "";
-    if (location === "From") {
-      type = "from_location_type";
-      if ($this.state.to_location_id === value) {
-        $this.setState({ [name]: null, [type]: null }, () => {
-          swalMessage({
-            title: "From Location and To Location Cannot be Same ",
-            type: "error"
-          });
+const LocationchangeTexts = ($this, location, ctrl, e) => {
+  e = ctrl || e;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let type = "";
+  if (location === "From") {
+    type = "from_location_type";
+    if ($this.state.to_location_id === value) {
+      $this.setState({ [name]: null, [type]: null }, () => {
+        swalMessage({
+          title: "From Location and To Location Cannot be Same ",
+          type: "error"
         });
-      } else {
-        $this.setState({
-          [name]: value,
-          [type]: e.selected.location_type,
-          requistion_type: "MR",
+      });
+    } else {
+      $this.setState({
+        [name]: value,
+        [type]: e.selected.location_type,
+        requistion_type: "MR",
 
-          addItemButton: true,
-          item_category_id: null,
-          item_group_id: null,
-          item_id: null,
-          quantity_required: 0,
-          transaction_qty: null,
+        addItemButton: true,
+        item_category_id: null,
+        item_group_id: null,
+        item_id: null,
+        quantity_required: 0,
+        transaction_qty: null,
 
-          item_uom: null,
-          from_qtyhand: 0,
-          to_qtyhand: 0
-        });
-      }
-    } else if (location === "To") {
-      type = "to_location_type";
-      if ($this.state.from_location_id === value) {
-        $this.setState({ [name]: null, [type]: null }, () => {
-          swalMessage({
-            title: "From Location and To Location Cannot be Same ",
-            type: "error"
-          });
-        });
-      } else {
-        $this.setState({
-          [name]: value,
-          [type]: e.selected.location_type,
-
-          addItemButton: true,
-          item_category_id: null,
-          item_group_id: null,
-          item_id: null,
-          quantity_required: 0,
-          transaction_qty: null,
-          item_uom: null,
-          from_qtyhand: 0,
-          to_qtyhand: 0
-        });
-      }
+        item_uom: null,
+        from_qtyhand: 0,
+        to_qtyhand: 0
+      });
     }
-  };
+  } else if (location === "To") {
+    type = "to_location_type";
+    if ($this.state.from_location_id === value) {
+      $this.setState({ [name]: null, [type]: null }, () => {
+        swalMessage({
+          title: "From Location and To Location Cannot be Same ",
+          type: "error"
+        });
+      });
+    } else {
+      $this.setState({
+        [name]: value,
+        [type]: e.selected.location_type,
+
+        addItemButton: true,
+        item_category_id: null,
+        item_group_id: null,
+        item_id: null,
+        quantity_required: 0,
+        transaction_qty: null,
+        item_uom: null,
+        from_qtyhand: 0,
+        to_qtyhand: 0
+      });
+    }
+  }
+};
 
 export {
   changeTexts,

@@ -74,7 +74,7 @@ let getMedicationAprovalList = (req, res, next) => {
   try {
     let _stringData = "";
     let inputValues = [];
-    console.log("req.query", req.query)
+    // console.log("req.query", req.query)
     if (req.query.created_date != null) {
       _stringData +=
         " and date(SA.created_date) between date('" +
@@ -393,12 +393,13 @@ let insertOrderedServices = (req, res, next) => {
           .then(deleteOrders => {
             new Promise((resolve, reject) => {
               try {
+                // console.log("input.billdetails", input.billdetails)
                 const insert_order_services = _.filter(input.billdetails, f => {
                   return f.hims_f_ordered_services_id === null || f.hims_f_ordered_services_id === undefined;
                 });
 
-                console.log("insert_order_services", insert_order_services)
-                if (insert_order_services.length != 0) {
+                // console.log("insert_order_services", insert_order_services)
+                if (insert_order_services.length > 0) {
                   _mysql
                     .executeQuery({
                       query: "INSERT INTO hims_f_ordered_services(??) VALUES ?",
@@ -436,8 +437,8 @@ let insertOrderedServices = (req, res, next) => {
                       return f.hims_f_ordered_services_id > 0;
                     });
 
-                    console.log("update_Order_Service", update_Order_Service)
-                    if (update_Order_Service.length != 0) {
+                    // console.log("update_Order_Service", update_Order_Service)
+                    if (update_Order_Service.length > 0) {
                       let strQry = ""
                       const pre_approval = _.filter(update_Order_Service, f => {
                         return f.pre_approval === "N";
@@ -496,11 +497,11 @@ let insertOrderedServices = (req, res, next) => {
                           printQuery: true,
                         })
                         .then(update_order_result => {
-                          console.log("result", update_order_result);
+                          // console.log("result", update_order_result);
                           return resolve(update_order_result);
                         })
                         .catch(error => {
-                          console.log("error", error);
+                          // console.log("error", error);
                           _mysql.rollBackTransaction(() => {
                             next(error);
                           });
@@ -559,9 +560,9 @@ let insertOrderedServices = (req, res, next) => {
                               };
                             })
                             .ToArray();
-                          console.log("length", detailsPush.length);
+                          // console.log("detailsPush.length", detailsPush.length);
                           if (detailsPush.length > 0) {
-                            console.log("detailsPush", detailsPush);
+                            // console.log("detailsPush", detailsPush);
                             const insurtCols = [
                               "hims_f_ordered_services_id",
                               "service_id",
@@ -611,6 +612,7 @@ let insertOrderedServices = (req, res, next) => {
                           } else {
                             req.records = { resultOrder, ResultOfFetchOrderIds };
                             next();
+                            // console.log("else detailsPush");
                           }
                         })
                         .catch(error => {
@@ -1917,10 +1919,14 @@ let deleteOrderService = (req, res, next) => {
 };
 
 let insertPhysiotherapyServices = (req, res, next) => {
+  // console.log("insertPhysiotherapyServices")
   const _options = req.connection == null ? {} : req.connection;
   const _mysql = new algaehMysql(_options);
+
   try {
-    let inputParam = { ...req.body };
+    // let inputParam = { ...req.body };
+    // console.log("insertPhysiotherapyServices", req.records.ResultOfFetchOrderIds)
+    // console.log("insertPhysiotherapyServices", req.body.billdetails)
     let Services =
       req.records.ResultOfFetchOrderIds == null
         ? req.body.billdetails
@@ -1944,6 +1950,8 @@ let insertPhysiotherapyServices = (req, res, next) => {
           .ToArray()
       )
     ];
+
+    // console.log("physothServices", physothServices)
 
     const IncludeValues = [
       "ordered_services_id",
@@ -1987,8 +1995,8 @@ function deleteOrderServices(options) {
     try {
       let delete_order_services = options.delete_order_services;
       let _mysql = options._mysql;
-      console.log("delete_order_services", delete_order_services)
-      if (delete_order_services.length != 0) {
+      // console.log("delete_order_services", delete_order_services)
+      if (delete_order_services !== undefined && delete_order_services.length > 0) {
 
         const lab_order_services = _.filter(delete_order_services, f => {
           return f.service_type === "LAB";
@@ -1998,8 +2006,8 @@ function deleteOrderServices(options) {
           return f.service_type === "RAD";
         });
 
-        console.log("lab_order_services", lab_order_services.length)
-        console.log("rad_order_services", rad_order_services.length)
+        // console.log("lab_order_services", lab_order_services.length)
+        // console.log("rad_order_services", rad_order_services.length)
         // let _salary_processed_emp = _.map(rad_order_services, o => {
         //   return o.hims_f_ordered_services_id;
         // });
@@ -2018,7 +2026,7 @@ function deleteOrderServices(options) {
           strQuery += "SELECT 1;";
         }
 
-        console.log("strQuery", strQuery)
+        // console.log("strQuery", strQuery)
 
         _mysql
           .executeQuery({
@@ -2026,15 +2034,15 @@ function deleteOrderServices(options) {
             printQuery: true
           })
           .then(result => {
-            console.log("result", result[0])
+            // console.log("result", result[0])
             let strQry = "";
             let order_ids = _.map(delete_order_services, o => {
               return o.hims_f_ordered_services_id;
             });
 
             let first_result = result[0];
-            console.log("order_ids", order_ids)
-            console.log("hims_f_lab_order_id:", first_result.hims_f_lab_order_id)
+            // console.log("order_ids", order_ids)
+            // console.log("hims_f_lab_order_id:", first_result.hims_f_lab_order_id)
             strQry += _mysql.mysqlQueryFormat(
               "DELETE FROM hims_f_service_approval where ordered_services_id in (?);",
               [order_ids]
@@ -2061,7 +2069,7 @@ function deleteOrderServices(options) {
               "DELETE FROM hims_f_ordered_services where hims_f_ordered_services_id in (?);",
               [order_ids,]
             );
-            console.log("strQry", strQry)
+            // console.log("strQry", strQry)
             _mysql
               .executeQuery({
                 query: strQry,

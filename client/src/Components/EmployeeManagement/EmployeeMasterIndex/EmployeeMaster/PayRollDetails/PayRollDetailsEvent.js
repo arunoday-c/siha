@@ -40,6 +40,8 @@ const earntexthandle = ($this, e) => {
     earn_disable: e.selected.calculation_method === "FO" ? true : false,
     earn_calculation_method: e.selected.calculation_method,
     earn_calculation_type: e.selected.calculation_type,
+    earn_limit_applicable: e.selected.limit_applicable,
+    earn_limit_amount: e.selected.limit_amount,
     earn_short_desc: e.selected.short_desc,
     earn_formula: formula
   });
@@ -73,7 +75,9 @@ const deducttexthandle = ($this, e) => {
     deduct_calculation_method: e.selected.calculation_method,
     deduct_calculation_type: e.selected.calculation_type,
     deduct_short_desc: e.selected.short_desc,
-    deduct_formula: formula
+    deduct_formula: formula,
+    deduct_limit_applicable: e.selected.limit_applicable,
+    deduct_limit_amount: e.selected.limit_amount
   });
 };
 
@@ -105,7 +109,9 @@ const contributtexthandle = ($this, e) => {
     contribut_calculation_method: e.selected.calculation_method,
     contribut_calculation_type: e.selected.calculation_type,
     contribut_short_desc: e.selected.short_desc,
-    contribut_formula: formula
+    contribut_formula: formula,
+    contribut_limit_applicable: e.selected.limit_applicable,
+    contribut_limit_amount: e.selected.limit_amount
   });
 };
 
@@ -174,7 +180,9 @@ const AddEarnComponent = ($this, e) => {
         calculation_method: $this.state.earn_calculation_method,
         calculation_type: $this.state.earn_calculation_type,
         formula: $this.state.earn_formula,
-        short_desc: $this.state.earn_short_desc
+        short_desc: $this.state.earn_short_desc,
+        limit_applicable: $this.state.earn_limit_applicable,
+        limit_amount: $this.state.earn_limit_amount
       });
 
       insertearnComp.push({
@@ -286,7 +294,9 @@ const AddDeductionComponent = ($this, e) => {
         calculation_method: $this.state.deduct_calculation_method,
         calculation_type: $this.state.deduct_calculation_type,
         formula: $this.state.deduct_formula,
-        short_desc: $this.state.deduct_short_desc
+        short_desc: $this.state.deduct_short_desc,
+        limit_applicable: $this.state.deduct_limit_applicable,
+        limit_amount: $this.state.deduct_limit_amount
       });
 
       insertDeductionComp.push({
@@ -396,7 +406,9 @@ const AddContributionComponent = ($this, e) => {
         calculation_method: $this.state.contribut_calculation_method,
         calculation_type: $this.state.contribut_calculation_type,
         formula: $this.state.contribut_formula,
-        short_desc: $this.state.contribut_short_desc
+        short_desc: $this.state.contribut_short_desc,
+        limit_applicable: $this.state.contribut_limit_applicable,
+        limit_amount: $this.state.contribut_limit_amount
       });
 
       insertContributeComp.push({
@@ -934,7 +946,13 @@ const CalculateBasedonFormula = ($this, from) => {
       formulaCal = formulaCal.replace(perexpression, "/100");
 
       formulaCal = eval(formulaCal);
-      earn_comp[x].amount = formulaCal;
+      // limit_applicable: e.selected.contribut_limit_applicable,
+      //   limit_amount: e.selected.contribut_limit_amount
+      if (earn_comp[x].limit_applicable === "Y" && parseFloat(formulaCal) > parseFloat(earn_comp[x].limit_amount)) {
+        earn_comp[x].amount = earn_comp[x].limit_amount;
+      } else {
+        earn_comp[x].amount = formulaCal;
+      }
       earningComponents[_index] = earn_comp[x];
 
       updateearnComp.push(earn_comp[x]);
@@ -947,6 +965,7 @@ const CalculateBasedonFormula = ($this, from) => {
       }
     }
   }
+  debugger
 
   if (deduct_comp.length > 0) {
     for (let y = 0; y < deduct_comp.length; y++) {
@@ -969,7 +988,13 @@ const CalculateBasedonFormula = ($this, from) => {
 
       // formulaCal = `${formulaCal}`;
       formulaCal = eval(formulaCal);
-      deduct_comp[y].amount = formulaCal;
+      debugger
+      if (deduct_comp[y].limit_applicable === "Y" && parseFloat(formulaCal) > parseFloat(deduct_comp[y].limit_amount)) {
+        deduct_comp[y].amount = deduct_comp[y].limit_amount;
+      } else {
+        deduct_comp[y].amount = formulaCal;
+      }
+      // deduct_comp[y].amount = formulaCal;
       deductioncomponents[_index] = deduct_comp[y];
 
       updateDeductionComp.push(deduct_comp[y]);
@@ -1003,9 +1028,15 @@ const CalculateBasedonFormula = ($this, from) => {
       formulaCal = formulaCal.replace(expression, $this.state.gross_salary);
       const perexpression = new RegExp("%", "g");
       formulaCal = formulaCal.replace(perexpression, "/100");
-
       formulaCal = eval(formulaCal);
-      contribute_comp[z].amount = formulaCal;
+
+      if (contribute_comp[z].limit_applicable === "Y" && parseFloat(formulaCal) > parseFloat(contribute_comp[z].limit_amount)) {
+        contribute_comp[z].amount = contribute_comp[z].limit_amount;
+      } else {
+        contribute_comp[z].amount = formulaCal;
+      }
+
+      // contribute_comp[z].amount = formulaCal;
       contributioncomponents[_index] = contribute_comp[z];
 
       updateContributeComp.push(contribute_comp[z]);

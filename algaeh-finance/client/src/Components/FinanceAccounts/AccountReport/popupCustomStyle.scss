@@ -1,0 +1,20 @@
+.algaehLedgerReportStyle {
+  max-width: 35vw;
+  .ant-modal-header {
+    padding: 15px;
+  }
+  .ant-modal-body {
+    padding: 15px;
+    .style_Label {
+      display: block;
+      font-weight: bold !important;
+    }
+    .radio-inline {
+      margin-right: 10px;
+      text-transform: none;
+      input[type="radio"] {
+        margin-right: 5px;
+      }
+    }
+  }
+}

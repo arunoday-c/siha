@@ -294,7 +294,7 @@ class PurchaseReturnEntry extends Component {
                                             data: GlobalVariables.PAYMENT_TERMS
                                         },
                                         others: {
-                                            disabled: this.state.dataExitst
+                                            disabled: true
                                         },
                                         onChange: texthandle.bind(this, this),
                                         onClear: () => {

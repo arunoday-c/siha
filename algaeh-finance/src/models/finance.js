@@ -876,6 +876,688 @@ export default {
       };
       next();
     }
+  },
+  //created by irfan:
+  getLedgerDataForChart: (req, res, next) => {
+    const utilities = new algaehUtilities();
+    const _mysql = new algaehMysql();
+    let input = req.query;
+
+    if (
+      input.finance_account_head_id > 0 &&
+      input.finance_account_head_id < 6 &&
+      input.period > 0 &&
+      input.period < 6
+    ) {
+      const monthArray = [];
+      let year = "";
+
+      if (input.year > 0) {
+        year = input.year;
+      } else {
+        year = moment().format("YYYY");
+      }
+
+      switch (input.period.toString()) {
+        case "1":
+          monthArray.push(1, 2, 3);
+          break;
+        case "2":
+          monthArray.push(4, 5, 6);
+          break;
+        case "3":
+          monthArray.push(8, 8, 9);
+          break;
+        case "4":
+          monthArray.push(10, 11, 12);
+          break;
+        default:
+          monthArray.push(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+      }
+      _mysql
+        .executeQuery({
+          query: `with cte as(
+            select head_id,month,monthname(concat('1999-',month,'-01')) as month_name,
+            coalesce(sum(debit_amount)-sum(credit_amount),0)as debit_minus_credit,
+            coalesce(sum(credit_amount)-sum(debit_amount),0)as credit_minus_debit from 
+            finance_voucher_details where  year=? and month in(?) and head_id in (with recursive heads  as (          
+            select  finance_account_head_id
+            from finance_account_head where finance_account_head_id=?
+            union                  
+            select H.finance_account_head_id
+            from finance_account_head  H inner join heads
+            on H.parent_acc_id = heads.finance_account_head_id    
+            )select  finance_account_head_id from heads) group by month
+            ) select t.*,(100 * (t.debit_minus_credit - t2.debit_minus_credit) / t2.debit_minus_credit) as dr_growth_percent,
+            (100 * (t.credit_minus_debit - t2.credit_minus_debit) / t2.credit_minus_debit) as cr_growth_percent
+             from cte as t left join cte t2 on  t2.month=(t.month-1);  `,
+
+          printQuery: false,
+          values: [year, monthArray, input.finance_account_head_id]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          let outputArray = [];
+          if (
+            input.finance_account_head_id == 1 ||
+            input.finance_account_head_id == 5
+          ) {
+            outputArray = result.map(m => {
+              return {
+                ...m,
+                amount: m.debit_minus_credit,
+                growth_percent: m.dr_growth_percent
+              };
+            });
+          } else {
+            outputArray = result.map(m => {
+              return {
+                ...m,
+                amount: m.credit_minus_debit,
+                growth_percent: m.cr_growth_percent
+              };
+            });
+          }
+
+          req.records = outputArray;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please provide Valid Input"
+      };
+      next();
+    }
+  },
+
+  //created by irfan:
+  leafnode: (req, res, next) => {
+    const utilities = new algaehUtilities();
+    const _mysql = new algaehMysql();
+    let input = req.query;
+
+    if (true) {
+      _mysql
+        .executeQuery({
+          query: `SELECT finance_voucher_id,payment_date ,credit_amount, debit_amount,
+                  coalesce(debit_amount-credit_amount,0)as debit_minus_credit ,
+                  coalesce(credit_amount-debit_amount,0)as credit_minus_debit ,
+                  narration,concat(H.account_name,' -> ',C.child_name) as account_details FROM 
+                  finance_voucher_details VD inner join finance_account_head H on
+                  VD.head_id=H.finance_account_head_id inner join finance_account_child C on 
+                  VD.child_id=C.finance_account_child_id where 
+                  head_id=? and child_id=? ;
+                  SELECT finance_voucher_id,payment_date ,sum(credit_amount) as total_credit_amount,
+                  sum(debit_amount) as total_debit_amount ,
+                  coalesce(sum(debit_amount)-sum(credit_amount),0)as debit_minus_credit ,
+                  coalesce(sum(credit_amount)-sum(debit_amount),0)as credit_minus_debit FROM 
+                  finance_voucher_details  where 
+                  head_id=? and child_id=? group by payment_date with rollup  ;`,
+          values: [
+            input.head_id,
+            input.child_id,
+            input.head_id,
+            input.child_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          const entries = result[0];
+          const dateWiseSum = result[1];
+
+          const totals = dateWiseSum.pop();
+
+          let outputArray = [];
+          let entriesArray = [];
+          if (input.parent_id == 1 || input.parent_id == 5) {
+            entriesArray = entries.map(m => {
+              return {
+                credit_amount: m.credit_amount,
+                debit_amount: m.debit_amount,
+                account_details: m.account_details,
+                narration: m.narration,
+                payment_date: m.payment_date,
+                balance_amount: m.debit_minus_credit
+              };
+            });
+          } else {
+            entriesArray = entries.map(m => {
+              return {
+                credit_amount: m.credit_amount,
+                debit_amount: m.debit_amount,
+                account_details: m.account_details,
+                narration: m.narration,
+                payment_date: m.payment_date,
+                balance_amount: m.credit_minus_debit
+              };
+            });
+          }
+
+          const entriesGroup = _.chain(entriesArray)
+            .groupBy(g => g.payment_date)
+            .value();
+          let finalTotals = null;
+          if (input.parent_id == 1 || input.parent_id == 5) {
+            const symbol = " Dr";
+            finalTotals = {
+              final_credit_amount: totals.total_credit_amount + symbol,
+              final_debit_amount: totals.total_debit_amount + symbol,
+              final_balance: totals.debit_minus_credit + symbol
+            };
+            dateWiseSum.forEach(item => {
+              outputArray.push({
+                entries: entriesGroup[item.payment_date],
+                total_debit_amount: item.total_debit_amount + symbol,
+                total_credit_amount: item.total_credit_amount + symbol,
+                balance: item.debit_minus_credit + symbol,
+                date: item.payment_date
+              });
+            });
+          } else {
+            const symbol = " Cr";
+            finalTotals = {
+              final_credit_amount: totals.total_credit_amount + symbol,
+              final_debit_amount: totals.total_debit_amount + symbol,
+              final_balance: totals.credit_minus_debit + symbol
+            };
+            dateWiseSum.forEach(item => {
+              outputArray.push({
+                entries: entriesGroup[item.payment_date],
+                total_debit_amount: item.total_debit_amount + symbol,
+                total_credit_amount: item.total_credit_amount + symbol,
+                balance: item.credit_minus_debit + symbol,
+                date: item.payment_date
+              });
+            });
+          }
+
+          req.records = { details: outputArray, ...finalTotals };
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else if (true) {
+      _mysql
+        .executeQuery({
+          query: `SELECT finance_voucher_id,sum(credit_amount) as credit_amount,
+                  sum(debit_amount) as debit_amount ,
+                  coalesce(sum(debit_amount)-sum(credit_amount),0)as debit_minus_credit ,
+                  coalesce(sum(credit_amount)-sum(debit_amount),0)as credit_minus_debit,
+                  concat(H.account_name,' -> ',C.child_name) as account_details,month,
+                  monthname(concat('1999-',month,'-01')) as month_name 
+                  FROM finance_voucher_details VD inner join finance_account_head H on
+                  VD.head_id=H.finance_account_head_id inner join finance_account_child C on 
+                  VD.child_id=C.finance_account_child_id where 
+                  head_id=? and child_id=? group by month with rollup ;`,
+          values: [input.head_id, input.child_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          let finalTotals = result.pop();
+
+          let outputArray = [];
+
+          if (input.parent_id == 1 || input.parent_id == 5) {
+            const symbol = " Dr";
+            finalTotals = {
+              final_credit_amount: finalTotals.credit_amount + symbol,
+              final_debit_amount: finalTotals.debit_amount + symbol,
+              final_balance: finalTotals.debit_minus_credit + symbol
+            };
+
+            outputArray = result.map(m => {
+              return {
+                credit_amount: m.credit_amount,
+                debit_amount: m.debit_amount,
+                account_details: m.account_details,
+                month_name: m.month_name,
+                balance_amount: m.debit_minus_credit
+              };
+            });
+          } else {
+            const symbol = " Cr";
+            finalTotals = {
+              final_credit_amount: finalTotals.credit_amount + symbol,
+              final_debit_amount: finalTotals.debit_amount + symbol,
+              final_balance: finalTotals.credit_minus_debit + symbol
+            };
+            outputArray = result.map(m => {
+              return {
+                credit_amount: m.credit_amount,
+                debit_amount: m.debit_amount,
+                account_details: m.account_details,
+                month_name: m.month_name,
+                balance_amount: m.credit_minus_debit
+              };
+            });
+          }
+
+          req.records = { details: outputArray, ...finalTotals };
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please provide Valid Input"
+      };
+      next();
+    }
+  },
+  //created by irfan:
+  test: (req, res, next) => {
+    const utilities = new algaehUtilities();
+    const _mysql = new algaehMysql();
+    let input = req.query;
+    let decimal_places = 2;
+    if (false) {
+      console.log("NON LEAF8:");
+      _mysql
+        .executeQuery({
+          query: ` with recursive cte  as (          
+          select  finance_account_head_id,PC.child_id
+          from finance_account_head P left join finance_head_m_child PC on P.finance_account_head_id
+          =PC.head_id where finance_account_head_id=?
+          union                  
+          select H.finance_account_head_id,PC.child_id
+          from finance_account_head  H inner join cte
+          on H.parent_acc_id = cte.finance_account_head_id   left join finance_head_m_child PC on H.finance_account_head_id
+          =PC.head_id )select * from cte;`,
+          values: [input.head_id],
+          printQuery: true
+        })
+        .then(result => {
+          const head_ids = result.map(m => m.finance_account_head_id);
+          const child_ids = result
+            .filter(f => {
+              return f.child_id > 0;
+            })
+            .map(m => m.child_id);
+
+          _mysql
+            .executeQuery({
+              query: `   SELECT finance_voucher_id,payment_date ,head_id,child_id,
+              sum(credit_amount) as credit_amount,sum(debit_amount) as debit_amount,
+              coalesce( sum(credit_amount)-sum(debit_amount),0)as credit_minus_debit,               
+              coalesce(sum(debit_amount)- sum(credit_amount),0)as debit_minus_credit,               
+              case payment_type when 'CR' then 'Credit' else 'Debit' end as payment_type,
+              narration,concat(H.account_name,' -> ',C.child_name) as account_details,
+              H.account_name,child_id,C.child_name
+               FROM finance_voucher_details VD 
+              inner join finance_account_head H on
+              VD.head_id=H.finance_account_head_id inner join finance_account_child C on 
+              VD.child_id=C.finance_account_child_id where 
+              head_id in (?) and child_id in (?)  group by head_id,child_id with rollup;`,
+              values: [head_ids, child_ids],
+              printQuery: true
+            })
+            .then(final_result => {
+              let outputArray = [];
+              let entriesArray = [];
+
+              const records = [];
+              let totals = {};
+              const heads = [];
+
+              final_result.forEach(item => {
+                if (item.head_id == null && item.child_id == null) {
+                  totals = item;
+                } else if (item.head_id > 0 && item.child_id == null) {
+                  heads.push(item);
+                } else if (item.head_id > 0 && item.child_id > 0) {
+                  records.push(item);
+                }
+              });
+
+              console.log("totals", totals);
+              if (input.parent_id == 1 || input.parent_id == 5) {
+                entriesArray = records.map(m => {
+                  return {
+                    credit_amount: parseFloat(m.credit_amount).toFixed(
+                      decimal_places
+                    ),
+                    debit_amount: parseFloat(m.debit_amount).toFixed(
+                      decimal_places
+                    ),
+                    account_details: m.account_details,
+                    narration: m.narration,
+                    head_id: m.head_id,
+
+                    balance_amount: m.debit_minus_credit
+                  };
+                });
+              } else {
+                entriesArray = records.map(m => {
+                  return {
+                    credit_amount: parseFloat(m.credit_amount).toFixed(
+                      decimal_places
+                    ),
+                    debit_amount: parseFloat(m.debit_amount).toFixed(
+                      decimal_places
+                    ),
+                    account_details: m.account_details,
+                    narration: m.narration,
+                    head_id: m.head_id,
+
+                    balance_amount: m.credit_minus_debit
+                  };
+                });
+              }
+
+              const entriesGroup = _.chain(entriesArray)
+                .groupBy(g => g.head_id)
+                .value();
+
+              let finalTotals = null;
+              if (input.parent_id == 1 || input.parent_id == 5) {
+                const symbol = " Dr";
+                finalTotals = {
+                  final_credit_amount: totals.credit_amount + symbol,
+                  final_debit_amount: totals.debit_amount + symbol,
+                  final_balance: totals.debit_minus_credit + symbol
+                };
+                heads.forEach(item => {
+                  outputArray.push({
+                    entries: entriesGroup[item.head_id],
+                    total_debit_amount: item.debit_amount + symbol,
+                    total_credit_amount: item.credit_amount + symbol,
+                    balance: item.debit_minus_credit + symbol,
+                    date: item.account_name
+                  });
+                });
+              } else {
+                const symbol = " Cr";
+                finalTotals = {
+                  final_credit_amount: totals.credit_amount + symbol,
+                  final_debit_amount: totals.debit_amount + symbol,
+                  final_balance: totals.credit_minus_debit + symbol
+                };
+                heads.forEach(item => {
+                  outputArray.push({
+                    entries: entriesGroup[item.head_id],
+                    total_debit_amount: item.debit_amount + symbol,
+                    total_credit_amount: item.credit_amount + symbol,
+                    balance: item.credit_minus_debit + symbol,
+                    date: item.account_name
+                  });
+                });
+              }
+
+              req.records = { details: outputArray, ...finalTotals };
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else if (true) {
+      _mysql
+        .executeQuery({
+          query: ` with recursive cte  as (          
+      select  finance_account_head_id,PC.child_id
+      from finance_account_head P left join finance_head_m_child PC on P.finance_account_head_id
+      =PC.head_id where finance_account_head_id=?
+      union                  
+      select H.finance_account_head_id,PC.child_id
+      from finance_account_head  H inner join cte
+      on H.parent_acc_id = cte.finance_account_head_id   left join finance_head_m_child PC on H.finance_account_head_id
+      =PC.head_id )select * from cte;`,
+          values: [input.head_id],
+          printQuery: false
+        })
+        .then(result => {
+          if (result.length > 0) {
+            const head_ids = result.map(m => m.finance_account_head_id);
+            const child_ids = result
+              .filter(f => {
+                return f.child_id > 0;
+              })
+              .map(m => m.child_id);
+
+            _mysql
+              .executeQuery({
+                query: `   SELECT finance_voucher_id,payment_date ,head_id,child_id,
+          sum(credit_amount) as credit_amount,sum(debit_amount) as debit_amount,
+          coalesce( sum(credit_amount)-sum(debit_amount),0)as credit_minus_debit,               
+          coalesce(sum(debit_amount)- sum(credit_amount),0)as debit_minus_credit,               
+          case payment_type when 'CR' then 'Credit' else 'Debit' end as payment_type,
+         
+          H.account_name,child_id,C.child_name
+           FROM finance_voucher_details VD 
+          inner join finance_account_head H on
+          VD.head_id=H.finance_account_head_id inner join finance_account_child C on 
+          VD.child_id=C.finance_account_child_id where 
+          head_id in (?) and child_id in (?)  group by payment_date,head_id,child_id with rollup;`,
+                values: [head_ids, child_ids],
+                printQuery: true
+              })
+              .then(final_result => {
+                if (final_result.length > 0) {
+                  let outputArray = [];
+                  let entriesArray = [];
+                  let grand_total = {};
+                  const records = [];
+                  const datewiseTotals = [];
+                  const datewiseHeadSum = [];
+
+                  //seprating data
+                  final_result.forEach(item => {
+                    if (
+                      item.head_id == null &&
+                      item.child_id == null &&
+                      item.payment_date == null
+                    ) {
+                      grand_total = item;
+                    } else if (
+                      item.payment_date != null &&
+                      item.head_id == null &&
+                      item.child_id == null
+                    ) {
+                      datewiseTotals.push(item);
+                    } else if (
+                      item.payment_date != null &&
+                      item.head_id > 0 &&
+                      item.child_id == null
+                    ) {
+                      datewiseHeadSum.push(item);
+                    } else if (
+                      item.payment_date != null &&
+                      item.head_id > 0 &&
+                      item.child_id > 0
+                    ) {
+                      records.push(item);
+                    }
+                  });
+
+                  //-------------------------------------------------------------------------
+                  //to get only balace amount
+                  if (input.parent_id == 1 || input.parent_id == 5) {
+                    entriesArray = records.map(m => {
+                      return {
+                        credit_amount: parseFloat(m.credit_amount).toFixed(
+                          decimal_places
+                        ),
+                        debit_amount: parseFloat(m.debit_amount).toFixed(
+                          decimal_places
+                        ),
+                        child_name: m.child_name,
+                  
+                        head_id: m.head_id,
+                        child_id: m.child_id,
+                        payment_date: m.payment_date,
+                        balance_amount: parseFloat(
+                          m.debit_minus_credit
+                        ).toFixed(decimal_places)
+                      };
+                    });
+                  } else {
+                    entriesArray = records.map(m => {
+                      return {
+                        credit_amount: parseFloat(m.credit_amount).toFixed(
+                          decimal_places
+                        ),
+                        debit_amount: parseFloat(m.debit_amount).toFixed(
+                          decimal_places
+                        ),
+                        child_name: m.child_name,
+                     
+                        head_id: m.head_id,
+                        child_id: m.child_id,
+                        payment_date: m.payment_date,
+                        balance_amount: parseFloat(
+                          m.credit_minus_debit
+                        ).toFixed(decimal_places)
+                      };
+                    });
+                  }
+
+                  const dateWiseEntries = _.chain(entriesArray)
+                    .groupBy(g => g.payment_date)
+                    .value();
+
+                  if (input.parent_id == 1 || input.parent_id == 5) {
+                    datewiseTotals.forEach(data => {
+                      const dateWiseheads = datewiseHeadSum.filter(
+                        f => f.payment_date == data.payment_date
+                      );
+                      const dateWiseChilds = dateWiseEntries[data.payment_date];
+
+                      const details = [];
+
+                      dateWiseheads.forEach(head => {
+                        const entries = dateWiseChilds.filter(
+                          child => head.head_id == child.head_id
+                        );
+                        console.log("entries:", entries);
+
+                        details.push({
+                          head_account: head.account_name,
+                          total_of_head_account: head.debit_minus_credit,
+                          entries: entries
+                        });
+                      });
+
+                      outputArray.push({
+                        payment_date: data.payment_date,
+                        day_closing_bal: data.debit_minus_credit,
+                        details: details
+                      });
+                    });
+                  } else {
+                    datewiseTotals.forEach(data => {
+                      const dateWiseheads = datewiseHeadSum.filter(
+                        f => f.payment_date == data.payment_date
+                      );
+                      const dateWiseChilds = dateWiseEntries[data.payment_date];
+
+                      const details = [];
+
+                      dateWiseheads.forEach(head => {
+                        const entries = dateWiseChilds.filter(
+                          child => head.head_id == child.head_id
+                        );
+                        console.log("entries:", entries);
+
+                        details.push({
+                          head_account: head.account_name,
+                          total_of_head_account: head.credit_minus_debit,
+                          entries: entries
+                        });
+                      });
+
+                      outputArray.push({
+                        payment_date: data.payment_date,
+                        day_closing_bal: data.credit_minus_debit,
+                        details: details
+                      });
+                    });
+                  }
+
+                  let finalTotals = null;
+                  if (input.parent_id == 1 || input.parent_id == 5) {
+                    const symbol = " Dr";
+                    finalTotals = {
+                      final_credit_amount:
+                        parseFloat(grand_total.credit_amount).toFixed(
+                          decimal_places
+                        ) + symbol,
+                      final_debit_amount:
+                        parseFloat(grand_total.debit_amount).toFixed(
+                          decimal_places
+                        ) + symbol,
+                      final_balance:
+                        parseFloat(grand_total.debit_minus_credit).toFixed(
+                          decimal_places
+                        ) + symbol
+                    };
+                  } else {
+                    const symbol = " Cr";
+                    finalTotals = {
+                      final_credit_amount:
+                        parseFloat(grand_total.credit_amount).toFixed(
+                          decimal_places
+                        ) + symbol,
+                      final_debit_amount:
+                        parseFloat(grand_total.debit_amount).toFixed(
+                          decimal_places
+                        ) + symbol,
+                      final_balance:
+                        parseFloat(grand_total.credit_minus_debit).toFixed(
+                          decimal_places
+                        ) + symbol
+                    };
+                  }
+
+                  req.records = {
+                    data: outputArray,
+                    ...finalTotals
+                  };
+                  next();
+                } else {
+                  resolve({
+                    details: []
+                  });
+                }
+              })
+              .catch(e => {
+                options.mysql.releaseConnection();
+                next(e);
+              });
+          } else {
+            resolve({
+              details: []
+            });
+          }
+        })
+        .catch(e => {
+          options.mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please provide Valid Input"
+      };
+      next();
+    }
   }
 };
 //created by :IRFAN to build tree hierarchy

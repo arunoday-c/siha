@@ -87,7 +87,9 @@ const ClearData = ($this, e) => {
       let IOputs = extend(SettlementIOputs.inputParam());
 
       IOputs.counter_id = counter_id;
-      $this.setState({ ...$this.state, ...IOputs });
+      $this.setState({ ...$this.state, ...IOputs }, () => {
+        getCashiersAndShiftMAP($this);
+      });
     }
   });
 };

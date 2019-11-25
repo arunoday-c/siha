@@ -543,7 +543,8 @@ const deletePOReturnDetail = ($this, context, row) => {
         discount_amount: discount_amount,
         net_total: net_total,
         tax_amount: tax_amount,
-        return_total: return_total
+        return_total: return_total,
+        saveEnable: pharmacy_stock_detail.length > 0 ? false : true
       });
     }
 
@@ -589,7 +590,8 @@ const deletePOReturnDetail = ($this, context, row) => {
           discount_amount: discount_amount,
           net_total: net_total,
           tax_amount: tax_amount,
-          return_total: return_total
+          return_total: return_total,
+          saveEnable: inventory_stock_detail.length > 0 ? false : true
         });
       }
     }
@@ -610,9 +612,10 @@ const onchangegridcol = ($this, context, row, e) => {
       ? $this.state.pharmacy_stock_detail
       : $this.state.inventory_stock_detail;
   let _index = _stock_detail.indexOf(row);
-  if (parseFloat(value) > parseFloat(row.qtyhand)) {
+  // IU.conversion_factor
+  if (parseFloat(value) > (parseFloat(row.qtyhand) / parseFloat(row.conversion_factor))) {
     swalMessage({
-      title: "Return Quantity cannot be Greater than Qty In Hand.",
+      title: "Return Quantity cannot be Greater than Qty In Hand / Deliverd Quantity.",
       type: "warning"
     });
     return;
@@ -651,8 +654,8 @@ const onchangegridcol = ($this, context, row, e) => {
 const onchhangegriddiscount = ($this, context, row, e) => {
   //
 
-  let discount_percentage = 0;
-  let discount_amount = 0;
+  // let discount_percentage = 0;
+  // let discount_amount = 0;
   let extended_cost = 0;
 
   let tax_amount = 0;
@@ -662,18 +665,18 @@ const onchhangegriddiscount = ($this, context, row, e) => {
       : $this.state.inventory_stock_detail;
   let _index = _stock_detail.indexOf(row);
 
-  let extended_price = row.extended_price;
+  // let extended_price = row.extended_price;
 
-  extended_price =
+  extended_cost =
     parseFloat(row.return_qty) * parseFloat(row.unit_cost);
-  discount_percentage = row.discount_percentage;
+  // discount_percentage = row.discount_percentage;
 
-  discount_amount =
-    (parseFloat(extended_price) * parseFloat(discount_percentage)) / 100;
+  // discount_amount =
+  //   (parseFloat(extended_price) * parseFloat(discount_percentage)) / 100;
 
 
 
-  extended_cost = parseFloat(extended_price) - parseFloat(discount_amount);
+  // extended_cost = parseFloat(extended_price) - parseFloat(discount_amount);
 
   tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
   tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
@@ -686,7 +689,7 @@ const onchhangegriddiscount = ($this, context, row, e) => {
   row["total_amount"] = parseFloat(tax_amount) + parseFloat(extended_cost);
 
 
-  // row["extended_cost"] = extended_cost;
+  // row["discount_amount"] = discount_amount;
   row["net_extended_cost"] = getAmountFormart(extended_cost, {
     appendSymbol: false
   });

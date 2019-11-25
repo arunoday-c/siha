@@ -131,14 +131,14 @@ class InvestigationSetup extends Component {
   }
 
   OpenComments(row) {
-    debugger;
+
     algaehApiCall({
       uri: "/investigation/getTestComments",
       module: "laboratory",
       data: { investigation_test_id: row.hims_d_investigation_test_id, comment_status: "A" },
       method: "GET",
       onSuccess: response => {
-        debugger;
+
         if (response.data.success === true) {
           this.setState({
             isCommentsOpen: !this.state.isCommentsOpen,

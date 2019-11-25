@@ -28,16 +28,13 @@ class InvestigationComments extends PureComponent {
     }
 
     componentWillReceiveProps(newProps) {
-        debugger;
+
 
         if (newProps.investigation_test_id !== null) {
             this.setState(
                 {
                     investigation_test_id: newProps.investigation_test_id,
                     comments_data: newProps.comments_data
-                },
-                () => {
-                    debugger;
                 }
             );
         }
@@ -54,7 +51,7 @@ class InvestigationComments extends PureComponent {
     };
 
     texthandle(e) {
-        debugger;
+
         this.setState({
             [e.target.name]: e.target.value
         });
@@ -109,7 +106,7 @@ class InvestigationComments extends PureComponent {
             data: { investigation_test_id: this.state.investigation_test_id, comment_status: "A" },
             method: "GET",
             onSuccess: response => {
-                debugger;
+
                 if (response.data.success === true) {
                     this.setState({
                         commnet_name: null,
@@ -122,7 +119,7 @@ class InvestigationComments extends PureComponent {
     }
 
     updateComments(row) {
-        debugger;
+
         algaehApiCall({
             uri: "/investigation/updateTestComments",
             module: "laboratory",
@@ -139,7 +136,7 @@ class InvestigationComments extends PureComponent {
         });
     }
     render() {
-        debugger;
+
         return (
             <>
                 <AlgaehModalPopUp

@@ -29,12 +29,14 @@ const discounthandle = ($this, context, ctrl, e) => {
       type: "Warning"
     });
     $this.setState({
-      sheet_discount_percentage: $this.state.sheet_discount_percentage
+      sheet_discount_amount: 0,
+      sheet_discount_percentage: 0
     });
 
     if (context !== null) {
       context.updateState({
-        sheet_discount_percentage: $this.state.sheet_discount_percentage
+        sheet_discount_amount: 0,
+        sheet_discount_percentage: 0
       });
     }
   } else if (sheet_discount_amount > $this.state.patient_payable) {
@@ -43,12 +45,14 @@ const discounthandle = ($this, context, ctrl, e) => {
       type: "Warning"
     });
     $this.setState({
-      sheet_discount_amount: $this.state.sheet_discount_amount
+      sheet_discount_amount: 0,
+      sheet_discount_percentage: 0
     });
 
     if (context !== null) {
       context.updateState({
-        sheet_discount_amount: $this.state.sheet_discount_amount
+        sheet_discount_amount: 0,
+        sheet_discount_percentage: 0
       });
     }
   } else {
@@ -974,7 +978,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
   // if (e.target.value !== e.target.oldvalue) {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
-  row[e.target.name] = parseFloat(e.target.value);
+  // row[e.target.name] = parseFloat(e.target.value);
 
   let inputParam = [
     {
@@ -1288,6 +1292,12 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.average_cost
       : $this.state.average_cost;
 
+  let quantity = e !== undefined
+    ? e.selected === true
+      ? 0
+      : $this.state.quantity
+    : $this.state.quantity;
+
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,
@@ -1299,7 +1309,8 @@ const CloseItemBatch = ($this, context, e) => {
     uom_id: uom_id,
     unit_cost: sale_price,
     uom_description: uom_description,
-    average_cost: average_cost
+    average_cost: average_cost,
+    quantity: quantity
   });
 
   if (context !== null) {
@@ -1312,7 +1323,8 @@ const CloseItemBatch = ($this, context, e) => {
       uom_id: uom_id,
       unit_cost: sale_price,
       uom_description: uom_description,
-      average_cost: average_cost
+      average_cost: average_cost,
+      quantity: quantity
     });
   }
 };
@@ -1325,58 +1337,67 @@ const onchangegridcol = ($this, context, row, e) => {
 
   if (name === "discount_percentage") {
     if (parseFloat(value) > 100) {
+      row[name] = 0;
+      row["discount_amount"] = 0;
+      pharmacy_stock_detail[_index] = row;
+      $this.setState({
+        pharmacy_stock_detail: pharmacy_stock_detail
+      });
       swalMessage({
         title: "Discount % cannot be greater than 100.",
         type: "warning"
       });
+
+      // return;
+    }
+    else if (parseFloat(value) < 0) {
       row[name] = 0;
       row["discount_amount"] = 0;
       pharmacy_stock_detail[_index] = row;
       $this.setState({
         pharmacy_stock_detail: pharmacy_stock_detail
       });
-      return;
-    }
-    if (parseFloat(value) < 0) {
       swalMessage({
         title: "Discount % cannot be less than Zero",
         type: "warning"
       });
+      // return;
+    } else {
+      row[name] = value;
+    }
+  } else if (name === "discount_amount") {
+
+    if (parseFloat(value) < 0) {
+
       row[name] = 0;
-      row["discount_amount"] = 0;
+      row["discount_percentage"] = 0
       pharmacy_stock_detail[_index] = row;
       $this.setState({
         pharmacy_stock_detail: pharmacy_stock_detail
       });
-      return;
-    }
-  } else if (name === "discount_amount") {
-    if (parseFloat(value) < 0) {
       swalMessage({
         title: "Discount Amount cannot be less than Zero",
         type: "warning"
       });
+      // return;
+    }
+    else if (parseFloat(row.extended_cost) < parseFloat(value)) {
+
       row[name] = 0;
+      row["discount_percentage"] = 0
       pharmacy_stock_detail[_index] = row;
       $this.setState({
         pharmacy_stock_detail: pharmacy_stock_detail
       });
-      return;
-    }
-    if (parseFloat(row.extended_cost) < parseFloat(value)) {
       swalMessage({
         title: "Discount Amount cannot be greater than Gross Amount.",
         type: "warning"
       });
-      row[name] = 0;
-      pharmacy_stock_detail[_index] = row;
-      $this.setState({
-        pharmacy_stock_detail: pharmacy_stock_detail
-      });
-      return;
+      // return;
+    } else {
+      row[name] = value;
     }
   }
-  row[name] = value;
   calculateAmount($this, context, row, e);
 };
 
@@ -1396,7 +1417,7 @@ const qtyonchangegridcol = ($this, context, row, e) => {
       title: "Quantity cannot be less than Zero",
       type: "warning"
     });
-  } else if (parseFloat(value) > row.qtyhand) {
+  } else if (parseFloat(value) > parseFloat(row.qtyhand)) {
     swalMessage({
       title: "Quantity cannot be greater than Quantity in hand",
       type: "warning"
@@ -1482,7 +1503,7 @@ const SelectBatchDetails = ($this, row, context, e) => {
     e.selected.non_prec_Item === true
       ? parseFloat(e.selected.qtyhand)
       : parseFloat(e.selected.qtyhand) /
-        parseFloat(e.selected.conversion_factor);
+      parseFloat(e.selected.conversion_factor);
   row["grn_no"] = e.selected.grnno;
   row["barcode"] = e.selected.barcode;
   row["unit_cost"] = e.selected.sale_price;

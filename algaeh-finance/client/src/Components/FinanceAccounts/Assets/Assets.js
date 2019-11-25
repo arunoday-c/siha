@@ -4,14 +4,22 @@ import SortableTree, {
   addNodeUnderParent,
   removeNodeAtPath
 } from "react-sortable-tree";
-
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
-import { AlgaehConfirm, AlgaehMessagePop,Input,Icon } from "algaeh-react-components";
+import {
+  AlgaehConfirm,
+  AlgaehMessagePop,
+  Input,
+  Icon,
+  DatePicker
+} from "algaeh-react-components";
 import ReportLauncher from "../AccountReport";
+import Charts from "../Charts";
+import moment from "moment";
 import {
   getAccounts,
   removeAccount,
-  isPositive
+  isPositive,
+  getChartData
 } from ".././FinanceAccountEvent";
 import "../alice.scss";
 export default function Assets() {
@@ -25,8 +33,11 @@ export default function Assets() {
   const [searchFocusIndex, setSearchFocusIndex] = useState(0);
   const [searchFoundCount, setSearchFoundCount] = useState(undefined);
   const [isAccountHead, setIsAccountHead] = useState(false);
-  const [reportVisible,setReportVisible]= useState(false);
-  const [editorRecord,setEditorRecord]= useState({});
+  const [reportVisible, setReportVisible] = useState(false);
+  const [editorRecord, setEditorRecord] = useState({});
+  const [period, setPeriod] = useState("4");
+  const [accountChart, setAccountChart] = useState([]);
+  const [year, setYear] = useState(moment());
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
       try {
@@ -94,15 +105,16 @@ export default function Assets() {
       }
     });
   }
-
   function loadAccount() {
     getAccounts("1", data => {
       if (Array.isArray(data)) {
         if (data.length > 0) {
-          setFinanceHeadId(data[0].finance_account_head_id);
-          setTreeData(data[0].children);
-          setAssetAmount(data[0]["subtitle"]);
-          setSymbol(data[0]["trans_symbol"]);
+          const firstData = data[0];
+          setFinanceHeadId(firstData.finance_account_head_id);
+          setTreeData(firstData.children);
+          setAssetAmount(firstData["subtitle"]);
+          setSymbol(firstData["trans_symbol"]);
+          loadChartData(firstData.finance_account_head_id);
         } else {
           setTreeData([]);
         }
@@ -111,7 +123,20 @@ export default function Assets() {
       }
     });
   }
-
+  function loadChartData(finheadId) {
+    getChartData({
+      finance_account_head_id:
+        finheadId === undefined ? financeHeadId : finheadId,
+      period: period,
+      year: moment(year).format("YYYY")
+    })
+      .then(result => {
+        setAccountChart(result);
+      })
+      .catch(error => {
+        AlgaehMessagePop({ type: "error", display: error });
+      });
+  }
   useEffect(() => {
     loadAccount();
   }, []);
@@ -137,15 +162,16 @@ export default function Assets() {
         }}
       />
       <ReportLauncher
-          title="Ledger Report"
-          visible={reportVisible}
-          selectedNode={selectedNode}
-          onCancel={()=>{
-            setReportVisible(false);
-          }}
-          onOk={()=>{
-            setReportVisible(false);
-          }}
+        title="Ledger Report"
+        visible={reportVisible}
+        selectedNode={selectedNode}
+        parentId="1"
+        onCancel={() => {
+          setReportVisible(false);
+        }}
+        onOk={() => {
+          setReportVisible(false);
+        }}
       />
       <div className="row">
         <div className="col-4">
@@ -154,9 +180,38 @@ export default function Assets() {
               <div className="caption">
                 <h3 className="caption-subject">Asset accounts</h3>
               </div>
-              <div className="actions"></div>
+              <div className="actions">
+                <select
+                  value={period}
+                  onChange={e => {
+                    setPeriod(e.target.value);
+                  }}
+                >
+                  <option value="1">Jan - Mar</option>
+                  <option value="2">Apr - Jun</option>
+                  <option value="3">Jul - Sep</option>
+                  <option value="4">Oct - Dec</option>
+                  <option value="5">By Year</option>
+                </select>
+                <DatePicker
+                  mode="year"
+                  size="small"
+                  value={year}
+                  format="YYYY"
+                  onPanelChange={selectedDate => {
+                    setYear(selectedDate);
+                  }}
+                />
+              </div>
             </div>
-            <div className="portlet-body"></div>
+            <div className="portlet-body">
+              <Charts
+                data={accountChart}
+                xAxis={"month_name"}
+                yAxisBar={"amount"}
+                yAxisLine={"growth_percent"}
+              />
+            </div>
           </div>
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
@@ -165,7 +220,9 @@ export default function Assets() {
               </div>
               <div className="actions"></div>
             </div>
-            <div className="portlet-body"></div>
+            <div className="portlet-body">
+              <Charts data={[]} xAxis={""} yAxisBar={""} yAxisLine={""} />
+            </div>
           </div>
         </div>
         <div className="col-8">
@@ -258,7 +315,6 @@ export default function Assets() {
                                     (node.leafnode === "Y" ? "disabled" : "")
                                   }
                                   onClick={() => {
-
                                     setShowPopup(true);
                                     setSelectedNode(rowInfo);
                                   }}
@@ -269,27 +325,29 @@ export default function Assets() {
                                   label="edit"
                                   className={
                                     "NodeEditButton " +
-                                    (node.created_status === "S" ? "disabled" : "")
+                                    (node.created_status === "S"
+                                      ? "disabled"
+                                      : "")
                                   }
                                   onClick={() => {
-                                    if(Object.keys(editorRecord).length >0 ){
+                                    if (Object.keys(editorRecord).length > 0) {
                                       setEditorRecord({});
-                                    }else{
+                                    } else {
                                       setEditorRecord(rowInfo);
                                     }
-
                                   }}
                                 >
-                                 {JSON.stringify(editorRecord) === JSON.stringify(rowInfo)? <i className="fas fa-times" />:
-                                     <i className="fas fa-pen" />}
+                                  {JSON.stringify(editorRecord) ===
+                                  JSON.stringify(rowInfo) ? (
+                                    <i className="fas fa-times" />
+                                  ) : (
+                                    <i className="fas fa-pen" />
+                                  )}
                                 </li>
                                 <li
                                   label="print"
-                                  className={
-                                    "NodePrintButton "
-                                  }
+                                  className={"NodePrintButton "}
                                   onClick={() => {
-
                                     setReportVisible(true);
                                     setSelectedNode(rowInfo);
                                   }}
@@ -342,13 +400,25 @@ export default function Assets() {
                           title: (
                             <>
                               <span>
-                                { JSON.stringify(editorRecord) === JSON.stringify(rowInfo)?(<Input
-                                    suffix={(<Icon type="save"  onClick={(e)=>{
-                                      const editedValue= e.currentTarget.offsetParent.previousElementSibling.value;
-                                      setEditorRecord({});
-                                    }} />)}
+                                {JSON.stringify(editorRecord) ===
+                                JSON.stringify(rowInfo) ? (
+                                  <Input
+                                    suffix={
+                                      <Icon
+                                        type="save"
+                                        onClick={e => {
+                                          const editedValue =
+                                            e.currentTarget.offsetParent
+                                              .previousElementSibling.value;
+                                          setEditorRecord({});
+                                        }}
+                                      />
+                                    }
                                     defaultValue={node.title}
-                                />): node.title}{" "}
+                                  />
+                                ) : (
+                                  node.title
+                                )}{" "}
                                 {node.leafnode === "Y" ? null : (
                                   <>
                                     /
@@ -382,7 +452,12 @@ export default function Assets() {
                               </small>
                             </div>
                           ),
-                          className:node.created_status === "S" ?"systemGen" :node.leafnode === "Y" ?"":"accGroup"
+                          className:
+                            node.created_status === "S"
+                              ? "systemGen"
+                              : node.leafnode === "Y"
+                              ? ""
+                              : "accGroup"
                         };
                       }}
                       searchMethod={({ node, searchQuery }) => {

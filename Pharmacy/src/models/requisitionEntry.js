@@ -164,7 +164,8 @@ export default {
                 "item_uom",
                 "to_qtyhand",
                 "from_qtyhand",
-                "quantity_required"
+                "quantity_required",
+                "quantity_authorized"
               ];
 
               utilities

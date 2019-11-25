@@ -54,3 +54,27 @@ export function isPositive(value){
         return " negitive";
     }
 }
+export function getChartData(input) {
+    return new Promise((resolve,reject)=>{
+        try{
+            algaehApiCall({
+                uri: "/finance/getLedgerDataForChart",
+                data:input,
+                method: "GET",
+                module: "finance",
+                onSuccess: response => {
+                    if (response.data.success === true) {
+                      resolve(response.data.result);
+                    }
+                },
+                onCatch: error => {
+                 reject(error);
+                }
+            });
+        }
+        catch (e) {
+            reject(e);
+        }
+    })
+
+}

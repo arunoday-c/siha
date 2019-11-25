@@ -55,7 +55,7 @@ const serviceHandeler = ($this, context, e) => {
         [e.name]: e.value,
         visittypeselect: false
       },
-      () => {}
+      () => { }
     );
     if (context !== null) {
       context.updateState({ [e.name]: e.value });
@@ -248,48 +248,58 @@ const ondiscountgridcol = ($this, context, row, e) => {
 
   if (name === "discount_percentage") {
     if (parseFloat(value) > 100) {
+
+      row[name] = 0;
+      row["discount_amout"] = 0
+      billdetails[_index] = row;
+      $this.setState({ billdetails: billdetails });
       swalMessage({
         title: "Discount % cannot be greater than 100.",
         type: "warning"
       });
-      row[name] = oldvalue;
+      // return;
+    } else if (parseFloat(value) < 0) {
+
+      row[name] = 0;
+      row["discount_amout"] = 0
       billdetails[_index] = row;
       $this.setState({ billdetails: billdetails });
-      return;
-    }
-    if (parseFloat(value) < 0) {
       swalMessage({
         title: "Discount % cannot be less than Zero",
         type: "warning"
       });
-      row[name] = oldvalue;
-      billdetails[_index] = row;
-      $this.setState({ billdetails: billdetails });
-      return;
+      // return;
+    } else {
+      row[name] = value;
     }
   } else if (name === "discount_amout") {
     if (parseFloat(row.gross_amount) < parseFloat(value)) {
+
+      row[name] = 0;
+      row["discount_percentage"] = 0
+      billdetails[_index] = row;
+      $this.setState({ billdetails: billdetails });
       swalMessage({
         title: "Discount Amount cannot be greater than Gross Amount.",
         type: "warning"
       });
-      row[name] = oldvalue;
+      // return;
+    } else if (parseFloat(value) < 0) {
+
+      row[name] = 0;
+      row["discount_percentage"] = 0
       billdetails[_index] = row;
       $this.setState({ billdetails: billdetails });
-      return;
-    }
-    if (parseFloat(value) < 0) {
       swalMessage({
         title: "Discount Amount cannot be less than Zero",
         type: "warning"
       });
-      row[name] = oldvalue;
-      billdetails[_index] = row;
-      $this.setState({ billdetails: billdetails });
-      return;
+      // return;
+    } else {
+      row[name] = value;
     }
   }
-  row[name] = value;
+  // row[name] = value;
   // row.update();
   calculateAmount($this, context, row, e);
 };
@@ -399,8 +409,9 @@ const calculateAmount = ($this, context, row, e) => {
 
   // if (e.target.value !== e.target.oldvalue) {
   let billdetails = $this.state.billdetails;
+  debugger
 
-  row[e.target.name] = parseFloat(e.target.value === "" ? 0 : e.target.value);
+  // row[e.target.name] = parseFloat(e.target.value === "" ? 0 : e.target.value);
   let inputParam = [
     {
       hims_d_services_id: row.services_id,

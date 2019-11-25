@@ -49,12 +49,12 @@ class LoanAuthorization extends Component {
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
-          debugger;
+
           let auth_level =
             res.data.records.auth_levels.length > 0
               ? Enumerable.from(res.data.records.auth_levels).maxBy(
-                  w => w.value
-                )
+                w => w.value
+              )
               : null;
 
           this.setState({
@@ -89,7 +89,7 @@ class LoanAuthorization extends Component {
             employee_name: row.full_name,
             employee_id: row.hims_d_employee_id
           },
-          () => {}
+          () => { }
         );
       }
     });
@@ -147,7 +147,7 @@ class LoanAuthorization extends Component {
         }
       },
 
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -163,7 +163,7 @@ class LoanAuthorization extends Component {
         }
       },
 
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -333,8 +333,8 @@ class LoanAuthorization extends Component {
                 {!this.state.loading ? (
                   <span>Load</span>
                 ) : (
-                  <i className="fas fa-spinner fa-spin" />
-                )}
+                    <i className="fas fa-spinner fa-spin" />
+                  )}
               </button>{" "}
               <button
                 onClick={this.clearState.bind(this)}
@@ -374,17 +374,17 @@ class LoanAuthorization extends Component {
                           return row.loan_authorized === "APR" ? (
                             <i className="fas fa-thumbs-up" />
                           ) : (
-                            <a
-                              onClick={() => {
-                                this.setState({
-                                  selRow: row,
-                                  openAuth: true
-                                });
-                              }}
-                            >
-                              <i className="fas fa-file-signature" />
-                            </a>
-                          );
+                              <a
+                                onClick={() => {
+                                  this.setState({
+                                    selRow: row,
+                                    openAuth: true
+                                  });
+                                }}
+                              >
+                                <i className="fas fa-file-signature" />
+                              </a>
+                            );
                         },
                         others: {
                           filterable: false,
@@ -414,8 +414,8 @@ class LoanAuthorization extends Component {
                                   Issued
                                 </span>
                               ) : (
-                                "------"
-                              )}
+                                        "------"
+                                      )}
                             </span>
                           );
                         }
