@@ -204,7 +204,9 @@ export default {
                 "tax_percentage",
                 "tax_amount",
                 "total_amount",
-                "item_type"
+                "item_type",
+                "quantity_outstanding",
+                "rejected_quantity"
               ];
 
               _mysql
