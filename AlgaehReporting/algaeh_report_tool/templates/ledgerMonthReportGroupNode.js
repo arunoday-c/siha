@@ -27,9 +27,6 @@ const executePDF = function executePDFMethod(options) {
 
       let group_str = " group by payment_date ";
 
-      if (input.monthwise == "Y") {
-        group_str = " group by month ";
-      }
       if (input.leafnode == "N") {
         options.mysql
           .executeQuery({
