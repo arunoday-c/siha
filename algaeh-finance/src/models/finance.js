@@ -980,7 +980,7 @@ export default {
     const utilities = new algaehUtilities();
 
     const decimal_places = req.userIdentity.decimal_places;
-    if (req.query.reportType == "PL") {
+    if (req.query.reportType == "BS") {
       getAccountHeadsForReport(decimal_places, 1)
         .then(asset => {
           getAccountHeadsForReport(decimal_places, 2)
@@ -1007,7 +1007,7 @@ export default {
         .catch(e => {
           next(e);
         });
-    } else if (req.query.reportType == "BS") {
+    } else if (req.query.reportType == "PL") {
       getAccountHeadsForReport(decimal_places, 4)
         .then(income => {
           getAccountHeadsForReport(decimal_places, 5)
