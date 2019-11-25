@@ -4,7 +4,6 @@ import {
   AlgaehModal,
   AlgaehDateHandler,
   Spin,
-  Switch,
   Button,
   AlgaehMessagePop
 } from "algaeh-react-components";
@@ -17,7 +16,8 @@ export default memo(function Modal(props) {
     "Please wait report is preparing.."
   );
   const [checkedType, setCheckType] = useState(false);
-  const [dateRange, setDateRange] = useState([]);
+const previousMonthDate =[moment().add(-1,"M"),moment().add(-1,"days")] ;
+  const [dateRange, setDateRange] = useState(previousMonthDate);
   const [loading, setLoading] = useState(false);
   function onPdfGeneration() {
     setPleaseWait("Please wait pdf is generating...");
@@ -80,14 +80,14 @@ export default memo(function Modal(props) {
             ? {}
             : {
                 name: "from_date",
-                value: moment(dateRange[0]).format("YYYY-MM-DD")
+                value: checkedType ? moment(dateRange[0]).format("M") : moment(dateRange[0]).format("YYYY-MM-DD")
               };
         const to_date =
           dateRange.length === 0
             ? {}
             : {
                 name: "to_date",
-                value: moment(dateRange[1]).format("YYYY-MM-DD")
+                value:checkedType ?moment(dateRange[1]).format("M"): moment(dateRange[1]).format("YYYY-MM-DD")
               };
         const monthwise =
           dateRange.length === 0
@@ -161,6 +161,8 @@ export default memo(function Modal(props) {
       }
     });
   }
+  const format=  checkedType?{format:"YYYY-MMM"}:{};
+  
   return (
     <AlgaehModal
       className="algaehLedgerReportStyle"
@@ -230,18 +232,9 @@ export default memo(function Modal(props) {
               />
               Month Wise
             </label>
-
-            {/* <Switch
-              checkedChildren="Month wise"
-              unCheckedChildren="Date Wise"
-              onChange={check => {
-                setCheckType(check);
-              }}
-              checked={checkedType}
-            /> */}
           </div>
           <AlgaehDateHandler
-            type="range"
+            type={"range"}
             div={{
               className: "col-12 form-group"
             }}
@@ -258,6 +251,9 @@ export default memo(function Modal(props) {
                 setDateRange(dateSelected);
               }
             }}
+           others={{
+            ...format
+           }}
           />
         </div>
       </Spin>

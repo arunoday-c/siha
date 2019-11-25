@@ -9,15 +9,15 @@ import extend from "extend";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup
+  // AlagehFormGroup
   //AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import DisplayOPBilling from "../../../BillDetails/BillDetails";
-import {
-  credittexthandle,
-  credittextCal,
-  makeZero
-} from "./AddOPBillingHandaler";
+// import {
+//   credittexthandle,
+//   credittextCal,
+//   makeZero
+// } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/ReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";

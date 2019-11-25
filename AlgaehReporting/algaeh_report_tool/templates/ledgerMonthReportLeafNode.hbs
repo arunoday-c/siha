@@ -13,7 +13,7 @@
                         <th>Debit</th>
                         <th>Credit</th>
                         <th>Balance</th>
-                        <th>Narration</th>
+                       
                     </tr>
                 </thead>
                 <tbody>
@@ -22,12 +22,12 @@
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td class="txtFld">{{month}}</td>
+                        <td class="txtFld">{{month_name}}</td>
                         <td class="numberFld numberFldTotal">{{account_details}}</td>
                         <td class="numberFld numberFldTotal">{{debit_amount}}</td>
                         <td class="numberFld numberFldTotal">{{credit_amount}}</td>
                         <td class="numberFld numberFldTotal">{{balance_amount}}</td>
-                        <td class="txtFld">{{narration}}</td>
+                        
                     </tr>
                     {{/each }}
                     {{!-- <tr class="numberFld numberFldTotalBottom">
@@ -56,26 +56,70 @@
         <table class="tableTotal">
             <tr>
                 <td>
-                    Grand Total Debit
+                     Total Debit
                 </td>
                 <td>
-                    {{000}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Grand Total Credit
-                </td>
-                <td>
-                    {{00}}
+                    {{total_debit}}
                 </td>
             </tr>
             <tr>
                 <td>
-                    Grand Closing Balance
+                     Total Credit
                 </td>
                 <td>
-                    {{00}}
+                    {{total_credit}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                     
+                      Closing Balance
+                </td>
+                <td>
+                    {{final_bal}}
                 </td>
             </tr>
 

@@ -407,6 +407,7 @@ const AddSelectedBatches = ($this, context) => {
     });
   } else {
     if (context !== null) {
+      // debugger
       let saveEnable = true;
       let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
       let _stock_detail = $this.state.stock_detail;
@@ -435,7 +436,8 @@ const AddSelectedBatches = ($this, context) => {
 
       for (let i = 0; i < remove_item.length; i++) {
         if (remove_item[i].item_id === details.item_id) {
-          _pharmacy_stock_detail.splice(remove_item[i], 1);
+          let remove_index = _pharmacy_stock_detail.indexOf(remove_item[i])
+          _pharmacy_stock_detail.splice(remove_index, 1);
         }
       }
 

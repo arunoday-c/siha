@@ -275,8 +275,8 @@ let addInvoiceGeneration = (req, res, next) => {
 
                 connection.query(
                   "INSERT INTO hims_f_invoice_details(" +
-                    insurtColumns.join(",") +
-                    ",invoice_header_id) VALUES ?",
+                  insurtColumns.join(",") +
+                  ",invoice_header_id) VALUES ?",
                   [
                     jsonArrayToObject({
                       sampleInputObject: insurtColumns,
@@ -407,7 +407,7 @@ let getInvoiceGeneration = (req, res, next) => {
         IH.`updated_by`, IH.`updated_date`, IH.`hospital_id`, PV.visit_code, P.patient_code, P.full_name\
         from  hims_f_invoice_header IH, hims_f_patient_visit PV, hims_f_patient P\
         where IH.visit_id = PV.hims_f_patient_visit_id and IH.patient_id = P.hims_d_patient_id and " +
-          where.condition,
+        where.condition,
         where.values,
         (error, headerResult) => {
           if (error) {
@@ -517,8 +517,8 @@ let getInvoicesForClaimsBACKUP = (req, res, next) => {
         and SI.record_status='A' left join hims_d_insurance_network NET on IH.network_id=NET.hims_d_insurance_network_id\
         and NET.record_status='A' left join hims_d_insurance_network_office NET_OF on IH.network_office_id=NET_OF.hims_d_insurance_network_office_id\
         and NET_OF.record_status='A' where " +
-            invoice_date +
-            where.condition,
+          invoice_date +
+          where.condition,
           where.values,
 
           (error, result) => {
@@ -650,8 +650,8 @@ let getInvoicesForClaims = (req, res, next) => {
            and SI.record_status='A' left join hims_d_insurance_network NET on IH.network_id=NET.hims_d_insurance_network_id\
            and NET.record_status='A' left join hims_d_insurance_network_office NET_OF on IH.network_office_id=NET_OF.hims_d_insurance_network_office_id\
            and NET_OF.record_status='A' where " +
-              invoice_date +
-              where.condition,
+            invoice_date +
+            where.condition,
             where.values,
 
             (error, result) => {
@@ -746,8 +746,8 @@ let getInvoicesForClaims = (req, res, next) => {
 
                                   connection.query(
                                     "INSERT INTO hims_f_invoice_icd(" +
-                                      insurtColumns.join(",") +
-                                      ",invoice_header_id,created_date,updated_date) VALUES ?",
+                                    insurtColumns.join(",") +
+                                    ",invoice_header_id,created_date,updated_date) VALUES ?",
                                     [
                                       jsonArrayToObject({
                                         sampleInputObject: insurtColumns,

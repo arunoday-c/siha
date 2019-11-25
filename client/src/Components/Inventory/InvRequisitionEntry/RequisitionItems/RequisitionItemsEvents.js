@@ -322,25 +322,27 @@ const onchangegridcol = ($this, context, row, e) => {
       title: "Cannot be greater than Requested Quantity.",
       type: "warning"
     });
-    row[name] = $this.state.quantity_transferred;
+    // row[name] = $this.state.quantity_transferred;
+    return
   } else if (parseFloat(value) < 0) {
     swalMessage({
       title: "Cannot be less than Zero.",
       type: "warning"
     });
-  } else {
-    row[name] = value === "" ? null : value;;
-    row["quantity_outstanding"] = value === "" ? 0 : value;
-
-    inventory_stock_detail[row.rowIdx] = row;
-    $this.setState({ inventory_stock_detail: inventory_stock_detail });
-
-    if (context !== undefined) {
-      context.updateState({
-        inventory_stock_detail: inventory_stock_detail
-      });
-    }
+    return
   }
+  row[name] = value === "" ? null : value;;
+  row["quantity_outstanding"] = value === "" ? 0 : value;
+
+  inventory_stock_detail[row.rowIdx] = row;
+  $this.setState({ inventory_stock_detail: inventory_stock_detail });
+
+  if (context !== undefined) {
+    context.updateState({
+      inventory_stock_detail: inventory_stock_detail
+    });
+  }
+
 };
 
 const getItemLocationStock = ($this, context, value) => {

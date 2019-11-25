@@ -26,8 +26,6 @@ const executePDF = function executePDFMethod(options) {
       }
 
       if (input.leafnode == "Y") {
-        console.log("leaf:");
-
         options.mysql
           .executeQuery({
             query: `SELECT finance_voucher_id,payment_date ,credit_amount, debit_amount,
@@ -37,13 +35,13 @@ const executePDF = function executePDFMethod(options) {
                       finance_voucher_details VD inner join finance_account_head H on
                       VD.head_id=H.finance_account_head_id inner join finance_account_child C on 
                       VD.child_id=C.finance_account_child_id where 
-                      head_id=? and child_id=? ;
+                      head_id=? and child_id=? ${strQry};
                       SELECT finance_voucher_id,payment_date ,sum(credit_amount) as total_credit_amount,
                       sum(debit_amount) as total_debit_amount ,
                       coalesce(sum(debit_amount)-sum(credit_amount),0)as debit_minus_credit ,
                       coalesce(sum(credit_amount)-sum(debit_amount),0)as credit_minus_debit FROM 
                       finance_voucher_details  where 
-                      head_id=? and child_id=? group by payment_date with rollup  ;`,
+                      head_id=? and child_id=? ${strQry} group by payment_date with rollup  ;`,
             values: [
               input.head_id,
               input.child_id,
