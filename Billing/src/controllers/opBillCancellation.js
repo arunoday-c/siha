@@ -8,7 +8,8 @@ const {
   updateEncounterDetails,
   checkLabSampleCollected,
   checkRadSheduled,
-  financeOpBillCancel
+  financeOpBillCancel,
+  checkDentalProcedure
 } = opModels;
 import recModels from "../models/receiptentry";
 const { getReceiptEntry, addReceiptEntry } = recModels;
@@ -48,6 +49,17 @@ export default () => {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
           records: req.radiology
+        });
+      } else {
+        next();
+      }
+    },
+    checkDentalProcedure,
+    (req, res, next) => {
+      if (req.dental_procedure.internal_error == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: req.dental_procedure
         });
       } else {
         next();
