@@ -105,7 +105,6 @@ const itemchangeText = ($this, context, e) => {
       module: "pharmacy",
       method: "GET",
       data: {
-        // location_id: $this.state.to_location_id,
         hims_d_item_master_id: value
       },
       redux: {
@@ -302,27 +301,26 @@ const onchangegridcol = ($this, context, row, e) => {
       title: "Cannot be greater than Requested Quantity.",
       type: "warning"
     });
-    row[name] = $this.state.quantity_transferred;
+    return
   } else if (parseFloat(value) < 0) {
     swalMessage({
       title: "Cannot be less than Zero.",
       type: "warning"
     });
-    // row[name] = oldvalue
-    // row.update();
-  } else {
-    row[name] = value === "" ? null : value;
-    row["quantity_outstanding"] = value === "" ? 0 : value;
-
-    pharmacy_stock_detail[row.rowIdx] = row;
-    $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
-
-    if (context !== undefined) {
-      context.updateState({
-        pharmacy_stock_detail: pharmacy_stock_detail
-      });
-    }
+    return
   }
+  row[name] = value === "" ? null : value;
+  row["quantity_outstanding"] = value === "" ? 0 : value;
+
+  pharmacy_stock_detail[row.rowIdx] = row;
+  $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+
+  if (context !== undefined) {
+    context.updateState({
+      pharmacy_stock_detail: pharmacy_stock_detail
+    });
+  }
+
 };
 
 const getItemLocationStock = ($this, context, value) => {
