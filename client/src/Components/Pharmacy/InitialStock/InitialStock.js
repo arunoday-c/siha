@@ -93,6 +93,7 @@ class InitialStock extends Component {
       module: "pharmacy",
       method: "GET",
       data: {
+        git_location: "N",
         location_status: "A",
         hospital_id: hospital.hims_d_hospital_id
       },
