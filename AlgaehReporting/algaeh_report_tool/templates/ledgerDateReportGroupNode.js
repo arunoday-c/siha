@@ -62,7 +62,7 @@ const executePDF = function executePDFMethod(options) {
             inner join finance_account_head H on
             VD.head_id=H.finance_account_head_id inner join finance_account_child C on 
             VD.child_id=C.finance_account_child_id where 
-            head_id in (?) and child_id in (?)  group by payment_date,head_id,child_id with rollup;`,
+            head_id in (?) and child_id in (?) ${strQry} group by payment_date,head_id,child_id with rollup;`,
                   values: [head_ids, child_ids],
                   printQuery: true
                 })

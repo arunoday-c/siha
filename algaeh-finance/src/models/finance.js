@@ -69,7 +69,7 @@ export default {
          
               `,
 
-          printQuery: true,
+          printQuery: false,
 
           values: [input.finance_account_head_id]
         })
@@ -234,7 +234,7 @@ export default {
         .executeQueryWithTransaction({
           query: "INSERT INTO `finance_account_child` (child_name)  VALUE(?)",
           values: [input.account_name],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           if (result.insertId > 0) {
@@ -243,7 +243,7 @@ export default {
                 query:
                   "INSERT INTO `finance_head_m_child` (head_id,child_id,created_from)  VALUE(?,?,?);",
                 values: [input.finance_account_head_id, result.insertId, "U"],
-                printQuery: true
+                printQuery: false
               })
               .then(detail => {
                 if (input.opening_bal > 0) {
@@ -276,7 +276,7 @@ export default {
                         req.userIdentity.algaeh_d_app_user_id,
                         new Date()
                       ],
-                      printQuery: true
+                      printQuery: false
                     })
                     .then(subdetail => {
                       _mysql.commitTransaction(() => {
@@ -340,7 +340,7 @@ export default {
             input.finance_account_head_id,
             input.finance_account_head_id
           ],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           console.log("result:", result);
@@ -382,7 +382,7 @@ export default {
                 parent_acc_id,
                 hierarchy_path
               ],
-              printQuery: true
+              printQuery: false
             })
             .then(resul => {
               _mysql.releaseConnection();
@@ -512,7 +512,7 @@ export default {
         left join  algaeh_d_app_screens S on H.from_screen=S.screen_code  where  SD.posted='N'  ${strQry}
         group by  finance_day_end_header_id; `,
 
-        printQuery: true
+        printQuery: false
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -548,7 +548,7 @@ export default {
         head_id,child_id,debit_amount,payment_type,credit_amount,narration,year,month,hospital_id 
         from finance_day_end_sub_detail where day_end_header_id in (?);`,
         values: [input.finance_day_end_header_ids],
-        printQuery: true
+        printQuery: false
       })
       .then(result => {
         // _mysql.releaseConnection();
@@ -582,7 +582,7 @@ export default {
               values: result,
               includeValues: insertColumns,
               bulkInsertOrUpdate: true,
-              printQuery: true
+              printQuery: false
             })
             .then(result2 => {
               _mysql
@@ -647,7 +647,7 @@ export default {
             input.head_id,
             input.child_id
           ],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           if (result[0][0]["created_from"] == "S") {
@@ -674,7 +674,7 @@ export default {
                     result[0][0]["finance_head_m_child_id"],
                     input.child_id
                   ],
-                  printQuery: true
+                  printQuery: false
                 })
                 .then(resu => {
                   // _mysql.releaseConnection();
@@ -760,7 +760,7 @@ export default {
                     ${delete_childs}
                     delete from finance_account_head  where finance_account_head_id in (${head_ids});`,
                   values: [input.head_id, input.child_id, input.head_id],
-                  printQuery: true
+                  printQuery: false
                 })
                 .then(resu => {
                   // _mysql.releaseConnection();
@@ -806,7 +806,7 @@ export default {
         case when payment_mode = "CH" then amount end as cheque
         from finance_day_end_detail where day_end_header_id=?) as A ;`,
         values: [req.query.day_end_header_id, req.query.day_end_header_id],
-        printQuery: true
+        printQuery: false
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -1425,7 +1425,7 @@ function getAccountHeadsForReport(decimal_places, finance_account_head_id) {
                 )select * from cte)
                 group by finance_account_head_id order by account_level;   `,
 
-          printQuery: true,
+          printQuery: false,
 
           values: [
             finance_account_head_id,
