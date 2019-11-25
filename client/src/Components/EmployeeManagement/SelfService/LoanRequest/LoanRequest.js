@@ -408,7 +408,7 @@ class LoanRequest extends Component {
                 {this.state.request_type === "LO" ? (
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group" }}
                       label={{
                         forceLabel: "Loan Type",
                         isImp: true
@@ -435,7 +435,7 @@ class LoanRequest extends Component {
                     </div>
 
                     <AlagehFormGroup
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group" }}
                       label={{
                         forceLabel: "Loan Amount",
                         isImp: true
@@ -452,7 +452,7 @@ class LoanRequest extends Component {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group" }}
                       label={{
                         forceLabel: "No. of EMI",
                         isImp: true
@@ -481,7 +481,7 @@ class LoanRequest extends Component {
                     </div>
 
                     <AlagehAutoComplete
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group" }}
                       label={{
                         forceLabel: "Start Year.",
                         isImp: true
@@ -524,7 +524,7 @@ class LoanRequest extends Component {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-12" }}
+                      div={{ className: "col-12 form-group" }}
                       label={{
                         forceLabel: "Reason for Loan",
                         isImp: false
@@ -542,7 +542,6 @@ class LoanRequest extends Component {
                       <button
                         type="button"
                         className="btn btn-primary"
-                        style={{ marginTop: 19 }}
                         onClick={this.applyLoan.bind(this)}
                       >
                         Request
@@ -552,7 +551,7 @@ class LoanRequest extends Component {
                 ) : this.state.request_type === "AD" ? (
                   <div className="row">
                     <AlagehFormGroup
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group" }}
                       label={{
                         forceLabel: "Advance Amount",
                         isImp: true
@@ -569,7 +568,7 @@ class LoanRequest extends Component {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group" }}
                       label={{
                         forceLabel: "Deducting Year",
                         isImp: true
@@ -593,7 +592,7 @@ class LoanRequest extends Component {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group" }}
                       label={{
                         forceLabel: "Deducting Month",
                         isImp: true
@@ -613,7 +612,7 @@ class LoanRequest extends Component {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-12" }}
+                      div={{ className: "col-12 form-group" }}
                       label={{
                         forceLabel: "Reason for Advance",
                         isImp: false
@@ -632,10 +631,9 @@ class LoanRequest extends Component {
                       <button
                         type="button"
                         className="btn btn-primary"
-                        style={{ marginTop: 19 }}
                         onClick={this.applyAdvance.bind(this)}
                       >
-                        Request
+                        Send for Approval
                       </button>
                     </div>
                   </div>
