@@ -563,6 +563,123 @@ export default {
       });
     }
   },
+
+  checkDentalProcedure: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      let inputParam = { ...req.body };
+      console.log("checkDentalProcedure: ", inputParam.billdetails);
+
+      const dental_Services = _.filter(
+        inputParam.billdetails,
+        f =>
+          f.service_type_id ==
+          appsettings.hims_d_service_type.service_type_id.Procedure && f.ordered_services_id != null
+      );
+      console.log("dental_Services: ", dental_Services.length);
+      if (dental_Services.length > 0) {
+        let ordered_services_id = _.map(dental_Services, o => {
+          return o.ordered_services_id;
+        });
+        console.log("ordered_services_id: ", ordered_services_id.length);
+        _mysql
+          .executeQuery({
+            query:
+              "SELECT d_treatment_id FROM `hims_f_ordered_services` WHERE hims_f_ordered_services_id in (?)",
+            values: [ordered_services_id],
+            printQuery: true
+          })
+          .then(dental_ordr_result => {
+            let d_treatment_id = _.map(dental_ordr_result, o => {
+              return o.d_treatment_id;
+            });
+            _mysql
+              .executeQuery({
+                query:
+                  "SELECT hims_f_dental_treatment_id, treatment_status FROM `hims_f_dental_treatment` WHERE hims_f_dental_treatment_id in (?)",
+                values: [d_treatment_id],
+                printQuery: true
+              })
+              .then(dental_data_result => {
+                if (dental_data_result.length > 0) {
+                  console.log("dental_data_result: ", dental_data_result);
+                  const den_Services_Proce = _.filter(
+                    dental_data_result,
+                    f => f.treatment_status != "PL"
+                  );
+
+                  if (den_Services_Proce.length > 0) {
+                    req.dental_procedure = {
+                      internal_error: true,
+                      message: "Already Procedure Done."
+                    };
+                    _mysql.rollBackTransaction(() => {
+                      next();
+                    });
+                  } else {
+                    let strQry = "";
+
+                    for (let i = 0; i < dental_data_result.length; i++) {
+                      strQry += _mysql.mysqlQueryFormat(
+                        "UPDATE hims_f_dental_treatment SET billed='N' where hims_f_dental_treatment_id=?;",
+                        [dental_data_result[i].hims_f_dental_treatment_id]
+                      );
+                      strQry += _mysql.mysqlQueryFormat(
+                        "UPDATE hims_f_ordered_services SET billed='N' where d_treatment_id=?;",
+                        [dental_data_result[i].hims_f_dental_treatment_id]
+                      );
+                    }
+                    _mysql
+                      .executeQuery({
+                        query: strQry,
+                        printQuery: true
+                      })
+                      .then(result => {
+                        req.dental_procedure = {
+                          ...result[0],
+                          ...{
+                            internal_error: false
+                          }
+                        };
+                        next();
+                      })
+                      .catch(e => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  }
+                } else {
+                  req.dental_procedure = {
+                    internal_error: false
+                  };
+                  next();
+                }
+              })
+              .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      } else {
+        req.dental_procedure = {
+          internal_error: false
+        };
+        next();
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
   financeOpBillCancel: (req, res, next) => {
     try {
       const _options = req.connection == null ? {} : req.connection;
