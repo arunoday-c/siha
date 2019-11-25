@@ -490,7 +490,8 @@ const AddSelectedBatches = ($this, context) => {
 
       for (let i = 0; i < remove_item.length; i++) {
         if (remove_item[i].item_id === details.item_id) {
-          _inventory_stock_detail.splice(remove_item[i], 1);
+          let remove_index = _inventory_stock_detail.indexOf(remove_item[i])
+          _inventory_stock_detail.splice(remove_index, 1);
         }
       }
 
