@@ -26,8 +26,6 @@ const executePDF = function executePDFMethod(options) {
       }
 
       if (input.leafnode == "Y") {
-        console.log("leaf:");
-
         options.mysql
           .executeQuery({
             query: `SELECT finance_voucher_id,payment_date ,credit_amount, debit_amount,

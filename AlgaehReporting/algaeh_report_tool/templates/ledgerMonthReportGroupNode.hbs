@@ -15,18 +15,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{#hasElement data}}
-                    {{#each data}}
+                    {{#hasElement months}}
+                    {{#each months}}
                     <tr>
-                        <td colspan="4" class="tableSubHdg txtFld">{{payment_date}}</td>
-                        <td class="tableSubHdg numberFld">{{day_closing_bal}}</td>
+                        <td colspan="4" class="tableSubHdg txtFld">{{month_name}}</td>
+                        <td class="tableSubHdg numberFld">{{month_closing_bal}}</td>
                     </tr>
-                    {{#each details}}
+                    {{#each head_accounts}}
                     <tr>
                         <td colspan="4" class="tableSubHdg2 txtFld">{{head_account}}</td>
                         <td class="tableSubHdg2 numberFld">{{total_of_head_account}}</td>
                     </tr>
-                    {{#each entries}}
+                    {{#each sub_accounts}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td class="txtFld">{{child_name}}</td>

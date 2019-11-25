@@ -1334,18 +1334,16 @@ export default {
 
             _mysql
               .executeQuery({
-                query: `   SELECT finance_voucher_id,payment_date ,head_id,child_id,
-          sum(credit_amount) as credit_amount,sum(debit_amount) as debit_amount,
-          coalesce( sum(credit_amount)-sum(debit_amount),0)as credit_minus_debit,               
-          coalesce(sum(debit_amount)- sum(credit_amount),0)as debit_minus_credit,               
-          case payment_type when 'CR' then 'Credit' else 'Debit' end as payment_type,
-         
-          H.account_name,child_id,C.child_name
-           FROM finance_voucher_details VD 
-          inner join finance_account_head H on
-          VD.head_id=H.finance_account_head_id inner join finance_account_child C on 
-          VD.child_id=C.finance_account_child_id where 
-          head_id in (?) and child_id in (?)  group by payment_date,head_id,child_id with rollup;`,
+                query: `  SELECT finance_voucher_id,month ,head_id,child_id,
+                sum(credit_amount) as credit_amount,sum(debit_amount) as debit_amount,
+                coalesce( sum(credit_amount)-sum(debit_amount),0)as credit_minus_debit,               
+                coalesce(sum(debit_amount)- sum(credit_amount),0)as debit_minus_credit,
+                H.account_name,child_id,C.child_name,monthname(concat('1999-',month,'-01')) as month_name 
+                FROM finance_voucher_details VD 
+                inner join finance_account_head H on
+                VD.head_id=H.finance_account_head_id inner join finance_account_child C on 
+                VD.child_id=C.finance_account_child_id where 
+                head_id in (?) and child_id in (?)  group by month,head_id,child_id with rollup;;`,
                 values: [head_ids, child_ids],
                 printQuery: true
               })
@@ -1355,31 +1353,33 @@ export default {
                   let entriesArray = [];
                   let grand_total = {};
                   const records = [];
-                  const datewiseTotals = [];
-                  const datewiseHeadSum = [];
+
+                  const monthwiseTotals = [];
+
+                  const monthwiseHeadSum = [];
 
                   //seprating data
                   final_result.forEach(item => {
                     if (
                       item.head_id == null &&
                       item.child_id == null &&
-                      item.payment_date == null
+                      item.month == null
                     ) {
                       grand_total = item;
                     } else if (
-                      item.payment_date != null &&
+                      item.month != null &&
                       item.head_id == null &&
                       item.child_id == null
                     ) {
-                      datewiseTotals.push(item);
+                      monthwiseTotals.push(item);
                     } else if (
-                      item.payment_date != null &&
+                      item.month != null &&
                       item.head_id > 0 &&
                       item.child_id == null
                     ) {
-                      datewiseHeadSum.push(item);
+                      monthwiseHeadSum.push(item);
                     } else if (
-                      item.payment_date != null &&
+                      item.month != null &&
                       item.head_id > 0 &&
                       item.child_id > 0
                     ) {
@@ -1399,10 +1399,10 @@ export default {
                           decimal_places
                         ),
                         child_name: m.child_name,
-                  
+
                         head_id: m.head_id,
                         child_id: m.child_id,
-                        payment_date: m.payment_date,
+                        month: m.month,
                         balance_amount: parseFloat(
                           m.debit_minus_credit
                         ).toFixed(decimal_places)
@@ -1418,10 +1418,10 @@ export default {
                           decimal_places
                         ),
                         child_name: m.child_name,
-                     
+
                         head_id: m.head_id,
                         child_id: m.child_id,
-                        payment_date: m.payment_date,
+                        month: m.month,
                         balance_amount: parseFloat(
                           m.credit_minus_debit
                         ).toFixed(decimal_places)
@@ -1429,21 +1429,21 @@ export default {
                     });
                   }
 
-                  const dateWiseEntries = _.chain(entriesArray)
-                    .groupBy(g => g.payment_date)
+                  const monthwiseEntries = _.chain(entriesArray)
+                    .groupBy(g => g.month)
                     .value();
 
                   if (input.parent_id == 1 || input.parent_id == 5) {
-                    datewiseTotals.forEach(data => {
-                      const dateWiseheads = datewiseHeadSum.filter(
-                        f => f.payment_date == data.payment_date
+                    monthwiseTotals.forEach(data => {
+                      const monthWiseheads = monthwiseHeadSum.filter(
+                        f => f.month == data.month
                       );
-                      const dateWiseChilds = dateWiseEntries[data.payment_date];
+                      const monthWiseChilds = monthwiseEntries[data.month];
 
                       const details = [];
 
-                      dateWiseheads.forEach(head => {
-                        const entries = dateWiseChilds.filter(
+                      monthWiseheads.forEach(head => {
+                        const entries = monthWiseChilds.filter(
                           child => head.head_id == child.head_id
                         );
                         console.log("entries:", entries);
@@ -1451,27 +1451,27 @@ export default {
                         details.push({
                           head_account: head.account_name,
                           total_of_head_account: head.debit_minus_credit,
-                          entries: entries
+                          sub_accounts: entries
                         });
                       });
 
                       outputArray.push({
-                        payment_date: data.payment_date,
-                        day_closing_bal: data.debit_minus_credit,
-                        details: details
+                        month_name: data.month_name,
+                        month_closing_bal: data.debit_minus_credit,
+                        head_accounts: details
                       });
                     });
                   } else {
-                    datewiseTotals.forEach(data => {
-                      const dateWiseheads = datewiseHeadSum.filter(
-                        f => f.payment_date == data.payment_date
+                    monthwiseTotals.forEach(data => {
+                      const monthWiseheads = monthwiseHeadSum.filter(
+                        f => f.month == data.month
                       );
-                      const dateWiseChilds = dateWiseEntries[data.payment_date];
+                      const monthWiseChilds = monthwiseEntries[data.month];
 
                       const details = [];
 
-                      dateWiseheads.forEach(head => {
-                        const entries = dateWiseChilds.filter(
+                      monthWiseheads.forEach(head => {
+                        const entries = monthWiseChilds.filter(
                           child => head.head_id == child.head_id
                         );
                         console.log("entries:", entries);
@@ -1479,14 +1479,14 @@ export default {
                         details.push({
                           head_account: head.account_name,
                           total_of_head_account: head.credit_minus_debit,
-                          entries: entries
+                          sub_accounts: entries
                         });
                       });
 
                       outputArray.push({
-                        payment_date: data.payment_date,
-                        day_closing_bal: data.credit_minus_debit,
-                        details: details
+                        month_name: data.month_name,
+                        month_closing_bal: data.credit_minus_debit,
+                        head_accounts: details
                       });
                     });
                   }
@@ -1527,7 +1527,7 @@ export default {
                   }
 
                   req.records = {
-                    data: outputArray,
+                    months: outputArray,
                     ...finalTotals
                   };
                   next();

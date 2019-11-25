@@ -56,8 +56,7 @@ const executePDF = function executePDFMethod(options) {
             sum(credit_amount) as credit_amount,sum(debit_amount) as debit_amount,
             coalesce( sum(credit_amount)-sum(debit_amount),0)as credit_minus_debit,               
             coalesce(sum(debit_amount)- sum(credit_amount),0)as debit_minus_credit,               
-            case payment_type when 'CR' then 'Credit' else 'Debit' end as payment_type,
-           
+                       
             H.account_name,child_id,C.child_name
              FROM finance_voucher_details VD 
             inner join finance_account_head H on
@@ -267,6 +266,10 @@ const executePDF = function executePDFMethod(options) {
             options.mysql.releaseConnection();
             next(e);
           });
+      } else {
+        resolve({
+          details: []
+        });
       }
     } catch (e) {
       reject(e);
