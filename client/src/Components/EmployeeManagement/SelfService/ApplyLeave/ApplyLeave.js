@@ -101,7 +101,7 @@ class ApplyLeave extends Component {
 
   deleteLeaveApplication(data) {
     swal({
-      title: "Delete Leave Application for " + data.leave_description + "?",
+      title: "Delete leave request for " + data.leave_description + "?",
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
@@ -616,7 +616,7 @@ class ApplyLeave extends Component {
                 </div>
               </div>
               <div className="portlet-body">
-                <div className="row" style={{ minHeight: "62.5vh" }}>
+                <div className="row">
                   {/* <AlagehAutoComplete
                     div={{ className: "col-12 margin-bottom-15" }}
                     label={{
@@ -880,7 +880,7 @@ class ApplyLeave extends Component {
                       className="btn btn-primary"
                       disabled={this.state.Request_enable}
                     >
-                      Request
+                      Send for Approval
                     </button>
                   </div>
                 </div>

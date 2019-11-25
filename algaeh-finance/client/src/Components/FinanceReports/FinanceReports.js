@@ -4,6 +4,13 @@ const style = {
   mystyle: {
     backgroundColor: "#fefefe"
   },
+  eachTable: {
+    width: "100%",
+    marginTop: 1,
+    paddingTop: 15,
+    borderTop: "1px solid #ccc",
+    borderBottom: "1px solid #ccc"
+  },
   reportListLeftSide: {
     backgroundColor: "white"
   },
@@ -25,7 +32,7 @@ const style = {
     margin: 0,
     padding: "5px 10px",
     listStyle: "none",
-    borderBottom: "1px solid #ccc",
+    borderBottom: "2px dashed #ccc",
     cursor: "pointer"
   },
   treeListUL: {
@@ -38,7 +45,6 @@ const style = {
     margin: 0,
     padding: "5px 10px",
     listStyle: "none",
-    borderBottom: "1px solid #ccc",
     cursor: "pointer",
     width: "100%"
   },
@@ -59,6 +65,14 @@ const style = {
   },
   treeListLiValue: {
     float: "right"
+  },
+  treeListLiTextTotal: {
+    textAlign: "left",
+    fontWeight: "bold"
+  },
+  treeListLiValueTotal: {
+    float: "right",
+    fontWeight: "bold"
   }
 };
 export default function FinanceReports() {
@@ -86,129 +100,96 @@ export default function FinanceReports() {
       </div>
       <div className="col-9" style={style.reportPreviewRight}>
         <div>
-          <table style={{ width: "100%" }}>
+          <table style={style.eachTable}>
             <tr>
-              <td style={{ width: "50%" }}>
+              <td>
                 <ul style={style.treeListUL}>
                   <li style={style.treeListLi}>
                     <span style={style.treeListLiText}>
                       <b>&#8627;</b> Assets
                     </span>
-                    <span style={style.treeListLiValue}>0.00</span>
                     <ul style={style.treeListInnerUl}>
                       <li style={style.treeListInnerLi}>
                         <span style={style.treeListLiText}>
-                          <b>&#8627;</b> Assets
+                          <b>&#8627;</b> Current Assets
                         </span>
-                        <span style={style.treeListLiValue}>0.00</span>
-                      </li>
-                      <li style={style.treeListInnerLi}>
-                        <span style={style.treeListLiText}>
-                          <b>&#8627;</b> Assets
-                        </span>
-                        <span style={style.treeListLiValue}>0.00</span>{" "}
                         <ul style={style.treeListInnerUl}>
                           <li style={style.treeListInnerLi}>
                             <span style={style.treeListLiText}>
-                              <b>&#8627;</b> Assets
+                              <b>&#8627;</b> Cash and cash equivalents
                             </span>
-                            <span style={style.treeListLiValue}>0.00</span>
-                          </li>
-                          <li style={style.treeListInnerLi}>
-                            <span style={style.treeListLiText}>
-                              <b>&#8627;</b> Assets
-                            </span>
-                            <span style={style.treeListLiValue}>0.00</span>
+                            <ul style={style.treeListInnerUl}>
+                              <li style={style.treeListInnerLi}>
+                                <span style={style.treeListLiText}>
+                                  <b>&#8627;</b> Bank Account HDFC
+                                </span>
+                                <span style={style.treeListLiValue}>0.00</span>
+                              </li>{" "}
+                              <li style={style.treeListInnerLi}>
+                                <span style={style.treeListLiTextTotal}>
+                                  <b>&#8627;</b> Total Cash and cash equivalents
+                                </span>
+                                <span style={style.treeListLiValueTotal}>
+                                  0.00
+                                </span>
+                              </li>
+                            </ul>{" "}
                           </li>{" "}
                           <li style={style.treeListInnerLi}>
-                            <span style={style.treeListLiText}>
-                              <b>&#8627;</b> Assets
+                            <span style={style.treeListLiTextTotal}>
+                              <b>&#8627;</b> Total Current Assets
                             </span>
-                            <span style={style.treeListLiValue}>0.00</span>
+                            <span style={style.treeListLiValueTotal}>0.00</span>
                           </li>
-                        </ul>{" "}
-                      </li>{" "}
+                        </ul>
+                      </li>
                       <li style={style.treeListInnerLi}>
-                        <span style={style.treeListLiText}>
-                          <b>&#8627;</b> Assets
+                        <span style={style.treeListLiTextTotal}>
+                          <b>&#8627;</b> Total Assets
                         </span>
-                        <span style={style.treeListLiValue}>0.00</span>
+                        <span style={style.treeListLiValueTotal}>0.00</span>
                       </li>
                     </ul>{" "}
-                  </li>
-                  <li style={style.treeListLi}>
-                    <span style={style.treeListLiText}>
-                      <b>&#8627;</b> Assets
-                    </span>
-                    <span style={style.treeListLiValue}>0.00</span>
-                  </li>{" "}
-                  <li style={style.treeListLi}>
-                    <span style={style.treeListLiText}>
-                      <b>&#8627;</b> Assets
-                    </span>
-                    <span style={style.treeListLiValue}>0.00</span>
                   </li>
                 </ul>{" "}
               </td>
-              <td style={{ width: "50%" }}>
+            </tr>
+          </table>
+          <table style={style.eachTable}>
+            <tr>
+              <td>
                 <ul style={style.treeListUL}>
                   <li style={style.treeListLi}>
                     <span style={style.treeListLiText}>
-                      <b>&#8627;</b> Liabilities
+                      <b>&#8627;</b> Liabilities and Equity
                     </span>
-                    <span style={style.treeListLiValue}>0.00</span>
                     <ul style={style.treeListInnerUl}>
                       <li style={style.treeListInnerLi}>
                         <span style={style.treeListLiText}>
-                          <b>&#8627;</b> Liabilities
+                          <b>&#8627;</b> Current Liabilities
                         </span>
-                        <span style={style.treeListLiValue}>0.00</span>
-                      </li>
-                      <li style={style.treeListInnerLi}>
-                        <span style={style.treeListLiText}>
-                          <b>&#8627;</b> Liabilities
-                        </span>
-                        <span style={style.treeListLiValue}>0.00</span>{" "}
                         <ul style={style.treeListInnerUl}>
                           <li style={style.treeListInnerLi}>
                             <span style={style.treeListLiText}>
-                              <b>&#8627;</b> Liabilities
-                            </span>
-                            <span style={style.treeListLiValue}>0.00</span>
-                          </li>
-                          <li style={style.treeListInnerLi}>
-                            <span style={style.treeListLiText}>
-                              <b>&#8627;</b> Liabilities
-                            </span>
+                              <b>&#8627;</b> Input IGST
+                            </span>{" "}
                             <span style={style.treeListLiValue}>0.00</span>
                           </li>{" "}
                           <li style={style.treeListInnerLi}>
-                            <span style={style.treeListLiText}>
-                              <b>&#8627;</b> Liabilities
+                            <span style={style.treeListLiTextTotal}>
+                              <b>&#8627;</b> Total Current Liabilities
                             </span>
-                            <span style={style.treeListLiValue}>0.00</span>
+                            <span style={style.treeListLiValueTotal}>0.00</span>
                           </li>
-                        </ul>{" "}
-                      </li>{" "}
+                        </ul>
+                      </li>
                       <li style={style.treeListInnerLi}>
-                        <span style={style.treeListLiText}>
-                          <b>&#8627;</b> Liabilities
+                        <span style={style.treeListLiTextTotal}>
+                          <b>&#8627;</b> Liabilities and Equity
                         </span>
-                        <span style={style.treeListLiValue}>0.00</span>
+                        <span style={style.treeListLiValueTotal}>0.00</span>
                       </li>
                     </ul>{" "}
-                  </li>
-                  <li style={style.treeListLi}>
-                    <span style={style.treeListLiText}>
-                      <b>&#8627;</b> Liabilities
-                    </span>
-                    <span style={style.treeListLiValue}>0.00</span>
-                  </li>{" "}
-                  <li style={style.treeListLi}>
-                    <span style={style.treeListLiText}>
-                      <b>&#8627;</b> Liabilities
-                    </span>
-                    <span style={style.treeListLiValue}>0.00</span>
                   </li>
                 </ul>{" "}
               </td>

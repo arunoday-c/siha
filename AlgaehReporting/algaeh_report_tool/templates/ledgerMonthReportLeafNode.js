@@ -25,10 +25,6 @@ const executePDF = function executePDFMethod(options) {
         strQry = ` and payment_date between date('${input.from_date}') and date('${input.to_date}') `;
       }
 
-      if (input.monthwise == "Y") {
-        group_str = " group by month ";
-      }
-
       if (input.leafnode == "Y") {
         options.mysql
           .executeQuery({
@@ -39,10 +35,10 @@ const executePDF = function executePDFMethod(options) {
           coalesce(sum(credit_amount)-sum(debit_amount),0)as credit_minus_debit ,
           concat(H.account_name,'->',C.child_name) as account_details FROM
           finance_voucher_details VD left join finance_account_head H on VD.head_id=H.finance_account_head_id
-          left join finance_account_child C on VD.child_id=C.finance_account_child_id where
-          head_id=? and child_id=?  group by month with rollup  ;`,
+          left join finance_account_child C on VD.child_id=C.finance_account_child_id where 
+          head_id=? and child_id=? ${strQry} group by month with rollup  ;`,
             values: [input.head_id, input.child_id],
-            printQuery: true
+            printQuery: false
           })
           .then(result => {
             if (result.length > 0) {

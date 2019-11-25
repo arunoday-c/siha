@@ -25,11 +25,6 @@ const executePDF = function executePDFMethod(options) {
         strQry = ` and payment_date between date('${input.from_date}') and date('${input.to_date}') `;
       }
 
-      let group_str = " group by payment_date ";
-
-      if (input.monthwise == "Y") {
-        group_str = " group by month ";
-      }
       if (input.leafnode == "N") {
         options.mysql
           .executeQuery({
@@ -65,10 +60,10 @@ const executePDF = function executePDFMethod(options) {
                 FROM finance_voucher_details VD 
                 inner join finance_account_head H on
                 VD.head_id=H.finance_account_head_id inner join finance_account_child C on 
-                VD.child_id=C.finance_account_child_id where 
-                head_id in (?) and child_id in (?)  group by month,head_id,child_id with rollup;;`,
+                VD.child_id=C.finance_account_child_id where  
+                head_id in (?) and child_id in (?) ${strQry} group by month,head_id,child_id with rollup;;`,
                   values: [head_ids, child_ids],
-                  printQuery: true
+                  printQuery: false
                 })
                 .then(final_result => {
                   options.mysql.releaseConnection();
@@ -170,7 +165,6 @@ const executePDF = function executePDFMethod(options) {
                           const entries = monthWiseChilds.filter(
                             child => head.head_id == child.head_id
                           );
-                          console.log("entries:", entries);
 
                           details.push({
                             head_account: head.account_name,
@@ -198,7 +192,6 @@ const executePDF = function executePDFMethod(options) {
                           const entries = monthWiseChilds.filter(
                             child => head.head_id == child.head_id
                           );
-                          console.log("entries:", entries);
 
                           details.push({
                             head_account: head.account_name,

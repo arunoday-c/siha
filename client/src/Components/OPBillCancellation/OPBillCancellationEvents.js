@@ -27,6 +27,7 @@ const ClearData = ($this, e) => {
         PatRegIOputs.inputParam(),
         BillingIOputs.inputParam()
       );
+      IOputs.selectedLang = getCookie("Language");
       IOputs.patient_payable_h = 0;
       IOputs.counter_id = counter_id;
       IOputs.cancel_remarks = null;
@@ -185,6 +186,7 @@ const getBillDetails = $this => {
         data.shift_id = $this.state.shift_id || null;
         data.mode_of_pay = data.insured === "Y" ? "Insured" : "Self";
         data.saveEnable = false;
+        debugger
         $this.setState(data);
         if (data.insured === "Y") {
           $this.props.getPatientInsurance({
