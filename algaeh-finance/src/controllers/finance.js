@@ -41,10 +41,10 @@ export default () => {
   api.post("/addAccountHeads", addAccountHeads, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res
-        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .status(utlities.AlgaehUtilities().httpStatus().internalServer)
         .json({
           success: false,
-          result: req.records
+          result: req.records.message
         })
         .end();
     } else {
@@ -63,10 +63,10 @@ export default () => {
     (req, res, next) => {
       if (req.records.invalid_input == true) {
         res
-          .status(utlities.AlgaehUtilities().httpStatus().ok)
+          .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({
             success: false,
-            result: req.records
+            result: req.records.message
           })
           .end();
       } else {
@@ -86,7 +86,7 @@ export default () => {
     (req, res, next) => {
       if (req.records.invalid_input == true) {
         res
-          .status(utlities.AlgaehUtilities().httpStatus().ok)
+          .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({
             success: false,
             message: req.records.message
@@ -106,7 +106,7 @@ export default () => {
   api.get("/getDayEndData", getDayEndData, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res
-        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .status(utlities.AlgaehUtilities().httpStatus().internalServer)
         .json({
           success: false,
           message: req.records.message
@@ -128,7 +128,7 @@ export default () => {
       req.records.invalid_input != undefined
     ) {
       res
-        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .status(utlities.AlgaehUtilities().httpStatus().internalServer)
         .json({
           success: false,
           message: req.records.message
@@ -150,7 +150,7 @@ export default () => {
       req.records.invalid_input != undefined
     ) {
       res
-        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .status(utlities.AlgaehUtilities().httpStatus().internalServer)
         .json({
           success: false,
           message: req.records.message

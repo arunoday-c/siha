@@ -122,7 +122,6 @@ export default {
         input.finance_account_head_id == 1 ||
         input.finance_account_head_id == 5
       ) {
-        console.log("AM HHHH");
         trans_symbol = "Dr.";
       }
 
@@ -530,38 +529,34 @@ export default {
     // const utilities = new algaehUtilities();
     let input = req.body;
 
-    // WITH cte_  AS (
-    //   SELECT finance_day_end_sub_detail_id, day_end_header_id, payment_date, head_account_code,
-    //   case when sum(debit_amount)= sum(credit_amount)then 'true' when transaction_type='ADJUST' then true
-    //   when transaction_type='CREDIT_ST' then 'true' else 'false'  end as is_equal,transaction_type FROM finance_day_end_header H inner join
-    //   finance_day_end_sub_detail SD on H.finance_day_end_header_id=day_end_header_id
-    //   where H.posted='N' and day_end_header_id in (?)
-    //   group by day_end_header_id)
-    //   select finance_day_end_sub_detail_id,day_end_header_id,payment_date,head_account_code,
-    //   head_id,child_id,debit_amount,payment_type,credit_amount,narration,hospital_id
-    //   from finance_day_end_sub_detail where day_end_header_id in (SELECT day_end_header_id
-    //   FROM cte_ where is_equal='true');
+    // select distinct  finance_day_end_sub_detail_id,day_end_header_id,payment_date,head_account_code,
+    // head_id,child_id,debit_amount,payment_type,credit_amount,narration,year,month,hospital_id
+    // from finance_day_end_sub_detail where day_end_header_id in (?);
 
     _mysql
       .executeQuery({
-        query: `  select finance_day_end_sub_detail_id,day_end_header_id,payment_date,head_account_code,
-        head_id,child_id,debit_amount,payment_type,credit_amount,narration,year,month,hospital_id 
-        from finance_day_end_sub_detail where day_end_header_id in (?);`,
+        query: `  WITH cte_  AS (
+          SELECT finance_day_end_sub_detail_id, day_end_header_id, payment_date, head_account_code,
+          case when sum(debit_amount)= sum(credit_amount)then 'true' else 'false'  end as is_equal,transaction_type FROM finance_day_end_header H inner join
+          finance_day_end_sub_detail SD on H.finance_day_end_header_id=day_end_header_id
+          where H.posted='N' and day_end_header_id in (?)
+          group by day_end_header_id)
+          select finance_day_end_sub_detail_id,day_end_header_id,payment_date,head_account_code,
+          head_id,child_id,debit_amount,payment_type,credit_amount,narration,year,month,hospital_id
+          from finance_day_end_sub_detail where day_end_header_id in (SELECT day_end_header_id
+          FROM cte_ where is_equal='true');`,
         values: [input.finance_day_end_header_ids],
-        printQuery: false
+        printQuery: true
       })
       .then(result => {
         // _mysql.releaseConnection();
         // req.records = result;
         // next();
         if (result.length > 0) {
-          const updateFinanceDayEndDetailIds = result.map(m => {
+          const updateFinanceDayEndSubDetailIds = result.map(m => {
             return m.finance_day_end_sub_detail_id;
           });
-          console.log(
-            "updateFinanceDayEndDetailIds:",
-            updateFinanceDayEndDetailIds
-          );
+
           const insertColumns = [
             "payment_date",
             "day_end_header_id",
@@ -592,7 +587,7 @@ export default {
                 posted_by=? where   finance_day_end_sub_detail_id in (?) ",
                   values: [
                     req.userIdentity.algaeh_d_app_user_id,
-                    updateFinanceDayEndDetailIds
+                    updateFinanceDayEndSubDetailIds
                   ],
                   printQuery: false
                 })
@@ -619,7 +614,7 @@ export default {
 
           req.records = {
             invalid_input: true,
-            message: "No records found to post"
+            message: "Credit and Debit are not equal"
           };
           next();
         }

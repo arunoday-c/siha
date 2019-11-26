@@ -1,0 +1,66 @@
+
+
+
+.reportMenuSecLeft{
+    border-right: 1px solid #000;
+    min-height: 93vh;
+    background: #f9f9f9;
+    ul.menuListUl{
+        margin: 0 -15px;
+        padding: 0;
+        list-style: none;
+        li{
+            margin: 0;
+            padding: 4px 10px;
+            list-style: none;
+            border-bottom: 1px solid #000;
+            &:hover{
+                background: #fff;
+                cursor: pointer;
+                color: #000;
+            }
+        }
+        .active{
+           
+    background: #00a796;
+    color: #fff;
+    border-bottom: 1px solid #007468;
+        }
+    }
+
+}
+.reportPreviewSecLeft{
+.reportTableStyle{
+    width: 100%;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    margin-bottom: 2px;
+    padding: 15px;
+    ul.treeListUL{
+        margin:15px;
+        padding: 0;
+        li{
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+            font-weight: bold;
+            span:nth-child(2){
+                color: red;
+                float: right;
+            }
+            .childNodeLi{
+                font-weight: normal;
+                cursor:auto;
+                color: black;
+                span:nth-child(2){
+                    color: black;
+                }
+                &:hover{ color: black;
+                }
+            }
+           
+        }
+        .show > ul{display: block;}
+        .hide > ul{display:none;}
+    }
+}}
