@@ -173,11 +173,13 @@ const FinalizeSalary = $this => {
       let hrms_options = JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
       );
+      debugger;
+
+      let salary_date =
+        "01-" + $this.state.inputs.month + "-" + $this.state.inputs.year;
       let salary_end_date = moment(salary_date)
         .endOf("month")
         .format("YYYY-MM-DD");
-      let salary_date =
-        "01-" + $this.state.inputs.month + "-" + $this.state.inputs.year;
       if (hrms_options.attendance_starts === "PM") {
         salary_date =
           hrms_options.at_st_date +
