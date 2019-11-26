@@ -61,7 +61,7 @@ class RCMWorkbench extends Component {
                   });
                 }
               },
-              onError: error => {}
+              onError: error => { }
             });
           }
         );
@@ -77,30 +77,44 @@ class RCMWorkbench extends Component {
 
   addClaimsArray(row, e) {
     let generateReport = true;
+    let claims = this.state.claims;
+    let _index = claims.indexOf(row);
     if (row.claim_validated === "P") {
-      e.preventDefault();
+      // e.preventDefault();
+
+
+      row.chkselect = 0
+      claims[_index] = row
+
+      generateReport = this.validatedClaims.length > 0 ? false : true;
+      this.setState({
+        generateReport: generateReport,
+        claims: claims
+      });
       swalMessage({
         title: "Please Validate the bill first",
         type: "warning"
       });
-
-      generateReport = this.validatedClaims.length > 0 ? false : true;
-      this.setState({
-        generateReport: generateReport
-      });
     } else if (this.validatedClaims.includes(row)) {
       this.validatedClaims.pop(row);
 
-      generateReport = this.validatedClaims.length > 0 ? false : true;
-      this.setState({
-        generateReport: generateReport
-      });
-    } else {
-      this.validatedClaims.push(row);
+      row.chkselect = 1
+      claims[_index] = row
 
       generateReport = this.validatedClaims.length > 0 ? false : true;
       this.setState({
-        generateReport: generateReport
+        generateReport: generateReport,
+        claims: claims
+      });
+    } else {
+      this.validatedClaims.push(row);
+      row.chkselect = 1
+      claims[_index] = row
+
+      generateReport = this.validatedClaims.length > 0 ? false : true;
+      this.setState({
+        generateReport: generateReport,
+        claims: claims
       });
     }
   }
@@ -162,7 +176,7 @@ class RCMWorkbench extends Component {
           });
         }
       },
-      onError: error => {}
+      onError: error => { }
     });
   }
 
@@ -272,12 +286,12 @@ class RCMWorkbench extends Component {
   openReviewSubmit() {
     this.validatedClaims.length === 0
       ? swalMessage({
-          title: "please select atleast one invoice to submit",
-          type: "warning"
-        })
+        title: "please select atleast one invoice to submit",
+        type: "warning"
+      })
       : this.setState({
-          openSubmit: true
-        });
+        openSubmit: true
+      });
   }
 
   handleClose() {
@@ -610,7 +624,7 @@ class RCMWorkbench extends Component {
                           return (
                             <input
                               type="checkbox"
-                              // checked = {row.chkselect === 0 ? true : false}
+                              checked={parseFloat(row.chkselect) === 0 ? false : true}
                               onChange={this.addClaimsArray.bind(this, row)}
                             />
                           );
@@ -619,7 +633,7 @@ class RCMWorkbench extends Component {
                           return (
                             <input
                               type="checkbox"
-                              // checked = {row.chkselect === 0 ? true : false}
+                              checked={parseFloat(row.chkselect) === 0 ? false : true}
                               onChange={this.addClaimsArray.bind(this, row)}
                             />
                           );
@@ -644,12 +658,12 @@ class RCMWorkbench extends Component {
                               {row.claim_validated === "V"
                                 ? "Validated"
                                 : row.claim_validated === "E"
-                                ? "Error"
-                                : row.claim_validated === "X"
-                                ? "XML Generated"
-                                : row.claim_validated === "P"
-                                ? "Pending"
-                                : "----"}
+                                  ? "Error"
+                                  : row.claim_validated === "X"
+                                    ? "XML Generated"
+                                    : row.claim_validated === "P"
+                                      ? "Pending"
+                                      : "----"}
                             </span>
                           );
                         }
@@ -792,14 +806,14 @@ class RCMWorkbench extends Component {
                     filter={true}
                     isEditable={false}
                     paging={{ page: 0, rowsPerPage: 20 }}
-                    // events={{
-                    //   onDelete: deletePosDetail.bind(this, this, context),
-                    //   onEdit: row => {},
-                    //   onDone: updatePosDetail.bind(this, this)
-                    // }}
-                    // onRowSelect={row => {
-                    //   getItemLocationStock(this, row);
-                    // }}
+                  // events={{
+                  //   onDelete: deletePosDetail.bind(this, this, context),
+                  //   onEdit: row => {},
+                  //   onDone: updatePosDetail.bind(this, this)
+                  // }}
+                  // onRowSelect={row => {
+                  //   getItemLocationStock(this, row);
+                  // }}
                   />
                 </div>
               </div>

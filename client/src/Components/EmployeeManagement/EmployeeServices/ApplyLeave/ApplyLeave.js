@@ -116,7 +116,7 @@ class ApplyLeave extends Component {
 
   deleteLeaveApplication(data) {
     swal({
-      title: "Delete Leave Application for " + data.leave_description + "?",
+      title: "Delete leave request for " + data.leave_description + "?",
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",

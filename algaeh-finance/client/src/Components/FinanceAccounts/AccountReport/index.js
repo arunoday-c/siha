@@ -80,19 +80,19 @@ const previousMonthDate =[moment().add(-1,"M"),moment().add(-1,"days")] ;
             ? {}
             : {
                 name: "from_date",
-                value: checkedType ? moment(dateRange[0]).format("M") : moment(dateRange[0]).format("YYYY-MM-DD")
+                value: moment(dateRange[0]).format("YYYY-MM-DD")
               };
         const to_date =
           dateRange.length === 0
             ? {}
             : {
                 name: "to_date",
-                value:checkedType ?moment(dateRange[1]).format("M"): moment(dateRange[1]).format("YYYY-MM-DD")
+                value: moment(dateRange[1]).format("YYYY-MM-DD")
               };
-        const monthwise =
-          dateRange.length === 0
-            ? {}
-            : { name: "monthwise", value: checkedType ? "Y" : "N" };
+        // const monthwise =
+        //   dateRange.length === 0
+        //     ? {}
+        //     : { name: "monthwise", value: checkedType ? "Y" : "N" };
  
           let reportName="";
           if(leafnode==="N"){
@@ -133,8 +133,8 @@ const previousMonthDate =[moment().add(-1,"M"),moment().add(-1,"days")] ;
               { name: "leafnode", value: leafnode },
               { name: "parent_id", value: parentId },
               from_date,
-              to_date,
-              monthwise
+              to_date
+              // monthwise
             ]
           }
         };
@@ -248,7 +248,20 @@ const previousMonthDate =[moment().add(-1,"M"),moment().add(-1,"days")] ;
             maxDate={moment()}
             events={{
               onChange: dateSelected => {
-                setDateRange(dateSelected);
+                if(checkedType){
+                 const months= moment(dateSelected[1]).diff(dateSelected[0],"months");
+                 if(months <=11){
+                  setDateRange(dateSelected);
+                 }else{
+                  AlgaehMessagePop({
+                    title:"error",
+                    display:"you can select maximum one year."
+                  })
+                 }
+                }else{
+                  setDateRange(dateSelected);
+                }
+               
               }
             }}
            others={{

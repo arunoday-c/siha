@@ -137,7 +137,6 @@ class ApplyLeaveEncashment extends Component {
         employee_id: this.state.employee_id
       },
       onSuccess: res => {
-
         if (res.data.success) {
           this.setState({
             encashDetail: res.data.result
@@ -163,11 +162,9 @@ class ApplyLeaveEncashment extends Component {
 
         break;
       case "hospital_id":
-        this.setState(
-          {
-            [value.name]: value.value
-          }
-        );
+        this.setState({
+          [value.name]: value.value
+        });
 
         break;
       default:
@@ -245,7 +242,6 @@ class ApplyLeaveEncashment extends Component {
   }
 
   applyLeave() {
-
     AlgaehValidation({
       alertTypeIcon: "warning",
       querySelector: "data-validate='apply-leave-div'",
@@ -376,7 +372,7 @@ class ApplyLeaveEncashment extends Component {
                   <h3 className="caption-subject">Request Leave Encashment</h3>
                 </div>
               </div>
-              <div className="portlet-body" style={{ minHeight: "70.6vh" }}>
+              <div className="portlet-body">
                 <div className="row">
                   {this.props.from_screen === "ES" ? (
                     <AlagehAutoComplete
@@ -401,7 +397,8 @@ class ApplyLeaveEncashment extends Component {
                           });
                         }
                       }}
-                    />) : null}
+                    />
+                  ) : null}
                   {this.props.from_screen === "ES" ? (
                     <div className="col-12 globalSearchCntr  form-group">
                       <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
@@ -554,8 +551,8 @@ class ApplyLeaveEncashment extends Component {
                                 Rejected
                               </span>
                             ) : (
-                                    "-------"
-                                  );
+                              "-------"
+                            );
                           }
                         },
                         {
@@ -657,8 +654,8 @@ class ApplyLeaveEncashment extends Component {
                       </div>
                     ))
                   ) : (
-                      <div className="noResult">Not Eligible for any Leaves</div>
-                    )}
+                    <div className="noResult">Not Eligible for any Leaves</div>
+                  )}
                 </div>
               </div>
             </div>

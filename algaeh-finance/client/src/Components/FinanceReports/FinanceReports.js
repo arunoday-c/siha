@@ -1,220 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
+import "./financeReportStyle.scss";
+import { Spin, AlgaehMessagePop } from "algaeh-react-components";
+import Balance from "./FinanceStandardReports/balancesheet";
+import { getBalanceSheet } from "./FinanceReportEvents";
 
-const style = {
-  mystyle: {
-    backgroundColor: "#fefefe"
-  },
-  reportListLeftSide: {
-    backgroundColor: "white"
-  },
-  reportPreviewRight: {
-    border: "1px dashed #000"
-  },
-  reportListHead: {
-    backgroundColor: "#efefef",
-    padding: 10,
-    margin: 0
-  },
-  reportListUl: {
-    margin: 0,
-    padding: 0,
-    listStyle: "none",
-    maxHeight: "20vh"
-  },
-  reportListLi: {
-    margin: 0,
-    padding: "5px 10px",
-    listStyle: "none",
-    borderBottom: "1px solid #ccc",
-    cursor: "pointer"
-  },
-  treeListUL: {
-    margin: 0,
-    padding: 0,
-    listStyle: "none",
-    maxHeight: "20vh"
-  },
-  treeListLi: {
-    margin: 0,
-    padding: "5px 10px",
-    listStyle: "none",
-    borderBottom: "1px solid #ccc",
-    cursor: "pointer",
-    width: "100%"
-  },
-  treeListInnerUl: {
-    paddingRight: 0,
-    paddingLeft: 15,
-    margin: 0,
-    listStyle: "none",
-    width: "100%"
-  },
-  treeListInnerLi: {
-    listStyle: "none",
-    paddingTop: 4,
-    paddingBottom: 4
-  },
-  treeListLiText: {
-    textAlign: "left"
-  },
-  treeListLiValue: {
-    float: "right"
-  }
-};
 export default function FinanceReports() {
+  const [loading, setLoading] = useState(false);
+  const [selected, setSelected] = useState("");
+  const [data, setData] = useState({});
+  function selectedClass(report) {
+    return report === selected ? "active" : "";
+  }
+  function loadReport(report) {
+    getBalanceSheet({ reportType: report })
+      .then(result => {
+        setLoading(false);
+        setData(result);
+      })
+      .catch(error => {
+        setLoading(false);
+        setData([]);
+        AlgaehMessagePop({
+          title: "error",
+          display: error
+        });
+      });
+  }
   return (
-    <div className="row" style={style.mystyle}>
-      <div className="col-3" style={style.reportListLeftSide}>
-        <h6 style={style.reportListHead}>Standard Report</h6>
-        <ul style={style.reportListUl}>
-          <li style={style.reportListLi}>Account receivable ageing summary</li>
-          <li style={style.reportListLi}>Balance Sheet</li>
-          <li style={style.reportListLi}>Profit and Loss</li>
-        </ul>{" "}
-        <h6 style={style.reportListHead}>Standard Report</h6>
-        <ul style={style.reportListUl}>
-          <li style={style.reportListLi}>Account receivable ageing summary</li>
-          <li style={style.reportListLi}>Balance Sheet</li>
-          <li style={style.reportListLi}>Profit and Loss</li>
-        </ul>{" "}
-        <h6 style={style.reportListHead}>Standard Report</h6>
-        <ul style={style.reportListUl}>
-          <li style={style.reportListLi}>Account receivable ageing summary</li>
-          <li style={style.reportListLi}>Balance Sheet</li>
-          <li style={style.reportListLi}>Profit and Loss</li>
-        </ul>{" "}
+    <div className="row">
+      <div className="col-3 reportMenuSecLeft">
+        <h6>Standard Report</h6>
+        <ul className="menuListUl">
+          <li
+            className={selectedClass("BS")}
+            onClick={e => {
+              setLoading(true);
+              setSelected("BS");
+              loadReport("BS");
+            }}
+          >
+            Balance Sheet
+          </li>
+          <li
+            className={selectedClass("PL")}
+            onClick={() => {
+              setSelected("PL");
+            }}
+          >
+            Profit and Loss
+          </li>
+        </ul>
       </div>
-      <div className="col-9" style={style.reportPreviewRight}>
-        <div>
-          <table style={{ width: "100%" }}>
-            <tr>
-              <td style={{ width: "50%" }}>
-                <ul style={style.treeListUL}>
-                  <li style={style.treeListLi}>
-                    <span style={style.treeListLiText}>
-                      <b>&#8627;</b> Assets
-                    </span>
-                    <span style={style.treeListLiValue}>0.00</span>
-                    <ul style={style.treeListInnerUl}>
-                      <li style={style.treeListInnerLi}>
-                        <span style={style.treeListLiText}>
-                          <b>&#8627;</b> Assets
-                        </span>
-                        <span style={style.treeListLiValue}>0.00</span>
-                      </li>
-                      <li style={style.treeListInnerLi}>
-                        <span style={style.treeListLiText}>
-                          <b>&#8627;</b> Assets
-                        </span>
-                        <span style={style.treeListLiValue}>0.00</span>{" "}
-                        <ul style={style.treeListInnerUl}>
-                          <li style={style.treeListInnerLi}>
-                            <span style={style.treeListLiText}>
-                              <b>&#8627;</b> Assets
-                            </span>
-                            <span style={style.treeListLiValue}>0.00</span>
-                          </li>
-                          <li style={style.treeListInnerLi}>
-                            <span style={style.treeListLiText}>
-                              <b>&#8627;</b> Assets
-                            </span>
-                            <span style={style.treeListLiValue}>0.00</span>
-                          </li>{" "}
-                          <li style={style.treeListInnerLi}>
-                            <span style={style.treeListLiText}>
-                              <b>&#8627;</b> Assets
-                            </span>
-                            <span style={style.treeListLiValue}>0.00</span>
-                          </li>
-                        </ul>{" "}
-                      </li>{" "}
-                      <li style={style.treeListInnerLi}>
-                        <span style={style.treeListLiText}>
-                          <b>&#8627;</b> Assets
-                        </span>
-                        <span style={style.treeListLiValue}>0.00</span>
-                      </li>
-                    </ul>{" "}
-                  </li>
-                  <li style={style.treeListLi}>
-                    <span style={style.treeListLiText}>
-                      <b>&#8627;</b> Assets
-                    </span>
-                    <span style={style.treeListLiValue}>0.00</span>
-                  </li>{" "}
-                  <li style={style.treeListLi}>
-                    <span style={style.treeListLiText}>
-                      <b>&#8627;</b> Assets
-                    </span>
-                    <span style={style.treeListLiValue}>0.00</span>
-                  </li>
-                </ul>{" "}
-              </td>
-              <td style={{ width: "50%" }}>
-                <ul style={style.treeListUL}>
-                  <li style={style.treeListLi}>
-                    <span style={style.treeListLiText}>
-                      <b>&#8627;</b> Liabilities
-                    </span>
-                    <span style={style.treeListLiValue}>0.00</span>
-                    <ul style={style.treeListInnerUl}>
-                      <li style={style.treeListInnerLi}>
-                        <span style={style.treeListLiText}>
-                          <b>&#8627;</b> Liabilities
-                        </span>
-                        <span style={style.treeListLiValue}>0.00</span>
-                      </li>
-                      <li style={style.treeListInnerLi}>
-                        <span style={style.treeListLiText}>
-                          <b>&#8627;</b> Liabilities
-                        </span>
-                        <span style={style.treeListLiValue}>0.00</span>{" "}
-                        <ul style={style.treeListInnerUl}>
-                          <li style={style.treeListInnerLi}>
-                            <span style={style.treeListLiText}>
-                              <b>&#8627;</b> Liabilities
-                            </span>
-                            <span style={style.treeListLiValue}>0.00</span>
-                          </li>
-                          <li style={style.treeListInnerLi}>
-                            <span style={style.treeListLiText}>
-                              <b>&#8627;</b> Liabilities
-                            </span>
-                            <span style={style.treeListLiValue}>0.00</span>
-                          </li>{" "}
-                          <li style={style.treeListInnerLi}>
-                            <span style={style.treeListLiText}>
-                              <b>&#8627;</b> Liabilities
-                            </span>
-                            <span style={style.treeListLiValue}>0.00</span>
-                          </li>
-                        </ul>{" "}
-                      </li>{" "}
-                      <li style={style.treeListInnerLi}>
-                        <span style={style.treeListLiText}>
-                          <b>&#8627;</b> Liabilities
-                        </span>
-                        <span style={style.treeListLiValue}>0.00</span>
-                      </li>
-                    </ul>{" "}
-                  </li>
-                  <li style={style.treeListLi}>
-                    <span style={style.treeListLiText}>
-                      <b>&#8627;</b> Liabilities
-                    </span>
-                    <span style={style.treeListLiValue}>0.00</span>
-                  </li>{" "}
-                  <li style={style.treeListLi}>
-                    <span style={style.treeListLiText}>
-                      <b>&#8627;</b> Liabilities
-                    </span>
-                    <span style={style.treeListLiValue}>0.00</span>
-                  </li>
-                </ul>{" "}
-              </td>
-            </tr>
-          </table>
-        </div>
+      <div className="col-9 reportPreviewSecLeft">
+        <Spin spinning={loading} tip="Please wait report data is fetching..">
+          <Balance data={data} result={["asset", "liabilities"]} />
+        </Spin>{" "}
       </div>
     </div>
   );
