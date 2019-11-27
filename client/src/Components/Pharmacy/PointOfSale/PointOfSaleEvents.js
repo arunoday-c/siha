@@ -1,5 +1,4 @@
 import AlgaehSearch from "../../Wrapper/globalSearch";
-import FrontDesk from "../../../Search/FrontDesk.json";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import ReactDOM from "react-dom";
@@ -14,8 +13,8 @@ import {
   AlgaehOpenContainer,
   imageToByteArray
 } from "../../../utils/GlobalFunctions";
-import Enumerable from "linq";
 import _ from "lodash";
+import extend from "extend";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -865,7 +864,7 @@ const getMedicationList = $this => {
         AddItems($this, data);
       } else {
         $this.setState({
-          pharmacy_stock_detail: []
+          prescribed_item_list: []
         });
         AlgaehLoader({ show: false });
       }
@@ -901,10 +900,11 @@ const AddItems = ($this, ItemInput) => {
       onSuccess: response => {
         if (response.data.success) {
           let data = response.data.records;
-
+          debugger
           $this.setState(
             {
-              pharmacy_stock_detail: data
+              prescribed_item_list: data,
+              prescribed_item: !$this.state.prescribed_item
             },
             () => {
               AlgaehLoader({ show: false });
@@ -1094,6 +1094,264 @@ const getCashiersAndShiftMAP = $this => {
     }
   });
 };
+
+const ClosePrescribedItem = ($this, e) => {
+  debugger
+  if (e !== undefined && e.length > 0 && Array.isArray(e)) {
+
+    algaehApiCall({
+      uri: "/billing/billingCalculations",
+      module: "billing",
+      method: "POST",
+      data: { billdetails: e },
+      onSuccess: response => {
+        if (response.data.success) {
+          let sum_data = response.data.records;
+
+          sum_data.patient_payable_h =
+            sum_data.patient_payable || $this.state.patient_payable;
+          sum_data.sub_total =
+            sum_data.sub_total_amount || $this.state.sub_total;
+          sum_data.patient_responsibility =
+            sum_data.patient_res || $this.state.patient_responsibility;
+          sum_data.company_responsibility =
+            sum_data.company_res || $this.state.company_responsibility;
+
+          sum_data.company_payable =
+            sum_data.company_payble || $this.state.company_payable;
+          sum_data.sec_company_responsibility =
+            sum_data.sec_company_res ||
+            $this.state.sec_company_responsibility;
+          sum_data.sec_company_payable =
+            sum_data.sec_company_paybale ||
+            $this.state.sec_company_payable;
+
+          sum_data.copay_amount =
+            sum_data.copay_amount || $this.state.copay_amount;
+          sum_data.sec_copay_amount =
+            sum_data.sec_copay_amount || $this.state.sec_copay_amount;
+          sum_data.addItemButton = false;
+          sum_data.saveEnable = true;
+          sum_data.postEnable = false;
+          sum_data.hims_f_pharmacy_pos_detail_id = null;
+
+          $this.setState({ ...sum_data, pharmacy_stock_detail: e, prescribed_item: !$this.state.prescribed_item });
+
+        } else {
+          swalMessage({
+            title: response.data.message,
+            type: "error"
+          });
+        }
+        AlgaehLoader({ show: false });
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  } else if (e !== undefined && e === "preApproval") {
+    $this.setState({
+      prescribed_item: !$this.state.prescribed_item
+    });
+    if ($this.state.pos_customer_type === "OP") {
+      getMedicationList($this);
+    } else if ($this.state.pos_customer_type === "OT") {
+      getPosEntry($this, $this.state.pos_number);
+    }
+  }
+  else {
+    $this.setState({
+      prescribed_item: !$this.state.prescribed_item
+    });
+  }
+}
+
+const qtyonchangegridcol = ($this, row, e) => {
+
+  let name = e.target.name;
+  let value = e.target.value === "" ? null : e.target.value;
+
+  debugger
+  if (parseFloat(value) < 0) {
+    swalMessage({
+      title: "Quantity cannot be less than Zero",
+      type: "warning"
+    });
+  } else if (parseFloat(value) > parseFloat(row.qtyhand)) {
+    swalMessage({
+      title: "Quantity cannot be greater than Quantity in hand",
+      type: "warning"
+    });
+  } else {
+    row[name] = value;
+    calculateAmount($this, row);
+  }
+};
+
+
+//Calculate Row Detail
+const calculateAmount = ($this, row) => {
+  //
+  debugger
+  // e = e || ctrl;
+  let prescribed_item_list = $this.state.prescribed_item_list;
+
+  let inputParam = [
+    {
+      hims_d_services_id: row.service_id,
+      vat_applicable: $this.state.vat_applicable,
+      unit_cost: row.sale_price,
+      pharmacy_item: "Y",
+      quantity: row.quantity === null ? 0 : row.quantity,
+      discount_amout: 0,
+      discount_percentage: 0,
+      insured: row.insurance_yesno,
+      primary_insurance_provider_id: $this.state.insurance_provider_id,
+      primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
+      primary_network_id: $this.state.network_id,
+      sec_insured: $this.state.sec_insured,
+      secondary_insurance_provider_id:
+        $this.state.secondary_insurance_provider_id,
+      secondary_network_id: $this.state.secondary_network_id,
+      secondary_network_office_id: $this.state.secondary_network_office_id,
+      from_pos: "Y"
+    }
+  ];
+
+  algaehApiCall({
+    uri: "/billing/getBillDetails",
+    module: "billing",
+    method: "POST",
+    cancelRequestId: "getPosDetails",
+    data: inputParam,
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+
+        data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
+        data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
+
+        data.billdetails[0].item_id = row.item_id;
+        data.billdetails[0].item_category = row.item_category;
+        data.billdetails[0].expiry_date = row.expiry_date;
+        data.billdetails[0].batchno = row.batchno;
+        data.billdetails[0].uom_id = row.uom_id;
+        data.billdetails[0].discount_amount =
+          data.billdetails[0].discount_amout;
+        data.billdetails[0].pre_approval =
+          row.pre_approval === "N" ? "N" : data.billdetails[0].pre_approval;
+        data.billdetails[0].insurance_yesno = data.billdetails[0].insured;
+
+        data.billdetails[0].insurance_yesno = data.billdetails[0].insured;
+        data.billdetails[0].insurance_yesno = data.billdetails[0].insured;
+
+        data.billdetails[0].patient_responsibility =
+          data.billdetails[0].patient_resp;
+        data.billdetails[0].company_responsibility =
+          data.billdetails[0].comapany_resp;
+        data.billdetails[0].company_payable =
+          data.billdetails[0].company_payble;
+
+        extend(row, data.billdetails[0]);
+
+        const _index = prescribed_item_list.indexOf(row);
+        prescribed_item_list[_index] = row;
+        // pharmacy_stock_detail[row.rowIdx] = row;
+
+        $this.setState({ prescribed_item_list: prescribed_item_list });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+  // }
+};
+
+const processSelectedItems = ($this, row, e) => {
+
+  debugger
+  AlgaehLoader({ show: false });
+  let selected_item_list = []
+  for (let i = 0; i < $this.state.prescribed_item_list.length; i++) {
+    if ($this.state.prescribed_item_list[i].batches.length > 0) {
+      const batch_item_list = _.filter($this.state.prescribed_item_list[i].batches, (f) => f.quantity !== null && parseFloat(f.quantity) > 0);
+      selected_item_list = selected_item_list.concat(batch_item_list)
+    }
+  }
+
+  $this.setState({
+    item_batches: []
+  }, () => {
+    $this.props.onClose && $this.props.onClose(selected_item_list);
+  })
+
+};
+
+
+const getMedicationAprovalList = ($this, row) => {
+  if (
+    $this.state.pos_customer_type === "OT" &&
+    $this.state.hims_f_pharmacy_pos_header_id === null
+  ) {
+    swalMessage({
+      title: "Save the record...",
+      type: "warning"
+    });
+    return;
+  }
+  debugger
+
+  let inputobj = { item_id: row.item_id };
+
+  if ($this.state.pos_customer_type === "OT") {
+    if (row.hims_f_pharmacy_pos_detail_id !== null) {
+      inputobj.pharmacy_pos_detail_id = row.hims_f_pharmacy_pos_detail_id;
+    }
+  }
+
+  if ($this.state.patient_id !== null) {
+    inputobj.patient_id = $this.state.patient_id;
+  }
+  if ($this.state.visit_id !== null) {
+    inputobj.visit_id = $this.state.visit_id;
+  }
+  if ($this.state.insurance_provider_id !== null) {
+    inputobj.insurance_provider_id = $this.state.insurance_provider_id;
+  }
+
+  algaehApiCall({
+    uri: "/orderAndPreApproval/getMedicationAprovalList",
+    method: "GET",
+    data: inputobj,
+    onSuccess: response => {
+      if (response.data.success) {
+        $this.setState({
+          medca_approval_Services: response.data.records,
+          viewPreapproval: !$this.state.viewPreapproval,
+          item_description: row.item_description,
+          prescription_detail_id: row.prescription_detail_id,
+          item_data: row,
+          hims_f_pharmacy_pos_detail_id: row.hims_f_pharmacy_pos_detail_id
+        });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.response.data.message,
+        type: "warning"
+      });
+    }
+  });
+};
+
 export {
   changeTexts,
   getCtrlCode,
@@ -1109,5 +1367,9 @@ export {
   CancelPosEntry,
   getPosEntry,
   generateReport,
-  getCashiersAndShiftMAP
+  getCashiersAndShiftMAP,
+  ClosePrescribedItem,
+  qtyonchangegridcol,
+  processSelectedItems,
+  getMedicationAprovalList
 };

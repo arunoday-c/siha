@@ -17,7 +17,7 @@ import moment from "moment";
 import { swalMessage, algaehApiCall } from "../../../../../utils/algaehApiCall";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import _ from "lodash";
-// import { UpdatePreApproval } from "./PreApprovalStatusEvent";
+import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
 
 class PreApprovalStatus extends PureComponent {
   constructor(props) {
@@ -79,6 +79,7 @@ class PreApprovalStatus extends PureComponent {
     }
   }
   componentWillReceiveProps(newProps) {
+    debugger
     if (
       newProps.selected_services !== undefined &&
       newProps.selected_services.length > 0
@@ -90,6 +91,7 @@ class PreApprovalStatus extends PureComponent {
   }
 
   saveApproval(e) {
+
     if (this.state.apprv_status === "AP") {
       if (parseFloat(this.state.approved_amount) === 0) {
         swalMessage({
@@ -107,6 +109,7 @@ class PreApprovalStatus extends PureComponent {
     }
     let update_pre_approval_service = [this.state];
     let that = this;
+    AlgaehLoader({ show: true });
     algaehApiCall({
       uri: "/orderAndPreApproval/updateMedicinePreApproval",
       data: update_pre_approval_service,
@@ -114,6 +117,7 @@ class PreApprovalStatus extends PureComponent {
       onSuccess: response => {
         if (response.data.success) {
           if (this.props.pos_customer_type === "OP") {
+            debugger
             let dataSend = [
               {
                 hims_f_prescription_detail_id:
@@ -151,7 +155,7 @@ class PreApprovalStatus extends PureComponent {
 
               pre_approval:
                 that.state.apprv_status === "RJ" ||
-                that.state.apprv_status === "AP"
+                  that.state.apprv_status === "AP"
                   ? "N"
                   : "Y",
               insurance_yesno: that.state.apprv_status === "RJ" ? "N" : "Y"
@@ -300,8 +304,8 @@ class PreApprovalStatus extends PureComponent {
                     <h6>
                       {this.state.apprv_date
                         ? moment(this.state.apprv_date).format(
-                            Options.dateFormat
-                          )
+                          Options.dateFormat
+                        )
                         : "--------"}
                     </h6>
                   </div>
