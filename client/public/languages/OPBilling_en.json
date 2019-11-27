@@ -125,5 +125,8 @@
   "card_class": "Card Class",
   "created_date": "Ordered Date",
   "pre_approval": "Pre Approval",
-  "select_card": "Select Card"
+  "select_card": "Select Card",
+  "net_ttl": "Net Total",
+  "pat_payable": "Patient Payable",
+  "co_payable": "Co. Payable"
 }
