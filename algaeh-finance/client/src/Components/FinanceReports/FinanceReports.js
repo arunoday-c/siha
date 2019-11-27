@@ -29,7 +29,7 @@ export default function FinanceReports() {
   return (
     <div className="row">
       <div className="col-3 reportMenuSecLeft">
-        <h6>Standard Report</h6>
+        <h6>Favourite Reports</h6>
         <ul className="menuListUl">
           <li
             className={selectedClass("BS")}

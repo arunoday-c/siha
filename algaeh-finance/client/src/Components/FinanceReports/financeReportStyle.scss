@@ -2,15 +2,20 @@
   border-right: 1px solid #000;
   min-height: 93vh;
   background: #f9f9f9;
+  h6 {
+    margin: 5px 0;
+    font-size: 1rem;
+  }
   ul.menuListUl {
     margin: 0 -15px;
     padding: 0;
     list-style: none;
     li {
       margin: 0;
-      padding: 4px 10px;
+      padding: 6px 15px;
       list-style: none;
       border-bottom: 1px solid #000;
+
       &:hover {
         background: #fff;
         cursor: pointer;
@@ -27,6 +32,8 @@
 .reportPreviewSecLeft {
   padding: 20px;
   background: #404040;
+  overflow: auto;
+  max-height: 93vh;
   .reportTableStyle {
     width: 100%;
     border-bottom: 1px solid #000;
@@ -60,11 +67,9 @@
       }
       .show > ul {
         display: block;
-        padding: 0;
       }
       .hide > ul {
         display: none;
-        padding: 0;
       }
 
       .parentNodeLi {
@@ -74,6 +79,15 @@
           background-size: contain;
           & > span {
             padding-left: 22px;
+          }
+        }
+        ul {
+          padding: 0;
+          margin: 0;
+          li {
+            margin: 0;
+            padding: 0;
+            padding-left: 20px;
           }
         }
       }
