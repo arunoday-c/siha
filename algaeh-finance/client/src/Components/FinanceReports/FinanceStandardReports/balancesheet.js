@@ -12,9 +12,7 @@ function PlotUI(node, style, indexIds) {
   if (!hasChildren(node)) {
     return (
       <li
-        className={
-          node.account_level === "0" ? "childNodeLi show" : "childNodeLi hide"
-        }
+        className="childNodeLi"
         key={indexIds.join("-")}
         followupid={
           node.leafnode === "N" ? node.finance_account_head_id : node.head_id
@@ -29,36 +27,47 @@ function PlotUI(node, style, indexIds) {
     return (
       <li
         key={indexIds.join("-")}
-        className={
-          indexIds.join("") === "0" ? "parentNodeLi show" : "parentNodeLi hide"
-        }
+        className="parentNodeLi"
         parentid={node.leafnode === "Y" ? node.head_id : node.parent_acc_id}
       >
         <div
           onClick={e => {
+            debugger;
             let currentElement = e.currentTarget;
-            let isShow = true;
+            // let isShow = true;
             let ul = currentElement.nextElementSibling;
-            if (ul.getAttribute("isexpand") === "true") {
-              isShow = false;
+            if (
+              ul.getAttribute("isexpand") === null ||
+              ul.getAttribute("isexpand") === "true"
+            ) {
+              //  isShow = false;
+              ul.classList.remove("hide");
+              ul.classList.add("show");
               ul.setAttribute("isexpand", "false");
             } else {
-              isShow = true;
+              //   isShow = true;
+              ul.classList.remove("show");
+              ul.classList.add("hide");
               ul.setAttribute("isexpand", "true");
             }
-            const followupid = currentElement.getAttribute("followupid");
-            const allsubtree = currentElement.nextElementSibling.querySelectorAll(
-              "li[parentid='" + followupid + "']"
-            );
-            allsubtree.forEach(element => {
-              if (isShow) {
-                element.classList.remove("hide");
-                element.classList.add("show");
-              } else {
-                element.classList.remove("show");
-                element.classList.add("hide");
-              }
-            });
+            // const followupid = currentElement.getAttribute("followupid");
+            // currentElement.nextElementSibling.classList.add("hide");
+            // if (isShow) {
+            //   currentElement.nextElementSibling.classList.add("show");
+            // }
+
+            //   querySelectorAll(
+            //   "li[parentid='" + followupid + "']"
+            // );
+            // allsubtree.forEach(element => {
+            //   if (isShow) {
+            //     element.classList.remove("hide");
+            //     element.classList.add("show");
+            //   } else {
+            //     element.classList.remove("show");
+            //     element.classList.add("hide");
+            //   }
+            // });
           }}
           followupid={
             node.leafnode === "N" ? node.finance_account_head_id : node.head_id
@@ -69,7 +78,7 @@ function PlotUI(node, style, indexIds) {
             <b>{node["subtitle"]}</b>
           </span>
         </div>
-        <ul>
+        <ul className={node.account_level === "0" ? "show" : "hide"}>
           {node.children.map((innerNode, index) => {
             let newIndex = Array.isArray(indexIds) ? indexIds : [];
             newIndex.push(index);
@@ -89,29 +98,45 @@ export default function BalanceSheet(props) {
   } else {
     return (
       <>
-        <Button
-          type="primary"
-          shape="circle"
-          icon="printer"
-          onClick={() => {
-            const report = createPrintObject.current;
-            var printWindow = window.open("", "", "height=700,width=900");
-            printWindow.document.write(`<html><head>`);
-            const details = document
-              .getElementsByTagName("head")[0]
-              .querySelectorAll("style");
-            details.forEach(item => {
-              printWindow.document.write(`<style>${item.innerHTML}</style>`);
-            });
-            printWindow.document.write(`</head><body>`);
-            printWindow.document.write(
-              `<div class='reportPreviewSecLeft'>${report.innerHTML}</div>`
-            );
-            printWindow.document.write(`</body></html>`);
-            printWindow.document.close();
-            printWindow.print();
-          }}
-        />
+        <div className="financeReportHeader">
+          <div>Company logo</div>
+          <i
+            className="fas fa-print"
+            onClick={() => {
+              const report = createPrintObject.current;
+              var printWindow = window.open("", "", "height=700,width=900");
+              printWindow.document.write(`<html><head>`);
+              const details = document
+                .getElementsByTagName("head")[0]
+                .querySelectorAll("style");
+              details.forEach(item => {
+                printWindow.document.write(`<style>${item.innerHTML}</style>`);
+              });
+              printWindow.document.write(`</head><body>`);
+              printWindow.document.write(
+                `<div class='reportPreviewSecLeft'>${report.innerHTML}</div>`
+              );
+              printWindow.document.write(`</body></html>`);
+              printWindow.document.close();
+              printWindow.print();
+            }}
+          ></i>
+          <div>Address</div>
+          <h3>Report Name</h3>
+          <p>
+            Applied Filters -{" "}
+            <span>
+              Date: <b>11-04-2019</b>
+            </span>
+            <span>
+              Date: <b>11-04-2019</b>
+            </span>
+            <span>
+              Date: <b>11-04-2019</b>
+            </span>
+          </p>
+        </div>
+
         <div ref={createPrintObject}>
           <table className="reportTableStyle">
             <tbody>
