@@ -47,10 +47,11 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "update  hims_d_bank  set bank_name=?,bank_short_name=?,address1=?,contact_person=?,contact_number=?,\
+            "update  hims_d_bank  set bank_name=?,bank_code=?,bank_short_name=?,address1=?,contact_person=?,contact_number=?,\
             updated_date=?,updated_by=? where hims_d_bank_id=?",
           values: [
             input.bank_name,
+            input.bank_code,
             input.bank_short_name,
             input.address1,
             input.contact_person,
