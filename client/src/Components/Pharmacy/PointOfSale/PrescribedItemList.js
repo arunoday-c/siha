@@ -20,6 +20,7 @@ import {
     getPosEntry
 } from "./PointOfSaleEvents"
 import PreApprovalStatus from "./PosListItems/PreApprovalStatus/PreApprovalStatus";
+import "./PointOfSale.scss";
 
 class PrescribedItemList extends Component {
     constructor(props) {
@@ -44,16 +45,16 @@ class PrescribedItemList extends Component {
     }
 
     CloseEditModel(e) {
-        if (e === "refresh") {
-            if (this.state.pos_customer_type === "OP") {
-                getMedicationList(this);
-            } else if (this.state.pos_customer_type === "OT") {
-                getPosEntry(this, this.state.pos_number);
-            }
-        }
         this.setState({
             viewPreapproval: !this.state.viewPreapproval
+        }, () => {
+            if (e === "refresh") {
+                this.props.onClose && this.props.onClose("preApproval");
+            }
         });
+
+
+
     }
 
     render() {
@@ -76,13 +77,31 @@ class PrescribedItemList extends Component {
                                 <div className="row">
                                     <div className="col-4">
                                         <AlgaehDataGrid
-                                            id="item_batchs"
+                                            id="item_list"
                                             columns={[
                                                 {
                                                     fieldName: "item_description",
                                                     label: (
                                                         <AlgaehLabel label={{ forceLabel: "Item Name" }} />
                                                     )
+                                                },
+                                                {
+                                                    fieldName: "insurance_yesno",
+                                                    label: (
+                                                        <AlgaehLabel
+                                                            label={{ forceLabel: "Insured" }}
+                                                        />
+                                                    ),
+                                                    displayTemplate: row => {
+                                                        return (
+                                                            <span>
+                                                                {row.insurance_yesno === "N"
+                                                                    ? "Not Covered"
+                                                                    : "Covered"}
+                                                            </span>
+                                                        );
+                                                    },
+                                                    disabled: true
                                                 },
                                                 {
                                                     fieldName: "pre_approval",
@@ -118,9 +137,15 @@ class PrescribedItemList extends Component {
                                             // isEditable={true}
                                             paging={{ page: 0, rowsPerPage: 10 }}
                                             onRowSelect={row => {
-                                                this.setState({
-                                                    item_batches: row.batches
-                                                })
+                                                if (row.pre_approval === "N") {
+                                                    this.setState({
+                                                        item_batches: row.batches
+                                                    })
+                                                } else {
+                                                    this.setState({
+                                                        item_batches: []
+                                                    })
+                                                }
                                             }}
                                         />
                                     </div>

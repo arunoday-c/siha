@@ -1327,12 +1327,14 @@ let updatePrescriptionDetail = (req, res, next) => {
   try {
     let input = extend({}, req.body[0]);
 
-    let insurance_yesno = input.apprv_status === "RJ" ? "N" : "N";
+    let insurance_yesno = input.apprv_status === "RJ" ? "N" : "Y";
 
     _mysql
       .executeQuery({
         query:
-          "UPDATE hims_f_prescription_detail SET apprv_status = ?, insured=?, approved_amount=?,pre_approval = 'N' WHERE `hims_f_prescription_detail_id`=?; UPDATE hims_f_medication_approval SET billing_updated ='Y' where hims_f_medication_approval_id=?;",
+          "UPDATE hims_f_prescription_detail SET apprv_status = ?, insured=?, approved_amount=?, \
+          pre_approval = 'N' WHERE `hims_f_prescription_detail_id`=?; \
+          UPDATE hims_f_medication_approval SET billing_updated ='Y' where hims_f_medication_approval_id=?;",
         values: [
           input.apprv_status,
           insurance_yesno,

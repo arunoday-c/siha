@@ -1097,7 +1097,7 @@ const getCashiersAndShiftMAP = $this => {
 
 const ClosePrescribedItem = ($this, e) => {
   debugger
-  if (e !== undefined && e.length > 0) {
+  if (e !== undefined && e.length > 0 && Array.isArray(e)) {
 
     algaehApiCall({
       uri: "/billing/billingCalculations",
@@ -1153,7 +1153,17 @@ const ClosePrescribedItem = ($this, e) => {
         });
       }
     });
-  } else {
+  } else if (e !== undefined && e === "preApproval") {
+    $this.setState({
+      prescribed_item: !$this.state.prescribed_item
+    });
+    if ($this.state.pos_customer_type === "OP") {
+      getMedicationList($this);
+    } else if ($this.state.pos_customer_type === "OT") {
+      getPosEntry($this, $this.state.pos_number);
+    }
+  }
+  else {
     $this.setState({
       prescribed_item: !$this.state.prescribed_item
     });
@@ -1297,6 +1307,7 @@ const getMedicationAprovalList = ($this, row) => {
     });
     return;
   }
+  debugger
 
   let inputobj = { item_id: row.item_id };
 
