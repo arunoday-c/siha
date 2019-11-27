@@ -518,35 +518,35 @@ class PosListItems extends Component {
                                         label={{ forceLabel: "Batch No." }}
                                       />
                                     ),
-                                    displayTemplate: row => {
-                                      // {this.state.dataExitst === false}
-                                      return this.state.dataExitst === false ? (
-                                        <AlagehAutoComplete
-                                          div={{ className: "" }}
-                                          selector={{
-                                            name: "batchno",
-                                            className: "select-fld",
-                                            value: row.batchno,
-                                            dataSource: {
-                                              textField: "batchno",
-                                              valueField: "batchno",
-                                              data: row.batches
-                                            },
-                                            onChange: SelectBatchDetails.bind(
-                                              this,
-                                              this,
-                                              row,
-                                              context
-                                            ),
-                                            onClear: () => {
-                                              row["batchno"] = null;
-                                            }
-                                          }}
-                                        />
-                                      ) : (
-                                          row.batchno
-                                        );
-                                    },
+                                    // displayTemplate: row => {
+                                    //   // {this.state.dataExitst === false}
+                                    //   return this.state.dataExitst === false ? (
+                                    //     <AlagehAutoComplete
+                                    //       div={{ className: "" }}
+                                    //       selector={{
+                                    //         name: "batchno",
+                                    //         className: "select-fld",
+                                    //         value: row.batchno,
+                                    //         dataSource: {
+                                    //           textField: "batchno",
+                                    //           valueField: "batchno",
+                                    //           data: row.batches
+                                    //         },
+                                    //         onChange: SelectBatchDetails.bind(
+                                    //           this,
+                                    //           this,
+                                    //           row,
+                                    //           context
+                                    //         ),
+                                    //         onClear: () => {
+                                    //           row["batchno"] = null;
+                                    //         }
+                                    //       }}
+                                    //     />
+                                    //   ) : (
+                                    //       row.batchno
+                                    //     );
+                                    // },
                                     disabled: true,
                                     others: {
                                       minWidth: 150

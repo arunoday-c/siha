@@ -1,5 +1,5 @@
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
@@ -124,7 +124,9 @@ export default {
       InvoiceEnable: false,
       OTItemAddDis: false,
       patInsuranceFrontImg: undefined,
-      patInsuranceBackImg: undefined
+      patInsuranceBackImg: undefined,
+      prescribed_item_list: [],
+      prescribed_item: false
     };
     return output;
   }

@@ -188,11 +188,11 @@ const FinalizeSalary = $this => {
           "-" +
           $this.state.inputs.year;
         salary_end_date =
-          hrms_options.at_end_date +
+          $this.state.inputs.year +
           "-" +
           $this.state.inputs.month +
           "-" +
-          $this.state.inputs.year;
+          hrms_options.at_end_date;
       }
 
       let annual_leave_calculation = JSON.parse(

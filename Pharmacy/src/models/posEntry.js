@@ -745,7 +745,7 @@ export default {
               from hims_m_item_location as itmloc \
               inner join hims_d_item_master as item on itmloc.item_id = item.hims_d_item_master_id \
               left join hims_m_item_uom as ITMUOM  on ITMUOM.item_master_id=item.hims_d_item_master_id \
-              and ITMUOM.uom_id = itmloc.sales_uom \
+              and ITMUOM.uom_id = itmloc.sales_uom and ITMUOM.record_status = 'A' \
               where item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0 and date(expirydt) > CURDATE() order by date(expirydt)",
           values: [item_ids, location_ids],
           printQuery: true
@@ -791,7 +791,11 @@ export default {
             let batches = new LINQ(result)
               .Where(w => w.item_id == item_grp[i])
               .Select(s => {
+                let item_details = new LINQ(_reqBody)
+                  .Where(w => w.item_id == s.item_id)
+                  .FirstOrDefault();
                 return {
+                  item_description: s.item_description,
                   item_id: s.item_id,
                   pharmacy_location_id: s.pharmacy_location_id,
                   batchno: s.batchno,
@@ -801,7 +805,19 @@ export default {
                   grnno: s.grnno,
                   sale_price: s.sale_price,
                   conversion_factor: s.conversion_factor,
-                  avgcost: s.avgcost
+                  average_cost: s.avgcost,
+                  sales_uom: s.sales_uom,
+                  quantity: 0,
+                  service_id: s.service_id,
+                  item_category: s.category_id,
+                  item_group_id: s.group_id,
+                  uom_id: s.sales_uom,
+
+                  insured: item_details.insured,
+                  insurance_yesno: item_details.insured,
+                  pre_approval: item_details.pre_approval,
+                  prescribed_qty: item_details.dispense,
+                  prescription_detail_id: item_details.prescription_detail_id
                 };
               })
               .ToArray();
