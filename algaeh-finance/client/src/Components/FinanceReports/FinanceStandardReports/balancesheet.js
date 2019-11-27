@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
-import { Button } from "algaeh-react-components";
+// import { Button } from "algaeh-react-components";
+import ReactToPrint from "react-to-print";
 function hasChildren(node) {
   return (
     typeof node === "object" &&
@@ -32,47 +33,26 @@ function PlotUI(node, style, indexIds) {
       >
         <div
           onClick={e => {
-            debugger;
             let currentElement = e.currentTarget;
-            // let isShow = true;
             let ul = currentElement.nextElementSibling;
             if (
               ul.getAttribute("isexpand") === null ||
               ul.getAttribute("isexpand") === "true"
             ) {
-              //  isShow = false;
               ul.classList.remove("hide");
               ul.classList.add("show");
               ul.setAttribute("isexpand", "false");
             } else {
-              //   isShow = true;
               ul.classList.remove("show");
               ul.classList.add("hide");
               ul.setAttribute("isexpand", "true");
             }
-            // const followupid = currentElement.getAttribute("followupid");
-            // currentElement.nextElementSibling.classList.add("hide");
-            // if (isShow) {
-            //   currentElement.nextElementSibling.classList.add("show");
-            // }
-
-            //   querySelectorAll(
-            //   "li[parentid='" + followupid + "']"
-            // );
-            // allsubtree.forEach(element => {
-            //   if (isShow) {
-            //     element.classList.remove("hide");
-            //     element.classList.add("show");
-            //   } else {
-            //     element.classList.remove("show");
-            //     element.classList.add("hide");
-            //   }
-            // });
           }}
           followupid={
             node.leafnode === "N" ? node.finance_account_head_id : node.head_id
           }
         >
+          <span>&#x27A5;</span>
           <span>{node["label"]}</span>
           <span>
             <b>{node["subtitle"]}</b>
@@ -98,68 +78,43 @@ export default function BalanceSheet(props) {
   } else {
     return (
       <>
-        <div className="financeReportHeader">
-          <div>Company logo</div>
-          <i
-            className="fas fa-print"
-            onClick={() => {
-              const report = createPrintObject.current;
-              var printWindow = window.open("", "", "height=700,width=900");
-              printWindow.document.write(`<html><head>`);
-              const details = document
-                .getElementsByTagName("head")[0]
-                .querySelectorAll("style");
-              details.forEach(item => {
-                printWindow.document.write(`<style>${item.innerHTML}</style>`);
-              });
-              printWindow.document.write(`</head><body>`);
-              printWindow.document.write(
-                `<div class='reportPreviewSecLeft'>${report.innerHTML}</div>`
-              );
-              printWindow.document.write(`</body></html>`);
-              printWindow.document.close();
-              printWindow.print();
-            }}
-          ></i>
-          <div>Address</div>
-          <h3>Report Name</h3>
-          <p>
-            Applied Filters -{" "}
-            <span>
-              Date: <b>11-04-2019</b>
-            </span>
-            <span>
-              Date: <b>11-04-2019</b>
-            </span>
-            <span>
-              Date: <b>11-04-2019</b>
-            </span>
-          </p>
-        </div>
-
+        <ReactToPrint
+          trigger={() => <i className="fas fa-print" />}
+          content={() => createPrintObject.current}
+          removeAfterPrint={true}
+          bodyClass="reportPreviewSecLeft"
+          pageStyle="printing"
+        />
         <div ref={createPrintObject}>
-          <table className="reportTableStyle">
-            <tbody>
-              <tr>
-                <td>
-                  <ul className="treeListUL">
-                    {PlotUI(data[result[0]], style, [0])}
-                  </ul>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <table className="reportTableStyle">
-            <tbody>
-              <tr>
-                <td>
-                  <ul className="treeListUL">
-                    {PlotUI(data[result[1]], style, [0])}
-                  </ul>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="financeReportHeader">
+            <div>Company logo</div>
+
+            <div>Address</div>
+            <h3>Report Name</h3>
+            {/* <p>
+              Applied Filters -{" "}
+              <span>
+                Date: <b>11-04-2019</b>
+              </span>
+              <span>
+                Date: <b>11-04-2019</b>
+              </span>
+              <span>
+                Date: <b>11-04-2019</b>
+              </span>
+            </p> */}
+          </div>
+          <div className="reportTableStyle">
+            <ul className="treeListUL">
+              {PlotUI(data[result[0]], style, [0])}
+            </ul>
+          </div>
+          <div className="reportTableStyle">
+            <ul className="treeListUL">
+              {PlotUI(data[result[1]], style, [0])}
+            </ul>{" "}
+          </div>
+          <div> Toatal Balance : {data.balance}</div>
         </div>
       </>
     );
