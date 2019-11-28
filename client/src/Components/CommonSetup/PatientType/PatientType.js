@@ -122,11 +122,6 @@ class PatientType extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -276,7 +271,7 @@ class PatientType extends Component {
                   }
                 }}
               />
-              <div className="col-lg-2 align-middle" style={{ paddingTop:19 }}>
+              <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
                 <button
                   onClick={this.addPatientType.bind(this)}
                   className="btn btn-primary"
@@ -354,8 +349,8 @@ class PatientType extends Component {
                         this.props.userdrtails === undefined
                           ? []
                           : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
+                            f => f.algaeh_d_app_user_id === row.created_by
+                          );
 
                       return (
                         <span>
@@ -370,8 +365,8 @@ class PatientType extends Component {
                         this.props.userdrtails === undefined
                           ? []
                           : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
+                            f => f.algaeh_d_app_user_id === row.created_by
+                          );
 
                       return (
                         <span>
@@ -435,7 +430,7 @@ class PatientType extends Component {
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: this.deletePatientType.bind(this),
-                  onEdit: row => {},
+                  onEdit: row => { },
                   onDone: this.updatePatientType.bind(this)
                 }}
               />

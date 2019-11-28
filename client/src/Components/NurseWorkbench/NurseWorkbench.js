@@ -302,12 +302,7 @@ class NurseWorkbench extends Component {
           },
           onFailure: error => {}
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
+      } 
     });
   }
 
@@ -603,12 +598,7 @@ class NurseWorkbench extends Component {
         this.setState({
           patChiefComp: this.state.patChiefComp
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
+      } 
     });
   }
 

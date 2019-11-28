@@ -532,11 +532,6 @@ const deleteEarningComponent = ($this, row) => {
         deleteearnComp: deleteearnComp,
         insertearnComp: insertearnComp
       });
-    } else {
-      swalMessage({
-        title: "Delete request cancelled",
-        type: "error"
-      });
     }
   });
 };
@@ -632,11 +627,6 @@ const deleteDeductionComponent = ($this, row) => {
         deleteDeductionComp: deleteDeductionComp,
         insertDeductionComp: insertDeductionComp
       });
-    } else {
-      swalMessage({
-        title: "Delete request cancelled",
-        type: "error"
-      });
     }
   });
 };
@@ -730,11 +720,6 @@ const deleteContibuteComponent = ($this, row) => {
         contributioncomponents: contributioncomponents,
         deleteContributeComp: deleteContributeComp,
         insertContributeComp: insertContributeComp
-      });
-    } else {
-      swalMessage({
-        title: "Delete request cancelled",
-        type: "error"
       });
     }
   });

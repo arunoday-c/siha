@@ -99,12 +99,7 @@ export default function ProjectMappingEvents() {
               });
             }
           });
-        } else {
-          swalMessage({
-            title: "Delete request cancelled",
-            type: "error"
-          });
-        }
+        } 
       });
     }
   };

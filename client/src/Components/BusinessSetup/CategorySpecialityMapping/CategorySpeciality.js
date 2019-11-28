@@ -175,11 +175,6 @@ class CategorySpeciality extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -187,60 +182,60 @@ class CategorySpeciality extends Component {
   updateCategorySpeciality(data) {
     data.category_speciality_status === "I"
       ? algaehApiCall({
-          uri: "/specialityAndCategory/updateCategorySpecialityMap",
-          module: "masterSettings",
-          data: {
-            hims_m_category_speciality_mappings_id:
-              data.hims_m_category_speciality_mappings_id
-          },
-          method: "PUT",
-          onSuccess: response => {
-            if (response.data.records.success) {
-              swalMessage({
-                title: "Record updated successfully",
-                type: "success"
-              });
-              this.getCategorySpecialityMap();
-            } else if (!response.data.records.success) {
-              swalMessage({
-                title: response.data.records.message,
-                type: "error"
-              });
-            }
-          },
-          onFailure: error => {
+        uri: "/specialityAndCategory/updateCategorySpecialityMap",
+        module: "masterSettings",
+        data: {
+          hims_m_category_speciality_mappings_id:
+            data.hims_m_category_speciality_mappings_id
+        },
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.records.success) {
             swalMessage({
-              title: error.message,
+              title: "Record updated successfully",
+              type: "success"
+            });
+            this.getCategorySpecialityMap();
+          } else if (!response.data.records.success) {
+            swalMessage({
+              title: response.data.records.message,
               type: "error"
             });
           }
-        })
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      })
       : algaehApiCall({
-          uri: "/specialityAndCategory/updateCategorySpecialityMap",
-          module: "masterSettings",
-          data: {
-            category_id: data.category_id,
-            speciality_id: data.speciality_id,
-            description: data.description,
-            category_speciality_status: "A"
-          },
-          method: "PUT",
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record updated successfully",
-                type: "success"
-              });
-              this.getCategorySpecialityMap();
-            }
-          },
-          onFailure: error => {
+        uri: "/specialityAndCategory/updateCategorySpecialityMap",
+        module: "masterSettings",
+        data: {
+          category_id: data.category_id,
+          speciality_id: data.speciality_id,
+          description: data.description,
+          category_speciality_status: "A"
+        },
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.success) {
             swalMessage({
-              title: error.message,
-              type: "error"
+              title: "Record updated successfully",
+              type: "success"
             });
+            this.getCategorySpecialityMap();
           }
-        });
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
   }
 
   changeTexts(e) {
@@ -526,9 +521,9 @@ class CategorySpeciality extends Component {
                     }}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => {},
+                      onEdit: () => { },
                       //onDelete: this.deleteCategorySpecialityMap.bind(this),
-                      onDone: () => {}
+                      onDone: () => { }
                     }}
                   />
                 </div>

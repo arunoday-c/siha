@@ -62,11 +62,6 @@ class AppointmentRooms extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -294,7 +289,7 @@ class AppointmentRooms extends Component {
             isEditable={true}
             paging={{ page: 0, rowsPerPage: 10 }}
             events={{
-              onEdit: () => {},
+              onEdit: () => { },
               onDelete: this.deleteApptRooms.bind(this),
               onDone: this.updateApptRooms.bind(this)
             }}

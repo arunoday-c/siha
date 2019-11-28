@@ -148,11 +148,6 @@ class Screens extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -402,7 +397,7 @@ class Screens extends Component {
                         isEditable={true}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
-                          onEdit: () => {},
+                          onEdit: () => { },
                           onDelete: this.deleteScreens.bind(this),
                           onDone: this.updateScreens.bind(this)
                         }}

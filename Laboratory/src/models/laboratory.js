@@ -416,9 +416,10 @@ export default {
             query:
               "UPDATE hims_f_lab_sample SET `collected`=?,`status`=?, `collected_by`=?,\
           `collected_date` =now() WHERE hims_d_lab_sample_id=?;\
-          SELECT distinct container_id,container_code FROM hims_m_lab_specimen,hims_d_investigation_test \
-          where hims_d_investigation_test.hims_d_investigation_test_id =hims_m_lab_specimen.test_id \
-          and hims_d_investigation_test.services_id=?;\
+          SELECT distinct LS.container_id, LC.container_id as container_code FROM hims_m_lab_specimen LS \
+          inner join hims_d_investigation_test IT on IT.hims_d_investigation_test_id = LS.test_id \
+          inner join hims_d_lab_container LC on LC.hims_d_lab_container_id = LS.container_id \
+          where IT.services_id=?;\
           SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
             values: [
               inputParam.collected,

@@ -1,3 +1,4 @@
+
 .reportMenuSecLeft {
   border-right: 1px solid #000;
   min-height: 93vh;
@@ -34,6 +35,15 @@
   background: #404040;
   overflow: auto;
   max-height: 93vh;
+  i.fa-print {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 2rem;
+    padding: 10px;
+    border: 1px solid #000;
+    cursor: pointer;
+  }
   .reportTableStyle {
     width: 100%;
     border-bottom: 1px solid #000;
@@ -50,6 +60,9 @@
         cursor: pointer;
         font-weight: bold;
         span:nth-child(2) {
+          margin-left: 5px;
+        }
+        span:nth-child(3) {
           color: black;
           float: right;
         }
@@ -59,6 +72,7 @@
           color: black;
           span:nth-child(2) {
             color: black;
+            float: right;
           }
           &:hover {
             color: black;
@@ -73,14 +87,7 @@
       }
 
       .parentNodeLi {
-        & > div {
-          background: url("../../assets/images/expand.png") no-repeat #f2f2f2
-            top left;
-          background-size: contain;
-          & > span {
-            padding-left: 22px;
-          }
-        }
+     
         ul {
           padding: 0;
           margin: 0;
@@ -118,14 +125,9 @@
         margin: 0 5px;
       }
     }
-    i.fa-print {
-      position: absolute;
-      right: 0;
-      top: 0;
-      font-size: 2rem;
-      padding: 10px;
-      border: 1px solid #000;
-      cursor: pointer;
-    }
   }
+}
+
+.printing{
+  margin: 10mm;
 }

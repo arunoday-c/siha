@@ -4,7 +4,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlagehFormGroup,AlgaehModalPopUp
+  AlagehFormGroup, AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 import {
@@ -40,16 +40,16 @@ class LoginUsers extends Component {
       HIMS_Active.length > 0 && HRMS_Active.length > 0
         ? HIMS_HR_USER_TYPE
         : HIMS_Active.length > 0
-        ? HIMS_USER_TYPE
-        : HRMS_Active.length > 0
-        ? HR_USER_TYPE
-        : [];
+          ? HIMS_USER_TYPE
+          : HRMS_Active.length > 0
+            ? HR_USER_TYPE
+            : [];
 
     this.state = {
       login_users: [],
       PR_USER_TYPE: USER_TYPE,
-      apiConfig:false,
-      selectedUSer:{}
+      apiConfig: false,
+      selectedUSer: {}
     };
     this.getGroups();
     this.getLoginUsers();
@@ -262,11 +262,6 @@ class LoginUsers extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -305,46 +300,46 @@ class LoginUsers extends Component {
               });
             }
           },
-          onError: error => {}
+          onError: error => { }
         });
       }
     });
   }
-apiConfiguration(row,e){
-    const {username,hospital_id}=row;
-  algaehApiCall({
-    uri:"/apiAuth/getAPI",
-    method:"GET",
-    data:{username:username,item_id:hospital_id},
-    onSuccess:(response)=>{
-      const {data} = response;
-      const {success,records}=data;
-      if(success){
-        this.setState({
-          apiConfig:true,
-          selectedUSer:{"x-api-token": records["x-api-token"],username,full_name:row.full_name}
-        })
-      }
-    }
-  });
-}
-  RemoveApiPermission(e){
-    const {username} = this.state.selectedUSer;
+  apiConfiguration(row, e) {
+    const { username, hospital_id } = row;
     algaehApiCall({
-      uri:"/apiAuth/removeAPI",
-      method:"PUT",
-      data:{username:username},
-      onSuccess:(response)=>{
-        const {data} = response;
-        const {success,message}=data;
-        if(success){
+      uri: "/apiAuth/getAPI",
+      method: "GET",
+      data: { username: username, item_id: hospital_id },
+      onSuccess: (response) => {
+        const { data } = response;
+        const { success, records } = data;
+        if (success) {
           this.setState({
-            apiConfig:false,
-            selectedUSer:{}
+            apiConfig: true,
+            selectedUSer: { "x-api-token": records["x-api-token"], username, full_name: row.full_name }
+          })
+        }
+      }
+    });
+  }
+  RemoveApiPermission(e) {
+    const { username } = this.state.selectedUSer;
+    algaehApiCall({
+      uri: "/apiAuth/removeAPI",
+      method: "PUT",
+      data: { username: username },
+      onSuccess: (response) => {
+        const { data } = response;
+        const { success, message } = data;
+        if (success) {
+          this.setState({
+            apiConfig: false,
+            selectedUSer: {}
           });
           swalMessage({
-            type:"success",
-            title:message
+            type: "success",
+            title: message
           })
         }
       }
@@ -355,13 +350,15 @@ apiConfiguration(row,e){
     return (
       <div className="login_users">
         <AlgaehModalPopUp
-            className="col-6"
-            title="API Configuration"
-            openPopup={this.state.apiConfig}
-            onClose={()=>{
-        this.setState({ apiConfig:false,
-          selectedUSer:{}});
-            }}
+          className="col-6"
+          title="API Configuration"
+          openPopup={this.state.apiConfig}
+          onClose={() => {
+            this.setState({
+              apiConfig: false,
+              selectedUSer: {}
+            });
+          }}
         >
           <div>
             <h5>{this.state.selectedUSer.full_name}</h5>
@@ -576,14 +573,14 @@ apiConfiguration(row,e){
                       datavalidate="data-validate='apptClinicsDiv'"
                       columns={[
                         {
-                          fieldName:"none",
-                          label:"API",
-                          others:{
-                            filterable:false
+                          fieldName: "none",
+                          label: "API",
+                          others: {
+                            filterable: false
                           }
                           ,
-                          displayTemplate:(row)=>{
-                            return (<button onClick={this.apiConfiguration.bind(this,row)}>Config</button>)
+                          displayTemplate: (row) => {
+                            return (<button onClick={this.apiConfiguration.bind(this, row)}>Config</button>)
                           }
                         },
                         {
@@ -731,8 +728,8 @@ apiConfiguration(row,e){
                             return row.user_status === "A"
                               ? "Active"
                               : row.user_status === "I"
-                              ? "Inactive"
-                              : "----------";
+                                ? "Inactive"
+                                : "----------";
                           },
                           editorTemplate: row => {
                             return (
@@ -768,7 +765,7 @@ apiConfiguration(row,e){
                         allowDelete: false
                       }}
                       events={{
-                        onEdit: () => {},
+                        onEdit: () => { },
                         // onDelete: this.deleteLoginUser.bind(this),
                         onDone: this.updateLoginUser.bind(this)
                       }}

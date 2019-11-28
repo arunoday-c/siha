@@ -129,12 +129,7 @@ class ChiefComplaints extends Component {
           },
           onFailure: error => {}
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "success"
-        });
-      }
+      } 
     });
   }
 
@@ -595,12 +590,7 @@ class ChiefComplaints extends Component {
             }
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
+      } 
     });
   }
 

@@ -286,6 +286,8 @@ const selectVisit = $this => {
 
                       response.data.records.saveEnable = false;
                       response.data.records.billDetails = false;
+                      response.data.records.balance_credit = 0;
+                      response.data.records.credit_amount = 0;
 
                       $this.setState({
                         ...response.data.records
@@ -484,6 +486,7 @@ const getPatientDetails = $this => {
               mappingName: "PatientPackageList"
             },
             afterSuccess: data => {
+              debugger
               if (data.length !== 0 || data.length === undefined) {
                 $this.setState({
                   pack_balance_amount: data[0].balance_amount

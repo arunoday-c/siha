@@ -151,11 +151,6 @@ class IDType extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -284,7 +279,7 @@ class IDType extends Component {
                 }}
               />
 
-              <div className="col-lg-2 align-middle" style={{ paddingTop:19 }}>
+              <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
                 <button
                   onClick={this.addIDType.bind(this)}
                   className="btn btn-primary"
@@ -362,8 +357,8 @@ class IDType extends Component {
                         this.props.userdrtails === undefined
                           ? []
                           : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
+                            f => f.algaeh_d_app_user_id === row.created_by
+                          );
 
                       return (
                         <span>
@@ -378,8 +373,8 @@ class IDType extends Component {
                         this.props.userdrtails === undefined
                           ? []
                           : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
+                            f => f.algaeh_d_app_user_id === row.created_by
+                          );
 
                       return (
                         <span>
@@ -443,7 +438,7 @@ class IDType extends Component {
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: this.deleteIDType.bind(this),
-                  onEdit: row => {},
+                  onEdit: row => { },
                   onDone: this.updateIDtypes.bind(this)
                 }}
               />

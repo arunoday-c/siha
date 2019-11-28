@@ -168,11 +168,6 @@ class AppointmentClinics extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -506,7 +501,7 @@ class AppointmentClinics extends Component {
             isEditable={true}
             paging={{ page: 0, rowsPerPage: 10 }}
             events={{
-              onEdit: () => {},
+              onEdit: () => { },
               onDelete: this.deleteAppointmentClinics.bind(this),
               onDone: this.updateAppointmentClinics.bind(this)
             }}

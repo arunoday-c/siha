@@ -354,12 +354,7 @@ class ValidateBills extends PureComponent {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
+      } 
     });
   }
 

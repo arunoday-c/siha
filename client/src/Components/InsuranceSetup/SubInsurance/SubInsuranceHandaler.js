@@ -129,12 +129,7 @@ const showconfirmDialog = ($this, id) => {
           });
         }
       });
-    } else {
-      swalMessage({
-        title: "Delete request cancelled",
-        type: "error"
-      });
-    }
+    } 
   });
 };
 

@@ -279,11 +279,6 @@ class PersistentDrawer extends React.Component {
               });
             }
           });
-        } else {
-          swalMessage({
-            title: "Delete request cancelled",
-            type: "error"
-          });
         }
       });
     }

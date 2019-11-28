@@ -310,12 +310,7 @@ class PhySchSetup extends Component {
             });
           }
         });
-      } else {
-        // swalMessage({
-        //   title: "Delete request cancelled",
-        //   type: "error"
-        // });
-      }
+      } 
     });
   }
 
@@ -841,11 +836,6 @@ class PhySchSetup extends Component {
             });
           }
         });
-      } else {
-        // swalMessage({
-        //   title: "Delete request cancelled.",
-        //   type: "warning"
-        // });
       }
     });
   }

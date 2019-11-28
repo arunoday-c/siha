@@ -58,8 +58,8 @@ class AppointmentStatus extends Component {
       this.state.default_status === "Y"
         ? this.setState({ steps: 1 })
         : this.setState({
-            steps: this.state.appointmentStatus.length + 1
-          });
+          steps: this.state.appointmentStatus.length + 1
+        });
     });
   }
 
@@ -78,56 +78,56 @@ class AppointmentStatus extends Component {
   authorizeApptStatus() {
     this.state.appointmentStatus.length > 0
       ? swal({
-          title:
-            "This is a one time setup, are you sure you want to authorize the Status for Appointment set?",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonText: "Yes",
-          confirmButtonColor: "#44b8bd",
-          cancelButtonColor: "#d33",
-          cancelButtonText: "No"
-        }).then(willDelete => {
-          if (willDelete.value) {
-            this.hasDuplicates(this.state.steps_list)
-              ? swalMessage({
-                  title:
-                    "There are repeated values, please re-check the status",
-                  type: "warning",
-                  timer: 5000
-                })
-              : algaehApiCall({
-                  uri: "/appointment/appointmentStatusAuthorized",
-                  module: "frontDesk",
-                  method: "PUT",
-                  onSuccess: response => {
-                    if (response.data.success) {
-                      this.setState({
-                        isEditable: false
-                      });
-                      swalMessage({
-                        title: "Status Authorized successfully . .",
-                        type: "success"
-                      });
-                      this.getAppointmentStatus();
-                    }
-                  },
-                  onFailure: error => {
-                    swalMessage({
-                      title: error.message,
-                      type: "error"
-                    });
-                  }
+        title:
+          "This is a one time setup, are you sure you want to authorize the Status for Appointment set?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        confirmButtonColor: "#44b8bd",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "No"
+      }).then(willDelete => {
+        if (willDelete.value) {
+          this.hasDuplicates(this.state.steps_list)
+            ? swalMessage({
+              title:
+                "There are repeated values, please re-check the status",
+              type: "warning",
+              timer: 5000
+            })
+            : algaehApiCall({
+              uri: "/appointment/appointmentStatusAuthorized",
+              module: "frontDesk",
+              method: "PUT",
+              onSuccess: response => {
+                if (response.data.success) {
+                  this.setState({
+                    isEditable: false
+                  });
+                  swalMessage({
+                    title: "Status Authorized successfully . .",
+                    type: "success"
+                  });
+                  this.getAppointmentStatus();
+                }
+              },
+              onFailure: error => {
+                swalMessage({
+                  title: error.message,
+                  type: "error"
                 });
-          } else {
-            swalMessage({
-              title: "Not authorized",
-              type: "error"
+              }
             });
-          }
-        })
+        } else {
+          swalMessage({
+            title: "Not authorized",
+            type: "error"
+          });
+        }
+      })
       : swalMessage({
-          title: "Please add the status first and then authorize"
-        });
+        title: "Please add the status first and then authorize"
+      });
   }
 
   deleteAppointmentStatus(data) {
@@ -168,11 +168,6 @@ class AppointmentStatus extends Component {
               type: "error"
             });
           }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
         });
       }
     });
@@ -247,7 +242,7 @@ class AppointmentStatus extends Component {
                     isEditable: false,
                     disableAdd: "none"
                   },
-                  () => {}
+                  () => { }
                 );
               }
             }
@@ -275,33 +270,33 @@ class AppointmentStatus extends Component {
       onSuccess: () => {
         this.state.steps_list.includes(parseInt(this.state.steps, 10))
           ? swalMessage({
-              title:
-                "Order already exists please select a unique order number?",
-              type: "warning"
-            })
+            title:
+              "Order already exists please select a unique order number?",
+            type: "warning"
+          })
           : algaehApiCall({
-              uri: "/appointment/addAppointmentStatus",
-              module: "frontDesk",
-              method: "POST",
-              data: {
-                color_code: this.state.color_code,
-                description: this.state.description,
-                default_status: this.state.default_status,
-                steps: this.state.steps
-              },
-              onSuccess: response => {
-                if (response.data.success) {
-                  swalMessage({
-                    title: "Record added successfully",
-                    type: "success"
-                  });
+            uri: "/appointment/addAppointmentStatus",
+            module: "frontDesk",
+            method: "POST",
+            data: {
+              color_code: this.state.color_code,
+              description: this.state.description,
+              default_status: this.state.default_status,
+              steps: this.state.steps
+            },
+            onSuccess: response => {
+              if (response.data.success) {
+                swalMessage({
+                  title: "Record added successfully",
+                  type: "success"
+                });
 
-                  this.resetState();
-                  this.getAppointmentStatus();
-                }
-              },
-              onFailure: error => {}
-            });
+                this.resetState();
+                this.getAppointmentStatus();
+              }
+            },
+            onFailure: error => { }
+          });
       }
     });
   }
@@ -488,12 +483,12 @@ class AppointmentStatus extends Component {
                       return row.default_status === "Y"
                         ? "Yes"
                         : row.default_status === "N"
-                        ? "No"
-                        : row.default_status === "RS"
-                        ? "Re-Schedule"
-                        : row.default_status === "C"
-                        ? "Create Visit"
-                        : "----------";
+                          ? "No"
+                          : row.default_status === "RS"
+                            ? "Re-Schedule"
+                            : row.default_status === "C"
+                              ? "Create Visit"
+                              : "----------";
                     },
                     editorTemplate: row => {
                       return (
@@ -572,26 +567,26 @@ class AppointmentStatus extends Component {
                 filter={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
-                  onEdit: () => {},
+                  onEdit: () => { },
                   onDelete:
                     this.state.disableAdd === null
                       ? this.deleteAppointmentStatus.bind(this)
                       : () => {
-                          swalMessage({
-                            title: "Already Authorized Cannot Edit/Delete",
-                            type: "error"
-                          });
-                        },
+                        swalMessage({
+                          title: "Already Authorized Cannot Edit/Delete",
+                          type: "error"
+                        });
+                      },
                   onDone:
                     this.state.disableAdd === null
                       ? this.updateAppointmentStatus.bind(this)
                       : () => {
-                          swalMessage({
-                            title: "Already Authorized Cannot Edit/Delete",
-                            type: "error"
-                          });
-                          this.getAppointmentStatus();
-                        }
+                        swalMessage({
+                          title: "Already Authorized Cannot Edit/Delete",
+                          type: "error"
+                        });
+                        this.getAppointmentStatus();
+                      }
                 }}
               />
             </div>

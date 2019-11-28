@@ -69,12 +69,7 @@ export default class EndServiceOption extends Component {
         this.setState({
           earning_comp: this.state.earning_comp
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
+      } 
     });
   }
 
@@ -106,12 +101,7 @@ export default class EndServiceOption extends Component {
             });
           }
         );
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
+      } 
     });
   }
 

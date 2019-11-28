@@ -110,11 +110,6 @@ class VisitType extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -383,7 +378,7 @@ class VisitType extends Component {
 
                 <div
                   className="col-lg-2 align-middle"
-                  style={{ paddingTop:19 }}
+                  style={{ paddingTop: 19 }}
                 >
                   <button
                     onClick={this.addVisit.bind(this)}
@@ -503,8 +498,8 @@ class VisitType extends Component {
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                                f => f.algaeh_d_app_user_id === row.created_by
-                              );
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
 
                         return (
                           <span>
@@ -519,8 +514,8 @@ class VisitType extends Component {
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                                f => f.algaeh_d_app_user_id === row.created_by
-                              );
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
 
                         return (
                           <span>
@@ -589,7 +584,7 @@ class VisitType extends Component {
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     onDelete: this.deleteVisitType.bind(this),
-                    onEdit: row => {},
+                    onEdit: row => { },
                     onDone: this.updateVisitType.bind(this)
                   }}
                 />
