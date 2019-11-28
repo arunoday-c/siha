@@ -48,11 +48,6 @@ class LeaveMaster extends Component {
         this.setState({
           leaveDetails: this.state.leaveDetails
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -73,12 +68,7 @@ class LeaveMaster extends Component {
         this.setState({
           leaveRules: this.state.leaveRules
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
+      } 
     });
   }
   deleteLeaveEncash(row) {
@@ -97,12 +87,7 @@ class LeaveMaster extends Component {
         this.setState({
           leaveEncash: this.state.leaveEncash
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
+      } 
     });
   }
 

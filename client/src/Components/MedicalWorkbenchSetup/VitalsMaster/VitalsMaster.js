@@ -230,12 +230,7 @@ class VitalsMaster extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
+      } 
     });
   }
   deleteVtialsDetail(data) {
@@ -276,11 +271,6 @@ class VitalsMaster extends Component {
               type: "error"
             });
           }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
         });
       }
     });

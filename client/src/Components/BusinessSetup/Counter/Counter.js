@@ -129,11 +129,6 @@ class Counter extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "warning"
-        });
       }
     });
   }
@@ -367,7 +362,7 @@ class Counter extends Component {
                     }}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => {},
+                      onEdit: () => { },
                       onDelete: this.deleteCounters.bind(this),
                       onDone: this.updatecounters.bind(this)
                     }}

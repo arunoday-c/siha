@@ -70,62 +70,62 @@ class Category extends Component {
   updateSpeciality(data) {
     data.department_status === "I"
       ? algaehApiCall({
-          uri: "/specialityAndCategory/makeEmployeeCategoryInActive",
-          module: "masterSettings",
-          data: {
-            hims_employee_category_id: data.hims_employee_category_id
-          },
-          method: "PUT",
-          onSuccess: response => {
-            if (response.data.records.success) {
-              swalMessage({
-                title: "Record updated successfully",
-                type: "success"
-              });
-              this.getCategories();
-            } else if (!response.data.records.success) {
-              swalMessage({
-                title: response.data.records.message,
-                type: "error"
-              });
-            }
-          },
-          onFailure: error => {
+        uri: "/specialityAndCategory/makeEmployeeCategoryInActive",
+        module: "masterSettings",
+        data: {
+          hims_employee_category_id: data.hims_employee_category_id
+        },
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.records.success) {
             swalMessage({
-              title: error.message,
+              title: "Record updated successfully",
+              type: "success"
+            });
+            this.getCategories();
+          } else if (!response.data.records.success) {
+            swalMessage({
+              title: response.data.records.message,
               type: "error"
             });
           }
-        })
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      })
       : algaehApiCall({
-          uri: "/specialityAndCategory/updateEmployeeCategoryMaster",
-          module: "masterSettings",
-          data: {
-            hims_employee_category_id: data.hims_employee_category_id,
-            employee_category_code: data.employee_category_code,
-            employee_category_name: data.employee_category_name,
-            employee_category_desc: data.employee_category_name,
-            effective_start_date: data.effective_start_date,
-            employee_category_status: data.employee_category_status,
-            arabic_name: data.arabic_name
-          },
-          method: "PUT",
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record updated successfully",
-                type: "success"
-              });
-              this.getCategories();
-            }
-          },
-          onFailure: error => {
+        uri: "/specialityAndCategory/updateEmployeeCategoryMaster",
+        module: "masterSettings",
+        data: {
+          hims_employee_category_id: data.hims_employee_category_id,
+          employee_category_code: data.employee_category_code,
+          employee_category_name: data.employee_category_name,
+          employee_category_desc: data.employee_category_name,
+          effective_start_date: data.effective_start_date,
+          employee_category_status: data.employee_category_status,
+          arabic_name: data.arabic_name
+        },
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.success) {
             swalMessage({
-              title: error.message,
-              type: "error"
+              title: "Record updated successfully",
+              type: "success"
             });
+            this.getCategories();
           }
-        });
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
   }
 
   deleteCategory(data) {
@@ -167,11 +167,6 @@ class Category extends Component {
               type: "error"
             });
           }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
         });
       }
     });
@@ -440,7 +435,7 @@ class Category extends Component {
                     }}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => {},
+                      onEdit: () => { },
                       onDelete: this.deleteCategory.bind(this),
                       onDone: this.updateSpeciality.bind(this)
                     }}

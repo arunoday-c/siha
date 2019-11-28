@@ -363,12 +363,7 @@ class FinalSettlement extends Component {
             this.setTotalEarnings();
           }
         );
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
+      } 
     });
   }
 
@@ -393,12 +388,7 @@ class FinalSettlement extends Component {
             this.setTotalDeductions();
           }
         );
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
+      } 
     });
   }
 

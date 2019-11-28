@@ -21,7 +21,7 @@ class Groups extends Component {
     this.getGroups();
   }
 
-    initCall() {
+  initCall() {
     let that = this;
     algaehApiCall({
       uri: "/init/",
@@ -36,7 +36,7 @@ class Groups extends Component {
           const placeHolder =
             response.data.records.length > 0 ? response.data.records[0] : {};
           that.setState({
-           app_group_code_placeHolder: placeHolder.app_group_code
+            app_group_code_placeHolder: placeHolder.app_group_code
           });
         }
       }
@@ -139,7 +139,7 @@ class Groups extends Component {
   }
 
   dropDownHandler(value) {
-    
+
     this.setState({
       [value.name]: value.value
     });
@@ -179,11 +179,6 @@ class Groups extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -205,10 +200,10 @@ class Groups extends Component {
                   value: this.state.app_group_code,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  },   others: {
-                          tabIndex: "1",
-                            placeholder: this.state.app_group_code_placeHolder
-                        }
+                  }, others: {
+                    tabIndex: "1",
+                    placeholder: this.state.app_group_code_placeHolder
+                  }
                 }}
               />
               <AlagehFormGroup
@@ -421,7 +416,7 @@ class Groups extends Component {
                     filter={true} isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => {},
+                      onEdit: () => { },
                       onDelete: this.deleteGroups.bind(this),
                       onDone: this.updateGroups.bind(this)
                     }}

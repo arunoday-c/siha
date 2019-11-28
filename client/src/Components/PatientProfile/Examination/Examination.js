@@ -124,12 +124,7 @@ class Examination extends Component {
             }
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled.",
-          type: "success"
-        });
-      }
+      } 
     });
   }
 
