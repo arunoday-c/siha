@@ -1028,10 +1028,11 @@ function InsertintoServiceInsurance(options) {
                 printQuery: true
               })
               .then(detailresult => {
-                resolve();
+                resolve(detailresult);
               })
               .catch(error => {
-                reject(e);
+                console.log("erroe", error)
+                reject(error);
               });
           }
         }
@@ -1102,10 +1103,10 @@ function InsertintoServiceInsuranceNetwork(options) {
                 printQuery: true
               })
               .then(detailresult => {
-                resolve();
+                resolve(detailresult);
               })
               .catch(error => {
-                reject(e);
+                reject(error);
               });
           }
         }
