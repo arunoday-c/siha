@@ -1,110 +1,10 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import moment from "moment";
-
 import algaehUtilities from "algaeh-utilities/utilities";
-import { resolve } from "dns";
-
-// import mysql from "mysql";
-// import { resolve } from "path";
-// import { rejects } from "assert";
 
 export default {
-  //created by irfan: to mark absent
-  getAccountHeadsBKUP: (req, res, next) => {
-    const utilities = new algaehUtilities();
-    const _mysql = new algaehMysql();
-    let input = req.query;
-
-    if (
-      input.finance_account_head_id > 0 &&
-      input.finance_account_head_id < 5
-    ) {
-      // input["childs_of"] = "A";
-      console.log("input:", input);
-
-      let default_total = "0.00 NO TRANS";
-      let trans_symbol = "CR";
-      if (input.finance_account_head_id == 1) {
-        trans_symbol = "DR";
-      }
-
-      _mysql
-        .executeQuery({
-          query: `with recursive cte (finance_account_head_id,account_code, account_name, parent_acc_id,
-              finance_account_child_id,child_name,child_created_from,account_level,sort_order,head_id,created_status) as (              
-              select finance_account_head_id,H.account_code,account_name,parent_acc_id,
-              C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
-              ,account_level,H.sort_order,CM.head_id,H.created_from as created_status
-              FROM finance_account_head H left join 
-              finance_head_m_child CM on H.finance_account_head_id=CM.head_id
-              left join finance_account_child C on CM.child_id=C.finance_account_child_id
-              where finance_account_head_id=?              
-              union                  
-              select   H.finance_account_head_id,H.account_code,H.account_name,H.parent_acc_id,
-              C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
-              ,H.account_level,H.sort_order,CM.head_id,H.created_from as created_status
-              FROM finance_account_head H left join 
-              finance_head_m_child CM on H.finance_account_head_id=CM.head_id
-              left join finance_account_child C on CM.child_id=C.finance_account_child_id
-              inner join 
-              cte
-              on H.parent_acc_id = cte.finance_account_head_id       
-              
-              )
-              select * from cte order by account_level,sort_order;              
-              select head_account_code,head_id,	child_id,coalesce(sum(debit_amount) ,0.0000) as debit_amount,
-              coalesce(sum(credit_amount) ,0.0000) as credit_amount, 
-              (coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) )as cred_minus_deb,
-              (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)) as deb_minus_cred
-              from finance_voucher_details group by child_id; 
-
-              select finance_account_head_id as head_id ,account_code,coalesce(sum(debit_amount) ,0.0000)as debit_amount,
-              coalesce(sum(credit_amount) ,0.0000)as credit_amount ,              
-              (coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) )as cred_minus_deb,
-              (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)) as deb_minus_cred              
-              from finance_account_head H left join
-              finance_voucher_details VD on H.finance_account_head_id=VD.head_id
-              where account_code like'${input.finance_account_head_id}%' group by account_code;
-         
-              `,
-
-          printQuery: false,
-
-          values: [input.finance_account_head_id]
-        })
-        .then(result => {
-          const child_data = result[1];
-
-          const head_data = result[2];
-          _mysql.releaseConnection();
-
-          utilities.logger().log("child_data: ", child_data);
-
-          const outputArray = createHierarchy(
-            result[0],
-            child_data,
-            head_data,
-            trans_symbol,
-            default_total
-          );
-
-          req.records = outputArray;
-          next();
-        })
-        .catch(e => {
-          _mysql.releaseConnection();
-          next(e);
-        });
-    } else {
-      req.records = {
-        invalid_input: true,
-        message: "Please provide Valid Input"
-      };
-      next();
-    }
-  },
-  //created by irfan: to mark absent
+  //created by irfan:
   getAccountHeads: (req, res, next) => {
     const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
@@ -536,12 +436,12 @@ export default {
     _mysql
       .executeQuery({
         query: `  WITH cte_  AS (
-          SELECT finance_day_end_sub_detail_id, day_end_header_id, payment_date, head_account_code,
+          SELECT finance_day_end_sub_detail_id, day_end_header_id, payment_date, head_account_code,voucher_no,
           case when sum(debit_amount)= sum(credit_amount)then 'true' else 'false'  end as is_equal,transaction_type FROM finance_day_end_header H inner join
           finance_day_end_sub_detail SD on H.finance_day_end_header_id=day_end_header_id
-          where H.posted='N' and day_end_header_id in (?)
+          where H.posted='N'  and SD.is_deleted='N' and day_end_header_id in (?)
           group by day_end_header_id)
-          select finance_day_end_sub_detail_id,day_end_header_id,payment_date,head_account_code,
+          select finance_day_end_sub_detail_id,day_end_header_id,payment_date,head_account_code,voucher_no,
           head_id,child_id,debit_amount,payment_type,credit_amount,narration,year,month,hospital_id
           from finance_day_end_sub_detail where day_end_header_id in (SELECT day_end_header_id
           FROM cte_ where is_equal='true');`,
@@ -569,7 +469,8 @@ export default {
             "narration",
             "hospital_id",
             "year",
-            "month"
+            "month",
+            "voucher_no"
           ];
           _mysql
             .executeQueryWithTransaction({

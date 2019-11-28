@@ -1313,7 +1313,7 @@ export default {
                     where status='APR'  and LA.leave_id=L.hims_d_leave_id  AND ((from_date>= ? and from_date <= ?) or\
                     (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?)); \
                     select hims_d_employee_id,biometric_id,date_of_joining,exit_date,sub_department_id,religion_id,hospital_id from hims_d_employee where record_status='A'\
-                    and employee_status='A'and biometric_id is not null and hospital_id=? and hims_d_employee_id>491 and (( date(date_of_joining) <= date(?) and date(exit_date) >= date(?)) or\
+                    and employee_status='A'and biometric_id is not null and hospital_id=? and (( date(date_of_joining) <= date(?) and date(exit_date) >= date(?)) or\
                     (date(date_of_joining) <= date(?) and exit_date is null)) ${stringData};\
                      select hims_f_shift_roster_id,employee_id,shift_date,shift_id,shift_end_date, weekoff,holiday,\
                     shift_start_time,shift_end_time,shift_time,\
