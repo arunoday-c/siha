@@ -63,7 +63,7 @@ class MedicalWorkbenchSetup extends Component {
                   />
                 }
               </li>
-              <li
+              {/* <li
                 algaehtabs={"ReviewofSystems"}
                 className={"nav-item tab-button "}
                 onClick={this.openTab.bind(this)}
@@ -75,7 +75,7 @@ class MedicalWorkbenchSetup extends Component {
                     }}
                   />
                 }
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
