@@ -2079,7 +2079,7 @@ export default {
                 _mysql
                   .executeQuery({
                     query:
-                      "INSERT INTO hims_f_attendance_monthly(??) VALUES ? ON DUPLICATE KEY UPDATE \
+                      "INSERT INTO hims_f_attendance_monthly (??) VALUES ? ON DUPLICATE KEY UPDATE \
                 employee_id=values(employee_id),year=values(year),\
                 month=values(month),hospital_id=values(hospital_id),\
                 sub_department_id=values(sub_department_id),total_days=values(total_days),present_days=values(present_days),\
@@ -2097,7 +2097,7 @@ export default {
                       updated_by: req.userIdentity.algaeh_d_app_user_id
                     },
                     bulkInsertOrUpdate: true,
-                    printQuery: false
+                    printQuery: true
                   })
                   .then(result => {
                     _mysql.releaseConnection();
