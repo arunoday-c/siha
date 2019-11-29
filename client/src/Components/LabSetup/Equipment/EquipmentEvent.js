@@ -51,7 +51,7 @@ const addToList = ($this) => {
 };
 
 const analyteEvent = ($this, e) => {
-    debugger
+
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     $this.setState({ [name]: value, analyte_name: e.selected.description });
@@ -92,7 +92,7 @@ const deleteAnalyteMap = ($this, row) => {
 }
 
 const saveMachineAnalyte = ($this) => {
-    debugger
+
     if ($this.state.hims_m_machine_analytes_header_id === null) {
 
         const machine_Exists = _.find($this.props.machine_ana_data, f => f.machine_id === $this.state.machine_id);

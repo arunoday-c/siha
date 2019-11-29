@@ -62,12 +62,14 @@ export default () => {
     addPosEntry,
 
     (req, res, next) => {
-      utilities.logger().log("pos_customer_type: ", req.body.pos_customer_type);
-      utilities.logger().log("pre_approval_req: ", req.body.pre_approval_req);
+      // utilities.logger().log("pos_customer_type: ", req.body.pos_customer_type);
+      // utilities.logger().log("pre_approval_req: ", req.body.pre_approval_req);
+      console.log("visit_preapproval: ", req.body.visit_preapproval);
       if (
-        req.body.pos_customer_type == "OT" &&
-        req.body.pre_approval_req == "Y"
+        (req.body.pos_customer_type == "OT" &&
+          req.body.pre_approval_req == "Y") || (req.body.visit_preapproval === "Y")
       ) {
+        console.log("if data: ");
         insertPreApprovalOutsideCustomer(req, res, next);
       } else {
         next();

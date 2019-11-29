@@ -354,6 +354,7 @@ const selectItemHandeler = ($this, e) => {
 }
 
 const ProcessService = ($this, e) => {
+
   if ($this.state.inventory_item_id !== null) {
     let preserviceInput = $this.state.preserviceInput || [];
     let serviceInput = [
@@ -384,25 +385,31 @@ const ProcessService = ($this, e) => {
       data: serviceInput,
       onSuccess: response => {
         if (response.data.success) {
+
           let data = response.data.records;
           if (
             data.billdetails[0].preapp_limit_exceed === "Y" &&
             $this.state.approval_limit_yesno === "N"
           ) {
             swal({
-              title:
-                "With this service Approval Limit exceed. Do you want to proceed, If proceeds all the selected services will be pro aproved and will be as cash.",
+              title: "Pre-Approval limit reached.",
+              text:
+                "Service amount have exceeded insurance limit. If proceed all services will be senting for Pre Approval.",
               type: "warning",
-              buttons: true
+              showCancelButton: true,
+              confirmButtonText: "Yes!",
+              confirmButtonColor: "#",
+              cancelButtonColor: "#d33",
+              cancelButtonText: "No"
             }).then(willProceed => {
-              if (willProceed) {
+              if (willProceed.value) {
                 preserviceInput.push(serviceInput[0]);
                 for (let k = 0; k < preserviceInput.length; k++) {
                   preserviceInput[k].approval_limit_yesno =
                     data.billdetails[0].preapp_limit_exceed;
                 }
 
-                let approval_amt = data.billdetails[0].approval_amt;
+                let approval_amt = data.approval_amt;
                 let approval_limit_yesno =
                   data.billdetails[0].preapp_limit_exceed;
 
@@ -410,7 +417,7 @@ const ProcessService = ($this, e) => {
                   uri: "/billing/getBillDetails",
                   module: "billing",
                   method: "POST",
-                  data: serviceInput,
+                  data: preserviceInput,
                   onSuccess: response => {
                     if (response.data.success) {
                       let Service_data = response.data.records;
@@ -438,43 +445,43 @@ const ProcessService = ($this, e) => {
                         Service_data.billdetails[i].insurance_service_name =
                           $this.state.insurance_service_name;
 
-                        Service_data.billdetails[0].inventory_item_id =
+                        Service_data.billdetails[i].inventory_item_id =
                           $this.state.inventory_item_id;
 
-                        Service_data.billdetails[0].item_id =
+                        Service_data.billdetails[i].item_id =
                           $this.state.inventory_item_id;
-                        Service_data.billdetails[0].item_category_id =
+                        Service_data.billdetails[i].item_category_id =
                           $this.state.item_category_id;
-                        Service_data.billdetails[0].item_group_id =
+                        Service_data.billdetails[i].item_group_id =
                           $this.state.item_group_id;
 
-                        Service_data.billdetails[0].expiry_date =
+                        Service_data.billdetails[i].expiry_date =
                           $this.state.expirydt;
-                        Service_data.billdetails[0].expirydt =
+                        Service_data.billdetails[i].expirydt =
                           $this.state.expirydt;
-                        Service_data.billdetails[0].batchno =
+                        Service_data.billdetails[i].batchno =
                           $this.state.batchno;
-                        Service_data.billdetails[0].uom_id = $this.state.uom_id;
-                        Service_data.billdetails[0].sales_uom =
+                        Service_data.billdetails[i].uom_id = $this.state.uom_id;
+                        Service_data.billdetails[i].sales_uom =
                           $this.state.uom_id;
-                        Service_data.billdetails[0].operation = "-";
-                        Service_data.billdetails[0].grn_number =
+                        Service_data.billdetails[i].operation = "-";
+                        Service_data.billdetails[i].grn_number =
                           $this.state.grnno;
-                        Service_data.billdetails[0].qtyhand =
+                        Service_data.billdetails[i].qtyhand =
                           $this.state.qtyhand;
-                        Service_data.billdetails[0].barcode =
+                        Service_data.billdetails[i].barcode =
                           $this.state.barcode;
-                        Service_data.billdetails[0].extended_cost =
-                          Service_data.billdetails[0].gross_amount;
-                        Service_data.billdetails[0].net_total =
-                          Service_data.billdetails[0].net_amout;
+                        Service_data.billdetails[i].extended_cost =
+                          Service_data.billdetails[i].gross_amount;
+                        Service_data.billdetails[i].net_total =
+                          Service_data.billdetails[i].net_amout;
 
-                        Service_data.billdetails[0].inventory_uom_id =
+                        Service_data.billdetails[i].inventory_uom_id =
                           $this.state.uom_id;
-                        Service_data.billdetails[0].location_type =
+                        Service_data.billdetails[i].location_type =
                           $this.state.location_type;
 
-                        Service_data.billdetails[0].location_id =
+                        Service_data.billdetails[i].location_id =
                           $this.state.inventory_location_id;
 
                         Service_data.billdetails[
@@ -486,7 +493,7 @@ const ProcessService = ($this, e) => {
                           Service_data.billdetails[i].quantity;
                         Service_data.billdetails[i].test_type =
                           $this.state.test_type;
-                        Service_data.billdetails[0].item_notchargable =
+                        Service_data.billdetails[i].item_notchargable =
                           $this.state.item_notchargable;
                       }
 
@@ -685,7 +692,7 @@ const ProcessService = ($this, e) => {
     });
   } else {
     swalMessage({
-      title: "Please select service and service type.",
+      title: "Please select Item.",
       type: "warning"
     });
   }

@@ -53,7 +53,7 @@ export function generateLabResultReport(data) {
 }
 
 const UpdateLabOrder = ($this, value, status) => {
-  debugger
+
   value[0].comments = $this.state.comment_list.join("<br/>")
   const critical_exit = _.filter(value, f => {
     return f.critical_status === "Y";
@@ -386,7 +386,7 @@ const onReRun = $this => {
 };
 
 const onchangegridresult = ($this, row, e) => {
-  debugger
+
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let test_analytes = $this.state.test_analytes;

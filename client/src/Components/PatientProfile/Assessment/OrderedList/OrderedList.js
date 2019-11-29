@@ -149,17 +149,61 @@ class OrderedList extends PureComponent {
       method: "GET",
       module: "masterSettings",
       onSuccess: response => {
+
         if (response.data.success === true) {
-          const Departmant_Location = _.filter(response.data.records, f => {
-            return (
-              f.hims_d_sub_department_id ===
-              this.props.patient_profile[0].sub_department_id
-            );
+          let Depat_data = response.data.records
+          algaehApiCall({
+            uri: "/patientRegistration/getVisitServiceAmount",
+            module: "frontDesk",
+            method: "GET",
+            data: { hims_f_patient_visit_id: Window.global["visit_id"] },
+            onSuccess: response => {
+
+              if (response.data.success) {
+                const Departmant_Location = _.filter(Depat_data, f => {
+                  return (
+                    f.hims_d_sub_department_id ===
+                    this.props.patient_profile[0].sub_department_id
+                  );
+                });
+
+                // let consumableorderedList = this.props.consumableorderedList
+                // let preserviceInput = []
+                // if (consumableorderedList.length > 0) {
+                //   for (let k = 0; k < consumableorderedList.length; k++) {
+                //     preserviceInput.push({
+                //       insured: consumableorderedList[k].insurance_yesno,
+                //       vat_applicable: this.props.vat_applicable,
+                //       hims_d_services_id: consumableorderedList[k].hims_d_services_id,
+                //       service_type_id: consumableorderedList[k].service_type_id,
+                //       primary_insurance_provider_id: consumableorderedList[k].insurance_provider_id,
+                //       primary_network_office_id:
+                //         consumableorderedList[k].insurance_network_office_id,
+                //       primary_network_id: consumableorderedList[k].network_id,
+                //       approval_amt: consumableorderedList[k].approval_amt,
+                //       approval_limit_yesno: consumableorderedList[k].approval_limit_yesno,
+                //       hims_f_ordered_services_id: consumableorderedList[k].hims_f_ordered_services_id,
+                //       billed: consumableorderedList[k].billed
+                //     })
+                //   }
+                // }
+                this.setState({
+                  isConsOpen: !this.state.isConsOpen,
+                  inventory_location_id: Departmant_Location[0].inventory_location_id,
+                  approval_amt: response.data.records[0].ins_services_amount,
+                  approval_limit_yesno: response.data.records[0].approval_limit_yesno,
+                  // preserviceInput: preserviceInput
+                });
+              }
+            },
+            onFailure: error => {
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
           });
-          this.setState({
-            isConsOpen: !this.state.isConsOpen,
-            inventory_location_id: Departmant_Location[0].inventory_location_id
-          });
+
         }
       },
       onFailure: error => {
@@ -1069,6 +1113,9 @@ class OrderedList extends PureComponent {
           onClose={this.CloseConsumableModel.bind(this)}
           vat_applicable={this.props.vat_applicable}
           inventory_location_id={this.state.inventory_location_id}
+          approval_amt={this.state.approval_amt}
+          approval_limit_yesno={this.state.approval_limit_yesno}
+          // preserviceInput={this.state.preserviceInput}
           addNew={true}
         />
 

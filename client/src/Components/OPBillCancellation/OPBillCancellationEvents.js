@@ -186,7 +186,7 @@ const getBillDetails = $this => {
         data.shift_id = $this.state.shift_id || null;
         data.mode_of_pay = data.insured === "Y" ? "Insured" : "Self";
         data.saveEnable = false;
-        debugger
+
         $this.setState(data);
         if (data.insured === "Y") {
           $this.props.getPatientInsurance({

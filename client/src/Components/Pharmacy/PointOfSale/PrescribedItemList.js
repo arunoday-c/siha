@@ -58,7 +58,7 @@ class PrescribedItemList extends Component {
     }
 
     render() {
-        debugger
+
         return (
             <React.Fragment>
                 <div>

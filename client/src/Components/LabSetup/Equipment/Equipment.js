@@ -59,7 +59,7 @@ class Equipment extends Component {
   }
 
   ShowModel(data) {
-    debugger
+
     this.setState({
       isOpen: !this.state.isOpen,
       selected_Machine_analyte: data

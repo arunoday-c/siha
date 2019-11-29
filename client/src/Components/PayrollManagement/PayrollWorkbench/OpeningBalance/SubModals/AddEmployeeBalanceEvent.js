@@ -36,7 +36,7 @@ export default function AllEvents() {
       });
     },
     SaveData: $this => {
-      debugger
+
       let selected_uri = "";
       let inputObj = {};
 
