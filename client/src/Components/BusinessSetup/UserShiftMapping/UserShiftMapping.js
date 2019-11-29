@@ -306,11 +306,6 @@ class UserShiftMapping extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -511,7 +506,7 @@ class UserShiftMapping extends Component {
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => {},
+                      onEdit: () => { },
                       onDelete: this.deleteCashiersAndShiftMAP.bind(this),
                       onDone: this.updateCashiersAndShiftMAP.bind(this)
                     }}

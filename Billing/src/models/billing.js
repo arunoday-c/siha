@@ -3308,7 +3308,7 @@ export default {
               amount = inputParam.credit_amount;
             }
 
-            utilities.logger().log("inputParamRR: ", inputParam);
+           
             _mysql
               .executeQueryWithTransaction({
                 query:
@@ -3564,7 +3564,9 @@ export default {
                               "debit_amount",
                               "payment_type",
                               "credit_amount",
-                              "narration"
+                              "narration",
+                              "hospital_id"
+                          
                             ];
                             _mysql
                               .executeQueryWithTransaction({
@@ -3575,7 +3577,10 @@ export default {
                                 bulkInsertOrUpdate: true,
                                 extraValues: {
                                   year:year,
-                                  month:month                             
+                                  month:month  ,
+                                  entered_date: new Date(),
+                                  entered_by: req.userIdentity.algaeh_d_app_user_id,
+                                                 
                                 },
                                 printQuery: false
                               })

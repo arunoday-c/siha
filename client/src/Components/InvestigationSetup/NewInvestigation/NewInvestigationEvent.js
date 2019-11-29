@@ -113,7 +113,7 @@ const Validations = $this => {
 const InsertLabTest = ($this, e) => {
   const err = Validations($this);
   // console.log($this.state, "from insert lab");
-  debugger
+
 
   if (!err) {
     if ($this.state.hims_d_investigation_test_id === null) {

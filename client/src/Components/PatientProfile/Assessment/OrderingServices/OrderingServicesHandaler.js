@@ -51,7 +51,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
   }
 
   if (SelectedService === undefined && PreSelectedService === undefined) {
-    debugger
+
 
     if (
       $this.state.s_service_type !== null &&
@@ -384,7 +384,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
 
 //if services got delete and if pre apprival limit exceed
 const deleteServices = ($this, row) => {
-  debugger
+
   let orderservicesdata = $this.state.orderservicesdata;
   let preserviceInput = $this.state.preserviceInput;
   let deleteserviceInput = $this.state.deleteserviceInput;
@@ -415,7 +415,7 @@ const deleteServices = ($this, row) => {
 
   preserviceInput.splice(_index, 1);
   let app_amt = parseFloat($this.state.approval_amt) - parseFloat(row["company_payble"]);
-  debugger
+
 
   if ($this.state.approval_limit_yesno === "Y") {
     if (app_amt < $this.state.preapp_limit_amount) {
@@ -559,7 +559,7 @@ const deleteServices = ($this, row) => {
 //Save Order
 const SaveOrdersServices = ($this, e) => {
   AlgaehLoader({ show: true });
-  debugger
+
   let inputObj = {
     visit_id: $this.state.visit_id,
     approval_amt: $this.state.approval_amt,
@@ -995,7 +995,7 @@ const ProcessFromFavourite = ($this, from) => {
 
   getFavouriteServices($this);
   AlgaehLoader({ show: true });
-  debugger
+
   algaehApiCall({
     uri: "/billing/getBillDetails",
     module: "billing",
@@ -1034,7 +1034,7 @@ const ProcessFromFavourite = ($this, from) => {
 
               let approval_amt = data.approval_amt;
               let approval_limit_yesno = "Y";
-              debugger
+
               algaehApiCall({
                 uri: "/billing/getBillDetails",
                 module: "billing",

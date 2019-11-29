@@ -448,13 +448,25 @@ const SavePosEnrty = $this => {
 
     const PreApprovalExists = _.find(
       $this.state.pharmacy_stock_detail,
-      f => f.pre_approval === "Y"
+      f => f.pre_approval === "Y" && f.prescription_detail_id !== null
     );
+
+    const visit_preapproval_Item = _.find(
+      $this.state.pharmacy_stock_detail,
+      f => f.pre_approval === "Y" && f.prescription_detail_id !== null
+    );
+
     if (PreApprovalExists !== null && PreApprovalExists !== undefined) {
       $this.state.pre_approval_req = "Y";
     } else {
       $this.state.pre_approval_req = "N";
     }
+    if (visit_preapproval_Item !== null && visit_preapproval_Item !== undefined) {
+      $this.state.visit_preapproval = "Y";
+    } else {
+      $this.state.visit_preapproval = "N";
+    }
+
 
     $this.state.posted = "N";
     $this.state.receipt_header_id = null;
@@ -580,7 +592,7 @@ const PostPosEntry = $this => {
       return;
     }
 
-    debugger
+
     const Quantity_zero = _.filter(
       $this.state.pharmacy_stock_detail,
       f => parseFloat(f.quantity) === 0 || f.quantity === null
@@ -900,7 +912,7 @@ const AddItems = ($this, ItemInput) => {
       onSuccess: response => {
         if (response.data.success) {
           let data = response.data.records;
-          debugger
+
           $this.setState(
             {
               prescribed_item_list: data,
@@ -1096,7 +1108,7 @@ const getCashiersAndShiftMAP = $this => {
 };
 
 const ClosePrescribedItem = ($this, e) => {
-  debugger
+
   if (e !== undefined && e.length > 0 && Array.isArray(e)) {
 
     algaehApiCall({
@@ -1175,7 +1187,7 @@ const qtyonchangegridcol = ($this, row, e) => {
   let name = e.target.name;
   let value = e.target.value === "" ? null : e.target.value;
 
-  debugger
+
   if (parseFloat(value) < 0) {
     swalMessage({
       title: "Quantity cannot be less than Zero",
@@ -1196,7 +1208,7 @@ const qtyonchangegridcol = ($this, row, e) => {
 //Calculate Row Detail
 const calculateAmount = ($this, row) => {
   //
-  debugger
+
   // e = e || ctrl;
   let prescribed_item_list = $this.state.prescribed_item_list;
 
@@ -1277,7 +1289,7 @@ const calculateAmount = ($this, row) => {
 
 const processSelectedItems = ($this, row, e) => {
 
-  debugger
+
   AlgaehLoader({ show: false });
   let selected_item_list = []
   for (let i = 0; i < $this.state.prescribed_item_list.length; i++) {
@@ -1307,7 +1319,7 @@ const getMedicationAprovalList = ($this, row) => {
     });
     return;
   }
-  debugger
+
 
   let inputobj = { item_id: row.item_id };
 

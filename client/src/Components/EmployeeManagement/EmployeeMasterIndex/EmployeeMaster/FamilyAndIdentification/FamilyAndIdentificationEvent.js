@@ -270,11 +270,6 @@ const deleteDependencies = ($this, row) => {
         deleteDependentDetails: deleteDependentDetails,
         insertDependentDetails: insertDependentDetails
       });
-    } else {
-      swalMessage({
-        title: "Delete request cancelled",
-        type: "error"
-      });
     }
   });
 };

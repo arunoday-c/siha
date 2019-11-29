@@ -108,7 +108,7 @@ const getSampleCollectionDetails = $this => {
     data: inputobj,
     onSuccess: response => {
       if (response.data.success) {
-        debugger
+
         $this.setState({ sample_collection: response.data.records });
       }
     }

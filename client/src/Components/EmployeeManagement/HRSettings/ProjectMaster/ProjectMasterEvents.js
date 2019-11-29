@@ -187,12 +187,7 @@ export default function ProjectMasterEvents() {
               });
             }
           });
-        } else {
-          swalMessage({
-            title: "Delete request cancelled",
-            type: "error"
-          });
-        }
+        } 
       });
     },
 

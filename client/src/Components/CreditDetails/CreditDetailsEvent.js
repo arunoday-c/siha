@@ -62,6 +62,8 @@ const updateCridetSettlement = ($this, context) => {
       recievable_amount: receipt_amount,
       unbalanced_amount: receipt_amount,
       cash_amount: receipt_amount,
+      card_amount: 0,
+      cheque_amount: 0,
       unbalanced_amount: 0
     });
   }

@@ -172,11 +172,6 @@ class LeaveEdit extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -359,12 +354,7 @@ class LeaveEdit extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
+      } 
     });
   }
 
@@ -402,12 +392,7 @@ class LeaveEdit extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
+      } 
     });
   }
 

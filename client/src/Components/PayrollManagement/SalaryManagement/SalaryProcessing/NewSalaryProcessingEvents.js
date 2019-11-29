@@ -173,7 +173,7 @@ const FinalizeSalary = $this => {
       let hrms_options = JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
       );
-      debugger;
+
 
       let salary_date =
         "01-" + $this.state.inputs.month + "-" + $this.state.inputs.year;

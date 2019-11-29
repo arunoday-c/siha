@@ -158,12 +158,7 @@ class LoanMaster extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
+      } 
     });
   }
 

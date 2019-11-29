@@ -207,7 +207,7 @@ class Dental extends Component {
   }
 
   saveBill() {
-    debugger
+
     let inputObj = {
       visit_id: Window.global["visit_is"],
       patient_id: Window.global["current_patient"],
@@ -339,7 +339,7 @@ class Dental extends Component {
               }
             ],
             onSuccess: res => {
-              debugger
+
               if (res.data.success) {
                 let dataOutput = res.data.records.billdetails[0];
                 if (dataOutput.pre_approval === "Y") {

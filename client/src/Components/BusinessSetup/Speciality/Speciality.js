@@ -91,63 +91,63 @@ class Speciality extends Component {
   updateSpeciality(data) {
     data.speciality_status === "I"
       ? algaehApiCall({
-          uri: "/specialityAndCategory/makeEmployeeSpecialityInActive",
-          module: "masterSettings",
-          data: {
-            hims_d_employee_speciality_id: data.hims_d_employee_speciality_id
-          },
-          method: "PUT",
-          onSuccess: response => {
-            if (response.data.records.success) {
-              swalMessage({
-                title: "Record updated successfully",
-                type: "success"
-              });
-              this.getSpeciality();
-            } else if (!response.data.records.success) {
-              swalMessage({
-                title: response.data.records.message,
-                type: "error"
-              });
-              this.getSpeciality();
-            }
-          },
-          onFailure: error => {
+        uri: "/specialityAndCategory/makeEmployeeSpecialityInActive",
+        module: "masterSettings",
+        data: {
+          hims_d_employee_speciality_id: data.hims_d_employee_speciality_id
+        },
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.records.success) {
             swalMessage({
-              title: error.message,
+              title: "Record updated successfully",
+              type: "success"
+            });
+            this.getSpeciality();
+          } else if (!response.data.records.success) {
+            swalMessage({
+              title: response.data.records.message,
               type: "error"
             });
+            this.getSpeciality();
           }
-        })
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      })
       : algaehApiCall({
-          uri: "/specialityAndCategory/updateEmployeeSpecialityMaster",
-          module: "masterSettings",
-          data: {
-            hims_d_employee_speciality_id: data.hims_d_employee_speciality_id,
-            speciality_code: data.speciality_code,
-            speciality_name: data.speciality_name,
-            speciality_desc: data.speciality_name,
-            arabic_name: data.arabic_name,
-            sub_department_id: data.sub_department_id,
-            speciality_status: data.speciality_status
-          },
-          method: "PUT",
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record updated successfully",
-                type: "success"
-              });
-              this.getSpeciality();
-            }
-          },
-          onFailure: error => {
+        uri: "/specialityAndCategory/updateEmployeeSpecialityMaster",
+        module: "masterSettings",
+        data: {
+          hims_d_employee_speciality_id: data.hims_d_employee_speciality_id,
+          speciality_code: data.speciality_code,
+          speciality_name: data.speciality_name,
+          speciality_desc: data.speciality_name,
+          arabic_name: data.arabic_name,
+          sub_department_id: data.sub_department_id,
+          speciality_status: data.speciality_status
+        },
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.success) {
             swalMessage({
-              title: error.message,
-              type: "error"
+              title: "Record updated successfully",
+              type: "success"
             });
+            this.getSpeciality();
           }
-        });
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
   }
 
   deleteSpeciality(data) {
@@ -189,11 +189,6 @@ class Speciality extends Component {
               type: "error"
             });
           }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
         });
       }
     });
@@ -458,8 +453,8 @@ class Speciality extends Component {
                           return row.speciality_status === "A"
                             ? "Active"
                             : row.speciality_status === "I"
-                            ? "Inactive"
-                            : "----------";
+                              ? "Inactive"
+                              : "----------";
                         },
                         editorTemplate: row => {
                           return (
@@ -495,7 +490,7 @@ class Speciality extends Component {
                     }}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => {},
+                      onEdit: () => { },
                       onDelete: this.deleteSpeciality.bind(this),
                       onDone: this.updateSpeciality.bind(this)
                     }}

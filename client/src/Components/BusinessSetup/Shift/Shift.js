@@ -148,11 +148,6 @@ class Shift extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "warning"
-        });
       }
     });
   }
@@ -541,8 +536,8 @@ class Shift extends Component {
                           <span>
                             {row.in_time1 !== null
                               ? moment(row.in_time1, "HH:mm:ss").format(
-                                  "hh:mm a"
-                                )
+                                "hh:mm a"
+                              )
                               : "------"}
                           </span>
                         );
@@ -578,8 +573,8 @@ class Shift extends Component {
                           <span>
                             {row.out_time1 !== null
                               ? moment(row.out_time1, "HH:mm:ss").format(
-                                  "hh:mm a"
-                                )
+                                "hh:mm a"
+                              )
                               : "------"}
                           </span>
                         );
@@ -615,8 +610,8 @@ class Shift extends Component {
                           <span>
                             {row.in_time2 !== null
                               ? moment(row.in_time2, "HH:mm:ss").format(
-                                  "hh:mm a"
-                                )
+                                "hh:mm a"
+                              )
                               : "------"}
                           </span>
                         );
@@ -652,8 +647,8 @@ class Shift extends Component {
                           <span>
                             {row.out_time2 !== null
                               ? moment(row.out_time2, "HH:mm:ss").format(
-                                  "hh:mm a"
-                                )
+                                "hh:mm a"
+                              )
                               : "------"}
                           </span>
                         );
@@ -691,8 +686,8 @@ class Shift extends Component {
                             {row.shift_end_day === "SD"
                               ? "Same Date"
                               : row.shift_end_day === "ND"
-                              ? "Next Date"
-                              : "------"}
+                                ? "Next Date"
+                                : "------"}
                           </span>
                         );
                       },
@@ -728,8 +723,8 @@ class Shift extends Component {
                             {row.break === "Y"
                               ? "YES"
                               : row.break === "N"
-                              ? "NO"
-                              : "------"}
+                                ? "NO"
+                                : "------"}
                           </span>
                         );
                       },
@@ -766,8 +761,8 @@ class Shift extends Component {
                           <span>
                             {row.break_start !== null
                               ? moment(row.break_start, "HH:mm:ss").format(
-                                  "hh:mm a"
-                                )
+                                "hh:mm a"
+                              )
                               : "------"}
                           </span>
                         );
@@ -803,8 +798,8 @@ class Shift extends Component {
                           <span>
                             {row.break_end !== null
                               ? moment(row.break_end, "HH:mm:ss").format(
-                                  "hh:mm a"
-                                )
+                                "hh:mm a"
+                              )
                               : "------"}
                           </span>
                         );
@@ -905,7 +900,7 @@ class Shift extends Component {
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    onEdit: () => {},
+                    onEdit: () => { },
                     onDelete: this.deleteShifts.bind(this),
                     onDone: this.updateShifts.bind(this)
                   }}

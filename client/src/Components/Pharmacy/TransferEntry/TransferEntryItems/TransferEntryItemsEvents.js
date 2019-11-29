@@ -407,7 +407,7 @@ const AddSelectedBatches = ($this, context) => {
     });
   } else {
     if (context !== null) {
-      // debugger
+
       let saveEnable = true;
       let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
       let _stock_detail = $this.state.stock_detail;

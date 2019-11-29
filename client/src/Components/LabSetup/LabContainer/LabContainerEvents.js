@@ -89,11 +89,6 @@ const showconfirmDialog = ($this, id) => {
         },
         onFailure: error => { }
       });
-    } else {
-      swalMessage({
-        title: "Delete request cancelled",
-        type: "error"
-      });
     }
   });
 };
@@ -151,7 +146,7 @@ const testData = ($this, e) => {
     ]
 
   }
-  debugger
+
   algaehApiCall({
     uri: "/laboratory/updateResultFromMachine",
     module: "laboratory",
@@ -159,7 +154,7 @@ const testData = ($this, e) => {
     data: inputObj,
     onSuccess: response => {
       if (response.data.success === true) {
-        debugger
+
         swalMessage({
           title: "Lab Container added successfully",
           type: "success"

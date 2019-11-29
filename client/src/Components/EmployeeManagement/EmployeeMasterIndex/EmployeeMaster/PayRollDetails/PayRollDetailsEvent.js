@@ -532,11 +532,6 @@ const deleteEarningComponent = ($this, row) => {
         deleteearnComp: deleteearnComp,
         insertearnComp: insertearnComp
       });
-    } else {
-      swalMessage({
-        title: "Delete request cancelled",
-        type: "error"
-      });
     }
   });
 };
@@ -632,11 +627,6 @@ const deleteDeductionComponent = ($this, row) => {
         deleteDeductionComp: deleteDeductionComp,
         insertDeductionComp: insertDeductionComp
       });
-    } else {
-      swalMessage({
-        title: "Delete request cancelled",
-        type: "error"
-      });
     }
   });
 };
@@ -730,11 +720,6 @@ const deleteContibuteComponent = ($this, row) => {
         contributioncomponents: contributioncomponents,
         deleteContributeComp: deleteContributeComp,
         insertContributeComp: insertContributeComp
-      });
-    } else {
-      swalMessage({
-        title: "Delete request cancelled",
-        type: "error"
       });
     }
   });
@@ -965,7 +950,6 @@ const CalculateBasedonFormula = ($this, from) => {
       }
     }
   }
-  debugger
 
   if (deduct_comp.length > 0) {
     for (let y = 0; y < deduct_comp.length; y++) {
@@ -988,7 +972,7 @@ const CalculateBasedonFormula = ($this, from) => {
 
       // formulaCal = `${formulaCal}`;
       formulaCal = eval(formulaCal);
-      debugger
+
       if (deduct_comp[y].limit_applicable === "Y" && parseFloat(formulaCal) > parseFloat(deduct_comp[y].limit_amount)) {
         deduct_comp[y].amount = deduct_comp[y].limit_amount;
       } else {

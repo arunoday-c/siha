@@ -168,7 +168,7 @@ class SelfPersonalDetails extends Component {
               this.getEmployeeEducation();
             }
           },
-          onFailure: err => {}
+          onFailure: err => { }
         });
       }
     });
@@ -196,7 +196,7 @@ class SelfPersonalDetails extends Component {
           this.getEmployeeEducation();
         }
       },
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
   updateEmployeeWorkExperience(data) {
@@ -223,7 +223,7 @@ class SelfPersonalDetails extends Component {
           this.getEmployeeWorkExp();
         }
       },
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -268,11 +268,6 @@ class SelfPersonalDetails extends Component {
               type: "error"
             });
           }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
         });
       }
     });
@@ -319,11 +314,6 @@ class SelfPersonalDetails extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -343,7 +333,7 @@ class SelfPersonalDetails extends Component {
           });
         }
       },
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -362,7 +352,7 @@ class SelfPersonalDetails extends Component {
           });
         }
       },
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -416,7 +406,7 @@ class SelfPersonalDetails extends Component {
               this.getEmployeeWorkExp();
             }
           },
-          onFailure: err => {}
+          onFailure: err => { }
         });
       }
     });
@@ -571,11 +561,6 @@ class SelfPersonalDetails extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -619,11 +604,6 @@ class SelfPersonalDetails extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -660,7 +640,7 @@ class SelfPersonalDetails extends Component {
               });
             }
           },
-          onFailure: err => {}
+          onFailure: err => { }
         });
       }
     });
@@ -719,7 +699,7 @@ class SelfPersonalDetails extends Component {
           });
         }
       },
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -1290,16 +1270,16 @@ class SelfPersonalDetails extends Component {
                                 {row.dependent_type === "SP"
                                   ? "Spouse"
                                   : row.dependent_type === "FT"
-                                  ? "Father"
-                                  : row.dependent_type === "MT"
-                                  ? "Mother"
-                                  : row.dependent_type === "GU"
-                                  ? "Guardian"
-                                  : row.dependent_type === "SO"
-                                  ? "Son"
-                                  : row.dependent_type === "DG"
-                                  ? "Daughter"
-                                  : "------"}
+                                    ? "Father"
+                                    : row.dependent_type === "MT"
+                                      ? "Mother"
+                                      : row.dependent_type === "GU"
+                                        ? "Guardian"
+                                        : row.dependent_type === "SO"
+                                          ? "Son"
+                                          : row.dependent_type === "DG"
+                                            ? "Daughter"
+                                            : "------"}
                               </span>
                             );
                           },
@@ -1425,7 +1405,7 @@ class SelfPersonalDetails extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onEdit: () => {},
+                        onEdit: () => { },
                         onDelete: this.deleteEmployeeDependentDetails.bind(
                           this
                         ),
@@ -1732,7 +1712,7 @@ class SelfPersonalDetails extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onEdit: () => {},
+                        onEdit: () => { },
                         onDelete: this.deleteIdDetails.bind(this),
                         onDone: this.updateIdDetails.bind(this)
                       }}
@@ -2095,7 +2075,7 @@ class SelfPersonalDetails extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onEdit: () => {},
+                        onEdit: () => { },
                         onDelete: this.deleteEmpWrkExp.bind(this),
                         onDone: this.updateEmployeeWorkExperience.bind(this)
                       }}
@@ -2303,8 +2283,8 @@ class SelfPersonalDetails extends Component {
                                 {row.qualitfication_type === "FT"
                                   ? "Full Time"
                                   : row.qualitfication_type === "PT"
-                                  ? "Part Time"
-                                  : null}
+                                    ? "Part Time"
+                                    : null}
                               </span>
                             );
                           },
@@ -2401,7 +2381,7 @@ class SelfPersonalDetails extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onEdit: () => {},
+                        onEdit: () => { },
                         onDelete: this.deleteEmployeeEdu.bind(this),
                         onDone: this.updateEmployeeEdu.bind(this)
                       }}

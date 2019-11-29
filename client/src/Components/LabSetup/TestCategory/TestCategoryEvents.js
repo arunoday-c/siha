@@ -87,12 +87,7 @@ const showconfirmDialog = ($this, id) => {
         },
         onFailure: error => {}
       });
-    } else {
-      swalMessage({
-        title: "Delete request cancelled",
-        type: "error"
-      });
-    }
+    } 
   });
 };
 

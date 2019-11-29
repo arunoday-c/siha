@@ -238,7 +238,7 @@ const AcknowledgeTransferEntry = $this => {
 
 const SaveTransferEntry = $this => {
 
-  debugger
+
   let gitLoaction_Exists = {};
 
   if ($this.props.git_locations.length === 0) {
@@ -305,7 +305,7 @@ const SaveTransferEntry = $this => {
 
   delete InputObj.Batch_Items
   delete InputObj.ItemUOM
-  debugger
+
   algaehApiCall({
     uri: "/transferEntry/addtransferEntry",
     module: "pharmacy",

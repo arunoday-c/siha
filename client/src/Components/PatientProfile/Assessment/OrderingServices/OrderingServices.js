@@ -199,7 +199,7 @@ class OrderingServices extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // debugger
+
     const orderservicesdata = _.filter(
       nextProps.orderedList,
       f => {

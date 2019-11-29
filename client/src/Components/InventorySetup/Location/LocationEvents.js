@@ -91,11 +91,6 @@ const showconfirmDialog = ($this, row) => {
           });
         }
       });
-    } else {
-      swalMessage({
-        title: "Delete request cancelled",
-        type: "error"
-      });
     }
   });
 };
@@ -202,7 +197,7 @@ const getLocation = $this => {
     module: "inventory",
     method: "GET",
     onSuccess: response => {
-      debugger
+
       if (response.data.success === true) {
         $this.setState({
           inv_loactions: response.data.records
