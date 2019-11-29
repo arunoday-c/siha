@@ -12,7 +12,7 @@ import logUtils from "./utils/logging";
 import jwtDecode from "jwt-decode";
 import cryptoUtils from "./utils/cryptography";
 import algaehKeys from "algaeh-keys";
-import { userSecurity } from "algaeh-utilities/checksecurity";
+// import { userSecurity } from "algaeh-utilities/checksecurity";
 import { authentication } from "algaeh-utilities/authentication";
 const keys = algaehKeys.default;
 let app = express();

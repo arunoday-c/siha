@@ -151,7 +151,6 @@ module.exports = {
     return new Promise((resolve, reject) => {
       try {
         redis.hmset(`streamingPermissions:${name}`, options);
-        console.log("Here Resolved");
         resolve();
       } catch (e) {
         reject(e);
@@ -178,5 +177,35 @@ module.exports = {
   },
   deleteStramingPermissions: name => {
     redis.del(`streamingPermissions:${name.toLowerCase()}`);
+  },
+  getCacheMasters: name => {
+    return new Promise((resolve, reject) => {
+      try {
+        redis.get(`masters:${name.toLowerCase()}`, (error, result) => {
+          if (error) {
+            reject(error);
+          } else {
+            const data = result === null ? null : JSON.parse(result);
+            resolve(data);
+          }
+        });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  },
+  setCacheMasters: (name, options) => {
+    return new Promise((resolve, reject) => {
+      try {
+        redis.set(`masters:${name.toLowerCase()}`, JSON.stringify(options));
+        resolve(options);
+      } catch (e) {
+        console.log("e", e);
+        reject(e);
+      }
+    });
+  },
+  deleteCacheMaster: name => {
+    redis.del(`masters:${name.toLowerCase()}`);
   }
 };
