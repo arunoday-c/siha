@@ -41,7 +41,7 @@ const texthandle = ($this, context, ctrl, e) => {
 
 const ageValidater = ($this, context) => {
 
-  debugger
+
 
   let isError = false
 

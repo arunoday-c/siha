@@ -1553,14 +1553,22 @@ const getMedicationAprovalList = ($this, row) => {
     data: inputobj,
     onSuccess: response => {
       if (response.data.success) {
-        $this.setState({
-          medca_approval_Services: response.data.records,
-          viewPreapproval: !$this.state.viewPreapproval,
-          item_description: row.item_description,
-          prescription_detail_id: row.prescription_detail_id,
-          item_data: row,
-          hims_f_pharmacy_pos_detail_id: row.hims_f_pharmacy_pos_detail_id
-        });
+
+        if (response.data.records.length > 0) {
+          $this.setState({
+            medca_approval_Services: response.data.records,
+            viewPreapproval: !$this.state.viewPreapproval,
+            item_description: row.item_description,
+            prescription_detail_id: row.prescription_detail_id,
+            item_data: row,
+            hims_f_pharmacy_pos_detail_id: row.hims_f_pharmacy_pos_detail_id
+          });
+        } else {
+          swalMessage({
+            title: "Save the record...",
+            type: "warning"
+          });
+        }
       }
     },
     onFailure: error => {

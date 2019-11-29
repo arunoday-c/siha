@@ -218,7 +218,7 @@ class Vitals extends Component {
       this.props.patient_vitals !== undefined
         ? Enumerable.from(this.props.patient_vitals)
           .groupBy("$.visit_date", null, (key, g) => {
-            debugger
+
             let firstRecordSet = Enumerable.from(g).firstOrDefault();
             _chartLabels.push(key);
             return {

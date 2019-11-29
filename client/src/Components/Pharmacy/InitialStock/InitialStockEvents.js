@@ -460,7 +460,7 @@ const EditGrid = ($this, cancelRow) => {
   if (cancelRow !== undefined) {
     _pharmacy_stock_detail[cancelRow.rowIdx] = cancelRow;
   }
-  debugger
+
   $this.setState({
     saveEnable: $this.state.dataExitst === true ? true : !$this.state.saveEnable,
     postEnable: !$this.state.postEnable,

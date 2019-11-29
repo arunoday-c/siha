@@ -51,9 +51,9 @@ class EquipmentPop extends Component {
     };
 
     componentWillReceiveProps(newProps) {
-        debugger
+
         if (Object.keys(newProps.selected_Machine_analyte).length > 0) {
-            debugger
+
             newProps.selected_Machine_analyte.saveEnable = false
             this.setState(newProps.selected_Machine_analyte);
         }

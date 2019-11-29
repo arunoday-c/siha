@@ -86,7 +86,7 @@ const showconfirmDialog = ($this, row) => {
         },
         onFailure: error => { }
       });
-    } 
+    }
   });
 };
 
@@ -136,7 +136,7 @@ const Validations = $this => {
 const insertLocation = ($this, e) => {
   e.preventDefault();
 
-  debugger
+
   let gitLoaction_Exists = _.find($this.props.location,
     f => f.git_location === "Y"
   );

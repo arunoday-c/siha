@@ -397,6 +397,7 @@ class RegistrationPatient extends Component {
                   patientdata.ScreenCode = getCookie("ScreenCode")
 
                   if ($this.state.hims_d_patient_id === null) {
+
                     algaehApiCall({
                       uri: "/frontDesk/add",
                       module: "frontDesk",
