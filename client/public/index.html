@@ -1,76 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <meta name="theme-color" content="#00A796" />
 
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.png" />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="theme-color" content="#00A796" />
 
-    <link rel="stylesheet" href="css/Bootstrap.css" />
-    <!--
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.png" />
+
+  <link rel="stylesheet" href="css/Bootstrap.css" />
+  <!--
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ"
       crossorigin="anonymous">
     -->
-    <link rel="stylesheet" href="css/font-awesome/all.min.css" />
-    <link rel="stylesheet" href="css/animate.min.css" />
-    <!-- <link rel="stylesheet" href="css/OpenSans.css"> -->
+  <link rel="stylesheet" href="css/font-awesome/all.min.css" />
+  <link rel="stylesheet" href="css/animate.min.css" />
+  <!-- <link rel="stylesheet" href="css/OpenSans.css"> -->
 
-    <link rel="stylesheet" type="text/css" href="./css/semantic.min.css" />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href=""
-      id="finance-style"
-      data-hash=""
-    />
-    <!-- <link
+  <link rel="stylesheet" type="text/css" href="./css/semantic.min.css" />
+  <link rel="stylesheet" type="text/css" href="" id="finance-style" data-hash="" />
+  <!-- <link
       href="https://fonts.googleapis.com/css?family=Titillium+Web:300,400,600,700"
       rel="stylesheet"
     /> -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="print"
-      href="css/algaeh-print.css"
-    />
-    <!--
+  <link rel="stylesheet" type="text/css" media="print" href="css/algaeh-print.css" />
+  <!--
       <link
         href="https://fonts.googleapis.com/css?family=Nunito:400,600,700"
         rel="stylesheet"
       />
     -->
-<!--<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/antd/3.23.6/antd.min.css"/>-->
-    <title>
-      Algaeh - A complete integration across departments, comprehensive reports
-      and a workflow from registration to billing provide a complete product.
-    </title>
-  </head>
+  <!--<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/antd/3.23.6/antd.min.css"/>-->
+  <title>
+    Algaeh - A complete integration across departments, comprehensive reports
+    and a workflow from registration to billing provide a complete product.
+  </title>
+</head>
 
-  <body>
-    <noscript> You need to enable JavaScript to run this app. </noscript>
-    <div id="root" autoComplete="new-password"></div>
-    <div id="algaeh_model_Popup" autoComplete="new-password"></div>
-    <div id="searchWindow" autoComplete="new-password"></div>
-    <div id="reportWindow" autoComplete="new-password"></div>
-    <div id="fullPageLoader" class="d-none">
-      <div class="loader-container">
-        <div class="algaeh-progress float shadow">
-          <div class="progress__item">loading</div>
-        </div>
+<body>
+  <noscript> You need to enable JavaScript to run this app. </noscript>
+  <div id="root" autoComplete="new-password"></div>
+  <div id="algaeh_model_Popup" autoComplete="new-password"></div>
+  <div id="searchWindow" autoComplete="new-password"></div>
+  <div id="reportWindow" autoComplete="new-password"></div>
+  <div id="fullPageLoader" class="d-none">
+    <div class="loader-container">
+      <div class="algaeh-progress float shadow">
+        <div class="progress__item">loading</div>
       </div>
     </div>
+  </div>
 
-    <script>
-      window.onpopstate = function(event) {
-        window.history.go(1);
-      };
-    </script>
-    <!--
+  <script>
+    window.onpopstate = function (event) {
+      window.history.go(1);
+    };
+  </script>
+  <!--
       <script
         type="text/javascript"
         src="https://api.yamli.com/js/yamli_api.js"
@@ -80,21 +67,13 @@
           Yamli.yamlify("arabicName");
         }
       </script>
+      src="https://unpkg.com/react@16/umd/react.%REACT_APP_CDN%.js"
+      src="https://unpkg.com/react-dom@16/umd/react-dom.%REACT_APP_CDN%.js"
     -->
 
-    <script
-      crossorigin
-      src="https://unpkg.com/react@16/umd/react.%REACT_APP_CDN%.js"
-    ></script>
-    <script
-      crossorigin
-      src="https://unpkg.com/react-dom@16/umd/react-dom.%REACT_APP_CDN%.js"
-    ></script>
-    <script
-      src=""
-      crossorigin="anonymous"
-      id="finance-script"
-      data-hash=""
-    ></script>
-  </body>
+  <script crossorigin src="cdn/react.%REACT_APP_CDN%.js"></script>
+  <script crossorigin src="cdn/react-dom.%REACT_APP_CDN%.js"></script>
+  <script src="" crossorigin="anonymous" id="finance-script" data-hash=""></script>
+</body>
+
 </html>
