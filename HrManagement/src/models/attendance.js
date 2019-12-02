@@ -3580,7 +3580,7 @@ export default {
 						year,month,AM.hospital_id,AM.sub_department_id,\
 						total_days,${presntdayStr} display_present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,\
 						total_leave,paid_leave,unpaid_leave,total_paid_days ,pending_unpaid_leave,total_hours,total_working_hours,\
-						shortage_hours,ot_work_hours,ot_weekoff_hours,ot_holiday_hours from hims_f_attendance_monthly AM \
+						shortage_hours,ot_work_hours,ot_weekoff_hours,ot_holiday_hours,prev_month_shortage_hr,prev_month_ot_hr from hims_f_attendance_monthly AM \
             inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
             inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id\
