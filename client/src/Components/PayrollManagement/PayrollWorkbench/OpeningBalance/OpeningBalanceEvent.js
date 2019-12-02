@@ -8,7 +8,7 @@ import {
   AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 import _ from "lodash";
-
+import Input from "./inputs";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
@@ -744,22 +744,28 @@ function getLeaveMasterData($this) {
                 return row[item.hims_d_leave_id] === "N" ? (
                   "Not Applicable"
                 ) : (
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    textBox={{
-                      number: {
-                        allowNegative: false,
-                        thousandSeparator: ","
-                      },
-                      dontAllowKeys: ["-", "e"],
-                      className: "txt-fld",
-                      name: item.hims_d_leave_id,
-                      value: row[item.hims_d_leave_id],
-                      events: {
-                        onChange: changeGridEditors.bind($this, $this, row)
-                      }
-                    }}
+                  <Input
+                    value={row[item.hims_d_leave_id]}
+                    name={item.hims_d_leave_id}
+                    row={row}
                   />
+
+                  // <AlagehFormGroup
+                  //   div={{ className: "col" }}
+                  //   textBox={{
+                  //     number: {
+                  //       allowNegative: false,
+                  //       thousandSeparator: ","
+                  //     },
+                  //     dontAllowKeys: ["-", "e"],
+                  //     className: "txt-fld",
+                  //     name: item.hims_d_leave_id,
+                  //     value: row[item.hims_d_leave_id],
+                  //     events: {
+                  //       onChange: changeGridEditors.bind($this, $this, row)
+                  //     }
+                  //   }}
+                  // />
                 );
               },
               others: {

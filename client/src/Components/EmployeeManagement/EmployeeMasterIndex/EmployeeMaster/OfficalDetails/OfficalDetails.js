@@ -866,8 +866,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OfficalDetails)
+  connect(mapStateToProps, mapDispatchToProps)(OfficalDetails)
 );
