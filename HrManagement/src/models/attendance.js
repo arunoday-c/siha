@@ -2021,7 +2021,7 @@ export default {
                   from_date,
                   to_date
                 ],
-                printQuery: false
+                printQuery: true
               })
               .then(result => {
                 allHolidays = result[0];
@@ -5171,7 +5171,7 @@ export default {
                   let total_biom_attend = AttenResult.concat(LastTenDaysResult);
                   if (total_biom_attend.length > 0) {
                     let excptions = new LINQ(total_biom_attend)
-                      .Where(w => w.status == "EX")
+                      .Where(w => w.status == "EX" ||w.status == "AB")
                       .Select(s => {
                         return {
                           employee_code: s.employee_code,
@@ -5185,7 +5185,7 @@ export default {
                       req.records = {
                         invalid_input: true,
                         employees: excptions,
-                        message: "Please Notify Exceptions to proceed"
+                        message: "Please Notify Exceptions and Absent to proceed"
                       };
                       next();
                       return;
