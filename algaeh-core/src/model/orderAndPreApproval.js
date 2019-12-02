@@ -109,11 +109,11 @@ let getMedicationAprovalList = (req, res, next) => {
         apprv_status,SA.created_date,SA.created_by, SD.chart_type, billing_updated, SD.sub_department_name,  \
         PI.primary_card_number as card_no, E.full_name as doctor_name, INS.insurance_provider_name \
         from hims_f_medication_approval SA left join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id \
-        inner join hims_d_employee E on E.hims_d_employee_id = SA.doctor_id \
+        left join hims_d_employee E on E.hims_d_employee_id = SA.doctor_id \
         inner join hims_d_services SR on SR.hims_d_services_id=SA.service_id \
         left join hims_f_patient_visit V on V.hims_f_patient_visit_id=SA.visit_id \
-        inner join hims_m_patient_insurance_mapping PI on PI.patient_visit_id=SA.visit_id \
-        inner join hims_d_insurance_provider INS on INS.hims_d_insurance_provider_id=PI.primary_insurance_provider_id \
+        left join hims_m_patient_insurance_mapping PI on PI.patient_visit_id=SA.visit_id \
+        left join hims_d_insurance_provider INS on INS.hims_d_insurance_provider_id=PI.primary_insurance_provider_id \
         left join hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id WHERE SA.record_status='A' " +
           _stringData,
         values: inputValues,

@@ -334,7 +334,7 @@ const getItemLocationStock = ($this, context, value) => {
       item_id: value.item_id
     },
     onSuccess: response => {
-      debugger
+
       if (response.data.success === true) {
         let data = response.data.records
         if (data.length > 0) {

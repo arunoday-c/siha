@@ -337,7 +337,6 @@ class PayRollDetails extends Component {
                         fieldName: "amount",
                         label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
                         editorTemplate: row => {
-                          debugger
                           return row.calculation_method === "FO" ? row.amount : (
                             <AlagehFormGroup
                               div={{}}

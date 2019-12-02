@@ -146,6 +146,9 @@ class OrderConsumables extends Component {
     ) {
       let output = nextProps.existinginsurance[0];
       output.insured = "Y";
+      output.approval_amt = nextProps.approval_amt;
+      output.approval_limit_yesno = nextProps.approval_limit_yesno
+      output.preserviceInput = []
       if (Location_name.length > 0) {
         output.inventory_location_id = nextProps.inventory_location_id;
         output.location_name = Location_name[0].location_description;
@@ -471,7 +474,7 @@ class OrderConsumables extends Component {
                           );
                         },
                         others: {
-                          minWidth: 400
+                          minWidth: 300
                         }
                       },
                       {
@@ -479,6 +482,9 @@ class OrderConsumables extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Batch No." }} />
                         ),
+                        others: {
+                          minWidth: 100
+                        },
                         disabled: true
                       },
                       {

@@ -79,7 +79,7 @@ class PreApprovalStatus extends PureComponent {
     }
   }
   componentWillReceiveProps(newProps) {
-    debugger
+
     if (
       newProps.selected_services !== undefined &&
       newProps.selected_services.length > 0
@@ -117,7 +117,7 @@ class PreApprovalStatus extends PureComponent {
       onSuccess: response => {
         if (response.data.success) {
           if (this.props.pos_customer_type === "OP") {
-            debugger
+
             let dataSend = [
               {
                 hims_f_prescription_detail_id:

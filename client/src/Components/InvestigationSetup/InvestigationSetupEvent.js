@@ -44,7 +44,7 @@ const getInvestigations = $this => {
     data: Obj,
     onSuccess: response => {
       // console.log("from update", response.data);
-      debugger
+
       if (response.data.success === true) {
         let _Investigations = Enumerable.from(response.data.records)
           .groupBy("$.hims_d_investigation_test_id", null, (k, g) => {

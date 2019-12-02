@@ -10,7 +10,7 @@ import _ from "lodash";
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  debugger
+
   if (name === "adjustment_type") {
     $this.setState({
       [name]: value,
@@ -27,7 +27,7 @@ const texthandle = ($this, e) => {
 };
 
 const batchEventHandaler = ($this, e) => {
-  debugger
+
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -42,7 +42,7 @@ const batchEventHandaler = ($this, e) => {
 };
 
 const adjustQtyHandaler = ($this, e) => {
-  debugger
+
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if ($this.state.adjustment_type === null) {
@@ -238,7 +238,7 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
 };
 
 const itemchangeText = ($this, e, ctrl) => {
-  debugger
+
   let name = ctrl;
   if ($this.state.location_id !== null) {
     let value = e.hims_d_inventory_item_master_id;

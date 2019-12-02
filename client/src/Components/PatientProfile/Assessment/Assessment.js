@@ -131,7 +131,7 @@ class Assessment extends Component {
       .where(w => w.final_daignosis === "Y")
       .toArray();
 
-    debugger
+
 
     return (
       <div className="hptl-ehr-assetment-details">

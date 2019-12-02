@@ -118,8 +118,8 @@ export default {
       let input = { ...req.body };
       let pos_number = "";
 
-      const utilities = new algaehUtilities();
-      utilities.logger().log("addPosEntry: ");
+      // const utilities = new algaehUtilities();
+      // utilities.logger().log("addPosEntry: ");
 
       _mysql
         .generateRunningNumber({
@@ -145,7 +145,7 @@ export default {
             req.records === undefined
               ? input.receipt_header_id
               : req.records.receipt_header_id;
-          utilities.logger().log("receipt_header_id: ", receipt_header_id);
+          // utilities.logger().log("receipt_header_id: ", receipt_header_id);
           _mysql
             .executeQuery({
               query:
@@ -233,7 +233,7 @@ export default {
               req.body.transaction_id = headerResult.insertId;
               req.body.year = year;
               req.body.period = period;
-              utilities.logger().log("headerResult: ", headerResult.insertId);
+              // utilities.logger().log("headerResult: ", headerResult.insertId);
               let IncludeValues = [
                 "item_id",
                 "item_category",
@@ -273,9 +273,9 @@ export default {
                 "average_cost"
               ];
 
-              utilities
-                .logger()
-                .log("pharmacy_stock_detail: ", input.pharmacy_stock_detail);
+              // utilities
+              //   .logger()
+              //   .log("pharmacy_stock_detail: ", input.pharmacy_stock_detail);
 
               _mysql
                 .executeQuery({
@@ -289,7 +289,7 @@ export default {
                   printQuery: true
                 })
                 .then(detailResult => {
-                  utilities.logger().log("detailResult: ", detailResult);
+                  // utilities.logger().log("detailResult: ", detailResult);
                   if (req.connection == null) {
                     _mysql.commitTransaction(() => {
                       _mysql.releaseConnection();
@@ -918,12 +918,12 @@ export default {
         .executeQuery({
           query:
             "SELECT H.patient_name, H.insurance_provider_id, H.sub_insurance_provider_id as sub_insurance_id,\
-             H.network_id,H.network_office_id as insurance_network_office_id, \
+             H.network_id,H.network_office_id as insurance_network_office_id, H.visit_id, \
              D.hims_f_pharmacy_pos_detail_id as pharmacy_pos_detail_id, D.item_id, D.service_id,\
              D.extended_cost as gross_amt,D.net_extended_cost as net_amount,D.quantity as requested_quantity, D.quantity as approved_qty,IM.item_description as insurance_service_name \
              from hims_f_pharmacy_pos_header H, hims_f_pharmacy_pos_detail D, hims_d_item_master IM where\
              H.hims_f_pharmacy_pos_header_id=D.pharmacy_pos_header_id and\
-             D.item_id=IM.hims_d_item_master_id and H.pos_number=? and D.pre_approval='Y' ",
+             D.item_id=IM.hims_d_item_master_id and H.pos_number=? and D.pre_approval='Y' and D.prescription_detail_id is null ",
           values: [pos_number],
           printQuery: true
         })
@@ -942,7 +942,8 @@ export default {
               "insurance_provider_id",
               "sub_insurance_id",
               "network_id",
-              "insurance_network_office_id"
+              "insurance_network_office_id",
+              "visit_id"
             ];
             _mysql
               .executeQuery({
@@ -963,7 +964,7 @@ export default {
                 utilities.logger().log("detailResult: ", detailResult);
 
                 _mysql.releaseConnection();
-                req.records = detailResult;
+                req.preapproval = detailResult;
                 next();
               })
               .catch(error => {

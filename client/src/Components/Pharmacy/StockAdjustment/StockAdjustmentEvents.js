@@ -10,7 +10,7 @@ import _ from "lodash";
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  debugger
+
   if (name === "adjustment_type") {
     $this.setState({
       [name]: value,
@@ -27,7 +27,7 @@ const texthandle = ($this, e) => {
 };
 
 const batchEventHandaler = ($this, e) => {
-  debugger
+
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -42,7 +42,7 @@ const batchEventHandaler = ($this, e) => {
 };
 
 const adjustQtyHandaler = ($this, e) => {
-  debugger
+
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if ($this.state.adjustment_type === null) {
@@ -308,7 +308,7 @@ const itemchangeText = ($this, e, ctrl) => {
       onSuccess: response => {
         if (response.data.success) {
           let data = response.data.records;
-          debugger
+
           if (data.locationResult.length > 0) {
             $this.setState({
               [name]: value,
@@ -432,7 +432,7 @@ const AddItemtoList = ($this) => {
         description: $this.state.description
       }
       pharmacy_stock_detail.push(InsertObj)
-      debugger
+
       $this.setState({
         pharmacy_stock_detail: pharmacy_stock_detail,
         adjust_qty: 0,

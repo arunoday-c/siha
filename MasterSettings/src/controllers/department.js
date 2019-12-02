@@ -2,7 +2,11 @@ import { Router } from "express";
 import algaehUtlities from "algaeh-utilities/utilities";
 import deptModels from "../models/department";
 import invModels from "algaeh-inventory/src/models/inventory";
-
+import {
+  getCacheMasters,
+  setCacheMasters,
+  deleteCacheMaster
+} from "algaeh-utilities/checksecurity";
 const { addInventoryLocation } = invModels;
 
 const {
@@ -26,43 +30,96 @@ export default () => {
   let api = Router();
   const utlities = new algaehUtlities();
 
-  api.post("/addDepartment", addDepartment, (req, res, next) => {
-    let result = req.records;
-    res.status(utlities.httpStatus().ok).json({
-      success: true,
-      records: result
-    });
-    next();
-  });
+  api.post(
+    "/addDepartment",
+    (req, res, next) => {
+      deleteCacheMaster("departments");
+      next();
+    },
+    addDepartment,
+    (req, res, next) => {
+      let result = req.records;
+      res
+        .status(utlities.httpStatus().ok)
+        .json({
+          success: true,
+          records: result
+        })
+        .end();
+      // next();
+    }
+  );
 
-  api.put("/updateDepartment", updateDepartment, (req, res, next) => {
-    let result = req.records;
-    res.status(utlities.httpStatus().ok).json({
-      success: true,
-      records: result
-    });
-    next();
-  });
+  api.put(
+    "/updateDepartment",
+    (req, res, next) => {
+      deleteCacheMaster("departments");
+      next();
+    },
+    updateDepartment,
+    (req, res, next) => {
+      let result = req.records;
+      res
+        .status(utlities.httpStatus().ok)
+        .json({
+          success: true,
+          records: result
+        })
+        .end();
+      next();
+    }
+  );
 
-  api.get("/get", selectDepartment, (req, res, next) => {
-    let result = req.records;
-    res.status(utlities.httpStatus().ok).json({
-      success: true,
-      records: result
-    });
-    next();
-  });
+  api.get(
+    "/get",
+    (req, res, next) => {
+      getCacheMasters("departments")
+        .then(result => {
+          if (result === null) {
+            next();
+          } else {
+            res
+              .status(utlities.AlgaehUtilities().httpStatus().ok)
+              .json({
+                success: true,
+                records: result
+              })
+              .end();
+          }
+        })
+        .catch(error => {
+          console.log("error", error);
+          next();
+        });
+    },
+    selectDepartment,
+    (req, res, next) => {
+      let result = req.records;
+      setCacheMasters("departments", result);
+      res
+        .status(utlities.httpStatus().ok)
+        .json({
+          success: true,
+          records: result
+        })
+        .end();
+    }
+  );
 
   api.get("/get/subdepartment", selectSubDepartment, (req, res, next) => {
     let result = req.records;
-    res.status(utlities.httpStatus().ok).json({
-      success: true,
-      records: result
-    });
-    next();
+    res
+      .status(utlities.httpStatus().ok)
+      .json({
+        success: true,
+        records: result
+      })
+      .end();
+    // next();
   });
   api.post(
     "/add/subdepartment",
+
     (req, res, next) => {
       if (req.body.Inventory_Active == true) {
         addInventoryLocation(req, res, next);
@@ -88,17 +145,45 @@ export default () => {
     });
     next();
   });
-  api.delete("/deleteDepartment", deleteDepartment, (req, res, next) => {
-    let result = req.records;
-    res.status(utlities.httpStatus().ok).json({
-      success: true,
-      records: result
-    });
-    next();
-  });
+  api.delete(
+    "/deleteDepartment",
+    (req, res, next) => {
+      deleteCacheMaster("departments");
+      next();
+    },
+    deleteDepartment,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(utlities.httpStatus().ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    }
+  );
 
   api.get(
     "/get/get_All_Doctors_DepartmentWise",
+    (req, res, next) => {
+      getCacheMasters("get_All_Doctors_DepartmentWise")
+        .then(result => {
+          if (result === null) {
+            next();
+          } else {
+            res
+              .status(utlities.AlgaehUtilities().httpStatus().ok)
+              .json({
+                success: true,
+                records: result
+              })
+              .end();
+          }
+        })
+        .catch(error => {
+          console.log("error", error);
+          next();
+        });
+    },
     selectdoctors,
     (req, res, next) => {
       let result = req.records;
@@ -132,13 +217,14 @@ export default () => {
         doc_Obj.push(doc);
       });
 
-      // let result = req.records;
+      let recor = {
+        departmets: dept_Obj,
+        doctors: doc_Obj
+      };
+      setCacheMasters("get_All_Doctors_DepartmentWise", recor);
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: {
-          departmets: dept_Obj,
-          doctors: doc_Obj
-        }
+        records: recor
       });
       next();
     }
@@ -146,6 +232,26 @@ export default () => {
 
   api.get(
     "/selectDoctorsAndClinic",
+    (req, res, next) => {
+      getCacheMasters("selectDoctorsAndClinic")
+        .then(result => {
+          if (result === null) {
+            next();
+          } else {
+            res
+              .status(utlities.AlgaehUtilities().httpStatus().ok)
+              .json({
+                success: true,
+                records: result
+              })
+              .end();
+          }
+        })
+        .catch(error => {
+          console.log("error", error);
+          next();
+        });
+    },
     selectDoctorsAndClinic,
     (req, res, next) => {
       let result = req.records;
@@ -177,29 +283,45 @@ export default () => {
         doc["departments"] = doctors[item];
         doc_Obj.push(doc);
       });
-
+      const recor = {
+        departmets: dept_Obj,
+        doctors: doc_Obj
+      };
+      setCacheMasters("selectDoctorsAndClinic", recor);
       // let result = req.records;
-      res.status(utlities.httpStatus().ok).json({
-        success: true,
-        records: {
-          departmets: dept_Obj,
-          doctors: doc_Obj
-        }
-      });
+      res
+        .status(utlities.httpStatus().ok)
+        .json({
+          success: true,
+          records: recor
+        })
+        .end();
       next();
     }
   );
 
-  api.delete("/deleteSubDepartment", deleteSubDepartment, (req, res, next) => {
-    let result = req.records;
-    res.status(utlities.httpStatus().ok).json({
-      success: true,
-      records: result
-    });
-    next();
-  });
+  api.delete(
+    "/deleteSubDepartment",
+    (req, res, next) => {
+      deleteCacheMaster("subdepartment");
+      next();
+    },
+    deleteSubDepartment,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(utlities.httpStatus().ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    }
+  );
   api.put(
     "/makeSubDepartmentInActive",
+    (req, res, next) => {
+      deleteCacheMaster("subdepartment");
+      next();
+    },
     makeSubDepartmentInActive,
     (req, res, next) => {
       let result = req.records;
@@ -212,6 +334,10 @@ export default () => {
   );
   api.put(
     "/makeDepartmentInActive",
+    (req, res, next) => {
+      deleteCacheMaster("departments");
+      next();
+    },
     makeDepartmentInActive,
     (req, res, next) => {
       let result = req.records;
