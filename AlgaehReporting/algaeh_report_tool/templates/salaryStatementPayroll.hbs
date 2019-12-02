@@ -3,12 +3,7 @@
 <body>
     <div class="print-body">
         {{#hasElement employees}}
-
-
         <section>
-
-
-
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
@@ -17,22 +12,13 @@
                         <th>Emp. Name</th>
                         <th>Desgnation</th>
                         <th>Nationality</th>
-                        {{!-- <th>Dep.</th> --}}
-                        {{!-- <th>Working Days</th> --}}
                         <th>PR Days</th>
-
                         <th>Total Earnings</th>
-
                         <th>Total Deduction </th>
                         <th>Net Salary</th>
-
                         <th>Total Contribution</th>
-                        <th>
-                            Mode Of Payment
-                        </th>
-                        <th>
-                            Salary Payed Date
-                        </th>
+                        <th>Mode Of Payment</th>
+                        <th>Salary Payed Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,7 +28,7 @@
                         <td class="numberFld">{{sum_deductions}}</td>
                         <td class="numberFld">{{sum_net_salary}}</td>
                         <td class="numberFld">{{sum_contributions}}</td>
-                        <td colspan="5"></td>
+                        <td colspan="2"></td>
                     </tr>
                     {{#each employees}}
                     <tr>
@@ -52,29 +38,16 @@
                         <td class="txtFld"><span class="textTruncate" style="width: 100px;">{{designation}}</span></td>
                         <td>{{nationality}}</td>
                         <td>{{display_present_days}}</td>
-
-
                         <td class="numberFld numberFldTotal">{{total_earnings}}</td>
-
-
-
-
-
                         <td class="numberFld numberFldTotal">{{total_deductions}}</td>
                         <td class="numberFld numberFldTotal">{{net_salary}}</td>
-
                         <td class="numberFld numberFldTotal">{{total_contributions}}</td>
-                        <td>
-                            {{mode_of_payment}}
-                        </td>
-                        <td>
-                            {{!-- {{salary_paid_date}} --}}
-                            30
-                        </td>
+                        <td>{{mode_of_payment}}</td>
+                        <td>{{!-- {{salary_paid_date}} --}}30</td>
                     </tr>
                     {{/each }}{{else}}
                     <tr>
-                        <td class="noResultTextReport">No Records Found</td>
+                        <td class="noResultTextReport" colspan="12">No Records Found</td>
                     </tr>
                 </tbody>
             </table>

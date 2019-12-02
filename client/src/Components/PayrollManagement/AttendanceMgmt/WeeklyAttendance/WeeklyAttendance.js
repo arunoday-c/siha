@@ -1504,7 +1504,7 @@ export default class WeeklyAttendance extends Component {
                 />
               </button>
 
-              <button
+              {/* <button
                 disabled={this.state.time_sheet.length === 0}
                 onClick={this.processBiometricAttendance.bind(this)}
                 type="button"
@@ -1513,7 +1513,7 @@ export default class WeeklyAttendance extends Component {
                 <AlgaehLabel
                   label={{ forceLabel: "Verify", returnText: true }}
                 />
-              </button>
+              </button> */}
 
               <button
                 disabled={
