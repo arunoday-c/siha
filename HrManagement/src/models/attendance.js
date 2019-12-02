@@ -24,7 +24,7 @@ export default {
           input.worked_hours,
           input.hims_f_daily_time_sheet_id
         ],
-        printQuery: true
+        printQuery: false
       })
       .then(update_result => {
         _mysql
@@ -42,7 +42,7 @@ export default {
               input.hims_f_daily_time_sheet_id,
               input.hims_f_project_roster_id
             ],
-            printQuery: true
+            printQuery: false
           })
           .then(result => {
             _mysql.releaseConnection();
@@ -2712,7 +2712,7 @@ export default {
                   from_date,
                   to_date
                 ],
-                printQuery: true
+                printQuery: false
               })
               .then(result => {
                 allHolidays = result[0];
@@ -3463,7 +3463,7 @@ export default {
                       updated_by: req.userIdentity.algaeh_d_app_user_id
                     },
                     bulkInsertOrUpdate: true,
-                    printQuery: true
+                    printQuery: false
                   })
                   .then(result => {
                     _mysql.releaseConnection();
@@ -3586,7 +3586,7 @@ export default {
             inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id\
 						where AM.record_status='A' and AM.year= ? and AM.month=? ${strQry} ;`,
                 values: [year, month_number],
-                printQuery: true
+                printQuery: false
               })
               .then(result => {
                 _mysql.releaseConnection();
@@ -3729,7 +3729,7 @@ export default {
              date(attendance_date)>=date(?) and date(attendance_date) <=date(?) \
              and (status='EX' or status='AB') ${employee_id};`,
           values: [input.hospital_id, input.from_date, input.to_date],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           if (result.length > 0) {
@@ -5074,6 +5074,24 @@ export default {
                 .endOf("month")
                 .format("YYYY-MM-DD");
 
+
+
+
+             let   standard_hours = options[0]["standard_working_hours"]
+                .toString()
+                .split(".")[0];
+
+                let standard_mins=0;
+              if (
+                options[0]["standard_working_hours"]
+                  .toString()
+                  .split(".")[1] != undefined
+              ) {
+                standard_mins = options[0]["standard_working_hours"]
+                  .toString()
+                  .split(".")[1];
+              }
+
               _mysql
                 .executeQuery({
                   query:
@@ -5141,7 +5159,7 @@ export default {
                     input.hospital_id
                   ],
 
-                  printQuery: true
+                  printQuery: false
                 })
                 .then(result => {
                   let AttenResult = result[0];
@@ -5394,12 +5412,26 @@ export default {
                               unpaid_leave: whichLeave == "U" ? 1 : 0,
                               total_hours: 0,
 
-                              hours: 0,
-                              minutes: 0,
-                              working_hours:
-                                whichLeave != 0 ||
+                              hours: (whichLeave != 0 ||
                                 holiday_or_weekOff.weekoff == "Y" ||
-                                holiday_or_weekOff.holiday == "Y"
+                                holiday_or_weekOff.holiday == "Y")
+                                  ? 0
+                                  : standard_hours,
+                              minutes:  (whichLeave != 0 ||
+                                holiday_or_weekOff.weekoff == "Y" ||
+                                holiday_or_weekOff.holiday == "Y")
+                                  ? 0
+                                  :standard_mins,
+                              working_hours:
+                                (whichLeave != 0 ||
+                                holiday_or_weekOff.weekoff == "Y" ||
+                                holiday_or_weekOff.holiday == "Y")
+                                  ? 0
+                                  : options[0]["standard_working_hours"],
+                                  total_hours:
+                                (whichLeave != 0 ||
+                                holiday_or_weekOff.weekoff == "Y" ||
+                                holiday_or_weekOff.holiday == "Y")
                                   ? 0
                                   : options[0]["standard_working_hours"],
                               shortage_hours: 0,
@@ -5409,7 +5441,7 @@ export default {
                             })
                         );
                       }
-                      console.log("ONE")
+                 
                       //last month 10 days
                       for (let i = 0; i < LastTenDaysResult.length; i++) {
                         let shortage_time = 0;
@@ -5559,12 +5591,7 @@ export default {
                           bulkInsertOrUpdate: true
                         })
                         .then(insertResult => {
-                          // _mysql.releaseConnection();
-
-                          // req.records = finalAttenResult;
-                          // next();
-
-                          console.log("TWO")
+                          
 
                           _mysql
                             .executeQuery({
@@ -5576,7 +5603,7 @@ export default {
                                 as total_hours,concat(COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', 1)),0)+floor(sum(SUBSTRING_INDEX(working_hours, '.', -1))/60) ,\
                         '.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
                                 COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hourss ,\
-                                COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_hourss\
+                                COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',right(concat('0',SUM(ot_minutes) % 60),2)),0) as ot_hourss\
                                 from hims_f_daily_attendance where      \
                                 hospital_id=?  and year=? and month=?  and sub_department_id=? " +
                                 stringData +
@@ -5598,7 +5625,7 @@ export default {
                                 pendingMonth
                               ],
 
-                              printQuery: true
+                              printQuery: false
                             })
                             .then(results => {
                               let attResult = results[0];
@@ -5607,7 +5634,7 @@ export default {
 
 
 
-                              console.log("THREE")
+                             
                               for (let i = 0; i < attResult.length; i++) {
                                 //ST--shortage
                                 let short_hrs = new LINQ(previousMonthData)
@@ -5627,8 +5654,7 @@ export default {
                                   .Sum(s => s.shortage_minutes);
 
 
-                                  console.log("short_hrs:",short_hrs);
-                                  console.log("short_min:",short_min);
+                             
 
                                 short_hrs =parseInt(short_hrs)+
                                   parseInt(parseInt(short_min) / parseInt(60)) +
@@ -5653,7 +5679,7 @@ export default {
                                   )
                                   .Sum(s => s.ot_minutes);
 
-                                ot_hrs +=
+                                ot_hrs =parseInt(ot_hrs)+
                                   parseInt(parseInt(ot_min) / parseInt(60)) +
                                   "." +
                                   (parseInt(ot_min) % parseInt(60));
@@ -5692,7 +5718,7 @@ export default {
                                   prev_month_ot_hr: ot_hrs
                                 });
                               }
-                              console.log("FOUR")
+                        
                               const insurtColumns = [
                                 "employee_id",
                                 "year",
@@ -6968,7 +6994,7 @@ getDailyAttendance: (req, res, next) => {
             input.ot_work_hours,
             input.hims_f_attendance_monthly_id
           ],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -7493,7 +7519,7 @@ getDailyAttendance: (req, res, next) => {
                     input.branch_id,
                     input.branch_id
                   ],
-                  printQuery: true
+                  printQuery: false
                 })
                 .then(result => {
                   _mysql.releaseConnection();
@@ -8503,7 +8529,7 @@ getDailyAttendance: (req, res, next) => {
                       input.from_date,
                       input.to_date
                     ],
-                    printQuery: true
+                    printQuery: false
                   })
                   .then(result => {
                     _mysql.releaseConnection();
@@ -8924,7 +8950,7 @@ getDailyAttendance: (req, res, next) => {
                       input.from_date,
                       input.to_date
                     ],
-                    printQuery: true
+                    printQuery: false
                   })
                   .then(result => {
                     _mysql.releaseConnection();
@@ -9750,7 +9776,7 @@ getDailyAttendance: (req, res, next) => {
             input.from_date,
             input.to_date
           ],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           const options = result[0][0];
@@ -10052,7 +10078,7 @@ getDailyAttendance: (req, res, next) => {
                       input.year,
                       input.month
                     ],
-                    printQuery: true
+                    printQuery: false
                   })
                   .then(results => {
                     let DilayResult = results[0];
@@ -10480,7 +10506,7 @@ function insertTimeSheet(
         _mysql
           .executeQuery({
             query: returnQry,
-            printQuery: true
+            printQuery: false
           })
           .then(result => {
             // _mysql.commitTransaction(() => {
@@ -10770,7 +10796,7 @@ function BulktimesheetCalc(req, res, next) {
                       input.from_date,
                       input.to_date
                     ],
-                    printQuery: true
+                    printQuery: false
                   })
                   .then(result => {
                     _mysql.releaseConnection();
@@ -11228,7 +11254,7 @@ function loadBulkTimeSheetbkup(input, req, res, next) {
 									left join hims_d_project P on PR.project_id=P.hims_d_project_id\
 									where  TS.hospital_id=? and  TS.attendance_date between (?) and (?) ${strQry} ${project}; `,
                   values: [input.branch_id, input.from_date, input.to_date],
-                  printQuery: true
+                  printQuery: false
                 })
                 .then(result => {
                   _mysql.releaseConnection();
@@ -11416,7 +11442,7 @@ function loadBulkTimeSheet(input, req, res, next) {
 									left join hims_d_project P on PR.project_id=P.hims_d_project_id\
 									where  TS.hospital_id=? and  TS.attendance_date between (?) and (?) ${strQry} ${project}; `,
                   values: [input.branch_id, input.from_date, input.to_date],
-                  printQuery: true
+                  printQuery: false
                 })
                 .then(result => {
                   //  console.log("result:",result);
