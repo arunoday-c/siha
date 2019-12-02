@@ -4,7 +4,8 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlagehFormGroup, AlgaehModalPopUp
+  AlagehFormGroup,
+  AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 import {
@@ -40,10 +41,10 @@ class LoginUsers extends Component {
       HIMS_Active.length > 0 && HRMS_Active.length > 0
         ? HIMS_HR_USER_TYPE
         : HIMS_Active.length > 0
-          ? HIMS_USER_TYPE
-          : HRMS_Active.length > 0
-            ? HR_USER_TYPE
-            : [];
+        ? HIMS_USER_TYPE
+        : HRMS_Active.length > 0
+        ? HR_USER_TYPE
+        : [];
 
     this.state = {
       login_users: [],
@@ -300,7 +301,7 @@ class LoginUsers extends Component {
               });
             }
           },
-          onError: error => { }
+          onError: error => {}
         });
       }
     });
@@ -311,14 +312,18 @@ class LoginUsers extends Component {
       uri: "/apiAuth/getAPI",
       method: "GET",
       data: { username: username, item_id: hospital_id },
-      onSuccess: (response) => {
+      onSuccess: response => {
         const { data } = response;
         const { success, records } = data;
         if (success) {
           this.setState({
             apiConfig: true,
-            selectedUSer: { "x-api-token": records["x-api-token"], username, full_name: row.full_name }
-          })
+            selectedUSer: {
+              "x-api-token": records["x-api-token"],
+              username,
+              full_name: row.full_name
+            }
+          });
         }
       }
     });
@@ -329,7 +334,7 @@ class LoginUsers extends Component {
       uri: "/apiAuth/removeAPI",
       method: "PUT",
       data: { username: username },
-      onSuccess: (response) => {
+      onSuccess: response => {
         const { data } = response;
         const { success, message } = data;
         if (success) {
@@ -340,7 +345,7 @@ class LoginUsers extends Component {
           swalMessage({
             type: "success",
             title: message
-          })
+          });
         }
       }
     });
@@ -362,8 +367,13 @@ class LoginUsers extends Component {
         >
           <div>
             <h5>{this.state.selectedUSer.full_name}</h5>
-            <strong>TOKEN</strong>:<small className="col-3">{this.state.selectedUSer["x-api-token"]}</small>
-            <button onClick={this.RemoveApiPermission.bind(this)} >Remove API Permission</button>
+            <strong>TOKEN</strong>:
+            <small className="col-3">
+              {this.state.selectedUSer["x-api-token"]}
+            </small>
+            <button onClick={this.RemoveApiPermission.bind(this)}>
+              Remove API Permission
+            </button>
           </div>
         </AlgaehModalPopUp>
         <div className="row">
@@ -577,11 +587,17 @@ class LoginUsers extends Component {
                           label: "API",
                           others: {
                             filterable: false
-                          }
-                          ,
-                          displayTemplate: (row) => {
-                            return (<button onClick={this.apiConfiguration.bind(this, row)}>Config</button>)
-                          }
+                          },
+                          displayTemplate: row => {
+                            return (
+                              <button
+                                onClick={this.apiConfiguration.bind(this, row)}
+                              >
+                                Config
+                              </button>
+                            );
+                          },
+                          disabled: true
                         },
                         {
                           fieldName: "full_name",
@@ -728,8 +744,8 @@ class LoginUsers extends Component {
                             return row.user_status === "A"
                               ? "Active"
                               : row.user_status === "I"
-                                ? "Inactive"
-                                : "----------";
+                              ? "Inactive"
+                              : "----------";
                           },
                           editorTemplate: row => {
                             return (
@@ -765,7 +781,7 @@ class LoginUsers extends Component {
                         allowDelete: false
                       }}
                       events={{
-                        onEdit: () => { },
+                        onEdit: () => {},
                         // onDelete: this.deleteLoginUser.bind(this),
                         onDone: this.updateLoginUser.bind(this)
                       }}

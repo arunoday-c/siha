@@ -7,7 +7,7 @@ const getEmployeeDetails = $this => {
     uri: "/employee/get",
     module: "hrManagement",
     method: "GET",
-    data: { hospital_id: $this.state.hospital_id },
+    data: { hospital_id: $this.state.hospital_id, show_all_status: true },
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;

@@ -107,8 +107,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(EmployeeLeaveOpenBal)
+  connect(mapStateToProps, mapDispatchToProps)(EmployeeLeaveOpenBal)
 );
