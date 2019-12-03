@@ -3236,7 +3236,7 @@ export default {
         .executeQuery({
           query:
             "select hims_f_leave_application_id,leave_application_code,employee_id,application_date,\
-              leave_id,from_date,to_date,from_leave_session,to_leave_session, leave_applied_from, \
+              leave_id,from_date,to_date,from_leave_session,to_leave_session,  \
               total_applied_days, total_approved_days,status,authorized3,authorized2,authorized1, \
               remarks,L.leave_code, L.leave_description, E.employee_code, E.full_name from hims_f_leave_application LA \
               inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id and L.record_status='A'\
@@ -4066,7 +4066,7 @@ export default {
                 query:
                   "SELECT hims_f_leave_application_id,LA.leave_application_code,LA.hospital_id,LA.employee_id,\
             LA.application_date,LA.sub_department_id,LA.leave_id,LA.from_leave_session,\
-            LA.from_date,LA.to_date,LA.to_leave_session,LA.leave_applied_from,\
+            LA.from_date,LA.to_date,LA.to_leave_session,\
             LA.total_applied_days,LA.leave_from,LA.absent_id,LA.total_approved_days,LA.status,LA.is_projected_leave \
             ,L.leave_code,L.leave_description,L.leave_type,L.leave_category,E.employee_code,\
             E.full_name as employee_name,E.religion_id,SD.sub_department_code,SD.sub_department_name, DE.designation,remarks,E.nationality \
@@ -6302,7 +6302,7 @@ function saveF(_mysql, req, next, input, msg) {
             .executeQuery({
               query:
                 "INSERT INTO `hims_f_leave_application` (leave_application_code,employee_id,hospital_id,application_date,sub_department_id,leave_id,leave_type,\
-            from_date,to_date,actual_to_date,from_leave_session,to_leave_session,leave_applied_from,total_applied_days,remarks,weekoff_included,holiday_included,\
+            from_date,to_date,actual_to_date,from_leave_session,to_leave_session,total_applied_days,remarks,weekoff_included,holiday_included,\
             weekoff_days,holidays,leave_from,absent_id,is_projected_leave,is_across_year_leave,from_year_applied_days,to_year_applied_days, created_date, created_by, updated_date, updated_by)\
             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
@@ -6318,7 +6318,7 @@ function saveF(_mysql, req, next, input, msg) {
                 input.to_date,
                 input.from_leave_session,
                 input.to_leave_session,
-                input.leave_applied_from,
+               
                 input.total_applied_days,
                 input.remarks,
                 input.weekoff_included,

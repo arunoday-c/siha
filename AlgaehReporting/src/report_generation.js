@@ -996,10 +996,11 @@ export default {
                       worksheet.addRow([]);
                     }
                     var tables = $("table").length;
-                    let mergedRecords = [];
+
                     if (tables > 0) {
                       $("table").each(function(tableIdx, table) {
                         var rows = [];
+                        // let mergedRecords = [];
                         var columns = [];
                         $(this)
                           .find("th")
@@ -1047,11 +1048,19 @@ export default {
                           .map(function(trIdx, tr) {
                             var rowID = worksheet.rowCount + 1;
                             const itemRow = worksheet.getRow(rowID);
+                            let skipOnMerdge = null;
                             $(this)
                               .find("td")
                               .map(function(cellIndex, td) {
                                 const celllIdx = cellIndex + 1;
-                                const cell = itemRow.getCell(celllIdx);
+                                const cell = itemRow.getCell(
+                                  skipOnMerdge === null
+                                    ? celllIdx
+                                    : skipOnMerdge
+                                );
+                                if (skipOnMerdge) {
+                                  skipOnMerdge = skipOnMerdge + 1;
+                                }
                                 if ($(this).attr("excelfonts") !== undefined) {
                                   cell.font = JSON.parse(
                                     $(this).attr("excelfonts")
@@ -1070,7 +1079,6 @@ export default {
                                       .attr("excelcellmerge")
                                       .split(":");
                                     const merge = `${_mergeCells[0]}${rowID}:${_mergeCells[1]}${rowID}`;
-
                                     const den = `${_mergeCells[0]}${rowID}`;
                                     worksheet.getCell(den).value = $(this)
                                       .text()
@@ -1084,40 +1092,45 @@ export default {
                                       .replace(/\n/g, " ")
                                       .replace(/  +/g, " ")
                                       .replace(/&amp;/gi, "&");
-
-                                    let currentColumn = 0;
-
-                                    for (
-                                      let h = 0;
-                                      h < cell.address.length;
-                                      h++
-                                    ) {
-                                      if (h !== cell.address.length - 1) {
-                                      }
+                                    if (!isNaN(cell.value)) {
+                                      cell.alignment = {
+                                        vertical: "top",
+                                        horizontal: "right"
+                                      };
                                     }
-                                    //cell.address.charCodeAt(
-                                    // 0
-                                    // );
+                                    const onlyAlphabets = cell.address.replace(
+                                      /\d+/g,
+                                      ""
+                                    );
+                                    const prefixes = onlyAlphabets.substring(
+                                      0,
+                                      onlyAlphabets.length - 1
+                                    );
+                                    const lastcharacter = onlyAlphabets.charCodeAt(
+                                      onlyAlphabets.length - 1
+                                    );
+
                                     const numberOfCols =
                                       parseInt($(this).attr("colspan")) - 1;
-                                    console.log(
-                                      "currentColumn ",
-                                      currentColumn
-                                    );
-                                    console.log("numberOfCols", numberOfCols);
+                                    const added = lastcharacter + numberOfCols;
                                     const character = String.fromCharCode(
-                                      currentColumn + numberOfCols
+                                      added
                                     );
-                                    console.log("Character", cell.address);
-
+                                    skipOnMerdge =
+                                      celllIdx +
+                                      parseInt($(this).attr("colspan"));
                                     // const allColumns = worksheet.columns.length;
                                     //  const merge = `A${rowID}:${columnToLetter(
                                     //  allColumns
                                     //)}${rowID}`;
-                                    const merge = `${cell.address}:${character}${rowID}`;
 
-                                    console.log("Merge", merge);
-                                    worksheet.mergeCells(merge);
+                                    const merge = `${cell.address}:${prefixes}${character}${rowID}`;
+                                    try {
+                                      worksheet.mergeCells(merge);
+                                    } catch {
+                                      console.log("Already Merge", merge);
+                                    }
+
                                     itemRow.font = {
                                       bold: true
                                     };
@@ -1134,6 +1147,13 @@ export default {
                                     .replace(/\n/g, " ")
                                     .replace(/  +/g, " ")
                                     .replace(/&amp;/gi, "&");
+
+                                  if (!isNaN(cell.value)) {
+                                    cell.alignment = {
+                                      vertical: "top",
+                                      horizontal: "right"
+                                    };
+                                  }
                                 }
 
                                 if (
