@@ -454,6 +454,40 @@ export default class NewMonthlyAttendance extends Component {
                         </span>
                       );
                     }
+                  },
+                  {
+                    fieldName: "prev_month_shortage_hr",
+                    label: (
+                      <AlgaehLabel
+                        label={{ forceLabel: "Previous Month Shortage" }}
+                      />
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.prev_month_shortage_hr
+                            ? row.prev_month_shortage_hr + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "prev_month_ot_hr",
+                    label: (
+                      <AlgaehLabel
+                        label={{ forceLabel: "Previous Month OT" }}
+                      />
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.prev_month_ot_hr
+                            ? row.prev_month_ot_hr + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
                   }
                 ]}
                 dataSource={{
