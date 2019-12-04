@@ -280,9 +280,9 @@ export default () => {
   );
   api.delete("/deleteSchedule", deleteSchedule, (req, res, next) => {
     if (req.records.invalid_opertaion == true) {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      res.status(utlities.AlgaehUtilities().httpStatus().internalServer).json({
         success: false,
-        records: req.records
+        message: req.records.message
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

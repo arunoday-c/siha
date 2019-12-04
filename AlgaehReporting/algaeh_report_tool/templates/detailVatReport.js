@@ -3,7 +3,6 @@ const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
   return new Promise(function(resolve, reject) {
     try {
-      console.log("noor", "oo");
       let input = {};
       let params = options.args.reportParams;
       // const utilities = new algaehUtilities();
