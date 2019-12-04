@@ -76,12 +76,14 @@
     margin-bottom: 15px;
   }
 }
-.popLeftDiv {
-  width: 45vw;
-  float: left;
-}
-.popRightDiv {
-  width: 50vw;
-  float: right;
-  padding-left: 0px !important;
+.MicroGroup {
+  .popLeftDiv {
+    width: 45vw;
+    float: left;
+  }
+  .popRightDiv {
+    width: 50vw;
+    float: right;
+    padding-left: 0px !important;
+  }
 }
