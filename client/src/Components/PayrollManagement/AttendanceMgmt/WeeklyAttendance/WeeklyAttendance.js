@@ -1343,7 +1343,7 @@ export default class WeeklyAttendance extends Component {
               )
             )}
           </div>
-          <div
+          {/* <div
             className="row"
             style={{
               padding: "15px"
@@ -1487,7 +1487,7 @@ export default class WeeklyAttendance extends Component {
                 <div className="cm" />
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="hptl-phase1-footer">

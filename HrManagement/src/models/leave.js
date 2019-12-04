@@ -6304,7 +6304,7 @@ function saveF(_mysql, req, next, input, msg) {
                 "INSERT INTO `hims_f_leave_application` (leave_application_code,employee_id,hospital_id,application_date,sub_department_id,leave_id,leave_type,\
             from_date,to_date,actual_to_date,from_leave_session,to_leave_session,total_applied_days,remarks,weekoff_included,holiday_included,\
             weekoff_days,holidays,leave_from,absent_id,is_projected_leave,is_across_year_leave,from_year_applied_days,to_year_applied_days, created_date, created_by, updated_date, updated_by)\
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 numGenLeave[0],
                 input.employee_id,
@@ -6318,7 +6318,6 @@ function saveF(_mysql, req, next, input, msg) {
                 input.to_date,
                 input.from_leave_session,
                 input.to_leave_session,
-               
                 input.total_applied_days,
                 input.remarks,
                 input.weekoff_included,
@@ -6331,7 +6330,6 @@ function saveF(_mysql, req, next, input, msg) {
                 input.is_across_year_leave ? input.is_across_year_leave : "N",
                 input.from_year_calculatedLeaveDays,
                 input.to_year_calculatedLeaveDays,
-
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),

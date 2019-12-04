@@ -167,30 +167,6 @@ export default function EmpProjectRoster(props) {
                 <option value="1">Show Assigned</option>
                 <option value="2">Show Pending</option>
               </select>
-
-              <button
-                className="btn btn-primary"
-                style={{ marginLeft: 25 }}
-                onClick={e => {
-                  setIsEditing(undefined);
-                  setShowPopup(true);
-
-                  if (projects.length === 0) {
-                    setLoadingProjects(true);
-                    getProjects()
-                      .then(result => {
-                        setLoadingProjects(false);
-                        setProjects(result);
-                      })
-                      .catch(error => {
-                        setProjects([]);
-                        setLoadingProjects(false);
-                      });
-                  }
-                }}
-              >
-                Assign New Project
-              </button>
             </div>
             <ProjectAssigned
               showPopup={showPopup}
@@ -232,6 +208,40 @@ export default function EmpProjectRoster(props) {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>{" "}
+      <div className="hptl-phase1-footer">
+        <div className="row">
+          <div className="col-lg-12">
+            <button
+              className="btn btn-primary"
+              onClick={e => {
+                setIsEditing(undefined);
+                setShowPopup(true);
+
+                if (projects.length === 0) {
+                  setLoadingProjects(true);
+                  getProjects()
+                    .then(result => {
+                      setLoadingProjects(false);
+                      setProjects(result);
+                    })
+                    .catch(error => {
+                      setProjects([]);
+                      setLoadingProjects(false);
+                    });
+                }
+              }}
+            >
+              Assign New Project
+            </button>
+            <button type="button" className="btn btn-default">
+              Download as Excel
+            </button>
+            <button type="button" className="btn btn-default">
+              Download as PDF
+            </button>{" "}
           </div>
         </div>
       </div>
