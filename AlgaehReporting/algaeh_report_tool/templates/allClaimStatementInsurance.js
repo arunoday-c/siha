@@ -1,11 +1,9 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   const _mysql = options.mysql;
   const inputParams = options.inputs;
   const _ = options.loadash;
   const moment = options.moment;
 
-  const utilities = new algaehUtilities();
   return new Promise(function(resolve, reject) {
     try {
       _mysql
@@ -272,10 +270,6 @@ const executePDF = function executePDFMethod(options) {
             );
             _copySheets = groupBy.length <= 1 ? [] : sheets_copy;
           }
-
-          utilities
-            .logger()
-            .log("result: ", { data: dataObject, copySheets: _copySheets });
 
           resolve({ data: dataObject, copySheets: _copySheets });
         })

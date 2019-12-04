@@ -1,6 +1,6 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function (resolve, reject) {
+  return new Promise(function(resolve, reject) {
     // const utilities = new algaehUtilities();
     try {
       const _ = options.loadash;
@@ -14,19 +14,13 @@ const executePDF = function executePDFMethod(options) {
       });
 
       // utilities.logger().log("input: ", input);
-      let current_date = moment().format("YYYY-MM-DD")
+      let current_date = moment().format("YYYY-MM-DD");
 
-      console.log("item_id: ", input.item_id)
+      console.log("item_id: ", input.item_id);
       if (input.item_id !== null && input.item_id !== undefined) {
         str += ` and item_code_id = ${input.item_id}`;
       }
 
-
-
-      // and item_code_id=? 
-
-      console.log("current_date: ", current_date)
-      console.log("stockUsed: ", input.stockUsed)
       options.mysql
         .executeQuery({
           query:
@@ -35,8 +29,14 @@ const executePDF = function executePDFMethod(options) {
             inner join hims_d_inventory_item_master IM  on IM.hims_d_inventory_item_master_id = PTH.item_code_id \
             inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = PTH.transaction_uom \
             where date(PTH.transaction_date)  between date(?) and date(?) and from_location_id=? and hospital_id=?" +
-            str + " group by item_code_id",
-          values: [input.stockUsed, current_date, input.location_id, input.hospital_id],
+            str +
+            " group by item_code_id",
+          values: [
+            input.stockUsed,
+            current_date,
+            input.location_id,
+            input.hospital_id
+          ],
           printQuery: true
         })
         .then(results => {

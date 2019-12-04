@@ -1,9 +1,8 @@
-// const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
       const _ = options.loadash;
-      // const utilities = new algaehUtilities();
+
       let str = "";
       let input = {};
       let params = options.args.reportParams;
@@ -53,7 +52,6 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true
         })
         .then(result => {
-          // utilities.logger().log("result: ", result);
           resolve({ result: result });
         })
         .catch(error => {
