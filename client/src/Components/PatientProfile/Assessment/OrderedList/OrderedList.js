@@ -534,6 +534,56 @@ class OrderedList extends PureComponent {
     });
   }
 
+  DeleteInvOrderItems(row) {
+    swal({
+      title: "Are you sure you want to delete this Item?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      debugger
+      if (willDelete.value) {
+
+        algaehApiCall({
+          uri: "/orderAndPreApproval/deleteInvOrderedItems",
+          method: "delete",
+          data: {
+            hims_f_ordered_inventory_id: row.hims_f_ordered_inventory_id
+          },
+          onSuccess: response => {
+            if (response.data.success === true) {
+              this.props.getConsumableOrderList({
+                uri: "/orderAndPreApproval/getVisitConsumable",
+                method: "GET",
+                data: {
+                  visit_id: Window.global["visit_id"]
+                },
+                redux: {
+                  type: "ORDER_SERVICES_GET_DATA",
+                  mappingName: "consumableorderedList"
+                }
+              });
+
+              swalMessage({
+                title: "Deleted Succesfully",
+                type: "success"
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      }
+    });
+  }
+
   render() {
     let patient_date =
       this.props.patient_profile !== undefined
@@ -773,6 +823,33 @@ class OrderedList extends PureComponent {
                   <AlgaehDataGrid
                     id="Orderd_Consumable"
                     columns={[
+                      {
+                        fieldName: "actions",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Details" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              <i
+                                // style={{
+                                //   pointerEvents:
+                                //     row.billed && row.trans_package_detail_id > 0 === "N" ? "" : "none",
+                                //   opacity: row.billed && row.trans_package_detail_id > 0 === "N" ? "" : "0.1"
+                                // }}
+                                className="fas fa-trash-alt"
+                                onClick={this.DeleteInvOrderItems.bind(
+                                  this,
+                                  row
+                                )}
+                              />
+                            </span>
+                          );
+                        },
+                        others: {
+                          fixed: "left"
+                        }
+                      },
                       {
                         fieldName: "created_date",
                         label: (
