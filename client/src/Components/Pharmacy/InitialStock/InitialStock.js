@@ -553,7 +553,7 @@ class InitialStock extends Component {
                                   : "",
                                 opacity: this.state.saveEnable === true ? "0.1" : ""
                               }}
-                              onClick={deleteInitialStock.bind(this, this)}
+                              onClick={deleteInitialStock.bind(this, this, row)}
                               className="fas fa-trash-alt"
                             />
                             <i

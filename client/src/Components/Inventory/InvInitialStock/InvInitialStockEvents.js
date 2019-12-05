@@ -329,15 +329,18 @@ const SaveInitialStock = $this => {
 
 const deleteInitialStock = ($this, row) => {
   let inventory_stock_detail = $this.state.inventory_stock_detail;
-
+  let saveEnable = true;
   for (let x = 0; x < inventory_stock_detail.length; x++) {
     if (inventory_stock_detail[x].noorecords === row.noorecords) {
       inventory_stock_detail.splice(x, 1);
     }
   }
-
+  if (inventory_stock_detail.length) {
+    saveEnable = false;
+  }
   $this.setState({
-    inventory_stock_detail: inventory_stock_detail
+    inventory_stock_detail: inventory_stock_detail,
+    saveEnable
   });
 };
 const ClearData = $this => {
@@ -453,8 +456,8 @@ const salesPriceEvent = ($this, ctrl, e) => {
 const onChamgeGridQuantity = ($this, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  let inventory_stock_detail = $this.state.inventory_stock_detail
-  let _index = inventory_stock_detail.indexOf(row)
+  let inventory_stock_detail = $this.state.inventory_stock_detail;
+  let _index = inventory_stock_detail.indexOf(row);
   let extended_cost = 0;
   if (value !== "") {
     extended_cost = parseFloat(row.unit_cost) * value;
@@ -465,10 +468,10 @@ const onChamgeGridQuantity = ($this, row, e) => {
     row[name] = value;
     row["extended_cost"] = extended_cost;
   }
-  inventory_stock_detail[_index] = row
+  inventory_stock_detail[_index] = row;
   $this.setState({
     inventory_stock_detail: inventory_stock_detail
-  })
+  });
 };
 
 const updateInitialStock = ($this, row) => {
@@ -489,7 +492,8 @@ const EditGrid = ($this, cancelRow) => {
     _inventory_stock_detail[cancelRow.rowIdx] = cancelRow;
   }
   $this.setState({
-    saveEnable: $this.state.dataExitst === true ? true : !$this.state.saveEnable,
+    saveEnable:
+      $this.state.dataExitst === true ? true : !$this.state.saveEnable,
     postEnable: !$this.state.postEnable,
     inventory_stock_detail: _inventory_stock_detail
   });
