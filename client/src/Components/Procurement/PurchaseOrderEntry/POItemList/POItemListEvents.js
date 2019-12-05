@@ -437,7 +437,8 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
     net_payable: net_payable,
     total_tax: total_tax,
     detail_discount: detail_discount,
-    addItemButton: true
+    addItemButton: true,
+    authorizeBtn: true
   });
 
   if (context !== undefined) {
@@ -480,7 +481,8 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
       net_payable: net_payable,
       total_tax: total_tax,
       detail_discount: detail_discount,
-      addItemButton: true
+      addItemButton: true,
+      authorizeBtn: true
     });
   }
 };

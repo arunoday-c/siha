@@ -451,8 +451,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PurchaseOrderEntry)
+  connect(mapStateToProps, mapDispatchToProps)(PurchaseOrderEntry)
 );

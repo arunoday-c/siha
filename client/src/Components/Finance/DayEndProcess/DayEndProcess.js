@@ -427,14 +427,7 @@ class DayEndProcess extends Component {
                           maxWidth: 55
                         }
                       },
-                      {
-                        fieldName: "document_type",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Document Type" }}
-                          />
-                        )
-                      },
+
                       {
                         fieldName: "document_number",
                         label: (
@@ -450,12 +443,7 @@ class DayEndProcess extends Component {
                           />
                         )
                       },
-                      {
-                        fieldName: "narration",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Description" }} />
-                        )
-                      },
+
                       {
                         fieldName: "transaction_type",
                         label: (

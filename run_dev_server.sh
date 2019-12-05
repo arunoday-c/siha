@@ -18,7 +18,7 @@ startServer () {
 }
 
 startServer "./algaeh-core" "core"
-startServer "./DocumentManagement" "document_server" 
+# startServer "./DocumentManagement" "document_server" 
 startServer "./HrManagement" "hr_server" 
 startServer "./FrontDesk" "front_desk_server" 
 startServer "./MasterSettings" "master_settings_server" 
@@ -29,9 +29,9 @@ startServer "./Radiology" "radiology_server"
 startServer "./Laboratory" "lab_server" 
 startServer "./Billing" "billing_server" 
 startServer "./MRD" "mrd_server" 
-# startServer "./Procurement" "procurement_server"
+startServer "./Procurement" "procurement_server"
 startServer "./AlgaehReporting" "report_server"
-startServer "./Sockets" "sockets"
+# startServer "./Sockets" "sockets"
 startServer "./client" "client"
 startServer "./algaeh-finance" "finance"  
 #add additional servers here if you want
