@@ -338,10 +338,13 @@ const AddItems = $this => {
     return;
   }
 
-  if (moment($this.state.start_date).isBefore(moment(), "day")) {
+  if (
+    !$this.state.start_date ||
+    moment($this.state.start_date).isBefore(moment(), "day")
+  ) {
     $this.setState(
       {
-        start_date: null
+        start_date: moment().format("YYYY-MM-DD")
       },
       () => {
         swalMessage({
@@ -464,7 +467,7 @@ const AddItems = $this => {
 
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: ctrl ? moment(ctrl)._d : null
+    [e]: moment(ctrl)._d
   });
 };
 
