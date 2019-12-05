@@ -35,6 +35,7 @@ const Accounts = () => <FinanceFragment path="Accounts" />;
 const Transactions = () => <FinanceFragment path="Transactions" />;
 const JournalLedger = () => <FinanceFragment path="JournalLedger" />;
 const FinanceReports = () => <FinanceFragment path="FinanceReports" />;
+const FinanceOptions = () => <FinanceFragment path="FinanceOptions" />;
 
 const PageToPlot = {
   Dashboard: HrDashboard,
@@ -299,7 +300,9 @@ const PageToPlot = {
     retry(() => import("./Components/Inventory/InvPointOfSale/InvPointOfSale"))
   ),
   InvStockAdjustment: React.lazy(() =>
-    retry(() => import("./Components/Inventory/InvStockAdjustment/InvStockAdjustment"))
+    retry(() =>
+      import("./Components/Inventory/InvStockAdjustment/InvStockAdjustment")
+    )
   ),
   InvAcknowledgeList: InvAcknowledgeList,
   VendorSetup: React.lazy(() =>
@@ -376,9 +379,7 @@ const PageToPlot = {
     )
   ),
   StockAdjustment: React.lazy(() =>
-    retry(() =>
-      import("./Components/Pharmacy/StockAdjustment/StockAdjustment")
-    )
+    retry(() => import("./Components/Pharmacy/StockAdjustment/StockAdjustment"))
   ),
   // VisitClose: React.lazy(() =>
   //   retry(() => import("./Components/VisitClose/VisitClose"))
@@ -516,7 +517,8 @@ const PageToPlot = {
   Accounts,
   Transactions,
   JournalLedger,
-  FinanceReports
+  FinanceReports,
+  FinanceOptions
 };
 
 const DirectRoutes = React.memo(props => {
