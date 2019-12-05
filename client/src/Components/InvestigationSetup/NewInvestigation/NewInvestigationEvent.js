@@ -35,16 +35,17 @@ const texthandle = ($this, ctrl, e) => {
 
 const Validations = $this => {
   let isError = false;
-  if ($this.state.test_code === null) {
-    isError = true;
-    swalMessage({
-      type: "error",
-      title: "Test Code Cannot be blank."
-    });
+  // if ($this.state.test_code === null) {
+  //   isError = true;
+  //   swalMessage({
+  //     type: "error",
+  //     title: "Test Code Cannot be blank."
+  //   });
 
-    document.querySelector("[name='test_code']").focus();
-  }
-  else if ($this.state.description === null) {
+  //   document.querySelector("[name='test_code']").focus();
+  //   return isError;
+  // } else
+  if ($this.state.description === null) {
     isError = true;
     swalMessage({
       type: "error",
@@ -97,6 +98,8 @@ const Validations = $this => {
       });
       document.querySelector("[name='category_id']").focus();
       return isError;
+    } else {
+      return isError;
     }
   }
 
@@ -113,7 +116,6 @@ const Validations = $this => {
 const InsertLabTest = ($this, e) => {
   const err = Validations($this);
   // console.log($this.state, "from insert lab");
-
 
   if (!err) {
     if ($this.state.hims_d_investigation_test_id === null) {
@@ -132,7 +134,6 @@ const InsertLabTest = ($this, e) => {
             $this.setState({ ...$this.state, ...IOputs }, () => {
               $this.props.onClose && $this.props.onClose(true);
             });
-
           }
         }
       });

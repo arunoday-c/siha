@@ -33,7 +33,7 @@ class DeliveryNoteEntry extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = DNEntry.inputParam();
     this.setState(IOputs);
   }

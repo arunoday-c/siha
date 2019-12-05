@@ -46,12 +46,12 @@ class AddAdvanceModal extends PureComponent {
     super(props);
     this.state = {};
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = AdvRefunIOputs.inputParam();
     this.setState(IOputs);
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.PackageAdvance === undefined) {
       let lang_sets = "en_comp";
       if (Window.global.selectedLang === "ar") {

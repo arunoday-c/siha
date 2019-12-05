@@ -32,7 +32,7 @@ class NewInvestigation extends PureComponent {
       InvestigationtypeEnable: false
     };
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = InvestigationIOputs.inputParam();
     this.setState({ ...this.state, ...IOputs });
   }
@@ -54,8 +54,7 @@ class NewInvestigation extends PureComponent {
     }
   }
 
-  componentWillReceiveProps(newProps) {
-
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.InvestigationPop.hims_d_investigation_test_id !== undefined) {
       let IOputs = newProps.InvestigationPop;
       IOputs.InvestigationtypeEnable = true;
@@ -66,13 +65,13 @@ class NewInvestigation extends PureComponent {
       this.setState({ ...this.state, ...IOputs });
     }
   }
+
   onClose = e => {
     let IOputs = InvestigationIOputs.inputParam();
     IOputs.InvestigationtypeEnable = false;
     this.setState({ ...this.state, ...IOputs }, () => {
       this.props.onClose && this.props.onClose(true);
     });
-
   };
 
   handleClose = () => {
@@ -124,7 +123,7 @@ class NewInvestigation extends PureComponent {
                     div={{ className: "col-3 mandatory" }}
                     label={{
                       forceLabel: "Test Code",
-                      isImp: true
+                      isImp: false
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -134,8 +133,7 @@ class NewInvestigation extends PureComponent {
                         onChange: texthandle.bind(this, this)
                       },
                       others: {
-                        tabIndex: "2",
-
+                        tabIndex: "2"
                       }
                     }}
                   />
@@ -282,8 +280,8 @@ class NewInvestigation extends PureComponent {
                   {this.state.investigation_type === "L" ? (
                     <LabInvestigation InvestigationIOputs={this.state} />
                   ) : (
-                      <RadInvestigation InvestigationIOputs={this.state} />
-                    )}
+                    <RadInvestigation InvestigationIOputs={this.state} />
+                  )}
                 </MyContext.Provider>
               </div>
             </div>
@@ -302,8 +300,8 @@ class NewInvestigation extends PureComponent {
                       {this.state.hims_d_investigation_test_id === null ? (
                         <AlgaehLabel label={{ fieldName: "btnSave" }} />
                       ) : (
-                          <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                        )}
+                        <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                      )}
                     </button>
                     <button
                       onClick={e => {
@@ -343,8 +341,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(NewInvestigation)
+  connect(mapStateToProps, mapDispatchToProps)(NewInvestigation)
 );

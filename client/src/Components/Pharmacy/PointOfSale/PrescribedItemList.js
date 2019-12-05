@@ -40,7 +40,7 @@ class PrescribedItemList extends Component {
 
     };
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState(nextProps.POSIOputs);
     }
 

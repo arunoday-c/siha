@@ -348,7 +348,18 @@ export default {
                   const startGenerate = async () => {
                     const _outPath = _path + ".pdf";
                     _reportOutput.push(_outPath);
-                    const browser = await puppeteer.launch({ headless: true });
+                    const browser = await puppeteer.launch({
+                      headless: true,
+                      executablePath: process.env.CHROME_BIN || null,
+                      args: process.env.CHROME_BIN
+                        ? [
+                            "--no-sandbox",
+                            "--headless",
+                            "--disable-gpu",
+                            "--disable-dev-shm-usage"
+                          ]
+                        : []
+                    });
                     const page = await browser.newPage();
                     const _pdfTemplating = {};
                     if (
@@ -643,7 +654,16 @@ export default {
                       subReportCollection.push(_outPath);
                       const startGenerate = async () => {
                         const browser = await puppeteer.launch({
-                          headless: true
+                          headless: true,
+                          executablePath: process.env.CHROME_BIN || null,
+                          args: process.env.CHROME_BIN
+                            ? [
+                                "--no-sandbox",
+                                "--headless",
+                                "--disable-gpu",
+                                "--disable-dev-shm-usage"
+                              ]
+                            : []
                         });
                         const page = await browser.newPage();
                         const _pdfTemplating = {};

@@ -160,7 +160,7 @@ class EmployeeMaster extends Component {
     }
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.editEmployee) {
       let IOputs = newProps.employeeDetailsPop;
       IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;

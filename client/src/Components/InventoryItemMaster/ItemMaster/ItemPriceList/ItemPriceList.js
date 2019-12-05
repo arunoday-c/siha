@@ -9,12 +9,12 @@ import {
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
 class ItemPriceList extends Component {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.itemPop;
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     let InputOutput = newProps.itemPop;
     this.setState({ ...this.state, ...InputOutput }, () => {});
   }

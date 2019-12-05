@@ -29,7 +29,7 @@ export default class ConsultationDetails extends PureComponent {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
       visitcode: nextProps.visitcode
     });

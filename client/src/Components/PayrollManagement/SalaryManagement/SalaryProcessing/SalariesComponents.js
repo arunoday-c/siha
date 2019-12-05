@@ -18,7 +18,7 @@ export default class SalariesComponents extends PureComponent {
     this.props.onClose && this.props.onClose(e);
   };
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.selectedEmployee !== undefined) {
       this.setState({ ...this.state, ...newProps.selectedEmployee });
     }

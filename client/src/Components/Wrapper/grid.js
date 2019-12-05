@@ -600,7 +600,7 @@ class DataGrid extends Component {
     if (this.state !== nextState) return true;
     else return false;
   }
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     if (props.uiUpdate !== undefined) {
       this.setState({ uiUpdate: props.uiUpdate });
     }

@@ -19,7 +19,7 @@ class ShiftAssign extends PureComponent {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.open === true) {
       let myArray = this.state.shiftEmp;
       myArray.push(nextProps.sendRow);

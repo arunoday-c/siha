@@ -20,7 +20,7 @@ class PackageList extends PureComponent {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let InputOutput = nextProps.PackageIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }

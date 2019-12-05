@@ -32,7 +32,7 @@ class LabInvestigation extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.InvestigationIOputs;
     this.setState({ ...this.state, ...InputOutput });
     // this.clearInputState();
@@ -99,7 +99,7 @@ class LabInvestigation extends Component {
     }
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     this.setState(newProps.InvestigationIOputs);
   }
 
@@ -140,21 +140,20 @@ class LabInvestigation extends Component {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
 
-
-    let isError = false
+    let isError = false;
 
     if (value === "D" && parseFloat(this.state.to_age) > 30) {
       swalMessage({
         type: "warning",
         title: "To Age cannot be greater than 30 Days"
       });
-      isError = true
+      isError = true;
     } else if (value === "M" && parseFloat(this.state.to_age) > 12) {
       swalMessage({
         type: "warning",
         title: "To Age cannot be greater than 12 Months"
       });
-      isError = true
+      isError = true;
     }
 
     if (isError === true) {
@@ -297,7 +296,7 @@ class LabInvestigation extends Component {
                       div={{ className: "col" }}
                       label={{
                         forceLabel: "Gender",
-                        isImp: true
+                        isImp: false
                       }}
                       selector={{
                         name: "gender",
@@ -315,7 +314,7 @@ class LabInvestigation extends Component {
                       div={{ className: "col" }}
                       label={{
                         forceLabel: "Age Type",
-                        isImp: true
+                        isImp: false
                       }}
                       selector={{
                         name: "age_type",
@@ -328,7 +327,7 @@ class LabInvestigation extends Component {
                         },
                         onChange: e => this.ageTypeHandle(context, e),
                         others: {
-                          onBlur: ageValidater.bind(this, this, context),
+                          onBlur: ageValidater.bind(this, this, context)
                         }
                       }}
                     />
@@ -337,7 +336,7 @@ class LabInvestigation extends Component {
                       div={{ className: "col" }}
                       label={{
                         forceLabel: "Age From",
-                        isImp: true
+                        isImp: false
                       }}
                       textBox={{
                         className: "txt-fld",
@@ -347,10 +346,10 @@ class LabInvestigation extends Component {
                           allowNegative: false
                         },
                         events: {
-                          onChange: texthandle.bind(this, this, context),
+                          onChange: texthandle.bind(this, this, context)
                         },
                         others: {
-                          onBlur: ageValidater.bind(this, this, context),
+                          onBlur: ageValidater.bind(this, this, context)
                         }
                       }}
                     />
@@ -358,7 +357,7 @@ class LabInvestigation extends Component {
                       div={{ className: "col" }}
                       label={{
                         forceLabel: "Age To",
-                        isImp: true
+                        isImp: false
                       }}
                       textBox={{
                         className: "txt-fld",
@@ -368,10 +367,10 @@ class LabInvestigation extends Component {
                         },
                         value: this.state.to_age,
                         events: {
-                          onChange: texthandle.bind(this, this, context),
+                          onChange: texthandle.bind(this, this, context)
                         },
                         others: {
-                          onBlur: ageValidater.bind(this, this, context),
+                          onBlur: ageValidater.bind(this, this, context)
                         }
                       }}
                     />
@@ -465,10 +464,10 @@ class LabInvestigation extends Component {
                                 this.props.labanalytes === undefined
                                   ? []
                                   : this.props.labanalytes.filter(
-                                    f =>
-                                      f.hims_d_lab_analytes_id ===
-                                      row.analyte_id
-                                  );
+                                      f =>
+                                        f.hims_d_lab_analytes_id ===
+                                        row.analyte_id
+                                    );
 
                               return (
                                 <span>
@@ -483,10 +482,10 @@ class LabInvestigation extends Component {
                                 this.props.labanalytes === undefined
                                   ? []
                                   : this.props.labanalytes.filter(
-                                    f =>
-                                      f.hims_d_lab_analytes_id ===
-                                      row.analyte_id
-                                  );
+                                      f =>
+                                        f.hims_d_lab_analytes_id ===
+                                        row.analyte_id
+                                    );
 
                               return (
                                 <span>
@@ -745,7 +744,7 @@ class LabInvestigation extends Component {
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
                           onDelete: deleteLabAnalyte.bind(this, this, context),
-                          onEdit: row => { },
+                          onEdit: row => {},
 
                           onDone: updateLabInvestigation.bind(
                             this,
@@ -788,8 +787,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(LabInvestigation)
+  connect(mapStateToProps, mapDispatchToProps)(LabInvestigation)
 );

@@ -53,15 +53,13 @@ export function generateLabResultReport(data) {
 }
 
 const UpdateLabOrder = ($this, value, status) => {
-
-  value[0].comments = $this.state.comment_list.join("<br/>")
+  value[0].comments = $this.state.comment_list.join("<br/>");
   const critical_exit = _.filter(value, f => {
     return f.critical_status === "Y";
   });
   if (critical_exit.length > 0) {
-    value[0].critical_status = "Y"
+    value[0].critical_status = "Y";
   }
-
 
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",
@@ -179,13 +177,14 @@ const getAnalytes = $this => {
     onSuccess: response => {
       if (response.data.success) {
         $this.setState({
-          comment_list: response.data.records.comments !== null ? response.data.records.comments.split("<br/>") : []
-        })
+          comment_list:
+            response.data.records.comments !== null
+              ? response.data.records.comments.split("<br/>")
+              : []
+        });
       }
     }
   });
-
-
 };
 
 const confirmedgridcol = ($this, row, e) => {
@@ -386,23 +385,22 @@ const onReRun = $this => {
 };
 
 const onchangegridresult = ($this, row, e) => {
-
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let test_analytes = $this.state.test_analytes;
-  let critical_status = "N"
+  let critical_status = "N";
   row[name] = value;
   for (let l = 0; l < test_analytes.length; l++) {
     if (
       test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
     ) {
       row["critical_type"] = checkRange(row);
+      if (row["critical_type"] === "CH" || row["critical_type"] === "CL") {
+        row["critical_status"] = "Y";
+        critical_status = "Y";
+      }
+      test_analytes[l] = row;
     }
-    if (row["critical_type"] === "CH" || row["critical_type"] === "CL") {
-      row["critical_status"] = "Y"
-      critical_status = "Y"
-    }
-    test_analytes[l] = row;
   }
   $this.setState({
     test_analytes: test_analytes,
@@ -489,35 +487,33 @@ const onchangeAmend = ($this, row, e) => {
   );
 };
 
-const addComments = ($this) => {
-
+const addComments = $this => {
   if ($this.state.selcted_comments === "") {
     swalMessage({
       type: "warning",
       title: "Comment cannot be blank."
     });
-    return
+    return;
   }
-  let comment_list = $this.state.comment_list
-  comment_list.push($this.state.selcted_comments)
+  let comment_list = $this.state.comment_list;
+  comment_list.push($this.state.selcted_comments);
 
   $this.setState({
     comment_list: comment_list,
     selcted_comments: "",
     test_comments_id: null
-  })
-}
+  });
+};
 
 const deleteComment = ($this, row) => {
-
-  let comment_list = $this.state.comment_list
-  let _index = comment_list.indexOf(row)
-  comment_list.splice(_index, 1)
+  let comment_list = $this.state.comment_list;
+  let _index = comment_list.indexOf(row);
+  comment_list.splice(_index, 1);
 
   $this.setState({
     comment_list: comment_list
-  })
-}
+  });
+};
 
 export {
   texthandle,

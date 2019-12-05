@@ -31,7 +31,7 @@ class RequisitionItems extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.RequisitionIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -83,7 +83,7 @@ class RequisitionItems extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.RequisitionIOputs);
   }
 

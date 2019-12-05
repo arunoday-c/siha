@@ -53,12 +53,12 @@ class InvItemMaster extends Component {
     this.setState({ ...this.state, ...IOputs });
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = InventoryItem.inputParam();
     this.setState({ ...this.state, ...IOputs });
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.itemPop.hims_d_inventory_item_master_id !== undefined) {
       let IOputs = newProps.itemPop;
       this.setState({ ...this.state, ...IOputs });

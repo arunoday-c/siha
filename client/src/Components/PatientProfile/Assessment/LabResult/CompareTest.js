@@ -58,7 +58,7 @@ export default class CompareTest extends PureComponent {
     });
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     // if (
     //   newProps.test_analytes === undefined ||
     //   newProps.test_analytes.length === 0

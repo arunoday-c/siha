@@ -58,7 +58,7 @@ export default class EmployeeGratuityOpenBal extends Component {
     all_functions.updateEmployeeOpeningBalance(this, row, "GR");
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.gratuity_dynamic_date.length > 0) {
       this.setState({
         gratuity_dynamic_date: newProps.gratuity_dynamic_date,

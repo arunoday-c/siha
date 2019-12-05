@@ -23,7 +23,7 @@ class LeaveEdit extends Component {
     this.getEarningsDeds();
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(
       {
         type: nextProps.type,

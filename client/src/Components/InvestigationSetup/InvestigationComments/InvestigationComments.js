@@ -27,7 +27,7 @@ class InvestigationComments extends PureComponent {
         };
     }
 
-    componentWillReceiveProps(newProps) {
+    UNSAFE_componentWillReceiveProps(newProps) {
 
 
         if (newProps.investigation_test_id !== null) {

@@ -43,7 +43,7 @@ class UpdatePatientDetails extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = PatRegIOputs.inputParam();
     this.setState(IOputs);
     setGlobal({ selectedLang: "en" });
@@ -58,7 +58,7 @@ class UpdatePatientDetails extends Component {
     this.setState(IOputs);
   }
 
-  componentWillReceiveProps() {
+  UNSAFE_componentWillReceiveProps() {
     let prevLang = getCookie("Language");
     if (prevLang !== this.state.selectedLang) {
       setGlobal({ selectedLang: prevLang });

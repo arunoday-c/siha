@@ -58,7 +58,7 @@ class InsuranceProvider extends PureComponent {
     });
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.InsuranceSetup;
     this.setState({ ...this.state, ...InputOutput });
   }

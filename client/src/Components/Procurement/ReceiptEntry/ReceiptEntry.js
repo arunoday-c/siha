@@ -44,7 +44,7 @@ class ReceiptEntry extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = ReceiptEntryInp.inputParam();
     this.setState(IOputs);
   }

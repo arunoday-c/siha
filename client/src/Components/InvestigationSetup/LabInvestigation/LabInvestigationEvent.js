@@ -40,23 +40,23 @@ const texthandle = ($this, context, ctrl, e) => {
 };
 
 const ageValidater = ($this, context) => {
-
-
-
-  let isError = false
+  let isError = false;
 
   if ($this.state.age_type === "D" && parseFloat($this.state.to_age) > 30) {
     swalMessage({
       type: "warning",
       title: "To Age cannot be greater than 30 Days"
     });
-    isError = true
-  } else if ($this.state.age_type === "M" && parseFloat($this.state.to_age) > 12) {
+    isError = true;
+  } else if (
+    $this.state.age_type === "M" &&
+    parseFloat($this.state.to_age) > 12
+  ) {
     swalMessage({
       type: "warning",
       title: "To Age cannot be greater than 12 Months"
     });
-    isError = true
+    isError = true;
   }
   if (parseFloat($this.state.from_age) > 0 && parseFloat($this.state.to_age)) {
     if (parseFloat($this.state.from_age) > parseFloat($this.state.to_age)) {
@@ -64,7 +64,7 @@ const ageValidater = ($this, context) => {
         type: "warning",
         title: "To Age cannot be less than From Age"
       });
-      isError = true
+      isError = true;
     }
   }
   if (isError === true) {
@@ -120,14 +120,14 @@ const AddAnalytes = ($this, context) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='analyte_details'",
     onSuccess: () => {
-      if (parseFloat($this.state.to_age) === 0) {
-        swalMessage({
-          type: "warning",
-          title: "To Age should be greater than 0."
-        });
-        document.querySelector("[name='to_age']").focus();
-        return
-      }
+      // if (parseFloat($this.state.to_age) === 0) {
+      //   swalMessage({
+      //     type: "warning",
+      //     title: "To Age should be greater than 0."
+      //   });
+      //   document.querySelector("[name='to_age']").focus();
+      //   return
+      // }
       let insert_analytes = $this.state.insert_analytes;
       let analytes = $this.state.analytes;
       let obj = {
@@ -199,7 +199,7 @@ const updateLabInvestigation = ($this, context, row) => {
   let analytes = $this.state.analytes;
   let update_analytes = $this.state.update_analytes;
 
-  let analytes_index = analytes.indexOf(row)
+  let analytes_index = analytes.indexOf(row);
   // let update_analytes_index = update_analytes.indexOf(row)
 
   if ($this.state.hims_d_investigation_test_id !== null) {
@@ -327,7 +327,7 @@ function findAndRemoveAnalyte(analytes, row) {
 
 const onchangegridcol = ($this, row, e) => {
   let analytes = $this.state.analytes;
-  let analytes_index = analytes.indexOf(row)
+  let analytes_index = analytes.indexOf(row);
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   row[name] = value;

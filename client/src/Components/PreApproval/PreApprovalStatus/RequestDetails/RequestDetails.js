@@ -37,11 +37,11 @@ class PatientDetails extends Component {
     this.props.onClose && this.props.onClose(e);
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.selected_services;
     this.setState({ ...this.state, ...InputOutput });
   }
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     this.setState(newProps.selected_services);
   }
 

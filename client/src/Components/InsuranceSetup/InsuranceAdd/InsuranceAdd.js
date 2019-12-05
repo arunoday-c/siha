@@ -53,7 +53,7 @@ class InsuranceAdd extends PureComponent {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = InsuranceSetup.inputParam();
     this.setState(IOputs);
   }
@@ -67,7 +67,7 @@ class InsuranceAdd extends PureComponent {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // if (
     //   nextProps.insuranceprovider !== undefined &&
     //   nextProps.insuranceprovider.length !== 0

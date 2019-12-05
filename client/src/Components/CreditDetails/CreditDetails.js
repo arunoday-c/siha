@@ -29,14 +29,14 @@ class CreditDetails extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.SettlementIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   componentDidMount() {}
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.SettlementIOputs);
   }
 

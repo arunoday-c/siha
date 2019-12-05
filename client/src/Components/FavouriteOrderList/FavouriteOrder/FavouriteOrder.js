@@ -62,7 +62,7 @@ class FavouriteOrder extends PureComponent {
     });
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (
       newProps.favouriteData !== undefined &&
       newProps.favouriteData.hims_d_favourite_orders_header_id !== undefined
