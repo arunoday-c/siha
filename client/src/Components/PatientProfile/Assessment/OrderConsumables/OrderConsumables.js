@@ -474,7 +474,7 @@ class OrderConsumables extends Component {
                           );
                         },
                         others: {
-                          minWidth: 300
+                          minWidth: 250
                         }
                       },
                       {
@@ -483,7 +483,7 @@ class OrderConsumables extends Component {
                           <AlgaehLabel label={{ forceLabel: "Batch No." }} />
                         ),
                         others: {
-                          minWidth: 100
+                          minWidth: 200
                         },
                         disabled: true
                       },

@@ -307,12 +307,13 @@ const SaveInitialStock = $this => {
 
 const deleteInitialStock = ($this, row) => {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-
-  for (let x = 0; x < pharmacy_stock_detail.length; x++) {
-    if (pharmacy_stock_detail[x].noorecords === row.noorecords) {
-      pharmacy_stock_detail.splice(x, 1);
-    }
-  }
+  let _index = pharmacy_stock_detail.indexOf(row)
+  pharmacy_stock_detail.splice(_index, 1);
+  // for (let x = 0; x < pharmacy_stock_detail.length; x++) {
+  //   if (pharmacy_stock_detail[x].noorecords === row.noorecords) {
+  //     pharmacy_stock_detail.splice(x, 1);
+  //   }
+  // }
 
   $this.setState({
     pharmacy_stock_detail: pharmacy_stock_detail

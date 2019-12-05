@@ -329,12 +329,14 @@ const SaveInitialStock = $this => {
 
 const deleteInitialStock = ($this, row) => {
   let inventory_stock_detail = $this.state.inventory_stock_detail;
+  let _index = inventory_stock_detail.indexOf(row)
+  inventory_stock_detail.splice(_index, 1);
 
-  for (let x = 0; x < inventory_stock_detail.length; x++) {
-    if (inventory_stock_detail[x].noorecords === row.noorecords) {
-      inventory_stock_detail.splice(x, 1);
-    }
-  }
+  // for (let x = 0; x < inventory_stock_detail.length; x++) {
+  //   if (inventory_stock_detail[x].noorecords === row.noorecords) {
+  //     inventory_stock_detail.splice(x, 1);
+  //   }
+  // }
 
   $this.setState({
     inventory_stock_detail: inventory_stock_detail
