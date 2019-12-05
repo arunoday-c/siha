@@ -23,7 +23,9 @@ export default {
         let inputValues = [input.year, input.month];
         let _stringData = "";
 
-        // utilities.logger().log("_stringData: ", input.leave_salary);
+        console.log("_stringData: ", input.leave_salary);
+        console.log("month_number: ", month_number);
+        console.log("leave_salary: ", input.leave_salary);
 
         let strQuery = "";
 
@@ -114,9 +116,9 @@ export default {
             printQuery: true
           })
           .then(empResult => {
-            utilities.logger().log("empResult: ", empResult.length);
+            console.log("empResult: ", empResult.length);
             if (empResult.length == 0) {
-              utilities.logger().log("empResult reslove: ", empResult.length);
+              console.log("empResult reslove: ", empResult.length);
 
               if (req.connection == null) {
                 utilities.logger().log("req.connection : ");
