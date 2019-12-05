@@ -79,7 +79,7 @@ class NewPackage extends PureComponent {
     });
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.from !== undefined && newProps.from === "doctor") {
       this.setState({ from: newProps.from, package_type: "D" });
     } else {

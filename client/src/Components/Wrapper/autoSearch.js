@@ -36,7 +36,7 @@ export default class AlgaehAutoSearch extends Component {
     });
   }
 
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     if (this.state.hasSecurity) return;
     if (props.value !== this.state.value) {
       this.setState({

@@ -26,7 +26,7 @@ export default class OPBillingDetails extends Component {
     });
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.BillingIOputs.insured === "N") {
       this.setState({
         pageDisplay: "BillingDetails"

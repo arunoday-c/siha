@@ -15,12 +15,12 @@ export default class DisplaySecondaryInsurance extends Component {
     super(props);
     this.state = {};
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.POSIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.POSIOputs);
   }
 

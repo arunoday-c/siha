@@ -50,7 +50,7 @@ class EquipmentPop extends Component {
 
     };
 
-    componentWillReceiveProps(newProps) {
+    UNSAFE_componentWillReceiveProps(newProps) {
 
         if (Object.keys(newProps.selected_Machine_analyte).length > 0) {
 

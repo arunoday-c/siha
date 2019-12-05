@@ -20,7 +20,7 @@ class AutoComplete extends PureComponent {
     };
   }
 
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     if (this.state.hasSecurity) return;
     const _templtate =
       typeof props.selector.template === "function"

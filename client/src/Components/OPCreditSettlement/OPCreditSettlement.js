@@ -48,7 +48,7 @@ class OPCreditSettlement extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = SettlementIOputs.inputParam();
     this.setState({ ...this.state, ...IOputs });
   }
@@ -76,7 +76,7 @@ class OPCreditSettlement extends Component {
     getCashiersAndShiftMAP(this, this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let output = {};
 
     if (

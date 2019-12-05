@@ -19,7 +19,7 @@ export default class AttendanceRegularization extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // console.log("REGZ", nextProps.regularize);
   }
 

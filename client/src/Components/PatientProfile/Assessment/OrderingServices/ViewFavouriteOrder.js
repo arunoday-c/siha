@@ -106,7 +106,7 @@ class ViewFavouriteOrder extends PureComponent {
       favourite_details: row.favourite_details
     });
   }
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.all_favourites !== undefined) {
       this.setState({ all_favourites: newProps.all_favourites });
     }

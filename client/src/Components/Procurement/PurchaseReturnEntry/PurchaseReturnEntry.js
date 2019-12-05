@@ -39,7 +39,7 @@ class PurchaseReturnEntry extends Component {
         getVendorMaster(this, this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         let IOputs = POReturnEntry.inputParam();
         this.setState(IOputs);
     }

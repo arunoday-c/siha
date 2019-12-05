@@ -29,7 +29,7 @@ class LeaveSalaryProcess extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = LeaveSalaryProcessIOputs.inputParam();
     this.setState(IOputs);
   }

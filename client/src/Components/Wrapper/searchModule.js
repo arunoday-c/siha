@@ -99,7 +99,7 @@ class SearchModule extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.getUserSelectedValue(nextProps, response => {
       let _searchBy = nextProps.searchGrid.columns[0]["fieldName"];
       let _title = nextProps.searchGrid.columns[0]["label"];

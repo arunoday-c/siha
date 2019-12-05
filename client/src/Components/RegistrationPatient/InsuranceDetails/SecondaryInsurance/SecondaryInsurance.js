@@ -33,11 +33,11 @@ class AddSecInsuranceForm extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.PatRegIOputs);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.PatRegIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }

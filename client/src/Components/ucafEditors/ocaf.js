@@ -102,7 +102,6 @@ export default class OcafEditor extends Component {
     EditorEvents().saveAndPrintOcaf(this);
   }
 
-  componentWillReceiveProps(newProps) {}
 
   render() {
     const _isPrimary = "primary";

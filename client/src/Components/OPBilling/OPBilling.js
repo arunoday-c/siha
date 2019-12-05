@@ -60,7 +60,7 @@ class OPBilling extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = extend(PatRegIOputs.inputParam(), BillingIOputs.inputParam());
     this.setState({ ...this.state, ...IOputs });
   }
@@ -119,7 +119,7 @@ class OPBilling extends Component {
     getCashiersAndShiftMAP(this, this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let prevLang = getCookie("Language");
     let output = {};
 

@@ -78,7 +78,7 @@ class PreApprovalStatus extends PureComponent {
         });
     }
   }
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
 
     if (
       newProps.selected_services !== undefined &&

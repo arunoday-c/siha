@@ -66,7 +66,7 @@ class PointOfSale extends Component {
     this.onKeyPress = this.onKeyPress.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = POSIOputs.inputParam();
     this.setState(IOputs);
   }

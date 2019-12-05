@@ -39,12 +39,12 @@ class AddReciptForm extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.BillingIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.BillingIOputs);
   }
 

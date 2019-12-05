@@ -450,7 +450,7 @@ class OrderedList extends PureComponent {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.openData !== undefined) {
       this.setState({ openData: nextProps.openData });
     }

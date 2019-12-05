@@ -52,7 +52,7 @@ class PosListItems extends Component {
     // this.onKeyPress = this.onKeyPress.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.POSIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -108,7 +108,7 @@ class PosListItems extends Component {
     document.removeEventListener("keypress", this.onKeyPress, false);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.POSIOputs);
   }
 

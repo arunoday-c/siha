@@ -23,7 +23,7 @@ class LoanModal extends Component {
     this.loadAuthSock = Socket;
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.open === true) {
       this.setState(nextProps.data, () => {
         this.getEmployeeLoans();

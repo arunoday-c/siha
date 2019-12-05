@@ -27,7 +27,7 @@ export default class PreApprovalStatus extends Component {
     this.props.onClose && this.props.onClose(e);
   };
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.selected_services !== null) {
       let InputOutput = newProps.selected_services;
       this.setState({ ...this.state, ...InputOutput });

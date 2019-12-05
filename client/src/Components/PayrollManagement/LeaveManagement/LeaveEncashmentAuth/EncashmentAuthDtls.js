@@ -27,7 +27,7 @@ export default class EncashmentAuthDtls extends Component {
     };
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
 
     this.setState({ ...newProps.EncashDetailPer });
   }

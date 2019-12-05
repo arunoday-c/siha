@@ -36,7 +36,7 @@ class UOMAdditionalInfo extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.itemPop;
     this.setState({ ...this.state, ...InputOutput });
   }

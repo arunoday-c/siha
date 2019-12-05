@@ -196,7 +196,7 @@ export default class FormGroup extends PureComponent {
           : false
     });
   }
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     if (this.state.hasSecurity) return;
     if (
       props.textBox.value !== this.state.value ||

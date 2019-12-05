@@ -98,7 +98,7 @@ class InvPointOfSale extends Component {
     );
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = INVPOSIOputs.inputParam();
     this.setState(IOputs);
   }

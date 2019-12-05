@@ -39,7 +39,7 @@ class EmployeeLeaveOpenBal extends Component {
     all_functions.updateEmployeeOpeningBalance(this, row, "LE");
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.leave_dynamic_date.length > 0) {
       this.setState({
         leave_dynamic_date: newProps.leave_dynamic_date,

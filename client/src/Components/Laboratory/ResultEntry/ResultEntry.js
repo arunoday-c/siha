@@ -132,7 +132,7 @@ class ResultEntry extends Component {
       });
     }
   }
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (
       newProps.selectedPatient !== undefined &&
       newProps.selectedPatient.open === true

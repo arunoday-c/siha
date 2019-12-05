@@ -49,7 +49,7 @@ class PackageUtilize extends Component {
 
   componentDidMount() {}
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.from_billing === true) {
       let consultation = nextProps.from === "frontDesk" ? true : false;
       this.setState({

@@ -32,7 +32,7 @@ export default class SubmitRequest extends PureComponent {
     this.props.onClose && this.props.onClose(e);
   };
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.selected_services !== null) {
       let InputOutput = nextProps.selected_services;
       // for (let i = 0; i < InputOutput.services_details.length; i++) {

@@ -70,7 +70,7 @@ class SampleCollectionPatient extends PureComponent {
       });
     }
   }
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.selected_patient !== null) {
       let InputOutput = nextProps.selected_patient;
       this.setState({ ...this.state, ...InputOutput });

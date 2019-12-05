@@ -83,7 +83,7 @@ class ClaimSubmission extends Component {
     );
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
       submit_invoices: nextProps.data !== undefined ? nextProps.data : []
     });

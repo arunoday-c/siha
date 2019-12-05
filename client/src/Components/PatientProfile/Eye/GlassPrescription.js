@@ -21,7 +21,7 @@ export default class GlassPrescription extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = OptometricIOputs.inputParam();
     this.setState(IOputs);
   }
@@ -52,7 +52,7 @@ export default class GlassPrescription extends Component {
     EyeModalEvent().radioChange(this, e)
   }
 
-componentWillReceiveProps(newProps){
+UNSAFE_componentWillReceiveProps(newProps){
   
   if(newProps.PrescriptionData !== undefined &&
     newProps.PrescriptionData.length !== 0){

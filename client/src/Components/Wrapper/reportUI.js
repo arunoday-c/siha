@@ -152,7 +152,7 @@ export default class ReportUI extends Component {
     });
   }
 
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     this.setState({
       openPopup: true,
       reportQuery: props.options.report.reportQuery
