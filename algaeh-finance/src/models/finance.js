@@ -400,12 +400,12 @@ export default {
 
     _mysql
       .executeQuery({
-        query: ` select finance_day_end_header_id,transaction_date,amount,control_account,document_type,
+        query: ` select finance_day_end_header_id,transaction_date,amount,
         document_number,from_screen,case H.transaction_type when 'AD' then 'ADVANCE' 
         when 'RF' then 'REFUND' when 'BILL' then 'OPBILL' when  'CREDIT' then 
         'PATIENT CREDIT'  when  'ADJUST' then 'ADVANCE ADJUST'  when 'CREDIT_ST' then 'CREDIT SETTLEMENT'
         when 'OP_BIL_CAN' then 'OP BILL CANCEL'
-        end as transaction_type,S.screen_name,H.narration 
+        end as transaction_type,S.screen_name
         from finance_day_end_header H inner join finance_day_end_sub_detail SD on
          H.finance_day_end_header_id=SD.day_end_header_id
         left join  algaeh_d_app_screens S on H.from_screen=S.screen_code  where  SD.posted='N'  ${strQry}
@@ -439,11 +439,12 @@ export default {
           SELECT finance_day_end_sub_detail_id, day_end_header_id, payment_date, head_account_code,voucher_no,
           case when sum(debit_amount)= sum(credit_amount)then 'true' else 'false'  end as is_equal,transaction_type FROM finance_day_end_header H inner join
           finance_day_end_sub_detail SD on H.finance_day_end_header_id=day_end_header_id
-          where H.posted='N'  and SD.is_deleted='N' and day_end_header_id in (?)
+          where SD.is_deleted='N' and day_end_header_id in (?)
           group by day_end_header_id)
-          select finance_day_end_sub_detail_id,day_end_header_id,payment_date,head_account_code,voucher_no,
+          select D.finance_day_end_sub_detail_id,D.day_end_header_id,D.payment_date,D.head_account_code,voucher_no,
           head_id,child_id,debit_amount,payment_type,credit_amount,narration,year,month,hospital_id
-          from finance_day_end_sub_detail where day_end_header_id in (SELECT day_end_header_id
+          from finance_day_end_sub_detail D inner join  cte_ C on D.day_end_header_id=C.day_end_header_id    
+          where  D.day_end_header_id in (SELECT day_end_header_id
           FROM cte_ where is_equal='true');`,
         values: [input.finance_day_end_header_ids],
         printQuery: true
