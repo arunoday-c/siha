@@ -41,7 +41,7 @@ class TestAnalytes extends PureComponent {
     this.props.onClose && this.props.onClose(e);
   };
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (
       newProps.test_analytes === undefined ||
       newProps.test_analytes.length === 0

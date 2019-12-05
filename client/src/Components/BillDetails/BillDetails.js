@@ -54,7 +54,7 @@ class DisplayOPBilling extends PureComponent {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let InputOutput = nextProps.BillingIOputs;
     if (InputOutput.frontDesk === true) {
       let lang_sets = InputOutput.selectedLang === "en" ? "en_comp" : "ar_comp";

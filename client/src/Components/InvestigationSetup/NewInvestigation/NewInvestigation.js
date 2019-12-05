@@ -32,7 +32,7 @@ class NewInvestigation extends PureComponent {
       InvestigationtypeEnable: false
     };
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = InvestigationIOputs.inputParam();
     this.setState({ ...this.state, ...IOputs });
   }

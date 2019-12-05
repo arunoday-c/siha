@@ -32,7 +32,7 @@ class LabInvestigation extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.InvestigationIOputs;
     this.setState({ ...this.state, ...InputOutput });
     // this.clearInputState();
@@ -99,7 +99,7 @@ class LabInvestigation extends Component {
     }
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     this.setState(newProps.InvestigationIOputs);
   }
 

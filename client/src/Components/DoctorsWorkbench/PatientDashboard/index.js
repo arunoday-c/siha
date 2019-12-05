@@ -21,7 +21,7 @@ export default class PatientDashboard extends Component {
     };
   }
 
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     this.setState({
       showPatientDashboard: props.dashboard_state.showPatientDashboard,
       allVitals: [],

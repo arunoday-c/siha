@@ -13,7 +13,7 @@ class MonthlyModify extends Component {
     this.state = {};
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.open === true) {
       this.setState(nextProps.data);
     }

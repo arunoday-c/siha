@@ -185,7 +185,7 @@ class OrderingPackages extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0

@@ -21,7 +21,7 @@ class AutoComplete extends PureComponent {
     this.handleClickOutside = this.handleClickOutside.bind(this);
   }
 
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     if (this.state.hasSecurity) return;
     const _text = this.getTextByValue(
       props.selector.value,

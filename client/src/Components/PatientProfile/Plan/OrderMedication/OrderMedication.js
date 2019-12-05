@@ -151,7 +151,7 @@ class OrderMedication extends Component {
   componentWillUnmount() {
     setGlobal({ orderMedicationState: this.state });
   }
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0

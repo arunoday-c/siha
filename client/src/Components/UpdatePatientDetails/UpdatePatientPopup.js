@@ -40,7 +40,7 @@ class UpdatePatientDetails extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = PatRegIOputs.inputParam();
     this.setState(IOputs);
     setGlobal({ selectedLang: "en" });
@@ -55,7 +55,7 @@ class UpdatePatientDetails extends Component {
     this.setState(IOputs);
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.show === true) {
       if (newProps.patient_code !== undefined && newProps.patient_code !== "") {
         this.getCtrlCode(newProps.patient_code);

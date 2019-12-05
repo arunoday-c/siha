@@ -81,12 +81,12 @@ class ItemMaster extends Component {
     this.props.onClose && this.props.onClose(false);
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = ItemSetup.inputParam();
     this.setState({ ...this.state, ...IOputs });
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.itemPop.hims_d_item_master_id !== undefined) {
       let IOputs = newProps.itemPop;
       this.setState({ ...this.state, ...IOputs });

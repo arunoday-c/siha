@@ -35,7 +35,7 @@ class AddInsuranceForm extends Component {
     getInsuranceCardClass(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.PatRegIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -46,7 +46,7 @@ class AddInsuranceForm extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.PatRegIOputs);
   }
 

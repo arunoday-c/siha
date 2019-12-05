@@ -26,7 +26,7 @@ class ConsumptionEntry extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = ConsumptionIOputs.inputParam();
     this.setState(IOputs);
   }

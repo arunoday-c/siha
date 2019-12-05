@@ -69,7 +69,7 @@ class NetworkPlanList extends PureComponent {
     }
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.insurance_provider_id !== undefined) {
       this.setState({
         network_plan: newProps.networkandplans,

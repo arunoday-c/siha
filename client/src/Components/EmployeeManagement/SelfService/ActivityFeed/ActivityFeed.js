@@ -18,7 +18,7 @@ export default class ActivityFeed extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let data = nextProps.empData !== null ? nextProps.empData : {};
     this.setState(data, () => {
       this.getActivityFeed();

@@ -51,7 +51,7 @@ class PackageBilling extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = extend(PatRegIOputs.inputParam(), BillingIOputs.inputParam());
     this.setState({ ...this.state, ...IOputs });
   }
@@ -104,7 +104,7 @@ class PackageBilling extends Component {
     getCashiersAndShiftMAP(this, this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let output = {};
 
     if (

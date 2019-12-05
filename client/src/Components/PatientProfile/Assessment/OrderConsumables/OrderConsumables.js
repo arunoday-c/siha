@@ -129,7 +129,7 @@ class OrderConsumables extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let Location_name =
       this.props.inventorylocations !== undefined &&
         this.props.inventorylocations.length > 0

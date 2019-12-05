@@ -46,7 +46,7 @@ class InvTransferEntry extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = TransferIOputs.inputParam();
     this.setState(IOputs);
   }

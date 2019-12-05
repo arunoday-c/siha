@@ -38,7 +38,7 @@ export default class CreateCsv extends Component {
       header: _onlyHeaders
     });
   }
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     this.setState({
       showExport: props.showExport === undefined ? true : props.showExport,
       showImport: props.showImport === undefined ? true : props.showImport

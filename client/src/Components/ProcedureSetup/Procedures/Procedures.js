@@ -75,7 +75,7 @@ class Procedures extends PureComponent {
     }
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.ProceduresPop.hims_d_procedure_id !== undefined) {
       let IOputs = newProps.ProceduresPop;
       this.setState({ ...this.state, ...IOputs });
