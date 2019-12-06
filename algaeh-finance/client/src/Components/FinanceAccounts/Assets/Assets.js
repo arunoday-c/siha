@@ -38,6 +38,7 @@ export default function Assets() {
   const [period, setPeriod] = useState("4");
   const [accountChart, setAccountChart] = useState([]);
   const [year, setYear] = useState(moment());
+
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
       try {
@@ -173,6 +174,7 @@ export default function Assets() {
           setReportVisible(false);
         }}
       />
+
       <div className="row">
         <div className="col-4">
           <div className="portlet portlet-bordered margin-bottom-15">

@@ -241,7 +241,7 @@ class EmployeeProjectRoster extends Component {
             });
           }
         });
-      } 
+      }
     });
   }
 
@@ -1017,7 +1017,7 @@ class EmployeeProjectRoster extends Component {
                         <i className="fas fa-user-clock" />
                       </div>
                     ) : (
-                      <table>
+                      <table className="rosterTableStyle">
                         <thead id="tHdRstr">
                           <tr>
                             {/* <th>Employee Code</th> */}

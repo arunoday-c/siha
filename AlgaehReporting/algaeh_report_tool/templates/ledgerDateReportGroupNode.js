@@ -26,7 +26,6 @@ const executePDF = function executePDFMethod(options) {
       }
 
       if (input.leafnode == "N") {
-        console.log("NON LEAF:");
         options.mysql
           .executeQuery({
             query: ` with recursive cte  as (          
@@ -164,7 +163,6 @@ const executePDF = function executePDFMethod(options) {
                           const entries = dateWiseChilds.filter(
                             child => head.head_id == child.head_id
                           );
-                          console.log("entries:", entries);
 
                           details.push({
                             head_account: head.account_name,
@@ -193,7 +191,6 @@ const executePDF = function executePDFMethod(options) {
                           const entries = dateWiseChilds.filter(
                             child => head.head_id == child.head_id
                           );
-                          console.log("entries:", entries);
 
                           details.push({
                             head_account: head.account_name,

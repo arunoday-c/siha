@@ -17,7 +17,7 @@ import utilitites from "algaeh-utilities/utilities";
 // const chromePath =
 // chrome.default.chromePuppeteer != null ? chrome.default.chromePuppeteer : {};
 
-const XlsxTemplate = require("xlsx-template");
+// const XlsxTemplate = require("xlsx-template");
 
 let outputFolder = path.join(
   path.join(process.cwd(), "algaeh_report_tool/templates", "Output")
@@ -300,8 +300,14 @@ export default {
             for (let r = 0; r < _reportCount; r++) {
               const _data = data[0][r];
 
-              const _inputOrders = eval(_data.report_input_series);
+              const _inputOrders = eval(
+                _data.report_input_series === null
+                  ? []
+                  : _data.report_input_series
+              );
+
               let _value = [];
+
               for (var i = 0; i < _inputOrders.length; i++) {
                 const _params = _.find(
                   _inputParam.reportParams,
@@ -321,13 +327,14 @@ export default {
                 values: _value,
                 printQuery: true
               };
+
               if (_data.report_query == null || _data.report_query == "") {
                 queryObject = {
                   query: "select 1",
                   printQuery: true
                 };
               }
-              console.log("queryObject", queryObject);
+              //console.log("queryObject", queryObject);
               _mysql
                 .executeQuery(queryObject)
                 .then(result => {
@@ -336,7 +343,8 @@ export default {
                     "algaeh_report_tool/templates/Output",
                     _data.report_name + moment().format("YYYYMMDDHHmmss")
                   );
-                  const _reportType = "PDF";
+
+                  // const _reportType = "PDF";
                   const _supportingJS = path.join(
                     process.cwd(),
                     "algaeh_report_tool/templates",
@@ -899,7 +907,9 @@ export default {
           _inputParam["hospital_id"] = req.userIdentity["hospital_id"];
           _inputParam["crypto"] = req.userIdentity;
           const _data = data[0][0];
-          const _inputOrders = eval(_data.report_input_series);
+          const _inputOrders = eval(
+            _data.report_input_series === null ? [] : _data.report_input_series
+          );
           let _value = [];
           for (var i = 0; i < _inputOrders.length; i++) {
             const _params = _.find(
@@ -1276,7 +1286,11 @@ export default {
             for (let r = 0; r < _reportCount; r++) {
               const _data = data[0][r];
 
-              const _inputOrders = eval(_data.report_input_series);
+              const _inputOrders = eval(
+                _data.report_input_series === null
+                  ? []
+                  : _data.report_input_series
+              );
 
               let _value = [];
               for (var i = 0; i < _inputOrders.length; i++) {
@@ -1473,5 +1487,72 @@ export default {
       // res.writeHead(400, { "Content-Type": "text/plain" });
       // res.write(e);
     }
+  },
+  printReportRaw: (req, res) => {
+    let buffer = "";
+    req.on("data", chunk => {
+      buffer += chunk.toString();
+    });
+    req.on("end", () => {
+      (async () => {
+        const browser = await puppeteer.launch({ headless: true });
+        const page = await browser.newPage();
+        const _pdfTemplating = {};
+        _pdfTemplating["headerTemplate"] = "";
+        _pdfTemplating["margin"] = {
+          top: "150px"
+        };
+        _pdfTemplating["footerTemplate"] = "";
+        _pdfTemplating["margin"] = {
+          bottom: "50px"
+        };
+        const template = hbs.compile(buffer);
+        await page.setContent(template({}));
+        await page.emulateMedia("screen");
+        const _path = path.join(
+          process.cwd(),
+          "algaeh_report_tool/templates/Output",
+          "newReports" + moment().format("YYYYMMDDHHmmss")
+        );
+        const _outPath = _path + ".pdf";
+        const _inputParam = {};
+        const pageOrentation =
+          _inputParam.pageOrentation == null
+            ? {}
+            : _inputParam.pageOrentation == "landscape"
+            ? { landscape: true }
+            : { landscape: true };
+        const pageSize =
+          _inputParam.pageSize == null
+            ? { format: "A3" }
+            : { format: _inputParam.pageSize };
+        await page.pdf({
+          path: _outPath,
+          ...pageSize,
+          landscape: true,
+          printBackground: true,
+          displayHeaderFooter: true,
+          ..._pdfTemplating
+          // headerTemplate:
+          //   "<h1>H1 tag</h1><h2>H2 tag</h2><hr style='border-bottom: 2px solid #8c8b8b;' />"
+        });
+        await browser.close();
+        fs.exists(_outPath, exists => {
+          if (exists) {
+            res.writeHead(200, {
+              "content-type": "application/pdf",
+              "content-disposition": "attachment;filename=newReport.pdf"
+            });
+            const _fs = fs.createReadStream(_outPath);
+            _fs.on("end", () => {
+              // fs.unlink(_outPath);
+            });
+            _fs.pipe(res);
+          } else {
+            res.status(400).send({ error: "ERROR File does not exist" });
+          }
+        });
+      })();
+    });
   }
 };

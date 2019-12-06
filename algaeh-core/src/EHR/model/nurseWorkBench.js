@@ -274,20 +274,20 @@ let addPatientNurseChiefComplaints = (req, res, next) => {
                   "vital_value",
                   "vital_value_one",
                   "vital_value_two",
-                  "formula_value",
-                  "created_by",
-                  "updated_by"
+                  "formula_value"
                 ];
 
                 connection.query(
                   "INSERT INTO hims_f_patient_vitals(" +
                     insurtColumns.join(",") +
-                    ",created_date,updated_date,hospital_id) VALUES ?",
+                    ",created_by,updated_by,created_date,updated_date,hospital_id) VALUES ?",
                   [
                     jsonArrayToObject({
                       sampleInputObject: insurtColumns,
                       arrayObj: req.body.patient_vitals,
                       newFieldToInsert: [
+                        req.userIdentity.algaeh_d_app_user_id,
+                        req.userIdentity.algaeh_d_app_user_id,
                         new Date(),
                         new Date(),
                         req.userIdentity.hospital_id
@@ -559,9 +559,9 @@ let getNurseMyDay = (req, res, next) => {
       req.query.fromDate != null &&
       req.query.fromDate != "" &&
       req.query.fromDate != undefined &&
-      (req.query.toDate != null &&
-        req.query.fromDate != "" &&
-        req.query.fromDate != undefined)
+      req.query.toDate != null &&
+      req.query.fromDate != "" &&
+      req.query.fromDate != undefined
     )
       _query += _mysql.mysqlQueryFormat(
         "date(E.created_date) BETWEEN date(?) and date(?)",

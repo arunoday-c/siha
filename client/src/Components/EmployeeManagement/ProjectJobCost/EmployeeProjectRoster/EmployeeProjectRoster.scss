@@ -183,7 +183,7 @@
       width: 100%;
     }
 
-    table {
+    table.rosterTableStyle {
       width: 100%;
       box-sizing: border-box;
       table-layout: fixed;
@@ -243,5 +243,12 @@
         }
       }
     }
+  }
+}
+.rosterTableStylePrint{
+  border:1px solid #000;
+  td{
+
+  border:1px solid red;
   }
 }
