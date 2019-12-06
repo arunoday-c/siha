@@ -35,7 +35,7 @@ class EmployeePayment extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = EmployeePaymentIOputs.inputParam();
     IOputs.hospital_id = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))

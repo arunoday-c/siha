@@ -23,7 +23,7 @@ export default class DateHandler extends PureComponent {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.state.hasSecurity) return;
     let momentDate = nextProps.value ? moment(nextProps.value) : null;
     let lang = getCookie("Language");

@@ -1,5 +1,5 @@
 export default {
-  inputParam: function (param) {
+  inputParam: function(param) {
     var output;
 
     output = {
@@ -7,6 +7,7 @@ export default {
       test_code: null,
       short_description: null,
       description: null,
+      specimen_id: null,
       investigation_type: "L",
       lab_section_id: null,
       send_out_test: "N",
@@ -45,11 +46,9 @@ export default {
       clear: false,
       analytes_required: true,
 
-
       gender: null,
       from_age: 0,
       to_age: 0
-
     };
     return output;
   }

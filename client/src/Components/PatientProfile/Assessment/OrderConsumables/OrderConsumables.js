@@ -129,7 +129,7 @@ class OrderConsumables extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let Location_name =
       this.props.inventorylocations !== undefined &&
         this.props.inventorylocations.length > 0
@@ -474,7 +474,7 @@ class OrderConsumables extends Component {
                           );
                         },
                         others: {
-                          minWidth: 300
+                          minWidth: 250
                         }
                       },
                       {
@@ -483,7 +483,7 @@ class OrderConsumables extends Component {
                           <AlgaehLabel label={{ forceLabel: "Batch No." }} />
                         ),
                         others: {
-                          minWidth: 100
+                          minWidth: 200
                         },
                         disabled: true
                       },

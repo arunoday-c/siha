@@ -91,12 +91,12 @@ export default {
                 let leave_start_date = moment(
                   annul_leave_app[0].from_date
                 ).format("YYYY-MM-DD");
-                // console.log("from_date", from_date);
-                // console.log("to_date", to_date);
+                console.log("from_date", from_date);
+                console.log("to_date", to_date);
 
                 while (from_date <= to_date) {
-                  // console.log("from_date", from_date);
-                  // console.log("to_date_month", to_date_month);
+                  console.log("from_date", from_date);
+                  console.log("to_date_month", to_date_month);
 
                   let fromDate_firstDate = null;
                   let fromDate_lastDate = null;
@@ -112,10 +112,15 @@ export default {
 
                   let no_of_days = 0;
 
+                  console.log("attendance_starts", hrms_options.attendance_starts);
                   if (hrms_options.attendance_starts === "PM") {
                     let selected_year = moment(from_date).year();
                     let selected_month = moment(from_date).format("M");
                     let selected_day = moment(from_date).format("DD");
+
+                    console.log("selected_day", selected_day);
+                    console.log("at_st_date", hrms_options.at_st_date);
+                    console.log("selected_month", selected_month);
 
                     if (
                       parseFloat(selected_day) >=
@@ -128,9 +133,36 @@ export default {
                       date_month = 1;
                     }
 
-                    // console.log("date_month", date_month);
+                    console.log("date_month", date_month);
 
                     if (to_date_month === date_month) {
+                      let end_selected_day = moment(to_date).format("DD");
+                      console.log("end_selected_day", end_selected_day)
+                      console.log("at_end_date", hrms_options.at_end_date)
+                      // if (parseFloat(parseFloat(end_selected_day) <= hrms_options.at_end_date)) {
+                      //   console.log("if", hrms_options.at_end_date)
+                      //   fromDate_firstDate = moment(
+                      //     selected_year +
+                      //     "-" +
+                      //     selected_month +
+                      //     "-" +
+                      //     hrms_options.at_st_date,
+                      //     "YYYY-MM-DD"
+                      //   )
+                      //     .add(-1, "M")
+                      //     .format("YYYY-MM-DD");
+
+                      //   fromDate_lastDate = moment(
+                      //     selected_year +
+                      //     "-" +
+                      //     selected_month +
+                      //     "-" +
+                      //     hrms_options.at_end_date
+                      //   )
+                      //     .format("YYYY-MM-DD");
+
+                      // } else {
+                      // console.log("else", hrms_options.at_end_date)
                       fromDate_firstDate = moment(
                         selected_year +
                         "-" +
@@ -138,7 +170,9 @@ export default {
                         "-" +
                         hrms_options.at_st_date,
                         "YYYY-MM-DD"
-                      ).format("YYYY-MM-DD");
+                      )
+                        .add(-1, "M")
+                        .format("YYYY-MM-DD");
 
                       fromDate_lastDate = moment(
                         selected_year +
@@ -147,8 +181,8 @@ export default {
                         "-" +
                         hrms_options.at_end_date
                       )
-                        .add(1, "M")
                         .format("YYYY-MM-DD");
+                      // }
                     } else {
                       // console.log("selected_day", selected_day);
                       // console.log("at_st_date", hrms_options.at_st_date);
@@ -448,15 +482,16 @@ export default {
                   )._d;
                 }
 
-                // utilities.logger().log("end_date_month: ", end_date_month);
-                // utilities.logger().log("date_month: ", date_month);
-                // utilities.logger().log("intValue: ", intValue);
+                console.log("end_date_month: ", end_date_month);
+                console.log("date_month: ", date_month);
+                console.log("intValue: ", intValue);
 
-                if (end_date_month == date_month || intValue > 0) {
+                if (end_date_month == date_month && intValue > 0) {
                   utilities.logger().log("intValue_inside: ", intValue);
                   req.query.leave_end_date = end_date;
                   req.query.leave_salary = "Y";
                 }
+                console.log("leave_salary: ", req.query.leave_salary);
 
                 let _attandance = null;
                 let _sarary = null;
@@ -543,7 +578,7 @@ export default {
                     .format("YYYY-MM-DD");
                 }
 
-                // console.log("Promise fromDate_lastDate: ", fromDate_lastDate);
+                console.log("Promise fromDate_lastDate: ", fromDate_lastDate);
                 start_date = moment(fromDate_lastDate)
                   .add(1, "days")
                   .format("YYYYMMDD");

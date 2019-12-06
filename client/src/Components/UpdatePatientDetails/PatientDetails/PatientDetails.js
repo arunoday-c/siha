@@ -43,7 +43,7 @@ class UpdatePatientForm extends Component {
     this.innerContext = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.PatRegIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -146,7 +146,7 @@ class UpdatePatientForm extends Component {
     this.getStateCity(this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.PatRegIOputs, () => {
       if (this.state.country_id === null) return;
       if (this.state.country_id !== nextProps.country_id) {

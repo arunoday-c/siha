@@ -31,7 +31,7 @@ class OvertimeManagement extends Component {
     super(props);
     this.state = {};
   }
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = OTManagement.inputParam();
     this.setState(IOputs);
   }

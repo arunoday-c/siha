@@ -18,7 +18,7 @@ class BreadCrumb extends PureComponent {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
       value:
         nextProps.soptlightSearch !== undefined

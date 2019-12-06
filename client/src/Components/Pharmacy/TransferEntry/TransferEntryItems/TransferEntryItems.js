@@ -38,7 +38,7 @@ class TransferEntryItems extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.TransferIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -86,7 +86,7 @@ class TransferEntryItems extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.TransferIOputs);
   }
 

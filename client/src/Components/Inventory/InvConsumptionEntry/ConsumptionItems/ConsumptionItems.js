@@ -24,7 +24,7 @@ class ConsumptionItems extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.ConsumptionIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -76,7 +76,7 @@ class ConsumptionItems extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.ConsumptionIOputs);
   }
   itemchangeText(context, e) {

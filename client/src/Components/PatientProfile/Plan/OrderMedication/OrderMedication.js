@@ -151,7 +151,7 @@ class OrderMedication extends Component {
   componentWillUnmount() {
     setGlobal({ orderMedicationState: this.state });
   }
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
@@ -214,6 +214,7 @@ class OrderMedication extends Component {
       generic_name: "",
       item_description: "",
       instructions: "",
+      start_date: moment().format("YYYY-MM-DD"),
       total_quantity: 0
     });
   };
@@ -392,7 +393,6 @@ class OrderMedication extends Component {
                     events={{
                       onChange: datehandle.bind(this, this)
                     }}
-                    dontAllow={"past"}
                     value={this.state.start_date}
                   />
                 </div>
@@ -742,8 +742,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OrderMedication)
+  connect(mapStateToProps, mapDispatchToProps)(OrderMedication)
 );

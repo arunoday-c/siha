@@ -22,7 +22,7 @@ class EyeModal extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = OptometricIOputs.inputParam();
     this.setState(IOputs);
   }

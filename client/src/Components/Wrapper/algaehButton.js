@@ -25,7 +25,7 @@ export default class ButtonType extends PureComponent {
       classname: classname
     });
   }
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     let loading = props.loading === undefined ? false : props.loading;
     if (props.isReport === true) {
       loading = true;

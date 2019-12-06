@@ -21,7 +21,7 @@ class DNItemList extends Component {
     this.state = {};
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // this.setState({
     //   dn_from: nextProps.dn_from,
     //   dn_item_details: nextProps.dn_item_details

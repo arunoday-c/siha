@@ -94,7 +94,7 @@ class HospitalServices extends PureComponent {
     });
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.servicePop.hims_d_services_id !== undefined) {
       let IOputs = newProps.servicePop;
 

@@ -1992,6 +1992,34 @@ let insertPhysiotherapyServices = (req, res, next) => {
   }
 };
 
+
+//Delete Inventory ordered Items
+let deleteInvOrderedItems = (req, res, next) => {
+
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    _mysql
+      .executeQuery({
+        query: "DELETE FROM hims_f_ordered_inventory where hims_f_ordered_inventory_id=?;",
+        values: [req.body.hims_f_ordered_inventory_id],
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (error) {
+    _mysql.releaseConnection();
+    next(error);
+  }
+
+};
+
 function deleteOrderServices(options) {
   return new Promise((resolve, reject) => {
     try {
@@ -2100,6 +2128,7 @@ function deleteOrderServices(options) {
   });
 }
 
+
 export default {
   insertOrderedServices,
   getPreAprovalList,
@@ -2118,5 +2147,6 @@ export default {
   addPackage,
   getPatientPackage,
   deleteOrderService,
-  insertPhysiotherapyServices
+  insertPhysiotherapyServices,
+  deleteInvOrderedItems
 };

@@ -76,7 +76,7 @@ class RegistrationPatient extends Component {
     ).requied_emp_id;
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = emptyObject;
     this.setState(IOputs);
     setGlobal({ selectedLang: "en" });
@@ -269,7 +269,7 @@ class RegistrationPatient extends Component {
     }
   }
 
-  componentWillReceiveProps() {
+  UNSAFE_componentWillReceiveProps() {
     let prevLang = getCookie("Language");
     if (prevLang !== this.state.selectedLang) {
       setGlobal({ selectedLang: prevLang });

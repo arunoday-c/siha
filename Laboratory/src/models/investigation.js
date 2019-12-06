@@ -378,7 +378,7 @@ export default {
                         qry += mysql.format(
                           "UPDATE `hims_m_lab_analyte` SET record_status=?,\
                         `critical_low`=?, `critical_high`=?, `normal_low`=?, `normal_high`=?,\
-                          `from_age`=?, `to_age`=?, `age_type`=?, \
+                          `from_age`=?, `to_age`=?, `age_type`=?, `gender`=?, \
                         updated_date=?, updated_by=? where hims_m_lab_analyte_id=?;",
                           [
                             update_analytes[i].record_status,
@@ -389,6 +389,7 @@ export default {
                             update_analytes[i].from_age,
                             update_analytes[i].to_age,
                             update_analytes[i].age_type,
+                            update_analytes[i].gender,
                             moment().format("YYYY-MM-DD HH:mm"),
                             req.userIdentity.algaeh_d_app_user_id,
                             update_analytes[i].hims_m_lab_analyte_id

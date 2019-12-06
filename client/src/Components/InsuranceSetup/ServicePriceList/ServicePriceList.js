@@ -39,7 +39,7 @@ class ServicePriceList extends PureComponent {
     this.baseState = this.state;
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.InsuranceSetup;
     this.setState({ ...this.state, ...InputOutput });
   }

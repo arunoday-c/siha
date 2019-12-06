@@ -34,7 +34,7 @@ class InvRequisitionEntry extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = RequisitionIOputs.inputParam();
     IOputs.requisition_auth = this.props.requisition_auth;
     this.setState(IOputs);

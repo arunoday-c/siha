@@ -87,6 +87,7 @@ const employeeSearch = $this => {
       let IOputs = LeaveSalaryProcessIOputs.inputParam();
       IOputs.employee_name = row.full_name;
       IOputs.employee_id = row.hims_d_employee_id;
+      IOputs.dis_employee_name = row.full_name;
       $this.setState(IOputs, () => {
         getLeaveSalaryProcess($this);
       });

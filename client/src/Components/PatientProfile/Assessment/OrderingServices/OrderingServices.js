@@ -198,7 +198,7 @@ class OrderingServices extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
 
     const orderservicesdata = _.filter(
       nextProps.orderedList,

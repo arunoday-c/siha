@@ -71,7 +71,7 @@ class ClosePackage extends PureComponent {
     this.props.onClose && this.props.onClose(e);
   };
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.package_detail !== undefined) {
       let InputObj = newProps.package_detail;
       InputObj.Cashchecked = true;

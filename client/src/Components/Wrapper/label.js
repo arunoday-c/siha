@@ -96,7 +96,7 @@ class Label extends PureComponent {
       return null;
     }
   };
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (this.props.label !== undefined) {
       if (
         this.props.label.language !== undefined &&
@@ -125,7 +125,7 @@ class Label extends PureComponent {
       });
     }
   }
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps !== undefined) {
       if (this.currentPageCanRender()) {
         if (nextProps.label !== undefined) {

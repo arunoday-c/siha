@@ -31,7 +31,7 @@ class LeaveEncashmentProcess extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = LeaveEncashmentProcessIOputs.inputParam();
     this.setState(IOputs);
   }

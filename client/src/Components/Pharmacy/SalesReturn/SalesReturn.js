@@ -44,7 +44,7 @@ class SalesReturn extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = SALESRETURNIOputs.inputParam();
     this.setState(IOputs);
   }
@@ -83,7 +83,7 @@ class SalesReturn extends Component {
     getCashiersAndShiftMAP(this, this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let SalesHeaderOut = {};
 
     if (

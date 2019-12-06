@@ -33,7 +33,7 @@ class ItemListsReturn extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.SALESRETURNIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -66,7 +66,7 @@ class ItemListsReturn extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.SALESRETURNIOputs);
   }
 

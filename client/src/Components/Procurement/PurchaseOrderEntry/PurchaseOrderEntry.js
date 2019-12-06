@@ -42,7 +42,7 @@ class PurchaseOrderEntry extends Component {
     getVendorMaster(this, this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = POEntry.inputParam();
     this.setState(IOputs);
   }
@@ -451,8 +451,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PurchaseOrderEntry)
+  connect(mapStateToProps, mapDispatchToProps)(PurchaseOrderEntry)
 );

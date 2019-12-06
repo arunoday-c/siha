@@ -35,7 +35,7 @@ class PackageDetail extends Component {
     this.props.onClose && this.props.onClose(this.state);
   };
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     
     if (newProps.package_detail !== null) {
       this.setState({ ...this.state, ...newProps.package_detail });

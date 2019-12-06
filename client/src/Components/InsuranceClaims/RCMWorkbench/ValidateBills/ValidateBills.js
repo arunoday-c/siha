@@ -129,7 +129,7 @@ class ValidateBills extends PureComponent {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.data !== undefined) {
       this.setState(
         {

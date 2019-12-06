@@ -158,7 +158,7 @@ class InvoiceGeneration extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (
       nextProps.existinsurance !== undefined &&
       nextProps.existinsurance.length !== 0
