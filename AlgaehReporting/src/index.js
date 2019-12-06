@@ -22,7 +22,8 @@ const {
   getReportMultiPrint,
   merdgeTosingleReport,
   getExcelReport,
-  getRawReport
+  getRawReport,
+  printReportRaw
 } = reportGen;
 
 process.env.MYSQL_KEYS = JSON.stringify(keys);
@@ -194,7 +195,7 @@ app.use("/api/v1/pentahoreport", (req, res) => {
     }
   );
 });
-
+app.use("/api/v1/printReportRaw", printReportRaw);
 process.on("warning", warning => {
   console.log("Waring := ", warning);
 });

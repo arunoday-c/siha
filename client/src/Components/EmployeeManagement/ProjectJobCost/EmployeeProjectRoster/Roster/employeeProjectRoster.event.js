@@ -64,6 +64,7 @@ export function getProjects() {
         uri: "/projectjobcosting/getDivisionProject",
         module: "hrManagement",
         method: "GET",
+
         onSuccess: response => {
           const { success, records, message } = response.data;
           if (success === true) {
@@ -71,6 +72,39 @@ export function getProjects() {
           } else {
             reject(new Error(message));
           }
+        },
+        onCatch: error => {
+          reject(error);
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+export function createReport(input, options) {
+  return new Promise((resolve, reject) => {
+    try {
+      const settings = { header: undefined, footer: undefined, ...options };
+      algaehApiCall({
+        uri: "/printReportRaw",
+        skipParse: true,
+        data: Buffer.from(input, "utf8"),
+        module: "reports",
+        method: "POST",
+        header: {
+          "content-type": "application/octet-stream",
+          ...settings
+        },
+        onSuccess: response => {
+          console.log("response", response);
+          resolve();
+          // const { success, records, message } = response.data;
+          // if (success === true) {
+          //   resolve(records);
+          // } else {
+          //   reject(new Error(message));
+          // }
         },
         onCatch: error => {
           reject(error);

@@ -1,13 +1,13 @@
-import React, { useContext } from "react";
+import React, { useContext, forwardRef } from "react";
 import moment from "moment";
 import { ProjectRosterContext } from "../index";
 import TableData from "./tableData";
-export default function(props) {
+export default forwardRef(function(props, ref) {
   const { getProjectRosterState } = useContext(ProjectRosterContext);
-  const { inputs, dates } = getProjectRosterState();
+  const { dates } = getProjectRosterState();
 
   return (
-    <table>
+    <table className="rosterTableStyle" ref={ref}>
       <thead>
         <tr>
           <th>Employee Name</th>
@@ -25,4 +25,4 @@ export default function(props) {
       <TableData {...props} />
     </table>
   );
-}
+});
