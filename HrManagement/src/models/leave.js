@@ -7247,13 +7247,13 @@ function yearlyLeaveProcess(inputs, req, mysql) {
             where   year=? and hospital_id=? and  ML.processed='N' ${strQry};`,
           values: [
             input.year,
-            req.userIdentity.hospital_id,
+            input.hospital_id,
             input.year,
-            req.userIdentity.hospital_id,
+            input.hospital_id,
             input.year,
-            req.userIdentity.hospital_id,
+            input.hospital_id,
             parseInt(input.year) - 1,
-            req.userIdentity.hospital_id
+            input.hospital_id
           ],
           printQuery: true
         })
@@ -7449,7 +7449,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
                           updated_date: new Date(),
                           created_by: req.userIdentity.algaeh_d_app_user_id,
                           updated_by: req.userIdentity.algaeh_d_app_user_id,
-                          hospital_id: req.userIdentity.hospital_id
+                          hospital_id: input.hospital_id
                         },
                         bulkInsertOrUpdate: true,
                         printQuery: false
@@ -7485,7 +7485,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
                     values: insertMonthlyArray,
                     includeValues: insurtColumns,
                     extraValues: {
-                      hospital_id: req.userIdentity.hospital_id
+                      hospital_id: input.hospital_id
                     },
                     bulkInsertOrUpdate: true,
                     printQuery: false
@@ -7750,6 +7750,7 @@ function validateLeaveApplictn(inputs, my_sql, req) {
                   })
                   .then(branch => {
                     const hospital_id = branch[0]["hospital_id"];
+                    // input["hospital_id"]= branch[0]["hospital_id"];
                     _mysql
                       .executeQuery({
                         query:
