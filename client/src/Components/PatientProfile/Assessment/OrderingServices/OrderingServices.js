@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -41,7 +41,7 @@ import sockets from "../../../../sockets";
 import FavouriteOrder from "../../../FavouriteOrderList/FavouriteOrder/FavouriteOrder";
 import ViewFavouriteOrder from "./ViewFavouriteOrder";
 
-class OrderingServices extends Component {
+class OrderingServices extends PureComponent {
   constructor(props) {
     super(props);
     this.serviceSocket = sockets;
@@ -198,14 +198,19 @@ class OrderingServices extends Component {
     });
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
 
+    debugger
+    let saved = true
     const orderservicesdata = _.filter(
       nextProps.orderedList,
       f => {
         return f.trans_package_detail_id === null;
       }
     );
+    if (orderservicesdata.length > 0) {
+      saved = false
+    }
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
@@ -216,7 +221,7 @@ class OrderingServices extends Component {
       output.approval_limit_yesno = nextProps.approval_limit_yesno
       output.orderservicesdata = orderservicesdata
       output.preserviceInput = nextProps.preserviceInput
-
+      output.saved = saved
 
       this.setState({ ...output });
     } else {
@@ -226,7 +231,8 @@ class OrderingServices extends Component {
         approval_amt: nextProps.approval_amt,
         orderservicesdata: orderservicesdata,
         preserviceInput: nextProps.preserviceInput,
-        approval_limit_yesno: nextProps.approval_limit_yesno
+        approval_limit_yesno: nextProps.approval_limit_yesno,
+        saved: saved
       });
     }
   }
