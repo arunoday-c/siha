@@ -17,7 +17,7 @@ import utilitites from "algaeh-utilities/utilities";
 // const chromePath =
 // chrome.default.chromePuppeteer != null ? chrome.default.chromePuppeteer : {};
 
-const XlsxTemplate = require("xlsx-template");
+// const XlsxTemplate = require("xlsx-template");
 
 let outputFolder = path.join(
   path.join(process.cwd(), "algaeh_report_tool/templates", "Output")
@@ -300,8 +300,14 @@ export default {
             for (let r = 0; r < _reportCount; r++) {
               const _data = data[0][r];
 
-              const _inputOrders = eval(_data.report_input_series);
+              const _inputOrders = eval(
+                _data.report_input_series === null
+                  ? []
+                  : _data.report_input_series
+              );
+
               let _value = [];
+
               for (var i = 0; i < _inputOrders.length; i++) {
                 const _params = _.find(
                   _inputParam.reportParams,
@@ -321,6 +327,7 @@ export default {
                 values: _value,
                 printQuery: true
               };
+
               if (_data.report_query == null || _data.report_query == "") {
                 queryObject = {
                   query: "select 1",
@@ -336,7 +343,8 @@ export default {
                     "algaeh_report_tool/templates/Output",
                     _data.report_name + moment().format("YYYYMMDDHHmmss")
                   );
-                  const _reportType = "PDF";
+
+                  // const _reportType = "PDF";
                   const _supportingJS = path.join(
                     process.cwd(),
                     "algaeh_report_tool/templates",
@@ -899,7 +907,9 @@ export default {
           _inputParam["hospital_id"] = req.userIdentity["hospital_id"];
           _inputParam["crypto"] = req.userIdentity;
           const _data = data[0][0];
-          const _inputOrders = eval(_data.report_input_series);
+          const _inputOrders = eval(
+            _data.report_input_series === null ? [] : _data.report_input_series
+          );
           let _value = [];
           for (var i = 0; i < _inputOrders.length; i++) {
             const _params = _.find(
@@ -1276,7 +1286,11 @@ export default {
             for (let r = 0; r < _reportCount; r++) {
               const _data = data[0][r];
 
-              const _inputOrders = eval(_data.report_input_series);
+              const _inputOrders = eval(
+                _data.report_input_series === null
+                  ? []
+                  : _data.report_input_series
+              );
 
               let _value = [];
               for (var i = 0; i < _inputOrders.length; i++) {

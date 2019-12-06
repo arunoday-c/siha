@@ -16,7 +16,7 @@ export default memo(function Modal(props) {
     "Please wait report is preparing.."
   );
   const [checkedType, setCheckType] = useState(false);
-const previousMonthDate =[moment().add(-1,"M"),moment().add(-1,"days")] ;
+  const previousMonthDate = [moment().add(-1, "M"), moment().add(-1, "days")];
   const [dateRange, setDateRange] = useState(previousMonthDate);
   const [loading, setLoading] = useState(false);
   function onPdfGeneration() {
@@ -24,25 +24,38 @@ const previousMonthDate =[moment().add(-1,"M"),moment().add(-1,"days")] ;
     setLoading(true);
     generateReport("pdf")
       .then(result => {
-        let myWindow = window.open(
+        // console.log("result", result);
+        // var file = new Blob([result], { type: "application/pdf" });
+
+        // var fileURL = URL.createObjectURL(result);
+        let newWindow = window.open(
           "",
           "",
-          "width=800,height=500,left=200,top=200,"
+          "width=800,height=500,left=200,top=200"
         );
-        myWindow.document.title = "Ledger report";
-        myWindow.document.body.style.overflow = "hidden";
-        let divElem = document.createElement("div");
-        divElem.id = "algaeh_frame";
-        divElem.style.width = "100%";
-        divElem.style.height = "100%";
-        let elem = document.createElement("iframe");
-        elem.src = result;
-        elem.setAttribute("webkitallowfullscreen", true);
-        elem.setAttribute("allowfullscreen", true);
-        elem.style.width = "100%";
-        elem.style.height = "100%";
-        divElem.appendChild(elem);
-        myWindow.document.body.appendChild(divElem);
+        newWindow.onload = () => {
+          newWindow.location = result;
+        };
+
+        // let myWindow = window.open(
+        //   "",
+        //   "",
+        //   "width=800,height=500,left=200,top=200,"
+        // );
+        // myWindow.document.title = "Ledger report";
+        // myWindow.document.body.style.overflow = "hidden";
+        // let divElem = document.createElement("div");
+        // divElem.id = "algaeh_frame";
+        // divElem.style.width = "100%";
+        // divElem.style.height = "100%";
+        // let elem = document.createElement("iframe");
+        // elem.src = result;
+        // elem.setAttribute("webkitallowfullscreen", true);
+        // elem.setAttribute("allowfullscreen", true);
+        // elem.style.width = "100%";
+        // elem.style.height = "100%";
+        // divElem.appendChild(elem);
+        // myWindow.document.body.appendChild(divElem);
         onOk("pdf");
         setLoading(false);
       })
@@ -93,19 +106,22 @@ const previousMonthDate =[moment().add(-1,"M"),moment().add(-1,"days")] ;
         //   dateRange.length === 0
         //     ? {}
         //     : { name: "monthwise", value: checkedType ? "Y" : "N" };
- 
-          let reportName="";
-          if(leafnode==="N"){
-            reportName= checkedType? "ledgerMonthReportGroupNode":"ledgerDateReportGroupNode";
-          }else{
-            reportName= checkedType? "ledgerMonthReportLeafNode":"ledgerDateReportLeafNode";
-          }
 
+        let reportName = "";
+        if (leafnode === "N") {
+          reportName = checkedType
+            ? "ledgerMonthReportGroupNode"
+            : "ledgerDateReportGroupNode";
+        } else {
+          reportName = checkedType
+            ? "ledgerMonthReportLeafNode"
+            : "ledgerDateReportLeafNode";
+        }
 
         const data = {
           report: {
             displayName: "Ledger Report - Date Wise",
-            reportName: reportName,//"ledgerDateReport",
+            reportName: reportName, //"ledgerDateReport",
             template_name: null,
             reportQuery: null,
             pageSize: "A4",
@@ -161,8 +177,8 @@ const previousMonthDate =[moment().add(-1,"M"),moment().add(-1,"days")] ;
       }
     });
   }
-  const format=  checkedType?{format:"YYYY-MMM"}:{};
-  
+  const format = checkedType ? { format: "YYYY-MMM" } : {};
+
   return (
     <AlgaehModal
       className="algaehLedgerReportStyle"
@@ -248,25 +264,27 @@ const previousMonthDate =[moment().add(-1,"M"),moment().add(-1,"days")] ;
             maxDate={moment()}
             events={{
               onChange: dateSelected => {
-                if(checkedType){
-                 const months= moment(dateSelected[1]).diff(dateSelected[0],"months");
-                 if(months <=11){
-                  setDateRange(dateSelected);
-                 }else{
-                  AlgaehMessagePop({
-                    title:"error",
-                    display:"you can select maximum one year."
-                  })
-                 }
-                }else{
+                if (checkedType) {
+                  const months = moment(dateSelected[1]).diff(
+                    dateSelected[0],
+                    "months"
+                  );
+                  if (months <= 11) {
+                    setDateRange(dateSelected);
+                  } else {
+                    AlgaehMessagePop({
+                      title: "error",
+                      display: "you can select maximum one year."
+                    });
+                  }
+                } else {
                   setDateRange(dateSelected);
                 }
-               
               }
             }}
-           others={{
-            ...format
-           }}
+            others={{
+              ...format
+            }}
           />
         </div>
       </Spin>
