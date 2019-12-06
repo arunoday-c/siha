@@ -7264,7 +7264,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
           const AllMonthlyLeaves = result[3];
           const prevoius_year_leave = result[4];
 
-          if (AllEmployees.length > 0) {
+          if (AllEmployees.length > 0 && prevoius_year_leave.length>0) {
             for (let i = 0; i < AllEmployees.length; i++) {
               //already proccesed leaves for selected year
               const already_processed_leaves = AllMonthlyLeaves.filter(item => {
@@ -7529,7 +7529,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
         
             reject({
               invalid_input: true,
-              message: "No Employees found"
+              message: "No Data found"
             });
           }
         })

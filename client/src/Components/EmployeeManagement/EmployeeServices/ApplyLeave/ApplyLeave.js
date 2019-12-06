@@ -268,7 +268,8 @@ class ApplyLeave extends Component {
         hims_d_leave_detail_id: this.state.hims_d_leave_detail_id,
         religion_id: this.state.religion_id,
         leave_id: this.state.leave_id,
-        employee_id: this.state.employee_id
+        employee_id: this.state.employee_id,
+        hospital_id: this.state.hospital_id
       },
       onSuccess: res => {
         if (res.data.success) {
