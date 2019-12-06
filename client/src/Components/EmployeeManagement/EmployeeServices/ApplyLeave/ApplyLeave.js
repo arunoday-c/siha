@@ -274,10 +274,12 @@ class ApplyLeave extends Component {
         if (res.data.success) {
           AlgaehLoader({ show: false });
           if (res.data.records.is_projected_leave === "Y") {
+            const { calculatedLeaveDays } = res.data.records;
+            const { available_balance } = this.state;
             swal({
-              title: "Applying across the year leave.",
-              text:
-                "Apply leave and transfer balance leave to next year or Request balance leave for encashment?",
+              title: "Applying across the year leave?",
+              text: `Employee have ${available_balance -
+                calculatedLeaveDays} balance leave, Do you want to Encash Leave or Transfer to next year?`,
               type: "warning",
               showCancelButton: true,
               confirmButtonText: "Request Encashment",
@@ -309,7 +311,8 @@ class ApplyLeave extends Component {
                 });
               } else {
                 swalMessage({
-                  title: "Please request from leave encashment screen",
+                  title:
+                    "Please request leave encashment then apply annual leave.",
                   type: "info"
                 });
               }

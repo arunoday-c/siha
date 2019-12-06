@@ -7255,7 +7255,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
             parseInt(input.year) - 1,
             req.userIdentity.hospital_id
           ],
-          printQuery: false
+          printQuery: true
         })
         .then(result => {
           const AllEmployees = result[0];
@@ -7526,7 +7526,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
             // };
             // next();
             // return;
-
+        
             reject({
               invalid_input: true,
               message: "No Employees found"
@@ -7534,6 +7534,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
           }
         })
         .catch(e => {
+          console.log("erorr2:",e)
           reject(e);
         });
     } else {
@@ -7959,6 +7960,9 @@ function validateLeaveApplictn(inputs, my_sql, req) {
                               .catch(e => {
                                 reject(e);
                               });
+                          }). catch(e => {
+                            _mysql.rollBackTransaction(() => { });
+                            reject(e);
                           });
                         } else {
                           reject({
