@@ -327,7 +327,7 @@ export default {
                   printQuery: true
                 };
               }
-              console.log("queryObject", queryObject);
+              //console.log("queryObject", queryObject);
               _mysql
                 .executeQuery(queryObject)
                 .then(result => {
@@ -1453,5 +1453,72 @@ export default {
       // res.writeHead(400, { "Content-Type": "text/plain" });
       // res.write(e);
     }
+  },
+  printReportRaw: (req, res) => {
+    let buffer = "";
+    req.on("data", chunk => {
+      buffer += chunk.toString();
+    });
+    req.on("end", () => {
+      (async () => {
+        const browser = await puppeteer.launch({ headless: true });
+        const page = await browser.newPage();
+        const _pdfTemplating = {};
+        _pdfTemplating["headerTemplate"] = "";
+        _pdfTemplating["margin"] = {
+          top: "150px"
+        };
+        _pdfTemplating["footerTemplate"] = "";
+        _pdfTemplating["margin"] = {
+          bottom: "50px"
+        };
+        const template = hbs.compile(buffer);
+        await page.setContent(template({}));
+        await page.emulateMedia("screen");
+        const _path = path.join(
+          process.cwd(),
+          "algaeh_report_tool/templates/Output",
+          "newReports" + moment().format("YYYYMMDDHHmmss")
+        );
+        const _outPath = _path + ".pdf";
+        const _inputParam = {};
+        const pageOrentation =
+          _inputParam.pageOrentation == null
+            ? {}
+            : _inputParam.pageOrentation == "landscape"
+            ? { landscape: true }
+            : { landscape: true };
+        const pageSize =
+          _inputParam.pageSize == null
+            ? { format: "A3" }
+            : { format: _inputParam.pageSize };
+        await page.pdf({
+          path: _outPath,
+          ...pageSize,
+          landscape: true,
+          printBackground: true,
+          displayHeaderFooter: true,
+          ..._pdfTemplating
+          // headerTemplate:
+          //   "<h1>H1 tag</h1><h2>H2 tag</h2><hr style='border-bottom: 2px solid #8c8b8b;' />"
+        });
+        await browser.close();
+        fs.exists(_outPath, exists => {
+          if (exists) {
+            res.writeHead(200, {
+              "content-type": "application/pdf",
+              "content-disposition": "attachment;filename=newReport.pdf"
+            });
+            const _fs = fs.createReadStream(_outPath);
+            _fs.on("end", () => {
+              // fs.unlink(_outPath);
+            });
+            _fs.pipe(res);
+          } else {
+            res.status(400).send({ error: "ERROR File does not exist" });
+          }
+        });
+      })();
+    });
   }
 };

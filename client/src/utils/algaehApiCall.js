@@ -61,7 +61,8 @@ export function algaehApiCall(options) {
         printInput: false,
         isfetch: false,
         cancelRequestId: null,
-        module: null
+        module: null,
+        skipParse: false
       },
       options
     );
@@ -105,12 +106,14 @@ export function algaehApiCall(options) {
 
     let queryParametres = "";
 
-    settings.data = JSON.parse(
-      JSON.stringify(settings.data, function(k, v) {
-        return v === undefined ? null : v;
-      }),
-      valueReviver
-    );
+    if (settings.skipParse === false) {
+      settings.data = JSON.parse(
+        JSON.stringify(settings.data, function(k, v) {
+          return v === undefined ? null : v;
+        }),
+        valueReviver
+      );
+    }
 
     if (String(settings.method).toUpperCase() === "GET") {
       let str = [];
@@ -242,7 +245,6 @@ export function algaehApiCall(options) {
           if (err.response !== undefined) {
             const { status, data } = err.response;
             if (status === 423) {
-
               showOtherPopup = false;
               reLoginPopup(data);
               return;
@@ -348,7 +350,6 @@ export function algaehApiCall(options) {
 
 export function reLoginPopup({ message, username }) {
   if (username === undefined) {
-
     window.location.href = window.location.origin + "/#";
     return;
   }
@@ -397,7 +398,7 @@ export function reLoginPopup({ message, username }) {
               if (success === true) {
                 setCookie("userName", records.user_display_name);
                 // setCookie("keyResources", records.keyResources, 30);
-                setCookie("authToken",records.token);
+                setCookie("authToken", records.token);
                 sessionStorage.setItem(
                   "keyData",
                   AlgaehCloseContainer(JSON.stringify(records.keyData))
@@ -419,7 +420,6 @@ export function reLoginPopup({ message, username }) {
         //  window.location.href = window.location.origin + "/#";
         //  window.location.reload();
       } else {
-
         window.location.reload();
       }
     });

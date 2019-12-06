@@ -1,13 +1,15 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, createRef } from "react";
 import { ProjectRosterContext } from "./index";
 import Table from "./table";
 import ProjectAssigned from "./AssignProject";
 import { EmployeeFilter } from "../../../../common/EmployeeFilter";
 import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
-import { Search } from "semantic-ui-react";
+// import { Search } from "semantic-ui-react";
+// import ReactPrint from "react-to-print";
 import {
   getEmployeesForProjectRoster,
-  getProjects
+  getProjects,
+  createReport
 } from "./employeeProjectRoster.event";
 import { swalMessage } from "../../../../../utils/algaehApiCall";
 import "../EmployeeProjectRoster.scss";
@@ -16,12 +18,12 @@ export default function EmpProjectRoster(props) {
     ProjectRosterContext
   );
   const {
-    filterTrue,
+    // filterTrue,
     employees,
     total_rosted,
     total_non_rosted,
-    fromDate,
-    toDate,
+    // fromDate,
+    // toDate,
     inputs
   } = getProjectRosterState();
   const [showPopup, setShowPopup] = useState(false);
@@ -29,8 +31,9 @@ export default function EmpProjectRoster(props) {
   const [loadingProjects, setLoadingProjects] = useState(false);
   const [isEditing, setIsEditing] = useState(undefined);
   const [filterStatus, setFilterStatus] = useState("0");
-  const [filterValue, setFilterValue] = useState("");
-  const [filterLoading, setFilterLoading] = useState(false);
+  // const [filterValue, setFilterValue] = useState("");
+  // const [filterLoading, setFilterLoading] = useState(false);
+  const tableRef = createRef();
   function editingProjectRoster(data) {
     setShowPopup(true);
     setIsEditing(data);
@@ -203,7 +206,7 @@ export default function EmpProjectRoster(props) {
                       <i className="fas fa-user-clock" />
                     </div>
                   ) : (
-                    <Table editing={editingProjectRoster} />
+                    <Table ref={tableRef} editing={editingProjectRoster} />
                   )}
                 </div>
               </div>
@@ -239,9 +242,46 @@ export default function EmpProjectRoster(props) {
             <button type="button" className="btn btn-default">
               Download as Excel
             </button>
-            <button type="button" className="btn btn-default">
+            <button
+              type="button"
+              className="btn btn-default"
+              onClick={() => {
+                debugger;
+
+                let newTable = tableRef.current.cloneNode(true);
+                newTable.classList.remove("rosterTableStyle");
+
+                let elements = newTable.querySelectorAll("i");
+                for (let i = 0; i < elements.length; i++) {
+                  elements[i].nextElementSibling.remove();
+                  elements[i].remove();
+                }
+                createReport(newTable.outerHTML).catch(error => {
+                  console.error(error);
+                });
+              }}
+            >
               Download as PDF
-            </button>{" "}
+            </button>
+            {/* <ReactPrint
+              trigger={() => (
+                <button type="button" className="btn btn-default">
+                  Download as PDF
+                </button>
+              )}
+              content={() => {
+                let newTable = tableRef.current.cloneNode(true);
+                debugger;
+                let elements = newTable.querySelectorAll("i");
+                for (let i = 0; i < elements.length; i++) {
+                  elements[i].nextElementSibling.remove();
+                  elements[i].remove();
+                }
+                return newTable;
+              }}
+              removeAfterPrint={true}
+              pageStyle="ProjectJobCost printing"
+            /> */}
           </div>
         </div>
       </div>

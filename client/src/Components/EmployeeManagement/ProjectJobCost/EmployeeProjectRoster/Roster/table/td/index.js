@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 
 import { ProjectRosterContext } from "../../index";
-import {
-  algaehApiCall,
-  swalMessage
-} from "../../../../../../../utils/algaehApiCall";
+// import {
+//   algaehApiCall,
+//   swalMessage
+// } from "../../../../../../../utils/algaehApiCall";
 import { deleteProjectRoster } from "./index.event";
 import AlgaehLoader from "../../../../../../Wrapper/fullPageLoader";
 export default React.memo(function(props) {
