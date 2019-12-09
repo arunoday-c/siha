@@ -221,3 +221,24 @@ export const expenseDestination = [
   { name: "Saving Account (INR 0.00)", value: "savingAccount" },
   { name: "Saving Account (INR 0.00)", value: "savingAccount" }
 ];
+
+export const voucherType = [
+  { name: "Select Voucher Type", value: "" },
+  { name: "Sales", value: "voucherType" },
+  { name: "Sales Return", value: "voucherType" },
+  { name: "Purchase", value: "voucherType" },
+  { name: "Purchase Return", value: "voucherType" }
+];
+
+export const paymentType = [
+  { name: "Select Payment Type", value: "" },
+  { name: "Debit (Dr)", value: "paymentType" },
+  { name: "Credit (Cr)", value: "paymentType" }
+];
+
+export const paymentMode = [
+  { name: "Select Payment Mode", value: "" },
+  { name: "Cash", value: "paymentMode" },
+  { name: "Card", value: "paymentMode" },
+  { name: "Cheque", value: "paymentMode" }
+];

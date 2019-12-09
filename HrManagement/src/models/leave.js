@@ -7247,15 +7247,15 @@ function yearlyLeaveProcess(inputs, req, mysql) {
             where   year=? and hospital_id=? and  ML.processed='N' ${strQry};`,
           values: [
             input.year,
-            req.userIdentity.hospital_id,
+            input.hospital_id,
             input.year,
-            req.userIdentity.hospital_id,
+            input.hospital_id,
             input.year,
-            req.userIdentity.hospital_id,
+            input.hospital_id,
             parseInt(input.year) - 1,
-            req.userIdentity.hospital_id
+            input.hospital_id
           ],
-          printQuery: false
+          printQuery: true
         })
         .then(result => {
           const AllEmployees = result[0];
@@ -7264,7 +7264,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
           const AllMonthlyLeaves = result[3];
           const prevoius_year_leave = result[4];
 
-          if (AllEmployees.length > 0) {
+          if (AllEmployees.length > 0 && prevoius_year_leave.length>0) {
             for (let i = 0; i < AllEmployees.length; i++) {
               //already proccesed leaves for selected year
               const already_processed_leaves = AllMonthlyLeaves.filter(item => {
@@ -7449,7 +7449,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
                           updated_date: new Date(),
                           created_by: req.userIdentity.algaeh_d_app_user_id,
                           updated_by: req.userIdentity.algaeh_d_app_user_id,
-                          hospital_id: req.userIdentity.hospital_id
+                          hospital_id: input.hospital_id
                         },
                         bulkInsertOrUpdate: true,
                         printQuery: false
@@ -7485,7 +7485,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
                     values: insertMonthlyArray,
                     includeValues: insurtColumns,
                     extraValues: {
-                      hospital_id: req.userIdentity.hospital_id
+                      hospital_id: input.hospital_id
                     },
                     bulkInsertOrUpdate: true,
                     printQuery: false
@@ -7526,14 +7526,15 @@ function yearlyLeaveProcess(inputs, req, mysql) {
             // };
             // next();
             // return;
-
+        
             reject({
               invalid_input: true,
-              message: "No Employees found"
+              message: "No Data found"
             });
           }
         })
         .catch(e => {
+          console.log("erorr2:",e)
           reject(e);
         });
     } else {
@@ -7749,6 +7750,7 @@ function validateLeaveApplictn(inputs, my_sql, req) {
                   })
                   .then(branch => {
                     const hospital_id = branch[0]["hospital_id"];
+                    // input["hospital_id"]= branch[0]["hospital_id"];
                     _mysql
                       .executeQuery({
                         query:
@@ -7959,6 +7961,9 @@ function validateLeaveApplictn(inputs, my_sql, req) {
                               .catch(e => {
                                 reject(e);
                               });
+                          }). catch(e => {
+                            _mysql.rollBackTransaction(() => { });
+                            reject(e);
                           });
                         } else {
                           reject({

@@ -371,9 +371,10 @@ export default {
     const _mysql = new algaehMysql(_options);
 
     const utilities = new algaehUtilities();
-    utilities.logger().log("updaterequisitionEntryOnceTranfer: ");
+    console.log("updaterequisitionEntryOnceTranfer: ");
     try {
       let inputParam = { ...req.body };
+      console.log("inputParam: ", inputParam);
 
       let complete = "Y";
 
@@ -386,7 +387,7 @@ export default {
       }
 
       _mysql
-        .executeQueryWithTransaction({
+        .executeQuery({
           query:
             "UPDATE `hims_f_pharamcy_material_header` SET `is_completed`=?, `completed_date`=? \
           WHERE `hims_f_pharamcy_material_header_id`=?",
@@ -417,7 +418,7 @@ export default {
 
             utilities.logger().log("qry: ", qry);
             _mysql
-              .executeQueryWithTransaction({
+              .executeQuery({
                 query: qry,
                 printQuery: true
               })

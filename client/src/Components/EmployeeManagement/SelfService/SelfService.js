@@ -85,6 +85,7 @@ export default class SelfService extends Component {
   }
 
   ChangeRenderTabs(options) {
+    debugger
     if (options.pageDisplay === "AttendanceRegularization") {
       this.attReg.click();
     } else if (options.pageDisplay === "ApplyLeave") {
@@ -131,11 +132,11 @@ export default class SelfService extends Component {
             </div>
             <div className="EmployeeDemographic">
               <span>
-                <i className="fas fa-user-tie" />{" "}
+                <i className="fas fa-user-tie" />
                 <b>{empDetails.employee_code}</b>
               </span>
               <span>
-                <i className="fas fa-mobile" />{" "}
+                <i className="fas fa-mobile" />
                 <b>{empDetails.primary_contact_no}</b>
               </span>
               <span>
@@ -152,7 +153,7 @@ export default class SelfService extends Component {
             </div>
             <div className="EmployeeDemographic">
               <span>
-                Joining Date:{" "}
+                Joining Date:
                 <b>
                   {empDetails.date_of_joining !== null
                     ? empDetails.date_of_joining
@@ -160,7 +161,7 @@ export default class SelfService extends Component {
                 </b>
               </span>
               <span>
-                Reporting to:{" "}
+                Reporting to:
                 <b>
                   {empDetails.reporting_to_name !== null
                     ? empDetails.reporting_to_name
@@ -169,7 +170,7 @@ export default class SelfService extends Component {
               </span>
               {empDetails.license_number !== null ? (
                 <span>
-                  License No.:{" "}
+                  License No.:
                   <b>
                     {empDetails.license_number !== null
                       ? empDetails.license_number
@@ -258,9 +259,9 @@ export default class SelfService extends Component {
                 algaehtabs={"ApplyLeaveEncashment"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
-                ref={attReg => {
-                  this.attReg = attReg;
-                }}
+              // ref={attReg => {
+              //   this.attReg = attReg;
+              // }}
               >
                 {
                   <AlgaehLabel
@@ -282,7 +283,7 @@ export default class SelfService extends Component {
                     }}
                   />
                 }
-              </li>{" "}
+              </li>
               <li
                 algaehtabs={"SelfPersonalDetails"}
                 className={"nav-item tab-button"}

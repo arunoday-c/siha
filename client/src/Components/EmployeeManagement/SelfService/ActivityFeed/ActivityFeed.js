@@ -51,17 +51,18 @@ export default class ActivityFeed extends Component {
   }
 
   skipTab(type, data, e) {
+    debugger
     e.preventDefault();
     let sendData = {};
 
     sendData =
       type === "AttendanceRegularization"
         ? {
-            pageDisplay: type,
-            regularize: data
-          }
+          pageDisplay: type,
+          regularize: data
+        }
         : type === "absent"
-        ? {
+          ? {
             pageDisplay: "AttendanceRegularization",
             regularize: {
               login_date: data.absent_date,
@@ -69,7 +70,7 @@ export default class ActivityFeed extends Component {
               absent_id: data.hims_f_absent_id
             }
           }
-        : {
+          : {
             pageDisplay: type,
             leave: {
               from_date: data.absent_date,
@@ -108,11 +109,11 @@ export default class ActivityFeed extends Component {
                     >
                       <div className="feedCntr">
                         <div className="dateUser">
-                          {moment(data.updated_date).format("MMM DD , hh:mm a")}{" "}
+                          {moment(data.updated_date).format("MMM DD , hh:mm a")}
                           by <i>{data.updated_by}</i>
                         </div>
                         <div className="text">
-                          Request to{" "}
+                          Request to
                           <a
                             onClick={this.skipTab.bind(
                               this,
@@ -120,11 +121,11 @@ export default class ActivityFeed extends Component {
                               data
                             )}
                           >
-                            Regularize Attendance{" "}
-                          </a>{" "}
-                          for{" "}
+                            Regularize Attendance
+                          </a>
+                          for
                           <span className="reqDate">
-                            {moment(data.attendance_date).format("DD MMM YYYY")}{" "}
+                            {moment(data.attendance_date).format("DD MMM YYYY")}
                           </span>
                         </div>
                       </div>
@@ -134,13 +135,13 @@ export default class ActivityFeed extends Component {
                     <div key={data.hims_f_absent_id} className="feed-item">
                       <div className="feedCntr">
                         <div className="dateUser">
-                          {moment(data.updated_date).format("MMM DD , hh:mm a")}{" "}
+                          {moment(data.updated_date).format("MMM DD , hh:mm a")}
                           by <i>{data.updated_by}</i>
                         </div>
                         <div className="text">
                           Request to
                           <a onClick={this.skipTab.bind(this, "absent", data)}>
-                            Regularize Attendance{" "}
+                            Regularize Attendance
                           </a>
                           or
                           <a
@@ -150,26 +151,26 @@ export default class ActivityFeed extends Component {
                               data
                             )}
                           >
-                            Apply Leave Attendance{" "}
+                            Apply Leave Attendance
                           </a>
                           for
                           <span className="reqDate">
-                            {" "}
+
                             {moment(data.absent_date).format(
                               "DD MMM YYYY"
-                            )}{" "}
+                            )}
                           </span>
                         </div>
                       </div>
                     </div>
-                  ))}{" "}
+                  ))}
                 </React.Fragment>
               ) : (
-                <div className="noActivityData">
-                  <h1>Relax! You don't have any activity</h1>
-                  <i className="fas fa-tasks" />
-                </div>
-              )}
+                  <div className="noActivityData">
+                    <h1>Relax! You don't have any activity</h1>
+                    <i className="fas fa-tasks" />
+                  </div>
+                )}
             </div>
           </div>
         </div>

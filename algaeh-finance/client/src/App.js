@@ -29,6 +29,11 @@ function App(props) {
           <Link className="nav-link" to="/reports">
             Financial Reports
           </Link>
+        </li>{" "}
+        <li className="nav-item">
+          <Link className="nav-link" to="/options">
+            Finance Options
+          </Link>
         </li>
       </ul>
     </>
