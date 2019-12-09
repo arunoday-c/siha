@@ -319,186 +319,199 @@ export default {
     const _mysql = new algaehMysql();
 
     try {
-      let input = { ...req.body };
-      let transfer_number = "";
+      let buffer = "";
+      req.on("data", chunk => {
+        buffer += chunk.toString();
+      });
 
-      const utilities = new algaehUtilities();
-      utilities.logger().log("addtransferEntry: ");
+      req.on("end", () => {
+        let input = JSON.parse(buffer);
+        req.body = input
+        let transfer_number = "";
 
-      _mysql
-        .generateRunningNumber({
-          modules: ["INV_TRN_NUM"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
-          }
-        })
-        .then(generatedNumbers => {
-          transfer_number = generatedNumbers[0];
+        // const utilities = new algaehUtilities();
+        console.log("addtransferEntry: ");
 
-          let year = moment().format("YYYY");
+        _mysql
+          .generateRunningNumber({
+            modules: ["INV_TRN_NUM"],
+            tableName: "hims_f_app_numgen",
+            identity: {
+              algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+              hospital_id: req.userIdentity.hospital_id
+            }
+          })
+          .then(generatedNumbers => {
+            transfer_number = generatedNumbers[0];
 
-          let today = moment().format("YYYY-MM-DD");
+            let year = moment().format("YYYY");
 
-          let month = moment().format("MM");
+            let today = moment().format("YYYY-MM-DD");
 
-          let period = month;
-          _mysql
-            .executeQuery({
-              query:
-                "INSERT INTO `hims_f_inventory_transfer_header` (transfer_number,transfer_date,`year`,period,\
+            let month = moment().format("MM");
+
+            let period = month;
+            _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO `hims_f_inventory_transfer_header` (transfer_number,transfer_date,`year`,period,\
               hims_f_inventory_material_header_id,from_location_type,from_location_id, material_requisition_number, \
               to_location_id, to_location_type, description, completed, completed_date, completed_lines, \
               transfer_quantity, requested_quantity,direct_transfer, recieved_quantity, outstanding_quantity, \
               return_type, cancelled, cancelled_by,cancelled_date,hospital_id) \
               VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-              values: [
-                transfer_number,
-                today,
-                year,
-                period,
-                input.hims_f_inventory_material_header_id,
-                input.from_location_type,
-                input.from_location_id,
-                input.material_requisition_number,
-                input.to_location_id,
-                input.to_location_type,
-                input.description,
-                "Y",
-                new Date(),
-                input.completed_lines,
-                input.transfer_quantity,
-                input.requested_quantity,
-                input.direct_transfer,
-                input.recieved_quantity,
-                input.outstanding_quantity,
-                input.return_type,
-                input.cancelled,
-                input.cancelled_by,
-                input.cancelled_date,
-                req.userIdentity.hospital_id
-              ],
-              printQuery: true
-            })
-            .then(headerResult => {
-              req.body.transaction_id = headerResult.insertId;
-              req.body.year = year;
-              req.body.period = period;
-              console.log("headerResult: ", headerResult.insertId);
-              console.log("length: ", input.stock_detail.length);
+                values: [
+                  transfer_number,
+                  today,
+                  year,
+                  period,
+                  input.hims_f_inventory_material_header_id,
+                  input.from_location_type,
+                  input.from_location_id,
+                  input.material_requisition_number,
+                  input.to_location_id,
+                  input.to_location_type,
+                  input.description,
+                  "Y",
+                  new Date(),
+                  input.completed_lines,
+                  input.transfer_quantity,
+                  input.requested_quantity,
+                  input.direct_transfer,
+                  input.recieved_quantity,
+                  input.outstanding_quantity,
+                  input.return_type,
+                  input.cancelled,
+                  input.cancelled_by,
+                  input.cancelled_date,
+                  req.userIdentity.hospital_id
+                ],
+                printQuery: true
+              })
+              .then(headerResult => {
+                req.body.transaction_id = headerResult.insertId;
+                req.body.year = year;
+                req.body.period = period;
+                console.log("headerResult: ", headerResult.insertId);
+                console.log("length: ", input.stock_detail.length);
 
-              for (let i = 0; i < input.stock_detail.length; i++) {
-                _mysql
-                  .executeQuery({
-                    query:
-                      "INSERT INTO hims_f_inventory_transfer_detail ( item_id,item_category_id,item_group_id,\
+                for (let i = 0; i < input.stock_detail.length; i++) {
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "INSERT INTO hims_f_inventory_transfer_detail ( item_id,item_category_id,item_group_id,\
                         batchno,expiry_date,to_qtyhand,from_qtyhand,quantity_requested,quantity_authorized,\
                         uom_requested_id,quantity_transferred,uom_transferred_id,quantity_recieved,uom_recieved_id,\
                         quantity_outstanding,transfer_to_date,grnno,unit_cost,sales_uom,\
                         material_requisition_header_id,material_requisition_detail_id,transfer_header_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                    values: [
-                      input.stock_detail[i]["item_id"],
-                      input.stock_detail[i]["item_category_id"],
-                      input.stock_detail[i]["item_group_id"],
-                      input.stock_detail[i]["batchno"],
-                      input.stock_detail[i]["expiry_date"],
-                      input.stock_detail[i]["to_qtyhand"],
-                      input.stock_detail[i]["from_qtyhand"],
-                      input.stock_detail[i]["quantity_requested"],
-                      input.stock_detail[i]["quantity_authorized"],
-                      input.stock_detail[i]["uom_requested_id"],
-                      input.stock_detail[i]["quantity_transferred"],
-                      input.stock_detail[i]["uom_transferred_id"],
-                      input.stock_detail[i]["quantity_recieved"],
-                      input.stock_detail[i]["uom_recieved_id"],
-                      input.stock_detail[i]["quantity_outstanding"],
-                      input.stock_detail[i]["transfer_to_date"],
-                      input.stock_detail[i]["grnno"],
-                      input.stock_detail[i]["unit_cost"],
-                      input.stock_detail[i]["sales_uom"],
-                      input.stock_detail[i]["material_requisition_header_id"],
-                      input.stock_detail[i]["material_requisition_detail_id"],
-                      headerResult.insertId
-                    ],
-                    printQuery: true
-                  })
-                  .then(detailResult => {
-                    let IncludeSubValues = [
-                      "transfer_detail_id",
-                      "item_category_id",
-                      "item_group_id",
-                      "item_id",
-                      "batchno",
-                      "grnno",
-                      "expiry_date",
-                      "quantity_requested",
-                      "quantity_authorized",
-                      "uom_requested_id",
-                      "quantity_transfer",
-                      "uom_transferred_id",
-                      "quantity_recieved",
-                      "uom_recieved_id",
-                      "unit_cost",
-                      "sales_uom",
-                      "sales_price",
-                      "ack_quantity",
-                      "barcode",
-                      "vendor_batchno"
-                    ];
+                      values: [
+                        input.stock_detail[i]["item_id"],
+                        input.stock_detail[i]["item_category_id"],
+                        input.stock_detail[i]["item_group_id"],
+                        input.stock_detail[i]["batchno"],
+                        input.stock_detail[i]["expiry_date"],
+                        input.stock_detail[i]["to_qtyhand"],
+                        input.stock_detail[i]["from_qtyhand"],
+                        input.stock_detail[i]["quantity_requested"],
+                        input.stock_detail[i]["quantity_authorized"],
+                        input.stock_detail[i]["uom_requested_id"],
+                        input.stock_detail[i]["quantity_transferred"],
+                        input.stock_detail[i]["uom_transferred_id"],
+                        input.stock_detail[i]["quantity_recieved"],
+                        input.stock_detail[i]["uom_recieved_id"],
+                        input.stock_detail[i]["quantity_outstanding"],
+                        input.stock_detail[i]["transfer_to_date"],
+                        input.stock_detail[i]["grnno"],
+                        input.stock_detail[i]["unit_cost"],
+                        input.stock_detail[i]["sales_uom"],
+                        input.stock_detail[i]["material_requisition_header_id"],
+                        input.stock_detail[i]["material_requisition_detail_id"],
+                        headerResult.insertId
+                      ],
+                      printQuery: true
+                    })
+                    .then(detailResult => {
+                      let IncludeSubValues = [
+                        "transfer_detail_id",
+                        "item_category_id",
+                        "item_group_id",
+                        "item_id",
+                        "batchno",
+                        "grnno",
+                        "expiry_date",
+                        "quantity_requested",
+                        "quantity_authorized",
+                        "uom_requested_id",
+                        "quantity_transfer",
+                        "uom_transferred_id",
+                        "quantity_recieved",
+                        "uom_recieved_id",
+                        "unit_cost",
+                        "sales_uom",
+                        "sales_price",
+                        "ack_quantity",
+                        "barcode",
+                        "vendor_batchno"
+                      ];
 
-                    _mysql
-                      .executeQuery({
-                        query:
-                          "INSERT INTO hims_f_inventory_transfer_batches(??) VALUES ?",
-                        values: input.stock_detail[i]["inventory_stock_detail"],
-                        includeValues: IncludeSubValues,
-                        extraValues: {
-                          transfer_detail_id: detailResult.insertId
-                        },
-                        bulkInsertOrUpdate: true,
-                        printQuery: true
-                      })
-                      .then(subResult => {
-                        if (i == input.stock_detail.length - 1) {
-                          console.log("done: ", i);
-                          req.connection = {
-                            connection: _mysql.connection,
-                            isTransactionConnection:
-                              _mysql.isTransactionConnection,
-                            pool: _mysql.pool
-                          };
-                          req.flag = 1;
+                      _mysql
+                        .executeQuery({
+                          query:
+                            "INSERT INTO hims_f_inventory_transfer_batches(??) VALUES ?",
+                          values: input.stock_detail[i]["inventory_stock_detail"],
+                          includeValues: IncludeSubValues,
+                          extraValues: {
+                            transfer_detail_id: detailResult.insertId
+                          },
+                          bulkInsertOrUpdate: true,
+                          printQuery: true
+                        })
+                        .then(subResult => {
+                          if (i == input.stock_detail.length - 1) {
+                            console.log("done: ", i);
+                            req.connection = {
+                              connection: _mysql.connection,
+                              isTransactionConnection:
+                                _mysql.isTransactionConnection,
+                              pool: _mysql.pool
+                            };
+                            req.flag = 1;
 
-                          req.records = {
-                            transfer_number: transfer_number,
-                            hims_f_inventory_transfer_header_id:
-                              headerResult.insertId,
-                            year: year,
-                            period: period
-                          };
-                          next();
-                        }
+                            req.records = {
+                              transfer_number: transfer_number,
+                              hims_f_inventory_transfer_header_id:
+                                headerResult.insertId,
+                              year: year,
+                              period: period
+                            };
+                            next();
+                          }
+                        })
+                        .catch(error => {
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
+                        });
+                    })
+                    .catch(error => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
                       });
-                  })
-                  .catch(error => {
-                    _mysql.rollBackTransaction(() => {
-                      next(error);
                     });
-                  });
-              }
-            })
-            .catch(e => {
-              _mysql.rollBackTransaction(() => {
-                next(e);
+                }
+              })
+              .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
               });
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
             });
-        })
-        .catch(e => {
-          _mysql.rollBackTransaction(() => {
-            next(e);
           });
-        });
+      });
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
