@@ -720,7 +720,7 @@ export default {
       });
   },
   //created by irfan:
-  getAccountHeadsForDropdown: (req, res, next) => {
+  getAccountHeadsForDropdownBackup: (req, res, next) => {
     const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
     let input = req.query;
@@ -772,6 +772,79 @@ export default {
         message: "Please provide Valid Input"
       };
       next();
+    }
+  },
+  //created by irfan:
+  getAccountHeadsForDropdown: (req, res, next) => {
+    const utilities = new algaehUtilities();
+    const _mysql = new algaehMysql();
+    let input = req.query;
+
+    if (
+      input.finance_account_head_id > 0 &&
+      input.finance_account_head_id < 6
+    ) {
+      _mysql
+        .executeQuery({
+          query: `with recursive cte (finance_account_head_id,account_code, account_name, parent_acc_id,
+              finance_account_child_id,child_name,child_created_from,account_level,sort_order,head_id,created_status) as (              
+              select finance_account_head_id,H.account_code,account_name,parent_acc_id,
+              C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
+              ,account_level,H.sort_order,CM.head_id,H.created_from as created_status
+              FROM finance_account_head H left join 
+              finance_head_m_child CM on H.finance_account_head_id=CM.head_id
+              left join finance_account_child C on CM.child_id=C.finance_account_child_id
+              where finance_account_head_id=?              
+              union                  
+              select   H.finance_account_head_id,H.account_code,H.account_name,H.parent_acc_id,
+              C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
+              ,H.account_level,H.sort_order,CM.head_id,H.created_from as created_status
+              FROM finance_account_head H left join 
+              finance_head_m_child CM on H.finance_account_head_id=CM.head_id
+              left join finance_account_child C on CM.child_id=C.finance_account_child_id
+              inner join 
+              cte
+              on H.parent_acc_id = cte.finance_account_head_id )
+              select * from cte order by account_level,sort_order;    `,
+
+          printQuery: false,
+
+          values: [input.finance_account_head_id]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          const outputArray = createHierarchyForDropdown(result);
+          req.records = outputArray;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      _mysql
+      .executeQuery({
+        query: `	select finance_account_head_id,H.account_code,account_name,parent_acc_id,
+        C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
+        ,account_level,H.sort_order,CM.head_id,H.created_from as created_status
+        FROM finance_account_head H left join 
+        finance_head_m_child CM on H.finance_account_head_id=CM.head_id
+        left join finance_account_child C on CM.child_id=C.finance_account_child_id;        `,
+
+        printQuery: false,
+
+        values: [input.finance_account_head_id]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        const outputArray = createHierarchyForDropdown(result);
+        req.records = outputArray;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
     }
   },
   //created by irfan:
