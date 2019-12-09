@@ -1720,6 +1720,68 @@ let addPackage = (req, res, next) => {
     next(e);
   }
 };
+
+//created by:Nowshad
+let deleteOrderedPackage = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  let input = req.body;
+
+  try {
+
+    _mysql
+      .executeQuery({
+        query:
+          "select package_header_id from `hims_f_package_detail` where package_header_id=? and utilized_qty > 0;",
+        values: [input.hims_f_package_header_id],
+        printQuery: true
+      })
+      .then(packageUtilizedResult => {
+        if (packageUtilizedResult.length > 0) {
+          req.records = {
+            invalid_input: true,
+            message: "In the deleting package already, services are utilized, cannot delete."
+          };
+          next();
+          return;
+        } else {
+          _mysql
+            .executeQuery({
+              query:
+                "Delete from `hims_f_package_detail` where package_header_id=?; \
+          Delete from `hims_f_package_header` where hims_f_package_header_id=?",
+              values: [
+                input.hims_f_package_header_id,
+                input.hims_f_package_header_id
+              ],
+              printQuery: true
+            })
+            .then(deleteResult => {
+              _mysql.releaseConnection();
+              req.records = deleteResult;
+              next();
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        }
+      })
+
+      .catch(e => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
+
+
+
+
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 //created by:irfan
 let getPatientPackage = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
@@ -2148,5 +2210,6 @@ export default {
   getPatientPackage,
   deleteOrderService,
   insertPhysiotherapyServices,
-  deleteInvOrderedItems
+  deleteInvOrderedItems,
+  deleteOrderedPackage
 };

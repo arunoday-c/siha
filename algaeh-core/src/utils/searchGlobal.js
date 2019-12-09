@@ -602,8 +602,8 @@ let algaehSearchConfig = (searchName, req) => {
           "select SQL_CALC_FOUND_ROWS service_name,service_type_id,hims_d_services_id,'N' as covered,'N' as pre_approval, IT.service_type\
             from hims_d_services as S,hims_d_service_type as IT, hims_d_investigation_test TEST where hims_d_services_id not in\
             (SELECT services_id FROM hims_d_services_insurance as I,hims_d_service_type as T where  \
-            insurance_id=? and {mapper} and I.service_type_id = T.hims_d_service_type_id and TEST.services_id = S.hims_d_services_id and \
-            I.service_type_id in (2,5,11)) and {mapper} and S.service_type_id = IT.hims_d_service_type_id \
+            insurance_id=? and {mapper} and I.service_type_id = T.hims_d_service_type_id and \
+            I.service_type_id in (2,5,11)) and {mapper} and S.service_type_id = IT.hims_d_service_type_id and TEST.services_id = S.hims_d_services_id \
             and S.service_type_id in (2,5,11) \
             union all\
             SELECT service_name,service_type_id,services_id as hims_d_services_id, covered,pre_approval, \

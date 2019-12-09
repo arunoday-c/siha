@@ -206,8 +206,8 @@ export default function EmpProjectRoster(props) {
                       <i className="fas fa-user-clock" />
                     </div>
                   ) : (
-                    <Table ref={tableRef} editing={editingProjectRoster} />
-                  )}
+                      <Table ref={tableRef} editing={editingProjectRoster} />
+                    )}
                 </div>
               </div>
             </div>
@@ -246,7 +246,6 @@ export default function EmpProjectRoster(props) {
               type="button"
               className="btn btn-default"
               onClick={() => {
-                debugger;
 
                 let newTable = tableRef.current.cloneNode(true);
                 newTable.classList.remove("rosterTableStyle");
@@ -271,7 +270,7 @@ export default function EmpProjectRoster(props) {
               )}
               content={() => {
                 let newTable = tableRef.current.cloneNode(true);
-                debugger;
+                
                 let elements = newTable.querySelectorAll("i");
                 for (let i = 0; i < elements.length; i++) {
                   elements[i].nextElementSibling.remove();

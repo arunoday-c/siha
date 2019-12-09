@@ -5,6 +5,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import TransferIOputs from "../../../Models/TransferEntry";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import _ from "lodash";
+import moment from "moment"
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -175,7 +176,7 @@ const AcknowledgeTransferEntry = $this => {
   InputObj.ack_done = "Y";
   InputObj.transaction_type = "ACK";
   InputObj.transaction_id = InputObj.hims_f_pharmacy_transfer_header_id;
-  InputObj.transaction_date = InputObj.transfer_date;
+  InputObj.transaction_date = moment($this.state.transfer_date, "YYYY-MM-DD").format("YYYY-MM-DD");
   InputObj.git_location_type = gitLoaction_Exists.location_type;
   InputObj.git_location_id = gitLoaction_Exists.hims_d_pharmacy_location_id;
 
@@ -207,6 +208,9 @@ const AcknowledgeTransferEntry = $this => {
 
     InputObj.pharmacy_stock_detail[i].git_qty =
       InputObj.pharmacy_stock_detail[i].ack_quantity;
+
+    InputObj.pharmacy_stock_detail[i].expiry_date =
+      moment(InputObj.pharmacy_stock_detail[i].expiry_date, "YYYY-MM-DD").format("YYYY-MM-DD");
   }
 
   algaehApiCall({
@@ -257,7 +261,7 @@ const SaveTransferEntry = $this => {
   InputObj.completed = "Y";
   InputObj.transaction_type = "ST";
   InputObj.transaction_id = InputObj.hims_f_pharmacy_transfer_header_id;
-  InputObj.transaction_date = InputObj.transfer_date;
+  InputObj.transaction_date = moment(InputObj.transfer_date, "YYYY-MM-DD").format("YYYY-MM-DD");
   InputObj.git_location_type = gitLoaction_Exists.location_type;
   InputObj.git_location_id = gitLoaction_Exists.hims_d_pharmacy_location_id;
   for (let i = 0; i < InputObj.pharmacy_stock_detail.length; i++) {
@@ -285,6 +289,8 @@ const SaveTransferEntry = $this => {
       parseFloat(InputObj.pharmacy_stock_detail[i].unit_cost) *
       parseFloat(InputObj.pharmacy_stock_detail[i].quantity_transfer)
     ).toFixed(InputObj.decimal_places);
+    InputObj.pharmacy_stock_detail[i].expiry_date =
+      moment(InputObj.pharmacy_stock_detail[i].expiry_date, "YYYY-MM-DD").format("YYYY-MM-DD");
   }
 
   delete InputObj.item_details;
@@ -305,14 +311,18 @@ const SaveTransferEntry = $this => {
 
   delete InputObj.Batch_Items
   delete InputObj.ItemUOM
-
+  debugger
+  const settings = { header: undefined, footer: undefined };
   algaehApiCall({
     uri: "/transferEntry/addtransferEntry",
+    skipParse: true,
+    data: Buffer.from(JSON.stringify(InputObj), "utf8"),
     module: "pharmacy",
-    data: InputObj,
-    // headers: {
-    //   Accept: "blob"
-    // },
+    method: "POST",
+    header: {
+      "content-type": "application/octet-stream",
+      ...settings
+    },
     onSuccess: response => {
       if (response.data.success === true) {
         $this.setState({
@@ -349,7 +359,7 @@ const PostTransferEntry = $this => {
   $this.state.completed = "Y";
   $this.state.transaction_type = "ST";
   $this.state.transaction_id = $this.state.hims_f_pharmacy_transfer_header_id;
-  $this.state.transaction_date = $this.state.transfer_date;
+  $this.state.transaction_date = moment($this.state.transfer_date, "YYYY-MM-DD").format("YYYY-MM-DD");
   for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
     $this.state.pharmacy_stock_detail[i].location_id =
       $this.state.from_location_id;
