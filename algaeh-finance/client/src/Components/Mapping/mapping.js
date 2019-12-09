@@ -3,7 +3,8 @@ import {
   AlgaehTreeDropDown,
   AlgaehValidator,
   AlgaehButton,
-  AlgaehMessagePop
+  AlgaehMessagePop,
+  AlgaehTreeSearch
 } from "algaeh-react-components";
 import {
   getHeaders,
@@ -16,39 +17,39 @@ export default function(props) {
   const [lability, setLability] = useState([]);
   const [expense, setExpense] = useState([]);
   //Its as object to send header and child id.
-  const [opControl, setOpControl] = useState({});
-  const [opControlLabel, setOpControlLable] = useState("");
+  const [opControl, setOpControl] = useState(undefined);
+
   //Its as object to send header and child id.
-  const [opPatientDeposit, setOpPatientDeposit] = useState({});
-  const [opDepositLabel, setOPDepositLable] = useState("");
+  const [opPatientDeposit, setOpPatientDeposit] = useState(undefined);
+  // const [opDepositLabel, setOPDepositLable] = useState("");
   //Its as object to send header and child id.
-  const [opReceviable, setOPReceviable] = useState({});
-  const [opReceviableLable, setOPReceviableLable] = useState("");
+  const [opReceviable, setOPReceviable] = useState(undefined);
+  // const [opReceviableLable, setOPReceviableLable] = useState("");
   //Its as object to send header and child id.
-  const [opCashInHand, setOPCashInHand] = useState({});
-  const [opCashInHandLabel, setopCashInHandLable] = useState("");
+  const [opCashInHand, setOPCashInHand] = useState(undefined);
+  // const [opCashInHandLabel, setopCashInHandLable] = useState("");
   //Its as object to send header and child id.
-  const [opWriteOff, setOPWriteOff] = useState({});
-  const [opWriteOffLabel, setopWriteOffLable] = useState("");
+  const [opWriteOff, setOPWriteOff] = useState(undefined);
+  // const [opWriteOffLabel, setopWriteOffLable] = useState("");
   //Its as object to send header and child id.
-  const [opConsultCash, setOPConsultCash] = useState({});
-  const [opConsultCashLabel, setOPConsultCashLable] = useState("");
+  const [opConsultCash, setOPConsultCash] = useState(undefined);
+  // const [opConsultCashLabel, setOPConsultCashLable] = useState("");
   //Its as object to send header and child id.
-  const [opLabTax, setOPLabTax] = useState({});
-  const [opLabTaxLabel, setOPLabTaxLable] = useState("");
+  const [opLabTax, setOPLabTax] = useState(undefined);
+  // const [opLabTaxLabel, setOPLabTaxLable] = useState("");
   //Its as object to send header and child id.
-  const [opRadTax, setOPRadTax] = useState({});
-  const [opRadTaxLabel, setOPRadTaxLable] = useState("");
+  const [opRadTax, setOPRadTax] = useState(undefined);
+  // const [opRadTaxLabel, setOPRadTaxLable] = useState("");
   //Its as object to send header and child id.
-  const [opInsConsultTax, setOPInsConsultTax] = useState({});
-  const [opInsConsultTaxLabel, setOPInsConsultTaxLable] = useState("");
+  const [opInsConsultTax, setOPInsConsultTax] = useState(undefined);
+  // const [opInsConsultTaxLabel, setOPInsConsultTaxLable] = useState("");
   //Its as object to send header and child id.
-  const [opInsLabTax, setOPInsLabTax] = useState({});
-  const [opInsLabTaxLabel, setOPInsLabTaxLable] = useState("");
+  const [opInsLabTax, setOPInsLabTax] = useState(undefined);
+  // const [opInsLabTaxLabel, setOPInsLabTaxLable] = useState("");
   //Its as object to send header and child id.
-  const [opInsRadTax, setOPInsRadTax] = useState({});
-  const [opInsRadTaxLabel, setOPInsRadTaxLable] = useState("");
-//#endregion
+  const [opInsRadTax, setOPInsRadTax] = useState(undefined);
+  // const [opInsRadTaxLabel, setOPInsRadTaxLable] = useState("");
+  //#endregion
   useEffect(() => {
     getHeaders({ finance_account_head_id: 1 })
       .then(result => {
@@ -89,65 +90,139 @@ export default function(props) {
     getFinanceAccountsMaping()
       .then(result => {
         if (Array.isArray(result)) {
-          const opCon = result.find(f => f.account === "OP_CON");
-          if (opCon !== undefined) {
-            setOpControl(opCon);
-            setOpControlLable(opCon.child_name);
-          }
-          const opDep = result.find(f => f.account === "OP_DEP");
-          if (opDep !== undefined) {
-            setOpPatientDeposit(opDep);
-            setOPDepositLable(opDep.child_name);
-          }
+          [
+            {
+              item: "OP_CON",
+              fun: res => {
+                setOpControl(res);
+              }
+            },
+            {
+              item: "OP_DEP",
+              fun: res => {
+                setOpPatientDeposit(res);
+              }
+            },
+            {
+              item: "OP_REC",
+              fun: res => {
+                setOPReceviable(res);
+              }
+            },
+            {
+              item: "CH_IN_HA",
+              fun: res => {
+                setOPCashInHand(res);
+              }
+            },
+            {
+              item: "OP_WF",
+              fun: res => {
+                setOPWriteOff(res);
+              }
+            },
+            {
+              item: "OP_CONSULT_TAX",
+              fun: res => {
+                setOPConsultCash(res);
+              }
+            },
+            {
+              item: "OP_LAB_TAX",
+              fun: res => {
+                setOPLabTax(res);
+              }
+            },
+            {
+              item: "OP_RAD_TAX",
+              fun: res => {
+                setOPRadTax(res);
+              }
+            },
+            {
+              item: "OP_INS_CONSULT_TAX",
+              fun: res => {
+                setOPInsConsultTax(res);
+              }
+            },
+            {
+              item: "OP_INS_LAB_TAX",
+              fun: res => {
+                setOPInsLabTax(res);
+              }
+            },
+            {
+              item: "OP_INS_RAD_TAX",
+              fun: res => {
+                setOPInsRadTax(res);
+              }
+            }
+          ].map(selected => {
+            const output = result.find(f => f.account === selected.item);
+            if (output !== undefined && typeof selected.fun === "function") {
+              selected.fun(output["head_id"] + "-" + output["child_id"]);
+            }
+          });
 
-          const opRec = result.find(f => f.account === "OP_REC");
-          if (opRec !== undefined) {
-            setOPReceviable(opRec);
-            setOPReceviableLable(opRec.child_name);
-          }
-          const cashInHand = result.find(f => f.account === "CH_IN_HA");
-          if (cashInHand !== undefined) {
-            setOPCashInHand(cashInHand);
-            setopCashInHandLable(cashInHand.child_name);
-          }
+          // const opCon = result.find(f => f.account === "OP_CON");
+          // if (opCon !== undefined) {
+          //   setOpControl(opCon);
+          //   setOpControlLable(opCon.child_name);
+          // }
+          // const opDep = result.find(f => f.account === "OP_DEP");
+          // if (opDep !== undefined) {
+          //   setOpPatientDeposit(opDep);
+          //   setOPDepositLable(opDep.child_name);
+          // }
 
-          const opWriteOff = result.find(f => f.account === "OP_WF");
-          if (opWriteOff !== undefined) {
-            setOPWriteOff(opWriteOff);
-            setopWriteOffLable(opWriteOff.child_name);
-          }
-          const opconst = result.find(f => f.account === "OP_CONSULT_TAX");
-          if (opconst !== undefined) {
-            setOPConsultCash(opconst);
-            setOPConsultCashLable(opconst.child_name);
-          }
-          const oplabTax = result.find(f => f.account === "OP_LAB_TAX");
-          if (oplabTax !== undefined) {
-            setOPLabTax(oplabTax);
-            setOPLabTaxLable(oplabTax.child_name);
-          }
-          const opradTax = result.find(f => f.account === "OP_RAD_TAX");
-          if (opradTax !== undefined) {
-            setOPRadTax(opradTax);
-            setOPRadTaxLable(opradTax.child_name);
-          }
-          const opconsInstax = result.find(f => f.account === "OP_INS_CONSULT_TAX");
-          if (opconsInstax !== undefined) {
-            setOPInsConsultTax(opconsInstax);
-            setOPInsConsultTaxLable(opconsInstax.child_name);
-          }
-          const opinsLabTax = result.find(f => f.account === "OP_INS_LAB_TAX");
-          if (opinsLabTax !== undefined) {
-            setOPInsLabTax(opinsLabTax);
-            setOPInsLabTaxLable(opinsLabTax.child_name);
-          }
-          const opinsRadTax= result.find(f => f.account === "OP_INS_RAD_TAX");
-          if (opinsRadTax !== undefined) {
-            setOPInsRadTax(opinsRadTax);
-            setOPInsRadTaxLable(opinsRadTax.child_name);
-          }
+          // const opRec = result.find(f => f.account === "OP_REC");
+          // if (opRec !== undefined) {
+          //   setOPReceviable(opRec);
+          //   setOPReceviableLable(opRec.child_name);
+          // }
+          // const cashInHand = result.find(f => f.account === "CH_IN_HA");
+          // if (cashInHand !== undefined) {
+          //   setOPCashInHand(cashInHand);
+          //   setopCashInHandLable(cashInHand.child_name);
+          // }
 
-
+          // const opWriteOff = result.find(f => f.account === "OP_WF");
+          // if (opWriteOff !== undefined) {
+          //   setOPWriteOff(opWriteOff);
+          //   setopWriteOffLable(opWriteOff.child_name);
+          // }
+          // const opconst = result.find(f => f.account === "OP_CONSULT_TAX");
+          // if (opconst !== undefined) {
+          //   setOPConsultCash(opconst);
+          //   setOPConsultCashLable(opconst.child_name);
+          // }
+          // const oplabTax = result.find(f => f.account === "OP_LAB_TAX");
+          // if (oplabTax !== undefined) {
+          //   setOPLabTax(oplabTax);
+          //   setOPLabTaxLable(oplabTax.child_name);
+          // }
+          // const opradTax = result.find(f => f.account === "OP_RAD_TAX");
+          // if (opradTax !== undefined) {
+          //   setOPRadTax(opradTax);
+          //   setOPRadTaxLable(opradTax.child_name);
+          // }
+          // const opconsInstax = result.find(
+          //   f => f.account === "OP_INS_CONSULT_TAX"
+          // );
+          // if (opconsInstax !== undefined) {
+          //   setOPInsConsultTax(opconsInstax);
+          //   setOPInsConsultTaxLable(opconsInstax.child_name);
+          // }
+          // const opinsLabTax = result.find(f => f.account === "OP_INS_LAB_TAX");
+          // if (opinsLabTax !== undefined) {
+          //   setOPInsLabTax(opinsLabTax);
+          //   setOPInsLabTaxLable(opinsLabTax.child_name);
+          // }
+          // const opinsRadTax = result.find(f => f.account === "OP_INS_RAD_TAX");
+          // if (opinsRadTax !== undefined) {
+          //   setOPInsRadTax(opinsRadTax);
+          //   setOPInsRadTaxLable(opinsRadTax.child_name);
+          // }
         }
       })
       .catch(error => {
@@ -168,14 +243,30 @@ export default function(props) {
             <div className="portlet-body">
               <AlgaehValidator
                 onSubmit={() => {
+                  const breakGenerate = (data, account) => {
+                    if (data === undefined || data === "") {
+                      return;
+                    }
+                    const splitter = data.split("-");
+                    return {
+                      head_id: splitter[0],
+                      child_id: splitter[1],
+                      account: account
+                    };
+                  };
+
                   updateFinanceAccountsMaping([
-                    opControl,
-                    opPatientDeposit,
-                    opReceviable,
-                    opCashInHand,
-                    opWriteOff,
-                    opConsultCash,
-                    opLabTax,opRadTax,opInsConsultTax,opInsLabTax,opInsRadTax
+                    breakGenerate(opControl, "OP_CON"),
+                    breakGenerate(opPatientDeposit, "OP_DEP"),
+                    breakGenerate(opReceviable, "OP_REC"),
+                    breakGenerate(opCashInHand, "CH_IN_HA"),
+                    breakGenerate(opWriteOff, "OP_WF"),
+                    breakGenerate(opConsultCash, "OP_CONSULT_TAX"),
+                    breakGenerate(opLabTax, "OP_LAB_TAX"),
+                    breakGenerate(opRadTax, "OP_RAD_TAX"),
+                    breakGenerate(opInsConsultTax, "OP_INS_CONSULT_TAX"),
+                    breakGenerate(opInsLabTax, "OP_INS_LAB_TAX"),
+                    breakGenerate(opInsRadTax, "OP_INS_RAD_TAX")
                   ])
                     .then(() => {
                       AlgaehMessagePop({
@@ -192,34 +283,63 @@ export default function(props) {
                 }}
               >
                 <div className="row">
-                  <AlgaehTreeDropDown
+                  <AlgaehTreeSearch
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "OP CONTROL A/C",
                       isImp: true,
                       align: "ltr"
                     }}
-                    value={opControlLabel}
-                    onChange={(currentNode, selectedNodes) => {
-                      setOpControl({
-                        head_id: currentNode.head_id,
-                        child_id: currentNode.finance_account_child_id,
-                        account: "OP_CON"
-                      });
-                      setOpControlLable(currentNode.label);
-                    }}
-                    others={{
-                      data: assets,
-                      texts: {
-                        placeholder: "Please select account",
-                        noMatches: "No records found",
-                        label: "Visa"
+                    tree={{
+                      treeDefaultExpandAll: true,
+                      onChange: value => {
+                        setOpControl(value);
                       },
-                      mode: "radioSelect"
+                      data: assets,
+                      textField: "label",
+                      valueField: node => {
+                        if (node["leafnode"] === "Y") {
+                          return (
+                            node["head_id"] +
+                            "-" +
+                            node["finance_account_child_id"]
+                          );
+                        } else {
+                          return node["finance_account_head_id"];
+                        }
+                      },
+                      value: opControl
                     }}
                   />
-
-                  <AlgaehTreeDropDown
+                  <AlgaehTreeSearch
+                    div={{ className: "col-3 form-group" }}
+                    label={{
+                      forceLabel: "OP Patient Deposit",
+                      isImp: true,
+                      align: "ltr"
+                    }}
+                    tree={{
+                      treeDefaultExpandAll: true,
+                      onChange: value => {
+                        setOpPatientDeposit(value);
+                      },
+                      data: lability,
+                      textField: "label",
+                      valueField: node => {
+                        if (node["leafnode"] === "Y") {
+                          return (
+                            node["head_id"] +
+                            "-" +
+                            node["finance_account_child_id"]
+                          );
+                        } else {
+                          return node["finance_account_head_id"];
+                        }
+                      },
+                      value: opPatientDeposit
+                    }}
+                  />
+                  {/* <AlgaehTreeDropDown
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "OP Patient Deposit",
@@ -243,8 +363,36 @@ export default function(props) {
                       },
                       mode: "radioSelect"
                     }}
+                  /> */}
+                  <AlgaehTreeSearch
+                    div={{ className: "col-3 form-group" }}
+                    label={{
+                      forceLabel: "OP Patient Receivable A/C",
+                      isImp: true,
+                      align: "ltr"
+                    }}
+                    tree={{
+                      treeDefaultExpandAll: true,
+                      onChange: value => {
+                        setOPReceviable(value);
+                      },
+                      data: assets,
+                      textField: "label",
+                      valueField: node => {
+                        if (node["leafnode"] === "Y") {
+                          return (
+                            node["head_id"] +
+                            "-" +
+                            node["finance_account_child_id"]
+                          );
+                        } else {
+                          return node["finance_account_head_id"];
+                        }
+                      },
+                      value: opReceviable
+                    }}
                   />
-                  <AlgaehTreeDropDown
+                  {/* <AlgaehTreeDropDown
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "OP Patient Receivable A/C",
@@ -268,8 +416,38 @@ export default function(props) {
                       },
                       mode: "radioSelect"
                     }}
+                  /> */}
+
+                  <AlgaehTreeSearch
+                    div={{ className: "col-3 form-group" }}
+                    label={{
+                      forceLabel: "Cash In Hand A/C",
+                      isImp: true,
+                      align: "ltr"
+                    }}
+                    tree={{
+                      treeDefaultExpandAll: true,
+                      onChange: value => {
+                        setOPCashInHand(value);
+                      },
+                      data: assets,
+                      textField: "label",
+                      valueField: node => {
+                        if (node["leafnode"] === "Y") {
+                          return (
+                            node["head_id"] +
+                            "-" +
+                            node["finance_account_child_id"]
+                          );
+                        } else {
+                          return node["finance_account_head_id"];
+                        }
+                      },
+                      value: opCashInHand
+                    }}
                   />
-                  <AlgaehTreeDropDown
+
+                  {/* <AlgaehTreeDropDown
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "Cash In Hand A/C",
@@ -294,9 +472,38 @@ export default function(props) {
                       },
                       mode: "radioSelect"
                     }}
+                  /> */}
+
+                  <AlgaehTreeSearch
+                    div={{ className: "col-3 form-group" }}
+                    label={{
+                      forceLabel: "OP write-off",
+                      isImp: true,
+                      align: "ltr"
+                    }}
+                    tree={{
+                      treeDefaultExpandAll: true,
+                      onChange: value => {
+                        setOPWriteOff(value);
+                      },
+                      data: expense,
+                      textField: "label",
+                      valueField: node => {
+                        if (node["leafnode"] === "Y") {
+                          return (
+                            node["head_id"] +
+                            "-" +
+                            node["finance_account_child_id"]
+                          );
+                        } else {
+                          return node["finance_account_head_id"];
+                        }
+                      },
+                      value: opWriteOff
+                    }}
                   />
 
-                  <AlgaehTreeDropDown
+                  {/* <AlgaehTreeDropDown
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "OP write-off",
@@ -321,9 +528,38 @@ export default function(props) {
                       },
                       mode: "radioSelect"
                     }}
+                  /> */}
+
+                  <AlgaehTreeSearch
+                    div={{ className: "col-3 form-group" }}
+                    label={{
+                      forceLabel: "OP consultation tax for cash",
+                      isImp: true,
+                      align: "ltr"
+                    }}
+                    tree={{
+                      treeDefaultExpandAll: true,
+                      onChange: value => {
+                        setOPConsultCash(value);
+                      },
+                      data: lability,
+                      textField: "label",
+                      valueField: node => {
+                        if (node["leafnode"] === "Y") {
+                          return (
+                            node["head_id"] +
+                            "-" +
+                            node["finance_account_child_id"]
+                          );
+                        } else {
+                          return node["finance_account_head_id"];
+                        }
+                      },
+                      value: opConsultCash
+                    }}
                   />
 
-                  <AlgaehTreeDropDown
+                  {/* <AlgaehTreeDropDown
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "OP consultation tax for cash",
@@ -348,9 +584,38 @@ export default function(props) {
                       },
                       mode: "radioSelect"
                     }}
+                  /> */}
+
+                  <AlgaehTreeSearch
+                    div={{ className: "col-3 form-group" }}
+                    label={{
+                      forceLabel: "OP lab tax for cash",
+                      isImp: true,
+                      align: "ltr"
+                    }}
+                    tree={{
+                      treeDefaultExpandAll: true,
+                      onChange: value => {
+                        setOPLabTax(value);
+                      },
+                      data: lability,
+                      textField: "label",
+                      valueField: node => {
+                        if (node["leafnode"] === "Y") {
+                          return (
+                            node["head_id"] +
+                            "-" +
+                            node["finance_account_child_id"]
+                          );
+                        } else {
+                          return node["finance_account_head_id"];
+                        }
+                      },
+                      value: opLabTax
+                    }}
                   />
 
-                  <AlgaehTreeDropDown
+                  {/* <AlgaehTreeDropDown
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "OP lab tax for cash",
@@ -375,116 +640,231 @@ export default function(props) {
                       },
                       mode: "radioSelect"
                     }}
+                  /> */}
+
+                  <AlgaehTreeSearch
+                    div={{ className: "col-3 form-group" }}
+                    label={{
+                      forceLabel: "OP radiology tax for cash",
+                      isImp: true,
+                      align: "ltr"
+                    }}
+                    tree={{
+                      treeDefaultExpandAll: true,
+                      onChange: value => {
+                        setOPRadTax(value);
+                      },
+                      data: lability,
+                      textField: "label",
+                      valueField: node => {
+                        if (node["leafnode"] === "Y") {
+                          return (
+                            node["head_id"] +
+                            "-" +
+                            node["finance_account_child_id"]
+                          );
+                        } else {
+                          return node["finance_account_head_id"];
+                        }
+                      },
+                      value: opRadTax
+                    }}
                   />
 
-                    <AlgaehTreeDropDown
-                        div={{ className: "col-3 form-group" }}
-                        label={{
-                            forceLabel: "OP radiology tax for cash",
-                            isImp: true,
-                            align: "ltr"
-                        }}
-                        value={opRadTaxLabel}
-                        onChange={(currentNode, selectedNodes) => {
-                          setOPRadTax({
-                                head_id: currentNode.head_id,
-                                child_id: currentNode.finance_account_child_id,
-                                account: "OP_RAD_TAX"
-                            });
-                          setOPRadTaxLable(currentNode.label);
-                        }}
-                        others={{
-                            data: lability,
-                            texts: {
-                                placeholder: "Please select account",
-                                noMatches: "No records found",
-                                label: "OP radiology tax for cash"
-                            },
-                            mode: "radioSelect"
-                        }}
-                    />
+                  {/* <AlgaehTreeDropDown
+                    div={{ className: "col-3 form-group" }}
+                    label={{
+                      forceLabel: "OP radiology tax for cash",
+                      isImp: true,
+                      align: "ltr"
+                    }}
+                    value={opRadTaxLabel}
+                    onChange={(currentNode, selectedNodes) => {
+                      setOPRadTax({
+                        head_id: currentNode.head_id,
+                        child_id: currentNode.finance_account_child_id,
+                        account: "OP_RAD_TAX"
+                      });
+                      setOPRadTaxLable(currentNode.label);
+                    }}
+                    others={{
+                      data: lability,
+                      texts: {
+                        placeholder: "Please select account",
+                        noMatches: "No records found",
+                        label: "OP radiology tax for cash"
+                      },
+                      mode: "radioSelect"
+                    }}
+                  /> */}
 
-                  <AlgaehTreeDropDown
-                      div={{ className: "col-3 form-group" }}
-                      label={{
-                        forceLabel: "OP consultation tax for insurance",
-                        isImp: true,
-                        align: "ltr"
-                      }}
-                      value={opInsConsultTaxLabel}
-                      onChange={(currentNode, selectedNodes) => {
-                        setOPInsConsultTax({
-                          head_id: currentNode.head_id,
-                          child_id: currentNode.finance_account_child_id,
-                          account: "OP_INS_CONSULT_TAX"
-                        });
-                        setOPInsConsultTaxLable(currentNode.label);
-                      }}
-                      others={{
-                        data: lability,
-                        texts: {
-                          placeholder: "Please select account",
-                          noMatches: "No records found",
-                          label: "OP consultation tax for insurance"
-                        },
-                        mode: "radioSelect"
-                      }}
+                  <AlgaehTreeSearch
+                    div={{ className: "col-3 form-group" }}
+                    label={{
+                      forceLabel: "OP consultation tax for insurance",
+                      isImp: true,
+                      align: "ltr"
+                    }}
+                    tree={{
+                      treeDefaultExpandAll: true,
+                      onChange: value => {
+                        setOPInsConsultTax(value);
+                      },
+                      data: lability,
+                      textField: "label",
+                      valueField: node => {
+                        if (node["leafnode"] === "Y") {
+                          return (
+                            node["head_id"] +
+                            "-" +
+                            node["finance_account_child_id"]
+                          );
+                        } else {
+                          return node["finance_account_head_id"];
+                        }
+                      },
+                      value: opInsConsultTax
+                    }}
                   />
 
+                  {/* <AlgaehTreeDropDown
+                    div={{ className: "col-3 form-group" }}
+                    label={{
+                      forceLabel: "OP consultation tax for insurance",
+                      isImp: true,
+                      align: "ltr"
+                    }}
+                    value={opInsConsultTaxLabel}
+                    onChange={(currentNode, selectedNodes) => {
+                      setOPInsConsultTax({
+                        head_id: currentNode.head_id,
+                        child_id: currentNode.finance_account_child_id,
+                        account: "OP_INS_CONSULT_TAX"
+                      });
+                      setOPInsConsultTaxLable(currentNode.label);
+                    }}
+                    others={{
+                      data: lability,
+                      texts: {
+                        placeholder: "Please select account",
+                        noMatches: "No records found",
+                        label: "OP consultation tax for insurance"
+                      },
+                      mode: "radioSelect"
+                    }}
+                  /> */}
 
-                  <AlgaehTreeDropDown
-                      div={{ className: "col-3 form-group" }}
-                      label={{
-                        forceLabel: "OP lab tax for insurance",
-                        isImp: true,
-                        align: "ltr"
-                      }}
-                      value={opInsLabTaxLabel}
-                      onChange={(currentNode, selectedNodes) => {
-                        setOPInsLabTax({
-                          head_id: currentNode.head_id,
-                          child_id: currentNode.finance_account_child_id,
-                          account: "OP_INS_LAB_TAX"
-                        });
-                        setOPInsLabTaxLable(currentNode.label);
-                      }}
-                      others={{
-                        data: lability,
-                        texts: {
-                          placeholder: "Please select account",
-                          noMatches: "No records found",
-                          label: "OP lab tax for insurance"
-                        },
-                        mode: "radioSelect"
-                      }}
-                  />
-                  <AlgaehTreeDropDown
-                      div={{ className: "col-3 form-group" }}
-                      label={{
-                        forceLabel: "OP radiology tax for insurance",
-                        isImp: true,
-                        align: "ltr"
-                      }}
-                      value={opInsRadTaxLabel}
-                      onChange={(currentNode, selectedNodes) => {
-                        setOPInsRadTax({
-                          head_id: currentNode.head_id,
-                          child_id: currentNode.finance_account_child_id,
-                          account: "OP_INS_RAD_TAX"
-                        });
-                        setOPInsRadTaxLable(currentNode.label);
-                      }}
-                      others={{
-                        data: lability,
-                        texts: {
-                          placeholder: "Please select account",
-                          noMatches: "No records found",
-                          label: "OP radiology tax for insurance"
-                        },
-                        mode: "radioSelect"
-                      }}
+                  <AlgaehTreeSearch
+                    div={{ className: "col-3 form-group" }}
+                    label={{
+                      forceLabel: "OP lab tax for insurance",
+                      isImp: true,
+                      align: "ltr"
+                    }}
+                    tree={{
+                      treeDefaultExpandAll: true,
+                      onChange: value => {
+                        setOPInsLabTax(value);
+                      },
+                      data: lability,
+                      textField: "label",
+                      valueField: node => {
+                        if (node["leafnode"] === "Y") {
+                          return (
+                            node["head_id"] +
+                            "-" +
+                            node["finance_account_child_id"]
+                          );
+                        } else {
+                          return node["finance_account_head_id"];
+                        }
+                      },
+                      value: opInsLabTax
+                    }}
                   />
 
+                  {/* <AlgaehTreeDropDown
+                    div={{ className: "col-3 form-group" }}
+                    label={{
+                      forceLabel: "OP lab tax for insurance",
+                      isImp: true,
+                      align: "ltr"
+                    }}
+                    value={opInsLabTaxLabel}
+                    onChange={(currentNode, selectedNodes) => {
+                      setOPInsLabTax({
+                        head_id: currentNode.head_id,
+                        child_id: currentNode.finance_account_child_id,
+                        account: "OP_INS_LAB_TAX"
+                      });
+                      setOPInsLabTaxLable(currentNode.label);
+                    }}
+                    others={{
+                      data: lability,
+                      texts: {
+                        placeholder: "Please select account",
+                        noMatches: "No records found",
+                        label: "OP lab tax for insurance"
+                      },
+                      mode: "radioSelect"
+                    }}
+                  /> */}
+
+                  <AlgaehTreeSearch
+                    div={{ className: "col-3 form-group" }}
+                    label={{
+                      forceLabel: "OP radiology tax for insurance",
+                      isImp: true,
+                      align: "ltr"
+                    }}
+                    tree={{
+                      treeDefaultExpandAll: true,
+                      onChange: value => {
+                        setOPInsRadTax(value);
+                      },
+                      data: lability,
+                      textField: "label",
+                      valueField: node => {
+                        if (node["leafnode"] === "Y") {
+                          return (
+                            node["head_id"] +
+                            "-" +
+                            node["finance_account_child_id"]
+                          );
+                        } else {
+                          return node["finance_account_head_id"];
+                        }
+                      },
+                      value: opInsRadTax
+                    }}
+                  />
+
+                  {/* <AlgaehTreeDropDown
+                    div={{ className: "col-3 form-group" }}
+                    label={{
+                      forceLabel: "OP radiology tax for insurance",
+                      isImp: true,
+                      align: "ltr"
+                    }}
+                    value={opInsRadTaxLabel}
+                    onChange={(currentNode, selectedNodes) => {
+                      setOPInsRadTax({
+                        head_id: currentNode.head_id,
+                        child_id: currentNode.finance_account_child_id,
+                        account: "OP_INS_RAD_TAX"
+                      });
+                      setOPInsRadTaxLable(currentNode.label);
+                    }}
+                    others={{
+                      data: lability,
+                      texts: {
+                        placeholder: "Please select account",
+                        noMatches: "No records found",
+                        label: "OP radiology tax for insurance"
+                      },
+                      mode: "radioSelect"
+                    }}
+                  /> */}
 
                   <AlgaehButton htmlType="submit" className="btn btn-primary">
                     {" "}
