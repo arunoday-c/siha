@@ -739,18 +739,18 @@ const onchhangegriddiscount = ($this, row, e) => {
   let discount_amount = 0;
 
   if (name === "sub_discount_percentage") {
-    sub_discount_percentage = value === "" ? "" : parseFloat(value);
+    sub_discount_percentage = value === "" || value === undefined ? null : parseFloat(value);
 
     sub_discount_amount =
-      value === ""
+      sub_discount_percentage === null
         ? 0
         : (parseFloat(extended_price) * sub_discount_percentage) / 100;
     discount_amount = sub_discount_amount;
   } else if (name === "sub_discount_amount") {
-    sub_discount_amount = value === "" ? "" : parseFloat(value);
-    discount_amount = value === "" ? 0 : parseFloat(value);
+    sub_discount_amount = value === "" || value === undefined ? null : parseFloat(value);
+    discount_amount = sub_discount_amount === null ? 0 : parseFloat(value);
     sub_discount_percentage =
-      value === ""
+      sub_discount_amount === null
         ? 0
         : (sub_discount_amount / parseFloat(extended_price)) * 100;
     sub_discount_percentage = sub_discount_percentage.toFixed(3);
@@ -775,7 +775,7 @@ const onchhangegriddiscount = ($this, row, e) => {
     });
   } else {
     //
-
+    debugger
     extended_cost = parseFloat(extended_price) - parseFloat(discount_amount);
     row["unit_cost"] =
       $this.state.hims_f_procurement_po_header_id !== null
@@ -815,10 +815,12 @@ const AssignData = $this => {
 };
 
 const GridAssignData = ($this, row) => {
-  if (row.sub_discount_percentage === "") {
+  if (row.sub_discount_percentage === null) {
     row["sub_discount_percentage"] = 0;
-  } else if (row.sub_discount_amount === "") {
     row["sub_discount_amount"] = 0;
+  } else if (row.sub_discount_amount === null) {
+    row["sub_discount_amount"] = 0;
+    row["sub_discount_percentage"] = 0;
   }
   row.update();
 };

@@ -354,8 +354,6 @@ export default {
             isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool
           };
-          console.log("inputParam.po_return_entry_detail.length");
-          console.log("inputParam.po_return_entry_detail", inputParam.po_return_entry_detail.length);
 
           let StrQuery = "";
 
