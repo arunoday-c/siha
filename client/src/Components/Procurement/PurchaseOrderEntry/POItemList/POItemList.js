@@ -46,6 +46,7 @@ class POItemList extends Component {
   }
 
   render() {
+
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -163,24 +164,7 @@ class POItemList extends Component {
                       />
                     </div>
                     <div className="row">
-                      {/* <AlagehFormGroup
-                        div={{ className: "col" }}
-                        label={{
-                          forceLabel: "Quantity in Hand"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.qtyhand,
-                          className: "txt-fld",
-                          name: "qtyhand",
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      /> */}
+
 
                       <AlagehFormGroup
                         div={{ className: "col" }}
@@ -243,24 +227,7 @@ class POItemList extends Component {
                             : "-----------"}
                         </h6>
                       </div>
-                      {/*<AlagehFormGroup
-                        div={{ className: "col" }}
-                        label={{
-                          forceLabel: "Extended Price"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.extended_price,
-                          className: "txt-fld",
-                          name: "extended_price",
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />*/}
+
 
                       <AlagehFormGroup
                         div={{ className: "col" }}
@@ -316,24 +283,7 @@ class POItemList extends Component {
                             : "-----------"}
                         </h6>
                       </div>
-                      {/*<AlagehFormGroup
-                        div={{ className: "col" }}
-                        label={{
-                          forceLabel: "Extended Cost"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.extended_cost,
-                          className: "txt-fld",
-                          name: "extended_cost",
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />*/}
+
                     </div>
                   </div>
                   <div className="row">
@@ -931,7 +881,11 @@ class POItemList extends Component {
                                 : this.state.inventory_stock_detail
                           }}
                           isEditable={true}
+                          actions={{
+                            allowDelete: !this.state.dataExitst
+                          }}
                           byForceEvents={true}
+                          // forceRender={true}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
                             onDelete: deletePODetail.bind(this, this, context),
