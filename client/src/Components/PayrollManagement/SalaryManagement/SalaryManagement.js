@@ -48,21 +48,8 @@ export default class SalaryManagement extends Component {
                 }
               </li> */}
               <li
-                algaehtabs={"NewSalaryProcessing"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Salary Processing"
-                    }}
-                  />
-                }
-              </li>
-              <li
                 algaehtabs={"MiscEarningsDeductions"}
-                className={"nav-item tab-button "}
+                className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
                 {
@@ -82,6 +69,19 @@ export default class SalaryManagement extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Miscellaneous E&D Bulk"
+                    }}
+                  />
+                }
+              </li>{" "}
+              <li
+                algaehtabs={"NewSalaryProcessing"}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Salary Processing"
                     }}
                   />
                 }
