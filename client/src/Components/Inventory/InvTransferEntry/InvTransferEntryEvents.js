@@ -5,6 +5,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import TransferIOputs from "../../../Models/InventoryTransferEntry";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import _ from "lodash";
+import moment from "moment"
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -163,7 +164,7 @@ const SaveTransferEntry = $this => {
   InputObj.completed = "Y";
   InputObj.transaction_type = "ST";
   InputObj.transaction_id = InputObj.hims_f_inventory_transfer_header_id;
-  InputObj.transaction_date = InputObj.transfer_date;
+  InputObj.transaction_date = moment(InputObj.transfer_date, "YYYY-MM-DD").format("YYYY-MM-DD");
   InputObj.git_location_type = gitLoaction_Exists.location_type;
   InputObj.git_location_id = gitLoaction_Exists.hims_d_inventory_location_id;
 
@@ -192,6 +193,9 @@ const SaveTransferEntry = $this => {
       parseFloat(InputObj.inventory_stock_detail[i].unit_cost) *
       parseFloat(InputObj.inventory_stock_detail[i].quantity_transfer)
     ).toFixed(InputObj.decimal_places);
+
+    InputObj.inventory_stock_detail[i].expiry_date =
+      moment(InputObj.inventory_stock_detail[i].expiry_date, "YYYY-MM-DD").format("YYYY-MM-DD");
   }
 
   delete InputObj.item_details;
@@ -210,10 +214,21 @@ const SaveTransferEntry = $this => {
 
   InputObj.stock_detail = stock_detail;
 
+
+  const settings = { header: undefined, footer: undefined };
   algaehApiCall({
     uri: "/inventorytransferEntry/addtransferEntry",
     module: "inventory",
-    data: InputObj,
+    skipParse: true,
+    data: Buffer.from(JSON.stringify(InputObj), "utf8"),
+    method: "POST",
+    header: {
+      "content-type": "application/octet-stream",
+      ...settings
+    },
+    // uri: "/inventorytransferEntry/addtransferEntry",
+    // module: "inventory",
+    // data: InputObj,
     onSuccess: response => {
       if (response.data.success === true) {
         $this.setState({

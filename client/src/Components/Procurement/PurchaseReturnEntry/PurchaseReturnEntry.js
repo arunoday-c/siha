@@ -312,6 +312,7 @@ class PurchaseReturnEntry extends Component {
                         value={{
                             state: this.state,
                             updateState: obj => {
+                                debugger
                                 this.setState({ ...obj });
                             }
                         }}

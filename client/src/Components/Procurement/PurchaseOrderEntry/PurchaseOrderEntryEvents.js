@@ -493,7 +493,7 @@ const getData = ($this, po_from) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "poitemcategory"
       },
-      afterSuccess: data => {}
+      afterSuccess: data => { }
     });
 
     $this.props.getItemGroup({
@@ -601,6 +601,12 @@ const AuthorizePOEntry = $this => {
     $this.state.po_from === "PHR"
       ? $this.state.pharmacy_stock_detail
       : $this.state.inventory_stock_detail;
+  if (stock_detail.length === 0) {
+    swalMessage({
+      title: "Atleast One item is required to Authorize PO.",
+      type: "warning"
+    });
+  }
   let auth_qty = Enumerable.from(stock_detail).any(
     w => parseFloat(w.authorize_quantity) === 0 || w.authorize_quantity === ""
   );

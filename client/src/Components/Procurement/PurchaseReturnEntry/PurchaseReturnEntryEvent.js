@@ -180,7 +180,6 @@ const ReceiptSearch = ($this, e) => {
             });
             AlgaehLoader({ show: false });
 
-            // $this.setState({ ...response.data.records });
           }
         }
       });
@@ -271,7 +270,6 @@ const getCtrlCode = ($this, docNumber) => {
           $this.setState(data);
           AlgaehLoader({ show: false });
 
-          // $this.setState({ ...response.data.records });
         }
         AlgaehLoader({ show: false });
       },
@@ -283,20 +281,7 @@ const getCtrlCode = ($this, docNumber) => {
         });
       }
     });
-    // $this.props.getPurchaseOrderEntry({
-    //   uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
-    //   module: "procurement",
-    //   method: "GET",
-    //   printInput: true,
-    //   data: { purchase_return_number: docNumber },
-    //   redux: {
-    //     type: "PO_ENTRY_GET_DATA",
-    //     mappingName: "purchaseorderentry"
-    //   },
-    //   afterSuccess: data => {
-    //
-    //   }
-    // });
+
   });
 };
 
@@ -493,6 +478,7 @@ const generatePOReceiptNoPrice = data => {
 
 const PostPOReturnEntry = $this => {
 
+  debugger
   AlgaehLoader({ show: true });
   let InputObj = $this.state
   InputObj.transaction_type = "PR";
@@ -500,7 +486,7 @@ const PostPOReturnEntry = $this => {
   InputObj.transaction_date = $this.state.return_date;
   InputObj.year = moment().format("YYYY")
   InputObj.period = moment().format("MM")
-
+  delete InputObj.po_return_entry_detail
   if ($this.state.po_return_from === "PHR") {
     for (let i = 0; i < InputObj.pharmacy_stock_detail.length; i++) {
       InputObj.pharmacy_stock_detail[i].location_id =
@@ -529,9 +515,10 @@ const PostPOReturnEntry = $this => {
         InputObj.pharmacy_stock_detail[i].net_extended_cost;
       InputObj.pharmacy_stock_detail[i].operation = "-";
     }
-    // $this.state.po_return_entry_detail = $this.state.pharmacy_stock_detail;
+    InputObj.po_return_entry_detail = InputObj.pharmacy_stock_detail
+
   } else {
-    // $this.state.po_return_entry_detail = $this.state.inventory_stock_detail;
+
     for (let i = 0; i < InputObj.inventory_stock_detail.length; i++) {
       InputObj.inventory_stock_detail[i].location_id =
         InputObj.inventory_location_id;
@@ -558,7 +545,11 @@ const PostPOReturnEntry = $this => {
         InputObj.inventory_stock_detail[i].net_extended_cost;
       InputObj.inventory_stock_detail[i].operation = "-";
     }
+    InputObj.po_return_entry_detail = InputObj.inventory_stock_detail
   }
+
+  debugger
+
 
 
   algaehApiCall({

@@ -61,8 +61,8 @@ class PurchaseOrderEntry extends Component {
       this.state.po_from === null
         ? []
         : Enumerable.from(this.props.polocations)
-            .where(w => w.location_type === "WH")
-            .toArray();
+          .where(w => w.location_type === "WH")
+          .toArray();
 
     return (
       <div>
@@ -122,7 +122,7 @@ class PurchaseOrderEntry extends Component {
                     ? moment(this.state.po_date).format(Options.dateFormat)
                     : Options.dateFormat}
                 </h6>
-              </div>{" "}
+              </div>
               {this.state.dataExitst === true ? (
                 <div className="col">
                   <AlgaehLabel
@@ -134,8 +134,8 @@ class PurchaseOrderEntry extends Component {
                     {this.state.authorize1 === "Y" ? (
                       <span className="badge badge-success">Authorized</span>
                     ) : (
-                      <span className="badge badge-danger">Pending</span>
-                    )}
+                        <span className="badge badge-danger">Pending</span>
+                      )}
                   </h6>
                 </div>
               ) : null}
@@ -144,25 +144,25 @@ class PurchaseOrderEntry extends Component {
           printArea={
             this.state.hims_f_procurement_po_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Receipt for Internal",
-                      events: {
-                        onClick: () => {
-                          generatePOReceipt(this.state);
-                        }
-                      }
-                    },
-                    {
-                      label: "Receipt for Vendor",
-                      events: {
-                        onClick: () => {
-                          generatePOReceiptNoPrice(this.state);
-                        }
+                menuitems: [
+                  {
+                    label: "Receipt for Internal",
+                    events: {
+                      onClick: () => {
+                        generatePOReceipt(this.state);
                       }
                     }
-                  ]
-                }
+                  },
+                  {
+                    label: "Receipt for Vendor",
+                    events: {
+                      onClick: () => {
+                        generatePOReceiptNoPrice(this.state);
+                      }
+                    }
+                  }
+                ]
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -292,8 +292,8 @@ class PurchaseOrderEntry extends Component {
                         this.state.dataExitst === true
                           ? "none"
                           : this.state.ReqData === true
-                          ? "none"
-                          : ""
+                            ? "none"
+                            : ""
                     }}
                     onClick={RequisitionSearch.bind(this, this)}
                   />

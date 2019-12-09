@@ -354,9 +354,34 @@ export default {
             isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool
           };
-          // _mysql.releaseConnection();
-          // req.records = headerResult;
-          next();
+
+          let StrQuery = "";
+
+          for (let i = 0; i < inputParam.po_return_entry_detail.length; i++) {
+
+            StrQuery += mysql.format(
+              "UPDATE `hims_f_procurement_po_return_detail` SET return_qty=? where hims_f_procurement_po_return_detail_id=?;",
+              [
+                inputParam.po_return_entry_detail[i].return_qty,
+                inputParam.po_return_entry_detail[i].hims_f_procurement_po_return_detail_id
+              ]
+            );
+          }
+          _mysql
+            .executeQueryWithTransaction({
+              query: StrQuery,
+              printQuery: true
+            })
+            .then(detailResult => {
+              // _mysql.releaseConnection();
+              // req.records = headerResult;
+              next();
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {

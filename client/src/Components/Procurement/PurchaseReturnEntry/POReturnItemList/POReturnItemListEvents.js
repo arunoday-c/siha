@@ -612,6 +612,7 @@ const onchangegridcol = ($this, context, row, e) => {
       ? $this.state.pharmacy_stock_detail
       : $this.state.inventory_stock_detail;
   let _index = _stock_detail.indexOf(row);
+  debugger
   // IU.conversion_factor
   if (parseFloat(value) > (parseFloat(row.qtyhand) / parseFloat(row.conversion_factor))) {
     swalMessage({
@@ -652,10 +653,7 @@ const onchangegridcol = ($this, context, row, e) => {
 };
 
 const onchhangegriddiscount = ($this, context, row, e) => {
-  //
-
-  // let discount_percentage = 0;
-  // let discount_amount = 0;
+  debugger
   let extended_cost = 0;
 
   let tax_amount = 0;
@@ -665,22 +663,12 @@ const onchhangegriddiscount = ($this, context, row, e) => {
       : $this.state.inventory_stock_detail;
   let _index = _stock_detail.indexOf(row);
 
-  // let extended_price = row.extended_price;
-
   extended_cost =
     parseFloat(row.return_qty) * parseFloat(row.unit_cost);
-  // discount_percentage = row.discount_percentage;
 
-  // discount_amount =
-  //   (parseFloat(extended_price) * parseFloat(discount_percentage)) / 100;
-
-
-
-  // extended_cost = parseFloat(extended_price) - parseFloat(discount_amount);
 
   tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
   tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
-  // extended_cost = getAmountFormart(extended_cost, { appendSymbol: false });
 
   row["extended_cost"] = getAmountFormart(extended_cost, {
     appendSymbol: false
@@ -689,12 +677,12 @@ const onchhangegriddiscount = ($this, context, row, e) => {
   row["total_amount"] = parseFloat(tax_amount) + parseFloat(extended_cost);
 
 
-  // row["discount_amount"] = discount_amount;
   row["net_extended_cost"] = getAmountFormart(extended_cost, {
     appendSymbol: false
   });
   _stock_detail[_index] = row;
 
+  debugger
   if ($this.state.po_return_from === "PHR") {
     $this.setState({
       pharmacy_stock_detail: _stock_detail
@@ -721,11 +709,12 @@ const onchhangegriddiscount = ($this, context, row, e) => {
 
 const calculateHeadervalues = ($this, context, row) => {
 
-
+  debugger
   if ($this.state.po_return_from === "PHR") {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+    let _index = pharmacy_stock_detail.indexOf(row);
 
-    pharmacy_stock_detail[row.rowIdx] = row;
+    pharmacy_stock_detail[_index] = row;
 
     let sub_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
       parseFloat(s.extended_cost)
@@ -770,8 +759,8 @@ const calculateHeadervalues = ($this, context, row) => {
     }
   } else {
     let inventory_stock_detail = $this.state.inventory_stock_detail;
-
-    inventory_stock_detail[row.rowIdx] = row;
+    let _index = inventory_stock_detail.indexOf(row);
+    inventory_stock_detail[_index] = row;
 
     let sub_total = Enumerable.from(inventory_stock_detail).sum(s =>
       parseFloat(s.extended_cost)
@@ -813,8 +802,6 @@ const calculateHeadervalues = ($this, context, row) => {
         return_total: return_total
       });
     }
-
-
   }
 };
 
