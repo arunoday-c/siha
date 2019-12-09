@@ -167,26 +167,6 @@ class OrderedList extends PureComponent {
                   );
                 });
 
-                // let consumableorderedList = this.props.consumableorderedList
-                // let preserviceInput = []
-                // if (consumableorderedList.length > 0) {
-                //   for (let k = 0; k < consumableorderedList.length; k++) {
-                //     preserviceInput.push({
-                //       insured: consumableorderedList[k].insurance_yesno,
-                //       vat_applicable: this.props.vat_applicable,
-                //       hims_d_services_id: consumableorderedList[k].hims_d_services_id,
-                //       service_type_id: consumableorderedList[k].service_type_id,
-                //       primary_insurance_provider_id: consumableorderedList[k].insurance_provider_id,
-                //       primary_network_office_id:
-                //         consumableorderedList[k].insurance_network_office_id,
-                //       primary_network_id: consumableorderedList[k].network_id,
-                //       approval_amt: consumableorderedList[k].approval_amt,
-                //       approval_limit_yesno: consumableorderedList[k].approval_limit_yesno,
-                //       hims_f_ordered_services_id: consumableorderedList[k].hims_f_ordered_services_id,
-                //       billed: consumableorderedList[k].billed
-                //     })
-                //   }
-                // }
                 this.setState({
                   isConsOpen: !this.state.isConsOpen,
                   inventory_location_id: Departmant_Location[0].inventory_location_id,
@@ -584,6 +564,61 @@ class OrderedList extends PureComponent {
     });
   }
 
+  DeleteOrderedPackage(row) {
+    swal({
+      title: "Are you sure you want to delete this Package?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      debugger
+      if (willDelete.value) {
+
+        algaehApiCall({
+          uri: "/orderAndPreApproval/deleteOrderedPackage",
+          method: "delete",
+          data: {
+            hims_f_package_header_id: row.hims_f_package_header_id
+          },
+          onSuccess: response => {
+            debugger
+            if (response.data.success === true) {
+              this.props.getPakageList({
+                uri: "/orderAndPreApproval/getPatientPackage",
+                method: "GET",
+                data: {
+                  patient_id: Window.global["current_patient"]
+                },
+                redux: {
+                  type: "ORDER_SERVICES_GET_DATA",
+                  mappingName: "pakageList"
+                }
+              });
+
+              swalMessage({
+                title: "Deleted Succesfully",
+                type: "success"
+              });
+            } else {
+              swalMessage({
+                title: response.data.records.message,
+                type: "error"
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      }
+    });
+  }
   render() {
     let patient_date =
       this.props.patient_profile !== undefined
@@ -646,8 +681,8 @@ class OrderedList extends PureComponent {
                               <i
                                 style={{
                                   pointerEvents:
-                                    row.billed && row.trans_package_detail_id > 0 === "N" ? "" : "none",
-                                  opacity: row.billed && row.trans_package_detail_id > 0 === "N" ? "" : "0.1"
+                                    row.billed === "N" && row.trans_package_detail_id > 0 ? "" : "none",
+                                  opacity: row.billed === "N" && row.trans_package_detail_id > 0 ? "" : "0.1"
                                 }}
                                 className="fas fa-trash-alt"
                                 onClick={this.DeleteOrderService.bind(
@@ -1020,10 +1055,17 @@ class OrderedList extends PureComponent {
                             ),
                             displayTemplate: row => {
                               return (
-                                <i
-                                  className="fas fa-eye"
-                                  onClick={this.ShowPackageUtilize.bind(this, row)}
-                                />
+                                <span>
+                                  <i
+                                    className="fas fa-eye"
+                                    onClick={this.ShowPackageUtilize.bind(this, row)}
+                                  />
+
+                                  <i
+                                    onClick={this.DeleteOrderedPackage.bind(this, row)}
+                                    className="fas fa-trash-alt"
+                                  />
+                                </span>
                               );
                             },
                             others: {
