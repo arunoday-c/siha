@@ -7,7 +7,7 @@ const { addVoucher, getVoucherNo } = voucher;
 export default () => {
   const api = Router();
 
-  api.get("/addVoucher", addVoucher, (req, res, next) => {
+  api.post("/addVoucher", addVoucher, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res
         .status(utlities.AlgaehUtilities().httpStatus().internalServer)
