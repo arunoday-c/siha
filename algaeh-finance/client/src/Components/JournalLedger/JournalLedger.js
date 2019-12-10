@@ -245,23 +245,26 @@ export default function JournalLedger() {
             className="btn  btn-default"
             style={{ marginTop: 17 }}
             onClick={() => {
-              let journor = journerList;
-              setJournerList([]);
-              const serialNo = journor.length + 1;
-              const source = sourceAccount.split("-");
-              journor.push({
-                child_id: source[1],
-                head_id: source[0],
-                slno: serialNo,
-                amount: amount,
-                sourceName: sourceAccountLabel,
-                destinationAccount,
-                narration,
-                //ToDo: based on above requirement
-                payment_mode: paymantMode,
-                payment_type: paymentType
+              // let journor = journerList;
+              // setJournerList([]);
+
+              setJournerList(result => {
+                const serialNo = result.length + 1;
+                const source = sourceAccount.split("-");
+                result.push({
+                  child_id: source[1],
+                  head_id: source[0],
+                  slno: serialNo,
+                  amount: amount,
+                  sourceName: sourceAccountLabel,
+                  destinationAccount,
+                  narration,
+                  //ToDo: based on above requirement
+                  payment_mode: paymantMode,
+                  payment_type: paymentType
+                });
+                return [...result];
               });
-              setJournerList(journor);
             }}
           >
             Add to List
