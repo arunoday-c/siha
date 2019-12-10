@@ -162,7 +162,7 @@ export default {
                     .executeQuery({
                       query:
                         "insert into finance_voucher_details ( payment_date,head_account_code,head_id,child_id,debit_amount,\
-                        payment_type,credit_amount,narration,enteredby,entered_date)  VALUE(?,?,?,?,?,?,?,?,?,?);",
+                        payment_type,credit_amount,narration,entered_by,entered_date)  VALUE(?,?,?,?,?,?,?,?,?,?);",
                       values: [
                         new Date(),
                         input.account_code,
@@ -823,28 +823,28 @@ export default {
         });
     } else {
       _mysql
-      .executeQuery({
-        query: `	select finance_account_head_id,H.account_code,account_name,parent_acc_id,
+        .executeQuery({
+          query: `	select finance_account_head_id,H.account_code,account_name,parent_acc_id,
         C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
         ,account_level,H.sort_order,CM.head_id,H.created_from as created_status
         FROM finance_account_head H left join 
         finance_head_m_child CM on H.finance_account_head_id=CM.head_id
         left join finance_account_child C on CM.child_id=C.finance_account_child_id;        `,
 
-        printQuery: false,
+          printQuery: false,
 
-        values: [input.finance_account_head_id]
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        const outputArray = createHierarchyForDropdown(result);
-        req.records = outputArray;
-        next();
-      })
-      .catch(e => {
-        _mysql.releaseConnection();
-        next(e);
-      });
+          values: [input.finance_account_head_id]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          const outputArray = createHierarchyForDropdown(result);
+          req.records = outputArray;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
     }
   },
   //created by irfan:

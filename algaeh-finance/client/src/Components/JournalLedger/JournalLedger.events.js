@@ -1,0 +1,67 @@
+import { algaehApiCall } from "../../utils/algaehApiCall";
+
+export function getVoucherNumber() {
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/voucher/getVoucherNo",
+        method: "GET",
+        module: "finance",
+        onSuccess: response => {
+          if (response.data.success === true) {
+            resolve(response.data.result);
+          }
+        },
+        onCatch: error => {
+          reject(error);
+        }
+      });
+    } catch (e) {}
+  });
+}
+export function getHeaders() {
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/finance/getAccountHeadsForDropdown",
+
+        method: "GET",
+        module: "finance",
+        onSuccess: response => {
+          if (response.data.success === true) {
+            resolve(response.data.result);
+          }
+        },
+        onCatch: error => {
+          reject(error);
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+export function addJurnorLedger(input) {
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/voucher/addVoucher",
+        data: input,
+        method: "POST",
+        module: "finance",
+        onSuccess: response => {
+          if (response.data.success === true) {
+            resolve();
+          } else {
+            reject(response.data.message);
+          }
+        },
+        onCatch: error => {
+          reject(error);
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
