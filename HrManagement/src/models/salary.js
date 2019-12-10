@@ -4646,11 +4646,16 @@ function UpdateProjectWisePayroll(options) {
           return f.employee_id == project_wise_payroll[z]["employee_id"];
         });
 
-        utilities.logger().log("total_complete_hours: ", total_complete_hours);
+        console.log("total_complete_hours: ", total_complete_hours);
+        console.log("complete_hours: ", complete_hours);
 
-        cost =
-          parseFloat(net_salary_amt[0].net_salary) /
-          parseFloat(total_complete_hours);
+        if (parseFloat(total_complete_hours) > 0) {
+          cost =
+            parseFloat(net_salary_amt[0].net_salary) /
+            parseFloat(total_complete_hours);
+        } else {
+          cost = 0
+        }
 
         // utilities.logger().log("cost: ", cost);
 
