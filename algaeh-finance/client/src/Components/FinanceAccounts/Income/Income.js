@@ -4,13 +4,20 @@ import SortableTree, {
   addNodeUnderParent,
   removeNodeAtPath
 } from "react-sortable-tree";
-import {AlgaehConfirm, AlgaehMessagePop, Input, Icon, DatePicker} from "algaeh-react-components";
+import {
+  AlgaehConfirm,
+  AlgaehMessagePop,
+  Input,
+  Icon,
+  DatePicker
+} from "algaeh-react-components";
 import ReportLauncher from "../AccountReport";
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
 import {
   getAccounts,
   isPositive,
-  removeAccount,getChartData
+  removeAccount,
+  getChartData
 } from ".././FinanceAccountEvent";
 import "react-sortable-tree/style.css";
 import "../alice.scss";
@@ -28,8 +35,8 @@ export default function Income() {
   const [searchFoundCount, setSearchFoundCount] = useState(undefined);
   const [isAccountHead, setIsAccountHead] = useState(false);
   const [financeHeadId, setFinanceHeadId] = useState(undefined);
-  const [reportVisible,setReportVisible]= useState(false);
-  const [editorRecord,setEditorRecord]= useState({});
+  const [reportVisible, setReportVisible] = useState(false);
+  const [editorRecord, setEditorRecord] = useState({});
   const [period, setPeriod] = useState("4");
   const [accountChart, setAccountChart] = useState([]);
   const [year, setYear] = useState(moment());
@@ -54,16 +61,16 @@ export default function Income() {
   function loadChartData(finheadId) {
     getChartData({
       finance_account_head_id:
-          finheadId === undefined ? financeHeadId : finheadId,
+        finheadId === undefined ? financeHeadId : finheadId,
       period: period,
       year: moment(year).format("YYYY")
     })
-        .then(result => {
-          setAccountChart(result);
-        })
-        .catch(error => {
-          AlgaehMessagePop({ type: "error", display: error });
-        });
+      .then(result => {
+        setAccountChart(result);
+      })
+      .catch(error => {
+        AlgaehMessagePop({ type: "error", display: error });
+      });
   }
   useEffect(() => {
     loadAccount();
@@ -154,16 +161,16 @@ export default function Income() {
         }}
       />
       <ReportLauncher
-          title="Ledger Report"
-          visible={reportVisible}
-          parentId="4"
-          selectedNode={selectedNode}
-          onCancel={()=>{
-            setReportVisible(false);
-          }}
-          onOk={()=>{
-            setReportVisible(false);
-          }}
+        title="Ledger Report"
+        visible={reportVisible}
+        parentId="4"
+        selectedNode={selectedNode}
+        onCancel={() => {
+          setReportVisible(false);
+        }}
+        onOk={() => {
+          setReportVisible(false);
+        }}
       />
       <div className="row">
         <div className="col-4">
@@ -174,10 +181,10 @@ export default function Income() {
               </div>
               <div className="actions">
                 <select
-                    value={period}
-                    onChange={e => {
-                      setPeriod(e.target.value);
-                    }}
+                  value={period}
+                  onChange={e => {
+                    setPeriod(e.target.value);
+                  }}
                 >
                   <option value="1">Jan - Mar</option>
                   <option value="2">Apr - Jun</option>
@@ -186,22 +193,22 @@ export default function Income() {
                   <option value="5">By Year</option>
                 </select>
                 <DatePicker
-                    mode="year"
-                    size="small"
-                    value={year}
-                    format="YYYY"
-                    onPanelChange={selectedDate => {
-                      setYear(selectedDate);
-                    }}
+                  mode="year"
+                  size="small"
+                  value={year}
+                  format="YYYY"
+                  onPanelChange={selectedDate => {
+                    setYear(selectedDate);
+                  }}
                 />
               </div>
             </div>
             <div className="portlet-body">
               <Charts
-                  data={accountChart}
-                  xAxis={"month_name"}
-                  yAxisBar={"amount"}
-                  yAxisLine={"growth_percent"}
+                data={accountChart}
+                xAxis={"month_name"}
+                yAxisBar={"amount"}
+                yAxisLine={"growth_percent"}
               />
             </div>
           </div>
@@ -230,7 +237,10 @@ export default function Income() {
                   className="btn btn-primary btn-circle active"
                   onClick={() => {
                     setSelectedNode({
-                      node: { finance_account_head_id: financeHeadId }
+                      node: {
+                        finance_account_head_id: financeHeadId,
+                        parent_acc_id: "4"
+                      }
                     });
                     setShowPopup(true);
                     setIsAccountHead(true);
@@ -299,82 +309,83 @@ export default function Income() {
                             <div className="box">
                               <ul className="NodeActionButton">
                                 <li
-                                    label="Add"
-                                    className={
-                                      "NodeAddButton " +
-                                      (node.leafnode === "Y" ? "disabled" : "")
-                                    }
-                                    onClick={() => {
-
-                                      setShowPopup(true);
-                                      setSelectedNode(rowInfo);
-                                    }}
+                                  label="Add"
+                                  className={
+                                    "NodeAddButton " +
+                                    (node.leafnode === "Y" ? "disabled" : "")
+                                  }
+                                  onClick={() => {
+                                    setShowPopup(true);
+                                    setSelectedNode(rowInfo);
+                                  }}
                                 >
                                   <i className="fas fa-plus"></i>
                                 </li>
                                 <li
-                                    label="edit"
-                                    className={
-                                      "NodeEditButton " +
-                                      (node.created_status === "S" ? "disabled" : "")
+                                  label="edit"
+                                  className={
+                                    "NodeEditButton " +
+                                    (node.created_status === "S"
+                                      ? "disabled"
+                                      : "")
+                                  }
+                                  onClick={() => {
+                                    if (Object.keys(editorRecord).length > 0) {
+                                      setEditorRecord({});
+                                    } else {
+                                      setEditorRecord(rowInfo);
                                     }
-                                    onClick={() => {
-                                      if(Object.keys(editorRecord).length >0 ){
-                                        setEditorRecord({});
-                                      }else{
-                                        setEditorRecord(rowInfo);
-                                      }
-
-                                    }}
+                                  }}
                                 >
-                                  {JSON.stringify(editorRecord) === JSON.stringify(rowInfo)? <i className="fas fa-times" />:
-                                      <i className="fas fa-pen" />}
+                                  {JSON.stringify(editorRecord) ===
+                                  JSON.stringify(rowInfo) ? (
+                                    <i className="fas fa-times" />
+                                  ) : (
+                                    <i className="fas fa-pen" />
+                                  )}
                                 </li>
                                 <li
-                                    label="print"
-                                    className={
-                                      "NodePrintButton "
-                                    }
-                                    onClick={() => {
-
-                                      setReportVisible(true);
-                                      setSelectedNode(rowInfo);
-                                    }}
+                                  label="print"
+                                  className={"NodePrintButton "}
+                                  onClick={() => {
+                                    setReportVisible(true);
+                                    setSelectedNode(rowInfo);
+                                  }}
                                 >
                                   <i className="fas fa-print"></i>
                                 </li>
                                 <li
-                                    className={
-                                      "NodeDeleteButton " +
-                                      (node.created_status === "S"
-                                          ? "disabled"
-                                          : "")
-                                    }
-                                    label="Delete"
+                                  className={
+                                    "NodeDeleteButton " +
+                                    (node.created_status === "S"
+                                      ? "disabled"
+                                      : "")
+                                  }
+                                  label="Delete"
                                 >
                                   <AlgaehConfirm
-                                      title="Are you sure want to delete ?"
-                                      placement="topLeft"
-                                      onConfirm={e => {
-                                        removeNode(rowInfo)
-                                            .then(newTree => {
-                                              setTreeData(newTree);
-                                              AlgaehMessagePop({
-                                                type: "success",
-                                                display:
-                                                    "Account deleted successfully"
-                                              });
-                                            })
-                                            .catch(error => {
-                                              AlgaehMessagePop({
-                                                type: "error",
-                                                display: error
-                                              });
-                                            });
-                                      }}
-                                      okButtonProps={{ label: "Delete" }}
-                                      okText="Yes, delete it!"
-                                      cancelText="No"
+                                    title="Are you sure want to delete ?"
+                                    placement="topLeft"
+                                    onConfirm={e => {
+                                      removeNode(rowInfo)
+                                        .then(newTree => {
+                                          setTreeData(newTree);
+                                          AlgaehMessagePop({
+                                            type: "success",
+                                            display:
+                                              "Account deleted successfully"
+                                          });
+                                        })
+                                        .catch(error => {
+                                          AlgaehMessagePop({
+                                            type: "error",
+                                            display: error
+                                          });
+                                        });
+                                    }}
+                                    okButtonProps={{ label: "Delete" }}
+                                    okText="Yes, delete it!"
+                                    cancelText="No"
                                   >
                                     <i className="fas fa-trash"></i>
                                   </AlgaehConfirm>{" "}
@@ -387,49 +398,66 @@ export default function Income() {
                             minWidth: "150px"
                           },
                           title: (
-                              <>
+                            <>
                               <span>
-                                { JSON.stringify(editorRecord) === JSON.stringify(rowInfo)?(<Input
-                                    suffix={(<Icon type="save"  onClick={(e)=>{
-                                      const editedValue= e.currentTarget.offsetParent.previousElementSibling.value;
-                                      setEditorRecord({});
-                                    }} />)}
+                                {JSON.stringify(editorRecord) ===
+                                JSON.stringify(rowInfo) ? (
+                                  <Input
+                                    suffix={
+                                      <Icon
+                                        type="save"
+                                        onClick={e => {
+                                          const editedValue =
+                                            e.currentTarget.offsetParent
+                                              .previousElementSibling.value;
+                                          setEditorRecord({});
+                                        }}
+                                      />
+                                    }
                                     defaultValue={node.title}
-                                />): node.title}{" "}
+                                  />
+                                ) : (
+                                  node.title
+                                )}{" "}
                                 {node.leafnode === "Y" ? null : (
-                                    <>
-                                      /
-                                      {node.children === undefined
-                                          ? 0
-                                          : node.children.length}
-                                    </>
+                                  <>
+                                    /
+                                    {node.children === undefined
+                                      ? 0
+                                      : node.children.length}
+                                  </>
                                 )}
                               </span>
-                              </>
+                            </>
                           ),
                           subtitle: (
-                              <div
-                                  style={{ fontSize: "medium", marginTop: "7px" }}
-                              >
+                            <div
+                              style={{ fontSize: "medium", marginTop: "7px" }}
+                            >
                               <span
-                                  className={
-                                    node.subtitle !== undefined
-                                        ? isPositive(node.subtitle)
-                                        : ""
-                                  }
+                                className={
+                                  node.subtitle !== undefined
+                                    ? isPositive(node.subtitle)
+                                    : ""
+                                }
                               >
                                 {node.subtitle === undefined
-                                    ? "0.00"
-                                    : node.subtitle}
+                                  ? "0.00"
+                                  : node.subtitle}
                               </span>{" "}
-                                <small>
-                                  {node.trans_symbol === undefined
-                                      ? symbol
-                                      : node.trans_symbol}
-                                </small>
-                              </div>
+                              <small>
+                                {node.trans_symbol === undefined
+                                  ? symbol
+                                  : node.trans_symbol}
+                              </small>
+                            </div>
                           ),
-                          className:node.created_status === "S" ?"systemGen" :node.leafnode === "Y" ?"":"accGroup"
+                          className:
+                            node.created_status === "S"
+                              ? "systemGen"
+                              : node.leafnode === "Y"
+                              ? ""
+                              : "accGroup"
                         };
                       }}
                       searchMethod={({ node, searchQuery }) => {
