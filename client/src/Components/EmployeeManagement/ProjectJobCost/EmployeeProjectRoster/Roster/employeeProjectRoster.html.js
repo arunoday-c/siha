@@ -37,18 +37,17 @@ export default function EmpProjectRoster(props) {
   function editingProjectRoster(data) {
     setShowPopup(true);
     setIsEditing(data);
-    if (projects.length === 0) {
-      setLoadingProjects(true);
-      getProjects()
-        .then(result => {
-          setLoadingProjects(false);
-          setProjects(result);
-        })
-        .catch(error => {
-          setProjects([]);
-          setLoadingProjects(false);
-        });
-    }
+
+    setLoadingProjects(true);
+    getProjects(inputs.hospital_id)
+      .then(result => {
+        setLoadingProjects(false);
+        setProjects(result);
+      })
+      .catch(error => {
+        setProjects([]);
+        setLoadingProjects(false);
+      });
   }
   return (
     <div className="EmployeeProjectRoster">
@@ -206,8 +205,8 @@ export default function EmpProjectRoster(props) {
                       <i className="fas fa-user-clock" />
                     </div>
                   ) : (
-                      <Table ref={tableRef} editing={editingProjectRoster} />
-                    )}
+                    <Table ref={tableRef} editing={editingProjectRoster} />
+                  )}
                 </div>
               </div>
             </div>
@@ -225,7 +224,7 @@ export default function EmpProjectRoster(props) {
 
                 if (projects.length === 0) {
                   setLoadingProjects(true);
-                  getProjects()
+                  getProjects(inputs.hospital_id)
                     .then(result => {
                       setLoadingProjects(false);
                       setProjects(result);
@@ -246,7 +245,6 @@ export default function EmpProjectRoster(props) {
               type="button"
               className="btn btn-default"
               onClick={() => {
-
                 let newTable = tableRef.current.cloneNode(true);
                 newTable.classList.remove("rosterTableStyle");
 
