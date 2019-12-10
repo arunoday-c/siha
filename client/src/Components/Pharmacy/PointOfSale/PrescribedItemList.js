@@ -16,8 +16,6 @@ import {
     qtyonchangegridcol,
     processSelectedItems,
     getMedicationAprovalList,
-    getMedicationList,
-    getPosEntry
 } from "./PointOfSaleEvents"
 import PreApprovalStatus from "./PosListItems/PreApprovalStatus/PreApprovalStatus";
 import "./PointOfSale.scss";
@@ -27,13 +25,15 @@ class PrescribedItemList extends Component {
         super(props);
         this.state = {
             item_batches: [],
-            viewPreapproval: false
+            viewPreapproval: false,
+            selected_row: null
         };
     }
 
     onClose = e => {
         this.setState({
-            item_batches: []
+            item_batches: [],
+            selected_row: null
         }, () => {
             this.props.onClose && this.props.onClose(e);
         })
@@ -79,6 +79,21 @@ class PrescribedItemList extends Component {
                                         <AlgaehDataGrid
                                             id="item_list"
                                             columns={[
+                                                {
+                                                    fieldName: "select_item",
+                                                    label: (
+                                                        <AlgaehLabel label={{ forceLabel: "Selected" }} />
+                                                    ),
+                                                    displayTemplate: row => {
+                                                        return (
+                                                            <span>
+                                                                {row.select_item === "N"
+                                                                    ? "No"
+                                                                    : "Yes"}
+                                                            </span>
+                                                        );
+                                                    },
+                                                },
                                                 {
                                                     fieldName: "item_description",
                                                     label: (
@@ -138,12 +153,16 @@ class PrescribedItemList extends Component {
                                             paging={{ page: 0, rowsPerPage: 10 }}
                                             onRowSelect={row => {
                                                 if (row.pre_approval === "N") {
+                                                    debugger
+                                                    let _index = this.state.prescribed_item_list.indexOf(row)
                                                     this.setState({
-                                                        item_batches: row.batches
+                                                        item_batches: row.batches,
+                                                        selected_row: _index
                                                     })
                                                 } else {
                                                     this.setState({
-                                                        item_batches: []
+                                                        item_batches: [],
+                                                        selected_row: null
                                                     })
                                                 }
                                             }}

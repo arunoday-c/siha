@@ -1267,11 +1267,23 @@ const calculateAmount = ($this, row) => {
           data.billdetails[0].comapany_resp;
         data.billdetails[0].company_payable =
           data.billdetails[0].company_payble;
-
+        // data.billdetails[0].select_item = "Y"
         extend(row, data.billdetails[0]);
 
-        const _index = prescribed_item_list.indexOf(row);
-        prescribed_item_list[_index] = row;
+        debugger
+
+        // const _index = prescribed_item_list.indexOf(row);
+
+        const qty_exists = _.filter(
+          $this.state.item_batches,
+          f => f.quantity !== null && parseFloat(f.quantity) > 0
+        );
+
+        if (qty_exists.length > 0) {
+          prescribed_item_list[$this.state.selected_row].select_item = "Y";
+        } else {
+          prescribed_item_list[$this.state.selected_row].select_item = "N";
+        }
         // pharmacy_stock_detail[row.rowIdx] = row;
 
         $this.setState({ prescribed_item_list: prescribed_item_list });
@@ -1287,23 +1299,57 @@ const calculateAmount = ($this, row) => {
   // }
 };
 
-const processSelectedItems = ($this, row, e) => {
+const processSelectedItems = ($this) => {
 
-
-  AlgaehLoader({ show: false });
+  const non_selected_Items = _.filter($this.state.prescribed_item_list, (f) => f.select_item === "N");
   let selected_item_list = []
-  for (let i = 0; i < $this.state.prescribed_item_list.length; i++) {
-    if ($this.state.prescribed_item_list[i].batches.length > 0) {
-      const batch_item_list = _.filter($this.state.prescribed_item_list[i].batches, (f) => f.quantity !== null && parseFloat(f.quantity) > 0);
-      selected_item_list = selected_item_list.concat(batch_item_list)
+  if (non_selected_Items.length > 0) {
+    debugger
+    let strItemDescription = ""
+    for (let k = 0; k < non_selected_Items.length; k++) {
+      strItemDescription += non_selected_Items[k].item_description
     }
-  }
+    swal({
+      title: "From the Prescribed Items, These " + strItemDescription + " items not selected do you want to proceed",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        AlgaehLoader({ show: false });
+        for (let i = 0; i < $this.state.prescribed_item_list.length; i++) {
+          if ($this.state.prescribed_item_list[i].batches.length > 0) {
+            const batch_item_list = _.filter($this.state.prescribed_item_list[i].batches, (f) => f.quantity !== null && parseFloat(f.quantity) > 0);
+            selected_item_list = selected_item_list.concat(batch_item_list)
+          }
+        }
 
-  $this.setState({
-    item_batches: []
-  }, () => {
-    $this.props.onClose && $this.props.onClose(selected_item_list);
-  })
+        $this.setState({
+          item_batches: []
+        }, () => {
+          $this.props.onClose && $this.props.onClose(selected_item_list);
+        })
+      }
+    });
+  } else {
+    AlgaehLoader({ show: false });
+
+    for (let i = 0; i < $this.state.prescribed_item_list.length; i++) {
+      if ($this.state.prescribed_item_list[i].batches.length > 0) {
+        const batch_item_list = _.filter($this.state.prescribed_item_list[i].batches, (f) => f.quantity !== null && parseFloat(f.quantity) > 0);
+        selected_item_list = selected_item_list.concat(batch_item_list)
+      }
+    }
+
+    $this.setState({
+      item_batches: []
+    }, () => {
+      $this.props.onClose && $this.props.onClose(selected_item_list);
+    })
+  }
 
 };
 

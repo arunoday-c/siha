@@ -43,7 +43,7 @@ class PerformanceManagement extends Component {
                   />
                 }
               </li>
-              <li
+              {/* <li
                 algaehtabs={"PerformanceReview"}
                 className={"nav-item tab-button "}
                 onClick={this.openTab.bind(this)}
@@ -55,7 +55,7 @@ class PerformanceManagement extends Component {
                     }}
                   />
                 }
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>

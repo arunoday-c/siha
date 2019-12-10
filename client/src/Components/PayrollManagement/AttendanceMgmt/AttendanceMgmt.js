@@ -99,7 +99,7 @@ export default class AttendanceMgmt extends Component {
                   />
                 }
               </li>
-              <li
+              {/* <li
                 algaehtabs={"WeeklyAttendance"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
@@ -111,8 +111,8 @@ export default class AttendanceMgmt extends Component {
                     }}
                   />
                 }
-              </li>{" "}
-              <li
+              </li>{" "} */}
+              {/* <li
                 algaehtabs={"AbsenceManagement"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
@@ -124,7 +124,7 @@ export default class AttendanceMgmt extends Component {
                     }}
                   />
                 }
-              </li>
+              </li> */}
               {/* <li
                 algaehtabs={"ManualAttendance"}
                 className={"nav-item tab-button"}

@@ -20,7 +20,7 @@ export default class SelfService extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "ActivityFeed",
+      pageDisplay: "ApplyLeave",
       regularize: {},
       leave: {},
       employee_details: {}
@@ -85,7 +85,7 @@ export default class SelfService extends Component {
   }
 
   ChangeRenderTabs(options) {
-    debugger
+    debugger;
     if (options.pageDisplay === "AttendanceRegularization") {
       this.attReg.click();
     } else if (options.pageDisplay === "ApplyLeave") {
@@ -184,7 +184,7 @@ export default class SelfService extends Component {
         <div className="row EmployeeTopNav box-shadow-normal">
           <div className="tabMaster toggle-section">
             <ul className="nav">
-              <li
+              {/* <li
                 algaehtabs={"ActivityFeed"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
@@ -196,7 +196,7 @@ export default class SelfService extends Component {
                     }}
                   />
                 }
-              </li>
+              </li> */}
               {/* <li
                 algaehtabs={"TimeSheetSelf"}
                 className={"nav-item tab-button"}
@@ -210,7 +210,7 @@ export default class SelfService extends Component {
                   />
                 }
               </li> */}
-              <li
+              {/* <li
                 algaehtabs={"AttendanceRegularization"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
@@ -225,10 +225,10 @@ export default class SelfService extends Component {
                     }}
                   />
                 }
-              </li>
+              </li> */}
               <li
                 algaehtabs={"ApplyLeave"}
-                className={"nav-item tab-button"}
+                className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
                 ref={attlv => {
                   this.attlv = attlv;
@@ -259,9 +259,9 @@ export default class SelfService extends Component {
                 algaehtabs={"ApplyLeaveEncashment"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
-              // ref={attReg => {
-              //   this.attReg = attReg;
-              // }}
+                // ref={attReg => {
+                //   this.attReg = attReg;
+                // }}
               >
                 {
                   <AlgaehLabel
