@@ -243,7 +243,10 @@ export default function Assets() {
                   className="btn btn-primary btn-circle active"
                   onClick={() => {
                     setSelectedNode({
-                      node: { finance_account_head_id: financeHeadId }
+                      node: {
+                        finance_account_head_id: financeHeadId,
+                        parent_acc_id: "1"
+                      }
                     });
                     setShowPopup(true);
                     setIsAccountHead(true);

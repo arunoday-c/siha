@@ -24,20 +24,20 @@ export default {
     let debit_amount = 0;
     input.details.forEach(item => {
       if (item.payment_type == "CR") {
-        credit_amount = parseFloat(credit_amount) + parseFloat(amount);
-        item["credit_amount"] = amount;
+        credit_amount = parseFloat(credit_amount) + parseFloat(item.amount);
+        item["credit_amount"] = item.amount;
         item["debit_amount"] = 0;
       } else if (item.payment_type == "DR") {
-        debit_amount = parseFloat(debit_amount) + parseFloat(amount);
+        debit_amount = parseFloat(debit_amount) + parseFloat(item.amount);
         item["credit_amount"] = 0;
-        item["debit_amount"] = amount;
+        item["debit_amount"] = item.amount;
 
         if (item.payment_mode == "CA") {
-          cash = parseFloat(cash) + parseFloat(amount);
+          cash = parseFloat(cash) + parseFloat(item.amount);
         } else if (item.payment_mode == "CD") {
-          card = parseFloat(card) + parseFloat(amount);
+          card = parseFloat(card) + parseFloat(item.amount);
         } else if (item.payment_mode == "CH") {
-          cheque = parseFloat(cheque) + parseFloat(amount);
+          cheque = parseFloat(cheque) + parseFloat(item.amount);
         }
       }
     });

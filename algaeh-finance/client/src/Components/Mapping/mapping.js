@@ -163,66 +163,6 @@ export default function(props) {
               selected.fun(output["head_id"] + "-" + output["child_id"]);
             }
           });
-
-          // const opCon = result.find(f => f.account === "OP_CON");
-          // if (opCon !== undefined) {
-          //   setOpControl(opCon);
-          //   setOpControlLable(opCon.child_name);
-          // }
-          // const opDep = result.find(f => f.account === "OP_DEP");
-          // if (opDep !== undefined) {
-          //   setOpPatientDeposit(opDep);
-          //   setOPDepositLable(opDep.child_name);
-          // }
-
-          // const opRec = result.find(f => f.account === "OP_REC");
-          // if (opRec !== undefined) {
-          //   setOPReceviable(opRec);
-          //   setOPReceviableLable(opRec.child_name);
-          // }
-          // const cashInHand = result.find(f => f.account === "CH_IN_HA");
-          // if (cashInHand !== undefined) {
-          //   setOPCashInHand(cashInHand);
-          //   setopCashInHandLable(cashInHand.child_name);
-          // }
-
-          // const opWriteOff = result.find(f => f.account === "OP_WF");
-          // if (opWriteOff !== undefined) {
-          //   setOPWriteOff(opWriteOff);
-          //   setopWriteOffLable(opWriteOff.child_name);
-          // }
-          // const opconst = result.find(f => f.account === "OP_CONSULT_TAX");
-          // if (opconst !== undefined) {
-          //   setOPConsultCash(opconst);
-          //   setOPConsultCashLable(opconst.child_name);
-          // }
-          // const oplabTax = result.find(f => f.account === "OP_LAB_TAX");
-          // if (oplabTax !== undefined) {
-          //   setOPLabTax(oplabTax);
-          //   setOPLabTaxLable(oplabTax.child_name);
-          // }
-          // const opradTax = result.find(f => f.account === "OP_RAD_TAX");
-          // if (opradTax !== undefined) {
-          //   setOPRadTax(opradTax);
-          //   setOPRadTaxLable(opradTax.child_name);
-          // }
-          // const opconsInstax = result.find(
-          //   f => f.account === "OP_INS_CONSULT_TAX"
-          // );
-          // if (opconsInstax !== undefined) {
-          //   setOPInsConsultTax(opconsInstax);
-          //   setOPInsConsultTaxLable(opconsInstax.child_name);
-          // }
-          // const opinsLabTax = result.find(f => f.account === "OP_INS_LAB_TAX");
-          // if (opinsLabTax !== undefined) {
-          //   setOPInsLabTax(opinsLabTax);
-          //   setOPInsLabTaxLable(opinsLabTax.child_name);
-          // }
-          // const opinsRadTax = result.find(f => f.account === "OP_INS_RAD_TAX");
-          // if (opinsRadTax !== undefined) {
-          //   setOPInsRadTax(opinsRadTax);
-          //   setOPInsRadTaxLable(opinsRadTax.child_name);
-          // }
         }
       })
       .catch(error => {
