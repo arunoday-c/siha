@@ -100,7 +100,7 @@ export default function ProjectMasterEvents() {
       getProjectsApi($this);
     },
 
-    updateEmployeeGroups: ($this, data) => {
+    updateProjectMaster: ($this, data) => {
       algaehApiCall({
         uri: "/hrsettings/updateProjects",
         module: "hrManagement",
@@ -187,7 +187,7 @@ export default function ProjectMasterEvents() {
               });
             }
           });
-        } 
+        }
       });
     },
 
