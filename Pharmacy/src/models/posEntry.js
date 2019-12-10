@@ -769,6 +769,7 @@ export default {
                   .Where(w => w.item_id == s.item_id)
                   .FirstOrDefault();
                 return {
+                  select_item: "N",
                   item_id: s.item_id,
                   service_id: s.service_id,
                   item_category: s.category_id,
