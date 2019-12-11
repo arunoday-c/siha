@@ -1,3 +1,4 @@
+/*eslint no-eval: 0*/
 import extend from "extend";
 import { swalMessage, algaehApiCall, getCookie } from "../utils/algaehApiCall";
 import crypto from "crypto";
@@ -23,7 +24,7 @@ export function decimalPointSet(value, decimal_point) {
   let data_value = value;
   if (typeof value === "string") {
     data_value = parseFloat(
-      value == "" || value == null || value == undefined ? "0" : value
+      value === "" || value === null || value === undefined ? "0" : value
     );
   }
 
@@ -113,7 +114,7 @@ export function saveImageOnServer(options) {
   };
 
   if (settings.fileControl !== undefined) {
-    settings.fileControl.map(file => {
+    settings.fileControl.forEach(file => {
       settings.thisState.stateName.setState({
         [settings.thisState.stateProgressName]: 0
       });
@@ -182,7 +183,7 @@ export function saveImageOnServer(options) {
 
       // const formData = new FormData();
       // formData.append("file", reader);
-      return;
+      // return;
     });
   }
 }
@@ -360,10 +361,10 @@ export function AlgaehValidation(options) {
           _checkVal = _Validateerror[i].getAttribute("checkvalidation");
         }
       }
-      let value = "";
+      // let value = "";
       if (_checkVal !== null) {
         const _val = _element.value; //=== "" ? "''" : _element.value;
-        value = _val;
+        // value = _val;
         _checkVal = _checkVal.replace(/\$value/g, _val);
       }
       const _role = _element.getAttribute("data_role");

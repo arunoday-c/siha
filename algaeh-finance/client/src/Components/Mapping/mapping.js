@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  AlgaehTreeDropDown,
+  // AlgaehTreeDropDown,
   AlgaehValidator,
   AlgaehButton,
   AlgaehMessagePop,
@@ -157,7 +157,7 @@ export default function(props) {
                 setOPInsRadTax(res);
               }
             }
-          ].map(selected => {
+          ].forEach(selected => {
             const output = result.find(f => f.account === selected.item);
             if (output !== undefined && typeof selected.fun === "function") {
               selected.fun(output["head_id"] + "-" + output["child_id"]);

@@ -72,16 +72,14 @@ export default function Income() {
         AlgaehMessagePop({ type: "error", display: error });
       });
   }
-  useEffect(() => {
-    loadAccount();
-  }, []);
+  useEffect(loadAccount, []);
 
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
       try {
         const { treeData } = options;
 
-        let { treeIndex, path } = rowInfo;
+        let { path } = rowInfo;
         let parentNode = getNodeAtPath({
           treeData: treeData,
           path: path,
@@ -407,9 +405,9 @@ export default function Income() {
                                       <Icon
                                         type="save"
                                         onClick={e => {
-                                          const editedValue =
-                                            e.currentTarget.offsetParent
-                                              .previousElementSibling.value;
+                                          // const editedValue =
+                                          //   e.currentTarget.offsetParent
+                                          //     .previousElementSibling.value;
                                           setEditorRecord({});
                                         }}
                                       />
