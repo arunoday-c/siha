@@ -397,7 +397,6 @@ export default () => {
 
     (req, res, next) => {
       if (req.records.invalid_input == true) {
-        console.log("eee:");
         res
           .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({
