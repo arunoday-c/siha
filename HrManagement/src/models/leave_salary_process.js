@@ -93,7 +93,7 @@ export default {
                 ).format("YYYY-MM-DD");
                 console.log("from_date", from_date);
                 console.log("to_date", to_date);
-
+                let intValue = 0
                 while (from_date <= to_date) {
                   console.log("from_date", from_date);
                   console.log("to_date_month", to_date_month);
@@ -139,26 +139,49 @@ export default {
                       let end_selected_day = moment(to_date).format("DD");
                       console.log("end_selected_day", end_selected_day)
                       console.log("at_end_date", hrms_options.at_end_date)
-                      fromDate_firstDate = moment(
-                        selected_year +
-                        "-" +
-                        selected_month +
-                        "-" +
-                        hrms_options.at_st_date,
-                        "YYYY-MM-DD"
-                      )
-                        .format("YYYY-MM-DD");
+                      if (intValue > 0) {
+                        fromDate_firstDate = moment(
+                          selected_year +
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_st_date,
+                          "YYYY-MM-DD"
+                        )
+                          .format("YYYY-MM-DD");
 
-                      fromDate_lastDate = moment(
-                        selected_year +
-                        "-" +
-                        selected_month +
-                        "-" +
-                        hrms_options.at_end_date,
-                        "YYYY-MM-DD"
-                      )
-                        .add(1, "M")
-                        .format("YYYY-MM-DD");
+                        fromDate_lastDate = moment(
+                          selected_year +
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_end_date,
+                          "YYYY-MM-DD"
+                        )
+                          .add(1, "M")
+                          .format("YYYY-MM-DD");
+                      } else {
+                        fromDate_firstDate = moment(
+                          selected_year +
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_st_date,
+                          "YYYY-MM-DD"
+                        )
+                          .add(-1, "M")
+                          .format("YYYY-MM-DD");
+
+                        fromDate_lastDate = moment(
+                          selected_year +
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_end_date,
+                          "YYYY-MM-DD"
+                        )
+                          .format("YYYY-MM-DD");
+                      }
                       // }
                     } else {
                       // console.log("selected_day", selected_day);
@@ -263,6 +286,7 @@ export default {
                     leave_application_id:
                       annul_leave_app[0].hims_f_leave_application_id
                   });
+                  intValue++;
                 }
 
                 let result = {
