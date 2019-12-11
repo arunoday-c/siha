@@ -44,10 +44,10 @@ export default {
 
               if (annul_leave_app.length > 0) {
                 let leave_salary_detail = [];
-                let from_date = moment(annul_leave_app[0].from_date).format(
+                let from_date = moment(annul_leave_app[0].from_date, "YYYY-MM-DD").format(
                   "YYYY-MM-DD"
                 );
-                let to_date = moment(annul_leave_app[0].to_date).format(
+                let to_date = moment(annul_leave_app[0].to_date, "YYYY-MM-DD").format(
                   "YYYY-MM-DD"
                 );
 
@@ -89,7 +89,7 @@ export default {
                 }
 
                 let leave_start_date = moment(
-                  annul_leave_app[0].from_date
+                  annul_leave_app[0].from_date, "YYYY-MM-DD"
                 ).format("YYYY-MM-DD");
                 console.log("from_date", from_date);
                 console.log("to_date", to_date);
@@ -154,7 +154,8 @@ export default {
                         "-" +
                         selected_month +
                         "-" +
-                        hrms_options.at_end_date
+                        hrms_options.at_end_date,
+                        "YYYY-MM-DD"
                       )
                         .add(1, "M")
                         .format("YYYY-MM-DD");
@@ -182,7 +183,8 @@ export default {
                           "-" +
                           selected_month +
                           "-" +
-                          hrms_options.at_end_date
+                          hrms_options.at_end_date,
+                          "YYYY-MM-DD"
                         )
                           .add(1, "M")
                           .format("YYYY-MM-DD");
@@ -203,7 +205,8 @@ export default {
                           "-" +
                           selected_month +
                           "-" +
-                          hrms_options.at_end_date
+                          hrms_options.at_end_date,
+                          "YYYY-MM-DD"
                         ).format("YYYY-MM-DD");
                       }
                     }
@@ -397,11 +400,8 @@ export default {
               end_date_month = String(end_date_month).toString();
             }
           }
-          // console.log("end_date_month: ", end_date_month);
           const syscCall = async function () {
             while (start_date <= end_date) {
-              // console.log("start_date: ", start_date);
-              // console.log("end_date: ", end_date);
               try {
                 let fromDate_lastDate = null;
 
@@ -414,8 +414,6 @@ export default {
                   let selected_month = moment(start_date).format("M");
                   let selected_day = moment(start_date).format("DD");
 
-                  // console.log("selected_day: ", selected_day);
-                  // console.log("selected_month: ", selected_month);
                   if (
                     parseFloat(selected_day) >=
                     parseFloat(hrms_options[0].at_st_date)
@@ -423,12 +421,6 @@ export default {
                     start_date = moment(start_date)
                       .add(1, "M")
                       .format("YYYYMMDD");
-                    // console.log("inside start_date: ", start_date);
-                    // if (
-                    //   parseFloat(end_selected_day) <=
-                    //   parseFloat(hrms_options[0].at_end_date)
-                    // ) {
-                    // }
                     selected_month = parseFloat(selected_month) + 1;
                     if (selected_month > 12) {
                       selected_month = 1;
@@ -458,13 +450,15 @@ export default {
                   )._d;
                 }
 
-                console.log("end_date_month: ", end_date_month);
-                console.log("date_month: ", date_month);
-                console.log("intValue: ", intValue);
+                // console.log("end_date_month: ", end_date_month);
+                // console.log("date_month: ", date_month);
+                // console.log("intValue: ", intValue);
 
                 if (end_date_month == date_month && intValue > 0) {
-                  utilities.logger().log("intValue_inside: ", intValue);
                   req.query.leave_end_date = end_date;
+                  req.query.leave_salary = "Y";
+                }
+                if (intValue > 0) {
                   req.query.leave_salary = "Y";
                 }
                 console.log("leave_salary: ", req.query.leave_salary);
@@ -486,7 +480,7 @@ export default {
                 }
 
                 // let _sarary = await newProcessSalary(req, res, next);
-                // utilities.logger().log("_sarary before:  ", _sarary);
+                console.log("_sarary before:  ", _sarary);
                 if (_sarary === undefined) {
                   utilities.logger().log("Salary Inside: ");
                   _mysql.commitTransaction(() => {
@@ -512,15 +506,6 @@ export default {
                   _sarary +
                   "; ";
 
-                // utilities
-                //   .logger()
-                //   .log(
-                //     "Promise attendance_starts: ",
-                //     hrms_options[0].attendance_starts
-                //   );
-                // utilities
-                //   .logger()
-                //   .log("Promise at_end_date: ", hrms_options[0].at_end_date);
                 if (hrms_options[0].attendance_starts === "PM") {
                   let _selected_year = moment(start_date).year();
                   let _selected_month = moment(start_date).format("M");
