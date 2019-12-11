@@ -27,7 +27,8 @@ import {
   AuthorizePOEntry,
   getVendorMaster,
   generatePOReceipt,
-  generatePOReceiptNoPrice
+  generatePOReceiptNoPrice,
+  clearItemDetails
 } from "./PurchaseOrderEntryEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POEntry from "../../../Models/POEntry";
@@ -191,6 +192,7 @@ class PurchaseOrderEntry extends Component {
                     },
                     onChange: poforhandle.bind(this, this),
                     onClear: () => {
+                      clearItemDetails(this, this)
                       this.setState({
                         po_from: null,
                         ReqData: true,
