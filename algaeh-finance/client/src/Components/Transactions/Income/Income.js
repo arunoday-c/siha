@@ -6,7 +6,7 @@ import {
   AlgaehAutoComplete,
   AlgaehDataGrid
 } from "algaeh-react-components";
-import { incomeSource, incomeDestination } from "../../../data/dropdownList";
+// import { incomeSource, incomeDestination } from "../../../data/dropdownList";
 export default function Income() {
   return (
     <>

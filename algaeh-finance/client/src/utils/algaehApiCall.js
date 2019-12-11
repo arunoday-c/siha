@@ -114,19 +114,22 @@ export function algaehApiCall(options) {
 
     if (String(settings.method).toUpperCase() === "GET") {
       let str = [];
-      for (let p in settings.data) {
-        if (settings.data.hasOwnProperty(p)) {
-          if (settings.data[p] !== undefined) {
-            let _newData = settings.data[p];
-            if (typeof _newData === "object") {
-              _newData = JSON.stringify(_newData);
+      if (settings.data !== undefined && settings.data !== null) {
+        Object.keys(settings.data).forEach(p => {
+          if (settings.data.hasOwnProperty(p)) {
+            if (settings.data[p] !== undefined) {
+              let _newData = settings.data[p];
+              if (typeof _newData === "object") {
+                _newData = JSON.stringify(_newData);
+              }
+              str.push(
+                encodeURIComponent(p) + "=" + encodeURIComponent(_newData)
+              );
             }
-            str.push(
-              encodeURIComponent(p) + "=" + encodeURIComponent(_newData)
-            );
           }
-        }
+        });
       }
+
       settings.data = {};
       queryParametres = "?" + str.join("&");
       if (settings.printInput) {
