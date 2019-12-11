@@ -14,9 +14,8 @@ export default {
     return new Promise((resolve, reject) => {
       try {
         const utilities = new algaehUtilities();
-        const decimal_places = req.userIdentity.decimal_places;
 
-        utilities.logger().log("newProcessSalary: ");
+        // utilities.logger().log("newProcessSalary: ");
         const input = req.query;
         const month_number = parseFloat(input.month);
         const year = input.year;
@@ -108,7 +107,7 @@ export default {
           }
         }
 
-        utilities.logger().log("strQuery: ", strQuery);
+        // utilities.logger().log("strQuery: ", strQuery);
         _mysql
           .executeQuery({
             query: strQuery,
@@ -121,12 +120,12 @@ export default {
               console.log("empResult reslove: ", empResult.length);
 
               if (req.connection == null) {
-                utilities.logger().log("req.connection : ");
+                // utilities.logger().log("req.connection : ");
                 _mysql.releaseConnection();
                 req.records = empResult;
                 next();
               } else {
-                utilities.logger().log("req.connection Else : ");
+                // utilities.logger().log("req.connection Else : ");
                 resolve();
               }
               return;
@@ -139,7 +138,7 @@ export default {
               _myemp.push(o.employee_id);
             });
 
-            utilities.logger().log("_myemp : ", _myemp);
+            // utilities.logger().log("_myemp : ", _myemp);
 
             if (_myemp.length == 0) {
               _mysql.releaseConnection();
@@ -158,9 +157,9 @@ export default {
                 avail_till_date += "+" + "COALESCE(" + months + ", 0)";
               }
             } else {
-              utilities.logger().log("else: ");
+              // utilities.logger().log("else: ");
               avail_till_date = moment(input.month, "MM").format("MMMM");
-              utilities.logger().log("avail_till_date: ", avail_till_date);
+              // utilities.logger().log("avail_till_date: ", avail_till_date);
               avail_till_date = "COALESCE(" + avail_till_date + ", 0)";
             }
             const month_name = moment(input.month, "MM").format("MMMM");
@@ -276,7 +275,7 @@ export default {
                 new Promise((resolve, reject) => {
                   try {
                     for (let i = 0; i < empResult.length; i++) {
-                      utilities.logger().log("empResult ", empResult[i]);
+                      // utilities.logger().log("empResult ", empResult[i]);
                       let results = Salaryresults;
                       let leave_salary_accrual_amount = 0;
                       let final_earning_amount = 0;
@@ -342,9 +341,9 @@ export default {
                             earningOutput.final_earning_amount;
                           leave_salary_accrual_amount =
                             earningOutput.accrual_amount;
-                          utilities
-                            .logger()
-                            .log("_earning_amount : ", final_earning_amount);
+                          // utilities
+                          //   .logger()
+                          //   .log("_earning_amount : ", final_earning_amount);
 
                           const _deduction = _.filter(results[1], f => {
                             return f.employee_id == empResult[i]["employee_id"];
@@ -430,12 +429,12 @@ export default {
                                   current_deduction_amt_array = current_deduction_amt_array.concat(
                                     advanceOutput.current_deduct_compoment
                                   );
-                                  utilities
-                                    .logger()
-                                    .log(
-                                      "employee_id: ",
-                                      empResult[i]["employee_id"]
-                                    );
+                                  // utilities
+                                  //   .logger()
+                                  //   .log(
+                                  //     "employee_id: ",
+                                  //     empResult[i]["employee_id"]
+                                  //   );
                                   //OT
                                   const _over_time = _.filter(
                                     results[10],
@@ -446,9 +445,9 @@ export default {
                                       );
                                     }
                                   );
-                                  utilities
-                                    .logger()
-                                    .log("_over_time: ", _over_time);
+                                  // utilities
+                                  //   .logger()
+                                  //   .log("_over_time: ", _over_time);
                                   getOtManagement({
                                     earnings: _earnings,
                                     current_earning_amt_array: current_earning_amt_array,
@@ -531,24 +530,24 @@ export default {
                                         _salary_number +=
                                           month_number + "-" + year;
 
-                                        utilities
-                                          .logger()
-                                          .log(
-                                            "final_earning_amount : ",
-                                            final_earning_amount
-                                          );
-                                        utilities
-                                          .logger()
-                                          .log(
-                                            "final_deduction_amount : ",
-                                            final_deduction_amount
-                                          );
-                                        utilities
-                                          .logger()
-                                          .log(
-                                            "total_loan_due_amount : ",
-                                            total_loan_due_amount
-                                          );
+                                        // utilities
+                                        //   .logger()
+                                        //   .log(
+                                        //     "final_earning_amount : ",
+                                        //     final_earning_amount
+                                        //   );
+                                        // utilities
+                                        //   .logger()
+                                        //   .log(
+                                        //     "final_deduction_amount : ",
+                                        //     final_deduction_amount
+                                        //   );
+                                        // utilities
+                                        //   .logger()
+                                        //   .log(
+                                        //     "total_loan_due_amount : ",
+                                        //     total_loan_due_amount
+                                        //   );
 
                                         let _net_salary =
                                           final_earning_amount -
@@ -656,28 +655,28 @@ export default {
                   }
                 })
                   .then(result => {
-                    utilities.logger().log("_headerQuery: ", _headerQuery);
-                    utilities
-                      .logger()
-                      .log(
-                        "final_earning_amt_array: ",
-                        final_earning_amt_array
-                      );
-                    utilities
-                      .logger()
-                      .log(
-                        "final_deduction_amt_array: ",
-                        final_deduction_amt_array
-                      );
-                    utilities
-                      .logger()
-                      .log(
-                        "final_contribution_amt_array: ",
-                        final_contribution_amt_array
-                      );
-                    utilities
-                      .logger()
-                      .log("final_loan_array: ", final_loan_array);
+                    // utilities.logger().log("_headerQuery: ", _headerQuery);
+                    // utilities
+                    //   .logger()
+                    //   .log(
+                    //     "final_earning_amt_array: ",
+                    //     final_earning_amt_array
+                    //   );
+                    // utilities
+                    //   .logger()
+                    //   .log(
+                    //     "final_deduction_amt_array: ",
+                    //     final_deduction_amt_array
+                    //   );
+                    // utilities
+                    //   .logger()
+                    //   .log(
+                    //     "final_contribution_amt_array: ",
+                    //     final_contribution_amt_array
+                    //   );
+                    // utilities
+                    //   .logger()
+                    //   .log("final_loan_array: ", final_loan_array);
                     if (_headerQuery == "") {
                       _mysql.releaseConnection();
                       req.records = empResult;
@@ -691,9 +690,9 @@ export default {
                         printQuery: true
                       })
                       .then(inserted_header => {
-                        utilities
-                          .logger()
-                          .log("inserted_header: ", inserted_header);
+                        // utilities
+                        //   .logger()
+                        //   .log("inserted_header: ", inserted_header);
                         let inserted_salary = [];
                         if (Array.isArray(inserted_header)) {
                           inserted_salary = inserted_header;
@@ -701,32 +700,32 @@ export default {
                           inserted_salary = [inserted_header];
                         }
 
-                        utilities
-                          .logger()
-                          .log("inserted_salary: ", inserted_salary);
+                        // utilities
+                        //   .logger()
+                        //   .log("inserted_salary: ", inserted_salary);
                         if (inserted_salary.length > 0) {
                           let execute_query = "";
 
                           for (let k = 0; k < inserted_salary.length; k++) {
                             salary_header_id = inserted_salary[k].insertId;
-                            utilities
-                              .logger()
-                              .log(
-                                "final_earning_amt_array: ",
-                                final_earning_amt_array[k]
-                              );
+                            // utilities
+                            //   .logger()
+                            //   .log(
+                            //     "final_earning_amt_array: ",
+                            //     final_earning_amt_array[k]
+                            //   );
                             if (final_earning_amt_array[k].length > 0) {
                               for (
                                 let l = 0;
                                 l < final_earning_amt_array[k].length;
                                 l++
                               ) {
-                                utilities
-                                  .logger()
-                                  .log(
-                                    "final_earning_amt_array: ",
-                                    final_earning_amt_array[k][l].earnings_id
-                                  );
+                                // utilities
+                                //   .logger()
+                                //   .log(
+                                //     "final_earning_amt_array: ",
+                                //     final_earning_amt_array[k][l].earnings_id
+                                //   );
                                 execute_query += _mysql.mysqlQueryFormat(
                                   "INSERT INTO `hims_f_salary_earnings` (salary_header_id, earnings_id, amount, \
                                 per_day_salary) VALUE(?,?,?,?); ",
@@ -799,9 +798,9 @@ export default {
                             }
 
                             if (k == inserted_salary.length - 1) {
-                              utilities
-                                .logger()
-                                .log("execute_query: ", execute_query);
+                              // utilities
+                              //   .logger()
+                              //   .log("execute_query: ", execute_query);
                               _mysql
                                 .executeQuery({
                                   query: execute_query,
@@ -816,12 +815,12 @@ export default {
                                       resolve(detailresult);
                                     });
                                   } else {
-                                    utilities
-                                      .logger()
-                                      .log(
-                                        "salary_header_id: ",
-                                        salary_header_id
-                                      );
+                                    // utilities
+                                    //   .logger()
+                                    //   .log(
+                                    //     "salary_header_id: ",
+                                    //     salary_header_id
+                                    //   );
                                     resolve(salary_header_id);
                                   }
                                 })
@@ -836,7 +835,7 @@ export default {
                         }
                       })
                       .catch(error => {
-                        utilities.logger().log("error: ", error);
+                        // utilities.logger().log("error: ", error);
                         _mysql.rollBackTransaction(() => {
                           next(error);
                           reject(error);
@@ -856,7 +855,7 @@ export default {
               });
           })
           .catch(error => {
-            utilities.logger().log("error: ", error);
+            // utilities.logger().log("error: ", error);
             _mysql.releaseConnection();
             next(error);
             reject(error);
@@ -1009,7 +1008,7 @@ export default {
                   }
 
                   const utilities = new algaehUtilities();
-                  utilities.logger().log("input.month: ", input.month);
+                  // utilities.logger().log("input.month: ", input.month);
                   let avail_till_date = "";
                   if (input.month != 1) {
                     let months = "";
@@ -1019,15 +1018,15 @@ export default {
                       avail_till_date += "+" + "COALESCE(" + months + ", 0)";
                     }
                   } else {
-                    utilities.logger().log("else: ");
+                    // utilities.logger().log("else: ");
                     avail_till_date = moment(input.month, "MM").format("MMMM");
-                    utilities
-                      .logger()
-                      .log("avail_till_date: ", avail_till_date);
+                    // utilities
+                    // .logger()
+                    // .log("avail_till_date: ", avail_till_date);
                     avail_till_date = "COALESCE(" + avail_till_date + ", 0)";
                   }
 
-                  utilities.logger().log("avail_till_date: ", avail_till_date);
+                  // utilities.logger().log("avail_till_date: ", avail_till_date);
 
                   const month_name = moment(input.month, "MM").format("MMMM");
 
@@ -1061,7 +1060,7 @@ export default {
                     month_name +
                     " > 0 and  employee_id in (?) and year=? ;";
 
-                  utilities.logger().log("strQuery: ", strQuery);
+                  // utilities.logger().log("strQuery: ", strQuery);
                   _salaryHeader_id =
                     _salaryHeader_id.length == 0 ? null : _salaryHeader_id;
                   _mysql
@@ -1144,7 +1143,7 @@ export default {
                         return _.find(_myemp, d => d == n.employee_id);
                       });
 
-                      utilities.logger().log("empResult", empResult);
+                      // utilities.logger().log("empResult", empResult);
 
                       if (empResult.length > 0) {
                         for (let i = 0; i < empResult.length; i++) {
@@ -1342,12 +1341,12 @@ export default {
                                                     next: next
                                                   })
                                                     .then(ShortAge => {
-                                                      utilities
-                                                        .logger()
-                                                        .log(
-                                                          "ShortAge",
-                                                          ShortAge
-                                                        );
+                                                      // utilities
+                                                      //   .logger()
+                                                      //   .log(
+                                                      //     "ShortAge",
+                                                      //     ShortAge
+                                                      //   );
                                                       final_deduction_amount =
                                                         final_deduction_amount +
                                                         ShortAge.final_deduction_amount;
@@ -1424,12 +1423,12 @@ export default {
                                                             _net_salary =
                                                               _net_salary +
                                                               total_loan_payable_amount;
-                                                            utilities
-                                                              .logger()
-                                                              .log(
-                                                                "final_deduction_amount",
-                                                                final_deduction_amount
-                                                              );
+                                                            // utilities
+                                                            //   .logger()
+                                                            //   .log(
+                                                            //     "final_deduction_amount",
+                                                            //     final_deduction_amount
+                                                            //   );
                                                             _mysql
                                                               .executeQueryWithTransaction(
                                                                 {
@@ -1528,12 +1527,12 @@ export default {
                                                               )
                                                               .then(
                                                                 inserted_salary => {
-                                                                  utilities
-                                                                    .logger()
-                                                                    .log(
-                                                                      "inserted_salary",
-                                                                      inserted_salary
-                                                                    );
+                                                                  // utilities
+                                                                  //   .logger()
+                                                                  //   .log(
+                                                                  //     "inserted_salary",
+                                                                  //     inserted_salary
+                                                                  //   );
                                                                   _requestCollector.push(
                                                                     inserted_salary
                                                                   );
@@ -2039,12 +2038,12 @@ export default {
       const inputParam = { ...req.body };
 
       const utilities = new algaehUtilities();
-      const decimal_places = req.userIdentity.decimal_places;
+      // const decimal_places = req.userIdentity.decimal_places;
 
-      utilities.logger().log("employee_id: ", inputParam.employee_id);
-      utilities
-        .logger()
-        .log("_leave_salary_acc: ", inputParam._leave_salary_acc.length);
+      // utilities.logger().log("employee_id: ", inputParam.employee_id);
+      // utilities
+      //   .logger()
+      //   .log("_leave_salary_acc: ", inputParam._leave_salary_acc.length);
       let strQuery = "";
       if (inputParam.annual_leave_calculation === "A") {
         strQuery =
@@ -2212,7 +2211,8 @@ export default {
                                         project_wise_payroll: project_wise_payroll,
                                         _mysql: _mysql,
                                         net_salary: inputParam.net_salary,
-                                        next: next
+                                        next: next,
+                                        decimal_places: req.userIdentity.decimal_places
                                       })
                                         .then(Employee_Leave_Salary => {
                                           // utilities
@@ -2222,14 +2222,14 @@ export default {
                                             inputParam: inputParam,
                                             _mysql: _mysql,
                                             next: next,
-                                            decimal_places: decimal_places
+                                            decimal_places: req.userIdentity.decimal_places
                                           })
                                             .then(gratuity_provision => {
-                                              utilities
-                                                .logger()
-                                                .log(
-                                                  "Employee_Leave_Salary gratuity_provision: "
-                                                );
+                                              // utilities
+                                              //   .logger()
+                                              //   .log(
+                                              //     "Employee_Leave_Salary gratuity_provision: "
+                                              //   );
                                               if (
                                                 inputParam._leave_salary_acc
                                                   .length > 0
@@ -2238,7 +2238,7 @@ export default {
                                                   inputParam: inputParam,
                                                   _mysql: _mysql,
                                                   next: next,
-                                                  decimal_places: decimal_places
+                                                  decimal_places: req.userIdentity.decimal_places
                                                 })
                                                   .then(
                                                     Leave_Salary_Provission => {
@@ -2282,17 +2282,17 @@ export default {
                                           });
                                         });
                                     } else {
-                                      utilities.logger().log("else: ");
+                                      // utilities.logger().log("else: ");
                                       InsertGratuityProvision({
                                         inputParam: inputParam,
                                         _mysql: _mysql,
                                         next: next,
-                                        decimal_places: decimal_places
+                                        decimal_places: req.userIdentity.decimal_places
                                       })
                                         .then(gratuity_provision => {
-                                          utilities
-                                            .logger()
-                                            .log("else gratuity_provision: ");
+                                          // utilities
+                                          //   .logger()
+                                          //   .log("else gratuity_provision: ");
                                           if (
                                             inputParam._leave_salary_acc
                                               .length > 0
@@ -2301,7 +2301,7 @@ export default {
                                               inputParam: inputParam,
                                               _mysql: _mysql,
                                               next: next,
-                                              decimal_places: decimal_places
+                                              decimal_places: req.userIdentity.decimal_places
                                             })
                                               .then(Leave_Salary_Provission => {
                                                 _mysql.commitTransaction(() => {
@@ -2372,7 +2372,7 @@ export default {
                 });
               });
           } else {
-            utilities.logger().log("else: ", leave_accrual_detail);
+            // utilities.logger().log("else: ", leave_accrual_detail);
             _mysql
               .executeQuery({
                 query:
@@ -2381,7 +2381,7 @@ export default {
                 printQuery: true
               })
               .then(salary_process => {
-                utilities.logger().log("salary_process: ");
+                // utilities.logger().log("salary_process: ");
                 _mysql
                   .executeQuery({
                     query:
@@ -2401,22 +2401,23 @@ export default {
                     printQuery: true
                   })
                   .then(project_wise_payroll => {
-                    utilities
-                      .logger()
-                      .log("project_wise_payroll: ", project_wise_payroll);
+                    // utilities
+                    //   .logger()
+                    //   .log("project_wise_payroll: ", project_wise_payroll);
                     if (project_wise_payroll.length > 0) {
                       UpdateProjectWisePayroll({
                         project_wise_payroll: project_wise_payroll,
                         _mysql: _mysql,
                         net_salary: inputParam.net_salary,
-                        next: next
+                        next: next,
+                        decimal_places: req.userIdentity.decimal_places
                       })
                         .then(Employee_Leave_Salary => {
                           InsertGratuityProvision({
                             inputParam: inputParam,
                             _mysql: _mysql,
                             next: next,
-                            decimal_places: decimal_places
+                            decimal_places: req.userIdentity.decimal_places
                           })
                             .then(gratuity_provision => {
                               if (inputParam._leave_salary_acc.length > 0) {
@@ -2424,7 +2425,7 @@ export default {
                                   inputParam: inputParam,
                                   _mysql: _mysql,
                                   next: next,
-                                  decimal_places: decimal_places
+                                  decimal_places: req.userIdentity.decimal_places
                                 })
                                   .then(Leave_Salary_Provission => {
                                     _mysql.commitTransaction(() => {
@@ -2462,7 +2463,7 @@ export default {
                         inputParam: inputParam,
                         _mysql: _mysql,
                         next: next,
-                        decimal_places: decimal_places
+                        decimal_places: req.userIdentity.decimal_places
                       })
                         .then(gratuity_provision => {
                           if (inputParam._leave_salary_acc.length > 0) {
@@ -2470,7 +2471,7 @@ export default {
                               inputParam: inputParam,
                               _mysql: _mysql,
                               next: next,
-                              decimal_places: decimal_places
+                              decimal_places: req.userIdentity.decimal_places
                             })
                               .then(Leave_Salary_Provission => {
                                 _mysql.commitTransaction(() => {
@@ -2800,7 +2801,7 @@ export default {
 
           const utilities = new algaehUtilities();
 
-          utilities.logger().log("default_nationality: ", default_nationality);
+          // utilities.logger().log("default_nationality: ", default_nationality);
           if (salary.length > 0) {
             total_earnings = new LINQ(salary).Sum(s =>
               parseFloat(s.total_earnings)
@@ -2819,7 +2820,7 @@ export default {
               .Select(s => s.hims_f_salary_id)
               .ToArray();
 
-            utilities.logger().log("salary_header_ids: ", salary_header_ids);
+            // utilities.logger().log("salary_header_ids: ", salary_header_ids);
 
             _mysql
               .executeQuery({
@@ -2848,7 +2849,7 @@ export default {
 
                 let total_basic = 0;
 
-                utilities.logger().log("salary: ", salary.length);
+                // utilities.logger().log("salary: ", salary.length);
                 for (let i = 0; i < salary.length; i++) {
                   //ST-complete OVER-Time (ot,wot,hot all togather sum)  calculation
                   let ot_hours = 0;
@@ -2930,17 +2931,17 @@ export default {
                     .Select(s => parseFloat(s.amount))
                     .FirstOrDefault(0);
 
-                  utilities
-                    .logger()
-                    .log("nationality: ", salary[i].nationality);
+                  // utilities
+                  //   .logger()
+                  //   .log("nationality: ", salary[i].nationality);
                   let emp_id_type = "P";
                   if (default_nationality == salary[i].nationality) {
                     emp_id_type = "C";
                   }
 
-                  utilities
-                    .logger()
-                    .log("employee_earning: ", employee_earning);
+                  // utilities
+                  //   .logger()
+                  //   .log("employee_earning: ", employee_earning);
 
                   let social_security_deductions = new LINQ(employee_deduction)
                     .Where(w => w.nationality_id == default_nationality)
@@ -3337,290 +3338,281 @@ function InsertEmployeeLeaveSalary(options) {
       let decimal_places = options.decimal_places;
       const utilities = new algaehUtilities();
 
+      let promiseAll = []
       for (let i = 0; i < leave_salary_accrual_detail.length; i++) {
-        _mysql
-          .executeQuery({
-            query:
-              "select hims_f_employee_leave_salary_header_id,employee_id,leave_days,leave_salary_amount, \
+        promiseAll.push(
+          new Promise((resolve, reject) => {
+            _mysql
+              .executeQuery({
+                query:
+                  "select hims_f_employee_leave_salary_header_id,employee_id,leave_days,leave_salary_amount, \
                 airticket_amount, balance_leave_days, balance_leave_salary_amount, balance_airticket_amount, \
                 airfare_months,utilized_leave_days,  utilized_leave_salary_amount, utilized_airticket_amount \
                 from hims_f_employee_leave_salary_header where employee_id = ?;\
                 select hims_f_employee_monthly_leave_id, close_balance, accumulated_leaves, projected_applied_leaves \
                 from hims_f_employee_monthly_leave where year = ? and employee_id = ? and leave_id=?;",
-            values: [
-              leave_salary_accrual_detail[i].employee_id,
-              leave_salary_accrual_detail[i].year,
-              leave_salary_accrual_detail[i].employee_id,
-              annual_leave_data[0].hims_d_leave_id
-            ],
-            printQuery: true
-          })
-          .then(employee_leave_salary => {
-            let employee_leave_salary_header = employee_leave_salary[0];
-            let monthly_leave = employee_leave_salary[1][0];
+                values: [
+                  leave_salary_accrual_detail[i].employee_id,
+                  leave_salary_accrual_detail[i].year,
+                  leave_salary_accrual_detail[i].employee_id,
+                  annual_leave_data[0].hims_d_leave_id
+                ],
+                printQuery: true
+              })
+              .then(employee_leave_salary => {
+                let employee_leave_salary_header = employee_leave_salary[0];
+                let monthly_leave = employee_leave_salary[1][0];
 
-            if (employee_leave_salary_header.length > 0) {
-              let leave_days =
-                parseFloat(employee_leave_salary_header[0].leave_days) +
-                parseFloat(leave_salary_accrual_detail[i].leave_days);
-              let leave_salary_amount =
-                parseFloat(
-                  employee_leave_salary_header[0].leave_salary_amount
-                ) + parseFloat(leave_salary_accrual_detail[i].leave_salary);
-              let airticket_amount =
-                parseFloat(employee_leave_salary_header[0].airticket_amount) +
-                parseFloat(leave_salary_accrual_detail[i].airfare_amount);
-              let balance_leave_days =
-                parseFloat(employee_leave_salary_header[0].balance_leave_days) +
-                parseFloat(leave_salary_accrual_detail[i].leave_days);
-              let balance_leave_salary_amount =
-                parseFloat(
-                  employee_leave_salary_header[0].balance_leave_salary_amount
-                ) + parseFloat(leave_salary_accrual_detail[i].leave_salary);
-              let balance_airticket_amount =
-                parseFloat(
-                  employee_leave_salary_header[0].balance_airticket_amount
-                ) + parseFloat(leave_salary_accrual_detail[i].airfare_amount);
+                if (employee_leave_salary_header.length > 0) {
+                  let leave_days =
+                    parseFloat(employee_leave_salary_header[0].leave_days) +
+                    parseFloat(leave_salary_accrual_detail[i].leave_days);
+                  let leave_salary_amount =
+                    parseFloat(
+                      employee_leave_salary_header[0].leave_salary_amount
+                    ) + parseFloat(leave_salary_accrual_detail[i].leave_salary);
+                  let airticket_amount =
+                    parseFloat(employee_leave_salary_header[0].airticket_amount) +
+                    parseFloat(leave_salary_accrual_detail[i].airfare_amount);
+                  let balance_leave_days =
+                    parseFloat(employee_leave_salary_header[0].balance_leave_days) +
+                    parseFloat(leave_salary_accrual_detail[i].leave_days);
+                  let balance_leave_salary_amount =
+                    parseFloat(
+                      employee_leave_salary_header[0].balance_leave_salary_amount
+                    ) + parseFloat(leave_salary_accrual_detail[i].leave_salary);
+                  let balance_airticket_amount =
+                    parseFloat(
+                      employee_leave_salary_header[0].balance_airticket_amount
+                    ) + parseFloat(leave_salary_accrual_detail[i].airfare_amount);
 
-              let airfare_months =
-                parseFloat(employee_leave_salary_header[0].airfare_months) + 1;
+                  let airfare_months =
+                    parseFloat(employee_leave_salary_header[0].airfare_months) + 1;
 
-              let monthly_close_balance = parseFloat(
-                monthly_leave.close_balance
-              );
+                  let monthly_close_balance = parseFloat(
+                    monthly_leave.close_balance
+                  );
 
-              // let utilized_leave_days =
-              //   parseFloat(
-              //     employee_leave_salary_header[0].utilized_leave_days
-              //   ) + parseFloat(leave_salary_accrual_detail[i].leave_days);
-              // let utilized_leave_salary_amount =
-              //   parseFloat(
-              //     employee_leave_salary_header[0].utilized_leave_salary_amount
-              //   ) + parseFloat(leave_salary_accrual_detail[i].leave_salary);
-              // let utilized_airticket_amount =
-              //   parseFloat(
-              //     employee_leave_salary_header[0].utilized_airticket_amount
-              //   ) + parseFloat(leave_salary_accrual_detail[i].airfare_amount);
+                  let projected_applied_leaves = parseFloat(
+                    monthly_leave.projected_applied_leaves
+                  );
+                  let accumulated_leaves = parseFloat(
+                    monthly_leave.accumulated_leaves
+                  );
+                  let monthly_accruval_leave = parseFloat(
+                    leave_salary_accrual_detail[i].leave_days
+                  );
+                  if (projected_applied_leaves > 0) {
+                    if (projected_applied_leaves > monthly_accruval_leave) {
+                      projected_applied_leaves =
+                        projected_applied_leaves - monthly_accruval_leave;
+                      accumulated_leaves =
+                        accumulated_leaves + monthly_accruval_leave;
+                    } else {
+                      projected_applied_leaves =
+                        monthly_accruval_leave - projected_applied_leaves;
+                      monthly_close_balance =
+                        monthly_close_balance + projected_applied_leaves;
+                      accumulated_leaves =
+                        accumulated_leaves +
+                        monthly_accruval_leave -
+                        projected_applied_leaves;
+                    }
+                  } else {
+                    monthly_close_balance =
+                      monthly_close_balance + monthly_accruval_leave;
+                  }
+                  leave_salary_amount = utilities.decimalPoints(
+                    leave_salary_amount,
+                    decimal_places
+                  );
+                  airticket_amount = utilities.decimalPoints(
+                    airticket_amount,
+                    decimal_places
+                  );
+                  balance_leave_salary_amount = utilities.decimalPoints(
+                    balance_leave_salary_amount,
+                    decimal_places
+                  );
+                  balance_airticket_amount = utilities.decimalPoints(
+                    balance_airticket_amount,
+                    decimal_places
+                  );
 
-              let projected_applied_leaves = parseFloat(
-                monthly_leave.projected_applied_leaves
-              );
-              let accumulated_leaves = parseFloat(
-                monthly_leave.accumulated_leaves
-              );
-              let monthly_accruval_leave = parseFloat(
-                leave_salary_accrual_detail[i].leave_days
-              );
-              if (projected_applied_leaves > 0) {
-                if (projected_applied_leaves > monthly_accruval_leave) {
-                  projected_applied_leaves =
-                    projected_applied_leaves - monthly_accruval_leave;
-                  accumulated_leaves =
-                    accumulated_leaves + monthly_accruval_leave;
-                } else {
-                  projected_applied_leaves =
-                    monthly_accruval_leave - projected_applied_leaves;
-                  monthly_close_balance =
-                    monthly_close_balance + projected_applied_leaves;
-                  accumulated_leaves =
-                    accumulated_leaves +
-                    monthly_accruval_leave -
-                    projected_applied_leaves;
-                }
-              } else {
-                monthly_close_balance =
-                  monthly_close_balance + monthly_accruval_leave;
-              }
-              leave_salary_amount = utilities.decimalPoints(
-                leave_salary_amount,
-                decimal_places
-              );
-              airticket_amount = utilities.decimalPoints(
-                airticket_amount,
-                decimal_places
-              );
-              balance_leave_salary_amount = utilities.decimalPoints(
-                balance_leave_salary_amount,
-                decimal_places
-              );
-              balance_airticket_amount = utilities.decimalPoints(
-                balance_airticket_amount,
-                decimal_places
-              );
-              // utilized_leave_salary_amount = utilities.decimalPoints(
-              //   utilized_leave_salary_amount,
-              //   decimal_places
-              // );
-              // utilized_airticket_amount = utilities.decimalPoints(
-              //   utilized_airticket_amount,
-              //   decimal_places
-              // );
-
-              strQry += mysql.format(
-                "UPDATE `hims_f_employee_leave_salary_header` SET leave_days=?,`leave_salary_amount`=?,\
+                  strQry += mysql.format(
+                    "UPDATE `hims_f_employee_leave_salary_header` SET leave_days=?,`leave_salary_amount`=?,\
                   `airticket_amount`=?,`balance_leave_days`=?,`balance_leave_salary_amount`=?,\
                   `balance_airticket_amount`=?,`airfare_months`=? where  hims_f_employee_leave_salary_header_id=?;\
                   UPDATE hims_f_employee_monthly_leave set close_balance=?, projected_applied_leaves=?, accumulated_leaves=? \
                   where hims_f_employee_monthly_leave_id=?;\
                   INSERT INTO `hims_f_employee_leave_salary_detail`(employee_leave_salary_header_id,leave_days,\
-                    leave_salary_amount,airticket_amount, year, month) VALUE(?,?,?,?,?,?)",
-                [
-                  leave_days,
-                  leave_salary_amount,
-                  airticket_amount,
-                  balance_leave_days,
-                  balance_leave_salary_amount,
-                  balance_airticket_amount,
-                  airfare_months,
-                  employee_leave_salary_header[0]
-                    .hims_f_employee_leave_salary_header_id,
-                  monthly_close_balance,
-                  projected_applied_leaves,
-                  accumulated_leaves,
-                  monthly_leave.hims_f_employee_monthly_leave_id,
-                  employee_leave_salary_header[0]
-                    .hims_f_employee_leave_salary_header_id,
-                  leave_salary_accrual_detail[i].leave_days,
-                  leave_salary_accrual_detail[i].leave_salary,
-                  leave_salary_accrual_detail[i].airfare_amount,
-                  leave_salary_accrual_detail[i].year,
-                  leave_salary_accrual_detail[i].month
-                ]
-              );
+                    leave_salary_amount,airticket_amount, year, month) VALUE(?,?,?,?,?,?);",
+                    [
+                      leave_days,
+                      leave_salary_amount,
+                      airticket_amount,
+                      balance_leave_days,
+                      balance_leave_salary_amount,
+                      balance_airticket_amount,
+                      airfare_months,
+                      employee_leave_salary_header[0]
+                        .hims_f_employee_leave_salary_header_id,
+                      monthly_close_balance,
+                      projected_applied_leaves,
+                      accumulated_leaves,
+                      monthly_leave.hims_f_employee_monthly_leave_id,
+                      employee_leave_salary_header[0]
+                        .hims_f_employee_leave_salary_header_id,
+                      leave_salary_accrual_detail[i].leave_days,
+                      leave_salary_accrual_detail[i].leave_salary,
+                      leave_salary_accrual_detail[i].airfare_amount,
+                      leave_salary_accrual_detail[i].year,
+                      leave_salary_accrual_detail[i].month
+                    ]
+                  );
 
-              _mysql
-                .executeQuery({ query: strQry, printQuery: true })
-                .then(update_employee_leave => {
-                  // resolve();
-                })
-                .catch(e => {
-                  reject(e);
-                });
-            } else {
-              _mysql
-                .executeQuery({
-                  query:
-                    "INSERT INTO `hims_f_employee_leave_salary_header`  (`year`,`employee_id`,`leave_days`,\
-                      `leave_salary_amount`,`airticket_amount`,`balance_leave_days`,`balance_leave_salary_amount`,\
-                      `balance_airticket_amount`,`airfare_months`,`utilized_leave_days`, `utilized_leave_salary_amount`, `utilized_airticket_amount`)\
-                       VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
-                  values: [
-                    leave_salary_accrual_detail[i].year,
-                    leave_salary_accrual_detail[i].employee_id,
-                    leave_salary_accrual_detail[i].leave_days,
-                    leave_salary_accrual_detail[i].leave_salary,
-                    leave_salary_accrual_detail[i].airfare_amount,
-                    leave_salary_accrual_detail[i].leave_days,
-                    leave_salary_accrual_detail[i].leave_salary,
-                    leave_salary_accrual_detail[i].airfare_amount,
-                    "1",
-                    "0",
-                    "0",
-                    "0"
-                  ],
-                  printQuery: true
-                })
-                .then(employee_leave_header => {
-                  let IncludeValues = [
-                    "employee_leave_salary_header_id",
-                    "leave_days",
-                    "leave_salary_amount",
-                    "airticket_amount"
-                  ];
-                  let inputValues = [
-                    {
-                      employee_leave_salary_header_id:
-                        employee_leave_header.insertId,
-                      leave_days: leave_salary_accrual_detail[i].leave_days,
-                      leave_salary_amount:
-                        leave_salary_accrual_detail[i].leave_salary,
-                      airticket_amount:
-                        leave_salary_accrual_detail[i].airfare_amount
-                    }
-                  ];
-
+                  _mysql
+                    .executeQuery({ query: strQry, printQuery: true })
+                    .then(update_employee_leave => {
+                      resolve();
+                    })
+                    .catch(e => {
+                      reject(e);
+                    });
+                } else {
                   _mysql
                     .executeQuery({
                       query:
-                        "INSERT INTO hims_f_employee_leave_salary_detail(??) VALUES ?",
-                      values: inputValues,
-                      includeValues: IncludeValues,
-                      extraValues: {
-                        year: leave_salary_accrual_detail.year,
-                        month: leave_salary_accrual_detail.month
-                      },
-                      bulkInsertOrUpdate: true,
+                        "INSERT INTO `hims_f_employee_leave_salary_header`  (`year`,`employee_id`,`leave_days`,\
+                      `leave_salary_amount`,`airticket_amount`,`balance_leave_days`,`balance_leave_salary_amount`,\
+                      `balance_airticket_amount`,`airfare_months`,`utilized_leave_days`, `utilized_leave_salary_amount`, `utilized_airticket_amount`)\
+                       VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
+                      values: [
+                        leave_salary_accrual_detail[i].year,
+                        leave_salary_accrual_detail[i].employee_id,
+                        leave_salary_accrual_detail[i].leave_days,
+                        leave_salary_accrual_detail[i].leave_salary,
+                        leave_salary_accrual_detail[i].airfare_amount,
+                        leave_salary_accrual_detail[i].leave_days,
+                        leave_salary_accrual_detail[i].leave_salary,
+                        leave_salary_accrual_detail[i].airfare_amount,
+                        "1",
+                        "0",
+                        "0",
+                        "0"
+                      ],
                       printQuery: true
                     })
-                    .then(leave_detail => {
-                      let monthly_close_balance = parseFloat(
-                        monthly_leave.close_balance
-                      );
-
-                      let projected_applied_leaves = parseFloat(
-                        monthly_leave.projected_applied_leaves
-                      );
-                      let accumulated_leaves = parseFloat(
-                        monthly_leave.accumulated_leaves
-                      );
-                      let monthly_accruval_leave = parseFloat(
-                        leave_salary_accrual_detail[i].leave_days
-                      );
-                      if (projected_applied_leaves > 0) {
-                        if (projected_applied_leaves > monthly_accruval_leave) {
-                          projected_applied_leaves =
-                            projected_applied_leaves - monthly_accruval_leave;
-                          accumulated_leaves =
-                            accumulated_leaves + monthly_accruval_leave;
-                        } else {
-                          projected_applied_leaves =
-                            monthly_accruval_leave - projected_applied_leaves;
-                          monthly_close_balance =
-                            monthly_close_balance + projected_applied_leaves;
-                          accumulated_leaves =
-                            accumulated_leaves +
-                            monthly_accruval_leave -
-                            projected_applied_leaves;
+                    .then(employee_leave_header => {
+                      let IncludeValues = [
+                        "employee_leave_salary_header_id",
+                        "leave_days",
+                        "leave_salary_amount",
+                        "airticket_amount"
+                      ];
+                      let inputValues = [
+                        {
+                          employee_leave_salary_header_id:
+                            employee_leave_header.insertId,
+                          leave_days: leave_salary_accrual_detail[i].leave_days,
+                          leave_salary_amount:
+                            leave_salary_accrual_detail[i].leave_salary,
+                          airticket_amount:
+                            leave_salary_accrual_detail[i].airfare_amount
                         }
-                      } else {
-                        monthly_close_balance =
-                          monthly_close_balance + monthly_accruval_leave;
-                      }
+                      ];
+
                       _mysql
                         .executeQuery({
                           query:
-                            "UPDATE hims_f_employee_monthly_leave set close_balance=?,  projected_applied_leaves=?, \
-                            accumulated_leaves=? where hims_f_employee_monthly_leave_id=?;",
-                          values: [
-                            monthly_close_balance,
-                            projected_applied_leaves,
-                            accumulated_leaves,
-                            monthly_leave.hims_f_employee_monthly_leave_id
-                          ],
-
+                            "INSERT INTO hims_f_employee_leave_salary_detail(??) VALUES ?",
+                          values: inputValues,
+                          includeValues: IncludeValues,
+                          extraValues: {
+                            year: leave_salary_accrual_detail.year,
+                            month: leave_salary_accrual_detail.month
+                          },
+                          bulkInsertOrUpdate: true,
                           printQuery: true
                         })
-                        .then(monthly_leave => {
-                          // resolve();
+                        .then(leave_detail => {
+                          let monthly_close_balance = parseFloat(
+                            monthly_leave.close_balance
+                          );
+
+                          let projected_applied_leaves = parseFloat(
+                            monthly_leave.projected_applied_leaves
+                          );
+                          let accumulated_leaves = parseFloat(
+                            monthly_leave.accumulated_leaves
+                          );
+                          let monthly_accruval_leave = parseFloat(
+                            leave_salary_accrual_detail[i].leave_days
+                          );
+                          if (projected_applied_leaves > 0) {
+                            if (projected_applied_leaves > monthly_accruval_leave) {
+                              projected_applied_leaves =
+                                projected_applied_leaves - monthly_accruval_leave;
+                              accumulated_leaves =
+                                accumulated_leaves + monthly_accruval_leave;
+                            } else {
+                              projected_applied_leaves =
+                                monthly_accruval_leave - projected_applied_leaves;
+                              monthly_close_balance =
+                                monthly_close_balance + projected_applied_leaves;
+                              accumulated_leaves =
+                                accumulated_leaves +
+                                monthly_accruval_leave -
+                                projected_applied_leaves;
+                            }
+                          } else {
+                            monthly_close_balance =
+                              monthly_close_balance + monthly_accruval_leave;
+                          }
+                          _mysql
+                            .executeQuery({
+                              query:
+                                "UPDATE hims_f_employee_monthly_leave set close_balance=?,  projected_applied_leaves=?, \
+                            accumulated_leaves=? where hims_f_employee_monthly_leave_id=?;",
+                              values: [
+                                monthly_close_balance,
+                                projected_applied_leaves,
+                                accumulated_leaves,
+                                monthly_leave.hims_f_employee_monthly_leave_id
+                              ],
+
+                              printQuery: true
+                            })
+                            .then(monthly_leave => {
+                              resolve();
+                            })
+                            .catch(error => {
+                              reject(error);
+                            });
                         })
                         .catch(error => {
                           reject(error);
                         });
                     })
-                    .catch(error => {
-                      reject(error);
+                    .catch(e => {
+                      reject(e);
                     });
-                })
-                .catch(e => {
-                  reject(e);
-                });
-            }
+                }
+              })
+              .catch(e => {
+                reject(e);
+              });
           })
-          .catch(e => {
-            reject(e);
-          });
+        );
       }
-      resolve();
+      Promise.all(promiseAll)
+        .then(() => {
+          resolve();
+        })
+        .catch(e => {
+          reject(e);
+        });
+
     } catch (e) {
       reject(e);
     }
@@ -3634,7 +3626,7 @@ function getOtManagement(options) {
     try {
       const utilities = new algaehUtilities();
 
-      utilities.logger().log("getOtManagement: ");
+      // utilities.logger().log("getOtManagement: ");
       const _earnings = options.earnings;
       const empResult = options.empResult;
 
@@ -3802,14 +3794,14 @@ function getShortAge(options) {
       let final_deduction_amount = 0;
       let current_shortage_amt_array = [];
 
-      utilities.logger().log("getShortAge: ", shortage_comp);
+      // utilities.logger().log("getShortAge: ", shortage_comp);
 
       if (empResult.shortage_hours != null && shortage_comp.length > 0) {
         let Noof_Working_Hours =
           parseFloat(hrms_option[0].standard_working_hours) -
           parseFloat(hrms_option[0].standard_break_hours);
 
-        utilities.logger().log("Noof_Working_Hours: ", Noof_Working_Hours);
+        // utilities.logger().log("Noof_Working_Hours: ", Noof_Working_Hours);
 
         _earnings.map(obj => {
           //ShortAge Calculation
@@ -3822,7 +3814,7 @@ function getShortAge(options) {
               })
               .value();
 
-            utilities.logger().log("earn_amount: ", earn_amount);
+            // utilities.logger().log("earn_amount: ", earn_amount);
 
             let _per_day_salary = parseFloat(
               parseFloat(earn_amount[0].amount) /
@@ -3831,11 +3823,11 @@ function getShortAge(options) {
 
             let per_hour_salary = _per_day_salary / Noof_Working_Hours;
 
-            utilities.logger().log("per_hour_salary: ", per_hour_salary);
+            // utilities.logger().log("per_hour_salary: ", per_hour_salary);
 
             per_hour_salary = per_hour_salary * empResult.shortage_hours;
 
-            utilities.logger().log("per_hour_salary: ", per_hour_salary);
+            // utilities.logger().log("per_hour_salary: ", per_hour_salary);
 
             if (per_hour_salary > 0) {
               current_shortage_amt_array.push({
@@ -3866,7 +3858,7 @@ function getEarningComponents(options) {
   return new Promise((resolve, reject) => {
     try {
       const utilities = new algaehUtilities();
-      utilities.logger().log("getEarningComponents: ");
+      // utilities.logger().log("getEarningComponents: ");
 
       const _earnings = options.earnings;
       const empResult = options.empResult;
@@ -3949,17 +3941,17 @@ function getEarningComponents(options) {
                 parseFloat(hrms_option[0].salary_calendar_fixed_days)
               );
 
-              utilities
-                .logger()
-                .log(
-                  "current_earning_per_day_salary: ",
-                  current_earning_per_day_salary
-                );
+              // utilities
+              //   .logger()
+              //   .log(
+              //     "current_earning_per_day_salary: ",
+              //     current_earning_per_day_salary
+              //   );
 
-              utilities
-                .logger()
-                .log("unpaid_leave: ", empResult["unpaid_leave"]);
-              utilities.logger().log("absent_days: ", empResult["absent_days"]);
+              // utilities
+              //   .logger()
+              //   .log("unpaid_leave: ", empResult["unpaid_leave"]);
+              // utilities.logger().log("absent_days: ", empResult["absent_days"]);
 
               if (
                 empResult["from_normal_salary"] === "Y" &&
@@ -3972,10 +3964,10 @@ function getEarningComponents(options) {
                 parseFloat(empResult["unpaid_leave"]) +
                 parseFloat(empResult["absent_days"]) +
                 leave_period;
-              utilities.logger().log("days: ", days);
+              // utilities.logger().log("days: ", days);
 
               let amount = current_earning_per_day_salary * days;
-              utilities.logger().log("amount: ", amount);
+              // utilities.logger().log("amount: ", amount);
               current_earning_amt = obj["amount"] - amount;
               current_earning_amt = current_earning_amt + annual_per_day_sal;
             } else {
@@ -4035,9 +4027,9 @@ function getEarningComponents(options) {
           //Apply Leave Rule
           accrual_amount = accrual_amount + annual_per_day_sal;
           if (leave_salary != "Y") {
-            utilities.logger().log("total_days: ", total_days);
+            // utilities.logger().log("total_days: ", total_days);
             let perday_salary = current_earning_amt / total_days;
-            utilities.logger().log("perday_salary: ", perday_salary);
+            // utilities.logger().log("perday_salary: ", perday_salary);
 
             let balance_days = 0;
             let x = 0,
@@ -4074,20 +4066,20 @@ function getEarningComponents(options) {
 
                       // x=previous_leave<0?
 
-                      utilities.logger().log("x: ", x);
+                      // utilities.logger().log("x: ", x);
                       if (leave_rule_days > 0) {
                         balance_days = leave_rule_days;
                       } else {
-                        utilities.logger().log("else: ", x);
+                        // utilities.logger().log("else: ", x);
                         balance_days = x;
                       }
                       leaves_till_date = x;
 
                       if (leaves_till_date > current_leave) {
-                        utilities.logger().log("if: ");
+                        // utilities.logger().log("if: ");
                         balance_days = 0;
                       } else {
-                        utilities.logger().log("else: ", y);
+                        // utilities.logger().log("else: ", y);
                         if (y > current_leave) {
                           y = y - current_leave;
                           balance_days = balance_days - y;
@@ -4606,12 +4598,12 @@ function UpdateProjectWisePayroll(options) {
       let _mysql = options._mysql;
       let net_salary = options.net_salary;
 
-      // let total_hours_project = options.total_hours_project;
+      const decimal_places = options.decimal_places
       let strQry = "";
 
       const utilities = new algaehUtilities();
 
-      utilities.logger().log("UpdateProjectWisePayroll: ");
+      // utilities.logger().log("UpdateProjectWisePayroll: ");
 
       let finalData = {};
       _.chain(project_wise_payroll)
@@ -4625,14 +4617,7 @@ function UpdateProjectWisePayroll(options) {
         })
         .value();
 
-      utilities.logger().log("finalData: ", finalData);
       for (let z = 0; z < project_wise_payroll.length; z++) {
-        utilities
-          .logger()
-          .log(
-            "total_complete_hours: ",
-            finalData[project_wise_payroll[z]["employee_id"]]
-          );
         let cost = 0;
         let complete_hours = parseInt(project_wise_payroll[z]["worked_hours"]);
         let total_complete_hours =
@@ -4656,10 +4641,12 @@ function UpdateProjectWisePayroll(options) {
         } else {
           cost = 0
         }
-
-        // utilities.logger().log("cost: ", cost);
-
         cost = cost * complete_hours;
+
+        cost = utilities.decimalPoints(
+          cost,
+          decimal_places
+        );
 
         strQry += _mysql.mysqlQueryFormat(
           "UPDATE hims_f_project_wise_payroll set cost=? where hims_f_project_wise_payroll_id=?; ",
@@ -4672,7 +4659,7 @@ function UpdateProjectWisePayroll(options) {
           query: strQry,
           printQuery: true
         })
-        .then(project_wise_payroll => {
+        .then(project_payroll => {
           resolve();
         })
         .catch(e => {
@@ -4696,7 +4683,7 @@ function InsertGratuityProvision(options) {
       const utilities = new algaehUtilities();
 
       // console.log("_mysql: ", _mysql);
-      utilities.logger().log("InsertGratuityProvision: ");
+      // utilities.logger().log("InsertGratuityProvision: ");
 
       _mysql
         .executeQuery({
@@ -4715,18 +4702,18 @@ function InsertGratuityProvision(options) {
         })
         .then(result => {
           console.log("Gratuity Provision result: ", result);
-          utilities.logger().log("Gratuity Provision result: ", result);
+          // utilities.logger().log("Gratuity Provision result: ", result);
           const _employee = result[0];
           const _options = result[1];
 
-          utilities.logger().log("_employee: ", _employee);
+          // utilities.logger().log("_employee: ", _employee);
 
           if (_employee.length == 0) {
             resolve();
             return;
           }
 
-          utilities.logger().log("_options: ", _options);
+          // utilities.logger().log("_options: ", _options);
 
           if (_options.length == 0) {
             resolve();
@@ -4734,7 +4721,7 @@ function InsertGratuityProvision(options) {
           }
           const _optionsDetals = _options[0];
           if (_optionsDetals.gratuity_provision == 1) {
-            utilities.logger().log("gratuity_provision: ");
+            // utilities.logger().log("gratuity_provision: ");
 
             let _eligibleDays = 0;
 
@@ -4742,7 +4729,7 @@ function InsertGratuityProvision(options) {
             for (let k = 0; k < _employee.length; k++) {
               new Promise((resolve, reject) => {
                 try {
-                  utilities.logger().log("_employee: ", _employee[k]);
+                  // utilities.logger().log("_employee: ", _employee[k]);
                   if (_optionsDetals.end_of_service_type == "S") {
                     if (
                       _employee[k].endOfServiceYears >= 0 &&
@@ -4921,7 +4908,8 @@ function InsertGratuityProvision(options) {
                           return a + b;
                         }, 0) * _eligibleDays;
 
-                      _computatedAmoutSum = _computatedAmoutSum.toFixed(
+                      _computatedAmoutSum = utilities.decimalPoints(
+                        _computatedAmoutSum,
                         decimal_places
                       );
 
@@ -4938,7 +4926,7 @@ function InsertGratuityProvision(options) {
 
                       if (k == _employee.length - 1) {
                         resolve();
-                        utilities.logger().log("strQry: ", strQry);
+                        // utilities.logger().log("strQry: ", strQry);
                       }
                     })
                     .catch(e => {
@@ -4949,7 +4937,7 @@ function InsertGratuityProvision(options) {
                 }
               })
                 .then(result => {
-                  utilities.logger().log("strQry: ", strQry);
+                  // utilities.logger().log("strQry: ", strQry);
 
                   _mysql
                     .executeQuery({
@@ -4957,11 +4945,11 @@ function InsertGratuityProvision(options) {
                       printQuery: true
                     })
                     .then(result => {
-                      utilities.logger().log("reslove: ");
+                      // utilities.logger().log("reslove: ");
                       resolve();
                     })
                     .catch(e => {
-                      utilities.logger().log("Error: ");
+                      // utilities.logger().log("Error: ");
                       reject(e);
                     });
                 })
@@ -4974,7 +4962,7 @@ function InsertGratuityProvision(options) {
           }
         })
         .catch(e => {
-          utilities.logger().log("Gratuity Provision Error: ");
+          // utilities.logger().log("Gratuity Provision Error: ");
           reject(e);
         });
     } catch (e) {
@@ -4995,7 +4983,7 @@ function UpdateLeaveSalaryProvission(options) {
 
       const utilities = new algaehUtilities();
 
-      utilities.logger().log("UpdateLeaveSalaryProvission: ");
+      // utilities.logger().log("UpdateLeaveSalaryProvission: ");
 
       for (let i = 0; i < inputParam._leave_salary_acc.length; i++) {
         _mysql
@@ -5006,9 +4994,9 @@ function UpdateLeaveSalaryProvission(options) {
             printQuery: true
           })
           .then(leave_salary_header => {
-            utilities
-              .logger()
-              .log("leave_salary_header: ", leave_salary_header);
+            // utilities
+            //   .logger()
+            //   .log("leave_salary_header: ", leave_salary_header);
 
             let balance_leave_days =
               parseFloat(leave_salary_header[0].balance_leave_days) -
@@ -5019,17 +5007,17 @@ function UpdateLeaveSalaryProvission(options) {
                 inputParam._leave_salary_acc[i].leave_salary_accrual_amount
               );
 
-            utilities.logger().log("balance_leave_days: ", balance_leave_days);
-            utilities
-              .logger()
-              .log(
-                "balance_leave_salary_amount: ",
-                balance_leave_salary_amount
-              );
+            // utilities.logger().log("balance_leave_days: ", balance_leave_days);
+            // utilities
+            //   .logger()
+            //   .log(
+            //     "balance_leave_salary_amount: ",
+            //     balance_leave_salary_amount
+            //   );
 
             strQry += _mysql.mysqlQueryFormat(
               "UPDATE `hims_f_employee_leave_salary_header` SET `balance_leave_days`=?, \
-              `balance_leave_salary_amount` = ? where hims_f_employee_leave_salary_header_id=?",
+              `balance_leave_salary_amount` = ? where hims_f_employee_leave_salary_header_id=?;",
               [
                 balance_leave_days,
                 balance_leave_salary_amount,
@@ -5038,7 +5026,7 @@ function UpdateLeaveSalaryProvission(options) {
             );
 
             if (i === inputParam._leave_salary_acc.length - 1) {
-              utilities.logger().log("strQry: ", strQry);
+              // utilities.logger().log("strQry: ", strQry);
               _mysql
                 .executeQuery({
                   query: strQry,
