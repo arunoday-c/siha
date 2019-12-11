@@ -54,8 +54,8 @@ class EmployeeGroups extends Component {
     ProjectMasterEvents().changeGridEditors(this, row, e);
   }
 
-  updateEmployeeGroups(data) {
-    ProjectMasterEvents().updateEmployeeGroups(this, data);
+  updateProjectMaster(data) {
+    ProjectMasterEvents().updateProjectMaster(this, data);
   }
 
   deleteEmployeeGroups(data) {
@@ -411,7 +411,7 @@ class EmployeeGroups extends Component {
                       events={{
                         onEdit: () => {},
                         onDelete: this.deleteEmployeeGroups.bind(this),
-                        onDone: this.updateEmployeeGroups.bind(this)
+                        onDone: this.updateProjectMaster.bind(this)
                       }}
                     />
                   </div>

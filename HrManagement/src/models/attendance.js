@@ -8904,7 +8904,7 @@ getDailyAttendance: (req, res, next) => {
                 left join  hims_d_project P on P.hims_d_project_id=PR.project_id
                 inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
                 left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
-                where E.hospital_id=? and E.record_status='A' and E.employee_status='A' ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
+                where E.hospital_id=? and E.record_status='A' and E.employee_status='A' and E.suspend_salary <>'Y' ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
 
                 order by hims_d_employee_id;
                 select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
@@ -10757,7 +10757,7 @@ function BulktimesheetCalc(req, res, next) {
                   left join  hims_d_project P on P.hims_d_project_id=PR.project_id
                   inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
                   left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
-                  where E.hospital_id=?  and E.record_status='A' and E.employee_status='A' ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
+                  where E.hospital_id=?  and E.record_status='A' and E.employee_status='A' and E.suspend_salary <>'Y' ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
 
                   order by hims_d_employee_id;
                   select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,L.leave_category,
@@ -11440,7 +11440,7 @@ function loadBulkTimeSheet(input, req, res, next) {
                   inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
 									left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date\
 									left join hims_d_project P on PR.project_id=P.hims_d_project_id\
-									where  TS.hospital_id=? and  TS.attendance_date between (?) and (?) ${strQry} ${project}; `,
+									where  TS.hospital_id=? and  TS.attendance_date between (?) and (?) and E.suspend_salary <>'Y' ${strQry} ${project}; `,
                   values: [input.branch_id, input.from_date, input.to_date],
                   printQuery: false
                 })

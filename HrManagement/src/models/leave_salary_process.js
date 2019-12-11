@@ -139,30 +139,6 @@ export default {
                       let end_selected_day = moment(to_date).format("DD");
                       console.log("end_selected_day", end_selected_day)
                       console.log("at_end_date", hrms_options.at_end_date)
-                      // if (parseFloat(parseFloat(end_selected_day) <= hrms_options.at_end_date)) {
-                      //   console.log("if", hrms_options.at_end_date)
-                      //   fromDate_firstDate = moment(
-                      //     selected_year +
-                      //     "-" +
-                      //     selected_month +
-                      //     "-" +
-                      //     hrms_options.at_st_date,
-                      //     "YYYY-MM-DD"
-                      //   )
-                      //     .add(-1, "M")
-                      //     .format("YYYY-MM-DD");
-
-                      //   fromDate_lastDate = moment(
-                      //     selected_year +
-                      //     "-" +
-                      //     selected_month +
-                      //     "-" +
-                      //     hrms_options.at_end_date
-                      //   )
-                      //     .format("YYYY-MM-DD");
-
-                      // } else {
-                      // console.log("else", hrms_options.at_end_date)
                       fromDate_firstDate = moment(
                         selected_year +
                         "-" +
@@ -171,7 +147,6 @@ export default {
                         hrms_options.at_st_date,
                         "YYYY-MM-DD"
                       )
-                        .add(-1, "M")
                         .format("YYYY-MM-DD");
 
                       fromDate_lastDate = moment(
@@ -181,6 +156,7 @@ export default {
                         "-" +
                         hrms_options.at_end_date
                       )
+                        .add(1, "M")
                         .format("YYYY-MM-DD");
                       // }
                     } else {
