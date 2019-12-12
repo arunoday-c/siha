@@ -35,7 +35,6 @@ class RequestItemList extends Component {
   }
 
   render() {
-
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -195,9 +194,9 @@ class RequestItemList extends Component {
                 <div className="col-lg-12">
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="row">
-                      <div className="col-lg-12" id="POGrid">
+                      <div className="col-lg-12" id="ReqQuoteGrid_Cntr">
                         <AlgaehDataGrid
-                          id="PO_details"
+                          id="ReqQuoteGrid"
                           columns={[
                             {
                               fieldName:
@@ -214,26 +213,26 @@ class RequestItemList extends Component {
 
                                 this.state.quotation_for === "PHR"
                                   ? (display =
-                                    this.props.poitemlist === undefined
-                                      ? []
-                                      : this.props.poitemlist.filter(
-                                        f =>
-                                          f.hims_d_item_master_id ===
-                                          row.phar_item_id
-                                      ))
+                                      this.props.poitemlist === undefined
+                                        ? []
+                                        : this.props.poitemlist.filter(
+                                            f =>
+                                              f.hims_d_item_master_id ===
+                                              row.phar_item_id
+                                          ))
                                   : (display =
-                                    this.props.poitemlist === undefined
-                                      ? []
-                                      : this.props.poitemlist.filter(
-                                        f =>
-                                          f.hims_d_inventory_item_master_id ===
-                                          row.inv_item_id
-                                      ));
+                                      this.props.poitemlist === undefined
+                                        ? []
+                                        : this.props.poitemlist.filter(
+                                            f =>
+                                              f.hims_d_inventory_item_master_id ===
+                                              row.inv_item_id
+                                          ));
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                      display.length !== 0
+                                    display.length !== 0
                                       ? display[0].item_description
                                       : ""}
                                   </span>
@@ -260,26 +259,26 @@ class RequestItemList extends Component {
 
                                 this.state.quotation_for === "PHR"
                                   ? (display =
-                                    this.props.poitemcategory === undefined
-                                      ? []
-                                      : this.props.poitemcategory.filter(
-                                        f =>
-                                          f.hims_d_item_category_id ===
-                                          row.phar_item_category
-                                      ))
+                                      this.props.poitemcategory === undefined
+                                        ? []
+                                        : this.props.poitemcategory.filter(
+                                            f =>
+                                              f.hims_d_item_category_id ===
+                                              row.phar_item_category
+                                          ))
                                   : (display =
-                                    this.props.poitemcategory === undefined
-                                      ? []
-                                      : this.props.poitemcategory.filter(
-                                        f =>
-                                          f.hims_d_inventory_tem_category_id ===
-                                          row.inv_item_category_id
-                                      ));
+                                      this.props.poitemcategory === undefined
+                                        ? []
+                                        : this.props.poitemcategory.filter(
+                                            f =>
+                                              f.hims_d_inventory_tem_category_id ===
+                                              row.inv_item_category_id
+                                          ));
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                      display.length !== 0
+                                    display.length !== 0
                                       ? display[0].category_desc
                                       : ""}
                                   </span>
@@ -305,26 +304,26 @@ class RequestItemList extends Component {
 
                                 this.state.quotation_for === "PHR"
                                   ? (display =
-                                    this.props.poitemgroup === undefined
-                                      ? []
-                                      : this.props.poitemgroup.filter(
-                                        f =>
-                                          f.hims_d_item_group_id ===
-                                          row.phar_item_group
-                                      ))
+                                      this.props.poitemgroup === undefined
+                                        ? []
+                                        : this.props.poitemgroup.filter(
+                                            f =>
+                                              f.hims_d_item_group_id ===
+                                              row.phar_item_group
+                                          ))
                                   : (display =
-                                    this.props.poitemgroup === undefined
-                                      ? []
-                                      : this.props.poitemgroup.filter(
-                                        f =>
-                                          f.hims_d_inventory_item_group_id ===
-                                          row.inv_item_group_id
-                                      ));
+                                      this.props.poitemgroup === undefined
+                                        ? []
+                                        : this.props.poitemgroup.filter(
+                                            f =>
+                                              f.hims_d_inventory_item_group_id ===
+                                              row.inv_item_group_id
+                                          ));
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                      display.length !== 0
+                                    display.length !== 0
                                       ? display[0].group_description
                                       : ""}
                                   </span>
@@ -335,39 +334,38 @@ class RequestItemList extends Component {
                               }
                             },
                             {
-                              fieldName: this.state.quotation_for === "PHR"
-                                ? "pharmacy_uom_id"
-                                : "inventory_uom_id",
+                              fieldName:
+                                this.state.quotation_for === "PHR"
+                                  ? "pharmacy_uom_id"
+                                  : "inventory_uom_id",
                               label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "UOM" }}
-                                />
+                                <AlgaehLabel label={{ forceLabel: "UOM" }} />
                               ),
                               displayTemplate: row => {
                                 let display;
 
                                 this.state.quotation_for === "PHR"
                                   ? (display =
-                                    this.props.poitemuom === undefined
-                                      ? []
-                                      : this.props.poitemuom.filter(
-                                        f =>
-                                          f.hims_d_pharmacy_uom_id ===
-                                          row.pharmacy_uom_id
-                                      ))
+                                      this.props.poitemuom === undefined
+                                        ? []
+                                        : this.props.poitemuom.filter(
+                                            f =>
+                                              f.hims_d_pharmacy_uom_id ===
+                                              row.pharmacy_uom_id
+                                          ))
                                   : (display =
-                                    this.props.poitemuom === undefined
-                                      ? []
-                                      : this.props.poitemuom.filter(
-                                        f =>
-                                          f.hims_d_inventory_uom_id ===
-                                          row.inventory_uom_id
-                                      ));
+                                      this.props.poitemuom === undefined
+                                        ? []
+                                        : this.props.poitemuom.filter(
+                                            f =>
+                                              f.hims_d_inventory_uom_id ===
+                                              row.inventory_uom_id
+                                          ));
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                      display.length !== 0
+                                    display.length !== 0
                                       ? display[0].uom_description
                                       : ""}
                                   </span>
@@ -384,7 +382,7 @@ class RequestItemList extends Component {
                                   label={{ forceLabel: "Quantity" }}
                                 />
                               )
-                            },
+                            }
                           ]}
                           keyId="hims_f_procurement_po_detail_id"
                           dataSource={{
@@ -398,7 +396,11 @@ class RequestItemList extends Component {
                           // forceRender={true}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onDelete: deleteQuotationDetail.bind(this, this, context)
+                            onDelete: deleteQuotationDetail.bind(
+                              this,
+                              this,
+                              context
+                            )
                           }}
                         />
                       </div>
@@ -436,8 +438,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(RequestItemList)
+  connect(mapStateToProps, mapDispatchToProps)(RequestItemList)
 );

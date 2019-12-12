@@ -1,14 +1,11 @@
-.hims-request-for-quotation {
-}
-#POGrid {
-	.ReactTable {
-		max-width: 95vw !important;
-		max-height: 50vh !important;
-	}
-
-	@media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
-		.ReactTable {
-			max-width: 93vw !important;
-		}
-	}
+#ReqQuoteGrid {
+  .ReactTable {
+    max-width: 95vw !important;
+    max-height: 38vh !important;
+  }
+  @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
+    .ReactTable {
+      max-width: 93vw !important;
+    }
+  }
 }
