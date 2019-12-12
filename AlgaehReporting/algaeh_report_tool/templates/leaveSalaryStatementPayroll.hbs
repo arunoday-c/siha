@@ -34,6 +34,13 @@
 
 
                     {{#hasElement details}}
+                    <tr>
+                        <td colspan="5"></td>
+                        <td>{{total_salary_amount}}</td>
+                        <td>{{total_leave_amount}}</td>
+                        <td>{{total_airfare_amount}}</td>
+                        <td>{{net_total_amount}}</td>
+                    </tr>
                     {{#each details}}
                     <tr style="border-top:2px dashed #000">
                         <td colspan="7" excelcellmerge="A:F" excelfonts='{"bold":true}'

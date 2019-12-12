@@ -404,7 +404,7 @@ export default {
         document_number,from_screen,case H.transaction_type when 'AD' then 'ADVANCE' 
         when 'RF' then 'REFUND' when 'BILL' then 'OPBILL' when  'CREDIT' then 
         'PATIENT CREDIT'  when  'ADJUST' then 'ADVANCE ADJUST'  when 'CREDIT_ST' then 'CREDIT SETTLEMENT'
-        when 'OP_BIL_CAN' then 'OP BILL CANCEL'
+        when 'OP_BIL_CAN' then 'OP BILL CANCEL'  when 'JV' then 'JOURNAL VOUCHER'
         end as transaction_type,S.screen_name
         from finance_day_end_header H inner join finance_day_end_sub_detail SD on
          H.finance_day_end_header_id=SD.day_end_header_id

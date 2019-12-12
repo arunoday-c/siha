@@ -35,7 +35,6 @@ class RequestItemList extends Component {
   }
 
   render() {
-
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -195,7 +194,7 @@ class RequestItemList extends Component {
                 <div className="col-lg-12">
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="row">
-                      <div className="col-lg-12" id="POGrid">
+                      <div className="col-lg-12" id="ReqQuoteGrid_Cntr">
                         <AlgaehDataGrid
                           id="QUOTATION_details"
                           columns={[
@@ -335,13 +334,12 @@ class RequestItemList extends Component {
                               }
                             },
                             {
-                              fieldName: this.state.quotation_for === "PHR"
-                                ? "pharmacy_uom_id"
-                                : "inventory_uom_id",
+                              fieldName:
+                                this.state.quotation_for === "PHR"
+                                  ? "pharmacy_uom_id"
+                                  : "inventory_uom_id",
                               label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "UOM" }}
-                                />
+                                <AlgaehLabel label={{ forceLabel: "UOM" }} />
                               ),
                               displayTemplate: row => {
                                 let display;
@@ -403,7 +401,11 @@ class RequestItemList extends Component {
                           // forceRender={true}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onDelete: deleteQuotationDetail.bind(this, this, context)
+                            onDelete: deleteQuotationDetail.bind(
+                              this,
+                              this,
+                              context
+                            )
                           }}
                         />
                       </div>
@@ -441,8 +443,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(RequestItemList)
+  connect(mapStateToProps, mapDispatchToProps)(RequestItemList)
 );

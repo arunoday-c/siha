@@ -134,51 +134,6 @@ class LoanAdjustment extends Component {
           className="row inner-top-search"
           style={{ paddingTop: 10, paddingBottom: 10 }}
         >
-          {/* <AlagehAutoComplete
-            div={{ className: "col-3 form-group mandatory" }}
-            label={{ forceLabel: "Select and Employee", isImp: true }}
-            selector={{
-              name: "",
-              className: "select-fld",
-              dataSource: {},
-              others: {}
-            }}
-          /> */}
-
-          {/* <div className="col-lg-3">
-            <div
-              className="row"
-              style={{
-                border: " 1px solid #ced4d9",
-                borderRadius: 5,
-                marginLeft: 0
-              }}
-            >
-              <div className="col">
-                <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
-                <h6>
-                  {this.state.employee_name
-                    ? this.state.employee_name
-                    : "------"}
-                </h6>
-              </div>
-              <div
-                className="col-lg-3"
-                style={{ borderLeft: "1px solid #ced4d8" }}
-              >
-                <i
-                  className="fas fa-search fa-lg"
-                  style={{
-                    paddingTop: 17,
-                    paddingLeft: 3,
-                    cursor: "pointer"
-                  }}
-                  onClick={this.employeeSearch.bind(this)}
-                />
-              </div>
-            </div>
-          </div> */}
-
           <div className="col-3 globalSearchCntr">
             <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
             <h6 onClick={this.employeeSearch.bind(this)}>
@@ -198,8 +153,8 @@ class LoanAdjustment extends Component {
               {!this.state.loading ? (
                 <span>Load</span>
               ) : (
-                  <i className="fas fa-spinner fa-spin" />
-                )}
+                <i className="fas fa-spinner fa-spin" />
+              )}
             </button>
             <button
               onClick={this.clearState.bind(this)}
@@ -234,7 +189,7 @@ class LoanAdjustment extends Component {
                           fieldName: "loan_skip_months",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Skipping Months" }}
+                              label={{ forceLabel: "Skip Month (Count)" }}
                             />
                           ),
                           displayTemplate: row => {
@@ -285,6 +240,54 @@ class LoanAdjustment extends Component {
                           ),
                           editorTemplate: row => {
                             return <span>{row.employee_name}</span>;
+                          },
+                          disabled: true
+                        },
+                        {
+                          fieldName: "approved_amount",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Approved Amount" }}
+                            />
+                          ),
+                          editorTemplate: row => {
+                            return <span>{row.approved_amount}</span>;
+                          },
+                          disabled: true
+                        },
+                        {
+                          fieldName: "installment_amount",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Installment Amount" }}
+                            />
+                          ),
+                          editorTemplate: row => {
+                            return <span>{row.installment_amount}</span>;
+                          },
+                          disabled: true
+                        },
+                        {
+                          fieldName: "pending_tenure",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Pending Tenure" }}
+                            />
+                          ),
+                          editorTemplate: row => {
+                            return <span>{row.pending_tenure}</span>;
+                          },
+                          disabled: true
+                        },
+                        {
+                          fieldName: "pending_loan",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Pending Loan" }}
+                            />
+                          ),
+                          editorTemplate: row => {
+                            return <span>{row.pending_loan}</span>;
                           },
                           disabled: true
                         },
@@ -342,12 +345,15 @@ class LoanAdjustment extends Component {
                       keyId="hims_f_loan_application_id"
                       dataSource={{ data: this.state.employee_loans }}
                       isEditable={true}
+                      actions={{
+                        allowDelete: false
+                      }}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       loading={this.state.loading}
                       events={{
-                        onEdit: () => { },
-                        onDone: this.adjustLoan.bind(this),
-                        onDelete: () => { }
+                        onEdit: () => {},
+                        onDone: this.adjustLoan.bind(this)
+                        //onDelete: () => { }
                       }}
                       others={{}}
                     />

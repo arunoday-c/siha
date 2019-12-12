@@ -2,7 +2,7 @@ import { Router } from "express";
 import utlities from "algaeh-utilities";
 import voucher from "../models/voucher";
 
-const { addVoucher, getVoucherNo } = voucher;
+const { addVoucher, getVoucherNo, getCostCenters } = voucher;
 
 export default () => {
   const api = Router();
@@ -27,6 +27,25 @@ export default () => {
     }
   });
   api.get("/getVoucherNo", getVoucherNo, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+        .json({
+          success: false,
+          message: req.records.message
+        })
+        .end();
+    } else {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records
+        })
+        .end();
+    }
+  });
+  api.get("/getCostCenters", getCostCenters, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res
         .status(utlities.AlgaehUtilities().httpStatus().internalServer)
