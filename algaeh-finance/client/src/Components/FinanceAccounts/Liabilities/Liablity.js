@@ -58,9 +58,7 @@ export default function Liablity() {
     });
   }
 
-  useEffect(() => {
-    loadAccount();
-  }, []);
+  useEffect(loadAccount, []);
   function loadChartData(finheadId) {
     getChartData({
       finance_account_head_id:
@@ -405,9 +403,9 @@ export default function Liablity() {
                                       <Icon
                                         type="save"
                                         onClick={e => {
-                                          const editedValue =
-                                            e.currentTarget.offsetParent
-                                              .previousElementSibling.value;
+                                          // const editedValue =
+                                          //   e.currentTarget.offsetParent
+                                          //     .previousElementSibling.value;
                                           setEditorRecord({});
                                         }}
                                       />

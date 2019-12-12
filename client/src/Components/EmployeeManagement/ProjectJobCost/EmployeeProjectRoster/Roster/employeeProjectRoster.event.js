@@ -57,14 +57,15 @@ export function getEmployeesForProjectRoster(inputs) {
   });
 }
 
-export function getProjects() {
+export function getProjects(hospital_id) {
   return new Promise((resolve, reject) => {
     try {
+      debugger;
       algaehApiCall({
         uri: "/projectjobcosting/getDivisionProject",
         module: "hrManagement",
         method: "GET",
-
+        data: { division_id: hospital_id },
         onSuccess: response => {
           const { success, records, message } = response.data;
           if (success === true) {

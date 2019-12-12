@@ -12,7 +12,7 @@ export default class SalaryManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "NewSalaryProcessing"
+      pageDisplay: "MiscEarningsDeductions"
     };
   }
 

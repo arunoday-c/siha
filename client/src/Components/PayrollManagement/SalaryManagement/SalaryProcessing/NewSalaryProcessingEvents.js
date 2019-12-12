@@ -138,13 +138,15 @@ const ClearData = $this => {
 
 const FinalizeSalary = $this => {
   swal({
-    title: "Are you sure, You want to Finalize the Salary?",
+    title: "You want to finalize the salary?",
+    text:
+      "Please verify all the information before finalize, Once finalize can't be revert back.",
     type: "warning",
     showCancelButton: true,
-    confirmButtonText: "Yes",
+    confirmButtonText: "Finalize",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No"
+    cancelButtonText: "Cancel"
   }).then(willFinalize => {
     if (willFinalize.value) {
       AlgaehLoader({ show: true });
@@ -173,7 +175,6 @@ const FinalizeSalary = $this => {
       let hrms_options = JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
       );
-
 
       let salary_date =
         "01-" + $this.state.inputs.month + "-" + $this.state.inputs.year;

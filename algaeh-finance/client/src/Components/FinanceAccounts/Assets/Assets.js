@@ -138,9 +138,7 @@ export default function Assets() {
         AlgaehMessagePop({ type: "error", display: error });
       });
   }
-  useEffect(() => {
-    loadAccount();
-  }, []);
+  useEffect(loadAccount, []);
 
   return (
     <div className="container-fluid assetsModuleScreen">
@@ -412,9 +410,9 @@ export default function Assets() {
                                       <Icon
                                         type="save"
                                         onClick={e => {
-                                          const editedValue =
-                                            e.currentTarget.offsetParent
-                                              .previousElementSibling.value;
+                                          // const editedValue =
+                                          //   e.currentTarget.offsetParent
+                                          //     .previousElementSibling.value;
                                           setEditorRecord({});
                                         }}
                                       />

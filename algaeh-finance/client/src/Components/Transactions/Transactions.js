@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 // import { AlgaehLabel } from "../../Wrappers";
 import Expense from "./Expense";
 import Income from "./Income";
