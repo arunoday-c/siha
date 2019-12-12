@@ -1,11 +1,13 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function (resolve, reject) {
+  return new Promise(function(resolve, reject) {
     try {
       const _ = options.loadash;
       // const utilities = new algaehUtilities();
       let str = "";
       let input = {};
+      const decimal_places = options.args.crypto.decimal_places;
+
       let params = options.args.reportParams;
 
       params.forEach(para => {
@@ -34,8 +36,11 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true
         })
         .then(result => {
+          const total_ED = _.sumBy(result, s => parseFloat(s.amount)).toFixed(
+            decimal_places
+          );
 
-          resolve({ details: result });
+          resolve({ details: result, total_ED: total_ED });
         })
         .catch(error => {
           options.mysql.releaseConnection();

@@ -16,6 +16,10 @@
                         <th>Total Amount</th>
                 </thead>
                 <tbody>{{#hasElement details}}
+                    <tr class="numberFld numberFldTotalBottom">
+                        <td class="" colspan="6"></td>
+                        <td class="numberFld" colspan="">{{total_ED}}</td>
+                    </tr>
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
@@ -24,7 +28,7 @@
                         <td>{{group_description}}</td>
                         <td>{{designation}}</td>
                         <td>{{earning_deduction_description}}</td>
-                        <td>{{amount}}</td>
+                        <td class="numberFld">{{amount}}</td>
                     </tr>
                     {{/each }}
                     {{else}}

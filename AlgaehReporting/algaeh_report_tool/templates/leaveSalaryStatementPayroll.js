@@ -4,6 +4,7 @@ const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
       let input = {};
+      const decimal_places = options.args.crypto.decimal_places;
       let params = options.args.reportParams;
       // const utilities = new algaehUtilities();
       params.forEach(para => {
@@ -67,8 +68,25 @@ const executePDF = function executePDFMethod(options) {
               });
             }
 
+            const total_salary_amount = _.sumBy(ress, s =>
+              parseFloat(s.salary_amount)
+            ).toFixed(decimal_places);
+            const total_leave_amount = _.sumBy(ress, s =>
+              parseFloat(s.leave_amount)
+            ).toFixed(decimal_places);
+            const total_airfare_amount = _.sumBy(ress, s =>
+              parseFloat(s.airfare_amount)
+            ).toFixed(decimal_places);
+            const net_total_amount = _.sumBy(ress, s =>
+              parseFloat(s.total_amount)
+            ).toFixed(decimal_places);
+
             const result = {
-              details: outputArray
+              details: outputArray,
+              total_salary_amount: total_salary_amount,
+              total_leave_amount: total_leave_amount,
+              total_airfare_amount: total_airfare_amount,
+              net_total_amount: net_total_amount
             };
 
             // utilities.logger().log("outputArray:", result);
