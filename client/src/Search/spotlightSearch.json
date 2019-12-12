@@ -437,6 +437,20 @@
         "label": "Vendor Name",
         "required": "N"
       }
+    ],
+    "RequestQuotation": [
+      {
+        "fieldName": "quotation_number",
+        "label": "Quotation Number"
+      },
+      {
+        "fieldName": "quotation_date",
+        "label": "Quotation Date"
+      },
+      {
+        "fieldName": "quotation_for",
+        "label": "Quotation Done For"
+      }
     ]
   },
   "Delivery": {

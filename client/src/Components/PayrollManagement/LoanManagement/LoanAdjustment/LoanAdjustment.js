@@ -33,7 +33,8 @@ class LoanAdjustment extends Component {
       onRowSelect: row => {
         this.setState({
           employee_name: row.full_name,
-          hims_d_employee_id: row.hims_d_employee_id
+          hims_d_employee_id: row.hims_d_employee_id,
+          hospital_id: row.hospital_id
         });
       }
     });
@@ -101,7 +102,8 @@ class LoanAdjustment extends Component {
         data: {
           employee_id: this.state.hims_d_employee_id,
           loan_issued: "Y",
-          loan_closed: "N"
+          loan_closed: "N",
+          hospital_id: this.state.hospital_id
         },
         onSuccess: res => {
           if (res.data.success) {
@@ -196,8 +198,8 @@ class LoanAdjustment extends Component {
               {!this.state.loading ? (
                 <span>Load</span>
               ) : (
-                <i className="fas fa-spinner fa-spin" />
-              )}
+                  <i className="fas fa-spinner fa-spin" />
+                )}
             </button>
             <button
               onClick={this.clearState.bind(this)}
@@ -262,141 +264,6 @@ class LoanAdjustment extends Component {
                             );
                           }
                         },
-                        // {
-                        //   fieldName: "pay_months",
-                        //   label: (
-                        //     <AlgaehLabel
-                        //       label={{ forceLabel: "Pay Month Togther" }}
-                        //     />
-                        //   ),
-                        //   displayTemplate: row => {
-                        //     return <span>{row.pay_months}</span>;
-                        //   },
-                        //   editorTemplate: row => {
-                        //     return (
-                        //       <AlagehFormGroup
-                        //         textBox={{
-                        //           value: row.pay_months,
-                        //           className: "txt-fld",
-                        //           name: "pay_months",
-                        //           events: {
-                        //             onChange: this.changeGridEditors.bind(
-                        //               this,
-                        //               row
-                        //             )
-                        //           },
-                        //           others: {
-                        //             errormessage:
-                        //               "Pay Months - cannot be blank",
-                        //             required: true,
-                        //             type: "number"
-                        //           }
-                        //         }}
-                        //       />
-                        //     );
-                        //   }
-                        // },
-                        // {
-                        //   fieldName: "skip_year",
-                        //   label: (
-                        //     <AlgaehLabel
-                        //       label={{
-                        //         forceLabel: "Start Year of Skip/ Pay Loan"
-                        //       }}
-                        //     />
-                        //   ),
-                        //   displayTemplate: row => {
-                        //     return <span>{row.skip_year}</span>;
-                        //   },
-                        //   editorTemplate: row => {
-                        //     return (
-                        //       <AlagehFormGroup
-                        //         textBox={{
-                        //           value: row.skip_year,
-                        //           className: "txt-fld",
-                        //           name: "skip_year",
-                        //           events: {
-                        //             onChange: this.changeGridEditors.bind(
-                        //               this,
-                        //               row
-                        //             )
-                        //           },
-                        //           others: {
-                        //             errormessage: "Skip Year - cannot be blank",
-                        //             required: true,
-                        //             type: "number"
-                        //           }
-                        //         }}
-                        //       />
-                        //     );
-                        //   }
-                        // },
-                        // {
-                        //   fieldName: "skip_month_start",
-                        //   label: (
-                        //     <AlgaehLabel
-                        //       label={{
-                        //         forceLabel: "Start Month of Skip/ Pay Loan"
-                        //       }}
-                        //     />
-                        //   ),
-                        //   displayTemplate: row => {
-                        //
-                        //     return (
-                        //       <span>
-                        //         {row.skip_month_start === "1"
-                        //           ? "January"
-                        //           : row.skip_month_start === "2"
-                        //           ? "February"
-                        //           : row.skip_month_start === "3"
-                        //           ? "March"
-                        //           : row.skip_month_start === "4"
-                        //           ? "April"
-                        //           : row.skip_month_start === "5"
-                        //           ? "May"
-                        //           : row.skip_month_start === "6"
-                        //           ? "June"
-                        //           : row.skip_month_start === "7"
-                        //           ? "July"
-                        //           : row.skip_month_start === "8"
-                        //           ? "August"
-                        //           : row.skip_month_start === "9"
-                        //           ? "September"
-                        //           : row.skip_month_start === "10"
-                        //           ? "October"
-                        //           : row.skip_month_start === "11"
-                        //           ? "November"
-                        //           : row.skip_month_start === "12"
-                        //           ? "December"
-                        //           : null}
-                        //       </span>
-                        //     );
-                        //   },
-                        //   editorTemplate: row => {
-                        //     return (
-                        //       <AlagehAutoComplete
-                        //         selector={{
-                        //           name: "skip_month_start",
-                        //           className: "select-fld",
-                        //           value: row.skip_month_start,
-                        //           dataSource: {
-                        //             textField: "name",
-                        //             valueField: "value",
-                        //             data: GlobalVariables.MONTHS
-                        //           },
-                        //           others: {
-                        //             errormessage: "Months - cannot be blank",
-                        //             required: true
-                        //           },
-                        //           onChange: this.changeGridEditors.bind(
-                        //             this,
-                        //             row
-                        //           )
-                        //         }}
-                        //       />
-                        //     );
-                        //   }
-                        // },
                         {
                           fieldName: "employee_code",
                           label: (
@@ -404,6 +271,9 @@ class LoanAdjustment extends Component {
                               label={{ forceLabel: "Employee Code" }}
                             />
                           ),
+                          editorTemplate: row => {
+                            return <span>{row.employee_code}</span>;
+                          },
                           disabled: true
                         },
                         {
@@ -413,6 +283,9 @@ class LoanAdjustment extends Component {
                               label={{ forceLabel: "Employee Name" }}
                             />
                           ),
+                          editorTemplate: row => {
+                            return <span>{row.employee_name}</span>;
+                          },
                           disabled: true
                         },
                         {
@@ -422,6 +295,9 @@ class LoanAdjustment extends Component {
                               label={{ forceLabel: "Loan Application Code" }}
                             />
                           ),
+                          editorTemplate: row => {
+                            return <span>{row.loan_application_number}</span>;
+                          },
                           disabled: true
                         },
                         {
@@ -431,6 +307,9 @@ class LoanAdjustment extends Component {
                               label={{ forceLabel: "Application Description" }}
                             />
                           ),
+                          editorTemplate: row => {
+                            return <span>{row.application_reason}</span>;
+                          },
                           disabled: true
                         },
                         {
@@ -466,9 +345,9 @@ class LoanAdjustment extends Component {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       loading={this.state.loading}
                       events={{
-                        onEdit: () => {},
+                        onEdit: () => { },
                         onDone: this.adjustLoan.bind(this),
-                        onDelete: () => {}
+                        onDelete: () => { }
                       }}
                       others={{}}
                     />

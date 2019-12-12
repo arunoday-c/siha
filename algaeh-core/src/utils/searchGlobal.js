@@ -799,6 +799,15 @@ let algaehSearchConfig = (searchName, req) => {
           hospitalId,
         orderBy: "hims_f_inventory_stock_adjust_header_id desc"
       },
+      {
+        searchName: "RequestQuotation",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS RQ.*, RQ.quotation_date as quotation_date, CASE RQ.quotation_for WHEN 'INV' then 'Inventory' \
+          else 'Pharmacy' end as quotation_for from hims_f_procurement_req_quotation_header RQ \
+          where RQ.hospital_id=" +
+          hospitalId,
+        orderBy: "hims_f_procurement_req_quotation_header_id desc"
+      }
     ]
   };
 

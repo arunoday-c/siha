@@ -285,6 +285,7 @@ const ClearData = ($this, e) => {
 
   IOputs.dataExitst = false;
   $this.setState(IOputs);
+  clearItemDetails($this)
 };
 
 const SavePOEnrty = $this => {
@@ -663,6 +664,49 @@ const getVendorMaster = $this => {
     }
   });
 };
+
+const clearItemDetails = ($this) => {
+  $this.props.getItems({
+    redux: {
+      type: "ITEM_GET_DATA",
+      mappingName: "poitemlist",
+      data: []
+    }
+  });
+
+  $this.props.getLocation({
+
+    redux: {
+      type: "LOCATIONS_GET_DATA",
+      mappingName: "polocations",
+      data: []
+    }
+  });
+
+  $this.props.getItemCategory({
+    redux: {
+      type: "ITEM_CATEGORY_GET_DATA",
+      mappingName: "poitemcategory",
+      data: []
+    }
+  });
+
+  $this.props.getItemGroup({
+    redux: {
+      type: "ITEM_GROUP_GET_DATA",
+      mappingName: "poitemgroup",
+      data: []
+    }
+  });
+
+  $this.props.getItemUOM({
+    redux: {
+      type: "ITEM_UOM_GET_DATA",
+      mappingName: "poitemuom",
+      data: []
+    }
+  });
+};
 export {
   texthandle,
   poforhandle,
@@ -678,5 +722,6 @@ export {
   AuthorizePOEntry,
   getVendorMaster,
   generatePOReceipt,
-  generatePOReceiptNoPrice
+  generatePOReceiptNoPrice,
+  clearItemDetails
 };
