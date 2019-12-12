@@ -50,99 +50,133 @@ export default {
 
     if (credit_amount === debit_amount) {
       _mysql
-        .executeQueryWithTransaction({
+        .executeQuery({
           query:
-            "INSERT INTO `finance_day_end_header` (transaction_date,amount,voucher_type,voucher_no,\
-            from_screen,refrence_no,transaction_type,hospital_id)\
-            VALUE(?,?,?,?,?,?,?,?)",
-          values: [
-            transaction_date,
-            credit_amount,
-            input.voucher_type,
-            input.voucher_no,
-            input.from_screen,
-            input.refrence_no,
-            "JV",
-            input.hospital_id
-          ]
+            "select hims_d_hospital_id,head_office,cost_center_type from \
+          hims_d_hospital where  head_office='Y'; "
         })
         .then(result => {
-          const IncludeValues = ["amount", "payment_mode"];
-          _mysql
-            .executeQueryWithTransaction({
-              query: "INSERT INTO finance_day_end_detail (??) VALUES ? ",
-              values: insertDetail,
-              includeValues: IncludeValues,
-              bulkInsertOrUpdate: true,
-              extraValues: {
-                day_end_header_id: result["insertId"]
-              },
-              printQuery: false
-            })
-            .then(detail => {
-              const month = moment(transaction_date, "YYYY-MM-DD").format("M");
-              const year = moment(transaction_date, "YYYY-MM-DD").format(
-                "YYYY"
-              );
-              const IncludeValuess = [
-                "day_end_header_id",
-                "head_account_code",
-                "head_id",
-                "child_id",
-                "debit_amount",
-                "payment_type",
-                "credit_amount",
-                "narration"
-              ];
+          if (resul.length == 1) {
+            if (
+              resul[0]["cost_center_type"] == "P" ||
+              resul[0]["cost_center_type"] == "SD"
+            ) {
+              let project_cost_center = null;
+              let subDept_cost_center = null;
+              if (resul[0]["cost_center_type"] == "P") {
+                project_cost_center = input.cost_center_id;
+              } else if (resul[0]["cost_center_type"] == "SD") {
+                subDept_cost_center = input.cost_center_id;
+              }
               _mysql
                 .executeQueryWithTransaction({
                   query:
-                    "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ",
-                  values: input.details,
-                  includeValues: IncludeValuess,
-                  bulkInsertOrUpdate: true,
-                  extraValues: {
-                    year: year,
-                    month: month,
-                    entered_date: new Date(),
-                    entered_by: req.userIdentity.algaeh_d_app_user_id,
-                    day_end_header_id: result.insertId,
-                    payment_date: transaction_date,
-                    hospital_id: input.hospital_id
-                  },
-                  printQuery: false
+                    "INSERT INTO `finance_day_end_header` (transaction_date,amount,voucher_type,voucher_no,\
+            from_screen,refrence_no,transaction_type,hospital_id)\
+            VALUE(?,?,?,?,?,?,?,?)",
+                  values: [
+                    transaction_date,
+                    credit_amount,
+                    input.voucher_type,
+                    input.voucher_no,
+                    input.from_screen,
+                    input.refrence_no,
+                    "JV",
+                    input.hospital_id
+                  ]
                 })
-                .then(subResult => {
+                .then(result => {
+                  const IncludeValues = ["amount", "payment_mode"];
                   _mysql
                     .executeQueryWithTransaction({
                       query:
-                        "SELECT encounter_id  FROM algaeh_d_app_config where algaeh_d_app_config_id=12 FOR UPDATE;\
-                      UPDATE algaeh_d_app_config SET encounter_id = encounter_id + 1 where algaeh_d_app_config_id=12;"
+                        "INSERT INTO finance_day_end_detail (??) VALUES ? ",
+                      values: insertDetail,
+                      includeValues: IncludeValues,
+                      bulkInsertOrUpdate: true,
+                      extraValues: {
+                        day_end_header_id: result["insertId"]
+                      },
+                      printQuery: false
                     })
-                    .then(updte_result => {
-                      _mysql.commitTransaction(() => {
-                        _mysql.releaseConnection();
-                        req.records = result;
-                        next();
-                      });
+                    .then(detail => {
+                      const month = moment(
+                        transaction_date,
+                        "YYYY-MM-DD"
+                      ).format("M");
+                      const year = moment(
+                        transaction_date,
+                        "YYYY-MM-DD"
+                      ).format("YYYY");
+                      const IncludeValuess = [
+                        "day_end_header_id",
+                        "head_account_code",
+                        "head_id",
+                        "child_id",
+                        "debit_amount",
+                        "payment_type",
+                        "credit_amount",
+                        "narration"
+                      ];
+                      _mysql
+                        .executeQueryWithTransaction({
+                          query:
+                            "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ",
+                          values: input.details,
+                          includeValues: IncludeValuess,
+                          bulkInsertOrUpdate: true,
+                          extraValues: {
+                            year: year,
+                            month: month,
+                            entered_date: new Date(),
+                            entered_by: req.userIdentity.algaeh_d_app_user_id,
+                            day_end_header_id: result.insertId,
+                            payment_date: transaction_date,
+                            hospital_id: input.hospital_id,
+                            project_id: project_cost_center,
+                            sub_department_id: subDept_cost_center
+                          },
+                          printQuery: false
+                        })
+                        .then(subResult => {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = result;
+                            next();
+                          });
+                        })
+                        .catch(error => {
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
+                        });
                     })
-                    .catch(e => {
+                    .catch(error => {
                       _mysql.rollBackTransaction(() => {
-                        next(e);
+                        next(error);
                       });
                     });
                 })
-                .catch(error => {
-                  _mysql.rollBackTransaction(() => {
-                    next(error);
-                  });
+                .catch(e => {
+                  _mysql.releaseConnection();
+                  next(e);
                 });
-            })
-            .catch(error => {
-              _mysql.rollBackTransaction(() => {
-                next(error);
-              });
-            });
+            } else {
+              _mysql.releaseConnection();
+              req.records = {
+                invalid_input: true,
+                message: "Please Define cost_center_type"
+              };
+              next();
+            }
+          } else {
+            _mysql.releaseConnection();
+            req.records = {
+              invalid_input: true,
+              message: "Please Define proper Head-Office"
+            };
+            next();
+          }
         })
         .catch(e => {
           _mysql.releaseConnection();
@@ -157,9 +191,9 @@ export default {
     }
   },
   //created by irfan:
-  getVoucherNo_BAKUP: (req, res, next) => {
+  getVoucherNo: (req, res, next) => {
     const _mysql = new algaehMysql();
-    let input = req.body;
+
     _mysql
       .executeQueryWithTransaction({
         query:
@@ -193,7 +227,7 @@ export default {
       });
   },
   //created by irfan:
-  getVoucherNo: (req, res, next) => {
+  getVoucherNoNEW: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
     _mysql
@@ -212,6 +246,58 @@ export default {
         _mysql.rollBackTransaction(() => {
           next(e);
         });
+      });
+  },
+  //created by irfan:
+  getCostCenters: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_d_hospital_id,head_office,cost_center_type from \
+          hims_d_hospital where  head_office='Y'; "
+      })
+      .then(result => {
+        if (result.length == 1) {
+          if (result[0]["cost_center_type"] == "P") {
+            _mysql
+              .executeQuery({
+                query:
+                  "select project_id as cost_center_id,P.project_desc as cost_center from \
+              hims_m_division_project DP inner join hims_d_project P\
+              on DP.project_id=P.hims_d_project_id where DP.division_id=?; ",
+                values: [req.userIdentity.hospital_id]
+              })
+              .then(results => {
+                _mysql.releaseConnection();
+                req.records = results;
+                next();
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
+          } else {
+            _mysql.releaseConnection();
+            req.records = {
+              invalid_input: true,
+              message: "Please Define cost_center_type"
+            };
+            next();
+          }
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: "Please Define proper Head-Office"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
       });
   }
 };
