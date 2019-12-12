@@ -1,16 +1,16 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import requestQuotation from "../models/RequestForQuotation";
+import vendorQuotation from "../models/VendorsQuotation";
 
 const {
-    getRequestForQuotation,
-    addRequestForQuotation,
-} = requestQuotation;
+    getVendorQuotation,
+    addVendorQuotation,
+} = vendorQuotation;
 
 export default () => {
     const api = Router();
 
-    api.get("/getRequestForQuotation", getRequestForQuotation, (req, res, next) => {
+    api.get("/getVendorQuotation", getVendorQuotation, (req, res, next) => {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
             success: true,
             records: req.records
@@ -18,7 +18,7 @@ export default () => {
     });
 
     api.post(
-        "/addRequestForQuotation", addRequestForQuotation, (req, res, next) => {
+        "/addVendorQuotation", addVendorQuotation, (req, res, next) => {
             res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
                 success: true,
                 records: req.records

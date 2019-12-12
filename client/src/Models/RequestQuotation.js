@@ -8,8 +8,6 @@ export default {
 
             quotation_date: new Date(),
             quotation_for: null,
-            pharmcy_location_id: null,
-            inventory_location_id: null,
 
             expected_date: new Date(),
             material_requisition_number: null,
@@ -31,11 +29,7 @@ export default {
             dataExitst: false,
             addItemButton: true,
             ReqData: true,
-            ClearDisable: false,
             saveEnable: true,
-            InvoiceEnable: false,
-            OTItemAddDis: false,
-            authorizeBtn: false
         };
         return output;
     }

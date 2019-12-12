@@ -3,19 +3,17 @@ import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
 
 export default {
-    getRequestForQuotation: (req, res, next) => {
+    getVendorQuotation: (req, res, next) => {
         const _mysql = new algaehMysql();
         try {
             _mysql
                 .executeQuery({
                     query:
-                        "SELECT RQH.*, CASE WHEN RQH.quotation_for = 'INV' THEN \
-                        (select material_requisition_number from hims_f_inventory_material_header \
-                        where hims_f_inventory_material_header_id=RQH.inv_requisition_id ) else \
-                        (select material_requisition_number from hims_f_pharamcy_material_header  \
-                        where hims_f_pharamcy_material_header_id=RQH.phar_requisition_id) END as material_requisition_number \
-                        from  hims_f_procurement_req_quotation_header RQH where quotation_number=?",
-                    values: [req.query.quotation_number],
+                        "SELECT VQH.*, RQH.quotation_number from  hims_f_procurement_vendor_quotation_header VQH, \
+                        hims_f_procurement_req_quotation_header RQH \
+                        where VQH.req_quotation_header_id = RQH.hims_f_procurement_req_quotation_header_id \
+                        and VQH.vendor_quotation_number=?;",
+                    values: [req.query.vendor_quotation_number],
                     printQuery: true
                 })
                 .then(headerResult => {
@@ -26,13 +24,13 @@ export default {
 
                         if (headerResult[0].quotation_for === "INV") {
                             strQuery = mysql.format(
-                                "select * from hims_f_procurement_req_quotation_detail where req_quotation_header_id=?",
-                                [headerResult[0].hims_f_procurement_req_quotation_header_id]
+                                "select * from hims_f_procurement_vendor_quotation_detail where vendor_quotation_header_id=?",
+                                [headerResult[0].hims_f_procurement_vendor_quotation_header_id]
                             );
                         } else if (headerResult[0].quotation_for === "PHR") {
                             strQuery = mysql.format(
-                                "select * from hims_f_procurement_req_quotation_detail where req_quotation_header_id=?",
-                                [headerResult[0].hims_f_procurement_req_quotation_header_id]
+                                "select * from hims_f_procurement_vendor_quotation_detail where vendor_quotation_header_id=?",
+                                [headerResult[0].hims_f_procurement_vendor_quotation_header_id]
                             );
                         }
                         console.log("strQuery: ", strQuery)
@@ -69,16 +67,16 @@ export default {
         }
     },
 
-    addRequestForQuotation: (req, res, next) => {
+    addVendorQuotation: (req, res, next) => {
         const _mysql = new algaehMysql();
         try {
             let input = { ...req.body };
-            let quotation_number = "";
+            let vendor_quotation_number = "";
             const utilities = new algaehUtilities();
             utilities.logger().log("addDeliveryNoteEntry: ");
             _mysql
                 .generateRunningNumber({
-                    modules: ["REQ_QUT_NUM"],
+                    modules: ["VEN_QUT_NUM"],
                     tableName: "hims_f_app_numgen",
                     identity: {
                         algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
@@ -86,24 +84,24 @@ export default {
                     }
                 })
                 .then(generatedNumbers => {
-                    quotation_number = generatedNumbers[0];
+                    vendor_quotation_number = generatedNumbers[0];
 
                     // let today = moment().format("YYYY-MM-DD");
 
                     _mysql
                         .executeQuery({
                             query:
-                                "INSERT INTO `hims_f_procurement_req_quotation_header` (quotation_number, quotation_date,\
-                                    quotation_for,expected_date, phar_requisition_id,inv_requisition_id, \
-                                    created_by,created_date, updated_by,updated_date,hospital_id) \
+                                "INSERT INTO `hims_f_procurement_vendor_quotation_header` (vendor_quotation_number, \
+                                    vendor_quotation_date, req_quotation_header_id, vendor_id, quotation_for, expected_date, \
+                                    created_by, created_date, updated_by, updated_date, hospital_id) \
                                     VALUE(?,?,?,?,?,?,?,?,?,?,?)",
                             values: [
-                                quotation_number,
+                                vendor_quotation_number,
                                 new Date(),
+                                input.req_quotation_header_id,
+                                input.vendor_id,
                                 input.quotation_for,
                                 input.expected_date,
-                                input.phar_requisition_id,
-                                input.inv_requisition_id,
                                 req.userIdentity.algaeh_d_app_user_id,
                                 new Date(),
                                 req.userIdentity.algaeh_d_app_user_id,
@@ -122,17 +120,25 @@ export default {
                                 "inv_item_id",
                                 "pharmacy_uom_id",
                                 "inventory_uom_id",
-                                "quantity"
+                                "quantity",
+                                "unit_price",
+                                "extended_price",
+                                "discount_percentage",
+                                "discount_amount",
+                                "net_extended_cost",
+                                "tax_percentage",
+                                "tax_amount",
+                                "total_amount",
                             ];
 
                             _mysql
                                 .executeQuery({
                                     query:
-                                        "INSERT INTO hims_f_procurement_req_quotation_detail(??) VALUES ?",
+                                        "INSERT INTO hims_f_procurement_vendor_quotation_detail(??) VALUES ?",
                                     values: input.quotation_detail,
                                     includeValues: IncludeValues,
                                     extraValues: {
-                                        req_quotation_header_id: headerResult.insertId
+                                        vendor_quotation_header_id: headerResult.insertId
                                     },
                                     bulkInsertOrUpdate: true,
                                     printQuery: true
@@ -141,8 +147,8 @@ export default {
                                     _mysql.commitTransaction(() => {
                                         _mysql.releaseConnection();
                                         req.records = {
-                                            quotation_number: quotation_number,
-                                            hims_f_procurement_req_quotation_header_id: headerResult.insertId
+                                            vendor_quotation_number: vendor_quotation_number,
+                                            hims_f_procurement_vendor_quotation_header_id: headerResult.insertId
                                         };
                                         next();
                                     });
@@ -170,6 +176,4 @@ export default {
             });
         }
     }
-
-
 };

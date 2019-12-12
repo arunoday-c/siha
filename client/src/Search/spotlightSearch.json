@@ -449,7 +449,28 @@
       },
       {
         "fieldName": "quotation_for",
-        "label": "Quotation Done For"
+        "label": "Quotation Done For",
+        "required": "N"
+      }
+    ],
+    "VendorQuotation": [
+      {
+        "fieldName": "vendor_quotation_number",
+        "label": "Vendor Quotation Number"
+      },
+      {
+        "fieldName": "vendor_quotation_date",
+        "label": "Transaction Date"
+      },
+      {
+        "fieldName": "quotation_for",
+        "label": "Quotation Done For",
+        "required": "N"
+      },
+      {
+        "fieldName": "quotation_number",
+        "label": "Quotation Number",
+        "required": "N"
       }
     ]
   },

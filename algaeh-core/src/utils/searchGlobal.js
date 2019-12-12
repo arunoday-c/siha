@@ -802,11 +802,21 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "RequestQuotation",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS RQ.*, RQ.quotation_date as quotation_date, CASE RQ.quotation_for WHEN 'INV' then 'Inventory' \
-          else 'Pharmacy' end as quotation_for from hims_f_procurement_req_quotation_header RQ \
-          where RQ.hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS RQ.*, CASE RQ.quotation_for \
+          WHEN 'INV' then 'Inventory' else 'Pharmacy' end as quotation_for from \
+          hims_f_procurement_req_quotation_header RQ where RQ.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_procurement_req_quotation_header_id desc"
+      },
+      {
+        searchName: "VendorQuotation",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS VH.*, CASE VH.quotation_for \
+          WHEN 'INV' then 'Inventory' else 'Pharmacy' end as quotation_for, RQ.quotation_number from \
+          hims_f_procurement_vendor_quotation_header VH, hims_f_procurement_req_quotation_header RQ \
+          where VH.req_quotation_header_id = RQ.hims_f_procurement_req_quotation_header_id and VH.hospital_id=" +
+          hospitalId,
+        orderBy: "hims_f_procurement_vendor_quotation_header_id desc"
       }
     ]
   };
