@@ -28,18 +28,24 @@ import {
   getVendorMaster,
   generatePOReceipt,
   generatePOReceiptNoPrice,
-  clearItemDetails
+  clearItemDetails,
+  VendorQuotationSearch
 } from "./PurchaseOrderEntryEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POEntry from "../../../Models/POEntry";
 import Enumerable from "linq";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 // import AlgaehReport from "../../Wrapper/printReports";
 // import _ from "lodash";
 
 class PurchaseOrderEntry extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      decimal_places: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).decimal_places,
+    };
     getVendorMaster(this, this);
   }
 
@@ -65,6 +71,11 @@ class PurchaseOrderEntry extends Component {
           .where(w => w.location_type === "WH")
           .toArray();
 
+    const class_finder = this.state.dataFinder === true
+      ? " disableFinder"
+      : this.state.ReqData === true
+        ? " disableFinder"
+        : ""
     return (
       <div>
         <BreadCrumb
@@ -177,6 +188,30 @@ class PurchaseOrderEntry extends Component {
               <div className="row">
                 <AlagehAutoComplete
                   div={{ className: "col-2" }}
+                  label={{ forceLabel: "PO Type" }}
+                  selector={{
+                    name: "po_type",
+                    className: "select-fld",
+                    value: this.state.po_type,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.PO_TYPE
+                    },
+                    others: {
+                      disabled: this.state.po_entry_detail.length > 0 ? true : false
+                    },
+                    onChange: texthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        po_type: "D"
+                      });
+                    }
+                  }}
+                />
+
+                <AlagehAutoComplete
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "PO For" }}
                   selector={{
                     name: "po_from",
@@ -188,7 +223,7 @@ class PurchaseOrderEntry extends Component {
                       data: GlobalVariables.PO_FROM
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled: this.state.po_entry_detail.length > 0 ? true : false
                     },
                     onChange: poforhandle.bind(this, this),
                     onClear: () => {
@@ -202,6 +237,8 @@ class PurchaseOrderEntry extends Component {
                     }
                   }}
                 />
+
+
                 <AlagehAutoComplete
                   div={{ className: "col-2" }}
                   label={{ forceLabel: "Location Code" }}
@@ -224,7 +261,7 @@ class PurchaseOrderEntry extends Component {
                       data: _mainStore
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled: this.state.po_entry_detail.length > 0 ? true : false
                     },
                     onChange: loctexthandle.bind(this, this),
                     onClear: () => {
@@ -248,7 +285,7 @@ class PurchaseOrderEntry extends Component {
                       data: this.props.povendors
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled: this.state.po_entry_detail.length > 0 ? true : false
                     },
                     onChange: vendortexthandle.bind(this, this),
                     onClear: () => {
@@ -259,47 +296,31 @@ class PurchaseOrderEntry extends Component {
                   }}
                 />
 
-                <AlagehFormGroup
-                  div={{ className: "col-2" }}
-                  label={{
-                    forceLabel: "Requisition No."
-                  }}
-                  textBox={{
-                    value: this.state.material_requisition_number,
-                    className: "txt-fld",
-                    name: "material_requisition_number",
+                {this.state.po_type === "MR" ?
+                  (
+                    <div className={"col-2 globalSearchCntr" + class_finder}>
+                      <AlgaehLabel label={{ forceLabel: "Search Requisition No." }} />
+                      <h6 onClick={RequisitionSearch.bind(this, this)}>
+                        {this.state.material_requisition_number
+                          ? this.state.material_requisition_number
+                          : "Requisition No."}
+                        <i className="fas fa-search fa-lg"></i>
+                      </h6>
+                    </div>
+                  ) : this.state.po_type === "VQ" ? (
+                    <div className={"col-2 globalSearchCntr" + class_finder}>
+                      <AlgaehLabel label={{ forceLabel: "Search Vendor Quotation No." }} />
+                      <h6 onClick={VendorQuotationSearch.bind(this, this)}>
+                        {this.state.vendor_quotation_number
+                          ? this.state.vendor_quotation_number
+                          : "Vendor Quotation No."}
+                        <i className="fas fa-search fa-lg"></i>
+                      </h6>
+                    </div>
+                  ) : null
+                }
 
-                    events: {
-                      onChange: null
-                    },
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
-                <div
-                  className="col"
-                  style={{
-                    paddingLeft: 0,
-                    paddingRight: 0
-                  }}
-                >
-                  <span
-                    className="fas fa-search fa-2x"
-                    style={{
-                      fontSize: " 1.2rem",
-                      marginTop: 26,
-                      paddingBottom: 0,
-                      pointerEvents:
-                        this.state.dataExitst === true
-                          ? "none"
-                          : this.state.ReqData === true
-                            ? "none"
-                            : ""
-                    }}
-                    onClick={RequisitionSearch.bind(this, this)}
-                  />
-                </div>
+
                 <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{ forceLabel: "Payment Terms" }}
@@ -313,7 +334,7 @@ class PurchaseOrderEntry extends Component {
                       data: GlobalVariables.PAYMENT_TERMS
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled: this.state.po_entry_detail.length > 0 ? true : false
                     },
                     onChange: texthandle.bind(this, this),
                     onClear: () => {

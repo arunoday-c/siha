@@ -50,6 +50,11 @@ class RequestForQuotation extends Component {
     // }
 
     render() {
+        const class_finder = this.state.dataExitst === true
+            ? " disableFinder"
+            : this.state.ReqData === true
+                ? " disableFinder"
+                : ""
         return (
             <div>
                 <BreadCrumb
@@ -161,47 +166,17 @@ class RequestForQuotation extends Component {
                                     }}
                                 />
 
-                                <AlagehFormGroup
-                                    div={{ className: "col-2" }}
-                                    label={{
-                                        forceLabel: "Requisition No."
-                                    }}
-                                    textBox={{
-                                        value: this.state.material_requisition_number,
-                                        className: "txt-fld",
-                                        name: "material_requisition_number",
-
-                                        events: {
-                                            onChange: null
-                                        },
-                                        others: {
-                                            disabled: true
-                                        }
-                                    }}
-                                />
-                                <div
-                                    className="col"
-                                    style={{
-                                        paddingLeft: 0,
-                                        paddingRight: 0
-                                    }}
-                                >
-                                    <span
-                                        className="fas fa-search fa-2x"
-                                        style={{
-                                            fontSize: " 1.2rem",
-                                            marginTop: 26,
-                                            paddingBottom: 0,
-                                            pointerEvents:
-                                                this.state.dataExitst === true
-                                                    ? "none"
-                                                    : this.state.ReqData === true
-                                                        ? "none"
-                                                        : ""
-                                        }}
-                                        onClick={RequisitionSearch.bind(this, this)}
-                                    />
+                                <div className={"col-3 globalSearchCntr" + class_finder}>
+                                    <AlgaehLabel label={{ forceLabel: "Search Requisition No." }} />
+                                    <h6 onClick={RequisitionSearch.bind(this, this)}>
+                                        {this.state.material_requisition_number
+                                            ? this.state.material_requisition_number
+                                            : "Requisition No."}
+                                        <i className="fas fa-search fa-lg"></i>
+                                    </h6>
                                 </div>
+
+                                <div className="col-lg-5"> &nbsp;</div>
 
                                 <AlgaehDateHandler
                                     div={{ className: "col" }}

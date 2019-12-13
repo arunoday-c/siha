@@ -612,7 +612,7 @@ const onchangegridcol = ($this, context, row, e) => {
       ? $this.state.pharmacy_stock_detail
       : $this.state.inventory_stock_detail;
   let _index = _stock_detail.indexOf(row);
-  debugger
+
   // IU.conversion_factor
   if (parseFloat(value) > (parseFloat(row.qtyhand) / parseFloat(row.conversion_factor))) {
     swalMessage({
@@ -653,7 +653,7 @@ const onchangegridcol = ($this, context, row, e) => {
 };
 
 const onchhangegriddiscount = ($this, context, row, e) => {
-  debugger
+
   let extended_cost = 0;
 
   let tax_amount = 0;
@@ -682,7 +682,7 @@ const onchhangegriddiscount = ($this, context, row, e) => {
   });
   _stock_detail[_index] = row;
 
-  debugger
+
   if ($this.state.po_return_from === "PHR") {
     $this.setState({
       pharmacy_stock_detail: _stock_detail
@@ -709,7 +709,7 @@ const onchhangegriddiscount = ($this, context, row, e) => {
 
 const calculateHeadervalues = ($this, context, row) => {
 
-  debugger
+
   if ($this.state.po_return_from === "PHR") {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
     let _index = pharmacy_stock_detail.indexOf(row);

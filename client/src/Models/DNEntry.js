@@ -1,5 +1,5 @@
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
@@ -53,7 +53,8 @@ export default {
       // fromPurList: false,
       location_name: null,
       vendor_name: null,
-      itemEnter: true
+      itemEnter: true,
+      dataFinder: false,
     };
     return output;
   }

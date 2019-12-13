@@ -85,7 +85,7 @@ export default class SelfService extends Component {
   }
 
   ChangeRenderTabs(options) {
-    debugger;
+
     if (options.pageDisplay === "AttendanceRegularization") {
       this.attReg.click();
     } else if (options.pageDisplay === "ApplyLeave") {
@@ -259,9 +259,9 @@ export default class SelfService extends Component {
                 algaehtabs={"ApplyLeaveEncashment"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
-                // ref={attReg => {
-                //   this.attReg = attReg;
-                // }}
+              // ref={attReg => {
+              //   this.attReg = attReg;
+              // }}
               >
                 {
                   <AlgaehLabel

@@ -261,7 +261,7 @@ const onchhangegriddiscount = ($this, row, e) => {
         row.po_quantity - row.quantity_recieved_todate - parseFloat(value);
       row["extended_price"] = parseFloat(extended_price);
       row["extended_cost"] = parseFloat(extended_cost);
-      row["unit_cost"] = parseFloat(extended_cost) / parseFloat(value);
+      row["unit_cost"] = (parseFloat(extended_cost) / parseFloat(value)).toFixed($this.state.decimal_places);
 
       row["tax_amount"] = parseFloat(tax_amount);
       row["total_amount"] = parseFloat(tax_amount) + parseFloat(extended_cost);
@@ -484,7 +484,8 @@ const OnChangeDeliveryQty = ($this, context, e) => {
 
       item_details["extended_price"] = parseFloat(extended_price);
       item_details["extended_cost"] = parseFloat(extended_cost);
-      item_details["unit_cost"] = parseFloat(extended_cost) / parseFloat(value);
+      // item_details["unit_cost"] = parseFloat(extended_cost) / parseFloat(value);
+      item_details["unit_cost"] = (parseFloat(extended_cost) / parseFloat(value)).toFixed($this.state.decimal_places);
 
       item_details["tax_amount"] = parseFloat(tax_amount);
       item_details["total_amount"] =
@@ -625,6 +626,7 @@ const AddtoList = ($this, context) => {
     dn_item_details.total_amount = 0;
     dn_item_details.net_extended_cost = 0;
 
+    
     $this.setState({
       dn_entry_detail: dn_entry_detail,
       item_details: dn_item_details,

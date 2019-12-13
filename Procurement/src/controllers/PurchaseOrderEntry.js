@@ -12,6 +12,7 @@ const {
   updatePharReqEntry,
   updateInvReqEntry,
   updatePurchaseOrderEntry,
+  getVendorQuotation,
   releaseDB
 } = purchaseModels;
 
@@ -47,6 +48,17 @@ export default () => {
   api.get(
     "/getInvRequisitionEntryPO",
     getInvRequisitionEntryPO,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get(
+    "/getVendorQuotation",
+    getVendorQuotation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

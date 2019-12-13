@@ -60,7 +60,6 @@ export function getEmployeesForProjectRoster(inputs) {
 export function getProjects(hospital_id) {
   return new Promise((resolve, reject) => {
     try {
-      debugger;
       algaehApiCall({
         uri: "/projectjobcosting/getDivisionProject",
         module: "hrManagement",

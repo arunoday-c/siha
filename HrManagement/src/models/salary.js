@@ -2532,174 +2532,181 @@ export default {
   //Salay Payment
   SaveSalaryPayment: (req, res, next) => {
     try {
-      const _mysql = new algaehMysql();
-      const inputParam = { ...req.body };
-
-      const _salaryHeader_id = _.map(inputParam.salary_payment, o => {
-        return o.hims_f_salary_id;
+      let buffer = "";
+      req.on("data", chunk => {
+        buffer += chunk.toString();
       });
 
-      let _allEmployees = _.map(inputParam.salary_payment, o => {
-        return o.employee_id;
-      });
+      req.on("end", () => {
+        const _mysql = new algaehMysql();
+        const inputParam = JSON.parse(buffer);
 
-      _mysql
-        .executeQueryWithTransaction({
-          query:
-            "UPDATE hims_f_salary SET salary_paid = 'Y', salary_paid_date=?, salary_paid_by=? \
-            where hims_f_salary_id in (?)",
-          values: [
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            _salaryHeader_id
-          ],
-          printQuery: true
-        })
-        .then(salary_process => {
-          //Miscellaneous Earning Deduction
-          _mysql
-            .executeQuery({
-              query:
-                "UPDATE hims_f_miscellaneous_earning_deduction SET processed = 'Y', updated_date=?, updated_by=? where \
-            processed = 'N' and year = ?  and month = ? and employee_id in (?)",
-              values: [
-                new Date(),
-                req.userIdentity.algaeh_d_app_user_id,
-                inputParam.year,
-                inputParam.month,
-                _allEmployees
-              ],
-              printQuery: true
-            })
-            .then(miscellaneous_earning_deduction => {
-              //Employee Payments Advance
-              _mysql
-                .executeQuery({
-                  query:
-                    "UPDATE hims_f_employee_payments SET deducted = 'Y', updated_date=?, updated_by=? where payment_type ='AD'\
-                and deducted='N'and cancel='N' and `year`=? and deduction_month=? and employee_id in (?);",
-                  values: [
-                    new Date(),
-                    req.userIdentity.algaeh_d_app_user_id,
-                    inputParam.year,
-                    inputParam.month,
-                    _allEmployees
-                  ],
-                  printQuery: true
-                })
-                .then(employee_payments_advance => {
-                  //Loan Due
-                  _mysql
-                    .executeQuery({
-                      query:
-                        "select loan_application_id,loan_due_amount,balance_amount from hims_f_salary_loans where \
-                    salary_header_id in (?)",
-                      values: [_salaryHeader_id],
-                      printQuery: true
-                    })
-                    .then(salary_loans => {
-                      let loan_application_ids = _.map(salary_loans, o => {
-                        return o.loan_application_id;
-                      });
-
-                      if (loan_application_ids.length > 0) {
-                        _mysql
-                          .executeQuery({
-                            query:
-                              "select hims_f_loan_application_id,loan_skip_months,installment_amount, pending_loan,pending_tenure from hims_f_loan_application  where hims_f_loan_application_id in (?)",
-                            values: [loan_application_ids],
-                            printQuery: true
-                          })
-                          .then(loan_application => {
-                            for (let i = 0; i < loan_application.length; i++) {
-                              let loan_skip_months =
-                                loan_application[i].loan_skip_months;
-                              let pending_loan =
-                                loan_application[i].pending_loan;
-                              let loan_closed = "N";
-
-                              let pending_tenure = 0;
-                              if (loan_skip_months > 0) {
-                                loan_skip_months--;
-                                pending_tenure =
-                                  loan_application[i].pending_tenure;
-                              } else {
-                                pending_loan =
-                                  pending_loan -
-                                  loan_application[i].installment_amount;
-                                pending_tenure =
-                                  loan_application[i].pending_tenure;
-                              }
-
-                              if (pending_loan == 0) {
-                                loan_closed = "Y";
-                              }
-
-                              _mysql
-                                .executeQuery({
-                                  query:
-                                    "UPDATE hims_f_loan_application SET pending_loan = ?, loan_closed=?, loan_skip_months=?, pending_tenure=?,\
-                                    updated_date=?, updated_by=? where hims_f_loan_application_id =?",
-                                  values: [
-                                    pending_loan,
-                                    loan_closed,
-                                    loan_skip_months,
-                                    pending_tenure,
-                                    new Date(),
-                                    req.userIdentity.algaeh_d_app_user_id,
-                                    loan_application[i]
-                                      .hims_f_loan_application_id
-                                  ],
-                                  printQuery: true
-                                })
-                                .then(update_loan_application => {
-                                  _mysql.commitTransaction(() => {
-                                    _mysql.releaseConnection();
-                                    req.records = update_loan_application;
-                                    next();
-                                  });
-                                })
-                                .catch(e => {
-                                  next(e);
-                                });
-                            }
-                          })
-                          .catch(error => {
-                            _mysql.rollBackTransaction(() => {
-                              next(error);
-                            });
-                          });
-                      } else {
-                        _mysql.commitTransaction(() => {
-                          _mysql.releaseConnection();
-                          req.records = salary_loans;
-                          next();
-                        });
-                      }
-                    })
-                    .catch(error => {
-                      _mysql.rollBackTransaction(() => {
-                        next(error);
-                      });
-                    });
-                })
-                .catch(error => {
-                  _mysql.rollBackTransaction(() => {
-                    next(error);
-                  });
-                });
-            })
-            .catch(error => {
-              _mysql.rollBackTransaction(() => {
-                next(error);
-              });
-            });
-        })
-        .catch(error => {
-          _mysql.rollBackTransaction(() => {
-            next(error);
-          });
+        const _salaryHeader_id = _.map(inputParam.salary_payment, o => {
+          return o.hims_f_salary_id;
         });
+
+        let _allEmployees = _.map(inputParam.salary_payment, o => {
+          return o.employee_id;
+        });
+
+        _mysql
+          .executeQueryWithTransaction({
+            query:
+              "UPDATE hims_f_salary SET salary_paid = 'Y', salary_paid_date=?, salary_paid_by=? \
+            where hims_f_salary_id in (?)",
+            values: [
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              _salaryHeader_id
+            ],
+            printQuery: true
+          })
+          .then(salary_process => {
+            //Miscellaneous Earning Deduction
+            _mysql
+              .executeQuery({
+                query:
+                  "UPDATE hims_f_miscellaneous_earning_deduction SET processed = 'Y', updated_date=?, updated_by=? where \
+            processed = 'N' and year = ?  and month = ? and employee_id in (?)",
+                values: [
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  inputParam.year,
+                  inputParam.month,
+                  _allEmployees
+                ],
+                printQuery: true
+              })
+              .then(miscellaneous_earning_deduction => {
+                //Employee Payments Advance
+                _mysql
+                  .executeQuery({
+                    query:
+                      "UPDATE hims_f_employee_payments SET deducted = 'Y', updated_date=?, updated_by=? where payment_type ='AD'\
+                and deducted='N'and cancel='N' and `year`=? and deduction_month=? and employee_id in (?);",
+                    values: [
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      inputParam.year,
+                      inputParam.month,
+                      _allEmployees
+                    ],
+                    printQuery: true
+                  })
+                  .then(employee_payments_advance => {
+                    //Loan Due
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "select loan_application_id,loan_due_amount,balance_amount from hims_f_salary_loans where \
+                    salary_header_id in (?)",
+                        values: [_salaryHeader_id],
+                        printQuery: true
+                      })
+                      .then(salary_loans => {
+                        let loan_application_ids = _.map(salary_loans, o => {
+                          return o.loan_application_id;
+                        });
+
+                        if (loan_application_ids.length > 0) {
+                          _mysql
+                            .executeQuery({
+                              query:
+                                "select hims_f_loan_application_id,loan_skip_months,installment_amount, pending_loan,pending_tenure from hims_f_loan_application  where hims_f_loan_application_id in (?)",
+                              values: [loan_application_ids],
+                              printQuery: true
+                            })
+                            .then(loan_application => {
+                              for (let i = 0; i < loan_application.length; i++) {
+                                let loan_skip_months =
+                                  loan_application[i].loan_skip_months;
+                                let pending_loan =
+                                  loan_application[i].pending_loan;
+                                let loan_closed = "N";
+
+                                let pending_tenure = 0;
+                                if (loan_skip_months > 0) {
+                                  loan_skip_months--;
+                                  pending_tenure =
+                                    loan_application[i].pending_tenure;
+                                } else {
+                                  pending_loan =
+                                    pending_loan -
+                                    loan_application[i].installment_amount;
+                                  pending_tenure =
+                                    loan_application[i].pending_tenure;
+                                }
+
+                                if (pending_loan == 0) {
+                                  loan_closed = "Y";
+                                }
+
+                                _mysql
+                                  .executeQuery({
+                                    query:
+                                      "UPDATE hims_f_loan_application SET pending_loan = ?, loan_closed=?, loan_skip_months=?, pending_tenure=?,\
+                                    updated_date=?, updated_by=? where hims_f_loan_application_id =?",
+                                    values: [
+                                      pending_loan,
+                                      loan_closed,
+                                      loan_skip_months,
+                                      pending_tenure,
+                                      new Date(),
+                                      req.userIdentity.algaeh_d_app_user_id,
+                                      loan_application[i]
+                                        .hims_f_loan_application_id
+                                    ],
+                                    printQuery: true
+                                  })
+                                  .then(update_loan_application => {
+                                    _mysql.commitTransaction(() => {
+                                      _mysql.releaseConnection();
+                                      req.records = update_loan_application;
+                                      next();
+                                    });
+                                  })
+                                  .catch(e => {
+                                    next(e);
+                                  });
+                              }
+                            })
+                            .catch(error => {
+                              _mysql.rollBackTransaction(() => {
+                                next(error);
+                              });
+                            });
+                        } else {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = salary_loans;
+                            next();
+                          });
+                        }
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          })
+          .catch(error => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      });
     } catch (e) {
       next(e);
     }

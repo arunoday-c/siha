@@ -28,13 +28,15 @@ export default {
       cancelled: "N",
       is_posted: "N",
       postEnable: true,
+      dataFinder: false,
 
 
       pharmacy_stock_detail: [],
       inventory_stock_detail: [],
       po_return_entry_detail: [],
       saveEnable: true,
-      dataExitst: false
+      dataExitst: false,
+      ReqData: true,
     };
     return output;
   }

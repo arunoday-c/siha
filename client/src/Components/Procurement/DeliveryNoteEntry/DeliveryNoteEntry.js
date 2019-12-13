@@ -20,6 +20,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import DNEntry from "../../../Models/DNEntry";
 import MyContext from "../../../utils/MyContext";
 import _ from "lodash";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 // vendortexthandle,
 //   loctexthandle,
@@ -29,7 +30,10 @@ class DeliveryNoteEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      fromPurList: false
+      fromPurList: false,
+      decimal_places: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).decimal_places,
     };
   }
 
@@ -66,6 +70,10 @@ class DeliveryNoteEntry extends Component {
   }
 
   render() {
+    const class_finder = this.state.dataFinder === true
+      ? " disableFinder"
+      : ""
+
     return (
       <div>
         <BreadCrumb
@@ -130,17 +138,17 @@ class DeliveryNoteEntry extends Component {
           printArea={
             this.state.hims_f_inventory_consumption_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateDeliveryNoteReceipt(this.state);
-                        }
+                menuitems: [
+                  {
+                    label: "Print Receipt",
+                    events: {
+                      onClick: () => {
+                        generateDeliveryNoteReceipt(this.state);
                       }
                     }
-                  ]
-                }
+                  }
+                ]
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -152,10 +160,19 @@ class DeliveryNoteEntry extends Component {
           >
             <div className="col-lg-12">
               <div className="row">
-                <AlagehFormGroup
+                <div className={"col-2 globalSearchCntr" + class_finder} >
+                  <AlgaehLabel label={{ forceLabel: "Search Purchase Order No." }} />
+                  <h6 onClick={PurchaseOrderSearch.bind(this, this)}>
+                    {this.state.purchase_number
+                      ? this.state.purchase_number
+                      : "Purchase Order No."}
+                    <i className="fas fa-search fa-lg"></i>
+                  </h6>
+                </div>
+                {/* <AlagehFormGroup
                   div={{ className: "col-2" }}
                   label={{
-                    forceLabel: "Purchase Order No."
+                    forceLabel: ""
                   }}
                   textBox={{
                     value: this.state.purchase_number,
@@ -187,7 +204,7 @@ class DeliveryNoteEntry extends Component {
                     }}
                     onClick={PurchaseOrderSearch.bind(this, this)}
                   />
-                </div>
+                </div> */}
                 <div className="col">
                   <AlgaehLabel label={{ forceLabel: "Receipt For" }} />
                   <h6>
