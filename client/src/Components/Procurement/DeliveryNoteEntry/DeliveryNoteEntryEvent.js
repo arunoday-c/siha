@@ -193,6 +193,7 @@ const getPurchaseDetails = ($this, row) => {
           data.dataExitst = true;
           data.purchase_order_id = data.hims_f_procurement_po_header_id;
           data.dn_from = data.po_from;
+
           for (let i = 0; i < data.po_entry_detail.length; i++) {
             data.po_entry_detail[i].item_id =
               data.po_entry_detail[i].phar_item_id ||
@@ -572,6 +573,7 @@ const getCtrlCode = ($this, docNumber, row) => {
           }
           data.saveEnable = true;
           data.dataExitst = true;
+          data.dataFinder = true;
           data.cannotEdit = true;
 
           data.addedItem = true;

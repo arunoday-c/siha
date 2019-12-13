@@ -30,7 +30,7 @@ import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 class VendorsQuotation extends Component {
     constructor(props) {
         super(props);
-        debugger
+
         this.state = {
             hims_f_procurement_vendor_quotation_header_id: null,
             vendor_quotation_number: null,
@@ -57,6 +57,11 @@ class VendorsQuotation extends Component {
     }
 
     render() {
+        const class_finder = this.state.dataExitst === true
+            ? " disableFinder"
+            : this.state.ReqData === true
+                ? " disableFinder"
+                : ""
         return (
             <div>
                 <BreadCrumb
@@ -167,7 +172,17 @@ class VendorsQuotation extends Component {
                                     }}
                                 />
 
-                                <AlagehFormGroup
+                                <div className={"col-3 globalSearchCntr" + class_finder}>
+                                    <AlgaehLabel label={{ forceLabel: "Search Quotation No." }} />
+                                    <h6 onClick={QuotationSearch.bind(this, this)}>
+                                        {this.state.quotation_number
+                                            ? this.state.quotation_number
+                                            : "Quotation No."}
+                                        <i className="fas fa-search fa-lg"></i>
+                                    </h6>
+                                </div>
+
+                                {/* <AlagehFormGroup
                                     div={{ className: "col-2" }}
                                     label={{
                                         forceLabel: "Quotation No."
@@ -206,7 +221,9 @@ class VendorsQuotation extends Component {
                                         }}
                                         onClick={QuotationSearch.bind(this, this)}
                                     />
-                                </div>
+                                </div> */}
+
+
 
                                 <AlagehAutoComplete
                                     div={{ className: "col-2" }}
@@ -226,6 +243,8 @@ class VendorsQuotation extends Component {
                                         onChange: null
                                     }}
                                 />
+
+                                <div className="col-lg-3"> &nbsp;</div>
 
                                 <AlgaehDateHandler
                                     div={{ className: "col" }}

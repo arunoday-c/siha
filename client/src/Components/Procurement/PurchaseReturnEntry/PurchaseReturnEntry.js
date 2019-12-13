@@ -61,6 +61,13 @@ class PurchaseReturnEntry extends Component {
                     .where(w => w.location_type === "WH")
                     .toArray();
 
+        debugger
+        const class_finder = this.state.dataFinder === true
+            ? " disableFinder"
+            : this.state.ReqData === false
+                ? ""
+                : " disableFinder"
+
         return (
             <div>
                 <BreadCrumb
@@ -240,7 +247,17 @@ class PurchaseReturnEntry extends Component {
                                     }}
                                 />
 
-                                <AlagehFormGroup
+                                <div className={"col-2 globalSearchCntr" + class_finder} >
+                                    <AlgaehLabel label={{ forceLabel: "Search Receipt No." }} />
+                                    <h6 onClick={ReceiptSearch.bind(this, this)}>
+                                        {this.state.grn_number
+                                            ? this.state.grn_number
+                                            : "Receipt No."}
+                                        <i className="fas fa-search fa-lg"></i>
+                                    </h6>
+                                </div>
+
+                                {/* <AlagehFormGroup
                                     div={{ className: "col-2" }}
                                     label={{
                                         forceLabel: "Receipt Number"
@@ -280,7 +297,7 @@ class PurchaseReturnEntry extends Component {
                                         }}
                                         onClick={ReceiptSearch.bind(this, this)}
                                     />
-                                </div>
+                                </div> */}
                                 <AlagehAutoComplete
                                     div={{ className: "col" }}
                                     label={{ forceLabel: "Payment Terms" }}
@@ -312,7 +329,7 @@ class PurchaseReturnEntry extends Component {
                         value={{
                             state: this.state,
                             updateState: obj => {
-                                debugger
+
                                 this.setState({ ...obj });
                             }
                         }}

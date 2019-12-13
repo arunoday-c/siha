@@ -26,7 +26,7 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const itemchangeText = ($this, context, e) => {
-  debugger
+
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 

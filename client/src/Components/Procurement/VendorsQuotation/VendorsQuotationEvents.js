@@ -2,8 +2,8 @@ import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-import RequestQuotation from "../../../Models/RequestQuotation";
 import _ from "lodash";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 const texthandle = ($this, e) => {
     let name = e.name || e.target.name;
@@ -26,7 +26,7 @@ const QuotationSearch = ($this, e) => {
             callBack(text);
         },
         onRowSelect: row => {
-
+            AlgaehLoader({ show: true });
             algaehApiCall({
                 uri: "/RequestForQuotation/getRequestForQuotation",
                 module: "procurement",
@@ -34,7 +34,7 @@ const QuotationSearch = ($this, e) => {
                 data: { quotation_number: row.quotation_number },
                 onSuccess: response => {
                     if (response.data.success) {
-                        debugger
+
                         let data = response.data.records;
                         data.req_quotation_header_id = data.hims_f_procurement_req_quotation_header_id;
                         for (let i = 0; i < data.quotation_detail.length; i++) {
@@ -108,7 +108,7 @@ const clearItemDetails = ($this) => {
 };
 const SaveVendorQuotationEnrty = $this => {
 
-    debugger
+
     const unit_price_exist = _.filter($this.state.quotation_detail, f => {
         return f.unit_price === 0 || f.unit_price === null || f.unit_price === "";
     });
@@ -155,7 +155,27 @@ const SaveVendorQuotationEnrty = $this => {
 
 const getCtrlCode = ($this, docNumber) => {
     AlgaehLoader({ show: true });
-    let IOputs = RequestQuotation.inputParam();
+    let IOputs = {
+        hims_f_procurement_vendor_quotation_header_id: null,
+        vendor_quotation_number: null,
+
+        vendor_id: null,
+        quotation_number: null,
+        req_quotation_header_id: null,
+
+
+        vendor_quotation_date: new Date(),
+        quotation_for: null,
+
+        expected_date: new Date(),
+        quotation_detail: [],
+        dataExitst: false,
+        ReqData: true,
+        saveEnable: true,
+        decimal_places: JSON.parse(
+            AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+        ).decimal_places,
+    };
 
     IOputs.dataExitst = false;
     $this.setState(IOputs, () => {
@@ -280,8 +300,8 @@ const getData = ($this, quotation_for) => {
 };
 
 const generateVendorQuotation = data => {
-    console.log("data:", data);
-    debugger
+    // console.log("data:", data);
+
     algaehApiCall({
         uri: "/report",
         method: "GET",

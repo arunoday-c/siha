@@ -200,7 +200,7 @@ class OrderingServices extends PureComponent {
 
   componentWillReceiveProps(nextProps) {
 
-    debugger
+
     let saved = true
     const orderservicesdata = _.filter(
       nextProps.orderedList,

@@ -7,7 +7,7 @@ const onchhangeNumber = ($this, context, row, e) => {
   let quotation_detail = $this.state.quotation_detail;
   let _index = quotation_detail.indexOf(row)
 
-  debugger
+
   if (name === "unit_price") {
     row.extended_price = value === "" || value === undefined ? 0
       :

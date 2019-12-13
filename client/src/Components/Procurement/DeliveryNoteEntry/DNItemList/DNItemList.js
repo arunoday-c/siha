@@ -65,10 +65,11 @@ class DNItemList extends Component {
     let tax_amount =
       (extended_cost * parseFloat(item_details.tax_percentage)) / 100;
 
+
     item_details["extended_price"] = parseFloat(extended_price);
     item_details["extended_cost"] = parseFloat(extended_cost);
     item_details["unit_cost"] =
-      parseFloat(extended_cost) / parseFloat(dn_quantity);
+      (parseFloat(extended_cost) / parseFloat(dn_quantity)).toFixed(this.state.decimal_places);
 
     item_details["tax_amount"] = parseFloat(tax_amount);
     item_details["total_amount"] =

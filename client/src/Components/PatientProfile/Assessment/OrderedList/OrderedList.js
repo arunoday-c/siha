@@ -524,7 +524,7 @@ class OrderedList extends PureComponent {
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
     }).then(willDelete => {
-      debugger
+
       if (willDelete.value) {
 
         algaehApiCall({
@@ -574,7 +574,7 @@ class OrderedList extends PureComponent {
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
     }).then(willDelete => {
-      debugger
+
       if (willDelete.value) {
 
         algaehApiCall({
@@ -584,7 +584,7 @@ class OrderedList extends PureComponent {
             hims_f_package_header_id: row.hims_f_package_header_id
           },
           onSuccess: response => {
-            debugger
+
             if (response.data.success === true) {
               this.props.getPakageList({
                 uri: "/orderAndPreApproval/getPatientPackage",

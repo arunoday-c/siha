@@ -9,10 +9,10 @@ export default {
             _mysql
                 .executeQuery({
                     query:
-                        "SELECT VQH.*, RQH.quotation_number from  hims_f_procurement_vendor_quotation_header VQH, \
-                        hims_f_procurement_req_quotation_header RQH \
+                        "SELECT VQH.*, RQH.quotation_number, V.payment_terms from  hims_f_procurement_vendor_quotation_header VQH, \
+                        hims_f_procurement_req_quotation_header RQH, hims_d_vendor V \
                         where VQH.req_quotation_header_id = RQH.hims_f_procurement_req_quotation_header_id \
-                        and VQH.vendor_quotation_number=?;",
+                        and V.hims_d_vendor_id = VQH.vendor_id and VQH.vendor_quotation_number=?;",
                     values: [req.query.vendor_quotation_number],
                     printQuery: true
                 })

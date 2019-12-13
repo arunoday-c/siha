@@ -1,5 +1,4 @@
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
-import Enumerable from "linq";
 import moment from "moment";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
@@ -39,6 +38,7 @@ const RequisitionSearch = ($this, e) => {
             callBack(text);
         },
         onRowSelect: row => {
+            AlgaehLoader({ show: true });
             algaehApiCall({
                 uri:
                     $this.state.quotation_for === "PHR"
@@ -53,8 +53,6 @@ const RequisitionSearch = ($this, e) => {
                     if (response.data.success === true) {
                         let data = response.data.records;
                         if (data !== null && data !== undefined) {
-                            AlgaehLoader({ show: true });
-
                             data.saveEnable = false;
                             data.quotation_detail = data.po_entry_detail;
                             delete data.po_entry_detail
@@ -94,11 +92,10 @@ const RequisitionSearch = ($this, e) => {
                                 data.inv_requisition_id =
                                     data.hims_f_inventory_material_header_id;
                             }
-
                             $this.setState(data);
-                            AlgaehLoader({ show: false });
                         }
                     }
+                    AlgaehLoader({ show: false });
                 }
             });
         }
@@ -307,8 +304,8 @@ const getData = ($this, quotation_for) => {
 };
 
 const generateRequestQuotation = data => {
-    console.log("data:", data);
-    debugger
+    // console.log("data:", data);
+
     algaehApiCall({
         uri: "/report",
         method: "GET",
