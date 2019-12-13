@@ -106,11 +106,18 @@ const PaySalary = $this => {
     salary_payment: _salarypayment
   };
   AlgaehLoader({ show: true });
+  debugger
+  const settings = { header: undefined, footer: undefined };
   algaehApiCall({
     uri: "/salary/SaveSalaryPayment",
     module: "hrManagement",
-    data: inputObj,
+    skipParse: true,
+    data: Buffer.from(JSON.stringify(inputObj), "utf8"),
     method: "PUT",
+    header: {
+      "content-type": "application/octet-stream",
+      ...settings
+    },
     onSuccess: response => {
       if (response.data.success) {
         $this.setState({
