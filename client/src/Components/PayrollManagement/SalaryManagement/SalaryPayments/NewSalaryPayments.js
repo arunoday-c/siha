@@ -158,6 +158,9 @@ class NewSalaryPayment extends Component {
                                             ? true
                                             : false
                                         }
+                                        disabled={
+                                          row.salary_paid === "N" ? true : false
+                                        }
                                       />
                                     </span>
                                   );
@@ -183,10 +186,10 @@ class NewSalaryPayment extends Component {
                                       No
                                     </span>
                                   ) : (
-                                    <span className="badge badge-success">
-                                      Yes
+                                      <span className="badge badge-success">
+                                        Yes
                                     </span>
-                                  );
+                                    );
                                 }
                               },
                               {

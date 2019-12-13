@@ -269,7 +269,10 @@ const generatePaySlip = ($this, inputs) => {
 };
 
 const selectToGeneratePaySlip = ($this, row, e) => {
-  let _salarypayment = $this.state.salary_payment;
+  let _salarypayment = Enumerable.from($this.state.salary_payment)
+    .where(w => w.salary_paid === "Y")
+    .toArray();
+  // let _salarypayment = $this.state.salary_payment;
   let _index = _salarypayment.indexOf(row);
   let generatePayslip = true;
   if (e.target.checked === true) {
