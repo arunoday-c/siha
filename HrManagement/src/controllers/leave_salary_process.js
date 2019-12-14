@@ -6,7 +6,8 @@ const {
   getLeaveSalaryProcess,
   processLeaveSalary,
   InsertLeaveSalary,
-  getLeaveSalary
+  getLeaveSalary,
+  getEmployeeAnnualLeaveToProcess
 } = leave_salary_process;
 
 export default () => {
@@ -38,6 +39,14 @@ export default () => {
       result: req.records
     });
   });
+
+  api.get("/getEmployeeAnnualLeaveToProcess", getEmployeeAnnualLeaveToProcess, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: req.flag == 1 ? false : true,
+      result: req.records
+    });
+  });
+
 
   return api;
 };

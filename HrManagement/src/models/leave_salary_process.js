@@ -1005,6 +1005,54 @@ export default {
     } catch (e) {
       next(e);
     }
+  },
+  getEmployeeAnnualLeaveToProcess: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      const inputParam = req.query;
+
+      let leaveSalary_header = [];
+
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_d_leave_id from hims_d_leave where leave_category='A';",
+          printQuery: true
+        })
+        .then(leave_master => {
+          if (leave_master.length > 0) {
+            const leave_id = leave_master[0].hims_d_leave_id;
+
+            _mysql
+              .executeQuery({
+                query:
+                  "select E.hims_d_employee_id, E.employee_code, E.full_name from hims_f_leave_application LA \
+                  inner join hims_d_employee E on LA.employee_id = E.hims_d_employee_id\
+                  inner join hims_f_employee_annual_leave EAL on EAL.leave_application_id = LA.hims_f_leave_application_id \
+                  where LA.hospital_id=? and LA.leave_id = 4 and LA.processed='N' and EAL.from_normal_salary = 'N';",
+                values: [inputParam.hospital_id, leave_id],
+                printQuery: true
+              })
+              .then(leave_salary => {
+                _mysql.releaseConnection();
+                req.records = leave_salary;
+                next();
+              })
+              .catch(e => {
+                next(e);
+              });
+          } else {
+            _mysql.releaseConnection();
+            req.records = leaveEncash_header;
+            next();
+          }
+        })
+        .catch(e => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
   }
 };
 
