@@ -339,6 +339,7 @@ const LoadLeaveSalary = $this => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
+    inputs: "LH.hospital_id=  " + $this.state.hospital_id,
     onRowSelect: row => {
       $this.setState(
         {

@@ -1029,7 +1029,7 @@ export default {
                   "select E.hims_d_employee_id, E.employee_code, E.full_name from hims_f_leave_application LA \
                   inner join hims_d_employee E on LA.employee_id = E.hims_d_employee_id\
                   inner join hims_f_employee_annual_leave EAL on EAL.leave_application_id = LA.hims_f_leave_application_id \
-                  where LA.hospital_id=? and LA.leave_id = 4 and LA.processed='N' and EAL.from_normal_salary = 'N';",
+                  where LA.hospital_id=? and LA.leave_id = 4 and LA.processed='N' and EAL.from_normal_salary = 'N' and EAL.cancelled='N';",
                 values: [inputParam.hospital_id, leave_id],
                 printQuery: true
               })

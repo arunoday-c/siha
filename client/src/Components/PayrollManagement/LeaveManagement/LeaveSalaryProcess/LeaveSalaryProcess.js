@@ -156,8 +156,8 @@ class LeaveSalaryProcess extends Component {
               <h6>
                 {this.state.leave_salary_date
                   ? moment(this.state.leave_salary_date).format(
-                      Options.dateFormat
-                    )
+                    Options.dateFormat
+                  )
                   : Options.dateFormat}
               </h6>
             </div>
@@ -225,9 +225,10 @@ class LeaveSalaryProcess extends Component {
         <div className="col-8">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">
-                  Leave Salary Details -{" "}
+              <div className="caption"> <h3 className="caption-subject">
+
+                Leave Salary Details -
+                {this.state.leave_salary_number ? <>
                   {this.state.status === "PEN" ? (
                     <span className="badge badge-info">Salary Pending</span>
                   ) : this.state.status === "PRO" ? (
@@ -237,9 +238,10 @@ class LeaveSalaryProcess extends Component {
                   ) : this.state.status === "CAN" ? (
                     <span className="badge badge-danger">Cancelled</span>
                   ) : (
-                    ""
-                  )}
-                </h3>
+                          ""
+                        )} </> : null}
+              </h3>
+
               </div>
               <div className="actions">
                 <h3 className="caption-subject">
