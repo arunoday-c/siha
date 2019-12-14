@@ -241,7 +241,7 @@ export default {
     }
 
     if (req.query.hospital_id > 0) {
-      employee = ` and hospital_id=${req.query.hospital_id} `;
+      employee = ` and  LA.hospital_id=${req.query.hospital_id} `;
     }
 
     if (
@@ -477,10 +477,10 @@ export default {
                         "YYYY-MM-DD"
                       )}', authorized_by=${
                         req.userIdentity.algaeh_d_app_user_id
-                        }\
+                      }\
                   where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=${
-                        input.hims_f_loan_application_id
-                        }`;
+                    input.hims_f_loan_application_id
+                  }`;
                     }
 
                     //---------------

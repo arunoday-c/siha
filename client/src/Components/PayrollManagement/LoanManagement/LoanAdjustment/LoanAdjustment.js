@@ -27,7 +27,7 @@ class LoanAdjustment extends Component {
 
       hospital_id: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      ).hims_d_hospital_id
     };
   }
 
@@ -109,7 +109,6 @@ class LoanAdjustment extends Component {
   }
 
   getEmployeeLoans() {
-
     this.setState({
       loading: true
     });
@@ -142,7 +141,6 @@ class LoanAdjustment extends Component {
         });
       }
     });
-
   }
 
   eventHandaler(e) {
@@ -194,24 +192,24 @@ class LoanAdjustment extends Component {
             </h6>
           </div> */}
 
-          <div className="col-lg-2">
+          <div className="col">
+            <button
+              onClick={this.clearState.bind(this)}
+              style={{ marginTop: 19 }}
+              className="btn btn-default"
+            >
+              Clear
+            </button>{" "}
             <button
               onClick={this.getEmployeeLoans.bind(this)}
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 19, marginLeft: 5 }}
               className="btn btn-primary"
             >
               {!this.state.loading ? (
                 <span>Load</span>
               ) : (
-                  <i className="fas fa-spinner fa-spin" />
-                )}
-            </button>
-            <button
-              onClick={this.clearState.bind(this)}
-              style={{ marginTop: 19, marginLeft: 5 }}
-              className="btn btn-default"
-            >
-              Clear
+                <i className="fas fa-spinner fa-spin" />
+              )}
             </button>
           </div>
         </div>
@@ -402,7 +400,7 @@ class LoanAdjustment extends Component {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       loading={this.state.loading}
                       events={{
-                        onEdit: () => { },
+                        onEdit: () => {},
                         onDone: this.adjustLoan.bind(this)
                         //onDelete: () => { }
                       }}
@@ -418,7 +416,6 @@ class LoanAdjustment extends Component {
     );
   }
 }
-
 
 function mapStateToProps(state) {
   return {
@@ -436,8 +433,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(LoanAdjustment)
+  connect(mapStateToProps, mapDispatchToProps)(LoanAdjustment)
 );
