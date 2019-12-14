@@ -11,7 +11,7 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
-import { getYears } from "../../../../utils/GlobalFunctions";
+import { getYears, AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Socket from "../../../../sockets";
@@ -29,7 +29,10 @@ class LoanRequest extends Component {
       start_year: moment().year(),
       deducting_year: moment().year(),
       deducting_month: parseInt(moment(new Date()).format("M"), 10) + 1,
-      request_type: "LO"
+      request_type: "LO",
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
     };
     this.loanSocket = Socket;
     this.getLoanMaster();
@@ -73,7 +76,8 @@ class LoanRequest extends Component {
       module: "hrManagement",
       method: "GET",
       data: {
-        employee_id: this.state.hims_d_employee_id
+        employee_id: this.state.hims_d_employee_id,
+        hospital_id: this.state.hospital_id
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -200,7 +204,8 @@ class LoanRequest extends Component {
               start_month: this.state.start_month,
               start_year: this.state.start_year,
               loan_tenure: this.state.loan_tenure,
-              installment_amount: this.state.installment_amount
+              installment_amount: this.state.installment_amount,
+              hospital_id: this.state.hospital_id
             },
             onSuccess: res => {
               if (res.data.success) {
@@ -678,8 +683,8 @@ class LoanRequest extends Component {
                                   Issued
                                 </span>
                               ) : (
-                                "------"
-                              )}
+                                        "------"
+                                      )}
                             </span>
                           );
                         },
@@ -729,8 +734,8 @@ class LoanRequest extends Component {
                           return row.pending_tenure !== 0 ? (
                             <span>{row.pending_tenure} Month</span>
                           ) : (
-                            <span className="badge badge-success">Closed</span>
-                          );
+                              <span className="badge badge-success">Closed</span>
+                            );
                         }
                       },
 
@@ -827,9 +832,9 @@ class LoanRequest extends Component {
                     isEditable={false}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => {},
-                      onDelete: () => {},
-                      onDone: () => {}
+                      onEdit: () => { },
+                      onDelete: () => { },
+                      onDone: () => { }
                     }}
                   />
                 </div>
@@ -900,9 +905,9 @@ class LoanRequest extends Component {
                             <span>
                               {moment(
                                 "01-" +
-                                  row.deducting_month +
-                                  "-" +
-                                  row.deducting_year,
+                                row.deducting_month +
+                                "-" +
+                                row.deducting_year,
                                 "DD-MM-YYYY"
                               ).format("MMMM - YYYY")}
                             </span>

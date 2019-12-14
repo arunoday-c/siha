@@ -257,7 +257,8 @@ export default {
         .executeQuery({
           query:
             "select LS.hims_f_leave_salary_header_id, LS.leave_salary_number as request_number, LS.employee_id, \
-          LS.total_amount as payment_amount, emp.employee_code, emp.full_name from hims_f_leave_salary_header LS, \
+          LS.total_amount as payment_amount, LS.salary_amount, LS.leave_amount, LS.airfare_amount, \
+          emp.employee_code, emp.full_name from hims_f_leave_salary_header LS, \
           hims_d_employee emp where LS.status = 'PEN' and LS.employee_id = emp.hims_d_employee_id" +
             _stringData,
           values: _.valuesIn(_FSDetails),

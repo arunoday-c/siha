@@ -314,7 +314,11 @@ const getPaymentDetails = ($this, row) => {
       deduction_month: row.deducting_month,
       year: row.deducting_year,
       payment_mode: null,
-      processBtn: false
+      processBtn: false,
+      dis_leave_amount: 0,
+      airfare_months: 0,
+      dis_salary_amount: 0,
+      dis_total_amount: 0
     });
   } else if ($this.state.sel_payment_type === "LN") {
     $this.setState({
@@ -325,7 +329,11 @@ const getPaymentDetails = ($this, row) => {
       full_name: row.full_name,
       employee_loan_id: row.hims_f_loan_application_id,
       payment_mode: null,
-      processBtn: false
+      processBtn: false,
+      dis_leave_amount: 0,
+      airfare_months: 0,
+      dis_salary_amount: 0,
+      dis_total_amount: 0
     });
   } else if (row.payment_type === "EN") {
     $this.setState({
@@ -336,7 +344,11 @@ const getPaymentDetails = ($this, row) => {
       full_name: row.full_name,
       employee_leave_encash_id: row.hims_f_leave_encash_header_id,
       payment_mode: null,
-      processBtn: false
+      processBtn: false,
+      dis_leave_amount: 0,
+      airfare_months: 0,
+      dis_salary_amount: 0,
+      dis_total_amount: 0
     });
   } else if (row.payment_type === "GR") {
     $this.setState({
@@ -347,7 +359,11 @@ const getPaymentDetails = ($this, row) => {
       full_name: row.full_name,
       employee_end_of_service_id: row.hims_f_end_of_service_id,
       payment_mode: null,
-      processBtn: false
+      processBtn: false,
+      dis_leave_amount: 0,
+      airfare_months: 0,
+      dis_salary_amount: 0,
+      dis_total_amount: 0
     });
   } else if (row.payment_type === "FS") {
     $this.setState({
@@ -358,7 +374,12 @@ const getPaymentDetails = ($this, row) => {
       full_name: row.full_name,
       employee_final_settlement_id: row.hims_f_final_settlement_header_id,
       payment_mode: null,
-      processBtn: false
+      processBtn: false,
+
+      dis_leave_amount: 0,
+      airfare_months: 0,
+      dis_salary_amount: 0,
+      dis_total_amount: 0
     });
   } else if (row.payment_type === "LS") {
     $this.setState({
@@ -369,7 +390,12 @@ const getPaymentDetails = ($this, row) => {
       full_name: row.full_name,
       employee_leave_settlement_id: row.hims_f_leave_salary_header_id,
       payment_mode: null,
-      processBtn: false
+      processBtn: false,
+
+      dis_leave_amount: row.leave_amount,
+      airfare_months: row.airfare_amount,
+      dis_salary_amount: row.salary_amount,
+      dis_total_amount: row.payment_amount
     });
   }
 };
