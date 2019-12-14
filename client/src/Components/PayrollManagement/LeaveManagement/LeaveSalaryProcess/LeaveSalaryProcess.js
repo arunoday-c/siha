@@ -156,8 +156,8 @@ class LeaveSalaryProcess extends Component {
               <h6>
                 {this.state.leave_salary_date
                   ? moment(this.state.leave_salary_date).format(
-                    Options.dateFormat
-                  )
+                      Options.dateFormat
+                    )
                   : Options.dateFormat}
               </h6>
             </div>
@@ -183,7 +183,7 @@ class LeaveSalaryProcess extends Component {
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Employee Code"
+                              forceLabel: "Emp. Code"
                             }}
                           />
                         ),
@@ -199,7 +199,8 @@ class LeaveSalaryProcess extends Component {
                         },
                         className: row => {
                           return "greenCell";
-                        }
+                        },
+                        others: { maxWidth: 100 }
                       },
                       {
                         fieldName: "full_name",
@@ -214,7 +215,7 @@ class LeaveSalaryProcess extends Component {
                     ]}
                     keyId="hims_f_salary_detail_id"
                     dataSource={{ data: this.state.emp_leave_salary }}
-                    paging={{ page: 0, rowsPerPage: 10 }}
+                    paging={{ page: 0, rowsPerPage: 20 }}
                     filter={true}
                   />
                 </div>
@@ -225,28 +226,25 @@ class LeaveSalaryProcess extends Component {
         <div className="col-8">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
-              <div className="caption"> <h3 className="caption-subject">
-
-                Leave Salary Details -
-                {this.state.leave_salary_number ? <>
-                  {this.state.status === "PEN" ? (
-                    <span className="badge badge-info">Salary Pending</span>
-                  ) : this.state.status === "PRO" ? (
-                    <span className="badge badge-success">
-                      Salary Processed
-                    </span>
-                  ) : this.state.status === "CAN" ? (
-                    <span className="badge badge-danger">Cancelled</span>
-                  ) : (
-                          ""
-                        )} </> : null}
-              </h3>
-
+              <div className="caption">
+                <h3 className="caption-subject">
+                  Employee Name: {this.state.employee_name}
+                </h3>
               </div>
               <div className="actions">
-                <h3 className="caption-subject">
-                  Employee Name -{this.state.employee_name}
-                </h3>
+                {this.state.leave_salary_number ? (
+                  <>
+                    {this.state.status === "PEN" ? (
+                      <span className="badge badge-info">Payment Pending</span>
+                    ) : this.state.status === "PRO" ? (
+                      <span className="badge badge-success">Salary Paid</span>
+                    ) : this.state.status === "CAN" ? (
+                      <span className="badge badge-danger">Cancelled</span>
+                    ) : (
+                      ""
+                    )}{" "}
+                  </>
+                ) : null}
               </div>
             </div>
             <div className="portlet-body">
@@ -306,33 +304,6 @@ class LeaveSalaryProcess extends Component {
                             </span>
                           );
                         }
-                      },
-                      {
-                        fieldName: "salary_no",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Salary No" }} />
-                        )
-                      },
-                      {
-                        fieldName: "salary_date",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Salary Date" }} />
-                        )
-                        // displayTemplate: row => {
-                        //   return <span>{dateFormater(row.expiry_date)}</span>;
-                        // }
-                      },
-                      {
-                        fieldName: "gross_amount",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Gross Salary" }} />
-                        )
-                      },
-                      {
-                        fieldName: "net_amount",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Net Salary" }} />
-                        )
                       },
                       {
                         fieldName: "start_date",
@@ -405,6 +376,33 @@ class LeaveSalaryProcess extends Component {
                         fieldName: "leave_period",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Leave Period" }} />
+                        )
+                      },
+                      {
+                        fieldName: "salary_no",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Salary No" }} />
+                        )
+                      },
+                      {
+                        fieldName: "salary_date",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Salary Date" }} />
+                        )
+                        // displayTemplate: row => {
+                        //   return <span>{dateFormater(row.expiry_date)}</span>;
+                        // }
+                      },
+                      {
+                        fieldName: "gross_amount",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Gross Salary" }} />
+                        )
+                      },
+                      {
+                        fieldName: "net_amount",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Net Salary" }} />
                         )
                       }
                     ]}
