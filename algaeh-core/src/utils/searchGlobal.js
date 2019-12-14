@@ -464,8 +464,7 @@ let algaehSearchConfig = (searchName, req) => {
           "select  hims_f_leave_salary_header_id,leave_salary_number,employee_id, \
           date(LH.leave_salary_date) as leave_salary_date, total_amount, emp.employee_code, \
           emp.full_name from hims_f_leave_salary_header LH, hims_d_employee emp \
-          where LH.employee_id = emp.hims_d_employee_id and LH.hospital_id=" +
-          hospitalId,
+          where LH.employee_id = emp.hims_d_employee_id ",
 
         orderBy: "hims_f_leave_salary_header_id desc"
       },

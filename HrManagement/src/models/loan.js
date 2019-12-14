@@ -130,7 +130,7 @@ export default {
                         req.userIdentity.algaeh_d_app_user_id,
                         new Date(),
                         req.userIdentity.algaeh_d_app_user_id,
-                        req.userIdentity.hospital_id
+                        input.hospital_id
                       ],
 
                       printQuery: true
@@ -240,6 +240,10 @@ export default {
       employee += ` and loan_authorized= '${req.query.loan_authorized}'`;
     }
 
+    if (req.query.hospital_id > 0) {
+      employee = ` and hospital_id=${req.query.hospital_id} `;
+    }
+
     if (
       req.query.from_date != "null" &&
       req.query.from_date != "" &&
@@ -281,7 +285,7 @@ export default {
           start_month,start_year,loan_tenure,pending_tenure,installment_amount,pending_loan,authorized1_by,authorized1_date,\
           authorized1,authorized2_by,authorized2_date,authorized2 ,E.full_name as employee_name ,E.employee_code from hims_f_loan_application LA  inner join \
           hims_d_loan L on LA.loan_id=L.hims_d_loan_id  inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id\
-           and E.record_status='A' where L.record_status='A' and LA.hospital_id=? " +
+           and E.record_status='A' where L.record_status='A' " +
           employee +
           "" +
           range +
@@ -292,7 +296,6 @@ export default {
           "" +
           loan_closed +
           " order by hims_f_loan_application_id desc",
-        values: [req.query.hospital_id],
 
         printQuery: true
       })
@@ -474,10 +477,10 @@ export default {
                         "YYYY-MM-DD"
                       )}', authorized_by=${
                         req.userIdentity.algaeh_d_app_user_id
-                      }\
+                        }\
                   where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=${
-                    input.hims_f_loan_application_id
-                  }`;
+                        input.hims_f_loan_application_id
+                        }`;
                     }
 
                     //---------------

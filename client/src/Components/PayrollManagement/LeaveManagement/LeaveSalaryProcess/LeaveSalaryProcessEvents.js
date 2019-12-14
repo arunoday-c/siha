@@ -21,6 +21,7 @@ const texthandle = ($this, e) => {
 const getLeaveSalaryProcess = ($this, e) => {
   AlgaehLoader({ show: true });
 
+
   let inputObj = {
     employee_id: $this.state.employee_id
   };
@@ -69,7 +70,13 @@ const ClearData = $this => {
 
 const MainClearData = $this => {
   let IOputs = LeaveSalaryProcessIOputs.inputParam();
-  $this.setState(IOputs);
+  IOputs.hospital_id = JSON.parse(
+    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+  ).hims_d_hospital_id
+
+  $this.setState(IOputs, () => {
+    getEmployeeAnnualLeaveToProcess($this)
+  });
 };
 
 const employeeSearch = $this => {
@@ -91,17 +98,23 @@ const employeeSearch = $this => {
       $this.setState(IOputs, () => {
         getLeaveSalaryProcess($this);
       });
-      // $this.setState(
-      //   {
-      //     employee_name: row.full_name,
-      //     employee_id: row.hims_d_employee_id
-      //   },
-      //   () => {
-      //     getLeaveSalaryProcess($this);
-      //   }
-      // );
+
     }
   });
+};
+
+const selectEmployee = ($this, row) => {
+
+  let IOputs = LeaveSalaryProcessIOputs.inputParam();
+  IOputs.emp_leave_salary = $this.state.emp_leave_salary
+  IOputs.employee_name = row.full_name;
+  IOputs.employee_id = row.hims_d_employee_id;
+  IOputs.dis_employee_name = row.full_name;
+  $this.setState(IOputs, () => {
+    getLeaveSalaryProcess($this);
+  });
+
+
 };
 
 const dateFormater = value => {
@@ -289,12 +302,14 @@ const getLeaveSalary = $this => {
         let data = response.data.result;
 
         AlgaehLoader({ show: false });
+        data.dataExists = true;
         data.dis_salary_amount = data.salary_amount;
         data.dis_leave_amount = data.leave_amount;
         data.dis_airfare_amount = data.airfare_amount;
         data.dis_total_amount = data.total_amount;
         data.ProcessBtn = true;
         data.SaveBtn = true;
+        data.emp_leave_salary = []
         $this.setState(data);
       } else if (!response.data.success) {
         AlgaehLoader({ show: false });
@@ -324,6 +339,7 @@ const LoadLeaveSalary = $this => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
+    inputs: "LH.hospital_id=  " + $this.state.hospital_id,
     onRowSelect: row => {
       $this.setState(
         {
@@ -428,6 +444,29 @@ const closeSalaryComponents = ($this, e) => {
   });
 };
 
+const getEmployeeAnnualLeaveToProcess = ($this) => {
+  algaehApiCall({
+    uri: "/leavesalaryprocess/getEmployeeAnnualLeaveToProcess",
+    module: "hrManagement",
+    data: { hospital_id: $this.state.hospital_id },
+    method: "GET",
+    onSuccess: response => {
+      $this.setState({ emp_leave_salary: response.data.result });
+    }
+  });
+}
+
+const eventHandaler = ($this, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value
+  }, () => {
+    getEmployeeAnnualLeaveToProcess($this)
+  });
+}
+
 export {
   texthandle,
   ClearData,
@@ -438,5 +477,8 @@ export {
   LoadLeaveSalary,
   MainClearData,
   openSalaryComponents,
-  closeSalaryComponents
+  closeSalaryComponents,
+  getEmployeeAnnualLeaveToProcess,
+  eventHandaler,
+  selectEmployee
 };

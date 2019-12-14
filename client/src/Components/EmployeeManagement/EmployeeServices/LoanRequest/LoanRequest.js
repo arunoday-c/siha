@@ -32,10 +32,10 @@ class LoanRequest extends Component {
     this.inputRef = React.createRef();
     const hospital = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    ).hims_d_hospital_id;
+    );
 
     this.state = {
-      hospital_id: hospital,
+      hospital_id: hospital.hims_d_hospital_id,
       hims_d_employee_id: null,
       selectedLang: this.props.SelectLanguage,
       loan_master: [],
@@ -49,7 +49,8 @@ class LoanRequest extends Component {
       // request_type: "LO"
       start_month: moment()
         .add(1, "months")
-        .format("M")
+        .format("M"),
+      decimal_places: hospital.decimal_places
     };
     this.getLoanMaster();
   }
@@ -149,9 +150,10 @@ class LoanRequest extends Component {
         this.setState(
           {
             employee_name: row.full_name,
-            employee_id: row.hims_d_employee_id
+            employee_id: row.hims_d_employee_id,
+            hims_d_employee_id: row.hims_d_employee_id
           },
-          () => this.getEmployees()
+          () => this.getEmployeeLoans()
         );
       }
     });
@@ -162,7 +164,8 @@ class LoanRequest extends Component {
       module: "hrManagement",
       method: "GET",
       data: {
-        employee_id: this.state.hims_d_employee_id
+        employee_id: this.state.hims_d_employee_id,
+        hospital_id: this.state.hospital_id
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -292,7 +295,8 @@ class LoanRequest extends Component {
               start_month: this.state.start_month,
               start_year: this.state.start_year,
               loan_tenure: this.state.loan_tenure,
-              installment_amount: this.state.installment_amount
+              installment_amount: this.state.installment_amount,
+              hospital_id: this.state.hospital_id
             },
             onSuccess: res => {
               if (res.data.success) {
@@ -322,7 +326,9 @@ class LoanRequest extends Component {
         if (e.target.value <= this.state.loan_limit) {
           this.setState({
             [e.target.name]: e.target.value,
-            installment_amount: e.target.value / this.state.loan_tenure
+
+            installment_amount: (e.target.value / this.state.loan_tenure)
+              .toFixed(this.state.decimal_places)
           });
         } else {
           swalMessage({
@@ -391,7 +397,8 @@ class LoanRequest extends Component {
       case "loan_tenure":
         this.setState({
           [value.name]: value.value,
-          installment_amount: this.state.loan_amount / value.value
+          installment_amount: (this.state.loan_amount / value.value)
+            .toFixed(this.state.decimal_places)
         });
         break;
 
@@ -499,8 +506,8 @@ class LoanRequest extends Component {
                                 Issued
                               </span>
                             ) : (
-                              "------"
-                            )}
+                                      "------"
+                                    )}
                           </span>
                         );
                       },
@@ -544,8 +551,8 @@ class LoanRequest extends Component {
                         return row.pending_tenure !== 0 ? (
                           <span>{row.pending_tenure} Month</span>
                         ) : (
-                          <span className="badge badge-success">Closed</span>
-                        );
+                            <span className="badge badge-success">Closed</span>
+                          );
                       }
                     },
 
@@ -638,9 +645,9 @@ class LoanRequest extends Component {
                   isEditable={false}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    onEdit: () => {},
-                    onDelete: () => {},
-                    onDone: () => {}
+                    onEdit: () => { },
+                    onDelete: () => { },
+                    onDone: () => { }
                   }}
                 />
               </div>
@@ -711,9 +718,9 @@ class LoanRequest extends Component {
                           <span>
                             {moment(
                               "01-" +
-                                row.deducting_month +
-                                "-" +
-                                row.deducting_year,
+                              row.deducting_month +
+                              "-" +
+                              row.deducting_year,
                               "DD-MM-YYYY"
                             ).format("MMMM - YYYY")}
                           </span>
