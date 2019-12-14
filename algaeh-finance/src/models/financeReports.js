@@ -6,8 +6,6 @@ import algaehUtilities from "algaeh-utilities/utilities";
 export default {
   //created by irfan:
   getBalanceSheet: (req, res, next) => {
-    const utilities = new algaehUtilities();
-
     const decimal_places = req.userIdentity.decimal_places;
     getAccountHeadsForReport(decimal_places, 1)
       .then(asset => {
@@ -38,6 +36,33 @@ export default {
               .catch(e => {
                 next(e);
               });
+          })
+          .catch(e => {
+            next(e);
+          });
+      })
+      .catch(e => {
+        next(e);
+      });
+  },
+  //created by irfan:
+  getProfitAndLoss: (req, res, next) => {
+    const decimal_places = req.userIdentity.decimal_places;
+
+    getAccountHeadsForReport(decimal_places, 4)
+      .then(income => {
+        getAccountHeadsForReport(decimal_places, 5)
+          .then(expense => {
+            const balance = parseFloat(
+              parseFloat(income.subtitle) - parseFloat(expense.subtitle)
+            ).toFixed(decimal_places);
+
+            req.records = {
+              profit: balance,
+              income: income,
+              expense: expense
+            };
+            next();
           })
           .catch(e => {
             next(e);
