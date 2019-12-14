@@ -45,9 +45,9 @@ export default function FinanceReports() {
           <li
             className={selectedClass("PL")}
             onClick={() => {
+              loadReport({ url: "getProfitAndLoss" });
               setLoading(true);
               setSelected("PL");
-              loadReport({ url: "getProfitAndLoss" });
             }}
           >
             Profit and Loss
@@ -56,14 +56,15 @@ export default function FinanceReports() {
       </div>
       <div className="col-9 reportPreviewSecLeft">
         <Spin spinning={loading} tip="Please wait report data is fetching..">
-          <Balance
-            data={data}
-            result={
-              selected === "BS"
-                ? ["asset", "liabilities"]
-                : ["income", "expense"]
-            }
-          />
+          {selected === "BS" ? (
+            <Balance data={data} result={["asset", "liabilities"]} />
+          ) : selected === "PL" ? (
+            <Balance
+              data={data}
+              result={["income", "expense"]}
+              footer={result => <div>Profit : {result.profit}</div>}
+            />
+          ) : null}
         </Spin>{" "}
       </div>
     </div>

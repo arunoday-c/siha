@@ -16,12 +16,22 @@ function PlotUI(node, style, indexIds) {
         className="childNodeLi"
         key={indexIds.join("-")}
         followupid={
-          node.leafnode === "N" ? node.finance_account_head_id : node.head_id
+          node !== undefined && node.leafnode === "N"
+            ? node.finance_account_head_id
+            : node !== undefined
+            ? node.head_id
+            : null
         }
-        parentid={node.leafnode === "Y" ? node.head_id : node.parent_acc_id}
+        parentid={
+          node !== undefined && node.leafnode === "Y"
+            ? node.head_id
+            : node !== undefined
+            ? node.parent_acc_id
+            : null
+        }
       >
-        <span>{node["label"]}</span>
-        <span>{node["subtitle"]}</span>
+        <span>{node !== undefined ? node["label"] : null}</span>
+        <span>{node !== undefined ? node["subtitle"] : null}</span>
       </li>
     );
   } else {
@@ -29,7 +39,11 @@ function PlotUI(node, style, indexIds) {
       <li
         key={indexIds.join("-")}
         className="parentNodeLi"
-        parentid={node.leafnode === "Y" ? node.head_id : node.parent_acc_id}
+        parentid={
+          node !== undefined && node.leafnode === "Y"
+            ? node.head_id
+            : node.parent_acc_id
+        }
       >
         <div
           onClick={e => {
@@ -49,13 +63,17 @@ function PlotUI(node, style, indexIds) {
             }
           }}
           followupid={
-            node.leafnode === "N" ? node.finance_account_head_id : node.head_id
+            node !== undefined && node.leafnode === "N"
+              ? node.finance_account_head_id
+              : node !== undefined
+              ? node.head_id
+              : null
           }
         >
           <span>&#x27A5;</span>
-          <span>{node["label"]}</span>
+          <span>{node !== undefined ? node["label"] : null}</span>
           <span>
-            <b>{node["subtitle"]}</b>
+            <b>{node !== undefined ? node["subtitle"] : null}</b>
           </span>
         </div>
         <ul className={node.account_level === "0" ? "show" : "hide"}>
@@ -71,7 +89,7 @@ function PlotUI(node, style, indexIds) {
 }
 
 export default function BalanceSheet(props) {
-  const { style, data, result } = props;
+  const { style, data, result, footer } = props;
   const createPrintObject = useRef(undefined);
   if (result.length === 0) return null;
   if (Object.keys(data).length === 0) {
@@ -115,6 +133,7 @@ export default function BalanceSheet(props) {
               {PlotUI(data[result[1]], style, [0])}
             </ul>{" "}
           </div>
+          {typeof footer === "function" ? footer(data) : null}
         </div>
       </>
     );
