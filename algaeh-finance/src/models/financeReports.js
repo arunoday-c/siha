@@ -25,7 +25,10 @@ export default {
                 // }
 
                 liabilities.children.push(equity);
-                liabilities.account_name = "Liabilities and Equity";
+                liabilities.label = "Liabilities and Equity";
+                liabilities.subtitle = parseFloat(
+                  parseFloat(liabilities.subtitle) + parseFloat(equity.subtitle)
+                ).toFixed(decimal_places);
                 req.records = {
                   asset: asset,
                   liabilities: liabilities
