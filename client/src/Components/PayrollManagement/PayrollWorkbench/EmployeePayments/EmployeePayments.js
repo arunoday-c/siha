@@ -488,7 +488,7 @@ class EmployeePayment extends Component {
                                 onChange: texthandle.bind(this, this)
                               }}
                             />{" "}
-                            <div className="col-12">
+                            {/* <div className="col-12">
                               <AlgaehLabel
                                 label={{
                                   forceLabel: "Generate Document No."
@@ -499,7 +499,7 @@ class EmployeePayment extends Component {
                                   ? this.state.payment_application_code
                                   : "----------"}
                               </h6>
-                            </div>
+                            </div> */}
                           </>
                         ) : null}
                         <AlagehAutoComplete

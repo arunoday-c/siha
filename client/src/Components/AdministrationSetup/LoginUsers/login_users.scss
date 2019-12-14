@@ -1,6 +1,9 @@
-#loginUserGrid_Cntr {
-  .ReactTable {
-    max-width: 98vw !important;
-    max-height: 70vh !important;
+.login_users {
+  #loginUserGrid_Cntr {
+    .ReactTable {
+      max-width: 98vw !important;
+      max-height: 70vh !important;
+    }
   }
+  margin-top: 15px;
 }
