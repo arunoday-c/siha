@@ -442,8 +442,9 @@ export default {
           where SD.is_deleted='N' and day_end_header_id in (?)
           group by day_end_header_id)
           select D.finance_day_end_sub_detail_id,D.day_end_header_id,D.payment_date,D.head_account_code,voucher_no,
-          head_id,child_id,debit_amount,payment_type,credit_amount,narration,year,month,hospital_id,D.root_id
-          from finance_day_end_sub_detail D inner join  cte_ C on D.day_end_header_id=C.day_end_header_id    
+          head_id,child_id,debit_amount,payment_type,credit_amount,narration,year,month,hospital_id,AH.root_id
+          from finance_day_end_sub_detail D inner join  cte_ C on D.day_end_header_id=C.day_end_header_id   
+          left join finance_account_head AH  on D.head_id=AH.finance_account_head_id
           where  D.day_end_header_id in (SELECT day_end_header_id
           FROM cte_ where is_equal='true');`,
         values: [input.finance_day_end_header_ids],
@@ -525,7 +526,6 @@ export default {
             "payment_date",
             "day_end_header_id",
             "head_account_code",
-            "root_id",
             "head_id",
             "child_id",
             "debit_amount",
