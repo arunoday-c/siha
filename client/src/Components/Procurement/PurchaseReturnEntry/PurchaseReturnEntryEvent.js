@@ -170,7 +170,7 @@ const ReceiptSearch = ($this, e) => {
 
             data.saveEnable = false;
 
-            data.dataExitst = true;
+            data.dataFinder = true;
 
             data.grn_number = row.grn_number;
             data.location_type = row.location_type
@@ -253,6 +253,7 @@ const getCtrlCode = ($this, docNumber) => {
 
           data.saveEnable = true;
           data.dataExitst = true;
+          data.dataFinder = true;
 
           if (data.is_posted === "N") {
             data.postEnable = false
@@ -478,7 +479,7 @@ const generatePOReceiptNoPrice = data => {
 
 const PostPOReturnEntry = $this => {
 
-  debugger
+
   AlgaehLoader({ show: true });
   let InputObj = $this.state
   InputObj.transaction_type = "PR";
@@ -548,7 +549,7 @@ const PostPOReturnEntry = $this => {
     InputObj.po_return_entry_detail = InputObj.inventory_stock_detail
   }
 
-  debugger
+
 
 
 

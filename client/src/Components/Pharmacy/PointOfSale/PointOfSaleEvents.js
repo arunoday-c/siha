@@ -1270,7 +1270,7 @@ const calculateAmount = ($this, row) => {
         // data.billdetails[0].select_item = "Y"
         extend(row, data.billdetails[0]);
 
-        debugger
+
 
         // const _index = prescribed_item_list.indexOf(row);
 
@@ -1304,7 +1304,7 @@ const processSelectedItems = ($this) => {
   const non_selected_Items = _.filter($this.state.prescribed_item_list, (f) => f.select_item === "N");
   let selected_item_list = []
   if (non_selected_Items.length > 0) {
-    debugger
+
     let strItemDescription = ""
     for (let k = 0; k < non_selected_Items.length; k++) {
       strItemDescription += non_selected_Items[k].item_description

@@ -153,7 +153,7 @@ class PrescribedItemList extends Component {
                                             paging={{ page: 0, rowsPerPage: 10 }}
                                             onRowSelect={row => {
                                                 if (row.pre_approval === "N") {
-                                                    debugger
+
                                                     let _index = this.state.prescribed_item_list.indexOf(row)
                                                     this.setState({
                                                         item_batches: row.batches,

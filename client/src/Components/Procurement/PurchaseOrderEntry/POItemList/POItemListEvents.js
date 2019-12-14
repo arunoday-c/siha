@@ -775,7 +775,7 @@ const onchhangegriddiscount = ($this, row, e) => {
     });
   } else {
     //
-    debugger
+
     extended_cost = parseFloat(extended_price) - parseFloat(discount_amount);
     row["unit_cost"] =
       $this.state.hims_f_procurement_po_header_id !== null

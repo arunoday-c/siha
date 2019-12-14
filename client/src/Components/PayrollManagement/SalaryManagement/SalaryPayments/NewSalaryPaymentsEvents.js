@@ -106,11 +106,18 @@ const PaySalary = $this => {
     salary_payment: _salarypayment
   };
   AlgaehLoader({ show: true });
+  debugger
+  const settings = { header: undefined, footer: undefined };
   algaehApiCall({
     uri: "/salary/SaveSalaryPayment",
     module: "hrManagement",
-    data: inputObj,
+    skipParse: true,
+    data: Buffer.from(JSON.stringify(inputObj), "utf8"),
     method: "PUT",
+    header: {
+      "content-type": "application/octet-stream",
+      ...settings
+    },
     onSuccess: response => {
       if (response.data.success) {
         $this.setState({
@@ -262,7 +269,10 @@ const generatePaySlip = ($this, inputs) => {
 };
 
 const selectToGeneratePaySlip = ($this, row, e) => {
-  let _salarypayment = $this.state.salary_payment;
+  let _salarypayment = Enumerable.from($this.state.salary_payment)
+    .where(w => w.salary_paid === "Y")
+    .toArray();
+  // let _salarypayment = $this.state.salary_payment;
   let _index = _salarypayment.indexOf(row);
   let generatePayslip = true;
   if (e.target.checked === true) {

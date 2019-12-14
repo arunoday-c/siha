@@ -22,7 +22,7 @@ const loctexthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let ReqData = true;
-  if ($this.state.vendor_id !== null) {
+  if ($this.state.vendor_id !== null || $this.state.po_type === "VQ") {
     ReqData = false;
   }
   $this.setState({
@@ -143,6 +143,7 @@ const RequisitionSearch = ($this, e) => {
       callBack(text);
     },
     onRowSelect: row => {
+      AlgaehLoader({ show: true });
       algaehApiCall({
         uri:
           $this.state.po_from === "PHR"
@@ -157,13 +158,13 @@ const RequisitionSearch = ($this, e) => {
           if (response.data.success === true) {
             let data = response.data.records;
             if (data !== null && data !== undefined) {
-              AlgaehLoader({ show: true });
+
 
               data.saveEnable = false;
 
               data.location_type = "MS";
 
-              data.dataExitst = true;
+              // data.dataFinder = true;
 
               for (let i = 0; i < data.po_entry_detail.length; i++) {
                 let purchase_cost = data.po_entry_detail[i].purchase_cost;
@@ -269,11 +270,10 @@ const RequisitionSearch = ($this, e) => {
                   data.hims_f_inventory_material_header_id;
                 data.inventory_stock_detail = data.po_entry_detail;
               }
-
               $this.setState(data);
-              AlgaehLoader({ show: false });
             }
           }
+          AlgaehLoader({ show: false });
         }
       });
     }
@@ -307,7 +307,8 @@ const SavePOEnrty = $this => {
           hims_f_procurement_po_header_id:
             response.data.records.hims_f_procurement_po_header_id,
           saveEnable: true,
-          dataExitst: true
+          dataExitst: true,
+          dataFinder: true
         });
 
         swalMessage({
@@ -366,6 +367,7 @@ const getCtrlCode = ($this, docNumber) => {
           }
           data.saveEnable = true;
           data.dataExitst = true;
+          data.dataFinder = true;
 
           if (data.po_from === "PHR") {
             $this.state.pharmacy_stock_detail = data.po_entry_detail;
@@ -707,6 +709,130 @@ const clearItemDetails = ($this) => {
     }
   });
 };
+
+const VendorQuotationSearch = ($this) => {
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.Purchase.VendorQuotation
+    },
+    searchName: "VendorQuotation",
+    uri: "/gloabelSearch/get",
+    inputs: " VH.quotation_for= '" + $this.state.po_from + "'",
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: row => {
+
+      algaehApiCall({
+        uri: "/VendorsQuotation/getVendorQuotation",
+        module: "procurement",
+        method: "GET",
+        data: { vendor_quotation_number: row.vendor_quotation_number },
+        onSuccess: response => {
+          if (response.data.success) {
+            let data = response.data.records;
+            data.po_entry_detail = data.quotation_detail
+            for (let i = 0; i < data.po_entry_detail.length; i++) {
+              // uom_requested_id
+              // if ($this.state.po_from === "PHR") {
+              //   data.po_entry_detail[i].item_category_id =
+              //     data.po_entry_detail[i].phar_item_category;
+              //   data.po_entry_detail[i].item_group_id =
+              //     data.po_entry_detail[i].phar_item_group;
+              //   data.po_entry_detail[i].item_id =
+              //     data.po_entry_detail[i].phar_item_id;
+
+              //   data.po_entry_detail[i].uom_requested_id =
+              //     data.po_entry_detail[i].pharmacy_uom_id;
+              // } else {
+              //   data.po_entry_detail[i].item_category_id =
+              //     data.po_entry_detail[i].inv_item_category_id;
+              //   data.po_entry_detail[i].item_group_id =
+              //     data.po_entry_detail[i].inv_item_group_id;
+              //   data.po_entry_detail[i].item_id =
+              //     data.po_entry_detail[i].inv_item_id;
+
+              //   data.po_entry_detail[i].uom_requested_id =
+              //     data.po_entry_detail[i].inventory_uom_id;
+              // }
+
+              data.po_entry_detail[i].order_quantity = data.po_entry_detail[i].quantity;
+              data.po_entry_detail[i].total_quantity = data.po_entry_detail[i].quantity
+              data.po_entry_detail[i].unit_price = data.po_entry_detail[i].unit_price
+              data.po_entry_detail[i].extended_price = data.po_entry_detail[i].extended_price
+              data.po_entry_detail[i].sub_discount_percentage = data.po_entry_detail[i].discount_percentage
+              data.po_entry_detail[i].sub_discount_amount = data.po_entry_detail[i].discount_amount
+              data.po_entry_detail[i].extended_cost = data.po_entry_detail[i].net_extended_cost
+              data.po_entry_detail[i].net_extended_cost = data.po_entry_detail[i].net_extended_cost
+              data.po_entry_detail[i].unit_cost =
+                (parseFloat(data.po_entry_detail[i].extended_cost) / parseFloat(data.po_entry_detail[i].quantity))
+                  .toFixed($this.state.decimal_places)
+              data.po_entry_detail[i].authorize_quantity = 0
+              data.po_entry_detail[i].quantity_outstanding = 0
+              data.po_entry_detail[i].rejected_quantity = 0
+              data.po_entry_detail[i].tax_percentage = data.po_entry_detail[i].tax_percentage
+              data.po_entry_detail[i].tax_amount = data.po_entry_detail[i].tax_amount
+              data.po_entry_detail[i].total_amount = data.po_entry_detail[i].total_amount
+            }
+
+
+            data.vendor_quotation_number = data.vendor_quotation_number;
+            data.vendor_quotation_header_id =
+              data.hims_f_procurement_vendor_quotation_header_id;
+            if ($this.state.po_from === "PHR") {
+              data.pharmacy_stock_detail = data.po_entry_detail;
+            } else {
+              data.inventory_stock_detail = data.po_entry_detail;
+            }
+            data.saveEnable = false;
+
+            let sub_total = Enumerable.from(data.po_entry_detail).sum(s =>
+              parseFloat(s.extended_price)
+            );
+
+            let net_total = Enumerable.from(data.po_entry_detail).sum(s =>
+              parseFloat(s.net_extended_cost)
+            );
+
+            let net_payable = Enumerable.from(data.po_entry_detail).sum(s =>
+              parseFloat(s.total_amount)
+            );
+
+            let total_tax = Enumerable.from(data.po_entry_detail).sum(s =>
+              parseFloat(s.tax_amount)
+            );
+
+            let detail_discount = Enumerable.from(data.po_entry_detail).sum(
+              s => parseFloat(s.sub_discount_amount)
+            );
+
+            data.sub_total = sub_total;
+            data.net_total = net_total;
+            data.net_payable = net_payable;
+            data.total_tax = total_tax;
+            data.detail_discount = detail_discount;
+            // data.dataExitst = true;
+
+            // data.addedItem = true;
+            $this.setState(data);
+            AlgaehLoader({ show: false });
+          } else {
+            AlgaehLoader({ show: false });
+          }
+
+        },
+        onFailure: error => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
+    }
+  });
+}
+
 export {
   texthandle,
   poforhandle,
@@ -723,5 +849,6 @@ export {
   getVendorMaster,
   generatePOReceipt,
   generatePOReceiptNoPrice,
-  clearItemDetails
+  clearItemDetails,
+  VendorQuotationSearch
 };

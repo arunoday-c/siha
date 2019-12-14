@@ -69,7 +69,7 @@ $black: #000;
   overflow: auto;
 
   .ReactTable {
-    max-height: 54vh !important;
+    max-height: 61vh !important;
   }
   .gridToolSec {
     margin: 0 !important;
@@ -121,10 +121,10 @@ $black: #000;
     color: #8c8c8c;
   }
   .flash {
-    -webkit-animation: colorchange 1s infinite alternate;
+    animation: colorchange 1s infinite alternate;
     text-shadow: 0 0 10px #ff0200;
   }
-  @-webkit-keyframes colorchange {
+  @keyframes colorchange {
     0% {
       color: 8c8c8c;
     }

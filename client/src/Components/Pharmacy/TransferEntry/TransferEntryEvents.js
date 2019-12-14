@@ -311,7 +311,7 @@ const SaveTransferEntry = $this => {
 
   delete InputObj.Batch_Items
   delete InputObj.ItemUOM
-  debugger
+
   const settings = { header: undefined, footer: undefined };
   algaehApiCall({
     uri: "/transferEntry/addtransferEntry",

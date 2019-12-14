@@ -228,6 +228,10 @@ export function algaehApiCall(options) {
         })
         .catch(err => {
           // AlgaehLoader({ show: false });
+          if (typeof settings.onCatch === "function") {
+            settings.onCatch(err);
+            return;
+          }
           if (!showOtherPopup) {
             return;
           }
@@ -338,10 +342,6 @@ export function algaehApiCall(options) {
                 });
               }
             }
-          }
-
-          if (typeof settings.onCatch === "function") {
-            settings.onCatch(err);
           }
         });
     }

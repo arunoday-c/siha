@@ -2407,16 +2407,8 @@
       "value": "MR"
     },
     {
-      "name": "Purchase Order",
-      "value": "PO"
-    },
-    {
       "name": "Stock Transfer",
       "value": "ST"
-    },
-    {
-      "name": "Purchase Order",
-      "value": "PO"
     },
     {
       "name": "Point Of Sale",
@@ -5209,6 +5201,20 @@
     {
       "name": "Both Decrease",
       "value": "BD"
+    }
+  ],
+  "PO_TYPE": [
+    {
+      "name": "Direct",
+      "value": "D"
+    },
+    {
+      "name": "Material Requisition",
+      "value": "MR"
+    },
+    {
+      "name": "Vendor Quotation",
+      "value": "VQ"
     }
   ]
 }

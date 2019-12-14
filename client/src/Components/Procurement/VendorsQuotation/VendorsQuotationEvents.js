@@ -1,9 +1,9 @@
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
-import moment from "moment";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-import RequestQuotation from "../../../Models/RequestQuotation";
+import _ from "lodash";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 const texthandle = ($this, e) => {
     let name = e.name || e.target.name;
@@ -14,24 +14,12 @@ const texthandle = ($this, e) => {
     });
 };
 
-
-const poforhandle = ($this, e) => {
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
-
-    getData($this, value);
-    $this.setState({
-        [name]: value,
-        ReqData: false
-    });
-};
-
-const RequisitionSearch = ($this, e) => {
+const QuotationSearch = ($this, e) => {
     AlgaehSearch({
         searchGrid: {
-            columns: spotlightSearch.RequisitionEntry.ReqEntry
+            columns: spotlightSearch.Purchase.RequestQuotation
         },
-        searchName: $this.state.quotation_for === "PHR" ? "PhrPOEntry" : "InvPOEntry",
+        searchName: "RequestQuotation",
         uri: "/gloabelSearch/get",
 
         onContainsChange: (text, serchBy, callBack) => {
@@ -40,62 +28,40 @@ const RequisitionSearch = ($this, e) => {
         onRowSelect: row => {
             AlgaehLoader({ show: true });
             algaehApiCall({
-                uri:
-                    $this.state.quotation_for === "PHR"
-                        ? "/PurchaseOrderEntry/getPharRequisitionEntryPO"
-                        : "/PurchaseOrderEntry/getInvRequisitionEntryPO",
+                uri: "/RequestForQuotation/getRequestForQuotation",
                 module: "procurement",
-                data: {
-                    material_requisition_number: row.material_requisition_number
-                },
                 method: "GET",
+                data: { quotation_number: row.quotation_number },
                 onSuccess: response => {
-                    if (response.data.success === true) {
+                    if (response.data.success) {
+
                         let data = response.data.records;
-                        if (data !== null && data !== undefined) {
-                            data.saveEnable = false;
-                            data.quotation_detail = data.po_entry_detail;
-                            delete data.po_entry_detail
-
-                            for (let i = 0; i < data.quotation_detail.length; i++) {
-
-                                if ($this.state.quotation_for === "PHR") {
-                                    data.quotation_detail[i].phar_item_category =
-                                        data.quotation_detail[i].item_category_id;
-                                    data.quotation_detail[i].phar_item_group =
-                                        data.quotation_detail[i].item_group_id;
-                                    data.quotation_detail[i].phar_item_id =
-                                        data.quotation_detail[i].item_id;
-
-                                    data.quotation_detail[i].pharmacy_uom_id =
-                                        data.quotation_detail[i].purchase_uom_id;
-                                } else {
-                                    data.quotation_detail[i].inv_item_category_id =
-                                        data.quotation_detail[i].item_category_id;
-                                    data.quotation_detail[i].inv_item_group_id =
-                                        data.quotation_detail[i].item_group_id;
-                                    data.quotation_detail[i].inv_item_id =
-                                        data.quotation_detail[i].item_id;
-
-                                    data.quotation_detail[i].inventory_uom_id =
-                                        data.quotation_detail[i].purchase_uom_id;
-                                }
-
-                                data.quotation_detail[i].quantity =
-                                    data.quotation_detail[i].quantity_authorized;
-                            }
-
-                            if ($this.state.quotation_for === "PHR") {
-                                data.phar_requisition_id =
-                                    data.hims_f_pharamcy_material_header_id;
-                            } else {
-                                data.inv_requisition_id =
-                                    data.hims_f_inventory_material_header_id;
-                            }
-                            $this.setState(data);
+                        data.req_quotation_header_id = data.hims_f_procurement_req_quotation_header_id;
+                        for (let i = 0; i < data.quotation_detail.length; i++) {
+                            data.quotation_detail[i].unit_price = 0
+                            data.quotation_detail[i].extend_cost = 0
+                            data.quotation_detail[i].discount_percentage = 0
+                            data.quotation_detail[i].discount_amount = 0
+                            data.quotation_detail[i].tax_percentage = 0
+                            data.quotation_detail[i].tax_amount = 0
+                            data.quotation_detail[i].net_extend_amount = 0
+                            data.quotation_detail[i].net_total = 0
                         }
+                        getData($this, data.quotation_for);
+                        data.saveEnable = false;
+                        $this.setState(data);
+                        AlgaehLoader({ show: false });
+                    } else {
+                        AlgaehLoader({ show: false });
                     }
+
+                },
+                onFailure: error => {
                     AlgaehLoader({ show: false });
+                    swalMessage({
+                        title: error.message,
+                        type: "error"
+                    });
                 }
             });
         }
@@ -103,11 +69,7 @@ const RequisitionSearch = ($this, e) => {
 };
 
 const ClearData = ($this, e) => {
-    let IOputs = RequestQuotation.inputParam();
-
-
-    IOputs.dataExitst = false;
-    $this.setState(IOputs);
+    $this.setState($this.baseState);
     clearItemDetails($this)
 };
 
@@ -144,18 +106,32 @@ const clearItemDetails = ($this) => {
         }
     });
 };
-const SaveQuotationEnrty = $this => {
+const SaveVendorQuotationEnrty = $this => {
+
+
+    const unit_price_exist = _.filter($this.state.quotation_detail, f => {
+        return f.unit_price === 0 || f.unit_price === null || f.unit_price === "";
+    });
+
+    if (unit_price_exist.length > 0) {
+        swalMessage({
+            type: "error",
+            title: "Please Enter Unit Price for all the items."
+        });
+        return
+    }
+
     AlgaehLoader({ show: true });
 
     algaehApiCall({
-        uri: "/RequestForQuotation/addRequestForQuotation",
+        uri: "/VendorsQuotation/addVendorQuotation",
         module: "procurement",
         data: $this.state,
         onSuccess: response => {
             if (response.data.success === true) {
                 $this.setState({
-                    quotation_number: response.data.records.quotation_number,
-                    hims_f_procurement_req_quotation_header_id: response.data.records.hims_f_procurement_req_quotation_header_id,
+                    vendor_quotation_number: response.data.records.vendor_quotation_number,
+                    hims_f_procurement_vendor_quotation_header_id: response.data.records.hims_f_procurement_vendor_quotation_header_id,
                     saveEnable: true,
                     dataExitst: true
                 });
@@ -179,15 +155,35 @@ const SaveQuotationEnrty = $this => {
 
 const getCtrlCode = ($this, docNumber) => {
     AlgaehLoader({ show: true });
-    let IOputs = RequestQuotation.inputParam();
+    let IOputs = {
+        hims_f_procurement_vendor_quotation_header_id: null,
+        vendor_quotation_number: null,
+
+        vendor_id: null,
+        quotation_number: null,
+        req_quotation_header_id: null,
+
+
+        vendor_quotation_date: new Date(),
+        quotation_for: null,
+
+        expected_date: new Date(),
+        quotation_detail: [],
+        dataExitst: false,
+        ReqData: true,
+        saveEnable: true,
+        decimal_places: JSON.parse(
+            AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+        ).decimal_places,
+    };
 
     IOputs.dataExitst = false;
     $this.setState(IOputs, () => {
         algaehApiCall({
-            uri: "/RequestForQuotation/getRequestForQuotation",
+            uri: "/VendorsQuotation/getVendorQuotation",
             module: "procurement",
             method: "GET",
-            data: { quotation_number: docNumber },
+            data: { vendor_quotation_number: docNumber },
             onSuccess: response => {
                 if (response.data.success) {
                     let data = response.data.records;
@@ -303,7 +299,7 @@ const getData = ($this, quotation_for) => {
     }
 };
 
-const generateRequestQuotation = data => {
+const generateVendorQuotation = data => {
     // console.log("data:", data);
 
     algaehApiCall({
@@ -318,12 +314,12 @@ const generateRequestQuotation = data => {
             report: {
                 reportName:
                     data.quotation_for === "PHR"
-                        ? "reqPharmacyQuotation"
-                        : "reqInventoryQuotation",
+                        ? "venPharmacyQuotation"
+                        : "venInventoryQuotation",
                 reportParams: [
                     {
-                        name: "quotation_number",
-                        value: data.quotation_number
+                        name: "vendor_quotation_number",
+                        value: data.vendor_quotation_number
                     }
                 ],
                 outputFileType: "PDF"
@@ -343,19 +339,41 @@ const generateRequestQuotation = data => {
     });
 };
 
-const datehandle = ($this, ctrl, e) => {
+
+const vendortexthandle = ($this, e) => {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+
     $this.setState({
-        [e]: moment(ctrl)._d
+        [name]: value,
+        vendor_name: e.selected.vendor_name,
+        payment_terms: e.selected.payment_terms,
+        tax_percentage: e.selected.vat_percentage,
+        ReqData: false
     });
 };
+
+const getVendorMaster = $this => {
+    $this.props.getVendorMaster({
+        uri: "/vendor/getVendorMaster",
+        module: "masterSettings",
+        method: "GET",
+        data: { vendor_status: "A" },
+        redux: {
+            type: "VENDORS_GET_DATA",
+            mappingName: "povendors"
+        }
+    });
+};
+
 export {
     texthandle,
-    poforhandle,
-    RequisitionSearch,
+    QuotationSearch,
     ClearData,
-    SaveQuotationEnrty,
+    SaveVendorQuotationEnrty,
     getCtrlCode,
-    generateRequestQuotation,
-    datehandle,
-    clearItemDetails
+    generateVendorQuotation,
+    clearItemDetails,
+    vendortexthandle,
+    getVendorMaster
 };

@@ -51,7 +51,8 @@ const SalaryProcess = ($this, inputs, from) => {
               if (response.data.result.length > 0) {
                 let data = response.data.result[0];
                 let finalizeBtn = true;
-                let strMessage = "Salary Already Processed.";
+                let strMessage =
+                  "Salary already finalized for selected criteria.";
                 let not_process = Enumerable.from(data.salaryprocess_header)
                   .where(w => w.salary_processed === "N")
                   .toArray();

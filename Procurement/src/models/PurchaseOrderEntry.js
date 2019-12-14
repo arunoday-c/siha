@@ -9,11 +9,12 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT PH.hims_f_procurement_po_header_id, PH.purchase_number, PH.po_date, PH.po_from, PH.pharmcy_location_id, PH.inventory_location_id,\
-            PH.location_type,PH.vendor_id,PH.expected_date,PH.on_hold,PH.phar_requisition_id,PH.inv_requisition_id,\
-            PH.from_multiple_requisition, PH.payment_terms, PH.sub_total,PH.detail_discount, PH.extended_total, \
-            PH.sheet_level_discount_percent,PH.sheet_level_discount_amount,PH.description,PH.net_total,PH.total_tax,\
-            PH.net_payable,PH.is_completed, PH.completed_date,PH.cancelled,PH.cancel_by,PH.cancel_date,PH.authorize1,\
+            "SELECT PH.hims_f_procurement_po_header_id, PH.purchase_number, PH.po_date, PH.po_type, PH.po_from, \
+            PH.pharmcy_location_id, PH.inventory_location_id, PH.location_type,PH.vendor_id,PH.expected_date, \
+            PH.on_hold,PH.phar_requisition_id,PH.inv_requisition_id, PH.from_multiple_requisition, PH.payment_terms, \
+            PH.sub_total,PH.detail_discount, PH.extended_total, PH.sheet_level_discount_percent, \
+            PH.sheet_level_discount_amount,PH.description,PH.net_total,PH.total_tax, PH.net_payable,PH.is_completed, \
+            PH.completed_date,PH.cancelled,PH.cancel_by,PH.cancel_date,PH.authorize1, VQH.vendor_quotation_number, \
             CASE WHEN PH.po_from = 'INV' THEN (select material_requisition_number from hims_f_inventory_material_header \
             where hims_f_inventory_material_header_id=PH.inv_requisition_id ) \
             else (select material_requisition_number from hims_f_pharamcy_material_header  \
@@ -21,8 +22,10 @@ export default {
             CASE PH.po_from WHEN 'INV' then IL.location_description \
             else PL.location_description end as location_name, V.vendor_name\
             from  hims_f_procurement_po_header PH inner join hims_d_vendor V on PH.vendor_id = V.hims_d_vendor_id \
-            left join hims_d_pharmacy_location PL on PH.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
-            left join hims_d_inventory_location IL on PH.inventory_location_id = IL.hims_d_inventory_location_id  where purchase_number=?",
+            left join hims_d_pharmacy_location PL on PH.pharmcy_location_id = PL.hims_d_pharmacy_location_id \
+            left join hims_d_inventory_location IL on PH.inventory_location_id = IL.hims_d_inventory_location_id \
+            left join hims_f_procurement_vendor_quotation_header VQH on VQH.hims_f_procurement_vendor_quotation_header_id = PH.vendor_quotation_header_id \
+            where purchase_number=?",
           values: [req.query.purchase_number],
           printQuery: true
         })
@@ -131,11 +134,12 @@ export default {
             .executeQuery({
               query:
                 "INSERT INTO `hims_f_procurement_po_header` (purchase_number,po_date,po_type,po_from, pharmcy_location_id,\
-                inventory_location_id,location_type,vendor_id,expected_date,on_hold, phar_requisition_id,inv_requisition_id, \
+                inventory_location_id,location_type,vendor_id,expected_date,on_hold, phar_requisition_id,\
+                inv_requisition_id, vendor_quotation_header_id,\
                 from_multiple_requisition, payment_terms, comment, sub_total, detail_discount, extended_total,sheet_level_discount_percent, \
                 sheet_level_discount_amount,description,net_total,total_tax, net_payable,created_by,created_date, \
                 updated_by,updated_date,hospital_id) \
-              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 purchase_number,
                 new Date(),
@@ -149,6 +153,7 @@ export default {
                 input.on_hold,
                 input.requisition_id,
                 input.inv_requisition_id,
+                input.vendor_quotation_header_id,
                 input.from_multiple_requisition,
                 input.payment_terms,
                 input.comment,
@@ -678,5 +683,52 @@ export default {
         next(e);
       });
     }
-  }
+  },
+
+  getVendorQuotation: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT * from  hims_f_procurement_vendor_quotation_header where vendor_quotation_number=?",
+          values: [req.query.vendor_quotation_number],
+          printQuery: true
+        })
+        .then(headerResult => {
+          if (headerResult.length != 0) {
+            _mysql
+              .executeQuery({
+                query:
+                  "select * from hims_f_procurement_vendor_quotation_detail vendor_quotation_header_id=?",
+                values: [headerResult[0].hims_f_procurement_vendor_quotation_header_id],
+                printQuery: true
+              })
+              .then(po_entry_detail => {
+                _mysql.releaseConnection();
+                req.records = {
+                  ...headerResult[0],
+                  ...{ po_entry_detail }
+                };
+                next();
+              })
+              .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          } else {
+            _mysql.releaseConnection();
+            req.records = headerResult;
+            next();
+          }
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
 };

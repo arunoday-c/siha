@@ -339,6 +339,9 @@ const PageToPlot = {
   RequestForQuotation: React.lazy(() =>
     retry(() => import("./Components/Procurement/RequestForQuotation/RequestForQuotation"))
   ),
+  VendorsQuotation: React.lazy(() =>
+    retry(() => import("./Components/Procurement/VendorsQuotation/VendorsQuotation"))
+  ),
   AcquisitionEntry: React.lazy(() =>
     retry(() =>
       import("./Components/AssetManagement/AcquisitionEntry/AcquisitionEntry")

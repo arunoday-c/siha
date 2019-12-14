@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import "./RequestForQuotation.scss";
+import "./VendorsQuotation.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import MyContext from "../../../utils/MyContext";
 import {
@@ -14,40 +14,47 @@ import {
 import Options from "../../../Options.json";
 import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-import RequestItemList from "./RequestItemList/RequestItemList";
+import ItemList from "./ItemList/ItemList";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import RequestQuotation from "../../../Models/RequestQuotation";
 import {
-    poforhandle,
-    RequisitionSearch,
+    vendortexthandle,
+    QuotationSearch,
     ClearData,
-    SaveQuotationEnrty,
+    SaveVendorQuotationEnrty,
     getCtrlCode,
-    generateRequestQuotation,
-    datehandle,
-    clearItemDetails
-} from "./RequestForQuotationEvents";
+    generateVendorQuotation,
+    getVendorMaster
+} from "./VendorsQuotationEvents";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
-
-class RequestForQuotation extends Component {
+class VendorsQuotation extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
-    }
 
-    UNSAFE_componentWillMount() {
-        let IOputs = RequestQuotation.inputParam();
-        this.setState(IOputs);
-    }
+        this.state = {
+            hims_f_procurement_vendor_quotation_header_id: null,
+            vendor_quotation_number: null,
 
-    // componentDidMount() {
-    //     if (
-    //         this.props.quotation_number !== undefined &&
-    //         this.props.quotation_number.length !== 0
-    //     ) {
-    //         getCtrlCode(this, this.props.quotation_number);
-    //     }
-    // }
+            vendor_id: null,
+            quotation_number: null,
+            req_quotation_header_id: null,
+
+
+            vendor_quotation_date: new Date(),
+            quotation_for: null,
+
+            expected_date: new Date(),
+            quotation_detail: [],
+            dataExitst: false,
+            ReqData: true,
+            saveEnable: true,
+            decimal_places: JSON.parse(
+                AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+            ).decimal_places,
+        };
+        this.baseState = this.state
+        getVendorMaster(this, this);
+    }
 
     render() {
         const class_finder = this.state.dataExitst === true
@@ -60,7 +67,7 @@ class RequestForQuotation extends Component {
                 <BreadCrumb
                     title={
                         <AlgaehLabel
-                            label={{ forceLabel: "Request For Quotation", align: "ltr" }}
+                            label={{ forceLabel: "Vendor Quotation", align: "ltr" }}
                         />
                     }
                     breadStyle={this.props.breadStyle}
@@ -78,7 +85,7 @@ class RequestForQuotation extends Component {
                         {
                             pageName: (
                                 <AlgaehLabel
-                                    label={{ forceLabel: "Request For Quotation", align: "ltr" }}
+                                    label={{ forceLabel: "Vendor Quotation", align: "ltr" }}
                                 />
                             )
                         }
@@ -86,45 +93,45 @@ class RequestForQuotation extends Component {
                     soptlightSearch={{
                         label: (
                             <AlgaehLabel
-                                label={{ forceLabel: "Quotation Number", returnText: true }}
+                                label={{ forceLabel: "Vendor Quotation Number", returnText: true }}
                             />
                         ),
-                        value: this.state.quotation_number,
-                        selectValue: "quotation_number",
+                        value: this.state.vendor_quotation_number,
+                        selectValue: "vendor_quotation_number",
                         events: {
                             onChange: getCtrlCode.bind(this, this)
                         },
                         jsonFile: {
                             fileName: "spotlightSearch",
-                            fieldName: "Purchase.RequestQuotation"
+                            fieldName: "Purchase.VendorQuotation"
                         },
-                        searchName: "RequestQuotation"
+                        searchName: "VendorQuotation"
                     }}
                     userArea={
                         <div className="row">
                             <div className="col">
                                 <AlgaehLabel
                                     label={{
-                                        forceLabel: "Quotation Date"
+                                        forceLabel: "Transaction Date"
                                     }}
                                 />
                                 <h6>
-                                    {this.state.quotation_date
-                                        ? moment(this.state.quotation_date).format(Options.dateFormat)
+                                    {this.state.vendor_quotation_date
+                                        ? moment(this.state.vendor_quotation_date).format(Options.dateFormat)
                                         : Options.dateFormat}
                                 </h6>
                             </div>
                         </div>
                     }
                     printArea={
-                        this.state.hims_f_procurement_req_quotation_header_id !== null
+                        this.state.hims_f_procurement_vendor_quotation_header_id !== null
                             ? {
                                 menuitems: [
                                     {
-                                        label: "Print Quotation",
+                                        label: "Print Vendor Quotation",
                                         events: {
                                             onClick: () => {
-                                                generateRequestQuotation(this.state);
+                                                generateVendorQuotation(this.state);
                                             }
                                         }
                                     }
@@ -143,6 +150,83 @@ class RequestForQuotation extends Component {
                             <div className="row">
                                 <AlagehAutoComplete
                                     div={{ className: "col-2" }}
+                                    label={{ forceLabel: "Vendor No." }}
+                                    selector={{
+                                        name: "vendor_id",
+                                        className: "select-fld",
+                                        value: this.state.vendor_id,
+                                        dataSource: {
+                                            textField: "vendor_name",
+                                            valueField: "hims_d_vendor_id",
+                                            data: this.props.povendors
+                                        },
+                                        others: {
+                                            disabled: this.state.quotation_detail.length > 0 ? true : false
+                                        },
+                                        onChange: vendortexthandle.bind(this, this),
+                                        onClear: () => {
+                                            this.setState({
+                                                vendor_id: null
+                                            });
+                                        }
+                                    }}
+                                />
+
+                                <div className={"col-3 globalSearchCntr" + class_finder}>
+                                    <AlgaehLabel label={{ forceLabel: "Search Quotation No." }} />
+                                    <h6 onClick={QuotationSearch.bind(this, this)}>
+                                        {this.state.quotation_number
+                                            ? this.state.quotation_number
+                                            : "Quotation No."}
+                                        <i className="fas fa-search fa-lg"></i>
+                                    </h6>
+                                </div>
+
+                                {/* <AlagehFormGroup
+                                    div={{ className: "col-2" }}
+                                    label={{
+                                        forceLabel: "Quotation No."
+                                    }}
+                                    textBox={{
+                                        value: this.state.quotation_number,
+                                        className: "txt-fld",
+                                        name: "quotation_number",
+                                        events: {
+                                            onChange: null
+                                        },
+                                        others: {
+                                            disabled: true
+                                        }
+                                    }}
+                                />
+                                <div
+                                    className="col"
+                                    style={{
+                                        paddingLeft: 0,
+                                        paddingRight: 0
+                                    }}
+                                >
+                                    <span
+                                        className="fas fa-search fa-2x"
+                                        style={{
+                                            fontSize: " 1.2rem",
+                                            marginTop: 26,
+                                            paddingBottom: 0,
+                                            pointerEvents:
+                                                this.state.dataExitst === true
+                                                    ? "none"
+                                                    : this.state.ReqData === true
+                                                        ? "none"
+                                                        : ""
+                                        }}
+                                        onClick={QuotationSearch.bind(this, this)}
+                                    />
+                                </div> */}
+
+
+
+                                <AlagehAutoComplete
+                                    div={{ className: "col-2" }}
                                     label={{ forceLabel: "Quotation For" }}
                                     selector={{
                                         name: "quotation_for",
@@ -154,29 +238,13 @@ class RequestForQuotation extends Component {
                                             data: GlobalVariables.PO_FROM
                                         },
                                         others: {
-                                            disabled: this.state.quotation_detail.length > 0 ? true : false
+                                            disabled: true
                                         },
-                                        onChange: poforhandle.bind(this, this),
-                                        onClear: () => {
-                                            clearItemDetails(this, this)
-                                            this.setState({
-                                                quotation_for: null
-                                            });
-                                        }
+                                        onChange: null
                                     }}
                                 />
 
-                                <div className={"col-3 globalSearchCntr" + class_finder}>
-                                    <AlgaehLabel label={{ forceLabel: "Search Requisition No." }} />
-                                    <h6 onClick={RequisitionSearch.bind(this, this)}>
-                                        {this.state.material_requisition_number
-                                            ? this.state.material_requisition_number
-                                            : "Requisition No."}
-                                        <i className="fas fa-search fa-lg"></i>
-                                    </h6>
-                                </div>
-
-                                <div className="col-lg-5"> &nbsp;</div>
+                                <div className="col-lg-3"> &nbsp;</div>
 
                                 <AlgaehDateHandler
                                     div={{ className: "col" }}
@@ -187,9 +255,9 @@ class RequestForQuotation extends Component {
                                     }}
                                     minDate={new Date()}
                                     events={{
-                                        onChange: datehandle.bind(this, this)
+                                        onChange: null
                                     }}
-                                    disabled={this.state.dataExitst}
+                                    disabled={true}
                                     value={this.state.expected_date}
                                 />
                             </div>
@@ -204,7 +272,7 @@ class RequestForQuotation extends Component {
                             }
                         }}
                     >
-                        <RequestItemList RequestQuotation={this.state} />
+                        <ItemList RequestQuotation={this.state} />
                     </MyContext.Provider>
                 </div>
 
@@ -214,7 +282,7 @@ class RequestForQuotation extends Component {
                             <button
                                 type="button"
                                 className="btn btn-primary"
-                                onClick={SaveQuotationEnrty.bind(this, this)}
+                                onClick={SaveVendorQuotationEnrty.bind(this, this)}
                                 disabled={this.state.saveEnable}
                             >
                                 <AlgaehLabel
@@ -248,7 +316,8 @@ function mapStateToProps(state) {
         poitemlist: state.poitemlist,
         poitemcategory: state.poitemcategory,
         poitemgroup: state.poitemgroup,
-        poitemuom: state.poitemuom
+        poitemuom: state.poitemuom,
+        povendors: state.povendors,
     };
 }
 
@@ -266,5 +335,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(RequestForQuotation)
+    connect(mapStateToProps, mapDispatchToProps)(VendorsQuotation)
 );
