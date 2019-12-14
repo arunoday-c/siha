@@ -73,6 +73,7 @@ function PlotUI(node, style, indexIds) {
 export default function BalanceSheet(props) {
   const { style, data, result } = props;
   const createPrintObject = useRef(undefined);
+  if (result.length === 0) return null;
   if (Object.keys(data).length === 0) {
     return null;
   } else {
@@ -114,7 +115,6 @@ export default function BalanceSheet(props) {
               {PlotUI(data[result[1]], style, [0])}
             </ul>{" "}
           </div>
-          <div> Toatal Balance : {data.balance}</div>
         </div>
       </>
     );

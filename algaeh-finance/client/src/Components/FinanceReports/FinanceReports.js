@@ -12,7 +12,8 @@ export default function FinanceReports() {
     return report === selected ? "active" : "";
   }
   function loadReport(report) {
-    getBalanceSheet({ reportType: report })
+    const { url } = report;
+    getBalanceSheet({ url: url })
       .then(result => {
         setLoading(false);
         setData(result);
@@ -36,7 +37,7 @@ export default function FinanceReports() {
             onClick={e => {
               setLoading(true);
               setSelected("BS");
-              loadReport("BS");
+              loadReport({ url: "getBalanceSheet" });
             }}
           >
             Balance Sheet
@@ -44,7 +45,9 @@ export default function FinanceReports() {
           <li
             className={selectedClass("PL")}
             onClick={() => {
+              setLoading(true);
               setSelected("PL");
+              loadReport({ url: "getProfitAndLoss" });
             }}
           >
             Profit and Loss
@@ -53,7 +56,14 @@ export default function FinanceReports() {
       </div>
       <div className="col-9 reportPreviewSecLeft">
         <Spin spinning={loading} tip="Please wait report data is fetching..">
-          <Balance data={data} result={["asset", "liabilities"]} />
+          <Balance
+            data={data}
+            result={
+              selected === "BS"
+                ? ["asset", "liabilities"]
+                : ["income", "expense"]
+            }
+          />
         </Spin>{" "}
       </div>
     </div>

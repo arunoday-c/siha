@@ -165,63 +165,6 @@ export default function JournalLedger() {
                     sortable: true
                   },
                   {
-                    key: "payment_mode",
-                    title: "Payment Mode",
-                    displayTemplate: (row, record) => {
-                      return (
-                        <AlgaehAutoComplete
-                          div={{}}
-                          label={{}}
-                          selector={{
-                            value: row,
-                            dataSource: {
-                              //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
-                              data: [
-                                { value: "CA", label: "Cash" },
-                                { label: "Cheque", value: "CH" },
-                                { label: "Card", value: "CD" }
-                              ],
-                              valueField: "value",
-                              textField: "label"
-                            },
-                            onChange: selected => {
-                              // setPaymentMode(selected.value);
-                              record["payment_mode"] = selected.value;
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    key: "payment_type",
-                    title: "Payment Type",
-                    displayTemplate: (row, record) => {
-                      return (
-                        <AlgaehAutoComplete
-                          div={{}}
-                          label={{}}
-                          selector={{
-                            value: row,
-                            dataSource: {
-                              //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
-
-                              data: [
-                                { value: "CR", label: "Credit" },
-                                { label: "Debit", value: "DR" }
-                              ],
-                              valueField: "value",
-                              textField: "label"
-                            },
-                            onChange: selected => {
-                              record["payment_type"] = selected.value;
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
                     key: "sourceName",
                     title: "Account",
                     align: "left",
@@ -242,11 +185,7 @@ export default function JournalLedger() {
                             textField: "label",
                             valueField: node => {
                               if (node["leafnode"] === "Y") {
-                                return (
-                                  node["head_id"] +
-                                  "-" +
-                                  node["finance_account_child_id"]
-                                );
+                                return `${node["head_id"]}-${node["finance_account_child_id"]}`;
                               } else {
                                 return node["finance_account_head_id"];
                               }
@@ -258,9 +197,14 @@ export default function JournalLedger() {
                     }
                   },
                   {
-                    key: "amount",
-                    title: "Amount",
+                    key: "debit_amount",
+                    title: "Debit Amount",
                     displayTemplate: (row, records) => {
+                      const disabled =
+                        records["credit_amount"] !== undefined &&
+                        records["credit_amount"] !== ""
+                          ? { disabled: true }
+                          : {};
                       return (
                         <AlgaehFormGroup
                           div={{}}
@@ -269,18 +213,76 @@ export default function JournalLedger() {
                             type: "number",
                             className: "form-control",
                             placeholder: "0.00",
-                            value: row,
+                            value: row === undefined ? "" : row,
                             onChange: e => {
-                              records["amount"] =
-                                e.target.value === ""
-                                  ? undefined
-                                  : e.target.value;
-                            }
+                              records["debit_amount"] =
+                                e.target.value === "" ? "" : e.target.value;
+                              records["payment_type"] = "DR";
+                            },
+                            ...disabled
                           }}
                         />
                       );
                     },
                     align: "left"
+                  },
+                  {
+                    key: "credit_amount",
+                    title: "Credit Amount",
+                    displayTemplate: (row, records) => {
+                      const disabled =
+                        records["debit_amount"] !== undefined &&
+                        records["debit_amount"] !== ""
+                          ? { disabled: true }
+                          : {};
+                      return (
+                        <AlgaehFormGroup
+                          div={{}}
+                          label={{}}
+                          textBox={{
+                            type: "number",
+                            className: "form-control",
+                            placeholder: "0.00",
+                            value: row === undefined ? "" : row,
+                            onChange: e => {
+                              records["credit_amount"] =
+                                e.target.value === "" ? "" : e.target.value;
+                              records["payment_type"] = "CR";
+                            },
+                            ...disabled
+                          }}
+                        />
+                      );
+                    },
+                    align: "left"
+                  },
+                  {
+                    key: "payment_mode",
+                    title: "Payment Mode",
+                    displayTemplate: (row, record) => {
+                      return (
+                        <AlgaehAutoComplete
+                          div={{}}
+                          label={{}}
+                          selector={{
+                            value: row,
+                            dataSource: {
+                              //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
+                              data: [
+                                { value: "CA", label: "Cash" },
+                                { label: "Cheque", value: "CH" },
+                                { label: "Card", value: "CD" }
+                              ],
+                              valueField: "value",
+                              textField: "label"
+                            },
+                            onChange: selected => {
+                              record["payment_mode"] = selected.value;
+                            }
+                          }}
+                        />
+                      );
+                    }
                   }
                 ]}
                 loading={false}

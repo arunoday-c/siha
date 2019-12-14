@@ -261,7 +261,7 @@ export default memo(function Modal(props) {
               name: "selectRange",
               value: dateRange
             }}
-            maxDate={moment()}
+            maxDate={moment().add(1, "days")}
             events={{
               onChange: dateSelected => {
                 if (checkedType) {
