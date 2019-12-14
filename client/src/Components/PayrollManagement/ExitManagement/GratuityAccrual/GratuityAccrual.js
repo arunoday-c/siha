@@ -36,7 +36,7 @@ export default class GratuityAccrual extends Component {
       <div className="row GratuityAccrualScreen">
         <div className="col-12" data-validate="loadGratuityAccrual">
           <div className="row inner-top-search">
-            <div className="col-2 globalSearchCntr">
+            <div className="col-3 globalSearchCntr">
               <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
               <h6 onClick={employeeSearch.bind(this, this)}>
                 {this.state.employee_name ? this.state.employee_name : "------"}
@@ -45,9 +45,9 @@ export default class GratuityAccrual extends Component {
             </div>
 
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col-1 mandatory form-group" }}
               label={{
-                forceLabel: "Select a Year.",
+                forceLabel: "Year",
                 isImp: true
               }}
               selector={{
@@ -69,9 +69,9 @@ export default class GratuityAccrual extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col-2 mandatory form-group" }}
               label={{
-                forceLabel: "Select a Month.",
+                forceLabel: "Month",
                 isImp: true
               }}
               selector={{

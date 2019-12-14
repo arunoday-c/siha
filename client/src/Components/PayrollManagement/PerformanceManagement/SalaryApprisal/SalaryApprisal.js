@@ -82,15 +82,15 @@ class SalaryApprisal extends Component {
           {/* Employee Global Search End here */}
 
           <div className="col form-group">
-            <button style={{ marginTop: 19 }} className="btn btn-primary">
-              Load
+            <button style={{ marginTop: 19 }} className="btn btn-default">
+              Clear
             </button>{" "}
             <button
-              style={{ marginTop: 21, marginLeft: 5 }}
-              className="btn btn-default"
+              style={{ marginTop: 19, marginLeft: 5 }}
+              className="btn btn-primary"
             >
-              Clear
-            </button>
+              Load
+            </button>{" "}
           </div>
         </div>
 
@@ -764,8 +764,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(SalaryApprisal)
+  connect(mapStateToProps, mapDispatchToProps)(SalaryApprisal)
 );

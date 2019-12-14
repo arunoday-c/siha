@@ -287,12 +287,8 @@ class EmployeeReceipts extends Component {
     return (
       <div className="emp_receipts">
         <div className="row  inner-top-search">
-          <div
-            className="col-3 form-group"
-            style={{
-              marginTop: 21
-            }}
-          >
+          <div className="col-3 form-group">
+            <label>Receipt Type</label>
             <div className="customRadio">
               <label className="radio inline">
                 <input
@@ -318,38 +314,12 @@ class EmployeeReceipts extends Component {
             </div>
           </div>
 
-          <div className="col-lg-3" style={{ marginTop: 10 }}>
-            <div
-              className="row"
-              style={{
-                border: "1px solid #ced4d9",
-                borderRadius: 5,
-                marginLeft: 0
-              }}
-            >
-              <div className="col">
-                <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
-                <h6>
-                  {this.state.employee_name
-                    ? this.state.employee_name
-                    : "------"}
-                </h6>
-              </div>
-              <div
-                className="col-lg-3"
-                style={{ borderLeft: "1px solid #ced4d8" }}
-              >
-                <i
-                  className="fas fa-search fa-lg"
-                  style={{
-                    paddingTop: 17,
-                    paddingLeft: 3,
-                    cursor: "pointer"
-                  }}
-                  onClick={this.employeeSearch.bind(this)}
-                />
-              </div>
-            </div>
+          <div className="col globalSearchCntr">
+            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <h6 onClick={this.employeeSearch.bind(this)}>
+              {this.state.employee_name ? this.state.employee_name : "------"}
+              <i className="fas fa-search fa-lg" />
+            </h6>
           </div>
 
           {this.state.reciepts_type === "LO" ? (
@@ -375,10 +345,10 @@ class EmployeeReceipts extends Component {
               }}
             />
           ) : null}
-          <div className="col form-group">
+          <div className="col-1 form-group">
             <button
               onClick={this.clearState.bind(this)}
-              style={{ marginTop: 21, marginLeft: 10 }}
+              style={{ marginTop: 19 }}
               className="btn btn-default"
             >
               Clear
@@ -443,7 +413,7 @@ class EmployeeReceipts extends Component {
                 <div className="row" data-validate="writeOffDiv">
                   <AlagehAutoComplete
                     div={{ className: "col form-group" }}
-                    label={{ forceLabel: "Mode of Recipt", isImp: true }}
+                    label={{ forceLabel: "Mode of Receipt", isImp: true }}
                     selector={{
                       name: "reciepts_mode",
                       value: this.state.reciepts_mode,
@@ -515,17 +485,17 @@ class EmployeeReceipts extends Component {
 
                   <div className="col form-group">
                     <button
-                      onClick={this.addEmployeeReceipts.bind(this)}
                       style={{ marginTop: 19 }}
-                      className="btn btn-primary"
-                    >
-                      Received
-                    </button>
-                    <button
-                      style={{ marginTop: 21, marginLeft: 10 }}
                       className="btn btn-default"
                     >
                       Print
+                    </button>{" "}
+                    <button
+                      onClick={this.addEmployeeReceipts.bind(this)}
+                      style={{ marginTop: 19, marginLeft: 10 }}
+                      className="btn btn-primary"
+                    >
+                      Received
                     </button>
                   </div>
                 </div>
@@ -601,7 +571,7 @@ class EmployeeReceipts extends Component {
                           fieldName: "reciepts_mode",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Mode of Recipt" }}
+                              label={{ forceLabel: "Mode of Receipt" }}
                             />
                           ),
                           displayTemplate: row => {

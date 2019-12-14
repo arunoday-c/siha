@@ -927,8 +927,15 @@ class EmployeeProjectRoster extends Component {
           </div>
           <div className="col-3 form-group">
             <button
-              onClick={this.getEmployeesForProjectRoster.bind(this)}
+              onClick={this.clearState.bind(this)}
               style={{ marginTop: 19 }}
+              className="btn btn-default"
+            >
+              Clear
+            </button>{" "}
+            <button
+              onClick={this.getEmployeesForProjectRoster.bind(this)}
+              style={{ marginTop: 19, marginLeft: 5 }}
               className="btn btn-primary"
             >
               {!this.state.loading ? (
@@ -936,13 +943,6 @@ class EmployeeProjectRoster extends Component {
               ) : (
                 <i className="fas fa-spinner fa-spin" />
               )}
-            </button>
-            <button
-              onClick={this.clearState.bind(this)}
-              style={{ marginTop: 21, marginLeft: 5 }}
-              className="btn btn-default"
-            >
-              Clear
             </button>
           </div>
         </div>

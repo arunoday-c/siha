@@ -260,8 +260,15 @@ class EOSGratuity extends Component {
 
           <div className="col form-group">
             <button
-              onClick={this.loadEmployeeDetails.bind(this)}
+              onClick={this.clearState.bind(this)}
               style={{ marginTop: 19 }}
+              className="btn btn-default"
+            >
+              Cleear
+            </button>{" "}
+            <button
+              onClick={this.loadEmployeeDetails.bind(this)}
+              style={{ marginTop: 19, marginLeft: 5 }}
               className="btn btn-primary"
             >
               {!this.state.loading ? (
@@ -269,14 +276,6 @@ class EOSGratuity extends Component {
               ) : (
                 <i className="fas fa-spinner fa-spin" />
               )}
-            </button>
-
-            <button
-              onClick={this.clearState.bind(this)}
-              style={{ marginTop: 21, marginLeft: 5 }}
-              className="btn btn-default"
-            >
-              CLEAR
             </button>
           </div>
 

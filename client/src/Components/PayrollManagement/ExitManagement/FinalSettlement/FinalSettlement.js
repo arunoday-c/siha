@@ -363,7 +363,7 @@ class FinalSettlement extends Component {
             this.setTotalEarnings();
           }
         );
-      } 
+      }
     });
   }
 
@@ -388,7 +388,7 @@ class FinalSettlement extends Component {
             this.setTotalDeductions();
           }
         );
-      } 
+      }
     });
   }
 
@@ -523,19 +523,18 @@ class FinalSettlement extends Component {
 
           <div className="col form-group">
             <button
-              onClick={this.loadFinalSettlement.bind(this)}
-              style={{ marginTop: 19 }}
-              className="btn btn-primary"
-            >
-              Load
-            </button>
-
-            <button
               onClick={this.clearState.bind(this)}
-              style={{ marginTop: 21, marginLeft: 5 }}
+              style={{ marginTop: 19 }}
               className="btn btn-default"
             >
               CLEAR
+            </button>{" "}
+            <button
+              onClick={this.loadFinalSettlement.bind(this)}
+              style={{ marginTop: 19, marginLeft: 5 }}
+              className="btn btn-primary"
+            >
+              Load
             </button>
             {this.state.flag !== undefined ? <h4>{this.state.flag}</h4> : null}
           </div>

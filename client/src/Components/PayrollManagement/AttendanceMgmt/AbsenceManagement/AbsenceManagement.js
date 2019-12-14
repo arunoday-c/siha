@@ -414,19 +414,19 @@ export default class AbsenceManagement extends Component {
 
           <div className="col form-group">
             <button
-              onClick={this.addAbsentRecord.bind(this)}
+              onClick={this.clearState.bind(this)}
               style={{ marginTop: 19 }}
+              className="btn btn-default"
+            >
+              CLEAR
+            </button>{" "}
+            <button
+              onClick={this.addAbsentRecord.bind(this)}
+              style={{ marginTop: 19, marginLeft: 5 }}
               className="btn btn-primary"
             >
               Add
             </button>{" "}
-            <button
-              onClick={this.clearState.bind(this)}
-              style={{ marginTop: 21, marginLeft: 5 }}
-              className="btn btn-default"
-            >
-              CLEAR
-            </button>
           </div>
         </div>
 

@@ -815,7 +815,7 @@ export default class EmployeeShiftRostering extends Component {
             });
           }
         });
-      } 
+      }
     });
   }
 
@@ -969,8 +969,15 @@ export default class EmployeeShiftRostering extends Component {
 
           <div className="col form-group">
             <button
-              onClick={this.getEmployeesForShiftRoster.bind(this)}
+              onClick={this.clearData.bind(this)}
               style={{ marginTop: 19 }}
+              className="btn btn-default"
+            >
+              Clear
+            </button>{" "}
+            <button
+              onClick={this.getEmployeesForShiftRoster.bind(this)}
+              style={{ marginTop: 19, marginLeft: 5 }}
               className="btn btn-primary"
               disabled={this.state.loading}
             >
@@ -979,13 +986,6 @@ export default class EmployeeShiftRostering extends Component {
               ) : (
                 <i className="fas fa-spinner fa-spin" />
               )}
-            </button>
-            <button
-              onClick={this.clearData.bind(this)}
-              style={{ marginTop: 21, marginLeft: 5 }}
-              className="btn btn-default"
-            >
-              Clear
             </button>
           </div>
         </div>

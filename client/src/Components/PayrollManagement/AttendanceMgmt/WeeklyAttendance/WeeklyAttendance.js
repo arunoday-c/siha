@@ -942,9 +942,16 @@ export default class WeeklyAttendance extends Component {
 
           <div className="col form-group">
             <button
+              onClick={this.clearState.bind(this)}
+              style={{ marginTop: 19 }}
+              className="btn btn-default"
+            >
+              CLEAR
+            </button>{" "}
+            <button
               disabled={this.state.loader}
               onClick={this.getDailyTimeSheet.bind(this)}
-              style={{ marginTop: 19 }}
+              style={{ marginTop: 19, marginLeft: 5 }}
               className="btn btn-primary"
             >
               {!this.state.loader ? (
@@ -952,14 +959,6 @@ export default class WeeklyAttendance extends Component {
               ) : (
                 <i className="fas fa-spinner fa-spin" />
               )}
-            </button>
-
-            <button
-              onClick={this.clearState.bind(this)}
-              style={{ marginTop: 21, marginLeft: 5 }}
-              className="btn btn-default"
-            >
-              CLEAR
             </button>
           </div>
         </div>

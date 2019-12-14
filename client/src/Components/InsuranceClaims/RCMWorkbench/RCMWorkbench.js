@@ -61,7 +61,7 @@ class RCMWorkbench extends Component {
                   });
                 }
               },
-              onError: error => { }
+              onError: error => {}
             });
           }
         );
@@ -82,9 +82,8 @@ class RCMWorkbench extends Component {
     if (row.claim_validated === "P") {
       // e.preventDefault();
 
-
-      row.chkselect = 0
-      claims[_index] = row
+      row.chkselect = 0;
+      claims[_index] = row;
 
       generateReport = this.validatedClaims.length > 0 ? false : true;
       this.setState({
@@ -98,8 +97,8 @@ class RCMWorkbench extends Component {
     } else if (this.validatedClaims.includes(row)) {
       this.validatedClaims.pop(row);
 
-      row.chkselect = 1
-      claims[_index] = row
+      row.chkselect = 1;
+      claims[_index] = row;
 
       generateReport = this.validatedClaims.length > 0 ? false : true;
       this.setState({
@@ -108,8 +107,8 @@ class RCMWorkbench extends Component {
       });
     } else {
       this.validatedClaims.push(row);
-      row.chkselect = 1
-      claims[_index] = row
+      row.chkselect = 1;
+      claims[_index] = row;
 
       generateReport = this.validatedClaims.length > 0 ? false : true;
       this.setState({
@@ -176,7 +175,7 @@ class RCMWorkbench extends Component {
           });
         }
       },
-      onError: error => { }
+      onError: error => {}
     });
   }
 
@@ -286,12 +285,12 @@ class RCMWorkbench extends Component {
   openReviewSubmit() {
     this.validatedClaims.length === 0
       ? swalMessage({
-        title: "please select atleast one invoice to submit",
-        type: "warning"
-      })
+          title: "please select atleast one invoice to submit",
+          type: "warning"
+        })
       : this.setState({
-        openSubmit: true
-      });
+          openSubmit: true
+        });
   }
 
   handleClose() {
@@ -562,14 +561,14 @@ class RCMWorkbench extends Component {
               <button
                 onClick={this.getInvoicesForClaims}
                 className="btn btn-primary"
-                style={{ marginTop: 21, marginLeft: 5, float: "right" }}
+                style={{ marginTop: 19, marginLeft: 5, float: "right" }}
               >
                 Load Claims
               </button>
               <button
                 onClick={this.clearSearch}
                 className="btn btn-default"
-                style={{ marginTop: 21, float: "right" }}
+                style={{ marginTop: 19, float: "right" }}
               >
                 Clear
               </button>
@@ -624,7 +623,9 @@ class RCMWorkbench extends Component {
                           return (
                             <input
                               type="checkbox"
-                              checked={parseFloat(row.chkselect) === 0 ? false : true}
+                              checked={
+                                parseFloat(row.chkselect) === 0 ? false : true
+                              }
                               onChange={this.addClaimsArray.bind(this, row)}
                             />
                           );
@@ -633,7 +634,9 @@ class RCMWorkbench extends Component {
                           return (
                             <input
                               type="checkbox"
-                              checked={parseFloat(row.chkselect) === 0 ? false : true}
+                              checked={
+                                parseFloat(row.chkselect) === 0 ? false : true
+                              }
                               onChange={this.addClaimsArray.bind(this, row)}
                             />
                           );
@@ -658,12 +661,12 @@ class RCMWorkbench extends Component {
                               {row.claim_validated === "V"
                                 ? "Validated"
                                 : row.claim_validated === "E"
-                                  ? "Error"
-                                  : row.claim_validated === "X"
-                                    ? "XML Generated"
-                                    : row.claim_validated === "P"
-                                      ? "Pending"
-                                      : "----"}
+                                ? "Error"
+                                : row.claim_validated === "X"
+                                ? "XML Generated"
+                                : row.claim_validated === "P"
+                                ? "Pending"
+                                : "----"}
                             </span>
                           );
                         }
@@ -806,14 +809,14 @@ class RCMWorkbench extends Component {
                     filter={true}
                     isEditable={false}
                     paging={{ page: 0, rowsPerPage: 20 }}
-                  // events={{
-                  //   onDelete: deletePosDetail.bind(this, this, context),
-                  //   onEdit: row => {},
-                  //   onDone: updatePosDetail.bind(this, this)
-                  // }}
-                  // onRowSelect={row => {
-                  //   getItemLocationStock(this, row);
-                  // }}
+                    // events={{
+                    //   onDelete: deletePosDetail.bind(this, this, context),
+                    //   onEdit: row => {},
+                    //   onDone: updatePosDetail.bind(this, this)
+                    // }}
+                    // onRowSelect={row => {
+                    //   getItemLocationStock(this, row);
+                    // }}
                   />
                 </div>
               </div>

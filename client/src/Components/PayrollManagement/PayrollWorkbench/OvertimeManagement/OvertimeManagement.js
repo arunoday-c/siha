@@ -45,7 +45,15 @@ class OvertimeManagement extends Component {
     return (
       <div className="ot_mgmt">
         <div className="row  inner-top-search">
-          <div className="col-3" style={{ marginTop: 10 }}>
+          <div className="col-3 globalSearchCntr">
+            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <h6 onClick={employeeSearch.bind(this, this)}>
+              {this.state.employee_name ? this.state.employee_name : "------"}
+              <i className="fas fa-search fa-lg" />
+            </h6>
+          </div>
+
+          {/* <div className="col-3" style={{ marginTop: 10 }}>
             <div
               className="row"
               style={{
@@ -77,11 +85,11 @@ class OvertimeManagement extends Component {
                 />
               </div>
             </div>
-          </div>
+          </div> */}
           <AlagehAutoComplete
-            div={{ className: "col-2" }}
+            div={{ className: "col-1 mandatory" }}
             label={{
-              forceLabel: "Select a Year.",
+              forceLabel: "Year",
               isImp: true
             }}
             selector={{
@@ -106,9 +114,9 @@ class OvertimeManagement extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col-2" }}
+            div={{ className: "col-2 mandatory" }}
             label={{
-              forceLabel: "Select a Month.",
+              forceLabel: "Month",
               isImp: true
             }}
             selector={{
