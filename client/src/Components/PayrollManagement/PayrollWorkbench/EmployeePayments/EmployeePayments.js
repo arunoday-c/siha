@@ -157,23 +157,15 @@ class EmployeePayment extends Component {
               }}
             />
 
-            <div className="col-3 globalSearchCntr">
+            {/* <div className="col-3 globalSearchCntr">
               <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
               <h6 onClick={employeeSearch.bind(this, this)}>
                 {this.state.employee_name ? this.state.employee_name : "------"}
                 <i className="fas fa-search fa-lg" />
               </h6>
-            </div>
+            </div> */}
 
             <div className="col margin-bottom-15">
-              <button
-                type="button"
-                className="btn btn-primary"
-                style={{ marginTop: 19 }}
-                onClick={LoadData.bind(this, this)}
-              >
-                Load
-              </button>
               <button
                 type="button"
                 className="btn btn-default"
@@ -181,6 +173,14 @@ class EmployeePayment extends Component {
                 onClick={ClearData.bind(this, this)}
               >
                 Clear
+              </button>{" "}
+              <button
+                type="button"
+                className="btn btn-primary"
+                style={{ marginTop: 19 }}
+                onClick={LoadData.bind(this, this)}
+              >
+                Load
               </button>
             </div>
           </div>

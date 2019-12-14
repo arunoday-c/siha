@@ -1185,6 +1185,7 @@ export default {
 
       let inputValues = [];
       let _stringData = "";
+      inputValues.push(input.hospital_id);
       inputValues.push(input.payment_type);
       if (input.employee_id != null) {
         _stringData += " and employee_id=? ";
@@ -1198,7 +1199,7 @@ export default {
           employee_end_of_service_id,employee_final_settlement_id,employee_leave_settlement_id,payment_application_code, \
           payment_type, payment_amount, payment_date, payment_mode, cheque_number, deduction_month, cancel, bank_id,\
           emp.employee_code, emp.full_name from hims_f_employee_payments, hims_d_employee emp where \
-          hims_f_employee_payments.employee_id = emp.hims_d_employee_id and payment_type=? " +
+          hims_f_employee_payments.employee_id = emp.hims_d_employee_id and emp.hospital_id=? and payment_type=?" +
             _stringData,
           values: inputValues,
           printQuery: true

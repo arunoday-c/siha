@@ -469,10 +469,13 @@ const employeeSearch = $this => {
 };
 
 const getEmployeePayments = $this => {
-  let inputObj = { payment_type: $this.state.sel_payment_type }
+  let inputObj = {
+    payment_type: $this.state.sel_payment_type,
+    hospital_id: $this.state.hospital_id
+  };
 
   if ($this.state.select_employee_id !== null) {
-    inputObj.employee_id = $this.state.select_employee_id
+    inputObj.employee_id = $this.state.select_employee_id;
   }
   algaehApiCall({
     uri: "/employeepayments/getEmployeePayments",

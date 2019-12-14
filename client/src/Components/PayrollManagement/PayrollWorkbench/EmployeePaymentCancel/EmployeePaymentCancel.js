@@ -4,13 +4,23 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import "./EmployeePaymentCancel.scss";
-import { AlgaehLabel, AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
+import {
+  AlgaehLabel,
+  AlagehAutoComplete,
+  AlgaehDataGrid
+} from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import {
+  branchHandelEvent,
   getEmployeePayments,
-  CancelPayment
+  CancelPayment,
+  Paymenttexthandle,
+  PaymentOnClear
 } from "./EmployeePaymentCancelEvent.js";
+import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../../../actions/algaehActions";
+
+import EmployeePaymentIOputs from "../../../../Models/EmployeePayment";
 
 class EmployeePaymentCancel extends Component {
   constructor(props) {
@@ -19,8 +29,27 @@ class EmployeePaymentCancel extends Component {
       PreviousPayments: []
     };
   }
-
+  UNSAFE_componentWillMount() {
+    let IOputs = EmployeePaymentIOputs.inputParam();
+    IOputs.hospital_id = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    ).hims_d_hospital_id;
+    this.setState(IOputs);
+  }
   componentDidMount() {
+    if (
+      this.props.organizations === undefined ||
+      this.props.organizations.length === 0
+    ) {
+      this.props.getOrganizations({
+        uri: "/organization/getOrganization",
+        method: "GET",
+        redux: {
+          type: "ORGS_GET_DATA",
+          mappingName: "organizations"
+        }
+      });
+    }
     if (this.props.banks === undefined || this.props.banks.length === 0) {
       this.props.getBanks({
         uri: "/bankmaster/getBank",
@@ -34,13 +63,83 @@ class EmployeePaymentCancel extends Component {
       });
     }
 
-    getEmployeePayments(this, this);
+    // getEmployeePayments(this, this);
   }
 
   render() {
     return (
       <React.Fragment>
         <div className="hptl-EmployeePayment-form">
+          <div className="row  inner-top-search" data-validate="paymentcancel">
+            <AlagehAutoComplete
+              div={{ className: "col-2 mandatory form-group" }}
+              label={{
+                forceLabel: "Select a Branch.",
+                isImp: true
+              }}
+              selector={{
+                name: "hospital_id",
+                className: "select-fld",
+                value: this.state.hospital_id,
+                dataSource: {
+                  textField: "hospital_name",
+                  valueField: "hims_d_hospital_id",
+                  data: this.props.organizations
+                },
+                onChange: branchHandelEvent.bind(this, this),
+                onClear: () => {
+                  this.setState({
+                    hospital_id: null
+                  });
+                }
+              }}
+            />
+            <AlagehAutoComplete
+              div={{ className: "col-2 mandatory form-group" }}
+              label={{
+                forceLabel: "Payment Type",
+                isImp: true
+              }}
+              selector={{
+                name: "sel_payment_type",
+                className: "select-fld",
+                value: this.state.sel_payment_type,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.EMPLOYEE_PAYMENT_TYPE
+                },
+                onChange: Paymenttexthandle.bind(this, this),
+                others: {
+                  tabIndex: "2"
+                },
+                onClear: PaymentOnClear.bind(this, this)
+              }}
+            />{" "}
+            <div className="col margin-bottom-15">
+              <button
+                type="button"
+                className="btn btn-default"
+                style={{ marginTop: 19, marginLeft: 10 }}
+                onClick={() => {
+                  this.setState({
+                    sel_payment_type: "",
+                    PreviousPayments: []
+                  });
+                }}
+              >
+                Clear
+              </button>{" "}
+              <button
+                type="button"
+                className="btn btn-primary"
+                style={{ marginTop: 19 }}
+                onClick={getEmployeePayments.bind(this, this)}
+              >
+                Load
+              </button>
+            </div>
+          </div>
           <div className="row">
             <div className="col-12">
               <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
@@ -109,29 +208,29 @@ class EmployeePaymentCancel extends Component {
                               );
                             }
                           },
-                          {
-                            fieldName: "payment_type",
+                          // {
+                          //   fieldName: "payment_type",
 
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Payment Type" }}
-                              />
-                            ),
+                          //   label: (
+                          //     <AlgaehLabel
+                          //       label={{ forceLabel: "Payment Type" }}
+                          //     />
+                          //   ),
 
-                            displayTemplate: row => {
-                              let display = GlobalVariables.EMPLOYEE_PAYMENT_TYPE.filter(
-                                f => f.value === row.payment_type
-                              );
+                          //   displayTemplate: row => {
+                          //     let display = GlobalVariables.EMPLOYEE_PAYMENT_TYPE.filter(
+                          //       f => f.value === row.payment_type
+                          //     );
 
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? display[0].name
-                                    : ""}
-                                </span>
-                              );
-                            }
-                          },
+                          //     return (
+                          //       <span>
+                          //         {display !== undefined && display.length !== 0
+                          //           ? display[0].name
+                          //           : ""}
+                          //       </span>
+                          //     );
+                          //   }
+                          // },
                           {
                             fieldName: "payment_application_code",
                             label: (
@@ -277,6 +376,7 @@ class EmployeePaymentCancel extends Component {
 
 function mapStateToProps(state) {
   return {
+    organizations: state.organizations,
     banks: state.banks
   };
 }
@@ -284,6 +384,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
+      getOrganizations: AlgaehActions,
       getBanks: AlgaehActions
     },
     dispatch
@@ -291,8 +392,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(EmployeePaymentCancel)
+  connect(mapStateToProps, mapDispatchToProps)(EmployeePaymentCancel)
 );
