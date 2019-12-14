@@ -111,7 +111,6 @@ export default {
                       const IncludeValuess = [
                         "day_end_header_id",
                         "head_account_code",
-                        "root_id",
                         "head_id",
                         "child_id",
                         "debit_amount",
@@ -299,7 +298,7 @@ export default {
                       const IncludeValuess = [
                         "day_end_header_id",
                         "head_account_code",
-                        "root_id",
+
                         "head_id",
                         "child_id",
                         "debit_amount",
