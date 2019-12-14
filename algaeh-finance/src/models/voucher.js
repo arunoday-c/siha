@@ -55,7 +55,7 @@ export default {
             "select hims_d_hospital_id,head_office,cost_center_type from \
           hims_d_hospital where  head_office='Y'; "
         })
-        .then(result => {
+        .then(resul => {
           if (resul.length == 1) {
             if (
               resul[0]["cost_center_type"] == "P" ||
@@ -111,6 +111,7 @@ export default {
                       const IncludeValuess = [
                         "day_end_header_id",
                         "head_account_code",
+                        "root_id",
                         "head_id",
                         "child_id",
                         "debit_amount",

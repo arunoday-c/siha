@@ -442,7 +442,7 @@ export default {
           where SD.is_deleted='N' and day_end_header_id in (?)
           group by day_end_header_id)
           select D.finance_day_end_sub_detail_id,D.day_end_header_id,D.payment_date,D.head_account_code,voucher_no,
-          head_id,child_id,debit_amount,payment_type,credit_amount,narration,year,month,hospital_id
+          head_id,child_id,debit_amount,payment_type,credit_amount,narration,year,month,hospital_id,D.root_id
           from finance_day_end_sub_detail D inner join  cte_ C on D.day_end_header_id=C.day_end_header_id    
           where  D.day_end_header_id in (SELECT day_end_header_id
           FROM cte_ where is_equal='true');`,
@@ -454,14 +454,78 @@ export default {
         // req.records = result;
         // next();
         if (result.length > 0) {
-          const updateFinanceDayEndSubDetailIds = result.map(m => {
-            return m.finance_day_end_sub_detail_id;
+          // const updateFinanceDayEndSubDetailIds = result.map(m => {
+          //   return m.finance_day_end_sub_detail_id;
+          // });
+          const updateFinanceDayEndSubDetailIds = [];
+          let total_income = 0;
+          let total_expense = 0;
+          let balance = 0;
+          result.forEach(m => {
+            updateFinanceDayEndSubDetailIds.push(
+              m.finance_day_end_sub_detail_id
+            );
+
+            if (m.root_id == 4) {
+              if (m.payment_type == "CR") {
+                total_income =
+                  parseFloat(total_income) + parseFloat(m.credit_amount);
+              } else if (m.payment_type == "DR") {
+                total_income =
+                  parseFloat(total_income) - parseFloat(m.debit_amount);
+              }
+            } else if (m.root_id == 5) {
+              if (m.payment_type == "DR") {
+                total_expense =
+                  parseFloat(total_expense) + parseFloat(m.debit_amount);
+              } else if (m.payment_type == "CR") {
+                total_expense =
+                  parseFloat(total_expense) - parseFloat(m.credit_amount);
+              }
+            }
           });
+
+          balance = parseFloat(total_income) - parseFloat(total_expense);
+
+          if (balance > 0) {
+            result.push({
+              payment_date: new Date(),
+              head_account_code: 3.1,
+              root_id: 3,
+              head_id: 61,
+              child_id: 51,
+              debit_amount: 0,
+              credit_amount: balance,
+              payment_type: "CR",
+              narration: "profit & loss tally",
+              hospital_id: result[0]["hospital_id"],
+              year: moment().format("YYYY"),
+              month: moment().format("M"),
+              voucher_no: null
+            });
+          } else if (balance < 0) {
+            result.push({
+              payment_date: new Date(),
+              head_account_code: 3.1,
+              root_id: 3,
+              head_id: 61,
+              child_id: 51,
+              debit_amount: Math.abs(balance),
+              credit_amount: 0,
+              payment_type: "DR",
+              narration: "profit & loss tally",
+              hospital_id: result[0]["hospital_id"],
+              year: moment().format("YYYY"),
+              month: moment().format("M"),
+              voucher_no: null
+            });
+          }
 
           const insertColumns = [
             "payment_date",
             "day_end_header_id",
             "head_account_code",
+            "root_id",
             "head_id",
             "child_id",
             "debit_amount",
@@ -787,10 +851,10 @@ export default {
       _mysql
         .executeQuery({
           query: `with recursive cte (finance_account_head_id,account_code, account_name, parent_acc_id,
-              finance_account_child_id,child_name,child_created_from,account_level,sort_order,head_id,created_status) as (              
+              finance_account_child_id,child_name,child_created_from,account_level,sort_order,head_id,created_status,root_id) as (              
               select finance_account_head_id,H.account_code,account_name,parent_acc_id,
               C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
-              ,account_level,H.sort_order,CM.head_id,H.created_from as created_status
+              ,account_level,H.sort_order,CM.head_id,H.created_from as created_status,H.root_id
               FROM finance_account_head H left join 
               finance_head_m_child CM on H.finance_account_head_id=CM.head_id
               left join finance_account_child C on CM.child_id=C.finance_account_child_id
@@ -798,7 +862,7 @@ export default {
               union                  
               select   H.finance_account_head_id,H.account_code,H.account_name,H.parent_acc_id,
               C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
-              ,H.account_level,H.sort_order,CM.head_id,H.created_from as created_status
+              ,H.account_level,H.sort_order,CM.head_id,H.created_from as created_status,H.root_id
               FROM finance_account_head H left join 
               finance_head_m_child CM on H.finance_account_head_id=CM.head_id
               left join finance_account_child C on CM.child_id=C.finance_account_child_id
@@ -826,7 +890,7 @@ export default {
         .executeQuery({
           query: `	select finance_account_head_id,H.account_code,account_name,parent_acc_id,
         C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
-        ,account_level,H.sort_order,CM.head_id,H.created_from as created_status
+        ,account_level,H.sort_order,CM.head_id,H.created_from as created_status,H.root_id
         FROM finance_account_head H left join 
         finance_head_m_child CM on H.finance_account_head_id=CM.head_id
         left join finance_account_child C on CM.child_id=C.finance_account_child_id;        `,
@@ -1275,7 +1339,9 @@ function createHierarchyForDropdown(arry) {
 
           title: item.child_name,
           label: item.child_name,
+          account_code: item["account_code"],
           head_id: item["head_id"],
+          root_id: item["root_id"],
           disabled: false,
           leafnode: "Y",
           created_status: item["child_created_from"]
