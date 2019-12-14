@@ -135,8 +135,61 @@ class LeaveSalaryProcess extends Component {
             </div>
           </div>
         </div>
-
-        <div className="col-12">
+        <div className="col-3">
+          <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject"> Leave Salary List</h3>
+                <div className="actions"></div>
+              </div>
+            </div>
+            <div className="portlet-body">
+              <div className="row">
+                <div className="col-12">
+                  <AlgaehDataGrid
+                    id="leaveSalaryProcessGrid"
+                    datavalidate="leaveSalaryProcessGrid"
+                    columns={[
+                      {
+                        fieldName: "Action",
+                        label: (
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Action"
+                            }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              <i
+                                className="fas fa-eye"
+                                aria-hidden="true"
+                                onClick={openSalaryComponents.bind(
+                                  this,
+                                  this,
+                                  row
+                                )}
+                              />
+                            </span>
+                          );
+                        },
+                        others: {
+                          minWidth: 50,
+                          filterable: false
+                        }
+                      }
+                    ]}
+                    keyId="hims_f_leave_salary_detail_id"
+                    dataSource={{ data: this.state.leave_salary_detail }}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-9">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
@@ -461,8 +514,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(LeaveSalaryProcess)
+  connect(mapStateToProps, mapDispatchToProps)(LeaveSalaryProcess)
 );

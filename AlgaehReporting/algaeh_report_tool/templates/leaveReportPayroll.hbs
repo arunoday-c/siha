@@ -18,13 +18,14 @@
                         <th>From Date</th>
                         <th>To Date</th>
                         <th>Total Days</th>
+                        <th>Salary Mode</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#hasElement detail}}
                     {{#each detail}}
                     <tr>
-                        <td colspan="11" class="tableSubHdg">{{status}}</td>
+                        <td colspan="12" class="tableSubHdg">{{status}}</td>
                     </tr>
                     {{#each detailList}}
                     <tr>
@@ -39,12 +40,13 @@
                         <td>{{from_date}}</td>
                         <td>{{to_date}}</td>
                         <td>{{total_applied_days}}</td>
+                        <td>{{from_normal_salary}}</td>
                     </tr>
                     {{/each }}
                     {{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="11" class="noResultTextReport">No Records Found</td>
+                        <td colspan="12" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
             </table>
