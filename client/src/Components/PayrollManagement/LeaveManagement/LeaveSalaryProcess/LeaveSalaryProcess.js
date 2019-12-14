@@ -8,7 +8,11 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
 
-import { AlgaehLabel, AlgaehDataGrid, AlagehAutoComplete } from "../../../Wrapper/algaehWrapper";
+import {
+  AlgaehLabel,
+  AlgaehDataGrid,
+  AlagehAutoComplete
+} from "../../../Wrapper/algaehWrapper";
 import {
   LeaveSalProcess,
   employeeSearch,
@@ -33,9 +37,9 @@ class LeaveSalaryProcess extends Component {
     this.state = {
       hospital_id: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      ).hims_d_hospital_id
     };
-    getEmployeeAnnualLeaveToProcess(this, this)
+    getEmployeeAnnualLeaveToProcess(this, this);
   }
 
   UNSAFE_componentWillMount() {
@@ -93,7 +97,6 @@ class LeaveSalaryProcess extends Component {
     }
   }
 
-
   render() {
     return (
       <div className="leave_en_auth row">
@@ -107,7 +110,34 @@ class LeaveSalaryProcess extends Component {
                   : "Search Employee"}
                 <i className="fas fa-search fa-lg"></i>
               </h6>
-            </div> */}
+            </div> */}{" "}
+            <AlagehAutoComplete
+              div={{ className: "col-2 mandatory form-group" }}
+              label={{
+                forceLabel: "Select a Branch.",
+                isImp: true
+              }}
+              selector={{
+                name: "hospital_id",
+                className: "select-fld",
+                value: this.state.hospital_id,
+                dataSource: {
+                  textField: "hospital_name",
+                  valueField: "hims_d_hospital_id",
+                  data: this.props.organizations
+                },
+                onChange: eventHandaler.bind(this, this),
+                others: {
+                  disabled: this.state.dataExists
+                },
+                onClear: () => {
+                  this.setState({
+                    hospital_id: null,
+                    emp_leave_salary: []
+                  });
+                }
+              }}
+            />
             <div className="col-2 globalSearchCntr">
               <AlgaehLabel label={{ forceLabel: "Search Leave Salary No." }} />
               <h6 onClick={LoadLeaveSalary.bind(this, this)}>
@@ -117,7 +147,6 @@ class LeaveSalaryProcess extends Component {
                 <i className="fas fa-search fa-lg"></i>
               </h6>
             </div>
-
             <div className="col-2">
               <AlgaehLabel
                 label={{
@@ -127,54 +156,16 @@ class LeaveSalaryProcess extends Component {
               <h6>
                 {this.state.leave_salary_date
                   ? moment(this.state.leave_salary_date).format(
-                    Options.dateFormat
-                  )
+                      Options.dateFormat
+                    )
                   : Options.dateFormat}
               </h6>
             </div>
-
-            <div className="col form-group">
-              <button
-                style={{ marginTop: 19 }}
-                className="btn btn-primary"
-                disabled={this.state.ProcessBtn}
-                onClick={LeaveSalProcess.bind(this, this)}
-              >
-                Process
-              </button>
-            </div>
           </div>
         </div>
-        <div className="col-3">
+        <div className="col-4">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
-              <AlagehAutoComplete
-                div={{ className: "col-3 mandatory" }}
-                label={{
-                  forceLabel: "Select a Branch.",
-                  isImp: true
-                }}
-                selector={{
-                  name: "hospital_id",
-                  className: "select-fld",
-                  value: this.state.hospital_id,
-                  dataSource: {
-                    textField: "hospital_name",
-                    valueField: "hims_d_hospital_id",
-                    data: this.props.organizations
-                  },
-                  onChange: eventHandaler.bind(this, this),
-                  others: {
-                    disabled: this.state.dataExists
-                  },
-                  onClear: () => {
-                    this.setState({
-                      hospital_id: null,
-                      emp_leave_salary: []
-                    });
-                  }
-                }}
-              />
               <div className="caption">
                 <h3 className="caption-subject"> Leave Salary List</h3>
                 <div className="actions"></div>
@@ -182,10 +173,10 @@ class LeaveSalaryProcess extends Component {
             </div>
             <div className="portlet-body">
               <div className="row">
-                <div className="col-12">
+                <div className="col-12" id="leaveListGrid_Cntr">
                   <AlgaehDataGrid
-                    id="leaveSalaryProcessGrid"
-                    datavalidate="leaveSalaryProcessGrid"
+                    id="leaveListGrid"
+                    datavalidate="leaveListGrid"
                     columns={[
                       {
                         fieldName: "employee_code",
@@ -200,10 +191,7 @@ class LeaveSalaryProcess extends Component {
                           return (
                             <span
                               className="pat-code"
-                              onClick={selectEmployee.bind(
-                                this, this,
-                                row
-                              )}
+                              onClick={selectEmployee.bind(this, this, row)}
                             >
                               {row.employee_code}
                             </span>
@@ -234,7 +222,7 @@ class LeaveSalaryProcess extends Component {
             </div>
           </div>
         </div>
-        <div className="col-9">
+        <div className="col-8">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
@@ -249,8 +237,8 @@ class LeaveSalaryProcess extends Component {
                   ) : this.state.status === "CAN" ? (
                     <span className="badge badge-danger">Cancelled</span>
                   ) : (
-                          ""
-                        )}
+                    ""
+                  )}
                 </h3>
               </div>
               <div className="actions">
@@ -517,9 +505,18 @@ class LeaveSalaryProcess extends Component {
                 disabled={this.state.SaveBtn}
                 onClick={SaveLeaveSalary.bind(this, this)}
               >
-                <AlgaehLabel label={{ forceLabel: "Save", returnText: true }} />
+                <AlgaehLabel
+                  label={{ forceLabel: "Send for Payment", returnText: true }}
+                />
               </button>
-
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={this.state.ProcessBtn}
+                onClick={LeaveSalProcess.bind(this, this)}
+              >
+                Process Leave Salary
+              </button>
               <button
                 type="button"
                 className="btn btn-default"
