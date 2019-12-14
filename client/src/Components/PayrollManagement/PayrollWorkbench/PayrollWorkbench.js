@@ -56,7 +56,7 @@ class PayrollWorkbench extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Employee Payment Cancellation"
+                      forceLabel: "Payment Cancellation"
                     }}
                   />
                 }
@@ -76,19 +76,6 @@ class PayrollWorkbench extends Component {
                 }
               </li>
               <li
-                algaehtabs={"OverTimeMgmt"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "OverTime Management"
-                    }}
-                  />
-                }
-              </li>
-              <li
                 algaehtabs={"LeaveSalaryAccural"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
@@ -96,7 +83,7 @@ class PayrollWorkbench extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Leave Salary Airfare Accrual"
+                      forceLabel: "Leave Salary & Airfare Accrual"
                     }}
                   />
                 }
@@ -110,6 +97,19 @@ class PayrollWorkbench extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Opening Balance"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"OverTimeMgmt"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "OverTime Management"
                     }}
                   />
                 }
