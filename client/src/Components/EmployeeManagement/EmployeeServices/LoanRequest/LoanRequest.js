@@ -150,8 +150,8 @@ class LoanRequest extends Component {
           {
             employee_name: row.full_name,
             employee_id: row.hims_d_employee_id
-          },
-          () => this.getEmployees()
+          }
+          // () => this.getEmployees()
         );
       }
     });
@@ -499,8 +499,8 @@ class LoanRequest extends Component {
                                 Issued
                               </span>
                             ) : (
-                              "------"
-                            )}
+                                      "------"
+                                    )}
                           </span>
                         );
                       },
@@ -544,8 +544,8 @@ class LoanRequest extends Component {
                         return row.pending_tenure !== 0 ? (
                           <span>{row.pending_tenure} Month</span>
                         ) : (
-                          <span className="badge badge-success">Closed</span>
-                        );
+                            <span className="badge badge-success">Closed</span>
+                          );
                       }
                     },
 
@@ -638,9 +638,9 @@ class LoanRequest extends Component {
                   isEditable={false}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    onEdit: () => {},
-                    onDelete: () => {},
-                    onDone: () => {}
+                    onEdit: () => { },
+                    onDelete: () => { },
+                    onDone: () => { }
                   }}
                 />
               </div>
@@ -711,9 +711,9 @@ class LoanRequest extends Component {
                           <span>
                             {moment(
                               "01-" +
-                                row.deducting_month +
-                                "-" +
-                                row.deducting_year,
+                              row.deducting_month +
+                              "-" +
+                              row.deducting_year,
                               "DD-MM-YYYY"
                             ).format("MMMM - YYYY")}
                           </span>
