@@ -6946,7 +6946,7 @@ function projectedleaveCalc(input, _mysql) {
 
     return new Promise((resolve, reject) => {
 
-    if(moment( date_end, "YYYY-MM-DD").format("YYYYMMDD")>moment(date_start, "YYYY-MM-DD").format("YYYYMMDD")){
+    if(moment( date_end, "YYYY-MM-DD").format("YYYYMMDD")>=moment(date_start, "YYYY-MM-DD").format("YYYYMMDD")){
       if (attendance_starts == "PM" && at_end_date > 0) {
         console.log("PM");
 

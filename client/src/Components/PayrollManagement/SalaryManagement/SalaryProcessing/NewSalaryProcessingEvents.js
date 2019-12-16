@@ -48,43 +48,54 @@ const SalaryProcess = ($this, inputs, from) => {
             data: inputObj,
             method: "GET",
             onSuccess: response => {
-              if (response.data.result.length > 0) {
-                let data = response.data.result[0];
-                let finalizeBtn = true;
-                let strMessage =
-                  "Salary already finalized for selected criteria.";
-                let not_process = Enumerable.from(data.salaryprocess_header)
-                  .where(w => w.salary_processed === "N")
-                  .toArray();
-                if (not_process.length > 0) {
-                  finalizeBtn = false;
-                  strMessage = "Salary Loaded Successfully.";
-                }
-                $this.setState({
-                  salaryprocess_header: data.salaryprocess_header,
-                  salaryprocess_detail: data.salaryprocess_detail,
-                  finalizeBtn: finalizeBtn
-                });
-                AlgaehLoader({ show: false });
+              if (response.data.success) {
+                if (response.data.result.length > 0) {
+                  let data = response.data.result[0];
+                  let finalizeBtn = true;
+                  let strMessage =
+                    "Salary already finalized for selected criteria.";
+                  let not_process = Enumerable.from(data.salaryprocess_header)
+                    .where(w => w.salary_processed === "N")
+                    .toArray();
+                  if (not_process.length > 0) {
+                    finalizeBtn = false;
+                    strMessage = "Salary Loaded Successfully.";
+                  }
+                  $this.setState({
+                    salaryprocess_header: data.salaryprocess_header,
+                    salaryprocess_detail: data.salaryprocess_detail,
+                    finalizeBtn: finalizeBtn
+                  });
+                  AlgaehLoader({ show: false });
 
-                if (from === "load") {
+                  if (from === "load") {
+                    swalMessage({
+                      title: strMessage,
+                      type: "success"
+                    });
+                  }
+                } else {
+                  $this.setState({
+                    salaryprocess_header: [],
+                    salaryprocess_detail: [],
+                    finalizeBtn: true
+                  });
+                  AlgaehLoader({ show: false });
                   swalMessage({
-                    title: strMessage,
-                    type: "success"
+                    title: "Attendance not processed for selected criteria.",
+                    type: "warning"
                   });
                 }
               } else {
-                $this.setState({
-                  salaryprocess_header: [],
-                  salaryprocess_detail: [],
-                  finalizeBtn: true
-                });
+                debugger
                 AlgaehLoader({ show: false });
                 swalMessage({
-                  title: "Attendance not processed for selected criteria.",
+                  title: response.data.result.message,
                   type: "warning"
                 });
+
               }
+
             },
             onFailure: error => {
               AlgaehLoader({ show: false });

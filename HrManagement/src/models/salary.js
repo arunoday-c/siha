@@ -15,7 +15,7 @@ export default {
       try {
         const utilities = new algaehUtilities();
 
-        // utilities.logger().log("newProcessSalary: ");
+        // console.log("newProcessSalary: ");
         const input = req.query;
         const month_number = parseFloat(input.month);
         const year = input.year;
@@ -1895,50 +1895,91 @@ export default {
   getSalaryProcess: (req, res, next) => {
     try {
       const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
-      const inputParam = req.query;
+      let inputParam = req.query;
 
       let salaryprocess_header = [];
 
+      inputParam.year = req.query.year;
+      inputParam.month = req.query.month;
       /* Select statemwnt  */
 
       let _stringData =
-        inputParam.employee_id != null ? " and employee_id=? " : "";
-
-      _stringData +=
-        inputParam.sub_department_id != null
-          ? " and emp.sub_department_id=? "
+        inputParam.employee_id != null
+          ? ` and S.employee_id= ${inputParam.employee_id}`
           : "";
 
       _stringData +=
-        inputParam.department_id != null ? " and SD.department_id=? " : "";
+        inputParam.sub_department_id != null
+          ? ` and emp.sub_department_id= ${inputParam.sub_department_id}`
+          : "";
 
       _stringData +=
-        inputParam.group_id != null ? " and emp.employee_group_id=? " : "";
+        inputParam.department_id != null
+          ? ` and SD.department_id= ${inputParam.department_id}`
+          : "";
+
+      _stringData +=
+        inputParam.group_id != null
+          ? ` and emp.employee_group_id= ${inputParam.group_id}`
+          : "";
 
       _stringData +=
         inputParam.salary_type != null
-          ? "and salary_type = '" + inputParam.salary_type + "'"
-          : "and salary_type='NS'";
+          ? " and salary_type = '" + inputParam.salary_type + "'"
+          : " and salary_type='NS'";
 
+      console.log("inputParam", inputParam);
       _mysql
         .executeQuery({
           query:
-            "select hims_f_salary_id, employee_id, salary_number, S.year, total_days, absent_days, total_work_days,  total_weekoff_days, total_holidays, total_leave, paid_leave, unpaid_leave, present_days,  pending_unpaid_leave, total_paid_days, S.gross_salary, S.net_salary, advance_due, display_present_days, \
+            "select hims_f_salary_id, S.employee_id, salary_number, S.year, total_days, absent_days, total_work_days,  total_weekoff_days, total_holidays, total_leave, paid_leave, unpaid_leave, present_days,  pending_unpaid_leave, total_paid_days, S.gross_salary, S.net_salary, advance_due, display_present_days, \
             S.total_earnings,S.total_deductions,loan_payable_amount, loan_due_amount, salary_processed, salary_paid, \
-            leave_salary_accrual_amount, leave_salary_days, emp.employee_code, emp.full_name from hims_f_salary S, \
-            hims_d_employee emp, hims_d_sub_department SD where S.employee_id = emp.hims_d_employee_id and \
-            emp.sub_department_id=SD.hims_d_sub_department_id \
-             and `year` = ? and `month` = ? and emp.hospital_id=? " +
+            leave_salary_accrual_amount, leave_salary_days, emp.employee_code, emp.full_name, \
+            AL.from_normal_salary, AL.hims_f_employee_annual_leave_id from hims_f_salary S \
+            inner join hims_d_employee emp on S.employee_id = emp.hims_d_employee_id  \
+            inner join  hims_d_sub_department SD on emp.sub_department_id=SD.hims_d_sub_department_id \
+            left join hims_f_employee_annual_leave AL on emp.hims_d_employee_id = AL.employee_id and  AL.year=? \
+            and AL.month=? and AL.cancelled='N' where \
+              S.`year` = ? and S.`month` = ? and emp.hospital_id=? " +
             _stringData,
-          values: _.valuesIn(inputParam),
+          values: [
+            inputParam.year,
+            inputParam.month,
+            inputParam.year,
+            inputParam.month,
+            inputParam.hospital_id
+          ],
           printQuery: true
         })
         .then(salary_process => {
           if (salary_process.length > 0) {
-            const _salaryHeader_id = salary_process.map(item => {
+            let _salary_data = _.filter(salary_process, f => {
+              return (
+                f.from_normal_salary === "Y" ||
+                f.hims_f_employee_annual_leave_id === null
+              );
+            });
+            if (inputParam.employee_id != null) {
+              let _annual_salary = _.filter(salary_process, f => {
+                return (
+                  f.from_normal_salary === "N" ||
+                  f.hims_f_employee_annual_leave_id !== null
+                );
+              });
+              if (_annual_salary.length > 0) {
+                req.records = {
+                  invalid_input: true,
+                  message:
+                    "Selected Employee applied annual leave, Please process from annual leave salary screen. "
+                };
+                next();
+                return;
+              }
+            }
+            const _salaryHeader_id = _salary_data.map(item => {
               return item.hims_f_salary_id;
             });
-            salaryprocess_header = salary_process;
+            salaryprocess_header = _salary_data;
 
             _mysql
               .executeQuery({
@@ -2617,7 +2658,11 @@ export default {
                               printQuery: true
                             })
                             .then(loan_application => {
-                              for (let i = 0; i < loan_application.length; i++) {
+                              for (
+                                let i = 0;
+                                i < loan_application.length;
+                                i++
+                              ) {
                                 let loan_skip_months =
                                   loan_application[i].loan_skip_months;
                                 let pending_loan =
@@ -4978,7 +5023,7 @@ function InsertGratuityProvision(options) {
                       );
 
                       strQry += mysql.format(
-                        "INSERT INTO `hims_f_gratuity_provision`(`employee_id`,`year`,\
+                        "INSERT IGNORE INTO `hims_f_gratuity_provision`(`employee_id`,`year`,\
                       `month`,`gratuity_amount`) VALUE(?,?,?,?);",
                         [
                           _employee[k].hims_d_employee_id,
