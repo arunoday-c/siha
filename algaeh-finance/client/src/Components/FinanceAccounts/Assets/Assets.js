@@ -38,7 +38,7 @@ export default function Assets() {
   const [period, setPeriod] = useState("4");
   const [accountChart, setAccountChart] = useState([]);
   const [year, setYear] = useState(moment());
-
+  const assetCode = "1";
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
       try {
@@ -107,7 +107,7 @@ export default function Assets() {
     });
   }
   function loadAccount() {
-    getAccounts("1", data => {
+    getAccounts(assetCode, data => {
       if (Array.isArray(data)) {
         if (data.length > 0) {
           const firstData = data[0];
@@ -145,6 +145,7 @@ export default function Assets() {
       <AddNewAccount
         showPopup={showPopup}
         selectedNode={selectedNode}
+        accountCode={assetCode}
         onClose={e => {
           setShowPopup(false);
           if (isAccountHead) {

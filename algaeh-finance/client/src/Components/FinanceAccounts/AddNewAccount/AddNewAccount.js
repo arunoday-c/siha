@@ -14,7 +14,7 @@ export default function AddNewAccount(props) {
   const [account_type, setAccountType] = useState("G");
   const [opening_balance, setOpeningBalance] = useState(0);
   // const [opening_balance_date, setOpeningBalanceDate] = useState("");
-  const { showPopup, onClose, selectedNode, okText } = props;
+  const { showPopup, onClose, selectedNode, okText, accountCode } = props;
 
   return (
     <AlgaehModal
@@ -138,26 +138,28 @@ export default function AddNewAccount(props) {
             }}
           />
           {account_type === "C" ? (
-            <AlgaehFormGroup
-              div={{
-                className: "form-group algaeh-text-fld col-xs-4 col-md-3"
-              }}
-              label={{
-                forceLabel: "Opening Balance",
-                isImp: true
-              }}
-              textBox={{
-                type: "number",
-                value: opening_balance,
-                className: "form-control",
-                id: "name",
-                onChange: e => {
-                  setOpeningBalance(e.target.value);
-                },
-                placeholder: " Enter Opening Balance",
-                autocomplete: false
-              }}
-            />
+            accountCode !== "4" && accountCode !== "5" ? (
+              <AlgaehFormGroup
+                div={{
+                  className: "form-group algaeh-text-fld col-xs-4 col-md-3"
+                }}
+                label={{
+                  forceLabel: "Opening Balance",
+                  isImp: true
+                }}
+                textBox={{
+                  type: "number",
+                  value: opening_balance,
+                  className: "form-control",
+                  id: "name",
+                  onChange: e => {
+                    setOpeningBalance(e.target.value);
+                  },
+                  placeholder: " Enter Opening Balance",
+                  autocomplete: false
+                }}
+              />
+            ) : null
           ) : null}
         </div>
       </Spin>

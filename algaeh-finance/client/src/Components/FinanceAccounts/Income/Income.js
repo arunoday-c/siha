@@ -40,8 +40,9 @@ export default function Income() {
   const [period, setPeriod] = useState("4");
   const [accountChart, setAccountChart] = useState([]);
   const [year, setYear] = useState(moment());
+  const accountCode = "4";
   function loadAccount() {
-    getAccounts("4", data => {
+    getAccounts(accountCode, data => {
       if (Array.isArray(data)) {
         if (data.length > 0) {
           const firstData = data[0];
@@ -143,6 +144,7 @@ export default function Income() {
       <AddNewAccount
         showPopup={showPopup}
         selectedNode={selectedNode}
+        accountCode={accountCode}
         onClose={e => {
           setShowPopup(false);
           if (isAccountHead) {

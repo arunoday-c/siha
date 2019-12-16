@@ -39,8 +39,9 @@ export default function Capital() {
   const [period, setPeriod] = useState("4");
   const [accountChart, setAccountChart] = useState([]);
   const [year, setYear] = useState(moment());
+  const accountCode = "3";
   function loadAccount() {
-    getAccounts("3", data => {
+    getAccounts(accountCode, data => {
       if (Array.isArray(data)) {
         if (data.length > 0) {
           setFinanceHeadId(data[0].finance_account_head_id);
@@ -141,6 +142,7 @@ export default function Capital() {
       <AddNewAccount
         showPopup={showPopup}
         selectedNode={selectedNode}
+        accountCode={accountCode}
         onClose={e => {
           setShowPopup(false);
           if (isAccountHead) {

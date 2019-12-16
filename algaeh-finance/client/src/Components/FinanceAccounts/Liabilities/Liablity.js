@@ -39,8 +39,9 @@ export default function Liablity() {
   const [period, setPeriod] = useState("4");
   const [accountChart, setAccountChart] = useState([]);
   const [year, setYear] = useState(moment());
+  const accountCode = "2";
   function loadAccount() {
-    getAccounts("2", data => {
+    getAccounts(accountCode, data => {
       if (Array.isArray(data)) {
         if (data.length > 0) {
           const firstData = data[0];
@@ -141,6 +142,7 @@ export default function Liablity() {
       <AddNewAccount
         showPopup={showPopup}
         selectedNode={selectedNode}
+        accountCode={accountCode}
         onClose={e => {
           setShowPopup(false);
           if (isAccountHead) {
