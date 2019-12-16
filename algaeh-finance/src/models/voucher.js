@@ -449,13 +449,17 @@ export default {
       .then(result => {
         if (result.length == 1) {
           if (result[0]["cost_center_type"] == "P") {
+            let hospital_id = req.userIdentity.hospital_id;
+            if (req.query.hospital_id > 0) {
+              hospital_id = req.query.hospital_id;
+            }
             _mysql
               .executeQuery({
                 query:
                   "select project_id as cost_center_id,P.project_desc as cost_center from \
               hims_m_division_project DP inner join hims_d_project P\
               on DP.project_id=P.hims_d_project_id where DP.division_id=?; ",
-                values: [req.userIdentity.hospital_id]
+                values: [hospital_id]
               })
               .then(results => {
                 _mysql.releaseConnection();

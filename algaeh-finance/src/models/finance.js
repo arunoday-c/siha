@@ -233,8 +233,11 @@ export default {
         select SUBSTRING_INDEX(max(account_code), '.', -1)+1\
         FROM finance_account_head where parent_acc_id=?)) as new_code\
         FROM finance_account_head where finance_account_head_id=?;\
-        select coalesce(max(sort_order),0)as sort_order FROM finance_account_head where parent_acc_id=?;",
+        select coalesce(max(sort_order),0)as sort_order FROM finance_account_head where parent_acc_id=?;\
+        select case  group_type when 'P' then finance_account_head_id else root_id end as root_id from\
+        finance_account_head where finance_account_head_id=?;",
           values: [
+            input.finance_account_head_id,
             input.finance_account_head_id,
             input.finance_account_head_id,
             input.finance_account_head_id
@@ -242,13 +245,11 @@ export default {
           printQuery: false
         })
         .then(result => {
-          console.log("result:", result);
-
           const data = result[0][0];
           const sort_order = parseInt(result[1][0]["sort_order"]) + 1;
 
-          console.log("sort_order:", sort_order);
           let account_code = 0;
+          let root_id = result[2][0]["root_id"];
 
           if (data["new_code"] == null) {
             account_code = data["account_code"] + "." + 1;
@@ -268,8 +269,8 @@ export default {
             .executeQuery({
               query:
                 "INSERT INTO `finance_account_head` (account_code,account_name,account_parent,\
-                group_type,account_level,created_from,sort_order,parent_acc_id,hierarchy_path)\
-                VALUE(?,?,?,?,?,?,?,?,?)",
+                group_type,account_level,created_from,sort_order,parent_acc_id,hierarchy_path,root_id)\
+                VALUE(?,?,?,?,?,?,?,?,?,?)",
               values: [
                 account_code,
                 input.account_name,
@@ -279,7 +280,8 @@ export default {
                 created_from,
                 sort_order,
                 parent_acc_id,
-                hierarchy_path
+                hierarchy_path,
+                root_id
               ],
               printQuery: false
             })
@@ -442,7 +444,7 @@ export default {
           where SD.is_deleted='N' and day_end_header_id in (?)
           group by day_end_header_id)
           select D.finance_day_end_sub_detail_id,D.day_end_header_id,D.payment_date,D.head_account_code,voucher_no,
-          head_id,child_id,debit_amount,payment_type,credit_amount,narration,year,month,hospital_id,AH.root_id
+          head_id,child_id,debit_amount,payment_type,credit_amount,narration,year,month,hospital_id,AH.root_id,D.project_id,D.sub_department_id
           from finance_day_end_sub_detail D inner join  cte_ C on D.day_end_header_id=C.day_end_header_id   
           left join finance_account_head AH  on D.head_id=AH.finance_account_head_id
           where  D.day_end_header_id in (SELECT day_end_header_id
@@ -535,7 +537,9 @@ export default {
             "hospital_id",
             "year",
             "month",
-            "voucher_no"
+            "voucher_no",
+            "project_id",
+            "sub_department_id"
           ];
           _mysql
             .executeQueryWithTransaction({
