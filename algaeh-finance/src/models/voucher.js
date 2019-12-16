@@ -259,8 +259,8 @@ export default {
                 .executeQueryWithTransaction({
                   query:
                     "INSERT INTO `finance_day_end_header` (transaction_date,amount,voucher_type,voucher_no,\
-            from_screen,refrence_no,transaction_type,hospital_id)\
-            VALUE(?,?,?,?,?,?,?,?)",
+                from_screen,refrence_no,transaction_type,hospital_id)\
+                  VALUE(?,?,?,?,?,?,?,?)",
                   values: [
                     transaction_date,
                     credit_amount,
