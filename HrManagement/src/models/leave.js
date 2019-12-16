@@ -8251,14 +8251,21 @@ function calculateNoLeaveDays(inputs, _mysql) {
             leave_id,L.leave_description,L.leave_category,L.avail_if_no_balance,include_weekoff,include_holiday from hims_f_employee_monthly_leave ML\
             inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id where employee_id=? and year=? and\
             leave_id=? and L.record_status='A';select hims_d_holiday_id,holiday_date,holiday_description,weekoff,\
-            holiday,holiday_type,religion_id  from hims_d_holiday  where hospital_id=? and  date(holiday_date) between date(?) and date(?) ",
+            holiday,holiday_type,religion_id  from hims_d_holiday  where hospital_id=? and  date(holiday_date) between date(?) and date(?);\
+            select hims_f_salary_id from hims_f_salary where employee_id=? and \
+            year=? and month=? and hospital_id=?; ",
               values: [
                 input.employee_id,
                 year,
                 input.leave_id,
                 hospital_id,
                 from_date,
-                to_date
+                to_date,
+                input.employee_id,
+                year,
+                from_month,
+                hospital_id
+
               ],
 
               printQuery: false
@@ -8275,6 +8282,15 @@ function calculateNoLeaveDays(inputs, _mysql) {
                   annual_leave = "Y";
                 }
 
+                if (result[2].length>0&&annual_leave=="Y"){
+
+                  _mysql.releaseConnection();
+                  reject({
+                    invalid_input: true,
+                    message: `Salary is processed for this month Cant apply Annual leave`
+                  });
+                }
+                else {
                 if (
                   allLeaves[0].processed == "Y" &&
                   input["part"] != "B" &&
@@ -8762,6 +8778,9 @@ function calculateNoLeaveDays(inputs, _mysql) {
                     }
                   }
                 }
+
+
+              }
               } else {
                 _mysql.releaseConnection();
                 reject({
