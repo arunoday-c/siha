@@ -8253,7 +8253,7 @@ function calculateNoLeaveDays(inputs, _mysql) {
             leave_id=? and L.record_status='A';select hims_d_holiday_id,holiday_date,holiday_description,weekoff,\
             holiday,holiday_type,religion_id  from hims_d_holiday  where hospital_id=? and  date(holiday_date) between date(?) and date(?);\
             select hims_f_salary_id from hims_f_salary where employee_id=? and \
-            year=? and month=? and hospital_id=?; ",
+            year=? and month=? and hospital_id=? and salary_processed='Y'; ",
               values: [
                 input.employee_id,
                 year,
