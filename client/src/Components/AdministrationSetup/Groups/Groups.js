@@ -139,7 +139,6 @@ class Groups extends Component {
   }
 
   dropDownHandler(value) {
-
     this.setState({
       [value.name]: value.value
     });
@@ -185,90 +184,88 @@ class Groups extends Component {
   render() {
     return (
       <div className="groups">
-        <div className="portlet portlet-bordered margin-bottom-15">
-          <div className="portlet-body">
-            <div className="row">
-              <AlagehFormGroup
-                div={{ className: "col-lg-2" }}
-                label={{
-                  forceLabel: "Group Code",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "app_group_code",
-                  value: this.state.app_group_code,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }, others: {
-                    tabIndex: "1",
-                    placeholder: this.state.app_group_code_placeHolder
-                  }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col-lg-2" }}
-                label={{
-                  forceLabel: "Group Name",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "app_group_name",
-                  value: this.state.app_group_name,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  forceLabel: "Group Description",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "app_group_desc",
-                  value: this.state.app_group_desc,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
-              <AlagehAutoComplete
-                div={{ className: "col-lg-2" }}
-                label={{
-                  forceLabel: "Group Type",
-                  isImp: true
-                }}
-                selector={{
-                  name: "group_type",
-                  className: "select-fld",
-                  value: this.state.group_type,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: GROUP_TYPE
-                  },
+        <div className="row inner-top-search">
+          <AlagehFormGroup
+            div={{ className: "col-2  mandatory form-group" }}
+            label={{
+              forceLabel: "Group Code",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "app_group_code",
+              value: this.state.app_group_code,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              },
+              others: {
+                tabIndex: "1",
+                placeholder: this.state.app_group_code_placeHolder
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-2  mandatory form-group" }}
+            label={{
+              forceLabel: "Group Name",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "app_group_name",
+              value: this.state.app_group_name,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-3  mandatory form-group" }}
+            label={{
+              forceLabel: "Group Description",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "app_group_desc",
+              value: this.state.app_group_desc,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
+          <AlagehAutoComplete
+            div={{ className: "col-2  mandatory form-group" }}
+            label={{
+              forceLabel: "Group Type",
+              isImp: true
+            }}
+            selector={{
+              name: "group_type",
+              className: "select-fld",
+              value: this.state.group_type,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: GROUP_TYPE
+              },
 
-                  onChange: this.dropDownHandler.bind(this)
-                }}
-              />
+              onChange: this.dropDownHandler.bind(this)
+            }}
+          />
 
-              <div className="col-lg-3">
-                <button
-                  type="submit"
-                  style={{ marginTop: 19 }}
-                  onClick={this.addGroups.bind(this)}
-                  className="btn btn-primary"
-                >
-                  Add to List
-                </button>
-              </div>
-            </div>
+          <div className="col">
+            <button
+              type="submit"
+              style={{ marginTop: 19 }}
+              onClick={this.addGroups.bind(this)}
+              className="btn btn-primary"
+            >
+              Add to List
+            </button>
           </div>
         </div>
+
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
@@ -413,10 +410,11 @@ class Groups extends Component {
                     dataSource={{
                       data: this.state.groups
                     }}
-                    filter={true} isEditable={true}
+                    filter={true}
+                    isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => { },
+                      onEdit: () => {},
                       onDelete: this.deleteGroups.bind(this),
                       onDone: this.updateGroups.bind(this)
                     }}
