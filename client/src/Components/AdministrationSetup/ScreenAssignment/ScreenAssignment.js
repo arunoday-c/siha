@@ -50,7 +50,7 @@ class ScreenAssignment extends Component {
       <div className="screen_assignment">
         <div className="row inner-top-search">
           <AlagehAutoComplete
-            div={{ className: "col-2 form-group" }}
+            div={{ className: "col-2 mandatory form-group" }}
             label={{ forceLabel: "Select a Group", isImp: true }}
             selector={{
               name: "app_group_id",
@@ -67,7 +67,7 @@ class ScreenAssignment extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col-2 form-group" }}
+            div={{ className: "col-2 mandatory form-group" }}
             label={{ forceLabel: "Select a Role", isImp: true }}
             selector={{
               name: "role_id",
