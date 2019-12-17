@@ -2,21 +2,28 @@ import React, { useState } from "react";
 import "./financeReportStyle.scss";
 import { Spin, AlgaehMessagePop } from "algaeh-react-components";
 import Balance from "./FinanceStandardReports/balancesheet";
+import TrailBalance from "./FinanceStandardReports/trailbalance";
+import CostCenter from "../costcenter";
 import { getBalanceSheet } from "./FinanceReportEvents";
 
 export default function FinanceReports() {
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState("");
   const [data, setData] = useState({});
+  const [trailBanlance, setTrailBalance] = useState({});
   function selectedClass(report) {
     return report === selected ? "active" : "";
   }
   function loadReport(report) {
-    const { url } = report;
+    const { url, reportName } = report;
     getBalanceSheet({ url: url })
       .then(result => {
         setLoading(false);
-        setData(result);
+        if (reportName === "TB") {
+          setTrailBalance(result);
+        } else {
+          setData(result);
+        }
       })
       .catch(error => {
         setLoading(false);
@@ -52,9 +59,20 @@ export default function FinanceReports() {
           >
             Profit and Loss
           </li>
+          <li
+            className={selectedClass("TB")}
+            onClick={() => {
+              loadReport({ url: "getTrialBalance", reportName: "TB" });
+              setLoading(true);
+              setSelected("TB");
+            }}
+          >
+            Trail Balance
+          </li>
         </ul>
       </div>
       <div className="col-9 reportPreviewSecLeft">
+        <CostCenter div={{}} />
         <Spin spinning={loading} tip="Please wait report data is fetching..">
           {selected === "BS" ? (
             <Balance data={data} result={["asset", "liabilities"]} />
@@ -64,6 +82,8 @@ export default function FinanceReports() {
               result={["income", "expense"]}
               footer={result => <div>Profit : {result.profit}</div>}
             />
+          ) : selected === "TB" ? (
+            <TrailBalance data={trailBanlance} />
           ) : null}
         </Spin>{" "}
       </div>

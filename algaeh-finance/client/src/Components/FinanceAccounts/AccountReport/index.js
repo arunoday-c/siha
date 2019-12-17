@@ -8,6 +8,7 @@ import {
   AlgaehMessagePop
 } from "algaeh-react-components";
 import moment from "moment";
+import CostCenter from "../../costcenter";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 export default memo(function Modal(props) {
@@ -249,6 +250,7 @@ export default memo(function Modal(props) {
               Month Wise
             </label>
           </div>
+          <CostCenter div={{ className: "col" }} />
           <AlgaehDateHandler
             type={"range"}
             div={{
