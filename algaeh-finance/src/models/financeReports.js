@@ -82,16 +82,31 @@ export default {
           .then(liability => {
             getAccountHeadsForReport(decimal_places, 3)
               .then(capital => {
+                const newCapital = capital.children[0].children.find(f => {
+                  return f.finance_account_child_id == 52;
+                });
                 getAccountHeadsForReport(decimal_places, 4)
                   .then(income => {
                     getAccountHeadsForReport(decimal_places, 5)
                       .then(expense => {
+                        const total_debit_amount = parseFloat(
+                          parseFloat(asset.subtitle) +
+                            parseFloat(expense.subtitle)
+                        ).toFixed(decimal_places);
+                        const total_credit_amount = parseFloat(
+                          parseFloat(newCapital.subtitle) +
+                            parseFloat(income.subtitle) +
+                            parseFloat(liability.subtitle)
+                        ).toFixed(decimal_places);
+
                         req.records = {
                           asset: asset,
                           liability: liability,
-                          capital: capital,
+                          capital: newCapital,
                           income: income,
-                          expense: expense
+                          expense: expense,
+                          total_debit_amount: total_debit_amount,
+                          total_credit_amount: total_credit_amount
                         };
                         next();
                       })
