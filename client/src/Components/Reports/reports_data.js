@@ -172,7 +172,7 @@ const Hims_Reports = [
             isImp: true,
             label: "Branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -216,7 +216,7 @@ const Hims_Reports = [
             isImp: true,
             label: "Branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -320,12 +320,12 @@ const Hims_Reports = [
                     : // : currentValue.value === "POS"
                     // ? "posReceipt"
                     currentValue.value === "AD"
-                    ? "advanceReceipt"
-                    : currentValue.value === "OPC"
-                    ? "opCreditReceipt"
-                    : // : currentValue.value === "POSC"
-                      // ? "posCreditReceipt"
-                      "";
+                      ? "advanceReceipt"
+                      : currentValue.value === "OPC"
+                        ? "opCreditReceipt"
+                        : // : currentValue.value === "POSC"
+                        // ? "posCreditReceipt"
+                        "";
                 callback({ reportQuery: reportQuery });
               }
             }
@@ -358,7 +358,7 @@ const Hims_Reports = [
             isImp: true,
             label: "Branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -431,7 +431,7 @@ const Hims_Reports = [
             isImp: true,
             label: "Branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -552,7 +552,7 @@ const Hims_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -614,7 +614,7 @@ const Hims_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -670,7 +670,7 @@ const Hims_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -770,7 +770,7 @@ const Hims_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -879,7 +879,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -1017,7 +1017,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -1155,7 +1155,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -1279,7 +1279,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -1405,7 +1405,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -1531,7 +1531,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -1658,7 +1658,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -1853,7 +1853,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -1944,7 +1944,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -2075,7 +2075,7 @@ const HR_Payroll_Reports = [
               data: LEAVE_STATUS
             },
             events: {
-              onChange: (reportState, currentValue) => {}
+              onChange: (reportState, currentValue) => { }
             }
           }
         ]
@@ -2129,7 +2129,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -2256,7 +2256,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -2349,7 +2349,7 @@ const HR_Payroll_Reports = [
       //       isImp: true,
       //       label: "branch",
       //       link: {
-      //         uri: "/organization/getOrganization"
+      //         uri: "/organization/getOrganizationByUser"
       //       },
       //       dataSource: {
       //         textField: "hospital_name",
@@ -2446,7 +2446,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -2593,7 +2593,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -2733,7 +2733,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -2874,7 +2874,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -2967,7 +2967,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -3158,7 +3158,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -3328,7 +3328,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -3477,7 +3477,7 @@ const HR_Payroll_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -3561,7 +3561,7 @@ const Inventory_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -3697,7 +3697,7 @@ const Inventory_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -3823,7 +3823,7 @@ const Inventory_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -4008,7 +4008,7 @@ const Inventory_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -4110,7 +4110,7 @@ const Inventory_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -4191,7 +4191,7 @@ const Inventory_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -4318,7 +4318,7 @@ const Pharmacy_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -4434,7 +4434,7 @@ const Pharmacy_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -4499,7 +4499,7 @@ const Pharmacy_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -4565,7 +4565,7 @@ const Pharmacy_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             value: hospital_id,
             dataSource: {
@@ -4611,7 +4611,7 @@ const Pharmacy_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -4798,7 +4798,7 @@ const Pharmacy_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -4932,7 +4932,7 @@ const Pharmacy_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -5069,7 +5069,7 @@ const Pharmacy_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -5192,7 +5192,7 @@ const Pharmacy_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -5274,7 +5274,7 @@ const Pharmacy_Reports = [
             isImp: false,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -5336,7 +5336,7 @@ const Pharmacy_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -5418,7 +5418,7 @@ const Pharmacy_Reports = [
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/organization/getOrganizationByUser"
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -5641,8 +5641,8 @@ export default function loadActiveReports() {
       const Activated_Modueles =
         sessionStorage.getItem("ModuleDetails") !== null
           ? JSON.parse(
-              AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-            )
+            AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+          )
           : [];
       let result = [];
       for (let i = 0; i < Activated_Modueles.length; i++) {

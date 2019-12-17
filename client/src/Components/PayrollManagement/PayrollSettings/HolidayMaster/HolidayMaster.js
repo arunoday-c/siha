@@ -42,7 +42,7 @@ export default class HolidayMaster extends Component {
 
   getHospitals() {
     algaehApiCall({
-      uri: "/organization/getOrganization",
+      uri: "/organization/getOrganizationByUser",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {

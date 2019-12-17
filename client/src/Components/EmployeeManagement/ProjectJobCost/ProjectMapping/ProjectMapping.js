@@ -34,7 +34,7 @@ class ProjectMapping extends Component {
       this.props.organizations.length === 0
     ) {
       this.props.getOrganizations({
-        uri: "/organization/getOrganization",
+        uri: "/organization/getOrganizationByUser",
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
@@ -183,9 +183,9 @@ class ProjectMapping extends Component {
                               this.props.organizations === undefined
                                 ? []
                                 : this.props.organizations.filter(
-                                    f =>
-                                      f.hims_d_hospital_id === row.division_id
-                                  );
+                                  f =>
+                                    f.hims_d_hospital_id === row.division_id
+                                );
 
                             return (
                               <span>
@@ -211,8 +211,8 @@ class ProjectMapping extends Component {
                               this.props.projects === undefined
                                 ? []
                                 : this.props.projects.filter(
-                                    f => f.hims_d_project_id === row.project_id
-                                  );
+                                  f => f.hims_d_project_id === row.project_id
+                                );
 
                             return (
                               <span>

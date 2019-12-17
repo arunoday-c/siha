@@ -81,14 +81,14 @@ export default function EmployeeFilter(props) {
 
   function getHospitals() {
     algaehApiCall({
-      uri: "/organization/getOrganization",
+      uri: "/organization/getOrganizationByUser",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
           setHospitals(res.data.records);
         }
       },
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 

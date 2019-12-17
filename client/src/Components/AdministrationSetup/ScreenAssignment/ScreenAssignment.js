@@ -48,49 +48,42 @@ class ScreenAssignment extends Component {
   render() {
     return (
       <div className="screen_assignment">
+        <div className="row inner-top-search">
+          <AlagehAutoComplete
+            div={{ className: "col-2 form-group" }}
+            label={{ forceLabel: "Select a Group", isImp: true }}
+            selector={{
+              name: "app_group_id",
+              className: "select-fld",
+              value: this.state.app_group_id,
+              dataSource: {
+                textField: "app_group_name",
+                valueField: "algaeh_d_app_group_id",
+                data: this.state.groups
+              },
+              onChange: this.dropDownEvent.bind(this),
+              others: {}
+            }}
+          />
+
+          <AlagehAutoComplete
+            div={{ className: "col-2 form-group" }}
+            label={{ forceLabel: "Select a Role", isImp: true }}
+            selector={{
+              name: "role_id",
+              className: "select-fld",
+              value: this.state.role_id,
+              dataSource: {
+                textField: "role_name",
+                valueField: "app_d_app_roles_id",
+                data: this.state.roles
+              },
+              onChange: this.dropDownEvent.bind(this)
+            }}
+          />
+        </div>
         <div className="row">
-          <div className="col-4">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-body">
-                <div className="row">
-                  <AlagehAutoComplete
-                    div={{ className: "col-12 form-group" }}
-                    label={{ forceLabel: "Select a Group", isImp: true }}
-                    selector={{
-                      name: "app_group_id",
-                      className: "select-fld",
-                      value: this.state.app_group_id,
-                      dataSource: {
-                        textField: "app_group_name",
-                        valueField: "algaeh_d_app_group_id",
-                        data: this.state.groups
-                      },
-                      onChange: this.dropDownEvent.bind(this),
-                      others: {}
-                    }}
-                  />
-
-                  <AlagehAutoComplete
-                    div={{ className: "col-12 form-group" }}
-                    label={{ forceLabel: "Select a Role", isImp: true }}
-                    selector={{
-                      name: "role_id",
-                      className: "select-fld",
-                      value: this.state.role_id,
-                      dataSource: {
-                        textField: "role_name",
-                        valueField: "app_d_app_roles_id",
-                        data: this.state.roles
-                      },
-                      onChange: this.dropDownEvent.bind(this)
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-8">
+          <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -149,7 +142,7 @@ class ScreenAssignment extends Component {
                 </div>
               </div>
             </div>
-          </div>
+          </div>{" "}
         </div>
 
         <div className="hptl-phase1-footer">

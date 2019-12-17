@@ -92,7 +92,7 @@ class ManualAttendance extends Component {
       this.props.organizations.length === 0
     ) {
       this.props.getOrganizations({
-        uri: "/organization/getOrganization",
+        uri: "/organization/getOrganizationByUser",
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
@@ -200,15 +200,15 @@ class ManualAttendance extends Component {
     const _dropDownDataSource =
       this.state.manual_timesheet_entry === "D"
         ? {
-            textField: "sub_department_name",
-            valueField: "hims_d_sub_department_id",
-            data: this.state.subdepartment
-          }
+          textField: "sub_department_name",
+          valueField: "hims_d_sub_department_id",
+          data: this.state.subdepartment
+        }
         : {
-            textField: "project_desc",
-            valueField: "hims_d_project_id",
-            data: this.state.projects
-          };
+          textField: "project_desc",
+          valueField: "hims_d_project_id",
+          data: this.state.projects
+        };
 
     const drop_Down_Label =
       this.state.manual_timesheet_entry === "D"
@@ -327,54 +327,54 @@ class ManualAttendance extends Component {
               </div>
             </div>
           ) : (
-            <div className="col">
-              <div className="row">
-                {" "}
-                <AlgaehDateHandler
-                  div={{ className: "col-3" }}
-                  label={{
-                    forceLabel: "Select Date",
-                    isImp: this.state.select_wise === "D" ? true : false
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "attendance_date"
-                  }}
-                  maxDate={new Date()}
-                  events={{
-                    onChange: this.datehandle.bind(this)
-                  }}
-                  value={this.state.attendance_date}
-                />
-                <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{
-                    forceLabel: drop_Down_Label,
-                    isImp: this.state.select_wise === "D" ? true : false
-                  }}
-                  selector={{
-                    name: timesheet_entry,
-                    className: "select-fld",
-                    value:
-                      this.state.manual_timesheet_entry === "D"
-                        ? this.state.sub_department_id
-                        : this.state.project_id,
-                    dataSource: _dropDownDataSource,
-                    onChange: this.eventHandaler.bind(this),
-                    onClear: () => {
-                      this.state.manual_timesheet_entry === "D"
-                        ? this.setState({
+              <div className="col">
+                <div className="row">
+                  {" "}
+                  <AlgaehDateHandler
+                    div={{ className: "col-3" }}
+                    label={{
+                      forceLabel: "Select Date",
+                      isImp: this.state.select_wise === "D" ? true : false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "attendance_date"
+                    }}
+                    maxDate={new Date()}
+                    events={{
+                      onChange: this.datehandle.bind(this)
+                    }}
+                    value={this.state.attendance_date}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: drop_Down_Label,
+                      isImp: this.state.select_wise === "D" ? true : false
+                    }}
+                    selector={{
+                      name: timesheet_entry,
+                      className: "select-fld",
+                      value:
+                        this.state.manual_timesheet_entry === "D"
+                          ? this.state.sub_department_id
+                          : this.state.project_id,
+                      dataSource: _dropDownDataSource,
+                      onChange: this.eventHandaler.bind(this),
+                      onClear: () => {
+                        this.state.manual_timesheet_entry === "D"
+                          ? this.setState({
                             sub_department_id: null
                           })
-                        : this.setState({
+                          : this.setState({
                             project_id: null
                           });
-                    }
-                  }}
-                />
+                      }
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
           <div className="col-1 form-group">
             <button
@@ -742,15 +742,15 @@ class ManualAttendance extends Component {
                       tool={{
                         fileName:
                           this.state.select_wise === "M" &&
-                          this.state.employee_details.length > 0
+                            this.state.employee_details.length > 0
                             ? this.state.employee_details[0]["employee_code"] +
-                              "-" +
-                              moment(
-                                this.state.employee_details[0]["month"],
-                                "M"
-                              ).format("MMM") +
-                              "-" +
-                              this.state.employee_details[0]["year"]
+                            "-" +
+                            moment(
+                              this.state.employee_details[0]["month"],
+                              "M"
+                            ).format("MMM") +
+                            "-" +
+                            this.state.employee_details[0]["year"]
                             : "Daily Time Sheet",
                         extraColumns: [],
                         formulazone: (worksheet, callBack) => {

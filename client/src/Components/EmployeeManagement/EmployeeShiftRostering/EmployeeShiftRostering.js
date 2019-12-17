@@ -144,7 +144,7 @@ export default class EmployeeShiftRostering extends Component {
 
   getHospitals() {
     algaehApiCall({
-      uri: "/organization/getOrganization",
+      uri: "/organization/getOrganizationByUser",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
@@ -154,7 +154,7 @@ export default class EmployeeShiftRostering extends Component {
         }
       },
 
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -338,305 +338,305 @@ export default class EmployeeShiftRostering extends Component {
             </span>
           </td>
         ) : //SHIFT AND A HOLIDAY AT SAME DAY
-        shift !== null && shift !== undefined && holiday !== undefined ? (
-          <td
-            className={
-              shift.weekoff === "Y"
-                ? "week_off_cell editAction"
-                : shift.holiday === "Y"
-                ? "holiday_cell editAction"
-                : "time_cell editAction"
-            }
-            key={now}
-          >
-            <i className="fas fa-ellipsis-v" />
-            <ul>
-              <li shift={shift} onClick={this.copyShift.bind(this, shift)}>
-                Copy
+          shift !== null && shift !== undefined && holiday !== undefined ? (
+            <td
+              className={
+                shift.weekoff === "Y"
+                  ? "week_off_cell editAction"
+                  : shift.holiday === "Y"
+                    ? "holiday_cell editAction"
+                    : "time_cell editAction"
+              }
+              key={now}
+            >
+              <i className="fas fa-ellipsis-v" />
+              <ul>
+                <li shift={shift} onClick={this.copyShift.bind(this, shift)}>
+                  Copy
               </li>
-              <li
-                onClick={this.pasteShift.bind(this, {
-                  id: row.hims_d_employee_id,
-                  date: now.format("YYYY-MM-DD"),
-                  sub_id: row.sub_department_id
-                })}
-              >
-                Paste Normal
-              </li>
-              {shift.shift_id === 100 || shift.shift_id === 101 ? (
                 <li
-                  onClick={this.pasteWeekoffShift.bind(this, {
+                  onClick={this.pasteShift.bind(this, {
                     id: row.hims_d_employee_id,
                     date: now.format("YYYY-MM-DD"),
-                    sub_id: row.sub_department_id,
-                    holiday: shift.shift_id === 101 ? "Y" : "N",
-                    weekoff: shift.shift_id === 100 ? "Y" : "N"
+                    sub_id: row.sub_department_id
                   })}
                 >
-                  Paste as Holiday / WeekOff
+                  Paste Normal
+              </li>
+                {shift.shift_id === 100 || shift.shift_id === 101 ? (
+                  <li
+                    onClick={this.pasteWeekoffShift.bind(this, {
+                      id: row.hims_d_employee_id,
+                      date: now.format("YYYY-MM-DD"),
+                      sub_id: row.sub_department_id,
+                      holiday: shift.shift_id === 101 ? "Y" : "N",
+                      weekoff: shift.shift_id === 100 ? "Y" : "N"
+                    })}
+                  >
+                    Paste as Holiday / WeekOff
                 </li>
-              ) : null}
-              <li shift={shift} onClick={this.deleteShift.bind(this, shift)}>
-                Delete Shift
+                ) : null}
+                <li shift={shift} onClick={this.deleteShift.bind(this, shift)}>
+                  Delete Shift
               </li>
-            </ul>
-            <span>
-              {shift.shift_id === 100
-                ? "WO"
-                : shift.shift_id === 101
-                ? "HO"
-                : shift.shift_abbreviation}
-              {/* Shift MoreInfo Tooltip start*/}
-              <p className="shiftMoreInfo animated fadeInDown faster">
-                <span>
-                  {shift.shift_abbreviation}: <b>{shift.shift_description}</b>
-                </span>
-                <span>
-                  Shift Start at:{" "}
-                  <b>
-                    {" "}
-                    {moment(shift.in_time1, "HH:mm:ss").isValid()
-                      ? moment(shift.in_time1, "HH:mm:ss").format("hh:mm a")
-                      : "----"}
-                  </b>
-                </span>
-                <span>
-                  Shift End at:{" "}
-                  <b>
-                    {" "}
-                    {moment(shift.out_time1, "HH:mm:ss").isValid()
-                      ? moment(shift.out_time1, "HH:mm:ss").format("hh:mm a")
-                      : "----"}
-                  </b>
-                </span>
-              </p>
-              {/* Shift MoreInfo Tooltip end */}
-            </span>
-          </td>
-        ) : // SHIFT ON A NORMAL DAY
-        shift !== null &&
-          shift !== undefined &&
-          shift.holiday === "N" &&
-          shift.weekoff === "N" ? (
-          <td
-            onClick={this.showModal.bind(this, row)}
-            key={now}
-            className="time_cell editAction"
-            employee_id={row.hims_d_employee_id}
-            date={now.format("YYYY-MM-DD")}
-          >
-            <span>
-              {shift.shift_abbreviation}
-              {/* Shift MoreInfo Tooltip start*/}
-              <p className="shiftMoreInfo animated fadeInDown faster">
-                <span>
-                  {shift.shift_abbreviation}: <b>{shift.shift_description}</b>
-                </span>
-                <span>
-                  Shift Start at:{" "}
-                  <b>
-                    {" "}
-                    {moment(shift.in_time1, "HH:mm:ss").isValid()
-                      ? moment(shift.in_time1, "HH:mm:ss").format("hh:mm a")
-                      : "----"}
-                  </b>
-                </span>
-                <span>
-                  Shift End at:{" "}
-                  <b>
-                    {" "}
-                    {moment(shift.out_time1, "HH:mm:ss").isValid()
-                      ? moment(shift.out_time1, "HH:mm:ss").format("hh:mm a")
-                      : "----"}
-                  </b>
-                </span>
-              </p>
-              {/* Shift MoreInfo Tooltip end */}
-            </span>
-            <i className="fas fa-ellipsis-v" />
-            <ul>
-              <li shift={shift} onClick={this.copyShift.bind(this, shift)}>
-                Copy
+              </ul>
+              <span>
+                {shift.shift_id === 100
+                  ? "WO"
+                  : shift.shift_id === 101
+                    ? "HO"
+                    : shift.shift_abbreviation}
+                {/* Shift MoreInfo Tooltip start*/}
+                <p className="shiftMoreInfo animated fadeInDown faster">
+                  <span>
+                    {shift.shift_abbreviation}: <b>{shift.shift_description}</b>
+                  </span>
+                  <span>
+                    Shift Start at:{" "}
+                    <b>
+                      {" "}
+                      {moment(shift.in_time1, "HH:mm:ss").isValid()
+                        ? moment(shift.in_time1, "HH:mm:ss").format("hh:mm a")
+                        : "----"}
+                    </b>
+                  </span>
+                  <span>
+                    Shift End at:{" "}
+                    <b>
+                      {" "}
+                      {moment(shift.out_time1, "HH:mm:ss").isValid()
+                        ? moment(shift.out_time1, "HH:mm:ss").format("hh:mm a")
+                        : "----"}
+                    </b>
+                  </span>
+                </p>
+                {/* Shift MoreInfo Tooltip end */}
+              </span>
+            </td>
+          ) : // SHIFT ON A NORMAL DAY
+            shift !== null &&
+              shift !== undefined &&
+              shift.holiday === "N" &&
+              shift.weekoff === "N" ? (
+                <td
+                  onClick={this.showModal.bind(this, row)}
+                  key={now}
+                  className="time_cell editAction"
+                  employee_id={row.hims_d_employee_id}
+                  date={now.format("YYYY-MM-DD")}
+                >
+                  <span>
+                    {shift.shift_abbreviation}
+                    {/* Shift MoreInfo Tooltip start*/}
+                    <p className="shiftMoreInfo animated fadeInDown faster">
+                      <span>
+                        {shift.shift_abbreviation}: <b>{shift.shift_description}</b>
+                      </span>
+                      <span>
+                        Shift Start at:{" "}
+                        <b>
+                          {" "}
+                          {moment(shift.in_time1, "HH:mm:ss").isValid()
+                            ? moment(shift.in_time1, "HH:mm:ss").format("hh:mm a")
+                            : "----"}
+                        </b>
+                      </span>
+                      <span>
+                        Shift End at:{" "}
+                        <b>
+                          {" "}
+                          {moment(shift.out_time1, "HH:mm:ss").isValid()
+                            ? moment(shift.out_time1, "HH:mm:ss").format("hh:mm a")
+                            : "----"}
+                        </b>
+                      </span>
+                    </p>
+                    {/* Shift MoreInfo Tooltip end */}
+                  </span>
+                  <i className="fas fa-ellipsis-v" />
+                  <ul>
+                    <li shift={shift} onClick={this.copyShift.bind(this, shift)}>
+                      Copy
               </li>
-              <li
-                shift={shift}
-                onClick={this.pasteShift.bind(this, {
-                  id: row.hims_d_employee_id,
-                  date: now.format("YYYY-MM-DD"),
-                  sub_id: row.sub_department_id
-                })}
-              >
-                Paste
+                    <li
+                      shift={shift}
+                      onClick={this.pasteShift.bind(this, {
+                        id: row.hims_d_employee_id,
+                        date: now.format("YYYY-MM-DD"),
+                        sub_id: row.sub_department_id
+                      })}
+                    >
+                      Paste
               </li>
 
-              {/* {shift.shift_id === 100 || shift.shift_id === 101 ? (
+                    {/* {shift.shift_id === 100 || shift.shift_id === 101 ? (
                 <li>Paste as Holiday / WeekOff</li>
               ) : null} */}
 
-              <li shift={shift} onClick={this.deleteShift.bind(this, shift)}>
-                Delete Shift
+                    <li shift={shift} onClick={this.deleteShift.bind(this, shift)}>
+                      Delete Shift
               </li>
-            </ul>
-          </td>
-        ) : //SHIFT ON A HOLIDAY / WEEKOFF
-        shift !== null &&
-          shift !== undefined &&
-          (shift.holiday === "Y" || shift.weekoff === "Y") ? (
-          <td
-            onClick={this.showModal.bind(this, row)}
-            key={now}
-            className={
-              shift.weekoff === "Y"
-                ? "week_off_cell editAction"
-                : "holiday_cell editAction"
-            }
-            employee_id={row.hims_d_employee_id}
-            date={now.format("YYYY-MM-DD")}
-          >
-            <span>
-              {" "}
-              {shift.shift_id === 100
-                ? "WO"
-                : shift.shift_id === 101
-                ? "HO"
-                : shift.shift_abbreviation}
-              {/* Shift MoreInfo Tooltip start*/}
-              <p className="shiftMoreInfo animated fadeInDown faster">
-                <span>
-                  {shift.shift_abbreviation}: <b>{shift.shift_description}</b>
-                </span>
-                <span>
-                  Shift Start at:{" "}
-                  <b>
-                    {" "}
-                    {moment(shift.in_time1, "HH:mm:ss").isValid()
-                      ? moment(shift.in_time1, "HH:mm:ss").format("hh:mm a")
-                      : "----"}
-                  </b>
-                </span>
-                <span>
-                  Shift End at:{" "}
-                  <b>
-                    {" "}
-                    {moment(shift.out_time1, "HH:mm:ss").isValid()
-                      ? moment(shift.out_time1, "HH:mm:ss").format("hh:mm a")
-                      : "----"}
-                  </b>
-                </span>
-              </p>
-              {/* Shift MoreInfo Tooltip end */}
-            </span>
+                  </ul>
+                </td>
+              ) : //SHIFT ON A HOLIDAY / WEEKOFF
+              shift !== null &&
+                shift !== undefined &&
+                (shift.holiday === "Y" || shift.weekoff === "Y") ? (
+                  <td
+                    onClick={this.showModal.bind(this, row)}
+                    key={now}
+                    className={
+                      shift.weekoff === "Y"
+                        ? "week_off_cell editAction"
+                        : "holiday_cell editAction"
+                    }
+                    employee_id={row.hims_d_employee_id}
+                    date={now.format("YYYY-MM-DD")}
+                  >
+                    <span>
+                      {" "}
+                      {shift.shift_id === 100
+                        ? "WO"
+                        : shift.shift_id === 101
+                          ? "HO"
+                          : shift.shift_abbreviation}
+                      {/* Shift MoreInfo Tooltip start*/}
+                      <p className="shiftMoreInfo animated fadeInDown faster">
+                        <span>
+                          {shift.shift_abbreviation}: <b>{shift.shift_description}</b>
+                        </span>
+                        <span>
+                          Shift Start at:{" "}
+                          <b>
+                            {" "}
+                            {moment(shift.in_time1, "HH:mm:ss").isValid()
+                              ? moment(shift.in_time1, "HH:mm:ss").format("hh:mm a")
+                              : "----"}
+                          </b>
+                        </span>
+                        <span>
+                          Shift End at:{" "}
+                          <b>
+                            {" "}
+                            {moment(shift.out_time1, "HH:mm:ss").isValid()
+                              ? moment(shift.out_time1, "HH:mm:ss").format("hh:mm a")
+                              : "----"}
+                          </b>
+                        </span>
+                      </p>
+                      {/* Shift MoreInfo Tooltip end */}
+                    </span>
 
-            <i className="fas fa-ellipsis-v" />
-            <ul>
-              <li shift={shift} onClick={this.copyShift.bind(this, shift)}>
-                Copy
+                    <i className="fas fa-ellipsis-v" />
+                    <ul>
+                      <li shift={shift} onClick={this.copyShift.bind(this, shift)}>
+                        Copy
               </li>
-              <li
-                shift={shift}
-                onClick={this.pasteShift.bind(this, {
-                  id: row.hims_d_employee_id,
-                  date: now.format("YYYY-MM-DD"),
-                  sub_id: row.sub_department_id
-                })}
-              >
-                Paste
+                      <li
+                        shift={shift}
+                        onClick={this.pasteShift.bind(this, {
+                          id: row.hims_d_employee_id,
+                          date: now.format("YYYY-MM-DD"),
+                          sub_id: row.sub_department_id
+                        })}
+                      >
+                        Paste
               </li>
-              {shift.shift_id === 100 || shift.shift_id === 101 ? (
-                <li
-                  onClick={this.pasteWeekoffShift.bind(this, {
-                    id: row.hims_d_employee_id,
-                    date: now.format("YYYY-MM-DD"),
-                    sub_id: row.sub_department_id,
-                    holiday: shift.shift_id === 101 ? "Y" : "N",
-                    weekoff: shift.shift_id === 100 ? "Y" : "N"
-                  })}
-                >
-                  Paste as Holiday / WeekOff
+                      {shift.shift_id === 100 || shift.shift_id === 101 ? (
+                        <li
+                          onClick={this.pasteWeekoffShift.bind(this, {
+                            id: row.hims_d_employee_id,
+                            date: now.format("YYYY-MM-DD"),
+                            sub_id: row.sub_department_id,
+                            holiday: shift.shift_id === 101 ? "Y" : "N",
+                            weekoff: shift.shift_id === 100 ? "Y" : "N"
+                          })}
+                        >
+                          Paste as Holiday / WeekOff
                 </li>
-              ) : null}
+                      ) : null}
 
-              <li shift={shift} onClick={this.deleteShift.bind(this, shift)}>
-                Delete Shift
+                      <li shift={shift} onClick={this.deleteShift.bind(this, shift)}>
+                        Delete Shift
               </li>
-            </ul>
-          </td>
-        ) : // HOLIDAY / WEEKOFF FROM MASTER
-        holiday !== undefined ? (
-          <td
-            className={
-              holiday.weekoff === "Y"
-                ? "editAction week_off_cell"
-                : holiday.holiday === "Y"
-                ? "editAction holiday_cell"
-                : null
-            }
-            key={now}
-          >
-            <span>
-              {holiday.weekoff === "Y"
-                ? "WO"
-                : holiday.holiday === "Y"
-                ? "HO"
-                : holiday.holiday_description}
-            </span>
+                    </ul>
+                  </td>
+                ) : // HOLIDAY / WEEKOFF FROM MASTER
+                holiday !== undefined ? (
+                  <td
+                    className={
+                      holiday.weekoff === "Y"
+                        ? "editAction week_off_cell"
+                        : holiday.holiday === "Y"
+                          ? "editAction holiday_cell"
+                          : null
+                    }
+                    key={now}
+                  >
+                    <span>
+                      {holiday.weekoff === "Y"
+                        ? "WO"
+                        : holiday.holiday === "Y"
+                          ? "HO"
+                          : holiday.holiday_description}
+                    </span>
 
-            <i className="fas fa-ellipsis-v" />
-            <ul>
-              <li
-                onClick={this.pasteWeekoffShift.bind(this, {
-                  id: row.hims_d_employee_id,
-                  date: now.format("YYYY-MM-DD"),
-                  sub_id: row.sub_department_id,
-                  holiday: holiday.holiday,
-                  weekoff: holiday.weekoff
-                })}
-                style={{
-                  zIndex: 9999
-                }}
-              >
-                Paste As Week Off
+                    <i className="fas fa-ellipsis-v" />
+                    <ul>
+                      <li
+                        onClick={this.pasteWeekoffShift.bind(this, {
+                          id: row.hims_d_employee_id,
+                          date: now.format("YYYY-MM-DD"),
+                          sub_id: row.sub_department_id,
+                          holiday: holiday.holiday,
+                          weekoff: holiday.weekoff
+                        })}
+                        style={{
+                          zIndex: 9999
+                        }}
+                      >
+                        Paste As Week Off
               </li>
-              <li
-                onClick={this.pasteShift.bind(this, {
-                  id: row.hims_d_employee_id,
-                  date: now.format("YYYY-MM-DD"),
-                  sub_id: row.sub_department_id
-                })}
-                style={{
-                  zIndex: 9999
-                }}
-              >
-                Paste As Normal
+                      <li
+                        onClick={this.pasteShift.bind(this, {
+                          id: row.hims_d_employee_id,
+                          date: now.format("YYYY-MM-DD"),
+                          sub_id: row.sub_department_id
+                        })}
+                        style={{
+                          zIndex: 9999
+                        }}
+                      >
+                        Paste As Normal
               </li>
-            </ul>
-          </td>
-        ) : (
-          //EMPTY CELL
-          <td
-            onClick={this.showModal.bind(this, row)}
-            key={now}
-            className="time_cell editAction"
-            employee_id={row.hims_d_employee_id}
-            date={now.format("YYYY-MM-DD")}
-          >
-            <i className="fas fa-ellipsis-v" />
-            <ul>
-              <li
-                onClick={this.pasteShift.bind(this, {
-                  id: row.hims_d_employee_id,
-                  date: now.format("YYYY-MM-DD"),
-                  sub_id: row.sub_department_id
-                })}
-                style={{
-                  zIndex: 9999
-                }}
-              >
-                Paste
+                    </ul>
+                  </td>
+                ) : (
+                    //EMPTY CELL
+                    <td
+                      onClick={this.showModal.bind(this, row)}
+                      key={now}
+                      className="time_cell editAction"
+                      employee_id={row.hims_d_employee_id}
+                      date={now.format("YYYY-MM-DD")}
+                    >
+                      <i className="fas fa-ellipsis-v" />
+                      <ul>
+                        <li
+                          onClick={this.pasteShift.bind(this, {
+                            id: row.hims_d_employee_id,
+                            date: now.format("YYYY-MM-DD"),
+                            sub_id: row.sub_department_id
+                          })}
+                          style={{
+                            zIndex: 9999
+                          }}
+                        >
+                          Paste
               </li>
-            </ul>
-          </td>
-        );
+                      </ul>
+                    </td>
+                  );
 
       Emp_Dates.push(data);
       now.add(1, "days");
@@ -984,8 +984,8 @@ export default class EmployeeShiftRostering extends Component {
               {!this.state.loading ? (
                 <span>Load</span>
               ) : (
-                <i className="fas fa-spinner fa-spin" />
-              )}
+                  <i className="fas fa-spinner fa-spin" />
+                )}
             </button>
           </div>
         </div>
@@ -1026,44 +1026,44 @@ export default class EmployeeShiftRostering extends Component {
                         <i className="fas fa-user-clock" />
                       </div>
                     ) : (
-                      <table>
-                        <thead id="tHdRstr">
-                          <tr>
-                            {/* <th>Employee Code</th> */}
-                            <th>Employee Name</th>
-                            {this.getDaysOfMonth()}
-                            <th>Joining Date</th>
-                            <th>Exit Date</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {this.state.employees.map((row, index) => (
-                            <tr key={row.hims_d_employee_id}>
-                              {/* <td>{row.employee_code}</td> */}
-                              <td>{row.employee_name}</td>
-
-                              {this.plotEmployeeDates(
-                                row,
-                                row.holidays,
-                                row.employeeLeaves,
-                                row.empShift
-                              )}
-                              <td>
-                                {moment(row.date_of_joining).format(
-                                  "DD-MM-YYYY"
-                                )}
-                              </td>
-                              <td>
-                                {row.exit_date
-                                  ? moment(row.exit_date).format("DD-MM-YYYY")
-                                  : "------"}
-                              </td>
+                        <table>
+                          <thead id="tHdRstr">
+                            <tr>
+                              {/* <th>Employee Code</th> */}
+                              <th>Employee Name</th>
+                              {this.getDaysOfMonth()}
+                              <th>Joining Date</th>
+                              <th>Exit Date</th>
                             </tr>
-                          ))}
-                        </tbody>
-                        {/* </div> */}
-                      </table>
-                    )}
+                          </thead>
+                          <tbody>
+                            {this.state.employees.map((row, index) => (
+                              <tr key={row.hims_d_employee_id}>
+                                {/* <td>{row.employee_code}</td> */}
+                                <td>{row.employee_name}</td>
+
+                                {this.plotEmployeeDates(
+                                  row,
+                                  row.holidays,
+                                  row.employeeLeaves,
+                                  row.empShift
+                                )}
+                                <td>
+                                  {moment(row.date_of_joining).format(
+                                    "DD-MM-YYYY"
+                                  )}
+                                </td>
+                                <td>
+                                  {row.exit_date
+                                    ? moment(row.exit_date).format("DD-MM-YYYY")
+                                    : "------"}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                          {/* </div> */}
+                        </table>
+                      )}
                   </div>
                 </div>
               </div>

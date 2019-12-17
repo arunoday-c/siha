@@ -1,9 +1,44 @@
 .login_users {
+  padding-top: 15px;
   #loginUserGrid_Cntr {
     .ReactTable {
       max-width: 98vw !important;
       max-height: 70vh !important;
     }
   }
-  margin-top: 15px;
+}
+.branchList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid #d6d6d6;
+  max-height: 28vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid #d6d6d6;
+    span {
+      display: inline-block;
+      &:first-child {
+        width: 30px;
+        height: 30px;
+        border-right: 1px solid #d6d6d6;
+        text-align: center;
+        line-height: 27px;
+      }
+      &:last-child {
+        text-align: left;
+        line-height: 27px;
+        padding-left: 10px;
+      }
+    }
+    &:hover {
+      background: #fff;
+    }
+  }
 }

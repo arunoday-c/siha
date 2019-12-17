@@ -56,7 +56,7 @@ export default class WeeklyAttendance extends Component {
 
   getOrganization() {
     algaehApiCall({
-      uri: "/organization/getOrganization",
+      uri: "/organization/getOrganizationByUser",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
