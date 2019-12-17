@@ -41,10 +41,10 @@ class LoginUsers extends Component {
       HIMS_Active.length > 0 && HRMS_Active.length > 0
         ? HIMS_HR_USER_TYPE
         : HIMS_Active.length > 0
-          ? HIMS_USER_TYPE
-          : HRMS_Active.length > 0
-            ? HR_USER_TYPE
-            : [];
+        ? HIMS_USER_TYPE
+        : HRMS_Active.length > 0
+        ? HR_USER_TYPE
+        : [];
 
     this.state = {
       login_users: [],
@@ -323,7 +323,7 @@ class LoginUsers extends Component {
               });
             }
           },
-          onError: error => { }
+          onError: error => {}
         });
       }
     });
@@ -453,7 +453,7 @@ class LoginUsers extends Component {
                     }}
                     onClick={this.searchSelect.bind(this)}
                   />
-                  <AlagehFormGroup
+                  {/* <AlagehFormGroup
                     div={{ className: "col-12 form-group" }}
                     label={{
                       fieldName: "display_name",
@@ -467,7 +467,7 @@ class LoginUsers extends Component {
                         onChange: this.changeTexts.bind(this)
                       }
                     }}
-                  />
+                  /> */}
                   <AlagehFormGroup
                     div={{ className: "col-6 form-group" }}
                     label={{
@@ -557,6 +557,59 @@ class LoginUsers extends Component {
                     }}
                     value={this.state.effective_start_date}
                   /> */}
+                  <div className="col-12">
+                    <label> Branch List</label>
+                    <ul className="branchList">
+                      <li>
+                        <span>
+                          <input type="checkbox" checked disabled />
+                        </span>
+                        <span>SES</span>
+                      </li>{" "}
+                      <li>
+                        <span>
+                          <input type="checkbox" />
+                        </span>
+                        <span>Branch Name</span>
+                      </li>{" "}
+                      <li>
+                        <span>
+                          <input type="checkbox" />
+                        </span>
+                        <span>Branch Name</span>
+                      </li>{" "}
+                      <li>
+                        <span>
+                          <input type="checkbox" />
+                        </span>
+                        <span>Branch Name</span>
+                      </li>{" "}
+                      <li>
+                        <span>
+                          <input type="checkbox" />
+                        </span>
+                        <span>Branch Name</span>
+                      </li>{" "}
+                      <li>
+                        <span>
+                          <input type="checkbox" />
+                        </span>
+                        <span>Branch Name</span>
+                      </li>{" "}
+                      <li>
+                        <span>
+                          <input type="checkbox" />
+                        </span>
+                        <span>Branch Name</span>
+                      </li>{" "}
+                      <li>
+                        <span>
+                          <input type="checkbox" />
+                        </span>
+                        <span>Branch Name</span>
+                      </li>
+                    </ul>
+                  </div>
                   <div className="col-12 form-group">
                     <button
                       onClick={this.resetSaveState.bind(this)}
@@ -635,7 +688,8 @@ class LoginUsers extends Component {
                             <AlgaehLabel label={{ forceLabel: "Full Name" }} />
                           ),
                           others: {
-                            disabled: true
+                            disabled: true,
+                            minWidth: 200
                           }
                         },
                         {
@@ -648,39 +702,38 @@ class LoginUsers extends Component {
                           others: {
                             disabled: true
                           }
-
                         },
-                        {
-                          fieldName: "user_display_name",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "display_name" }}
-                            />
-                          ),
-                          editorTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                div={{ className: "col" }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "user_display_name",
-                                  value: row.user_display_name,
-                                  events: {
-                                    onChange: this.changeGridEditors.bind(
-                                      this,
-                                      row
-                                    )
-                                  },
-                                  others: {
-                                    errormessage:
-                                      " Description- cannot be blank",
-                                    required: true
-                                  }
-                                }}
-                              />
-                            );
-                          }
-                        },
+                        // {
+                        //   fieldName: "user_display_name",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ fieldName: "display_name" }}
+                        //     />
+                        //   ),
+                        //   editorTemplate: row => {
+                        //     return (
+                        //       <AlagehFormGroup
+                        //         div={{ className: "col" }}
+                        //         textBox={{
+                        //           className: "txt-fld",
+                        //           name: "user_display_name",
+                        //           value: row.user_display_name,
+                        //           events: {
+                        //             onChange: this.changeGridEditors.bind(
+                        //               this,
+                        //               row
+                        //             )
+                        //           },
+                        //           others: {
+                        //             errormessage:
+                        //               " Description- cannot be blank",
+                        //             required: true
+                        //           }
+                        //         }}
+                        //       />
+                        //     );
+                        //   }
+                        // },
                         {
                           fieldName: "username",
                           label: (
@@ -688,8 +741,7 @@ class LoginUsers extends Component {
                           ),
                           others: {
                             disabled: true
-                          },
-
+                          }
                         },
                         {
                           fieldName: "user_type",
@@ -720,7 +772,10 @@ class LoginUsers extends Component {
                                     valueField: "value",
                                     data: this.state.PR_USER_TYPE
                                   },
-                                  onChange: this.changeGridEditors.bind(this, row)
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
                                 }}
                               />
                             );
@@ -742,7 +797,10 @@ class LoginUsers extends Component {
                                     valueField: "algaeh_d_app_group_id",
                                     data: this.state.groups
                                   },
-                                  onChange: this.changeGridEditors.bind(this, row)
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
                                 }}
                               />
                             );
@@ -764,7 +822,10 @@ class LoginUsers extends Component {
                                     valueField: "app_d_app_roles_id",
                                     data: this.state.roles_grid
                                   },
-                                  onChange: this.changeGridEditors.bind(this, row)
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
                                 }}
                               />
                             );
@@ -777,8 +838,8 @@ class LoginUsers extends Component {
                             return row.user_status === "A"
                               ? "Active"
                               : row.user_status === "I"
-                                ? "Inactive"
-                                : "----------";
+                              ? "Inactive"
+                              : "----------";
                           },
                           editorTemplate: row => {
                             return (
