@@ -18,7 +18,7 @@ startServer () {
 }
 
 startServer "./algaeh-core" "core"
-# startServer "./DocumentManagement" "document_server" 
+startServer "./DocumentManagement" "document_server" 
 startServer "./HrManagement" "hr_server" 
 startServer "./FrontDesk" "front_desk_server" 
 startServer "./MasterSettings" "master_settings_server" 

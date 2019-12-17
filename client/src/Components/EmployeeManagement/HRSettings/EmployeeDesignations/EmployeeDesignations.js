@@ -79,7 +79,7 @@ class EmployeeDesignations extends Component {
             });
           }
         });
-      } 
+      }
     });
   }
 
@@ -168,132 +168,155 @@ class EmployeeDesignations extends Component {
 
   render() {
     return (
-      <div className="emp_dsgntn margin-top-15">
-        <div className="col-lg-12">
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col-lg-2" }}
-              label={{
-                forceLabel: "Code",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "designation_code",
-                value: this.state.designation_code,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Designation",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                //decimal: { allowNegative: false },
-                name: "designation",
-                value: this.state.designation,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
+      <div className="emp_dsgntn">
+        <div className="row inner-top-search">
+          <AlagehFormGroup
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Code",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "designation_code",
+              value: this.state.designation_code,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-3 mandatory form-group" }}
+            label={{
+              forceLabel: "Designation Description",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              //decimal: { allowNegative: false },
+              name: "designation",
+              value: this.state.designation,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
 
-            <div className="col form-group">
-              <button
-                style={{ marginTop: 19 }}
-                className="btn btn-primary"
-                id="srch-sch"
-                onClick={this.addDesignations.bind(this)}
-              >
-                Add to List
-              </button>
-            </div>
+          <div className="col form-group">
+            <button
+              style={{ marginTop: 19 }}
+              className="btn btn-primary"
+              id="srch-sch"
+              onClick={this.addDesignations.bind(this)}
+            >
+              Add to List
+            </button>
           </div>
-
-          <div id="empDsgnDivGrid_Cntr">
-            <AlgaehDataGrid
-              id="empDsgnDivGrid"
-              data-validate="empDsgnDivGrid"
-              columns={[
-                {
-                  fieldName: "designation_code",
-                  label: (
-                    <AlgaehLabel label={{ forceLabel: "Designation Code" }} />
-                  ),
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "designation_code",
-                          value: row.designation_code,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          },
-                          others: {
-                            errormessage: "Designation Code - cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "designation",
-                  label: <AlgaehLabel label={{ forceLabel: "Designation" }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "designation",
-                          value: row.designation,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          },
-                          others: {
-                            errormessage: "Designation cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "created_date",
-                  label: <AlgaehLabel label={{ forceLabel: "Created Date" }} />,
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        {moment(row.created_date).format("DD-MM-YYYY")}
-                      </span>
-                    );
-                  },
-                  disabled: true
-                }
-              ]}
-              keyId="hims_d_designation_id"
-              dataSource={{
-                data: this.state.employee_designations
-              }}
-              isEditable={true}
-              filter={true}
-              paging={{ page: 0, rowsPerPage: 20 }}
-              events={{
-                onEdit: () => {},
-                onDelete: this.deleteDesignation.bind(this),
-                onDone: this.updateDesignation.bind(this)
-              }}
-            />
+        </div>
+        <div className="row">
+          <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Designation Master List</h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div id="empDsgnDivGrid_Cntr">
+                  <AlgaehDataGrid
+                    id="empDsgnDivGrid"
+                    data-validate="empDsgnDivGrid"
+                    columns={[
+                      {
+                        fieldName: "designation_code",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Designation Code" }}
+                          />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "designation_code",
+                                value: row.designation_code,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage:
+                                    "Designation Code - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "designation",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Designation" }} />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "designation",
+                                value: row.designation,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage: "Designation cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "created_date",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Created Date" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {moment(row.created_date).format("DD-MM-YYYY")}
+                            </span>
+                          );
+                        },
+                        disabled: true
+                      }
+                    ]}
+                    keyId="hims_d_designation_id"
+                    dataSource={{
+                      data: this.state.employee_designations
+                    }}
+                    isEditable={true}
+                    filter={true}
+                    paging={{ page: 0, rowsPerPage: 20 }}
+                    events={{
+                      onEdit: () => {},
+                      onDelete: this.deleteDesignation.bind(this),
+                      onDone: this.updateDesignation.bind(this)
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
