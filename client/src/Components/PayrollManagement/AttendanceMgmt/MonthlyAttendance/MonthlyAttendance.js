@@ -125,7 +125,7 @@ export default class MonthlyAttendance extends Component {
 
   getOrganization() {
     algaehApiCall({
-      uri: "/organization/getOrganization",
+      uri: "/organization/getOrganizationByUser",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
@@ -170,7 +170,7 @@ export default class MonthlyAttendance extends Component {
     const that = this;
     const _empdtl =
       that.state.hims_d_employee_id !== null &&
-      that.state.hims_d_employee_id !== ""
+        that.state.hims_d_employee_id !== ""
         ? { hims_d_employee_id: that.state.hims_d_employee_id }
         : {};
 
@@ -452,21 +452,21 @@ export default class MonthlyAttendance extends Component {
                 {!this.state.loader ? (
                   <span>Process Attendance</span>
                 ) : (
-                  <i className="fas fa-spinner fa-spin" />
-                )}
+                    <i className="fas fa-spinner fa-spin" />
+                  )}
               </button>
             </div>
           ) : (
-            <div className="col form-group" style={{ marginTop: 19 }}>
-              <button
-                onClick={this.loadAttendance.bind(this)}
-                className="btn btn-primary"
-                disabled={this.state.displayLoader}
-              >
-                LOAD
+              <div className="col form-group" style={{ marginTop: 19 }}>
+                <button
+                  onClick={this.loadAttendance.bind(this)}
+                  className="btn btn-primary"
+                  disabled={this.state.displayLoader}
+                >
+                  LOAD
               </button>
-            </div>
-          )}
+              </div>
+            )}
         </div>
 
         <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">

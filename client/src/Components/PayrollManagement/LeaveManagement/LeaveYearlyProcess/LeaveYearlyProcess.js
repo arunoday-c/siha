@@ -47,7 +47,7 @@ class LeaveYearlyProcess extends Component {
       this.props.organizations.length === 0
     ) {
       this.props.getOrganizations({
-        uri: "/organization/getOrganization",
+        uri: "/organization/getOrganizationByUser",
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",

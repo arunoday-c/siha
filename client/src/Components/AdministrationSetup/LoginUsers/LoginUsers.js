@@ -41,10 +41,10 @@ class LoginUsers extends Component {
       HIMS_Active.length > 0 && HRMS_Active.length > 0
         ? HIMS_HR_USER_TYPE
         : HIMS_Active.length > 0
-        ? HIMS_USER_TYPE
-        : HRMS_Active.length > 0
-        ? HR_USER_TYPE
-        : [];
+          ? HIMS_USER_TYPE
+          : HRMS_Active.length > 0
+            ? HR_USER_TYPE
+            : [];
 
     this.state = {
       login_users: [],
@@ -92,7 +92,7 @@ class LoginUsers extends Component {
 
   getOrganization() {
     algaehApiCall({
-      uri: "/organization/getOrganization",
+      uri: "/organization/getOrganizationByUser",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
@@ -301,7 +301,7 @@ class LoginUsers extends Component {
               });
             }
           },
-          onError: error => {}
+          onError: error => { }
         });
       }
     });
@@ -744,8 +744,8 @@ class LoginUsers extends Component {
                             return row.user_status === "A"
                               ? "Active"
                               : row.user_status === "I"
-                              ? "Inactive"
-                              : "----------";
+                                ? "Inactive"
+                                : "----------";
                           },
                           editorTemplate: row => {
                             return (
@@ -781,7 +781,7 @@ class LoginUsers extends Component {
                         allowDelete: false
                       }}
                       events={{
-                        onEdit: () => {},
+                        onEdit: () => { },
                         // onDelete: this.deleteLoginUser.bind(this),
                         onDone: this.updateLoginUser.bind(this)
                       }}

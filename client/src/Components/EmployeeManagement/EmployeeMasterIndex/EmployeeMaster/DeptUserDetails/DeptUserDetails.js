@@ -119,15 +119,15 @@ class DeptUserDetails extends Component {
       }
     }
     if (
-      this.props.organizations === undefined ||
-      this.props.organizations.length === 0
+      this.props.branches === undefined ||
+      this.props.branches.length === 0
     ) {
       this.props.getOrganizations({
         uri: "/organization/getOrganization",
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
-          mappingName: "organizations"
+          mappingName: "branches"
         }
       });
     }
@@ -206,26 +206,26 @@ class DeptUserDetails extends Component {
       this.state.sub_department_id === undefined
         ? ""
         : Enumerable.from(this.props.subdepartment)
-            .where(
-              w => w.hims_d_sub_department_id === this.state.sub_department_id
-            )
-            .firstOrDefault({});
+          .where(
+            w => w.hims_d_sub_department_id === this.state.sub_department_id
+          )
+          .firstOrDefault({});
 
     const employee_designation =
       this.state.employee_designation_id === undefined
         ? ""
         : Enumerable.from(this.props.designations)
-            .where(
-              w =>
-                w.hims_d_designation_id === this.state.employee_designation_id
-            )
-            .firstOrDefault({});
+          .where(
+            w =>
+              w.hims_d_designation_id === this.state.employee_designation_id
+          )
+          .firstOrDefault({});
     const reporting_to =
       this.state.reporting_to_id === undefined
         ? ""
         : Enumerable.from(this.props.all_employees)
-            .where(w => w.hims_d_employee_id === this.state.reporting_to_id)
-            .firstOrDefault({});
+          .where(w => w.hims_d_employee_id === this.state.reporting_to_id)
+          .firstOrDefault({});
 
     return (
       <React.Fragment>
@@ -241,7 +241,7 @@ class DeptUserDetails extends Component {
                   />
                   <h6>
                     {this.state.department_name === null ||
-                    this.state.department_name === undefined
+                      this.state.department_name === undefined
                       ? "------"
                       : this.state.department_name}
                   </h6>
@@ -254,7 +254,7 @@ class DeptUserDetails extends Component {
                   />
                   <h6>
                     {this.state.sub_department_name === null ||
-                    this.state.sub_department_name === undefined
+                      this.state.sub_department_name === undefined
                       ? "------"
                       : this.state.sub_department_name}
                     {/* this.state.sub_department_id */}
@@ -377,7 +377,7 @@ class DeptUserDetails extends Component {
                     dataSource: {
                       textField: "hospital_name",
                       valueField: "hims_d_hospital_id",
-                      data: this.props.organizations
+                      data: this.props.branches
                     },
                     onChange: texthandle.bind(this, this),
                     others: {
@@ -598,7 +598,7 @@ class DeptUserDetails extends Component {
                           return (
                             <span>
                               {row.from_date === null ||
-                              row.from_date === undefined
+                                row.from_date === undefined
                                 ? ""
                                 : dateFormater(this, row.from_date)}
                             </span>
@@ -608,7 +608,7 @@ class DeptUserDetails extends Component {
                           return (
                             <span>
                               {row.from_date === null ||
-                              row.from_date === undefined
+                                row.from_date === undefined
                                 ? ""
                                 : dateFormater(this, row.from_date)}
                             </span>
@@ -686,10 +686,10 @@ class DeptUserDetails extends Component {
                             this.props.subdepartment === undefined
                               ? []
                               : this.props.subdepartment.filter(
-                                  f =>
-                                    f.hims_d_sub_department_id ===
-                                    row.sub_department_id
-                                );
+                                f =>
+                                  f.hims_d_sub_department_id ===
+                                  row.sub_department_id
+                              );
 
                           return (
                             <span>
@@ -706,10 +706,10 @@ class DeptUserDetails extends Component {
                             this.props.subdepartment === undefined
                               ? []
                               : this.props.subdepartment.filter(
-                                  f =>
-                                    f.hims_d_sub_department_id ===
-                                    row.sub_department_id
-                                );
+                                f =>
+                                  f.hims_d_sub_department_id ===
+                                  row.sub_department_id
+                              );
 
                           return (
                             <span>
@@ -732,10 +732,10 @@ class DeptUserDetails extends Component {
                             this.props.empspeciality === undefined
                               ? []
                               : this.props.empspeciality.filter(
-                                  f =>
-                                    f.hims_d_employee_speciality_id ===
-                                    row.speciality_id
-                                );
+                                f =>
+                                  f.hims_d_employee_speciality_id ===
+                                  row.speciality_id
+                              );
 
                           return (
                             <span>
@@ -752,10 +752,10 @@ class DeptUserDetails extends Component {
                             this.props.empspeciality === undefined
                               ? []
                               : this.props.empspeciality.filter(
-                                  f =>
-                                    f.hims_d_employee_speciality_id ===
-                                    row.speciality_id
-                                );
+                                f =>
+                                  f.hims_d_employee_speciality_id ===
+                                  row.speciality_id
+                              );
 
                           return (
                             <span>
@@ -778,10 +778,10 @@ class DeptUserDetails extends Component {
                             this.props.specimapcategorylist === undefined
                               ? []
                               : this.props.specimapcategorylist.filter(
-                                  f =>
-                                    f.hims_m_category_speciality_mappings_id ===
-                                    row.category_id
-                                );
+                                f =>
+                                  f.hims_m_category_speciality_mappings_id ===
+                                  row.category_id
+                              );
 
                           return (
                             <span>
@@ -798,10 +798,10 @@ class DeptUserDetails extends Component {
                             this.props.specimapcategorylist === undefined
                               ? []
                               : this.props.specimapcategorylist.filter(
-                                  f =>
-                                    f.hims_m_category_speciality_mappings_id ===
-                                    row.category_id
-                                );
+                                f =>
+                                  f.hims_m_category_speciality_mappings_id ===
+                                  row.category_id
+                              );
 
                           return (
                             <span>
@@ -826,10 +826,10 @@ class DeptUserDetails extends Component {
                             this.props.designations === undefined
                               ? []
                               : this.props.designations.filter(
-                                  f =>
-                                    f.hims_d_designation_id ===
-                                    row.employee_designation_id
-                                );
+                                f =>
+                                  f.hims_d_designation_id ===
+                                  row.employee_designation_id
+                              );
 
                           return (
                             <span>
@@ -868,9 +868,9 @@ class DeptUserDetails extends Component {
                             this.props.all_employees === undefined
                               ? []
                               : this.props.all_employees.filter(
-                                  f =>
-                                    f.hims_d_employee_id === row.reporting_to_id
-                                );
+                                f =>
+                                  f.hims_d_employee_id === row.reporting_to_id
+                              );
 
                           return (
                             <span>
@@ -909,8 +909,8 @@ class DeptUserDetails extends Component {
                             this.props.depservices === undefined
                               ? []
                               : this.props.depservices.filter(
-                                  f => f.hims_d_services_id === row.services_id
-                                );
+                                f => f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -927,8 +927,8 @@ class DeptUserDetails extends Component {
                             this.props.depservices === undefined
                               ? []
                               : this.props.depservices.filter(
-                                  f => f.hims_d_services_id === row.services_id
-                                );
+                                f => f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -950,7 +950,7 @@ class DeptUserDetails extends Component {
                     isEditable={true}
                     events={{
                       onDelete: deleteDeptUser.bind(this, this),
-                      onEdit: row => {},
+                      onEdit: row => { },
                       onDone: updateDeptUser.bind(this, this)
                     }}
                   />
@@ -976,7 +976,7 @@ function mapStateToProps(state) {
     specimapcategorylist: state.specimapcategorylist,
     all_employees: state.all_employees,
     emp_groups: state.emp_groups,
-    organizations: state.organizations,
+    branches: state.branches,
     overTime: state.overTime
   };
 }

@@ -2,7 +2,7 @@ import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
 export function getHospitals(callBack) {
   algaehApiCall({
-    uri: "/organization/getOrganization",
+    uri: "/organization/getOrganizationByUser",
     method: "GET",
     onSuccess: res => {
       if (res.data.success) {
