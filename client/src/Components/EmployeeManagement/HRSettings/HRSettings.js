@@ -40,7 +40,7 @@ class HRSettings extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Employee Groups"
+                      forceLabel: "Group Master"
                     }}
                   />
                 }
@@ -53,7 +53,7 @@ class HRSettings extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Employee Designations"
+                      forceLabel: "Designation Master"
                     }}
                   />
                 }
