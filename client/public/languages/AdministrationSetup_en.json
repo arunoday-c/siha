@@ -1,10 +1,10 @@
 {
-  "login_users": "Login Users",
+  "login_users": "User Login",
   "username": "User Name",
   "password": "Password",
   "confirm_password": "Confirm Password",
-  "group": "Groups",
-  "role": "Roles",
+  "group": "User Groups",
+  "role": "User Roles",
   "add_to_list": "Add To List",
   "display_name": "Display Name",
   "effective_start_date": "Effective Start Date",

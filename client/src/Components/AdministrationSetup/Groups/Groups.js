@@ -222,7 +222,7 @@ class Groups extends Component {
           <AlagehFormGroup
             div={{ className: "col-3  mandatory form-group" }}
             label={{
-              forceLabel: "Group Description",
+              forceLabel: "User Group Description",
               isImp: true
             }}
             textBox={{
@@ -271,7 +271,7 @@ class Groups extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Group List</h3>
+                  <h3 className="caption-subject">User Group List</h3>
                 </div>
               </div>
               <div className="portlet-body">

@@ -249,7 +249,7 @@ class Roles extends Component {
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory form-group" }}
             label={{
-              forceLabel: "Select Group",
+              forceLabel: "Select User Group",
               isImp: true
             }}
             selector={{
