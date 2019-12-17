@@ -71,6 +71,49 @@ export default {
       .catch(e => {
         next(e);
       });
+  },
+  //created by irfan:
+  getTrialBalance: (req, res, next) => {
+    const decimal_places = req.userIdentity.decimal_places;
+
+    getAccountHeadsForReport(decimal_places, 1)
+      .then(asset => {
+        getAccountHeadsForReport(decimal_places, 2)
+          .then(liability => {
+            getAccountHeadsForReport(decimal_places, 3)
+              .then(capital => {
+                getAccountHeadsForReport(decimal_places, 4)
+                  .then(income => {
+                    getAccountHeadsForReport(decimal_places, 5)
+                      .then(expense => {
+                        req.records = {
+                          asset: asset,
+                          liability: liability,
+                          capital: capital,
+                          income: income,
+                          expense: expense
+                        };
+                        next();
+                      })
+                      .catch(e => {
+                        next(e);
+                      });
+                  })
+                  .catch(e => {
+                    next(e);
+                  });
+              })
+              .catch(e => {
+                next(e);
+              });
+          })
+          .catch(e => {
+            next(e);
+          });
+      })
+      .catch(e => {
+        next(e);
+      });
   }
 };
 
