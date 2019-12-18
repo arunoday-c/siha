@@ -134,7 +134,15 @@ export default function BalanceSheet(props) {
               {PlotUI(data[result[1]], style, [0])}
             </ul>{" "}
           </div>
-          {typeof footer === "function" ? footer(data) : null}
+
+          <table style={{ width: "100%" }}>
+            {" "}
+            <tr className="footerTotalArea">
+              <td style={{ width: "100%" }} valign="top">
+                <b> {typeof footer === "function" ? footer(data) : null}</b>
+              </td>
+            </tr>
+          </table>
         </div>
       </>
     );

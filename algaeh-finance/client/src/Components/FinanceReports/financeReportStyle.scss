@@ -1,11 +1,13 @@
-
 .reportMenuSecLeft {
   border-right: 1px solid #000;
   min-height: 93vh;
   background: #f9f9f9;
   h6 {
-    margin: 5px 0;
+    margin: 0 -15px 0;
     font-size: 1rem;
+    background: #404040;
+    padding: 10px 15px;
+    color: #fff;
   }
   ul.menuListUl {
     margin: 0 -15px;
@@ -61,7 +63,11 @@
         font-weight: bold;
         span:nth-child(2) {
           margin-left: 5px;
+          &:hover {
+            color: #00a796;
+          }
         }
+
         span:nth-child(3) {
           color: black;
           float: right;
@@ -87,7 +93,6 @@
       }
 
       .parentNodeLi {
-     
         ul {
           padding: 0;
           margin: 0;
@@ -107,10 +112,9 @@
   }
   .ant-spin-nested-loading {
     background: #fff;
-    box-shadow: 0 0 10px #000;
     border: 1px solid #000;
     border-radius: 2px;
-    min-height: 88vh;
+    min-height: 76vh;
     padding: 15px;
   }
   .financeReportHeader {
@@ -128,6 +132,23 @@
   }
 }
 
-.printing{
+.printing {
   margin: 10mm;
+}
+.footerTotalArea {
+  border-top: 1px solid #000;
+  text-align: right;
+  td {
+    vertical-align: top;
+    padding: 0 15px;
+    b {
+      color: black;
+      font-weight: bolder;
+    }
+  }
+}
+.trialReportStyle {
+  td {
+    vertical-align: top;
+  }
 }
