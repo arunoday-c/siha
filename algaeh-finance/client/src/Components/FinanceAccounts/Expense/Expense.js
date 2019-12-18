@@ -229,7 +229,8 @@ export default function Expense() {
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">
-                  Expense Accounts {expenceAmount} {symbol}
+                  Expense Accounts: {expenceAmount}
+                  {symbol}
                 </h3>
               </div>
               <div className="actions">

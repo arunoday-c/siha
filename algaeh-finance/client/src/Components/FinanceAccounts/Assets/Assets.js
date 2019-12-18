@@ -231,7 +231,8 @@ export default function Assets() {
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">
-                  Asset Accounts: {assetAmount} {symbol}
+                  Asset Accounts: {assetAmount}
+                  {symbol}
                 </h3>
               </div>
               <div className="actions">

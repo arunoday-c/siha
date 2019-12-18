@@ -230,7 +230,8 @@ export default function Income() {
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">
-                  Income Accounts: {incomeAmount} {symbol}
+                  Income Accounts: {incomeAmount}
+                  {symbol}
                 </h3>
               </div>
               <div className="actions">

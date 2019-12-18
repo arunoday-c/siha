@@ -227,7 +227,8 @@ export default function Liablity() {
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">
-                  Liability accounts <small>{labilityAmount}</small>{" "}
+                  Liability accounts: {labilityAmount}
+                  {symbol}
                 </h3>
               </div>
               <div className="actions">
