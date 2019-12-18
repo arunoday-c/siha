@@ -111,7 +111,7 @@ export default function JournalLedger() {
                 { label: "Contra", value: "contra", shortHand: "CON" },
                 { value: "receipt", label: "Receipt", shortHand: "REC" },
                 { label: "Payment", value: "payment", shortHand: "PAY" },
-                { value: "sales", label: "Cales", shortHand: "SAL" },
+                { value: "sales", label: "Sales", shortHand: "SAL" },
                 { label: "Purchase", value: "purchase", shortHand: "PUR" },
                 {
                   value: "credit_note",
@@ -136,7 +136,7 @@ export default function JournalLedger() {
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Journal Ledger List </h3>
+                <h3 className="caption-subject">Journal Voucher List </h3>
               </div>
               <div className="actions">
                 <button

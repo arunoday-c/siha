@@ -175,7 +175,7 @@ export default function Assets() {
       />
 
       <div className="row">
-        <div className="col-4">
+        {/* <div className="col-4">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
@@ -225,13 +225,13 @@ export default function Assets() {
               <Charts data={[]} xAxis={""} yAxisBar={""} yAxisLine={""} />
             </div>
           </div>
-        </div>
-        <div className="col-8">
+        </div> */}
+        <div className="col-12">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">
-                  Asset accounts: {assetAmount} {symbol}
+                  Asset Accounts: {assetAmount} {symbol}
                 </h3>
               </div>
               <div className="actions">

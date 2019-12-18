@@ -2,6 +2,11 @@
   .ui.styled.accordion {
     width: 100vw;
   }
+  .actions {
+    .ant-calendar-picker {
+      width: 60% !important;
+    }
+  }
 }
 
 .treeNodeWrapper {

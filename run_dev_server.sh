@@ -31,7 +31,7 @@ startServer "./Billing" "billing_server"
 startServer "./MRD" "mrd_server" 
 startServer "./Procurement" "procurement_server"
 startServer "./AlgaehReporting" "report_server"
-# startServer "./Sockets" "sockets"
+startServer "./Sockets" "sockets"
 startServer "./client" "client"
 startServer "./algaeh-finance" "finance"  
 #add additional servers here if you want

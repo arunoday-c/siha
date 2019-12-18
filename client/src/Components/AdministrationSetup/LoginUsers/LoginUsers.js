@@ -41,38 +41,53 @@ class LoginUsers extends Component {
       HIMS_Active.length > 0 && HRMS_Active.length > 0
         ? HIMS_HR_USER_TYPE
         : HIMS_Active.length > 0
-        ? HIMS_USER_TYPE
-        : HRMS_Active.length > 0
-        ? HR_USER_TYPE
-        : [];
+          ? HIMS_USER_TYPE
+          : HRMS_Active.length > 0
+            ? HR_USER_TYPE
+            : [];
 
     this.state = {
+      algaeh_d_app_user_id: null,
       login_users: [],
       PR_USER_TYPE: USER_TYPE,
       apiConfig: false,
       selectedUSer: {},
-      roles_grid: []
+      roles_grid: [],
+      branch_detail: []
     };
     this.getGroups();
     this.getLoginUsers();
     this.getOrganization();
+    this.getBranchDetail()
   }
 
   searchSelect(data) {
+
+    let branch_detail = this.state.branch_detail
+    let selecte_branch = _.find(
+      branch_detail,
+      f => f.hims_d_hospital_id === data.hospital_id
+    );
+    const _index = branch_detail.indexOf(selecte_branch)
+    selecte_branch.checked = true
+    branch_detail[_index] = selecte_branch
+
     this.setState({
       employee_id: data.hims_d_employee_id,
       sub_department_id: data.sub_department_id,
       full_name: data.full_name,
       display_name: data.full_name,
-      username: data.full_name.split(" ")[0].toLowerCase()
+      // username: data.full_name.split(" ")[0].toLowerCase(),
+      username: data.work_email.toLowerCase(),
+      branch_detail: branch_detail
     });
   }
 
   resetSaveState() {
     this.setState({
+      algaeh_d_app_user_id: null,
       username: "",
       display_name: "",
-      //effective_start_date: null,
       password: "",
       confirm_password: "",
       app_group_id: null,
@@ -80,8 +95,10 @@ class LoginUsers extends Component {
       employee_id: null,
       sub_department_id: null,
       user_type: "",
-      full_name: ""
+      full_name: "",
+      branch_detail: []
     });
+    this.getBranchDetail()
   }
 
   changeGridEditors(row, e) {
@@ -116,13 +133,65 @@ class LoginUsers extends Component {
       }
     });
   }
+  getBranchDetail() {
+    algaehApiCall({
+      uri: "/organization/getOrganization",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          const data = response.data.records.map((item) => {
+            return {
+              checked: false,
+              ...item
+            };
+          })
+          this.setState({
+            branch_detail: data
+          });
+        }
+      },
+      onFailure: error => {
+        this.setState({
+          branch: {
+            loader: false
+          }
+        });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
   getLoginUsers() {
     algaehApiCall({
       uri: "/algaehappuser/getLoginUserMaster",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          this.setState({ login_users: response.data.records });
+          debugger
+          let login_users = Enumerable.from(response.data.records)
+            .groupBy("$.hims_d_employee_id", null, (k, g) => {
+              let firstRecordSet = Enumerable.from(g).firstOrDefault();
+              debugger
+              return {
+                algaeh_d_app_user_id: firstRecordSet.algaeh_d_app_user_id,
+                full_name: firstRecordSet.full_name,
+                employee_code: firstRecordSet.employee_code,
+                username: firstRecordSet.username,
+                user_type: firstRecordSet.user_type,
+                branch_data: g.getSource(),
+                app_group_name: firstRecordSet.app_group_name,
+                app_group_id: firstRecordSet.app_group_id,
+                role_name: firstRecordSet.role_name,
+                role_id: firstRecordSet.role_id,
+                user_status: firstRecordSet.user_status,
+                hospital_id: firstRecordSet.hospital_id,
+                algaeh_m_role_user_mappings_id: firstRecordSet.algaeh_m_role_user_mappings_id
+              };
+            })
+            .toArray();
+          this.setState({ login_users: login_users });
         }
       },
       onFailure: error => {
@@ -196,135 +265,107 @@ class LoginUsers extends Component {
   }
 
   updateLoginUser(data) {
-    algaehApiCall({
-      uri: "/algaehappuser/updateUser",
-      method: "PUT",
-      data: {
-        user_display_name: data.user_display_name,
-        algaeh_d_app_user_id: data.algaeh_d_app_user_id,
-        user_status: data.user_status
-      },
-      onSuccess: response => {
-        if (response.data.success) {
-          swalMessage({
-            title: "Record updated successfully",
-            type: "success"
-          });
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
 
-          this.getLoginUsers();
-          this.resetSaveState();
-        } else if (!response.data.success) {
-          swalMessage({
-            title: response.data.records.message,
-            type: "error"
-          });
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
+        debugger
+
       }
     });
+
   }
 
-  EditGrid(data) {
-    algaehApiCall({
-      uri: "/algaehappuser/selectRoles",
-      method: "GET",
-      data: {
-        algaeh_d_app_group_id: data.app_group_id
-      },
-      onSuccess: response => {
-        if (response.data.success) {
-          this.setState({ roles_grid: response.data.records });
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
-  }
-
-  deleteLoginUser(data) {
-    swal({
-      title: "Do you want to De Activate : " + data.username + "?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
-      if (willDelete.value) {
-        algaehApiCall({
-          uri: "/algaehMasters/deleteUserLogin",
-          method: "DELETE",
-          data: {
-            user_id: data.algaeh_d_app_user_id,
-            employee_id: data.hims_d_employee_id
-          },
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record updated successfully",
-                type: "success"
-              });
-
-              this.getLoginUsers();
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
-      }
-    });
-  }
   addLoginUser() {
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
-        algaehApiCall({
-          uri: "/algaehappuser/createUserLogin",
-          method: "POST",
-          data: {
-            username: this.state.username,
-            user_display_name: this.state.display_name,
-            //effective_start_date: this.state.effective_start_date,
-            password: this.state.password,
-            app_group_id: this.state.app_group_id,
-            role_id: this.state.role_id,
-            user_type: this.state.user_type,
-            employee_id: this.state.employee_id,
-            sub_department_id: this.state.sub_department_id,
-            hospital_id: this.state.hospital_id
-          },
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record added successfully",
-                type: "success"
-              });
+        debugger
+        if (this.state.algaeh_d_app_user_id === null) {
+          const branch_data = _.filter(this.state.branch_detail, f => {
+            return f.checked === true;
+          });
+          algaehApiCall({
+            uri: "/algaehappuser/createUserLogin",
+            method: "POST",
+            data: {
+              username: this.state.username,
+              user_display_name: this.state.display_name,
+              //effective_start_date: this.state.effective_start_date,
+              password: this.state.password,
+              app_group_id: this.state.app_group_id,
+              role_id: this.state.role_id,
+              user_type: this.state.user_type,
+              employee_id: this.state.employee_id,
+              sub_department_id: this.state.sub_department_id,
+              hospital_id: this.state.hospital_id,
+              branch_data: branch_data
+            },
+            onSuccess: response => {
+              if (response.data.success) {
+                swalMessage({
+                  title: "Record added successfully",
+                  type: "success"
+                });
 
-              this.getLoginUsers();
-              this.resetSaveState();
-            } else if (!response.data.success) {
+                this.getLoginUsers();
+                this.resetSaveState();
+                this.getBranchDetail()
+              } else if (!response.data.success) {
+                swalMessage({
+                  title: response.data.records.message,
+                  type: "warning"
+                });
+              }
+            },
+            onError: error => { }
+          });
+        } else {
+          const branch_data = _.filter(this.state.branch_detail, f => {
+            return f.checked === true && (f.hims_m_user_employee_id === null || f.hims_m_user_employee_id === undefined);
+          });
+
+          const delete_branch_data = _.filter(this.state.branch_detail, f => {
+            return f.checked === false && f.hims_m_user_employee_id !== null;
+          });
+
+          algaehApiCall({
+            uri: "/algaehappuser/updateUser",
+            method: "PUT",
+            data: {
+              app_group_id: this.state.app_group_id,
+              role_id: this.state.role_id,
+              user_type: this.state.user_type,
+              algaeh_d_app_user_id: this.state.algaeh_d_app_user_id,
+              algaeh_m_role_user_mappings_id: this.state.algaeh_m_role_user_mappings_id,
+              user_status: this.state.user_status,
+              branch_data: branch_data,
+              delete_branch_data: delete_branch_data
+            },
+            onSuccess: response => {
+              if (response.data.success) {
+                swalMessage({
+                  title: "Record updated successfully",
+                  type: "success"
+                });
+
+                this.getLoginUsers();
+                this.resetSaveState();
+              } else if (!response.data.success) {
+                swalMessage({
+                  title: response.data.records.message,
+                  type: "error"
+                });
+              }
+            },
+            onFailure: error => {
               swalMessage({
-                title: response.data.records.message,
-                type: "warning"
+                title: error.message,
+                type: "error"
               });
             }
-          },
-          onError: error => {}
-        });
+          });
+        }
       }
     });
   }
@@ -373,6 +414,55 @@ class LoginUsers extends Component {
     });
   }
 
+  selectBranch(data, e) {
+    let branch_detail = this.state.branch_detail
+    let selecte_branch = _.find(
+      branch_detail,
+      f => f.hims_d_hospital_id === data.hims_d_hospital_id
+    );
+    const _index = branch_detail.indexOf(selecte_branch)
+    selecte_branch.checked = e.target.checked
+    branch_detail[_index] = selecte_branch
+    this.setState({ branch_detail: branch_detail });
+  }
+
+  EditLoginUser(row) {
+    let branch_detail = this.state.branch_detail
+    branch_detail = branch_detail.map((item) => {
+      return {
+        hims_m_user_employee_id: null,
+        ...item
+      };
+    })
+    for (let i = 0; i < row.branch_data.length; i++) {
+      debugger
+      let selecte_branch = _.find(
+        branch_detail,
+        f => f.hims_d_hospital_id === row.branch_data[i].hospital_id
+      );
+      const _index = branch_detail.indexOf(selecte_branch)
+      selecte_branch.checked = true
+      selecte_branch.hims_m_user_employee_id = row.branch_data[i].hims_m_user_employee_id
+      branch_detail[_index] = selecte_branch
+    }
+    this.getRoles(row.app_group_id);
+    this.setState({
+      algaeh_d_app_user_id: row.algaeh_d_app_user_id,
+      username: row.username,
+      full_name: row.full_name,
+      app_group_id: row.app_group_id,
+      role_id: row.role_id,
+      user_type: row.user_type,
+      user_status: row.user_status,
+      employee_id: row.employee_id,
+      sub_department_id: row.sub_department_id,
+      hospital_id: row.hospital_id,
+      algaeh_m_role_user_mappings_id: row.algaeh_m_role_user_mappings_id,
+      branch_detail: branch_detail
+      // branch_data: branch_data
+    })
+  }
+
   render() {
     return (
       <div className="login_users">
@@ -403,7 +493,6 @@ class LoginUsers extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
                 <div className="row">
-                  {" "}
                   <AlagehAutoComplete
                     div={{ className: "col-12 form-group" }}
                     label={{
@@ -418,6 +507,9 @@ class LoginUsers extends Component {
                         textField: "hospital_name",
                         valueField: "hims_d_hospital_id",
                         data: this.state.hospitals
+                      },
+                      others: {
+                        disabled: this.state.algaeh_d_app_user_id === null ? false : true
                       },
                       onChange: this.dropDownHandler.bind(this)
                     }}
@@ -451,23 +543,11 @@ class LoginUsers extends Component {
                     extraParameters={{
                       hospital_id: this.state.hospital_id
                     }}
+                    others={{
+                      disabled: this.state.algaeh_d_app_user_id === null ? false : true
+                    }}
                     onClick={this.searchSelect.bind(this)}
                   />
-                  {/* <AlagehFormGroup
-                    div={{ className: "col-12 form-group" }}
-                    label={{
-                      fieldName: "display_name",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "display_name",
-                      value: this.state.display_name,
-                      events: {
-                        onChange: this.changeTexts.bind(this)
-                      }
-                    }}
-                  /> */}
                   <AlagehFormGroup
                     div={{ className: "col-6 form-group" }}
                     label={{
@@ -480,6 +560,9 @@ class LoginUsers extends Component {
                       value: this.state.username,
                       events: {
                         onChange: this.changeTexts.bind(this)
+                      },
+                      others: {
+                        disabled: true
                       }
                     }}
                   />
@@ -537,78 +620,53 @@ class LoginUsers extends Component {
                       onChange: this.dropDownHandler.bind(this)
                     }}
                   />
-                  {/* <AlgaehDateHandler
-                    div={{ className: "col-12 form-group" }}
-                    label={{
-                      fieldName: "effective_start_date",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "effective_start_date"
-                    }}
-                    // maxDate={new Date()}
-                    events={{
-                      onChange: selDate => {
-                        this.setState({
-                          effective_start_date: selDate
-                        });
-                      }
-                    }}
-                    value={this.state.effective_start_date}
-                  /> */}
+
+                  {this.state.algaeh_d_app_user_id !== null ?
+                    <AlagehAutoComplete
+                      div={{ className: "col-6 form-group" }}
+                      label={{
+                        forceLabel: "User Status",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "user_status",
+                        className: "select-fld",
+                        value: this.state.user_status,
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: FORMAT_STATUS
+                        },
+                        onChange: this.dropDownHandler.bind(this)
+                      }}
+                    /> : null}
+
                   <div className="col-12">
                     <label> Branch List</label>
+
                     <ul className="branchList">
-                      <li>
-                        <span>
-                          <input type="checkbox" checked disabled />
-                        </span>
-                        <span>SES</span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          <input type="checkbox" />
-                        </span>
-                        <span>Branch Name</span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          <input type="checkbox" />
-                        </span>
-                        <span>Branch Name</span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          <input type="checkbox" />
-                        </span>
-                        <span>Branch Name</span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          <input type="checkbox" />
-                        </span>
-                        <span>Branch Name</span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          <input type="checkbox" />
-                        </span>
-                        <span>Branch Name</span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          <input type="checkbox" />
-                        </span>
-                        <span>Branch Name</span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          <input type="checkbox" />
-                        </span>
-                        <span>Branch Name</span>
-                      </li>
+                      {this.state.branch_detail.map((data, index) => {
+                        return (
+                          <li key={data.hims_d_hospital_id}>
+                            <span>
+                              <input
+                                type="checkbox"
+                                onChange={this.selectBranch.bind(this, data)}
+                                name="modules"
+                                checked={
+                                  data.checked === undefined
+                                    ? false
+                                    : data.checked
+                                }
+                                value={data.hims_d_hospital_id}
+                              />
+                            </span>
+                            <span>{data.hospital_name}</span>
+                          </li>
+                        );
+                      })}
                     </ul>
+
                   </div>
                   <div className="col-12 form-group">
                     <button
@@ -628,11 +686,16 @@ class LoginUsers extends Component {
                       type="button"
                       className="btn btn-primary"
                     >
-                      <AlgaehLabel
+                      {this.state.algaeh_d_app_user_id === null ? <AlgaehLabel
                         label={{
                           fieldName: "add_to_list"
                         }}
-                      />
+                      /> : <AlgaehLabel
+                          label={{
+                            forceLabel: "Update"
+                          }}
+                        />}
+
                     </button>
                   </div>
                 </div>
@@ -658,21 +721,33 @@ class LoginUsers extends Component {
                       datavalidate="data-validate='apptClinicsDiv'"
                       columns={[
                         {
+                          fieldName: "action",
+
+                          label: <AlgaehLabel label={{ forceLabel: "action" }} />,
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                <i
+                                  className="fas fa-pen"
+                                  onClick={this.EditLoginUser.bind(this, row)}
+                                />
+                              </span>
+                            );
+                          },
+                          others: {
+                            maxWidth: 65,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
+                          }
+                        },
+                        {
                           fieldName: "none",
                           label: "API",
                           others: {
                             filterable: false
                           },
                           displayTemplate: row => {
-                            return (
-                              <button
-                                onClick={this.apiConfiguration.bind(this, row)}
-                              >
-                                Config
-                              </button>
-                            );
-                          },
-                          editorTemplate: row => {
                             return (
                               <button
                                 onClick={this.apiConfiguration.bind(this, row)}
@@ -703,37 +778,6 @@ class LoginUsers extends Component {
                             disabled: true
                           }
                         },
-                        // {
-                        //   fieldName: "user_display_name",
-                        //   label: (
-                        //     <AlgaehLabel
-                        //       label={{ fieldName: "display_name" }}
-                        //     />
-                        //   ),
-                        //   editorTemplate: row => {
-                        //     return (
-                        //       <AlagehFormGroup
-                        //         div={{ className: "col" }}
-                        //         textBox={{
-                        //           className: "txt-fld",
-                        //           name: "user_display_name",
-                        //           value: row.user_display_name,
-                        //           events: {
-                        //             onChange: this.changeGridEditors.bind(
-                        //               this,
-                        //               row
-                        //             )
-                        //           },
-                        //           others: {
-                        //             errormessage:
-                        //               " Description- cannot be blank",
-                        //             required: true
-                        //           }
-                        //         }}
-                        //       />
-                        //     );
-                        //   }
-                        // },
                         {
                           fieldName: "username",
                           label: (
@@ -758,78 +802,15 @@ class LoginUsers extends Component {
                                 {x !== undefined ? x.name : "Unknown user"}
                               </span>
                             );
-                          },
-                          editorTemplate: row => {
-                            return (
-                              <AlagehAutoComplete
-                                div={{}}
-                                selector={{
-                                  name: "user_type",
-                                  className: "select-fld",
-                                  value: row.user_type,
-                                  dataSource: {
-                                    textField: "name",
-                                    valueField: "value",
-                                    data: this.state.PR_USER_TYPE
-                                  },
-                                  onChange: this.changeGridEditors.bind(
-                                    this,
-                                    row
-                                  )
-                                }}
-                              />
-                            );
                           }
                         },
                         {
                           fieldName: "app_group_name",
-                          label: <AlgaehLabel label={{ fieldName: "group" }} />,
-                          editorTemplate: row => {
-                            return (
-                              <AlagehAutoComplete
-                                div={{}}
-                                selector={{
-                                  name: "app_group_id",
-                                  className: "select-fld",
-                                  value: row.app_group_id,
-                                  dataSource: {
-                                    textField: "app_group_name",
-                                    valueField: "algaeh_d_app_group_id",
-                                    data: this.state.groups
-                                  },
-                                  onChange: this.changeGridEditors.bind(
-                                    this,
-                                    row
-                                  )
-                                }}
-                              />
-                            );
-                          }
+                          label: <AlgaehLabel label={{ fieldName: "group" }} />
                         },
                         {
                           fieldName: "role_name",
-                          label: <AlgaehLabel label={{ fieldName: "role" }} />,
-                          editorTemplate: row => {
-                            return (
-                              <AlagehAutoComplete
-                                div={{}}
-                                selector={{
-                                  name: "role_id",
-                                  className: "select-fld",
-                                  value: row.role_id,
-                                  dataSource: {
-                                    textField: "role_name",
-                                    valueField: "app_d_app_roles_id",
-                                    data: this.state.roles_grid
-                                  },
-                                  onChange: this.changeGridEditors.bind(
-                                    this,
-                                    row
-                                  )
-                                }}
-                              />
-                            );
-                          }
+                          label: <AlgaehLabel label={{ fieldName: "role" }} />
                         },
                         {
                           fieldName: "user_status",
@@ -838,29 +819,8 @@ class LoginUsers extends Component {
                             return row.user_status === "A"
                               ? "Active"
                               : row.user_status === "I"
-                              ? "Inactive"
-                              : "----------";
-                          },
-                          editorTemplate: row => {
-                            return (
-                              <AlagehAutoComplete
-                                selector={{
-                                  name: "user_status",
-                                  className: "select-fld",
-                                  value: row.user_status,
-                                  dataSource: {
-                                    textField: "name",
-                                    valueField: "value",
-                                    data: FORMAT_STATUS
-                                  },
-
-                                  onChange: this.changeGridEditors.bind(
-                                    this,
-                                    row
-                                  )
-                                }}
-                              />
-                            );
+                                ? "Inactive"
+                                : "----------";
                           }
                         }
                       ]}
@@ -868,14 +828,14 @@ class LoginUsers extends Component {
                       dataSource={{
                         data: this.state.login_users
                       }}
-                      isEditable={true}
+                      isEditable={false}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       filter={true}
                       actions={{
                         allowDelete: false
                       }}
                       events={{
-                        onEdit: this.EditGrid.bind(this),
+                        // onEdit: this.EditGrid.bind(this),
                         // onDelete: this.deleteLoginUser.bind(this),
                         onDone: this.updateLoginUser.bind(this)
                       }}

@@ -95,8 +95,13 @@
 
     @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
       .-center {
-        flex: 3 1 !important;
+        flex: none !important;
       }
+    }
+    .-next,
+    .-previous {
+      flex: none !important;
+      width: 70px;
     }
   }
   i.fa-pen,

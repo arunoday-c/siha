@@ -111,8 +111,7 @@ export default ({ config, db }) => {
         });
       }
       next();
-    },
-    releaseConnection
+    }
   );
 
   // created by irfan :

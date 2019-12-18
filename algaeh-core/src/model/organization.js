@@ -13,7 +13,7 @@ let getOrganization = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "SELECT hims_d_hospital_id, hospital_code, local_vat_applicable, default_nationality, default_country, \
+          "SELECT hims_d_hospital_id, hims_d_hospital_id as hospital_id, hospital_code, local_vat_applicable, default_nationality, default_country, \
           default_currency, default_slot, default_patient_type, standard_from_time, standard_to_time, hospital_name, \
           arabic_hospital_name, hospital_address, city_id, organization_id, effective_start_date, effective_end_date, \
           hosital_status, lab_location_code ,hims_d_currency_id, currency_code, currency_description, currency_symbol,\

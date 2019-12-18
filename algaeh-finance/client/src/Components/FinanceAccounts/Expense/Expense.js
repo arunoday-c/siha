@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./expense.scss";
 import SortableTree, {
   getNodeAtPath,
   addNodeUnderParent,
@@ -214,7 +215,7 @@ export default function Expense() {
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Expense accounts</h3>
+                <h3 className="caption-subject">Expense Accounts</h3>
               </div>
               <div className="actions"></div>
             </div>
@@ -228,7 +229,7 @@ export default function Expense() {
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">
-                  Expense accounts {expenceAmount} {symbol}
+                  Expense Accounts {expenceAmount} {symbol}
                 </h3>
               </div>
               <div className="actions">
