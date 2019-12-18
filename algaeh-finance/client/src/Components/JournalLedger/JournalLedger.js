@@ -7,7 +7,8 @@ import {
   AlgaehAutoComplete,
   AlgaehDataGrid,
   AlgaehTreeSearch,
-  AlgaehMessagePop
+  AlgaehMessagePop,
+  AlgaehFormGroupGrid
 } from "algaeh-react-components";
 import {
   getVoucherNumber,
@@ -208,23 +209,21 @@ export default function JournalLedger() {
                     displayTemplate: (row, records) => {
                       const disabled =
                         records["credit_amount"] !== undefined &&
+                        records["credit_amount"] !== null &&
                         records["credit_amount"] !== ""
                           ? { disabled: true }
                           : {};
+
                       return (
-                        <AlgaehFormGroup
-                          div={{}}
-                          label={{}}
-                          textBox={{
-                            type: "number",
-                            className: "form-control",
-                            placeholder: "0.00",
-                            value: row === undefined ? "" : row,
-                            onChange: e => {
-                              records["debit_amount"] =
-                                e.target.value === "" ? "" : e.target.value;
-                              records["payment_type"] = "DR";
-                            },
+                        <AlgaehFormGroupGrid
+                          type="number"
+                          value={row === undefined ? "" : row}
+                          onChange={e => {
+                            records["debit_amount"] =
+                              e.target.value === "" ? "" : e.target.value;
+                            records["payment_type"] = "DR";
+                          }}
+                          others={{
                             ...disabled
                           }}
                         />
@@ -238,23 +237,22 @@ export default function JournalLedger() {
                     displayTemplate: (row, records) => {
                       const disabled =
                         records["debit_amount"] !== undefined &&
+                        records["debit_amount"] !== null &&
                         records["debit_amount"] !== ""
                           ? { disabled: true }
                           : {};
+
                       return (
-                        <AlgaehFormGroup
-                          div={{}}
-                          label={{}}
-                          textBox={{
-                            type: "number",
+                        <AlgaehFormGroupGrid
+                          type="number"
+                          value={row === undefined ? "" : row}
+                          onChange={e => {
+                            records["credit_amount"] =
+                              e.target.value === "" ? "" : e.target.value;
+                            records["payment_type"] = "CR";
+                          }}
+                          others={{
                             className: "form-control",
-                            placeholder: "0.00",
-                            value: row === undefined ? "" : row,
-                            onChange: e => {
-                              records["credit_amount"] =
-                                e.target.value === "" ? "" : e.target.value;
-                              records["payment_type"] = "CR";
-                            },
                             ...disabled
                           }}
                         />
