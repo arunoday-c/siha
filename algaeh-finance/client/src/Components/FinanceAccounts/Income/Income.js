@@ -178,7 +178,7 @@ export default function Income() {
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Income accounts</h3>
+                <h3 className="caption-subject">Income Accounts</h3>
               </div>
               <div className="actions">
                 <select
@@ -216,7 +216,7 @@ export default function Income() {
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Income accounts</h3>
+                <h3 className="caption-subject">Income Accounts</h3>
               </div>
               <div className="actions"></div>
             </div>
@@ -230,7 +230,7 @@ export default function Income() {
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">
-                  Income accounts: {incomeAmount} {symbol}
+                  Income Accounts: {incomeAmount} {symbol}
                 </h3>
               </div>
               <div className="actions">

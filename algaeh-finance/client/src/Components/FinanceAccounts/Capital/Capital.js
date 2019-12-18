@@ -232,7 +232,7 @@ export default function Capital() {
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">
-                  Capital accounts: {capitalAmount} {symbol}
+                  Capital Accounts: {capitalAmount} {symbol}
                 </h3>
               </div>
               <div className="actions">
