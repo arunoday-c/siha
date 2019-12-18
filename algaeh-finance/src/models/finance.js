@@ -53,7 +53,15 @@ export default {
               coalesce(sum(credit_amount) ,0.0000) as credit_amount, 
               (coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) )as cred_minus_deb,
               (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)) as deb_minus_cred
-              from finance_voucher_details group by head_id,child_id; 
+              from finance_voucher_details where head_id 
+              in ( with recursive cte  as (          
+                select  finance_account_head_id
+                from finance_account_head where finance_account_head_id =?
+                union                  
+                select H.finance_account_head_id
+                from finance_account_head  H inner join cte
+                on H.parent_acc_id = cte.finance_account_head_id    
+                )select * from cte) group by head_id,child_id; 
                   
               with recursive cte  as (select finance_account_head_id,account_level
                 FROM finance_account_head where finance_account_head_id=?
@@ -80,6 +88,7 @@ export default {
           printQuery: false,
 
           values: [
+            input.finance_account_head_id,
             input.finance_account_head_id,
             input.finance_account_head_id,
             input.finance_account_head_id
@@ -1011,68 +1020,6 @@ export default {
       };
       next();
     }
-  },
-
-  //created by irfan:
-  getStandardfinanceReport: (req, res, next) => {
-    const utilities = new algaehUtilities();
-
-    const decimal_places = req.userIdentity.decimal_places;
-    if (req.query.reportType == "BS") {
-      getAccountHeadsForReport(decimal_places, 1)
-        .then(asset => {
-          getAccountHeadsForReport(decimal_places, 2)
-            .then(liabilities => {
-              const balance = parseFloat(
-                parseFloat(asset.subtitle) - parseFloat(liabilities.subtitle)
-              ).toFixed(decimal_places);
-
-              let symbol = " Dr";
-              if (balance < 0) {
-                symbol = " Cr";
-              }
-              req.records = {
-                balance: balance + symbol,
-                asset: asset,
-                liabilities: liabilities
-              };
-              next();
-            })
-            .catch(e => {
-              next(e);
-            });
-        })
-        .catch(e => {
-          next(e);
-        });
-    } else if (req.query.reportType == "PL") {
-      getAccountHeadsForReport(decimal_places, 4)
-        .then(income => {
-          getAccountHeadsForReport(decimal_places, 5)
-            .then(expense => {
-              const balance = parseFloat(
-                parseFloat(income.subtitle) - parseFloat(expense.subtitle)
-              ).toFixed(decimal_places);
-
-              let symbol = " Cr";
-              if (balance < 0) {
-                symbol = " Dr";
-              }
-              req.records = {
-                balance: balance + symbol,
-                income: income,
-                expense: expense
-              };
-              next();
-            })
-            .catch(e => {
-              next(e);
-            });
-        })
-        .catch(e => {
-          next(e);
-        });
-    }
   }
 };
 //created by :IRFAN to build tree hierarchy
@@ -1396,115 +1343,4 @@ function createHierarchyForDropdown(arry) {
   } catch (e) {
     console.log("MY-ERORR:", e);
   }
-}
-
-//getAccountHeads data for report
-
-//created by irfan:
-function getAccountHeadsForReport(decimal_places, finance_account_head_id) {
-  const utilities = new algaehUtilities();
-  const _mysql = new algaehMysql();
-
-  return new Promise((resolve, reject) => {
-    if (finance_account_head_id > 0 && finance_account_head_id < 6) {
-      const default_total = parseFloat(0).toFixed(decimal_places);
-      let trans_symbol = "Cr.";
-      if (finance_account_head_id == 1 || finance_account_head_id == 5) {
-        trans_symbol = "Dr.";
-      }
-
-      _mysql
-        .executeQuery({
-          query: `with recursive cte (finance_account_head_id,account_code, account_name, parent_acc_id,
-              finance_account_child_id,child_name,child_created_from,account_level,sort_order,head_id,created_status) as (              
-              select finance_account_head_id,H.account_code,account_name,parent_acc_id,
-              C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
-              ,account_level,H.sort_order,CM.head_id,H.created_from as created_status
-              FROM finance_account_head H left join 
-              finance_head_m_child CM on H.finance_account_head_id=CM.head_id
-              left join finance_account_child C on CM.child_id=C.finance_account_child_id
-              where finance_account_head_id =?             
-              union                  
-              select   H.finance_account_head_id,H.account_code,H.account_name,H.parent_acc_id,
-              C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
-              ,H.account_level,H.sort_order,CM.head_id,H.created_from as created_status
-              FROM finance_account_head H left join 
-              finance_head_m_child CM on H.finance_account_head_id=CM.head_id
-              left join finance_account_child C on CM.child_id=C.finance_account_child_id
-              inner join 
-              cte
-              on H.parent_acc_id = cte.finance_account_head_id       
-              
-              )
-              select * from cte order by account_level,sort_order;              
-              select head_account_code,head_id,	child_id,coalesce(sum(debit_amount) ,0.0000) as debit_amount,
-              coalesce(sum(credit_amount) ,0.0000) as credit_amount, 
-              (coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) )as cred_minus_deb,
-              (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)) as deb_minus_cred
-              from finance_voucher_details group by head_id,child_id; 
-                  
-              with recursive cte  as (select finance_account_head_id,account_level
-                FROM finance_account_head where finance_account_head_id =?
-                union
-                select H.finance_account_head_id,H.account_level FROM finance_account_head H
-                inner join cte on H.parent_acc_id = cte.finance_account_head_id       
-                )
-                select max(account_level) as account_level from cte ;
-  
-                select finance_account_head_id,account_code,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level,
-                coalesce(sum(debit_amount),0.0000)as debit_amount,coalesce(sum(credit_amount),0.000)as credit_amount
-                from finance_account_head  H left join finance_voucher_details VD on H.finance_account_head_id=VD.head_id        
-                where finance_account_head_id  
-                in ( with recursive cte  as (          
-                select  finance_account_head_id
-                from finance_account_head where finance_account_head_id =?
-                union                  
-                select H.finance_account_head_id
-                from finance_account_head  H inner join cte
-                on H.parent_acc_id = cte.finance_account_head_id    
-                )select * from cte)
-                group by finance_account_head_id order by account_level;   `,
-
-          printQuery: false,
-
-          values: [
-            finance_account_head_id,
-            finance_account_head_id,
-            finance_account_head_id
-          ]
-        })
-        .then(result => {
-          _mysql.releaseConnection();
-
-          const child_data = result[1];
-
-          calcAmount(result[3], result[2], decimal_places)
-            .then(head_data => {
-              const outputArray = createHierarchy(
-                result[0],
-                child_data,
-                head_data,
-                trans_symbol,
-                default_total,
-                decimal_places
-              );
-
-              resolve(outputArray[0]);
-            })
-            .catch(e => {
-              console.log("m4:", e);
-              next(e);
-            });
-        })
-        .catch(e => {
-          _mysql.releaseConnection();
-          reject(e);
-        });
-    } else {
-      reject({
-        invalid_input: true,
-        message: "Please provide Valid Input"
-      });
-    }
-  });
 }
