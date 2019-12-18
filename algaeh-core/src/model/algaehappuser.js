@@ -2,6 +2,9 @@ import utils from "../utils";
 import extend from "extend";
 import httpStatus from "../utils/httpStatus";
 import algaehMysql from "algaeh-mysql";
+import mysql from "mysql";
+import _ from "lodash";
+
 const keyPath = require("algaeh-keys/keys");
 
 const { whereCondition, releaseDBConnection, selectStatement } = utils;
@@ -113,8 +116,8 @@ let getLoginUserMaster = (req, res, next) => {
         .executeQuery({
           query:
             "select  algaeh_d_app_user_id,username,user_display_name,user_type,user_status,hims_d_employee_id,\
-            employee_code,full_name,role_name,app_group_name,algaeh_m_role_user_mappings_id,E.hospital_id,\
-            hims_m_user_employee_id, R.app_group_id, RU.role_id from  hims_m_user_employee UM \
+            employee_code,full_name,role_name,app_group_name,algaeh_m_role_user_mappings_id , app_d_app_roles_id, \
+            UM.hospital_id, hims_m_user_employee_id, R.app_group_id, RU.role_id from  hims_m_user_employee UM \
             inner join algaeh_d_app_user U on UM.user_id=U.algaeh_d_app_user_id\
             inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id\
             inner join algaeh_m_role_user_mappings RU  on  UM.user_id=RU.user_id \
@@ -577,7 +580,7 @@ let createUserLogin_OLD = (req, res, next) => {
 };
 
 //created by irfan: to
-let createUserLogin = (req, res, next) => {
+let createUserLogin_old = (req, res, next) => {
   // const _mysql = new algaehMysql();
   try {
     // _mysql.executeQueryWithTransaction()
@@ -805,6 +808,207 @@ let createUserLogin = (req, res, next) => {
   }
 };
 
+let createUserLogin = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let input = req.body;
+
+
+
+    if (req.userIdentity.user_type == "AD" && input.user_type == "AD") {
+      req.records = {
+        validUser: false,
+        message: "You don't have rights to add this user"
+      };
+      next();
+    } else {
+      if (req.userIdentity.role_type != "GN") {
+        _mysql
+          .executeQueryWithTransaction({
+            query:
+              "INSERT INTO `algaeh_d_app_user` (username, user_display_name,employee_id, user_type, effective_start_date, \
+                created_date, created_by, updated_date, updated_by)\
+            VALUE(?,?,?,?,?,?,?,?,?)",
+            values: [
+
+              input.username,
+              input.user_display_name,
+              input.employee_id,
+              input.user_type,
+              new Date(),
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+            ],
+            printQuery: true
+          })
+          .then(result => {
+            if (result.insertId != null && result.insertId != undefined) {
+              let new_password = "12345";
+              if (process.env.NODE_ENV == "production") {
+                new_password = generatePwd();
+              }
+              _mysql
+                .executeQuery({
+                  query:
+                    "INSERT INTO `algaeh_d_app_password` ( userid,password,created_date, created_by, updated_date, \
+                      updated_by) VALUE(?,md5(?),?,?,?,?)",
+                  values: [
+
+                    result.insertId,
+                    new_password,
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                  ],
+                  printQuery: true
+                })
+                .then(pwdResult => {
+                  if (pwdResult.insertId > 0 && input.role_id > 0) {
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "INSERT INTO `algaeh_m_role_user_mappings` ( user_id,  role_id, created_date, created_by, \
+                            updated_date, updated_by) VALUE(?,?,?,?,?,?)",
+                        values: [
+                          result.insertId,
+                          input.role_id,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                        ],
+                        printQuery: true
+                      })
+                      .then(finalResult => {
+                        if (
+                          finalResult.insertId > 0 &&
+                          input.employee_id > 0
+                        ) {
+                          const insurtColumns = [
+                            "hospital_id"
+                          ];
+                          let strGrnQry = mysql.format(
+                            "select trim(email)as email  from hims_d_employee where hims_d_employee_id=?;",
+                            [input.employee_id]
+                          );
+                          _mysql
+                            .executeQuery({
+                              query: "INSERT INTO hims_m_user_employee (??) VALUES ? ; " + strGrnQry,
+                              values: input.branch_data,
+                              includeValues: insurtColumns,
+                              extraValues: {
+                                user_id: result.insertId,
+                                created_by: req.userIdentity.algaeh_d_app_user_id,
+                                created_date: new Date(),
+                                updated_by: req.userIdentity.algaeh_d_app_user_id,
+                                updated_date: new Date()
+                              },
+                              bulkInsertOrUpdate: true,
+                              printQuery: true
+                            })
+                            .then(user_employee_res => {
+                              if (
+                                user_employee_res[1][0]["email"] != null &&
+                                process.env.NODE_ENV == "production"
+                              ) {
+                                sendMailFunction(
+                                  input.username,
+                                  new_password,
+                                  "",
+                                  user_employee_res[1][0]["email"]
+                                )
+                                  .then(rs => {
+                                    console.log("resultemail:", rs);
+                                  })
+                                  .catch(e => {
+                                    console.log("resultemail:", e);
+                                  });
+
+                                _mysql.commitTransaction(() => {
+                                  _mysql.releaseConnection();
+                                  req.records = user_employee_res;
+                                  next();
+                                });
+                              } else {
+                                console.log("new_password:", new_password);
+
+                                _mysql.commitTransaction(() => {
+                                  _mysql.releaseConnection();
+                                  req.records = user_employee_res;
+                                  next();
+                                });
+                              }
+                            })
+                            .catch(e => {
+                              _mysql.rollBackTransaction(() => {
+                                next(e);
+                              });
+                            });
+                        } else {
+                          _mysql.rollBackTransaction(() => {
+                            req.records = {
+                              validUser: false,
+                              message: "Please Select a employee"
+                            };
+                            next();
+                          });
+                        }
+
+                      })
+                      .catch(e => {
+                        _mysql.rollBackTransaction(() => {
+                          next(e);
+                        });
+                      });
+                  } else {
+                    _mysql.rollBackTransaction(() => {
+                      req.records = {
+                        validUser: false,
+                        message: "Please Select a Role"
+                      };
+                      next();
+                    });
+                  }
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            }
+            else {
+              _mysql.rollBackTransaction(() => {
+                req.records = {
+                  validUser: false,
+                  message: "Please enter valid password"
+                };
+                next();
+              });
+            }
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+
+      } else {
+        req.records = {
+          validUser: false,
+          message: "You don't have Admin Privilege"
+        };
+        next();
+      }
+    }
+
+  } catch (e) {
+    next(e);
+  }
+};
+
 //created by irfan: to
 let changePassword = (req, res, next) => {
   try {
@@ -881,58 +1085,187 @@ let changePassword = (req, res, next) => {
 };
 //created by irfan: to
 let updateUser = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-
-    db.getConnection((error, connection) => {
-      if (
-        req.body.algaeh_d_app_user_id > 0 &&
-        req.body.user_display_name != null
-      ) {
-        connection.query(
-          "update algaeh_d_app_user set user_display_name=?,user_status=?,updated_date=?,updated_by=? where\
-          record_status='A' and algaeh_d_app_user_id=?",
-          [
-            req.body.user_display_name,
-            req.body.user_status,
+    let input = req.body
+    console.log("input", input)
+    if (
+      input.algaeh_d_app_user_id > 0
+    ) {
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "update algaeh_d_app_user set user_status=?, updated_date=?, updated_by=? where algaeh_d_app_user_id=?;",
+          values: [
+            input.user_status,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            req.body.algaeh_d_app_user_id
+            input.algaeh_d_app_user_id
           ],
-          (error, result) => {
-            if (error) {
-              releaseDBConnection(db, connection);
-              next(error);
-            }
-            releaseDBConnection(db, connection);
+          printQuery: true
+        })
+        .then(result => {
+          if (result.affectedRows > 0) {
+            let strQry = mysql.format(
+              "update algaeh_m_role_user_mappings set role_id=?, updated_date=?, updated_by=? \
+              where algaeh_m_role_user_mappings_id=?;",
+              [
+                input.role_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                input.algaeh_m_role_user_mappings_id
+              ]
+            )
+            if (input.delete_branch_data.length > 0) {
+              let user_employee_id = _.map(input.delete_branch_data, o => {
+                return o.hims_m_user_employee_id;
+              });
 
-            if (result.affectedRows > 0) {
-              req.records = result;
-            } else {
-              req.records = {
-                validUser: false,
-                message: "Please Provide valid user id"
-              };
+              strQry += mysql.format(
+                "DELETE FROM hims_m_user_employee where hims_m_user_employee_id in (?);",
+                [user_employee_id]
+              );
             }
+
+            const insurtColumns = [
+              "hospital_id"
+            ];
+            _mysql
+              .executeQuery({
+                query: "INSERT INTO hims_m_user_employee (??) VALUES ? ; " + strQry,
+                values: input.branch_data,
+                includeValues: insurtColumns,
+                extraValues: {
+                  user_id: input.algaeh_d_app_user_id,
+                  created_by: req.userIdentity.algaeh_d_app_user_id,
+                  created_date: new Date(),
+                  updated_by: req.userIdentity.algaeh_d_app_user_id,
+                  updated_date: new Date()
+                },
+                bulkInsertOrUpdate: true,
+                printQuery: true
+              })
+              .then(user_employee_res => {
+
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = user_employee_res;
+                  next();
+                });
+
+              })
+              .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
+            // _mysql
+            //   .executeQuery({
+            //     query:
+            //       "update algaeh_m_role_user_mappings set role_id=?, updated_date=?, updated_by=? \
+            //       where algaeh_m_role_user_mappings_id=?; " + strQry,
+            //     values: [
+            //       input.user_status,
+            //       new Date(),
+            //       req.userIdentity.algaeh_d_app_user_id,
+            //       input.algaeh_d_app_user_id,
+
+            //     ],
+            //     printQuery: true
+            //   })
+            //   .then(result => {
+            //     _mysql.releaseConnection();
+            //     if (result[0].affectedRows > 0) {
+            //       req.records = result;
+            //     } else {
+            //       req.records = {
+            //         validUser: false,
+            //         message: "Please Provide valid user id"
+            //       };
+            //     }
+            //     next();
+            //   })
+            //   .catch(error => {
+            //     _mysql.releaseConnection();
+            //     next(error);
+            //   });
+          } else {
+            _mysql.releaseConnection();
+            req.records = {
+              validUser: false,
+              message: "Please Provide valid user id"
+            };
             next();
           }
-        );
 
-        ///------------------
-      } else {
-        req.records = {
-          validUser: false,
-          message: "You are not a valid user id"
-        };
-        next();
-      }
-    });
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } else {
+      req.records = {
+        validUser: false,
+        message: "Please Provide valid user id"
+      };
+      next();
+    }
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
+  // try {
+  //   if (req.db == null) {
+  //     next(httpStatus.dataBaseNotInitilizedError());
+  //   }
+  //   let db = req.db;
+
+  //   db.getConnection((error, connection) => {
+  //     if (
+  //       req.body.algaeh_d_app_user_id > 0 &&
+  //       req.body.user_display_name != null
+  //     ) {
+  //       connection.query(
+  //         "update algaeh_d_app_user set user_display_name=?,user_status=?,updated_date=?,updated_by=? where\
+  //         record_status='A' and algaeh_d_app_user_id=?",
+  //         [
+  //           req.body.user_display_name,
+  //           req.body.user_status,
+  //           new Date(),
+  //           req.userIdentity.algaeh_d_app_user_id,
+  //           req.body.algaeh_d_app_user_id
+  //         ],
+  //         (error, result) => {
+  //           if (error) {
+  //             releaseDBConnection(db, connection);
+  //             next(error);
+  //           }
+  //           releaseDBConnection(db, connection);
+
+  //           if (result.affectedRows > 0) {
+  //             req.records = result;
+  //           } else {
+  //             req.records = {
+  //               validUser: false,
+  //               message: "Please Provide valid user id"
+  //             };
+  //           }
+  //           next();
+  //         }
+  //       );
+
+  //       ///------------------
+  //     } else {
+  //       req.records = {
+  //         validUser: false,
+  //         message: "You are not a valid user id"
+  //       };
+  //       next();
+  //     }
+  //   });
+  // } catch (e) {
+  //   next(e);
+  // }
 };
 
 export default {
