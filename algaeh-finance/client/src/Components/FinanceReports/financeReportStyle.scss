@@ -18,11 +18,11 @@
       padding: 6px 15px;
       list-style: none;
       border-bottom: 1px solid #000;
-
+      cursor: pointer;
       &:hover {
-        background: #fff;
-        cursor: pointer;
-        color: #000;
+        background: #00a796;
+        color: #fff;
+        border-bottom: 1px solid #007468;
       }
     }
     .active {
