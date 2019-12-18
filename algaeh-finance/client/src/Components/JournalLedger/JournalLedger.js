@@ -130,33 +130,39 @@ export default function JournalLedger() {
           }}
         />
       </div>
-
       <div className="row">
+        <AlgaehFormGroup
+          div={{
+            className: "col-5 form-group algaeh-text-fld"
+          }}
+          label={{
+            forceLabel: "Narration",
+            isImp: false
+          }}
+          textBox={{
+            type: "text",
+            className: "form-control",
+            placeholder: "Enter Narration ex:- Electricity Bill",
+
+            value: narration,
+            onChange: e => {
+              setNarration(e.target.value);
+            }
+          }}
+          // multiline="true"
+        />
         <div className="col-12">
-          <div className="portlet portlet-bordered margin-bottom-15">
+          <div
+            className="portlet portlet-bordered"
+            style={{ paddingBottom: 0 }}
+          >
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">Journal Voucher List </h3>
               </div>
-              <div className="actions">
-                <button
-                  onClick={() => {
-                    setJournerList(result => {
-                      const serialNo = result.length + 1;
-                      result.push({
-                        child_id: undefined,
-                        head_id: undefined,
-                        slno: serialNo
-                      });
-                      return [...result];
-                    });
-                  }}
-                >
-                  Add
-                </button>
-              </div>
+              <div className="actions"></div>
             </div>
-            <div className="portlet-body">
+            <div className="portlet-body" id="JLVoucherListGrid">
               <AlgaehDataGrid
                 columns={[
                   {
@@ -305,75 +311,82 @@ export default function JournalLedger() {
                   }
                 }}
               />
-              <AlgaehFormGroup
-                div={{
-                  className: "col-5 form-group algaeh-text-fld"
-                }}
-                label={{
-                  forceLabel: "Narration",
-                  isImp: false
-                }}
-                textBox={{
-                  type: "text",
-                  className: "form-control",
-                  placeholder: "Narration",
-
-                  value: narration,
-                  onChange: e => {
-                    setNarration(e.target.value);
-                  }
-                }}
-                multiline="true"
-              />
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                  if (journerList.length === 0) {
-                    AlgaehMessagePop({
-                      type: "error",
-                      display: "Empty data !"
-                    });
-                    return;
-                  }
-                  if (voucherDate === "") {
-                    AlgaehMessagePop({
-                      type: "error",
-                      display: "Voucher Date can't blank"
-                    });
-                    return;
-                  }
-                  if (voucherType === "") {
-                    AlgaehMessagePop({
-                      type: "error",
-                      display: "Voucher Type can't blank"
-                    });
-                    return;
-                  }
-                  addJurnorLedger({
-                    transaction_date: voucherDate,
-                    voucher_type: voucherType,
-                    voucher_no: voucher_no,
-                    from_screen: getCookie("ScreenCode"),
-                    hospital_id: getCookie("HospitalId"),
-                    details: journerList
-                  })
-                    .then(() => {
-                      AlgaehMessagePop({
-                        type: "success",
-                        display: "Successfully updated.."
-                      });
-                    })
-                    .catch(error => {
-                      AlgaehMessagePop({
-                        type: "error",
-                        display: error
-                      });
-                    });
-                }}
-              >
-                Submit
-              </button>
             </div>
+            <button
+              className="btn btn-default btn-small"
+              style={{
+                position: "absolute",
+                marginTop: -45
+              }}
+              onClick={() => {
+                setJournerList(result => {
+                  const serialNo = result.length + 1;
+                  result.push({
+                    child_id: undefined,
+                    head_id: undefined,
+                    slno: serialNo
+                  });
+                  return [...result];
+                });
+              }}
+            >
+              Add
+            </button>
+          </div>
+        </div>
+      </div>{" "}
+      <div className="hptl-phase1-footer">
+        <div className="row">
+          <div className="col-lg-12">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => {
+                if (journerList.length === 0) {
+                  AlgaehMessagePop({
+                    type: "error",
+                    display: "Empty data !"
+                  });
+                  return;
+                }
+                if (voucherDate === "") {
+                  AlgaehMessagePop({
+                    type: "error",
+                    display: "Voucher Date can't blank"
+                  });
+                  return;
+                }
+                if (voucherType === "") {
+                  AlgaehMessagePop({
+                    type: "error",
+                    display: "Voucher Type can't blank"
+                  });
+                  return;
+                }
+                addJurnorLedger({
+                  transaction_date: voucherDate,
+                  voucher_type: voucherType,
+                  voucher_no: voucher_no,
+                  from_screen: getCookie("ScreenCode"),
+                  hospital_id: getCookie("HospitalId"),
+                  details: journerList
+                })
+                  .then(() => {
+                    AlgaehMessagePop({
+                      type: "success",
+                      display: "Successfully updated.."
+                    });
+                  })
+                  .catch(error => {
+                    AlgaehMessagePop({
+                      type: "error",
+                      display: error
+                    });
+                  });
+              }}
+            >
+              Save
+            </button>
           </div>
         </div>
       </div>
