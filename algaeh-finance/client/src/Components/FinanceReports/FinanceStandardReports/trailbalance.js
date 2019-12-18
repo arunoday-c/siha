@@ -21,26 +21,39 @@ export default function TrailBalaceReport(props) {
           <div>Address</div>
           <h3>Report Name</h3>
         </div>
-        <table>
+        <table
+          width="100%"
+          cellPadding="0"
+          cellSpacing="0"
+          className="trialReportStyle"
+        >
+          {" "}
           <tr>
-            <td>
-              <div className="reportTableStyle">
+            <td style={{ width: "50%" }}>
+              {" "}
+              <div className="reportTableStyle" style={{ border: "none" }}>
                 <ul className="treeListUL">{PlotUI(asset, style, [0])}</ul>
-              </div>
-              <div className="reportTableStyle">
+
                 <ul className="treeListUL">{PlotUI(expense, style, [0])}</ul>
               </div>
             </td>
-            <td>
-              <div className="reportTableStyle">
+            <td style={{ width: "50%" }}>
+              {" "}
+              <div className="reportTableStyle" style={{ border: "none" }}>
                 <ul className="treeListUL">{PlotUI(liability, style, [0])}</ul>
-              </div>
-              <div className="reportTableStyle">
+
                 <ul className="treeListUL">{PlotUI(capital, style, [0])}</ul>
-              </div>
-              <div className="reportTableStyle">
+
                 <ul className="treeListUL">{PlotUI(income, style, [0])}</ul>
               </div>
+            </td>
+          </tr>
+          <tr className="footerTotalArea">
+            <td style={{ width: "50%" }} valign="top">
+              <b>0.00</b>
+            </td>
+            <td style={{ width: "50%" }} valign="top">
+              <b>0.00</b>
             </td>
           </tr>
         </table>

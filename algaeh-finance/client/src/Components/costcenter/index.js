@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "./costcenter.scss";
 import { AlgaehAutoComplete } from "algaeh-react-components";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 export default function CostCenter(props) {
@@ -26,23 +27,25 @@ export default function CostCenter(props) {
   }, []);
 
   return (
-    <AlgaehAutoComplete
-      div={{ ...div }}
-      label={{ forceLabel: "Cost Center" }}
-      selector={{
-        dataSource: {
-          data: data,
-          valueField: "cost_center_id",
-          textField: "cost_center"
-        },
-        value: costCenter,
-        onChange: (details, value) => {
-          setCostCenter(value);
-        },
-        others: {
-          loading: loading
-        }
-      }}
-    />
+    <div className="col-12 costCenterFilter">
+      <AlgaehAutoComplete
+        div={{ ...div }}
+        label={{ forceLabel: "Cost Center" }}
+        selector={{
+          dataSource: {
+            data: data,
+            valueField: "cost_center_id",
+            textField: "cost_center"
+          },
+          value: costCenter,
+          onChange: (details, value) => {
+            setCostCenter(value);
+          },
+          others: {
+            loading: loading
+          }
+        }}
+      />
+    </div>
   );
 }

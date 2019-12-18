@@ -173,7 +173,16 @@ function getAccountHeadsForReport(decimal_places, finance_account_head_id) {
               coalesce(sum(credit_amount) ,0.0000) as credit_amount, 
               (coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) )as cred_minus_deb,
               (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)) as deb_minus_cred
-              from finance_voucher_details group by head_id,child_id; 
+              from finance_voucher_details where head_id 
+              in ( with recursive cte  as (          
+                select  finance_account_head_id
+                from finance_account_head where finance_account_head_id =?
+                union                  
+                select H.finance_account_head_id
+                from finance_account_head  H inner join cte
+                on H.parent_acc_id = cte.finance_account_head_id    
+                )select * from cte)
+              group by head_id,child_id; 
                   
               with recursive cte  as (select finance_account_head_id,account_level
                 FROM finance_account_head where finance_account_head_id =?
@@ -200,6 +209,7 @@ function getAccountHeadsForReport(decimal_places, finance_account_head_id) {
           printQuery: false,
 
           values: [
+            finance_account_head_id,
             finance_account_head_id,
             finance_account_head_id,
             finance_account_head_id

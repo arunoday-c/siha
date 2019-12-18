@@ -154,3 +154,9 @@
 .rst__rowSearchFocus {
   outline: solid 3px #00a796 !important;
 }
+.ant-table-thead > tr > th {
+  color: #000 !important;
+  background: #c1fff9 !important;
+  border-bottom: 2px solid #00a796;
+  text-align: center !important;
+}

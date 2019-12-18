@@ -91,6 +91,7 @@
       input {
         padding: 2px !important;
       }
+      flex: none !important;
     }
 
     @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {

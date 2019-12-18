@@ -176,23 +176,23 @@ export default class AttendanceSettings extends Component {
       case "salary_calendar":
         e.target.value === "P"
           ? this.setState({
-              [e.target.name]: e.target.value,
-              salary_calendar_fixed_days: null
-            })
+            [e.target.name]: e.target.value,
+            salary_calendar_fixed_days: null
+          })
           : this.setState({
-              [e.target.name]: e.target.value
-            });
+            [e.target.name]: e.target.value
+          });
         break;
 
       case "airfare_factor":
         e.target.value === "FI"
           ? this.setState({
-              [e.target.name]: e.target.value,
-              airfare_percentage: null
-            })
+            [e.target.name]: e.target.value,
+            airfare_percentage: null
+          })
           : this.setState({
-              [e.target.name]: e.target.value
-            });
+            [e.target.name]: e.target.value
+          });
 
         break;
 
@@ -627,6 +627,35 @@ export default class AttendanceSettings extends Component {
                       <span>Annual</span>
                     </label>
                   </div>
+                </div>
+                <div className="col">
+
+
+                  <label>External Finznce</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="Y"
+                        name="external_finance"
+                        checked={this.state.external_finance === "Y"}
+                        onChange={this.textHandler.bind(this)}
+                      />
+                      <span>Yes</span>
+                    </label>
+
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="N"
+                        name="external_finance"
+                        checked={this.state.external_finance === "N"}
+                        onChange={this.textHandler.bind(this)}
+                      />
+                      <span>No</span>
+                    </label>
+                  </div>
+
                 </div>
                 {/*
                 <div className="col-2">
