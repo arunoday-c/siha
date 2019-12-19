@@ -20,10 +20,34 @@ export default memo(function Modal(props) {
   const previousMonthDate = [moment().add(-1, "M"), moment().add(-1, "days")];
   const [dateRange, setDateRange] = useState(previousMonthDate);
   const [loading, setLoading] = useState(false);
+  let resultdata = {};
+
   function onPdfGeneration() {
     setPleaseWait("Please wait pdf is generating...");
     setLoading(true);
-    generateReport("pdf")
+    if (Object.keys(resultdata).length === 0) {
+      setLoading(false);
+      setPleaseWait("");
+      AlgaehMessagePop({
+        type: "info",
+        display: "Please select Branch and Cost Center"
+      });
+      return;
+    } else {
+      if (
+        resultdata["hospital_id"] === undefined ||
+        resultdata["cost_center_id"] === undefined
+      ) {
+        setLoading(false);
+        setPleaseWait("");
+        AlgaehMessagePop({
+          type: "info",
+          display: "Branch and Cost Center are mandatory"
+        });
+        return;
+      }
+    }
+    generateReport("pdf", resultdata)
       .then(result => {
         // console.log("result", result);
         // var file = new Blob([result], { type: "application/pdf" });
@@ -77,7 +101,7 @@ export default memo(function Modal(props) {
     setLoading(false);
     onCancel();
   }
-  function generateReport(type) {
+  function generateReport(type, inputdata) {
     return new Promise((resolve, reject) => {
       try {
         const { node } = selectedNode;
@@ -118,6 +142,22 @@ export default memo(function Modal(props) {
             ? "ledgerMonthReportLeafNode"
             : "ledgerDateReportLeafNode";
         }
+        let outcomeDataHospital = {};
+        let outcomeDataCostCenter = {};
+        if (inputdata !== undefined && Object.keys(inputdata).length > 0) {
+          outcomeDataHospital = {
+            name: "hospital_id",
+            value: inputdata["hospital_id"],
+            label: "Branch",
+            labelValue: inputdata["hospital_id_label"]
+          };
+          outcomeDataCostCenter = {
+            name: "cost_center_id",
+            value: inputdata["cost_center_id"],
+            label: "Cost Center",
+            labelValue: inputdata["cost_center_id_label"]
+          };
+        }
 
         const data = {
           report: {
@@ -150,7 +190,9 @@ export default memo(function Modal(props) {
               { name: "leafnode", value: leafnode },
               { name: "parent_id", value: parentId },
               from_date,
-              to_date
+              to_date,
+              outcomeDataHospital,
+              outcomeDataCostCenter
               // monthwise
             ]
           }
@@ -250,7 +292,7 @@ export default memo(function Modal(props) {
               Month Wise
             </label>
           </div>
-          <CostCenter div={{ className: "col" }} />
+          <CostCenter result={resultdata} />
           <AlgaehDateHandler
             type={"range"}
             div={{
