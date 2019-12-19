@@ -5219,15 +5219,32 @@ export default {
               .executeQuery({
                 query:
                   "select hims_f_leave_application_id,leave_application_code ,`status`\
-             from hims_f_leave_application where hims_f_leave_application_id=? ",
+             from hims_f_leave_application where hims_f_leave_application_id=?;\
+             select attendance_starts,at_st_date,at_end_date from hims_d_hrms_options limit 1; ",
                 values: [input.hims_f_leave_application_id],
 
                 printQuery: false
               })
-              .then(leaveStaus => {
+              .then(leaveResult => {
+                const leaveStaus=leaveResult[0];
+                const attResult=leaveResult[1][0];
                 if (leaveStaus.length > 0) {
                   if (leaveStaus[0]["status"] == "APR") {
-                    const month_number = moment(input.from_date).format("M");
+                    let month_number = '';
+
+
+                    if (attResult.attendance_starts == "PM" && attResult.at_end_date > 0) {
+                      if (moment(input.from_date, "YYYY-MM-DD").format("D") > attResult.at_end_date) {
+                        month_number =
+                          parseInt(moment(input.from_date, "YYYY-MM-DD").format("M")) + 1;
+                      }else {
+                        from_month = moment(input.from_date, "YYYY-MM-DD").format("M");
+                      }
+                    }else{
+                      month_number = moment(input.from_date).format("M");
+
+                    }
+
                     _mysql
                       .executeQuery({
                         query:
