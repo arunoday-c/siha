@@ -1214,7 +1214,9 @@ export default {
                           f++
                         ) {
                           const item = _inputParam.reportParams[f];
-                          filter += `${item.label}:${item.labelValue} || `;
+                          // console.log("item.label ", item.label);
+                          if (item.label !== undefined)
+                            filter += `${item.label}:${item.labelValue} || `;
                         }
                       }
                       worksheet.getRow(6).getCell(1).value = filter;

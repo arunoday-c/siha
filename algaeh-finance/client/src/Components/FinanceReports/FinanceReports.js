@@ -5,18 +5,25 @@ import Balance from "./FinanceStandardReports/balancesheet";
 import TrailBalance from "./FinanceStandardReports/trailbalance";
 import CostCenter from "../costcenter";
 import { getBalanceSheet } from "./FinanceReportEvents";
-
+let resultdata = {};
 export default function FinanceReports() {
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState("");
   const [data, setData] = useState({});
   const [trailBanlance, setTrailBalance] = useState({});
+
   function selectedClass(report) {
     return report === selected ? "active" : "";
   }
   function loadReport(report) {
     const { url, reportName } = report;
-    getBalanceSheet({ url: url })
+    getBalanceSheet({
+      url: url,
+      inputParam: {
+        hospital_id: resultdata["hospital_id"],
+        cost_center_id: resultdata["cost_center_id"]
+      }
+    })
       .then(result => {
         setLoading(false);
         if (reportName === "TB") {
@@ -34,6 +41,30 @@ export default function FinanceReports() {
         });
       });
   }
+
+  function checkExists() {
+    if (Object.keys(resultdata).length === 0) {
+      AlgaehMessagePop({
+        title: "info",
+        display: "Please select Branch and Cost Center"
+      });
+      return false;
+    } else {
+      if (
+        resultdata["hospital_id"] === undefined ||
+        resultdata["cost_center_id"] === undefined
+      ) {
+        AlgaehMessagePop({
+          title: "info",
+          display: "Branch and Cost Center are mandatory."
+        });
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
+
   return (
     <div className="row">
       <div className="col-3 reportMenuSecLeft">
@@ -42,9 +73,11 @@ export default function FinanceReports() {
           <li
             className={selectedClass("BS")}
             onClick={e => {
-              setLoading(true);
-              setSelected("BS");
-              loadReport({ url: "getBalanceSheet" });
+              if (checkExists()) {
+                setLoading(true);
+                setSelected("BS");
+                loadReport({ url: "getBalanceSheet" });
+              }
             }}
           >
             Balance Sheet
@@ -52,9 +85,11 @@ export default function FinanceReports() {
           <li
             className={selectedClass("PL")}
             onClick={() => {
-              loadReport({ url: "getProfitAndLoss" });
-              setLoading(true);
-              setSelected("PL");
+              if (checkExists()) {
+                loadReport({ url: "getProfitAndLoss" });
+                setLoading(true);
+                setSelected("PL");
+              }
             }}
           >
             Profit and Loss
@@ -62,9 +97,11 @@ export default function FinanceReports() {
           <li
             className={selectedClass("TB")}
             onClick={() => {
-              loadReport({ url: "getTrialBalance", reportName: "TB" });
-              setLoading(true);
-              setSelected("TB");
+              if (checkExists()) {
+                loadReport({ url: "getTrialBalance", reportName: "TB" });
+                setLoading(true);
+                setSelected("TB");
+              }
             }}
           >
             Trail Balance
@@ -72,7 +109,7 @@ export default function FinanceReports() {
         </ul>
       </div>
       <div className="col-9 reportPreviewSecLeft">
-        <CostCenter div={{}} />
+        <CostCenter result={resultdata} />
         <Spin spinning={loading} tip="Please wait report data is fetching..">
           {selected === "BS" ? (
             <Balance data={data} result={["asset", "liabilities"]} />

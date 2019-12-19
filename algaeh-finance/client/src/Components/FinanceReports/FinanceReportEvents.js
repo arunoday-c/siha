@@ -1,12 +1,12 @@
 import { algaehApiCall } from "../../utils/algaehApiCall";
 
 export function getBalanceSheet(input) {
-  const { url } = input;
+  const { url, inputParam } = input;
   return new Promise((resolve, reject) => {
     try {
       algaehApiCall({
         uri: `/financeReports/${url}`,
-        // data: input,
+        data: inputParam,
         method: "GET",
         module: "finance",
         onSuccess: response => {
