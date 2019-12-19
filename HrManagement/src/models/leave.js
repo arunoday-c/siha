@@ -2076,7 +2076,7 @@ export default {
                     _mysql.releaseConnection();
                     req.records = {
                       invalid_input: true,
-                      message: `you cant apply leave on , ${isHoliday[0].holiday_date} is :( ${isHoliday[0].holiday_description} )`
+                      message: `you can't apply leave on , ${isHoliday[0].holiday_date} is :( ${isHoliday[0].holiday_description} )`
                     };
                     next();
                     return;
@@ -2239,7 +2239,7 @@ export default {
                             } else {
                               req.records = {
                                 invalid_input: true,
-                                message: `max available is ${max_available_leave} days, you cant apply for  
+                                message: `max available is ${max_available_leave} days, you can't apply for  
                               ${calculatedLeaveDays} days`
                               };
                               next();
@@ -2257,7 +2257,7 @@ export default {
                         _mysql.releaseConnection();
                         req.records = {
                           invalid_input: true,
-                          message: `max available is ${currentClosingBal} days, you cant apply for  
+                          message: `max available is ${currentClosingBal} days, you can't apply for  
                         ${calculatedLeaveDays} days`
                         };
                         next();
@@ -2357,7 +2357,7 @@ export default {
                             } else {
                               req.records = {
                                 invalid_input: true,
-                                message: `max available is ${max_available_leave} days, you cant apply for  
+                                message: `max available is ${max_available_leave} days, you can't apply for  
                               ${calculatedLeaveDays} days`
                               };
                               next();
@@ -2376,7 +2376,7 @@ export default {
 
                         req.records = {
                           invalid_input: true,
-                          message: `max available is ${currentClosingBal} days, you cant apply for  
+                          message: `max available is ${currentClosingBal} days, you can't apply for  
                         ${calculatedLeaveDays} days`
                         };
                         next();
@@ -2923,7 +2923,7 @@ export default {
                   } else {
                     req.records = {
                       leave_already_exist: true,
-                      message: "you cant apply for this leave type"
+                      message: "you can't apply for this leave type"
                     };
                     _mysql.releaseConnection();
                     next();
@@ -2939,17 +2939,17 @@ export default {
               if (empResult.length < 1) {
                 req.records = {
                   leave_already_exist: true,
-                  message: ` cant apply leave for inactive employee  `
+                  message: ` can't apply leave for inactive employee  `
                 };
               } else if (empResult[0]["exit_date"] != null) {
                 req.records = {
                   leave_already_exist: true,
-                  message: ` cant apply leave for resigned employee `
+                  message: ` can't apply leave for resigned employee `
                 };
               } else {
                 req.records = {
                   leave_already_exist: true,
-                  message: ` cant apply leave before joining date, your joining date is: ${
+                  message: ` can't apply leave before joining date, your joining date is: ${
                     empResult[0]["date_of_joining"]
                     }   `
                 };
@@ -2965,7 +2965,7 @@ export default {
       } else {
         req.records = {
           leave_already_exist: true,
-          message: "cant apply across year leave"
+          message: "can't apply across year leave"
         };
 
         next();
@@ -3090,17 +3090,17 @@ export default {
               if (!rest[0].length > 0) {
                 req.records = {
                   leave_already_exist: true,
-                  message: ` cant apply leave for inactive employee  `
+                  message: ` can't apply leave for inactive employee  `
                 };
               } else if (empResult["exit_date"] != null) {
                 req.records = {
                   leave_already_exist: true,
-                  message: ` cant apply leave for resigned employee `
+                  message: ` can't apply leave for resigned employee `
                 };
               } else {
                 req.records = {
                   leave_already_exist: true,
-                  message: ` cant apply leave before joining date, your joining date is: ${
+                  message: ` can't apply leave before joining date, your joining date is: ${
                     empResult["date_of_joining"]
                     }   `
                 };
@@ -3116,7 +3116,7 @@ export default {
 
         // req.records = {
         //   leave_already_exist: true,
-        //   message: "cant apply across year leave"
+        //   message: "can't apply across year leave"
         // };
 
         // next();
@@ -3124,7 +3124,7 @@ export default {
       } else {
         req.records = {
           invalid_input: true,
-          message: `Cant apply leave for this Date range `
+          message: `can't apply leave for this Date range `
         };
         next();
         return;
@@ -5160,7 +5160,7 @@ export default {
                     _mysql.releaseConnection();
                     req.records = {
                       invalid_input: true,
-                      message: "cant cancel,leave is not Approved yet"
+                      message: "can't cancel,leave is not Approved yet"
                     };
                     next();
                     return;
@@ -5451,7 +5451,7 @@ export default {
                     _mysql.releaseConnection();
                     req.records = {
                       invalid_input: true,
-                      message: "cant cancel,leave is not Approved yet"
+                      message: "can't cancel,leave is not Approved yet"
                     };
                     next();
                     return;
@@ -6130,7 +6130,7 @@ function calc(db, body) {
                           } else {
                             resolve({
                               invalid_input: true,
-                              message: `max available is ${max_available_leave} days, you cant apply for  
+                              message: `max available is ${max_available_leave} days, you can't apply for  
                               ${calculatedLeaveDays} days`
                             });
                             // next();
@@ -6147,7 +6147,7 @@ function calc(db, body) {
                     } else {
                       resolve({
                         invalid_input: true,
-                        message: `max available is ${currentClosingBal} days, you cant apply for  
+                        message: `max available is ${currentClosingBal} days, you can't apply for  
                         ${calculatedLeaveDays} days`
                       });
                     }
@@ -6241,7 +6241,7 @@ function calc(db, body) {
                       } else {
                         resolve({
                           invalid_input: true,
-                          message: `max available is ${max_available_leave} days, you cant apply for  
+                          message: `max available is ${max_available_leave} days, you can't apply for  
                           ${calculatedLeaveDays} days`
                         });
                         // next();
@@ -6259,7 +6259,7 @@ function calc(db, body) {
                   utilities.logger().log("FISH: ", "PART");
                   resolve({
                     invalid_input: true,
-                    message: `max available is ${max_available_leave} days, you cant apply for  
+                    message: `max available is ${max_available_leave} days, you can't apply for  
                           ${calculatedLeaveDays} days`
                   });
                 }
@@ -7197,7 +7197,7 @@ function projectedleaveCalc(input, _mysql) {
       }else{
         reject({
           invalid_input: true,
-          message: "Cant apply Projected leaves for Past Dates"
+          message: "can't apply Projected leaves for Past Dates"
         });
 
       }
@@ -7646,7 +7646,7 @@ function validateLeaveApplictn(inputs, my_sql, req) {
                   } else {
                     reject({
                       invalid_input: true,
-                      message: `max available is ${max_available_leave} days, you cant apply for  
+                      message: `max available is ${max_available_leave} days, you can't apply for  
               ${sameYearResult.calculatedLeaveDays} days`
                     });
                   }
@@ -7750,7 +7750,7 @@ function validateLeaveApplictn(inputs, my_sql, req) {
                   } else {
                     reject({
                       invalid_input: true,
-                      message: `max available is ${max_available_leave} days, you cant apply for  
+                      message: `max available is ${max_available_leave} days, you can't apply for  
                   ${calculatedLeaveDays} days`
                     });
                   }
@@ -7945,7 +7945,7 @@ function validateLeaveApplictn(inputs, my_sql, req) {
                                     }
                                     reject({
                                       invalid_input: true,
-                                      message: `max available is ${max_days} days in ${calc_year}, you cant apply for  
+                                      message: `max available is ${max_days} days in ${calc_year}, you can't apply for  
                                 ${applying_days} days`
                                     });
                                   }
@@ -8011,7 +8011,7 @@ function validateLeaveApplictn(inputs, my_sql, req) {
           } else {
             reject({
               invalid_input: true,
-              message: `Cant apply leave for this Date range `
+              message: `can't apply leave for this Date range `
             });
           }
         })
@@ -8304,7 +8304,7 @@ function calculateNoLeaveDays(inputs, _mysql) {
                   _mysql.releaseConnection();
                   reject({
                     invalid_input: true,
-                    message: `Salary is processed for this month Cant apply Annual leave`
+                    message: `Salary is processed for this month can't apply Annual leave`
                   });
                 }
                 else {
@@ -8441,13 +8441,13 @@ function calculateNoLeaveDays(inputs, _mysql) {
                     _mysql.releaseConnection();
                     // req.records = {
                     //   invalid_input: true,
-                    //   message: `you cant apply leave on , ${isHoliday[0].holiday_date} is :( ${isHoliday[0].holiday_description} )`
+                    //   message: `you can't apply leave on , ${isHoliday[0].holiday_date} is :( ${isHoliday[0].holiday_description} )`
                     // };
                     // next();
                     // return;
                     reject({
                       invalid_input: true,
-                      message: `you cant apply leave on , ${isHoliday[0].holiday_date} is :( ${isHoliday[0].holiday_description} )`
+                      message: `you can't apply leave on , ${isHoliday[0].holiday_date} is :( ${isHoliday[0].holiday_description} )`
                     });
                   } else {
                     // subtracting  week off or holidays fom LeaveApplied Days
@@ -8648,7 +8648,7 @@ function calculateNoLeaveDays(inputs, _mysql) {
                         _mysql.releaseConnection();
                         reject({
                           invalid_input: true,
-                          message: `max available is ${currentClosingBal} days, you cant apply for  
+                          message: `max available is ${currentClosingBal} days, you can't apply for  
                         ${calculatedLeaveDays} days`
                         });
                       }
@@ -8788,7 +8788,7 @@ function calculateNoLeaveDays(inputs, _mysql) {
 
                         reject({
                           invalid_input: true,
-                          message: `max available is ${currentClosingBal} days, you cant apply for  
+                          message: `max available is ${currentClosingBal} days, you can't apply for  
                           ${calculatedLeaveDays} days`
                         });
                       }
