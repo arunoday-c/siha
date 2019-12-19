@@ -129,7 +129,7 @@ export default class SelfService extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Rejoin From Annual Leave"
+                      forceLabel: "Employee Rejoin"
                     }}
                   />
                 }

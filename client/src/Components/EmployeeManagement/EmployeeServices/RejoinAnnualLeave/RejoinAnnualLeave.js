@@ -63,7 +63,10 @@ export default class RejoinAnnualLeave extends Component {
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
     }).then(willProceed => {
-      let dates_equal = moment(row.last_salary_process_date, "DD-MM-YYYY").isSame(row.to_date, "DD-MM-YYYY");
+      let dates_equal = moment(
+        row.last_salary_process_date,
+        "DD-MM-YYYY"
+      ).isSame(row.to_date, "DD-MM-YYYY");
 
       if (willProceed.value) {
         let inputObj = {
@@ -153,6 +156,39 @@ export default class RejoinAnnualLeave extends Component {
                     },
 
                     {
+                      fieldName: "last_salary_process_date",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Rejoin Date" }} />
+                      ),
+                      // displayTemplate: row => {
+                      //   return (
+                      //     <span>
+                      //       {this.dateFormater(row.last_salary_process_date)}
+                      //     </span>
+                      //   );
+                      // },
+                      displayTemplate: row => {
+                        return (
+                          <AlgaehDateHandler
+                            div={{ className: "" }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "last_salary_process_date"
+                            }}
+                            events={{
+                              onChange: this.gridOndateHandler.bind(this, row)
+                            }}
+                            value={row.last_salary_process_date}
+                          />
+                        );
+                      },
+                      others: {
+                        maxWidth: 150,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
                       fieldName: "employee_code",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Employee Code" }} />
@@ -235,41 +271,6 @@ export default class RejoinAnnualLeave extends Component {
                       ),
                       displayTemplate: row => {
                         return <span>{this.dateFormater(row.to_date)}</span>;
-                      },
-                      others: {
-                        maxWidth: 150,
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "last_salary_process_date",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "Re-joining Data" }}
-                        />
-                      ),
-                      // displayTemplate: row => {
-                      //   return (
-                      //     <span>
-                      //       {this.dateFormater(row.last_salary_process_date)}
-                      //     </span>
-                      //   );
-                      // },
-                      displayTemplate: row => {
-                        return (
-                          <AlgaehDateHandler
-                            div={{ className: "" }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "last_salary_process_date"
-                            }}
-                            events={{
-                              onChange: this.gridOndateHandler.bind(this, row)
-                            }}
-                            value={row.last_salary_process_date}
-                          />
-                        );
                       },
                       others: {
                         maxWidth: 150,
