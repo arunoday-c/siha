@@ -5427,7 +5427,7 @@ export default {
                           _mysql.releaseConnection();
                           req.records = {
                             invalid_input: true,
-                            message: "salary is already processed"
+                            message: "Salary already processed, can’t cancel the leave."
                           };
                           next();
                           return;
