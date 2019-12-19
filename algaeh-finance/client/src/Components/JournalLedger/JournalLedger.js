@@ -174,7 +174,7 @@ export default function JournalLedger() {
                   {
                     key: "sourceName",
                     title: "Account",
-                    align: "left",
+                    // align: "left",
                     displayTemplate: (row, record) => {
                       return (
                         <AlgaehTreeSearch
@@ -228,8 +228,8 @@ export default function JournalLedger() {
                           }}
                         />
                       );
-                    },
-                    align: "left"
+                    }
+                    // align: "left"
                   },
                   {
                     key: "credit_amount",
@@ -257,8 +257,8 @@ export default function JournalLedger() {
                           }}
                         />
                       );
-                    },
-                    align: "left"
+                    }
+                    // align: "left"
                   },
                   {
                     key: "payment_mode",
@@ -295,7 +295,7 @@ export default function JournalLedger() {
                   data: journerList
                 }}
                 rowUnique="slno"
-                xaxis={1500}
+                // xaxis={1500}
                 events={{
                   onDelete: result => {
                     setJournerList(data => {
