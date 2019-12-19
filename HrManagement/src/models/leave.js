@@ -5238,7 +5238,7 @@ export default {
                         month_number =
                           parseInt(moment(input.from_date, "YYYY-MM-DD").format("M")) + 1;
                       }else {
-                        from_month = moment(input.from_date, "YYYY-MM-DD").format("M");
+                        month_number = moment(input.from_date, "YYYY-MM-DD").format("M");
                       }
                     }else{
                       month_number = moment(input.from_date).format("M");
