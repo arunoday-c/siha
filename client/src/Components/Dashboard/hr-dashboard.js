@@ -7,6 +7,13 @@ import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 import DashBoardEvents from "./DashBoardEvents";
+import {
+  AlagehFormGroup,
+  AlagehAutoComplete,
+  AlgaehLabel,
+  AlgaehDataGrid
+} from "../Wrapper/algaehWrapper";
+import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 
 class Dashboard extends Component {
   constructor(props) {
@@ -20,13 +27,24 @@ class Dashboard extends Component {
       Desig_Employee: {},
       no_of_emp_join: [],
       avg_salary: 0,
-      no_of_projects: 0
+      no_of_projects: 0,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id
     };
     DashBoardEvents().getEmployeeList(this);
     DashBoardEvents().getEmployeeDepartmentsWise(this);
     DashBoardEvents().getEmployeeDesignationWise(this);
-
     DashBoardEvents().getProjectList(this);
+
+    this.props.getOrganizations({
+      uri: "/organization/getOrganizationByUser",
+      method: "GET",
+      redux: {
+        type: "ORGS_GET_DATA",
+        mappingName: "organizations"
+      }
+    });
   }
 
   showDetailHandler(event) {
@@ -41,9 +59,50 @@ class Dashboard extends Component {
     });
   }
 
+  eventHandaler(e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+
+    this.setState(
+      {
+        [name]: value
+      },
+      () => {
+        DashBoardEvents().getEmployeeList(this);
+        DashBoardEvents().getEmployeeDepartmentsWise(this);
+        DashBoardEvents().getEmployeeDesignationWise(this);
+        DashBoardEvents().getProjectList(this);
+      }
+    );
+  }
   render() {
     return (
       <div className="dashboard ">
+        <div className="row">
+          <AlagehAutoComplete
+            div={{ className: "col-3  form-group" }}
+            label={{
+              forceLabel: "Select a Branch",
+              isImp: true
+            }}
+            selector={{
+              name: "hospital_id",
+              className: "select-fld",
+              value: this.state.hospital_id,
+              dataSource: {
+                textField: "hospital_name",
+                valueField: "hims_d_hospital_id",
+                data: this.props.organizations
+              },
+              onChange: this.eventHandaler.bind(this),
+              onClear: () => {
+                this.setState({
+                  hospital_id: null
+                });
+              }
+            }}
+          />
+        </div>
         <div className="row card-deck">
           <div className="card animated fadeInUp faster">
             <div className="content">
@@ -201,14 +260,16 @@ class Dashboard extends Component {
 
 function mapStateToProps(state) {
   return {
-    hospitaldetails: state.hospitaldetails
+    hospitaldetails: state.hospitaldetails,
+    organizations: state.organizations
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getHospitalDetails: AlgaehActions
+      getHospitalDetails: AlgaehActions,
+      getOrganizations: AlgaehActions
     },
     dispatch
   );
