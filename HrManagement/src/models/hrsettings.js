@@ -108,9 +108,7 @@ export default {
       if (req.query.sub_department_id) {
         strQuery = `select hims_d_designation_id,designation_code, designation,D.created_date from hims_d_employee E \
 inner join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id \
-where E.sub_department_id=${
-          req.query.sub_department_id
-        } group by hims_d_designation_id`;
+where E.sub_department_id=${req.query.sub_department_id} group by hims_d_designation_id`;
       }
       _mysql
         .executeQuery({
@@ -413,6 +411,10 @@ where E.sub_department_id=${
       let _strQuery = "";
       if (req.query.pjoject_status != null) {
         _strQuery = " and pjoject_status = '" + req.query.pjoject_status + "'";
+      }
+
+      if (req.query.hospital_id > 0) {
+        _strQuery = " and hospital_id = '" + req.query.hospital_id + "'";
       }
 
       _mysql

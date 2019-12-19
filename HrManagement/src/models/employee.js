@@ -593,7 +593,7 @@ export default {
               "SELECT SD.sub_department_name, count(*) as no_of_emp  FROM hims_d_employee E, hims_d_sub_department SD WHERE \
             SD.hims_d_sub_department_id = E.sub_department_id and E.record_status = 'A' and E.hospital_id = ? \
             group by SD.hims_d_sub_department_id ; ",
-            values: [req.userIdentity.hospital_id],
+            values: [req.query.hospital_id],
             printQuery: true
           })
           .then(result => {
@@ -626,7 +626,7 @@ export default {
               "SELECT D.designation, count(*) as no_of_emp  FROM hims_d_employee E, hims_d_designation D WHERE \
                 D.hims_d_designation_id = E.employee_designation_id and E.record_status = 'A' and E.hospital_id = ? \
                 group by D.hims_d_designation_id ; ",
-            values: [req.userIdentity.hospital_id],
+            values: [req.query.hospital_id],
             printQuery: true
           })
           .then(result => {

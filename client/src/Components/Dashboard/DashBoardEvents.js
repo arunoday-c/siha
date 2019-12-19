@@ -63,6 +63,7 @@ export default function DashBoardEvents() {
       algaehApiCall({
         uri: "/employee/get",
         module: "hrManagement",
+        data: { hospital_id: $this.state.hospital_id },
         method: "GET",
 
         onSuccess: response => {
@@ -112,7 +113,7 @@ export default function DashBoardEvents() {
         uri: "/employee/getEmployeeDepartmentsWise",
         module: "hrManagement",
         method: "GET",
-        data: { hospital_id: HospitalId },
+        data: { hospital_id: $this.state.hospital_id },
 
         onSuccess: response => {
           if (response.data.success) {
@@ -155,7 +156,7 @@ export default function DashBoardEvents() {
         uri: "/employee/getEmployeeDesignationWise",
         module: "hrManagement",
         method: "GET",
-        data: { hospital_id: HospitalId },
+        data: { hospital_id: $this.state.hospital_id },
         onSuccess: response => {
           if (response.data.success) {
             let no_of_employees = response.data.records;
@@ -197,7 +198,7 @@ export default function DashBoardEvents() {
         uri: "/hrsettings/getProjects",
         module: "hrManagement",
         method: "GET",
-        data: { pjoject_status: "A" },
+        data: { pjoject_status: "A", hospital_id: $this.state.hospital_id },
         onSuccess: res => {
           if (res.data.success) {
             $this.setState({
