@@ -53,34 +53,34 @@ export default memo(function Modal(props) {
         // var file = new Blob([result], { type: "application/pdf" });
 
         // var fileURL = URL.createObjectURL(result);
-        let newWindow = window.open(
-          "",
-          "",
-          "width=800,height=500,left=200,top=200"
-        );
-        newWindow.onload = () => {
-          newWindow.location = result;
-        };
-
-        // let myWindow = window.open(
+        // let newWindow = window.open(
         //   "",
         //   "",
-        //   "width=800,height=500,left=200,top=200,"
+        //   "width=800,height=500,left=200,top=200"
         // );
-        // myWindow.document.title = "Ledger report";
-        // myWindow.document.body.style.overflow = "hidden";
-        // let divElem = document.createElement("div");
-        // divElem.id = "algaeh_frame";
-        // divElem.style.width = "100%";
-        // divElem.style.height = "100%";
-        // let elem = document.createElement("iframe");
-        // elem.src = result;
-        // elem.setAttribute("webkitallowfullscreen", true);
-        // elem.setAttribute("allowfullscreen", true);
-        // elem.style.width = "100%";
-        // elem.style.height = "100%";
-        // divElem.appendChild(elem);
-        // myWindow.document.body.appendChild(divElem);
+        // newWindow.onload = () => {
+        //   newWindow.location = result;
+        // };
+
+        let myWindow = window.open(
+          "",
+          "",
+          "width=800,height=500,left=200,top=200,"
+        );
+        myWindow.document.title = "Ledger report";
+        myWindow.document.body.style.overflow = "hidden";
+        let divElem = document.createElement("div");
+        divElem.id = "algaeh_frame";
+        divElem.style.width = "100%";
+        divElem.style.height = "100%";
+        let elem = document.createElement("iframe");
+        elem.src = result;
+        elem.setAttribute("webkitallowfullscreen", true);
+        elem.setAttribute("allowfullscreen", true);
+        elem.style.width = "100%";
+        elem.style.height = "100%";
+        divElem.appendChild(elem);
+        myWindow.document.body.appendChild(divElem);
         onOk("pdf");
         setLoading(false);
       })
