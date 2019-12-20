@@ -66,7 +66,7 @@ export default function JournalLedger() {
       >
         <AlgaehDateHandler
           div={{
-            className: "col-2 form-group algaeh-date-fld"
+            className: "col-2 algaeh-date-fld"
           }}
           label={{
             forceLabel: "Voucher Date",
@@ -86,7 +86,7 @@ export default function JournalLedger() {
         />{" "}
         <AlgaehFormGroup
           div={{
-            className: "col-2 form-group algaeh-text-fld"
+            className: "col-2 algaeh-text-fld"
           }}
           label={{
             forceLabel: "Voucher No.",
@@ -101,7 +101,7 @@ export default function JournalLedger() {
           }}
         />
         <AlgaehAutoComplete
-          div={{ className: "col-2 form-group " }}
+          div={{ className: "col-2" }}
           label={{
             forceLabel: "Voucher Type",
             isImp: true
@@ -137,30 +137,9 @@ export default function JournalLedger() {
         </div>
       </div>
       <div className="row">
-        <AlgaehFormGroup
-          div={{
-            className: "col-5 form-group algaeh-text-fld"
-          }}
-          label={{
-            forceLabel: "Narration",
-            isImp: false
-          }}
-          textBox={{
-            type: "text",
-            className: "form-control",
-            placeholder: "Enter Narration ex:- Electricity Bill",
-
-            value: narration,
-            onChange: e => {
-              setNarration(e.target.value);
-            }
-          }}
-          // multiline="true"
-        />
-
         <div className="col-12">
           <div
-            className="portlet portlet-bordered"
+            className="portlet portlet-bordered margin-bottom-15"
             style={{ paddingBottom: 0 }}
           >
             <div className="portlet-title">
@@ -344,6 +323,27 @@ export default function JournalLedger() {
             </button>
           </div>
         </div>
+        <div className="col-8"></div>
+        <AlgaehFormGroup
+          div={{
+            className: "col form-group algaeh-text-fld"
+          }}
+          label={{
+            forceLabel: "Narration",
+            isImp: false
+          }}
+          textBox={{
+            type: "text",
+            className: "form-control",
+            placeholder: "Enter Narration ex:- Electricity Bill",
+
+            value: narration,
+            onChange: e => {
+              setNarration(e.target.value);
+            }
+          }}
+          // multiline="true"
+        />
       </div>{" "}
       <div className="hptl-phase1-footer">
         <div className="row">
