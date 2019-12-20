@@ -561,10 +561,24 @@ let algaehSearchConfig = (searchName, req) => {
         orderBy: "IM.hims_d_inventory_item_master_id desc"
       },
       {
+        searchName: "salesitemmaster",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS IM.hims_d_inventory_item_master_id, IM.item_description, IM.category_id, \
+          IM.sales_uom_id,IM.service_id, IM.group_id, IC.category_desc,SR.vat_percent,\
+          IG.group_description, PU.uom_description,SR.standard_fee from hims_d_inventory_item_master IM, \
+          hims_d_inventory_tem_category IC, hims_d_inventory_item_group IG, hims_d_inventory_uom PU, \
+           hims_d_services SR where IM.category_id = IC.hims_d_inventory_tem_category_id and \
+          IM.group_id = IG.hims_d_inventory_item_group_id and IM.sales_uom_id=PU.hims_d_inventory_uom_id and \
+          IM.service_id= SR.hims_d_services_id and IM.item_status='A' and \
+          IM.record_status='A' and IC.record_status='A' and IG.record_status='A'",
+        orderBy: "IM.hims_d_inventory_item_master_id desc",
+        inputSequence: ["inventory_location_id"]
+      },
+      {
         searchName: "tranitemmaster",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS IM.hims_d_inventory_item_master_id, IM.item_description, IM.category_id, IM.sales_uom_id, IM.service_id, IM.group_id, IC.category_desc, IG.group_description, PU.uom_description,\
-          SR.standard_fee,IL.sale_price,IL.avgcost, IM.stocking_uom_id, STOCK_UOM.uom_description as stocking_uom \
+          SR.standard_fee, IL.sale_price, IL.avgcost, IM.stocking_uom_id, STOCK_UOM.uom_description as stocking_uom \
           from hims_d_inventory_item_master IM, hims_d_inventory_tem_category IC,\
           hims_d_inventory_item_group IG, hims_d_inventory_uom PU, hims_d_services SR, \
           hims_m_inventory_item_location IL, hims_d_inventory_uom STOCK_UOM where IL.item_id = IM.hims_d_inventory_item_master_id and \
