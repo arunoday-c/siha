@@ -527,9 +527,9 @@ const PageToPlot = {
   DentalLab: React.lazy(() =>
     retry(() => import("./Components/Laboratory/DentalLab/DentalLab"))
   ),
-  // SalesQuotation: React.lazy(() =>
-  //   retry(() => import("./Components/Sales/SalesQuotation/SalesQuotation"))
-  // ),
+  SalesQuotation: React.lazy(() =>
+    retry(() => import("./Components/Sales/SalesQuotation/SalesQuotation"))
+  ),
 
   Accounts,
   Transactions,

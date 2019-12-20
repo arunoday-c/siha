@@ -23,7 +23,7 @@ import {
     dateFormater,
     onchangegridcol,
     qtyonchangegridcol,
-} from "./SalesListItemsEvents";
+} from "./SalesListServiceEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
@@ -127,7 +127,7 @@ class SalesListItems extends Component {
                                     <div className="row">
                                         <AlgaehAutoSearch
                                             div={{ className: "col-12 form-group mandatory" }}
-                                            label={{ forceLabel: "Item Name (Ctrl + i)" }}
+                                            label={{ forceLabel: "Service Name (Ctrl + i)" }}
                                             title="Search Items"
                                             id="item_id_search"
                                             template={result => {
@@ -165,29 +165,7 @@ class SalesListItems extends Component {
                                             }}
                                         />
 
-                                        <AlagehAutoComplete
-                                            div={{ className: "col-6 form-group mandatory" }}
-                                            label={{ forceLabel: "UOM", isImp: true }}
-                                            selector={{
-                                                name: "uom_id",
-                                                className: "select-fld",
-                                                value: this.state.uom_id,
-                                                dataSource: {
-                                                    textField: "uom_description",
-                                                    valueField: "uom_id",
-                                                    data: this.state.ItemUOM
-                                                },
-                                                onChange: UomchangeTexts.bind(
-                                                    this,
-                                                    this,
-                                                    context
-                                                ),
-                                                others: {
-                                                    disabled: true,
-                                                    tabIndex: "2"
-                                                }
-                                            }}
-                                        />
+                                        
                                         <AlagehFormGroup
                                             div={{ className: "col-6 form-group mandatory" }}
                                             label={{
@@ -312,7 +290,7 @@ class SalesListItems extends Component {
                                                         fieldName: "item_id",
                                                         label: (
                                                             <AlgaehLabel
-                                                                label={{ forceLabel: "Item Name" }}
+                                                                label={{ forceLabel: "Service Name" }}
                                                             />
                                                         ),
                                                         displayTemplate: row => {
@@ -392,57 +370,6 @@ class SalesListItems extends Component {
                                                                         }
                                                                     }}
                                                                 />
-                                                            );
-                                                        },
-                                                        others: {
-                                                            minWidth: 90
-                                                        }
-                                                    },
-                                                    {
-                                                        fieldName: "uom_id",
-                                                        label: (
-                                                            <AlgaehLabel
-                                                                label={{ forceLabel: "UOM" }}
-                                                            />
-                                                        ),
-                                                        displayTemplate: row => {
-                                                            let display =
-                                                                this.props.inventoryitemuom ===
-                                                                    undefined
-                                                                    ? []
-                                                                    : this.props.inventoryitemuom.filter(
-                                                                        f =>
-                                                                            f.hims_d_inventory_uom_id ===
-                                                                            row.uom_id
-                                                                    );
-
-                                                            return (
-                                                                <span>
-                                                                    {display !== null &&
-                                                                        display.length !== 0
-                                                                        ? display[0].uom_description
-                                                                        : ""}
-                                                                </span>
-                                                            );
-                                                        },
-                                                        editorTemplate: row => {
-                                                            let display =
-                                                                this.props.inventoryitemuom ===
-                                                                    undefined
-                                                                    ? []
-                                                                    : this.props.inventoryitemuom.filter(
-                                                                        f =>
-                                                                            f.hims_d_inventory_uom_id ===
-                                                                            row.uom_id
-                                                                    );
-
-                                                            return (
-                                                                <span>
-                                                                    {display !== null &&
-                                                                        display.length !== 0
-                                                                        ? display[0].uom_description
-                                                                        : ""}
-                                                                </span>
                                                             );
                                                         },
                                                         others: {
