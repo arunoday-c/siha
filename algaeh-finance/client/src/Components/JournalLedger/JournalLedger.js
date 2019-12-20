@@ -352,8 +352,6 @@ export default function JournalLedger() {
               type="button"
               className="btn btn-primary"
               onClick={() => {
-                console.log("records_av", records_av);
-                return;
                 if (journerList.length === 0) {
                   AlgaehMessagePop({
                     type: "error",
