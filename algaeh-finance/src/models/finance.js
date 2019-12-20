@@ -682,7 +682,6 @@ export default {
             .groupBy(g => g.day_end_header_id)
             .value();
 
-          console.log("day_end_header_group:", day_end_header_group);
 
           _mysql
             .executeQueryWithTransaction({
@@ -696,7 +695,7 @@ export default {
               //ST- CHECK FOR CLOSING BALANCE BEFORE CREDITING ASSET AND EXPENCE
 
               for (let item in day_end_header_group) {
-                console.log("item:", item);
+              
                 let temp_item = day_end_header_group[item].filter(f => {
                   return (
                     (f.root_id == 1 || f.root_id == 5) && f.payment_type == "CR"
@@ -710,7 +709,6 @@ export default {
                     );
                   });
 
-                  console.log("bal:", bal);
                   if (bal != undefined) {
                     const temp_balance =
                       parseFloat(bal.deb_minus_cred) -
