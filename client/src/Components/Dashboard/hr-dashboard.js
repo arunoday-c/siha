@@ -99,7 +99,8 @@ class Dashboard extends Component {
                 this.setState({
                   hospital_id: null
                 });
-              }
+              },
+              autoComplete: "off"
             }}
           />
         </div>
