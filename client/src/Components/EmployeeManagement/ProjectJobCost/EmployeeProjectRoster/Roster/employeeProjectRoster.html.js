@@ -201,7 +201,7 @@ export default function EmpProjectRoster(props) {
                 <div className="row">
                   {employees.length === 0 ? (
                     <div className="noTimeSheetData">
-                      <h1>Employee Project Roster</h1>
+                      <h1>Project Roster</h1>
                       <i className="fas fa-user-clock" />
                     </div>
                   ) : (
