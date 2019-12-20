@@ -3,7 +3,7 @@ import "./costcenter.scss";
 import { AlgaehAutoComplete } from "algaeh-react-components";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 export default forwardRef(function CostCenter(props, ref) {
-  const { div, result } = props;
+  const { div, result, noborder } = props;
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadBranch, setLoadBranch] = useState(false);
@@ -49,7 +49,10 @@ export default forwardRef(function CostCenter(props, ref) {
   }
 
   return (
-    <div ref={ref} className="col-12 costCenterFilter">
+    <div
+      ref={ref}
+      className={noborder === undefined ? "col-12 costCenterFilter" : "col-12"}
+    >
       <div className="row">
         <div className="col-6">
           <AlgaehAutoComplete

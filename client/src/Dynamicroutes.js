@@ -308,6 +308,9 @@ const PageToPlot = {
   VendorSetup: React.lazy(() =>
     retry(() => import("./Components/VendorSetup/VendorSetup"))
   ),
+  CustomerSetup: React.lazy(() =>
+    retry(() => import("./Components/CustomerSetup/CustomerSetup"))
+  ),
   DayEndProcess: React.lazy(() =>
     retry(() => import("./Components/Finance/DayEndProcess/DayEndProcess"))
   ),
@@ -337,10 +340,14 @@ const PageToPlot = {
     retry(() => import("./Components/Procurement/ShipmentEntry/ShipmentEntry"))
   ),
   RequestForQuotation: React.lazy(() =>
-    retry(() => import("./Components/Procurement/RequestForQuotation/RequestForQuotation"))
+    retry(() =>
+      import("./Components/Procurement/RequestForQuotation/RequestForQuotation")
+    )
   ),
   VendorsQuotation: React.lazy(() =>
-    retry(() => import("./Components/Procurement/VendorsQuotation/VendorsQuotation"))
+    retry(() =>
+      import("./Components/Procurement/VendorsQuotation/VendorsQuotation")
+    )
   ),
   AcquisitionEntry: React.lazy(() =>
     retry(() =>
@@ -520,6 +527,10 @@ const PageToPlot = {
   DentalLab: React.lazy(() =>
     retry(() => import("./Components/Laboratory/DentalLab/DentalLab"))
   ),
+  // SalesQuotation: React.lazy(() =>
+  //   retry(() => import("./Components/Sales/SalesQuotation/SalesQuotation"))
+  // ),
+
   Accounts,
   Transactions,
   JournalLedger,

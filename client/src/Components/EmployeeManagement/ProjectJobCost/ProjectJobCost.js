@@ -83,7 +83,7 @@ class ProjectJobCost extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Employee Project Roster"
+                      forceLabel: "Project Roster"
                     }}
                   />
                 }
