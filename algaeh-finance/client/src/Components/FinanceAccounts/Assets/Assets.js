@@ -9,17 +9,17 @@ import {
   AlgaehConfirm,
   AlgaehMessagePop,
   Input,
-  Icon,
-  DatePicker
+  Icon
+  // DatePicker
 } from "algaeh-react-components";
 import ReportLauncher from "../AccountReport";
-import Charts from "../Charts";
-import moment from "moment";
+// import Charts from "../Charts";
+// import moment from "moment";
 import {
   getAccounts,
   removeAccount,
-  isPositive,
-  getChartData
+  isPositive
+  // getChartData
 } from ".././FinanceAccountEvent";
 import "../alice.scss";
 export default function Assets() {
@@ -35,9 +35,9 @@ export default function Assets() {
   const [isAccountHead, setIsAccountHead] = useState(false);
   const [reportVisible, setReportVisible] = useState(false);
   const [editorRecord, setEditorRecord] = useState({});
-  const [period, setPeriod] = useState("4");
-  const [accountChart, setAccountChart] = useState([]);
-  const [year, setYear] = useState(moment());
+  // const [period, setPeriod] = useState("4");
+  // const [accountChart, setAccountChart] = useState([]);
+  // const [year, setYear] = useState(moment());
   const assetCode = "1";
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
@@ -115,7 +115,7 @@ export default function Assets() {
           setTreeData(firstData.children);
           setAssetAmount(firstData["subtitle"]);
           setSymbol(firstData["trans_symbol"]);
-          loadChartData(firstData.finance_account_head_id);
+          // loadChartData(firstData.finance_account_head_id);
         } else {
           setTreeData([]);
         }
@@ -124,20 +124,20 @@ export default function Assets() {
       }
     });
   }
-  function loadChartData(finheadId) {
-    getChartData({
-      finance_account_head_id:
-        finheadId === undefined ? financeHeadId : finheadId,
-      period: period,
-      year: moment(year).format("YYYY")
-    })
-      .then(result => {
-        setAccountChart(result);
-      })
-      .catch(error => {
-        AlgaehMessagePop({ type: "error", display: error });
-      });
-  }
+  // function loadChartData(finheadId) {
+  //   getChartData({
+  //     finance_account_head_id:
+  //       finheadId === undefined ? financeHeadId : finheadId,
+  //     period: period,
+  //     year: moment(year).format("YYYY")
+  //   })
+  //     .then(result => {
+  //       setAccountChart(result);
+  //     })
+  //     .catch(error => {
+  //       AlgaehMessagePop({ type: "error", display: error });
+  //     });
+  // }
   useEffect(loadAccount, []);
 
   return (
