@@ -10,7 +10,7 @@ import {
 import moment from "moment";
 import CostCenter from "../../costcenter";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
-
+let resultdata = {};
 export default memo(function Modal(props) {
   const { selectedNode, title, onCancel, visible, onOk, parentId } = props;
   const [plaseWait, setPleaseWait] = useState(
@@ -20,7 +20,6 @@ export default memo(function Modal(props) {
   const previousMonthDate = [moment().add(-1, "M"), moment().add(-1, "days")];
   const [dateRange, setDateRange] = useState(previousMonthDate);
   const [loading, setLoading] = useState(false);
-  let resultdata = {};
 
   function onPdfGeneration() {
     setPleaseWait("Please wait pdf is generating...");
