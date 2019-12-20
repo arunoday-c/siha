@@ -3374,8 +3374,7 @@ addtoDayEnd: (req, res, next) => {
         query:
           "select product_type from hims_d_hospital where hims_d_hospital_id=? and \
       (product_type='HIMS_ERP' or product_type='HRMS_ERP' or product_type='FINANCE_ERP');\
-      select hims_d_hospital_id,head_office,cost_center_type from \
-          hims_d_hospital where  head_office='Y'; ",
+      SELECT cost_center_type  FROM finance_options limit 1; ",
         values: [req.userIdentity.hospital_id],
         printQuery: false
       })
@@ -3752,7 +3751,7 @@ addtoDayEnd: (req, res, next) => {
 
             req.records = {
               internal_error: true,
-              message: "Please Define proper Head-Office"
+              message: "Please Define Cost center type"
             };
             _mysql.rollBackTransaction(() => {
               next();

@@ -22,7 +22,7 @@ const executePDF = function executePDFMethod(options) {
         moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD") > 0 &&
         moment(input.to_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
       ) {
-        strQry = ` and payment_date between date('${input.from_date}') and date('${input.to_date}') `;
+        strQry += ` and payment_date between date('${input.from_date}') and date('${input.to_date}') `;
       }
 
       if (input.leafnode == "N") {
@@ -36,19 +36,33 @@ const executePDF = function executePDFMethod(options) {
         select H.finance_account_head_id,PC.child_id
         from finance_account_head  H inner join cte
         on H.parent_acc_id = cte.finance_account_head_id   left join finance_head_m_child PC on H.finance_account_head_id
-        =PC.head_id )select * from cte;`,
+        =PC.head_id )select * from cte;
+        SELECT cost_center_type  FROM finance_options limit 1;`,
             values: [input.head_id],
             printQuery: false
           })
           .then(result => {
-            if (result.length > 0) {
-              const head_ids = result.map(m => m.finance_account_head_id);
-              const child_ids = result
+            if (result[0].length > 0) {
+              const head_ids = result[0].map(m => m.finance_account_head_id);
+              const child_ids = result[0]
                 .filter(f => {
                   return f.child_id > 0;
                 })
                 .map(m => m.child_id);
 
+              //ST-cost center
+              if (
+                result[1][0]["cost_center_type"] == "P" &&
+                input.cost_center_id > 0
+              ) {
+                strQry += ` and project_id=${input.cost_center_id} `;
+              } else if (
+                result[1][0]["cost_center_type"] == "SD" &&
+                input.cost_center_id > 0
+              ) {
+                strQry += ` and sub_department_id=${input.cost_center_id} `;
+              }
+              //END-cost center
               options.mysql
                 .executeQuery({
                   query: `   SELECT finance_voucher_id,payment_date ,head_id,child_id,
