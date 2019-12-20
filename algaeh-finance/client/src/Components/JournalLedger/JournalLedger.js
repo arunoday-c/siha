@@ -138,10 +138,7 @@ export default function JournalLedger() {
       </div>
       <div className="row">
         <div className="col-12">
-          <div
-            className="portlet portlet-bordered margin-bottom-15"
-            style={{ paddingBottom: 0 }}
-          >
+          <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">Journal Voucher List </h3>
@@ -301,29 +298,26 @@ export default function JournalLedger() {
                 }}
               />
             </div>
-            <button
-              className="btn btn-default btn-small"
-              style={{
-                position: "absolute",
-                marginTop: -45
-              }}
-              onClick={() => {
-                setJournerList(result => {
-                  const serialNo = result.length + 1;
-                  result.push({
-                    child_id: undefined,
-                    head_id: undefined,
-                    slno: serialNo
-                  });
-                  return [...result];
-                });
-              }}
-            >
-              Add
-            </button>
           </div>
         </div>
-        <div className="col-8"></div>
+        <div className="col-8">
+          <button
+            className="btn btn-default btn-small"
+            onClick={() => {
+              setJournerList(result => {
+                const serialNo = result.length + 1;
+                result.push({
+                  child_id: undefined,
+                  head_id: undefined,
+                  slno: serialNo
+                });
+                return [...result];
+              });
+            }}
+          >
+            Add New Entry
+          </button>
+        </div>
         <AlgaehFormGroup
           div={{
             className: "col form-group algaeh-text-fld"
