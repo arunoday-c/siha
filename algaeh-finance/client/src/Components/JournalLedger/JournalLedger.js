@@ -386,7 +386,7 @@ export default function JournalLedger() {
                 addJurnorLedger({
                   transaction_date: voucherDate,
                   voucher_type: voucherType,
-                  voucher_no: voucher_no,
+                  voucher_no: `${prefix}${voucher_no}`,
                   ...costcenter,
                   from_screen: getCookie("ScreenCode"),
                   hospital_id: getCookie("HospitalId"),
