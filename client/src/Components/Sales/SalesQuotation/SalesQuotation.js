@@ -3,12 +3,14 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
+  AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import {
+  datehandle,
   changeTexts,
   customerTexthandle,
   ClearData,
@@ -18,7 +20,6 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import "./SalesQuotation.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import ReactDOM from "react-dom";
 
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import SalesListItems from "./SalesListItems/SalesListItems";
@@ -41,23 +42,37 @@ class SalesQuotation extends Component {
     super(props);
 
     this.state = {
+      hims_f_sales_quotation_id: null,
+      sales_quotation_number: null,
       sales_quotation_date: new Date(),
-      sales_quotation_detail: [],
+      sales_quotation_mode: "I",
+      reference_number: null,
+      customer_id: null,
+      quote_validity: null,
+      sales_man: null,
+      payment_terms: null,
+      service_terms: null,
+      other_terms: null,
+      sub_total: null,
+      discount_amount: null,
+      net_total: null,
+      total_tax: null,
+      net_payable: null,
+      narration: null,
+
+      tax_percentage: null,
+
+      sales_quotation_items: [],
+      sales_quotation_services: [],
       decimal_place: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).decimal_places
+      ).decimal_places,
+      saveEnable: true,
+      dataExists: false
     };
-    this.onKeyPress = this.onKeyPress.bind(this);
-  }
-
-  UNSAFE_componentWillMount() {
-    // let IOputs = INVPOSIOputs.inputParam();
-    // this.setState(IOputs);
   }
 
   componentDidMount() {
-    document.addEventListener("keypress", this.onKeyPress, false);
-
     if (
       this.props.opitemlist === undefined ||
       this.props.opitemlist.length === 0
@@ -149,31 +164,10 @@ class SalesQuotation extends Component {
     });
   }
 
-  onKeyPress(e) {
-    if (e.ctrlKey && e.keyCode === 9) {
-      const element = ReactDOM.findDOMNode(
-        document.getElementById("root")
-      ).querySelector("input[name='item_id']");
-      element.focus();
-    }
-
-    if (e.ctrlKey && e.keyCode === 14) {
-      ClearData(this);
-      const element = ReactDOM.findDOMNode(
-        document.getElementById("root")
-      ).querySelector("input[name='item_id']");
-      element.focus();
-    }
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("keypress", this.onKeyPress, false);
-  }
-
   render() {
     return (
       <React.Fragment>
-        <div onKeyPress={this.onKeyPress}>
+        <div>
           <BreadCrumb
             title={
               <AlgaehLabel
@@ -263,35 +257,38 @@ class SalesQuotation extends Component {
             {/* Patient code */}
             <div className="col-lg-12">
               <div className="row">
-                <div className="col-2">
-                  <label>Quotation Type</label>
+                <div className="col">
+                  <label>Quotation Mode</label>
                   <div className="customRadio">
                     <label className="radio inline">
                       <input
                         type="radio"
-                        value="SRV"
-                        name="quotation_type"
-                        // checked={this.state.reciepts_type === "LO"}
-                        // onChange={this.textHandler.bind(this)}
+                        value="I"
+                        name="sales_quotation_mode"
+                        checked={
+                          this.state.sales_quotation_mode === "I" ? true : false
+                        }
+                        onChange={changeTexts.bind(this, this)}
                       />
-                      <span>Service</span>
+                      <span>Item</span>
                     </label>
-
                     <label className="radio inline">
                       <input
                         type="radio"
-                        value="ITM"
-                        name="quotation_type"
-                        // checked={this.state.reciepts_type === "FS"}
-                        // onChange={this.textHandler.bind(this)}
+                        value="S"
+                        name="sales_quotation_mode"
+                        checked={
+                          this.state.sales_quotation_mode === "S" ? true : false
+                        }
+                        onChange={changeTexts.bind(this, this)}
                       />
-                      <span>Item</span>
+                      <span>Service</span>
                     </label>
                   </div>
                 </div>
 
                 <AlagehAutoComplete
-                  div={{ className: "col-3 mandatory" }}
+                  div={{ className: "col mandatory" }}
                   label={{ forceLabel: "Customer", isImp: true }}
                   selector={{
                     name: "customer_id",
@@ -311,16 +308,17 @@ class SalesQuotation extends Component {
                     autoComplete: "off",
                     others: {
                       disabled:
-                        this.state.sales_quotation_detail.length > 0
+                        this.state.sales_quotation_items.length > 0
                           ? true
                           : false
                     }
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col-2 mandatory" }}
+                  div={{ className: "col mandatory" }}
                   label={{ forceLabel: "Payment Terms", isImp: true }}
                   selector={{
+                    sort: "off",
                     name: "payment_terms",
                     className: "select-fld",
                     value: this.state.payment_terms,
@@ -340,6 +338,22 @@ class SalesQuotation extends Component {
                     }
                   }}
                 />
+
+                <AlgaehDateHandler
+                  div={{ className: "col mandatory" }}
+                  label={{ forceLabel: "quote validity", isImp: true }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "quote_validity"
+                  }}
+                  minDate={new Date()}
+                  events={{
+                    onChange: datehandle.bind(this, this)
+                  }}
+                  disabled={this.state.dataExists}
+                  value={this.state.quote_validity}
+                />
+
                 <AlagehFormGroup
                   div={{ className: "col" }}
                   label={{
@@ -348,8 +362,9 @@ class SalesQuotation extends Component {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "name_sales_person",
-                    value: ""
+                    name: "sales_man",
+                    value: this.state.sales_man,
+                    onChange: changeTexts.bind(this, this)
                   }}
                 />
                 <AlagehFormGroup
@@ -360,10 +375,41 @@ class SalesQuotation extends Component {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "ref_no_quotation",
-                    value: ""
+                    name: "reference_number",
+                    value: this.state.reference_number,
+                    onChange: changeTexts.bind(this, this)
                   }}
                 />
+
+                <AlagehFormGroup
+                  div={{ className: "col" }}
+                  label={{
+                    forceLabel: "Other Terms",
+                    isImp: false
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "other_terms",
+                    value: this.state.other_terms,
+                    onChange: changeTexts.bind(this, this)
+                  }}
+                />
+
+                {this.state.sales_quotation_mode === "S" ? (
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Service Terms",
+                      isImp: false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "service_terms",
+                      value: this.state.service_terms,
+                      onChange: changeTexts.bind(this, this)
+                    }}
+                  />
+                ) : null}
               </div>
             </div>
           </div>
@@ -378,10 +424,13 @@ class SalesQuotation extends Component {
                   }
                 }}
               >
-                <SalesListService POSIOputs={this.state} />
-                <SalesListItems POSIOputs={this.state} />
+                {this.state.sales_quotation_mode === "S" ? (
+                  <SalesListService SALESIOputs={this.state} />
+                ) : (
+                  <SalesListItems SALESIOputs={this.state} />
+                )}
               </MyContext.Provider>
-            </div>{" "}
+            </div>
             <div className="row">
               <div className="col-3"></div>
               <div className="col-9" style={{ textAlign: "right" }}>
@@ -402,7 +451,6 @@ class SalesQuotation extends Component {
                     />
                     <h6>{getAmountFormart(this.state.discount_amount)}</h6>
                   </div>
-
                   <div className="col">
                     <AlgaehLabel
                       label={{
@@ -411,7 +459,6 @@ class SalesQuotation extends Component {
                     />
                     <h6>{getAmountFormart(this.state.net_total)}</h6>
                   </div>
-
                   <div className="col">
                     <AlgaehLabel
                       label={{
@@ -420,7 +467,6 @@ class SalesQuotation extends Component {
                     />
                     <h6>{getAmountFormart(this.state.total_tax)}</h6>
                   </div>
-
                   <div className="col">
                     <AlgaehLabel
                       label={{
@@ -428,7 +474,24 @@ class SalesQuotation extends Component {
                       }}
                     />
                     <h6>{getAmountFormart(this.state.net_payable)}</h6>
-                  </div>
+                  </div>{" "}
+                  <AlagehFormGroup
+                    div={{ className: "col-3 textAreaLeft" }}
+                    label={{
+                      forceLabel: "Narration",
+                      isImp: false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "narration",
+                      value: this.state.narration,
+                      onChange: changeTexts.bind(this, this),
+                      others: {
+                        multiline: true,
+                        rows: "4"
+                      }
+                    }}
+                  />
                 </div>
               </div>
             </div>
