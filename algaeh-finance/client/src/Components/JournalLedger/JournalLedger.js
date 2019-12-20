@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import CostCenter from "../costcenter";
 import moment from "moment";
 import "./JournalLedger.scss";
 import {
@@ -16,6 +17,7 @@ import {
   addJurnorLedger
 } from "./JournalLedger.events";
 import { getCookie } from "../../utils/algaehApiCall";
+let records_av = {};
 export default function JournalLedger() {
   const [voucherDate, setVoucherDate] = useState(undefined);
   const [voucher_no, setVoucherNo] = useState(undefined);
@@ -130,6 +132,9 @@ export default function JournalLedger() {
             }
           }}
         />
+        <div className="col-6">
+          <CostCenter result={records_av} noborder={false} />
+        </div>
       </div>
       <div className="row">
         <AlgaehFormGroup
@@ -152,6 +157,7 @@ export default function JournalLedger() {
           }}
           // multiline="true"
         />
+
         <div className="col-12">
           <div
             className="portlet portlet-bordered"
@@ -183,10 +189,16 @@ export default function JournalLedger() {
                           tree={{
                             treeDefaultExpandAll: true,
                             onChange: (value, label) => {
-                              record["sourceName"] = value;
-                              const source = value.split("-");
-                              record["child_id"] = source[1];
-                              record["head_id"] = source[0];
+                              if (value !== undefined) {
+                                record["sourceName"] = value;
+                                const source = value.split("-");
+                                record["child_id"] = source[1];
+                                record["head_id"] = source[0];
+                              } else {
+                                record["sourceName"] = "";
+                                record["child_id"] = "";
+                                record["head_id"] = "";
+                              }
                             },
                             data: accounts,
                             textField: "label",
@@ -340,6 +352,8 @@ export default function JournalLedger() {
               type="button"
               className="btn btn-primary"
               onClick={() => {
+                console.log("records_av", records_av);
+                return;
                 if (journerList.length === 0) {
                   AlgaehMessagePop({
                     type: "error",
@@ -361,10 +375,34 @@ export default function JournalLedger() {
                   });
                   return;
                 }
+                let costcenter = {};
+                if (Object.keys(records_av).length === 0) {
+                  AlgaehMessagePop({
+                    type: "info",
+                    display: "Please Branch and Cost Center is mandatory"
+                  });
+                  return;
+                } else {
+                  if (
+                    records_av["hospital_id"] === undefined ||
+                    records_av["cost_center_id"] === undefined
+                  ) {
+                    AlgaehMessagePop({
+                      type: "info",
+                      display: "Branch and Cost Center is mandatory"
+                    });
+                    return;
+                  } else {
+                    costcenter["hospital_id"] = records_av["hospital_id"];
+                    costcenter["cost_center_id"] = records_av["cost_center_id"];
+                  }
+                }
+
                 addJurnorLedger({
                   transaction_date: voucherDate,
                   voucher_type: voucherType,
                   voucher_no: voucher_no,
+                  ...costcenter,
                   from_screen: getCookie("ScreenCode"),
                   hospital_id: getCookie("HospitalId"),
                   details: journerList
