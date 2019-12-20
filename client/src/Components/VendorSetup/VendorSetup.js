@@ -11,9 +11,8 @@ import {
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import swal from "sweetalert2";
+import Enumerable from "linq";
 
-//TODO
-//Inactive Different API Call Integration
 
 class VendorSetup extends Component {
   constructor(props) {
@@ -27,7 +26,8 @@ class VendorSetup extends Component {
       cities: [],
       vat_applicable: false,
       btn_txt: "ADD",
-      hims_d_vendor_id: null
+      hims_d_vendor_id: null,
+      vendor_status: "A"
     };
     this.getAllVendors();
     this.getCountries();
@@ -128,7 +128,7 @@ class VendorSetup extends Component {
           postal_code: this.state.postal_code,
           bank_name: this.state.bank_name,
           address: this.state.address,
-          vendor_status: "A"
+          vendor_status: this.state.vendor_status
         };
 
         algaehApiCall({
@@ -163,6 +163,30 @@ class VendorSetup extends Component {
       btn_txt: "Update",
       ...data
     });
+    this.getStateCity(data.country_id, data.state_id)
+  }
+
+  getStateCity(country_id, state_id) {
+
+    let country = Enumerable.from(this.state.countries)
+      .where(w => w.hims_d_country_id === parseInt(country_id, 10))
+      .firstOrDefault();
+    let states = country !== undefined ? country.states : [];
+    if (this.state.countries !== undefined && states.length !== 0) {
+      let cities = Enumerable.from(states)
+        .where(w => w.hims_d_state_id === parseInt(state_id, 10))
+        .firstOrDefault();
+      if (cities !== undefined) {
+        this.setState({
+          states: states,
+          cities: cities.cities,
+        });
+      } else {
+        this.setState({
+          states: states
+        });
+      }
+    }
   }
 
   changeTexts(e) {
@@ -202,50 +226,62 @@ class VendorSetup extends Component {
     }
   }
 
-  deleteVendor(data, e) {
-    swal({
-      title: "Delete Vendor " + data.vendor_name + "?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
-      if (willDelete.value) {
-        algaehApiCall({
-          uri: "/vendor/deleteVendorMaster",
-          module: "masterSettings",
-          data: {
-            hims_d_vendor_id: data.hims_d_vendor_id
-          },
-          method: "DELETE",
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record deleted successfully . .",
-                type: "success"
-              });
+  // deleteVendor(data, e) {
+  //   swal({
+  //     title: "Delete Vendor " + data.vendor_name + "?",
+  //     type: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonText: "Yes",
+  //     confirmButtonColor: "#44b8bd",
+  //     cancelButtonColor: "#d33",
+  //     cancelButtonText: "No"
+  //   }).then(willDelete => {
+  //     if (willDelete.value) {
+  //       algaehApiCall({
+  //         uri: "/vendor/deleteVendorMaster",
+  //         module: "masterSettings",
+  //         data: {
+  //           hims_d_vendor_id: data.hims_d_vendor_id
+  //         },
+  //         method: "DELETE",
+  //         onSuccess: response => {
+  //           if (response.data.success) {
+  //             swalMessage({
+  //               title: "Record deleted successfully . .",
+  //               type: "success"
+  //             });
 
-              this.getAllVendors();
-              this.resetSaveState();
-            } else if (!response.data.success) {
-              swalMessage({
-                title: response.data.message,
-                type: "error"
-              });
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
-      } 
+  //             this.getAllVendors();
+  //             this.resetSaveState();
+  //           } else if (!response.data.success) {
+  //             swalMessage({
+  //               title: response.data.message,
+  //               type: "error"
+  //             });
+  //           }
+  //         },
+  //         onFailure: error => {
+  //           swalMessage({
+  //             title: error.message,
+  //             type: "error"
+  //           });
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
+
+
+  radioChange(e) {
+    let vendor_status = "A";
+    if (e.target.value === "I") {
+      vendor_status = "I";
+    }
+    this.setState({
+      vendor_status: vendor_status
     });
   }
+
 
   render() {
     return (
@@ -460,6 +496,43 @@ class VendorSetup extends Component {
                       }
                     }}
                   />
+
+                  {this.state.hims_d_customer_id !== null ?
+                    <div className="col-3">
+                      <label>Customer Status</label>
+                      <div className="customRadio" style={{ borderBottom: 0 }}>
+                        <label className="radio inline">
+                          <input
+                            type="radio"
+                            value="A"
+                            checked={this.state.vendor_status === "A" ? true : false}
+                            onChange={this.radioChange.bind(this)}
+                          />
+                          <span>
+                            <AlgaehLabel
+                              label={{
+                                fieldName: "active"
+                              }}
+                            />
+                          </span>
+                        </label>
+                        <label className="radio inline">
+                          <input
+                            type="radio"
+                            value="I"
+                            checked={this.state.vendor_status === "I" ? true : false}
+                            onChange={this.radioChange.bind(this)}
+                          />
+                          <span>
+                            <AlgaehLabel
+                              label={{
+                                fieldName: "inactive"
+                              }}
+                            />
+                          </span>
+                        </label>
+                      </div>
+                    </div> : null}
                 </div>
                 <h6 style={{ marginTop: 30 }}>Payment Details</h6>
                 <hr style={{ margin: 0 }} />
@@ -517,15 +590,24 @@ class VendorSetup extends Component {
                       }
                     }}
                   />
-                  <div className="col-2" style={{ marginTop: 19 }}>
-                    <input
-                      name="vat_applicable"
-                      checked={this.state.vat_applicable}
-                      type="checkbox"
-                      style={{ marginRight: "5px" }}
-                      onChange={this.changeChecks.bind(this)}
-                    />
-                    <label>VAT Applicable</label>
+                  <div
+                    className="col-2 customCheckbox"
+                    style={{ paddingTop: "10px" }}
+                  >
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        name="vat_applicable"
+                        value="Y"
+                        checked={this.state.vat_applicable}
+                        onChange={this.changeChecks.bind(this)}
+                      />
+                      <span>
+                        <AlgaehLabel
+                          label={{ forceLabel: "VAT Applicable" }}
+                        />
+                      </span>
+                    </label>
                   </div>
 
                   <AlagehFormGroup
@@ -617,10 +699,10 @@ class VendorSetup extends Component {
                                 className="fas fa-pen"
                                 onClick={this.editVendor.bind(this, row)}
                               />
-                              <i
+                              {/* <i
                                 className="fas fa-trash-alt"
-                                onClick={this.deleteVendor.bind(this, row)}
-                              />
+                              onClick={this.deleteVendor.bind(this, row)}
+                              /> */}
                             </div>
                           </div>
                         );
