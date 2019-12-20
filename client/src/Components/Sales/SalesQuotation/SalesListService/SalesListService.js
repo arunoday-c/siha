@@ -8,27 +8,23 @@ import "./../../../../styles/site.scss";
 import {
     AlgaehDataGrid,
     AlgaehLabel,
-    AlagehFormGroup,
-    AlagehAutoComplete
+    AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 
 import {
-    itemchangeText,
+    servicechangeText,
     numberchangeTexts,
-    AddItems,
+    AddSerices,
     deleteSalesDetail,
-    UomchangeTexts,
-    dateFormater,
     onchangegridcol,
     qtyonchangegridcol,
 } from "./SalesListServiceEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import Options from "../../../../Options.json";
-import moment from "moment"
+import _ from "lodash";
 
 class SalesListItems extends Component {
     constructor(props) {
@@ -38,26 +34,19 @@ class SalesListItems extends Component {
             selectBatchButton: true,
 
             addItemButton: true,
-            item_description: "",
+            service_name: "",
             addedItem: true,
-            item_category_id: null,
-            item_group_id: null,
-            item_id: null,
+
+            services_id: null,
             quantity: 0,
-            uom_id: null,
-            uom_description: null,
             discount_percentage: 0,
-            barcode: null,
-            ItemUOM: [],
-            Batch_Items: [],
             unit_cost: 0,
-            Real_unit_cost: 0,
             tax_percent: 0
         };
     }
 
     UNSAFE_componentWillMount() {
-        let InputOutput = this.props.POSIOputs;
+        let InputOutput = this.props.SALESIOputs;
         this.setState({ ...this.state, ...InputOutput });
     }
 
@@ -108,12 +97,8 @@ class SalesListItems extends Component {
         }
     }
 
-    componentWillUnmount() {
-        document.removeEventListener("keypress", this.onKeyPress, false);
-    }
-
     UNSAFE_componentWillReceiveProps(nextProps) {
-        this.setState(nextProps.POSIOputs);
+        this.setState(nextProps.SALESIOputs);
     }
 
     render() {
@@ -127,45 +112,41 @@ class SalesListItems extends Component {
                                     <div className="row">
                                         <AlgaehAutoSearch
                                             div={{ className: "col-12 form-group mandatory" }}
-                                            label={{ forceLabel: "Service Name (Ctrl + i)" }}
+                                            label={{ forceLabel: "Service Name" }}
                                             title="Search Items"
                                             id="item_id_search"
-                                            template={result => {
+                                            template={({ service_name, service_type }) => {
                                                 return (
+
                                                     <section className="resultSecStyles">
                                                         <div className="row">
                                                             <div className="col-12">
                                                                 <h4 className="title">
-                                                                    {result.item_description}
+                                                                    {_.startCase(_.toLower(service_name))}
                                                                 </h4>
-                                                                <small>{result.uom_description}</small>
+                                                                <p className="searchMoreDetails">
+                                                                    <span>
+                                                                        Service Type:
+                                                                        <b>{_.startCase(_.toLower(service_type))}</b>
+                                                                    </span>
+                                                                </p>
                                                             </div>
-                                                            {/* <div className="col-4">
-                                                                                <h6 className="price">
-                                                                                    {getAmountFormart(
-                                                                                        result.sale_price
-                                                                                    )}
-                                                                                </h6>
-                                                                            </div> */}
                                                         </div>
                                                     </section>
                                                 );
                                             }}
-                                            name="item_id"
-                                            columns={spotlightSearch.Items.Invitemmaster}
-                                            displayField="item_description"
-                                            value={this.state.item_description}
-                                            searchName="salesitemmaster"
-                                            extraParameters={{
-                                                inventory_location_id: this.state.location_id
-                                            }}
-                                            onClick={itemchangeText.bind(this, this)}
+                                            name="services_id"
+                                            columns={spotlightSearch.Services.servicemaster}
+                                            displayField="service_name"
+                                            value={this.state.service_name}
+                                            searchName="servicemaster"
+                                            onClick={servicechangeText.bind(this, this)}
                                             ref={attReg => {
                                                 this.attReg = attReg;
                                             }}
                                         />
 
-                                        
+
                                         <AlagehFormGroup
                                             div={{ className: "col-6 form-group mandatory" }}
                                             label={{
@@ -225,8 +206,8 @@ class SalesListItems extends Component {
                                                 }}
                                             />
                                             <h6>
-                                                {this.state.tax_percent
-                                                    ? this.state.tax_percent
+                                                {this.state.tax_percentage
+                                                    ? this.state.tax_percentage
                                                     : "-----------"}
                                             </h6>
                                         </div>
@@ -244,23 +225,23 @@ class SalesListItems extends Component {
                                         </div> <div className="col-12 subFooter-btn">
                                             <button
                                                 className="btn btn-primary"
-                                                onClick={AddItems.bind(this, this, context)}
+                                                onClick={AddSerices.bind(this, this, context)}
                                                 disabled={this.state.addItemButton}
                                                 tabIndex="5"
                                             >
                                                 Add Item
-                                                        </button>
+                                            </button>
 
                                         </div>
                                     </div>
                                 </div>
-                              
+
                             </div>
 
                             <div className="col-9">
                                 <div className="portlet portlet-bordered margin-bottom-15">
                                     <div className="row">
-                                    <div className="col-12" id="SaleQuotationGrid_Cntr">
+                                        <div className="col-12" id="SaleQuotationGrid_Cntr">
                                             <AlgaehDataGrid
                                                 id="SaleQuotationGrid"
                                                 columns={[
@@ -287,50 +268,13 @@ class SalesListItems extends Component {
                                                         }
                                                     },
                                                     {
-                                                        fieldName: "item_id",
+                                                        fieldName: "service_name",
                                                         label: (
                                                             <AlgaehLabel
                                                                 label={{ forceLabel: "Service Name" }}
                                                             />
                                                         ),
-                                                        displayTemplate: row => {
-                                                            let display =
-                                                                this.props.opitemlist === undefined
-                                                                    ? []
-                                                                    : this.props.opitemlist.filter(
-                                                                        f =>
-                                                                            f.hims_d_inventory_item_master_id ===
-                                                                            row.item_id
-                                                                    );
-
-                                                            return (
-                                                                <span>
-                                                                    {display !== undefined &&
-                                                                        display.length !== 0
-                                                                        ? display[0].item_description
-                                                                        : ""}
-                                                                </span>
-                                                            );
-                                                        },
-                                                        editorTemplate: row => {
-                                                            let display =
-                                                                this.props.opitemlist === undefined
-                                                                    ? []
-                                                                    : this.props.opitemlist.filter(
-                                                                        f =>
-                                                                            f.hims_d_inventory_item_master_id ===
-                                                                            row.item_id
-                                                                    );
-
-                                                            return (
-                                                                <span>
-                                                                    {display !== undefined &&
-                                                                        display.length !== 0
-                                                                        ? display[0].item_description
-                                                                        : ""}
-                                                                </span>
-                                                            );
-                                                        },
+                                                        disabled: true,
                                                         others: {
                                                             minWidth: 200
                                                         }
@@ -485,7 +429,7 @@ class SalesListItems extends Component {
                                                         disabled: true
                                                     },
                                                     {
-                                                        fieldName: "tax_percent",
+                                                        fieldName: "tax_percentage",
                                                         label: (
                                                             <AlgaehLabel
                                                                 label={{
@@ -520,7 +464,7 @@ class SalesListItems extends Component {
                                                 ]}
                                                 keyId="service_type_id"
                                                 dataSource={{
-                                                    data: this.state.sales_quotation_detail
+                                                    data: this.state.sales_quotation_services
                                                 }}
                                                 paging={{ page: 0, rowsPerPage: 10 }}
 

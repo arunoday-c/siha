@@ -498,6 +498,7 @@ class CustomerSetup extends Component {
                                             isImp: true
                                         }}
                                         selector={{
+                                            sort: "off",
                                             name: "payment_terms",
                                             className: "select-fld",
                                             value: this.state.payment_terms,
