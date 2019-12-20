@@ -17,7 +17,6 @@ const executePDF = function executePDFMethod(options) {
       });
 
       let strQry = "";
-
       if (
         moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD") > 0 &&
         moment(input.to_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
@@ -28,7 +27,32 @@ const executePDF = function executePDFMethod(options) {
       if (input.leafnode == "Y") {
         options.mysql
           .executeQuery({
-            query: ` SELECT finance_voucher_id,monthname(concat('1999-',month,'-01')) as month_name ,
+            query: `SELECT cost_center_type  FROM finance_options limit 1;`,
+            values: [
+              input.head_id,
+              input.child_id,
+              input.head_id,
+              input.child_id
+            ],
+            printQuery: true
+          })
+          .then(resul => {
+            //ST-cost center
+            if (
+              resul[0]["cost_center_type"] == "P" &&
+              input.cost_center_id > 0
+            ) {
+              strQry += ` and project_id=${input.cost_center_id} `;
+            } else if (
+              resul[0]["cost_center_type"] == "SD" &&
+              input.cost_center_id > 0
+            ) {
+              strQry += ` and sub_department_id=${input.cost_center_id} `;
+            }
+            //END-cost center
+            options.mysql
+              .executeQuery({
+                query: ` SELECT finance_voucher_id,monthname(concat('1999-',month,'-01')) as month_name ,
           sum(credit_amount) as credit_amount,
           sum(debit_amount) as debit_amount ,head_id,child_id,month,
           coalesce(sum(debit_amount)-sum(credit_amount),0)as debit_minus_credit ,
@@ -37,95 +61,105 @@ const executePDF = function executePDFMethod(options) {
           finance_voucher_details VD left join finance_account_head H on VD.head_id=H.finance_account_head_id
           left join finance_account_child C on VD.child_id=C.finance_account_child_id where 
           head_id=? and child_id=? ${strQry} group by month with rollup  ;`,
-            values: [input.head_id, input.child_id],
-            printQuery: false
-          })
-          .then(result => {
-            if (result.length > 0) {
-              const totals = result.pop();
+                values: [input.head_id, input.child_id],
+                printQuery: true
+              })
+              .then(result => {
+                if (result.length > 0) {
+                  const totals = result.pop();
 
-              let outputArray = [];
-              //ST-all months
-              if (input.parent_id == 1 || input.parent_id == 5) {
-                outputArray = result.map(m => {
-                  return {
-                    month_name: m.month_name,
-                    credit_amount: parseFloat(m.credit_amount).toFixed(
-                      decimal_places
-                    ),
-                    debit_amount: parseFloat(m.debit_amount).toFixed(
-                      decimal_places
-                    ),
-                    account_details: m.account_details,
+                  let outputArray = [];
+                  //ST-all months
+                  if (input.parent_id == 1 || input.parent_id == 5) {
+                    outputArray = result.map(m => {
+                      return {
+                        month_name: m.month_name,
+                        credit_amount: parseFloat(m.credit_amount).toFixed(
+                          decimal_places
+                        ),
+                        debit_amount: parseFloat(m.debit_amount).toFixed(
+                          decimal_places
+                        ),
+                        account_details: m.account_details,
 
-                    balance_amount: parseFloat(m.debit_minus_credit).toFixed(
-                      decimal_places
-                    )
-                  };
-                });
-              } else {
-                outputArray = result.map(m => {
-                  return {
-                    month_name: m.month_name,
-                    credit_amount: parseFloat(m.credit_amount).toFixed(
-                      decimal_places
-                    ),
-                    debit_amount: parseFloat(m.debit_amount).toFixed(
-                      decimal_places
-                    ),
-                    account_details: m.account_details,
+                        balance_amount: parseFloat(
+                          m.debit_minus_credit
+                        ).toFixed(decimal_places)
+                      };
+                    });
+                  } else {
+                    outputArray = result.map(m => {
+                      return {
+                        month_name: m.month_name,
+                        credit_amount: parseFloat(m.credit_amount).toFixed(
+                          decimal_places
+                        ),
+                        debit_amount: parseFloat(m.debit_amount).toFixed(
+                          decimal_places
+                        ),
+                        account_details: m.account_details,
 
-                    balance_amount: parseFloat(m.credit_minus_debit).toFixed(
-                      decimal_places
-                    )
-                  };
-                });
-              }
-              //END-all months
+                        balance_amount: parseFloat(
+                          m.credit_minus_debit
+                        ).toFixed(decimal_places)
+                      };
+                    });
+                  }
+                  //END-all months
 
-              let final_totals = {};
-              if (input.parent_id == 1 || input.parent_id == 5) {
-                const symbol = " Dr";
-                final_totals = {
-                  final_bal:
-                    parseFloat(totals.debit_minus_credit).toFixed(
-                      decimal_places
-                    ) + symbol,
-                  total_credit:
-                    parseFloat(totals.credit_amount).toFixed(decimal_places) +
-                    symbol,
-                  total_debit:
-                    parseFloat(totals.debit_amount).toFixed(decimal_places) +
-                    symbol
-                };
-              } else {
-                const symbol = " Cr";
-                final_totals = {
-                  final_bal:
-                    parseFloat(totals.credit_minus_debit).toFixed(
-                      decimal_places
-                    ) + symbol,
-                  total_credit:
-                    parseFloat(totals.credit_amount).toFixed(decimal_places) +
-                    symbol,
-                  total_debit:
-                    parseFloat(totals.debit_amount).toFixed(decimal_places) +
-                    symbol
-                };
-              }
+                  let final_totals = {};
+                  if (input.parent_id == 1 || input.parent_id == 5) {
+                    const symbol = " Dr";
+                    final_totals = {
+                      final_bal:
+                        parseFloat(totals.debit_minus_credit).toFixed(
+                          decimal_places
+                        ) + symbol,
+                      total_credit:
+                        parseFloat(totals.credit_amount).toFixed(
+                          decimal_places
+                        ) + symbol,
+                      total_debit:
+                        parseFloat(totals.debit_amount).toFixed(
+                          decimal_places
+                        ) + symbol
+                    };
+                  } else {
+                    const symbol = " Cr";
+                    final_totals = {
+                      final_bal:
+                        parseFloat(totals.credit_minus_debit).toFixed(
+                          decimal_places
+                        ) + symbol,
+                      total_credit:
+                        parseFloat(totals.credit_amount).toFixed(
+                          decimal_places
+                        ) + symbol,
+                      total_debit:
+                        parseFloat(totals.debit_amount).toFixed(
+                          decimal_places
+                        ) + symbol
+                    };
+                  }
 
-              resolve({
-                ...final_totals,
-                details: outputArray
+                  resolve({
+                    ...final_totals,
+                    details: outputArray
+                  });
+                } else {
+                  resolve({
+                    details: []
+                  });
+                }
+              })
+              .catch(e => {
+                console.log("EROOR:", e);
+                options.mysql.releaseConnection();
+                next(e);
               });
-            } else {
-              resolve({
-                details: []
-              });
-            }
           })
           .catch(e => {
-            console.log("EROOR:", e);
+            console.log("EEEE6:", e);
             options.mysql.releaseConnection();
             next(e);
           });
