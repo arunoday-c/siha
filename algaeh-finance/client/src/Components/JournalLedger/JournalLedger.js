@@ -192,6 +192,33 @@ export default function JournalLedger() {
                     }
                   },
                   {
+                    key: "payment_type",
+                    title: "Account Type ",
+                    displayTemplate: (row, record) => {
+                      return (
+                        <AlgaehAutoComplete
+                          div={{}}
+                          label={{}}
+                          selector={{
+                            value: row,
+                            dataSource: {
+                              //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
+                              data: [
+                                { value: "DR", label: "Debit" },
+                                { value: "CR", label: "Credit" }
+                              ],
+                              valueField: "value",
+                              textField: "label"
+                            },
+                            onChange: selected => {
+                              record["payment_type"] = selected.value;
+                            }
+                          }}
+                        />
+                      );
+                    }
+                  },
+                  {
                     key: "debit_amount",
                     title: "Debit Amount",
                     displayTemplate: (row, records) => {
@@ -262,8 +289,8 @@ export default function JournalLedger() {
                               //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
                               data: [
                                 { value: "CA", label: "Cash" },
-                                { label: "Cheque", value: "CH" },
-                                { label: "Card", value: "CD" }
+                                { value: "CH", label: "Cheque" },
+                                { value: "CD", label: "Card" }
                               ],
                               valueField: "value",
                               textField: "label"
@@ -341,7 +368,7 @@ export default function JournalLedger() {
       </div>{" "}
       <div className="hptl-phase1-footer">
         <div className="row">
-          <div className="col-lg-12">
+          <div className="col-12">
             <button
               type="button"
               className="btn btn-primary"
@@ -414,6 +441,9 @@ export default function JournalLedger() {
               }}
             >
               Save
+            </button>
+            <button type="button" className="btn btn-default">
+              Clear
             </button>
           </div>
         </div>
