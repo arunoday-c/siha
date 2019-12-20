@@ -108,7 +108,7 @@ export function algaehApiCall(options) {
 
     if (settings.skipParse === false) {
       settings.data = JSON.parse(
-        JSON.stringify(settings.data, function(k, v) {
+        JSON.stringify(settings.data, function (k, v) {
           return v === undefined ? null : v;
         }),
         valueReviver
@@ -198,10 +198,10 @@ export function algaehApiCall(options) {
       const timmer =
         settings.timerNotRequired === undefined
           ? {
-              timeout: settings.timeout !== undefined ? settings.timeout : 60000
-            }
+            timeout: settings.timeout !== undefined ? settings.timeout : 60000
+          }
           : {};
-
+      debugger
       axios({
         method: settings.method,
         url: settings.baseUrl + settings.uri + queryParametres,
@@ -223,10 +223,12 @@ export function algaehApiCall(options) {
         ...cancelRequest
       })
         .then(response => {
+          debugger
           if (typeof settings.onSuccess === "function")
             settings.onSuccess(response);
         })
         .catch(err => {
+          debugger
           AlgaehLoader({ show: false });
           if (!showOtherPopup) {
             return;
@@ -255,15 +257,15 @@ export function algaehApiCall(options) {
             if (process.env.NODE_ENV === "development") {
               console.error(
                 "Error Message : \n" +
-                  err.message +
-                  " \n Detail Info : \n" +
-                  JSON.stringify(err)
+                err.message +
+                " \n Detail Info : \n" +
+                JSON.stringify(err)
               );
             }
           } else {
             if (settings.module === "documentManagement") {
               const reader = new FileReader();
-              reader.onload = function() {
+              reader.onload = function () {
                 if (settings.onFileFailure === "function") {
                   settings.onFileFailure(reader.result);
                   return;
@@ -293,7 +295,7 @@ export function algaehApiCall(options) {
               err.response.headers["content-type"] === "text/plain"
             ) {
               const reader = new FileReader();
-              reader.onload = function() {
+              reader.onload = function () {
                 swalMessage({
                   title: reader.result,
                   type: "error",
@@ -319,7 +321,7 @@ export function algaehApiCall(options) {
             } else if (
               err.response !== undefined &&
               err.response.headers["content-type"] ===
-                "application/json; charset=utf-8"
+              "application/json; charset=utf-8"
             ) {
               if (
                 err.response.data !== undefined &&
@@ -595,11 +597,11 @@ function IDGenerator() {
   this.length = 9;
   this.timestamp = +new Date();
 
-  var _getRandomInt = function(min, max) {
+  var _getRandomInt = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
-  this.generate = function() {
+  this.generate = function () {
     var ts = this.timestamp.toString();
     var parts = ts.split("").reverse();
     var id = "";

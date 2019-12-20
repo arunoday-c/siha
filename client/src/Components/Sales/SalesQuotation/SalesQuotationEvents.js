@@ -83,49 +83,24 @@ const ClearData = ($this, e) => {
   $this.setState(IOputs)
 };
 
-const SavePosEnrty = $this => {
+const SaveSalesQuotation = $this => {
   AlgaehLoader({ show: true });
 
-  $this.state.posted = "Y";
-  $this.state.transaction_type = "POS";
-  $this.state.transaction_date = $this.state.pos_date;
-
-  for (let i = 0; i < $this.state.inventory_stock_detail.length; i++) {
-    $this.state.inventory_stock_detail[i].location_id =
-      $this.state.location_id;
-    $this.state.inventory_stock_detail[i].location_type =
-      $this.state.location_type;
-    $this.state.inventory_stock_detail[i].operation = "-";
-    $this.state.inventory_stock_detail[i].sales_uom =
-      $this.state.inventory_stock_detail[i].uom_id;
-    $this.state.inventory_stock_detail[i].item_code_id =
-      $this.state.item_id;
-    $this.state.inventory_stock_detail[i].grn_number =
-      $this.state.inventory_stock_detail[i].grn_no;
-    $this.state.inventory_stock_detail[i].item_category_id =
-      $this.state.inventory_stock_detail[i].item_category;
-    $this.state.inventory_stock_detail[i].net_total =
-      $this.state.inventory_stock_detail[i].net_extended_cost;
-  }
-
+  debugger
   algaehApiCall({
-    uri: "/posEntry/addPosEntry",
-    module: "inventory",
+    uri: "/addSalesQuotation",
+    module: "sales",
+    method: "POST",
     data: $this.state,
     onSuccess: response => {
+      debugger
       if (response.data.success) {
         $this.setState({
-          pos_number: response.data.records.pos_number,
-          hims_f_inventory_pos_header_id:
-            response.data.records.hims_f_inventory_pos_header_id,
-          year: response.data.records.year,
-          period: response.data.records.period,
-          receipt_number: response.data.records.receipt_number,
-          saveEnable: true,
-          postEnable: false,
-          popUpGenereted: true
+          sales_quotation_number: response.records.sales_quotation_number,
+          hims_f_sales_quotation_id:
+            response.data.records.hims_f_sales_quotation_id,
+          saveEnable: true
         });
-
         swalMessage({
           type: "success",
           title: "Saved successfully ..."
@@ -203,7 +178,7 @@ const datehandle = ($this, ctrl, e) => {
 export {
   changeTexts,
   ClearData,
-  SavePosEnrty,
+  SaveSalesQuotation,
   // LocationchangeTexts,  
   customerTexthandle,
   datehandle
