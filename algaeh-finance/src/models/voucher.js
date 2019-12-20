@@ -267,7 +267,6 @@ export default {
                   input.voucher_type,
                   input.voucher_no,
                   input.from_screen,
-
                   "JV",
                   input.hospital_id
                 ]
