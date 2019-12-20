@@ -308,6 +308,9 @@ const PageToPlot = {
   VendorSetup: React.lazy(() =>
     retry(() => import("./Components/VendorSetup/VendorSetup"))
   ),
+  CustomerSetup: React.lazy(() =>
+    retry(() => import("./Components/CustomerSetup/CustomerSetup"))
+  ),
   DayEndProcess: React.lazy(() =>
     retry(() => import("./Components/Finance/DayEndProcess/DayEndProcess"))
   ),
@@ -520,6 +523,10 @@ const PageToPlot = {
   DentalLab: React.lazy(() =>
     retry(() => import("./Components/Laboratory/DentalLab/DentalLab"))
   ),
+  SalesQuotation: React.lazy(() =>
+    retry(() => import("./Components/Sales/SalesQuotation/SalesQuotation"))
+  ),
+
   Accounts,
   Transactions,
   JournalLedger,
