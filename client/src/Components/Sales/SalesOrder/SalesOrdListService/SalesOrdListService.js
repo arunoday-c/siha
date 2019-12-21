@@ -3,7 +3,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext";
-// import "./SalesListService.scss";
 import "./../../../../styles/site.scss";
 import {
     AlgaehDataGrid,
@@ -20,13 +19,13 @@ import {
     deleteSalesDetail,
     onchangegridcol,
     qtyonchangegridcol,
-} from "./SalesListServiceEvents";
+} from "./SalesOrdListServiceEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import _ from "lodash";
 
-class SalesListService extends Component {
+class SalesOrdListService extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -506,5 +505,5 @@ export default withRouter(
     connect(
         mapStateToProps,
         mapDispatchToProps
-    )(SalesListService)
+    )(SalesOrdListService)
 );

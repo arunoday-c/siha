@@ -531,6 +531,10 @@ const PageToPlot = {
     retry(() => import("./Components/Sales/SalesQuotation/SalesQuotation"))
   ),
 
+  SalesOrder: React.lazy(() =>
+    retry(() => import("./Components/Sales/SalesOrder/SalesOrder"))
+  ),
+
   Accounts,
   Transactions,
   JournalLedger,

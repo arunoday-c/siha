@@ -28,11 +28,6 @@ import SalesListService from "./SalesListService/SalesListService";
 import MyContext from "../../../utils/MyContext";
 import Options from "../../../Options.json";
 import {
-    algaehApiCall,
-    swalMessage,
-    getCookie
-} from "../../../utils/algaehApiCall";
-import {
     AlgaehOpenContainer,
     getAmountFormart
 } from "../../../utils/GlobalFunctions";
@@ -104,64 +99,6 @@ class SalesQuotation extends Component {
                 }
             });
         }
-
-        if (
-            this.props.oplocations === undefined ||
-            this.props.oplocations.length === 0
-        ) {
-            this.props.getLocation({
-                uri: "/inventoryGlobal/getUserLocationPermission",
-                module: "inventory",
-                method: "GET",
-                redux: {
-                    type: "LOCATIOS_GET_DATA",
-                    mappingName: "oplocations"
-                }
-            });
-        }
-
-        let IOputs = {};
-        let _screenName = getCookie("ScreenName").replace("/", "");
-
-        algaehApiCall({
-            uri: "/userPreferences/get",
-            data: {
-                screenName: _screenName,
-                identifier: "InventoryLocation"
-            },
-            method: "GET",
-            onSuccess: response => {
-                if (response.data.records.selectedValue !== undefined) {
-                    IOputs.location_id = response.data.records.selectedValue;
-                }
-                algaehApiCall({
-                    uri: "/userPreferences/get",
-                    data: {
-                        screenName: _screenName,
-                        identifier: "LocationType"
-                    },
-                    method: "GET",
-                    onSuccess: response => {
-                        if (response.data.records.selectedValue !== undefined) {
-                            IOputs.location_type = response.data.records.selectedValue;
-                        }
-                        this.setState(IOputs);
-                    },
-                    onFailure: error => {
-                        swalMessage({
-                            title: error.message,
-                            type: "error"
-                        });
-                    }
-                });
-            },
-            onFailure: error => {
-                swalMessage({
-                    title: error.message,
-                    type: "error"
-                });
-            }
-        });
     }
 
     render() {
@@ -534,7 +471,6 @@ class SalesQuotation extends Component {
 function mapStateToProps(state) {
     return {
         opitemlist: state.opitemlist,
-        oplocations: state.oplocations,
         customer_data: state.customer_data
     };
 }
