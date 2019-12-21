@@ -68,7 +68,7 @@ const numberchangeTexts = ($this, context, e) => {
 const servicechangeText = ($this, e, ctrl) => {
     let name = ctrl;
 
-    let value = e.hims_d_inventory_item_master_id;
+    let value = e.hims_d_services_id;
 
     $this.setState({
         [name]: value,
