@@ -143,7 +143,7 @@ export default function Filter(props) {
         showLoading={true}
       />
       <AlagehAutoComplete
-        div={{ className: "col-2" }}
+        div={{ className: "col-1" }}
         label={{
           forceLabel: "Select Year",
           isImp: true
