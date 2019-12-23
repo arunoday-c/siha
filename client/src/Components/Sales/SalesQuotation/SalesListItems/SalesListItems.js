@@ -30,8 +30,6 @@ class SalesListItems extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectBatch: false,
-            selectBatchButton: true,
 
             addItemButton: true,
             item_description: "",
@@ -128,13 +126,6 @@ class SalesListItems extends Component {
                                                                 </h4>
                                                                 <small>{result.uom_description}</small>
                                                             </div>
-                                                            {/* <div className="col-4">
-                                                                                <h6 className="price">
-                                                                                    {getAmountFormart(
-                                                                                        result.sale_price
-                                                                                    )}
-                                                                                </h6>
-                                                                            </div> */}
                                                         </div>
                                                     </section>
                                                 );
@@ -147,6 +138,9 @@ class SalesListItems extends Component {
                                             onClick={itemchangeText.bind(this, this)}
                                             ref={attReg => {
                                                 this.attReg = attReg;
+                                            }}
+                                            others={{
+                                                disabled: this.state.dataExists
                                             }}
                                         />
 
@@ -277,7 +271,14 @@ class SalesListItems extends Component {
                                                                         row
                                                                     )}
                                                                 >
-                                                                    <i className="fas fa-trash-alt" />
+                                                                    <i
+                                                                        style={{
+                                                                            pointerEvents:
+                                                                                this.state.dataExists ? "none" : "",
+                                                                            opacity:
+                                                                                this.state.dataExists ? "0.1" : ""
+                                                                        }}
+                                                                        className="fas fa-trash-alt" />
                                                                 </span>
                                                             );
                                                         }
@@ -302,7 +303,7 @@ class SalesListItems extends Component {
                                                             />
                                                         ),
                                                         displayTemplate: row => {
-                                                            return (
+                                                            return this.state.dataExists === true ? parseFloat(row.quantity) : (
                                                                 <AlagehFormGroup
                                                                     div={{}}
                                                                     textBox={{
@@ -379,7 +380,7 @@ class SalesListItems extends Component {
                                                             />
                                                         ),
                                                         displayTemplate: row => {
-                                                            return (
+                                                            return this.state.dataExists === true ? row.discount_percentage : (
                                                                 <AlagehFormGroup
                                                                     div={{}}
                                                                     textBox={{

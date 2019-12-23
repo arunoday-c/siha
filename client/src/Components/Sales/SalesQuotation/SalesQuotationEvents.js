@@ -36,7 +36,19 @@ const changeTexts = ($this, ctrl, e) => {
           AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
         ).decimal_places,
         saveEnable: true,
-        dataExists: false
+        dataExists: false,
+
+        addItemButton: true,
+        item_description: "",
+        addedItem: true,
+
+        item_id: null,
+        quantity: 0,
+        uom_id: null,
+        uom_description: null,
+        discount_percentage: 0,
+        unit_cost: 0,
+        tax_percent: 0
       });
       break;
 
@@ -77,7 +89,19 @@ const ClearData = ($this, e) => {
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
     ).decimal_places,
     saveEnable: true,
-    dataExists: false
+    dataExists: false,
+
+    addItemButton: true,
+    item_description: "",
+    addedItem: true,
+
+    item_id: null,
+    quantity: 0,
+    uom_id: null,
+    uom_description: null,
+    discount_percentage: 0,
+    unit_cost: 0,
+    tax_percent: 0
   };
 
   $this.setState(IOputs)
@@ -85,21 +109,20 @@ const ClearData = ($this, e) => {
 
 const SaveSalesQuotation = $this => {
   AlgaehLoader({ show: true });
-
-  debugger
   algaehApiCall({
-    uri: "/addSalesQuotation",
+    uri: "/SalesQuotation/addSalesQuotation",
     module: "sales",
     method: "POST",
     data: $this.state,
     onSuccess: response => {
-      debugger
+
       if (response.data.success) {
         $this.setState({
-          sales_quotation_number: response.records.sales_quotation_number,
+          sales_quotation_number: response.data.records.sales_quotation_number,
           hims_f_sales_quotation_id:
             response.data.records.hims_f_sales_quotation_id,
-          saveEnable: true
+          saveEnable: true,
+          dataExists: true
         });
         swalMessage({
           type: "success",
@@ -122,40 +145,7 @@ const SaveSalesQuotation = $this => {
       });
     }
   });
-
-
 };
-
-// const LocationchangeTexts = ($this, ctrl, e) => {
-//   e = ctrl || e;
-//   let name = e.name || e.target.name;
-//   let value = e.value || e.target.value;
-//   $this.setState(
-//     { [name]: value, location_type: e.selected.location_type },
-//     () => {
-//       let _screenName = getCookie("ScreenName").replace("/", "");
-//       algaehApiCall({
-//         uri: "/userPreferences/save",
-//         data: {
-//           screenName: _screenName,
-//           identifier: "InventoryLocation",
-//           value: value
-//         },
-//         method: "POST"
-//       });
-
-//       algaehApiCall({
-//         uri: "/userPreferences/save",
-//         data: {
-//           screenName: _screenName,
-//           identifier: "LocationType",
-//           value: e.selected.location_type
-//         },
-//         method: "POST"
-//       });
-//     }
-//   );
-// };
 
 const customerTexthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -175,11 +165,48 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
+
+const getCtrlCode = ($this, docNumber) => {
+  AlgaehLoader({ show: true });
+  algaehApiCall({
+    uri: "/SalesQuotation/getSalesQuotation",
+    module: "sales",
+    method: "GET",
+    data: { sales_quotation_number: docNumber },
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+
+        if (data.sales_quotation_mode === "I") {
+          data.sales_quotation_items = data.qutation_detail
+        } else {
+          data.sales_quotation_services = data.qutation_detail
+        }
+        data.saveEnable = true;
+        data.dataExists = true;
+
+        data.addedItem = true;
+        $this.setState(data);
+      }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+
+};
+
 export {
   changeTexts,
   ClearData,
   SaveSalesQuotation,
   // LocationchangeTexts,  
   customerTexthandle,
-  datehandle
+  datehandle,
+  getCtrlCode
 };

@@ -1,19 +1,73 @@
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
-import Enumerable from "linq";
 import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
-
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
-const texthandle = ($this, e) => {
+const texthandle = ($this, ctrl, e) => {
+    e = ctrl || e;
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
+    switch (name) {
+        case "sales_quotation_mode":
+            $this.setState({
+                [name]: value,
+                hims_f_sales_order_id: null,
+                sales_quotation_number: null,
+                sales_quotation_id: null,
+                sales_order_number: null,
+                sales_order_date: new Date(),
+                sales_order_mode: "I",
+                reference_number: null,
+                customer_id: null,
+                quote_validity: null,
+                sales_man: null,
+                payment_terms: null,
+                service_terms: null,
+                other_terms: null,
+                sub_total: null,
+                discount_amount: null,
+                net_total: null,
+                total_tax: null,
+                net_payable: null,
+                narration: null,
+                project_id: null,
+                customer_po_no: null,
+                tax_percentage: null,
 
-    $this.setState({
-        [name]: value
-    });
+                sales_order_items: [],
+                sales_order_services: [],
+                decimal_place: JSON.parse(
+                    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+                ).decimal_places,
+                saveEnable: true,
+                dataExists: false,
+                hospital_id: JSON.parse(
+                    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+                ).hims_d_hospital_id,
+
+                addItemButton: true,
+                item_description: "",
+                addedItem: true,
+
+                item_id: null,
+                quantity: 0,
+                uom_id: null,
+                uom_description: null,
+                discount_percentage: 0,
+                unit_cost: 0,
+                tax_percent: 0
+            });
+            break;
+
+        default:
+            $this.setState({
+                [name]: value
+            });
+            break;
+    }
+
 };
 
 const customerTexthandle = ($this, e) => {
@@ -38,10 +92,11 @@ const datehandle = ($this, ctrl, e) => {
 const SalesQuotationSearch = ($this, e) => {
     AlgaehSearch({
         searchGrid: {
-            columns: spotlightSearch.RequisitionEntry.ReqEntry
+            columns: spotlightSearch.Sales.SalesQuotation
         },
-        searchName: $this.state.po_from === "PHR" ? "PhrPOEntry" : "InvPOEntry",
+        searchName: "SalesQuotation",
         uri: "/gloabelSearch/get",
+        inputs: " sales_quotation_mode= '" + $this.state.sales_order_mode + "'",
 
         onContainsChange: (text, serchBy, callBack) => {
             callBack(text);
@@ -49,135 +104,38 @@ const SalesQuotationSearch = ($this, e) => {
         onRowSelect: row => {
             AlgaehLoader({ show: true });
             algaehApiCall({
-                uri:
-                    $this.state.po_from === "PHR"
-                        ? "/PurchaseOrderEntry/getPharRequisitionEntryPO"
-                        : "/PurchaseOrderEntry/getInvRequisitionEntryPO",
-                module: "procurement",
-                data: {
-                    material_requisition_number: row.material_requisition_number
-                },
+                uri: "/SalesQuotation/getSalesQuotation",
+                module: "sales",
                 method: "GET",
+                data: { sales_quotation_number: row.sales_quotation_number },
                 onSuccess: response => {
-                    if (response.data.success === true) {
+                    if (response.data.success) {
                         let data = response.data.records;
-                        if (data !== null && data !== undefined) {
 
+                        data.sales_quotation_id = data.hims_f_sales_quotation_id;
 
-                            data.saveEnable = false;
-
-                            data.location_type = "MS";
-
-                            // data.dataFinder = true;
-
-                            for (let i = 0; i < data.po_entry_detail.length; i++) {
-                                let purchase_cost = data.po_entry_detail[i].purchase_cost;
-
-                                if ($this.state.po_from === "PHR") {
-                                    data.po_entry_detail[i].pharmacy_requisition_id =
-                                        data.po_entry_detail[i].hims_f_pharmacy_material_detail_id;
-
-                                    data.po_entry_detail[i].phar_item_category =
-                                        data.po_entry_detail[i].item_category_id;
-                                    data.po_entry_detail[i].phar_item_group =
-                                        data.po_entry_detail[i].item_group_id;
-                                    data.po_entry_detail[i].phar_item_id =
-                                        data.po_entry_detail[i].item_id;
-
-                                    data.po_entry_detail[i].pharmacy_uom_id =
-                                        data.po_entry_detail[i].purchase_uom_id;
-                                } else {
-                                    data.po_entry_detail[i].inventory_requisition_id =
-                                        data.po_entry_detail[i].hims_f_inventory_material_detail_id;
-
-                                    data.po_entry_detail[i].inv_item_category_id =
-                                        data.po_entry_detail[i].item_category_id;
-                                    data.po_entry_detail[i].inv_item_group_id =
-                                        data.po_entry_detail[i].item_group_id;
-                                    data.po_entry_detail[i].inv_item_id =
-                                        data.po_entry_detail[i].item_id;
-
-                                    data.po_entry_detail[i].inventory_uom_id =
-                                        data.po_entry_detail[i].purchase_uom_id;
-                                }
-
-                                data.po_entry_detail[i].order_quantity =
-                                    data.po_entry_detail[i].quantity_authorized;
-                                data.po_entry_detail[i].total_quantity =
-                                    data.po_entry_detail[i].quantity_authorized;
-
-                                data.po_entry_detail[i].uom_requested_id =
-                                    data.po_entry_detail[i].item_uom;
-
-                                data.po_entry_detail[i].unit_price = purchase_cost;
-                                data.po_entry_detail[i].unit_cost = purchase_cost;
-
-                                data.po_entry_detail[i].extended_price =
-                                    purchase_cost * data.po_entry_detail[i].quantity_authorized;
-
-                                data.po_entry_detail[i].extended_cost =
-                                    purchase_cost * data.po_entry_detail[i].quantity_authorized;
-                                data.po_entry_detail[i].net_extended_cost =
-                                    purchase_cost * data.po_entry_detail[i].quantity_authorized;
-                                data.po_entry_detail[i].quantity_outstanding = 0;
-
-                                data.po_entry_detail[i].sub_discount_percentage = 0;
-                                data.po_entry_detail[i].sub_discount_amount = 0;
-                                data.po_entry_detail[i].expected_arrival_date =
-                                    $this.state.expected_date;
-                                data.po_entry_detail[i].authorize_quantity = 0;
-                                data.po_entry_detail[i].rejected_quantity = 0;
-                                data.po_entry_detail[i].tax_percentage =
-                                    $this.state.tax_percentage;
-                                data.po_entry_detail[i].tax_amount =
-                                    (parseFloat(data.po_entry_detail[i].extended_cost) *
-                                        parseFloat($this.state.tax_percentage)) /
-                                    100;
-
-                                data.po_entry_detail[i].total_amount =
-                                    parseFloat(data.po_entry_detail[i].extended_cost) +
-                                    data.po_entry_detail[i].tax_amount;
-                            }
-
-                            let sub_total = Enumerable.from(data.po_entry_detail).sum(s =>
-                                parseFloat(s.extended_price)
-                            );
-
-                            let net_total = Enumerable.from(data.po_entry_detail).sum(s =>
-                                parseFloat(s.net_extended_cost)
-                            );
-
-                            let net_payable = Enumerable.from(data.po_entry_detail).sum(s =>
-                                parseFloat(s.total_amount)
-                            );
-
-                            let total_tax = Enumerable.from(data.po_entry_detail).sum(s =>
-                                parseFloat(s.tax_amount)
-                            );
-
-                            let detail_discount = Enumerable.from(data.po_entry_detail).sum(
-                                s => parseFloat(s.sub_discount_amount)
-                            );
-
-                            data.sub_total = sub_total;
-                            data.net_total = net_total;
-                            data.net_payable = net_payable;
-                            data.total_tax = total_tax;
-                            data.detail_discount = detail_discount;
-
-                            if ($this.state.po_from === "PHR") {
-                                data.phar_requisition_id =
-                                    data.hims_f_pharamcy_material_header_id;
-                                data.pharmacy_stock_detail = data.po_entry_detail;
-                            } else {
-                                data.inv_requisition_id =
-                                    data.hims_f_inventory_material_header_id;
-                                data.inventory_stock_detail = data.po_entry_detail;
-                            }
-                            $this.setState(data);
+                        if (data.sales_quotation_mode === "I") {
+                            data.sales_order_items = data.qutation_detail
+                        } else {
+                            data.sales_order_services = data.qutation_detail
                         }
+                        data.saveEnable = true;
+                        data.dataExists = true;
+                        data.tax_percentage = data.vat_percentage;
+                        // data.addedItem = false;
+                        $this.setState(data);
+                        AlgaehLoader({ show: false });
+
+                        // $this.setState({ ...response.data.records });
                     }
                     AlgaehLoader({ show: false });
+                },
+                onFailure: error => {
+                    AlgaehLoader({ show: false });
+                    swalMessage({
+                        title: error.message,
+                        type: "error"
+                    });
                 }
             });
         }
@@ -186,10 +144,12 @@ const SalesQuotationSearch = ($this, e) => {
 
 const ClearData = ($this, e) => {
     let IOputs = {
-        hims_f_sales_quotation_id: null,
+        hims_f_sales_order_id: null,
         sales_quotation_number: null,
-        sales_quotation_date: new Date(),
-        sales_quotation_mode: "I",
+        sales_quotation_id: null,
+        sales_order_number: null,
+        sales_order_date: new Date(),
+        sales_order_mode: "I",
         reference_number: null,
         customer_id: null,
         quote_validity: null,
@@ -204,16 +164,31 @@ const ClearData = ($this, e) => {
         net_payable: null,
         narration: null,
         project_id: null,
+        customer_po_no: null,
         tax_percentage: null,
 
-
-        sales_quotation_items: [],
-        sales_quotation_services: [],
+        sales_order_items: [],
+        sales_order_services: [],
         decimal_place: JSON.parse(
             AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
         ).decimal_places,
         saveEnable: true,
-        dataExists: false
+        dataExists: false,
+        hospital_id: JSON.parse(
+            AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+        ).hims_d_hospital_id,
+
+        addItemButton: true,
+        item_description: "",
+        addedItem: true,
+
+        item_id: null,
+        quantity: 0,
+        uom_id: null,
+        uom_description: null,
+        discount_percentage: 0,
+        unit_cost: 0,
+        tax_percent: 0
     };
 
     $this.setState(IOputs)
@@ -221,33 +196,33 @@ const ClearData = ($this, e) => {
 
 const SavePOEnrty = $this => {
     AlgaehLoader({ show: true });
-    if ($this.state.po_from === "PHR") {
-        $this.state.po_entry_detail = $this.state.pharmacy_stock_detail;
-    } else {
-        $this.state.po_entry_detail = $this.state.inventory_stock_detail;
-    }
-
     algaehApiCall({
-        uri: "/PurchaseOrderEntry/addPurchaseOrderEntry",
-        module: "procurement",
+        uri: "/SalesOrder/addSalesOrder",
+        module: "sales",
+        method: "POST",
         data: $this.state,
         onSuccess: response => {
-            if (response.data.success === true) {
-                $this.setState({
-                    purchase_number: response.data.records.purchase_number,
-                    hims_f_procurement_po_header_id:
-                        response.data.records.hims_f_procurement_po_header_id,
-                    saveEnable: true,
-                    dataExitst: true,
-                    dataFinder: true
-                });
 
+            if (response.data.success) {
+                $this.setState({
+                    sales_order_number: response.data.records.sales_order_number,
+                    hims_f_sales_order_id:
+                        response.data.records.hims_f_sales_order_id,
+                    saveEnable: true,
+                    dataExists: true
+                });
                 swalMessage({
                     type: "success",
-                    title: "Saved successfully . ."
+                    title: "Saved successfully ..."
+                });
+                AlgaehLoader({ show: false });
+            } else {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                    type: "error",
+                    title: response.data.records.message
                 });
             }
-            AlgaehLoader({ show: false });
         },
         onFailure: error => {
             AlgaehLoader({ show: false });
@@ -260,52 +235,26 @@ const SavePOEnrty = $this => {
 };
 
 const getCtrlCode = ($this, docNumber) => {
-
+    AlgaehLoader({ show: true });
     algaehApiCall({
-        uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
-        module: "procurement",
+        uri: "/SalesOrder/getSalesOrder",
+        module: "sales",
         method: "GET",
-        data: { purchase_number: docNumber },
+        data: { sales_order_number: docNumber },
         onSuccess: response => {
             if (response.data.success) {
                 let data = response.data.records;
-                if (
-                    $this.props.purchase_number !== undefined &&
-                    $this.props.purchase_number.length !== 0
-                ) {
-                    data.authorizeEnable = false;
-                    data.ItemDisable = true;
-                    data.ClearDisable = true;
 
-                    for (let i = 0; i < data.po_entry_detail.length; i++) {
-                        data.po_entry_detail[i].authorize_quantity =
-                            data.authorize1 === "N"
-                                ? data.po_entry_detail[i].total_quantity
-                                : data.po_entry_detail[i].authorize_quantity;
-                        data.po_entry_detail[i].quantity_outstanding =
-                            data.authorize1 === "N"
-                                ? data.po_entry_detail[i].total_quantity
-                                : data.po_entry_detail[i].quantity_outstanding;
-                        data.po_entry_detail[i].rejected_quantity =
-                            parseFloat(data.po_entry_detail[i].total_quantity) -
-                            parseFloat(data.po_entry_detail[i].authorize_quantity);
-                    }
+                if (data.sales_order_mode === "I") {
+                    data.sales_order_items = data.qutation_detail
+                } else {
+                    data.sales_order_services = data.qutation_detail
                 }
                 data.saveEnable = true;
-                data.dataExitst = true;
-                data.dataFinder = true;
-
-                if (data.po_from === "PHR") {
-                    $this.state.pharmacy_stock_detail = data.po_entry_detail;
-                } else {
-                    $this.state.inventory_stock_detail = data.po_entry_detail;
-                }
+                data.dataExists = true;
 
                 data.addedItem = true;
                 $this.setState(data);
-                AlgaehLoader({ show: false });
-
-                // $this.setState({ ...response.data.records });
             }
             AlgaehLoader({ show: false });
         },

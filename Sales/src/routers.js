@@ -1,7 +1,10 @@
 import express from "express";
 import SalesQuotation from "./controller/SalesQuotation";
-export default function Routing(BASE_URL) {
-  const router = express();
-  router.use("/quotations", SalesQuotation());
+import SalesOrder from "./controller/SalesOrder";
+
+const router = express();
+export default function Routing() {
+  router.use("/SalesQuotation", SalesQuotation());
+  router.use("/SalesOrder", SalesOrder());
   return router;
 }

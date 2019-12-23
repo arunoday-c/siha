@@ -143,6 +143,9 @@ class SalesOrdListService extends Component {
                                             ref={attReg => {
                                                 this.attReg = attReg;
                                             }}
+                                            others={{
+                                                disabled: this.state.dataExists
+                                            }}
                                         />
 
 
@@ -240,9 +243,9 @@ class SalesOrdListService extends Component {
                             <div className="col-9">
                                 <div className="portlet portlet-bordered margin-bottom-15">
                                     <div className="row">
-                                        <div className="col-12" id="SaleQuotationGrid_Cntr">
+                                        <div className="col-12" id="SaleOrderGrid_Cntr">
                                             <AlgaehDataGrid
-                                                id="SaleQuotationGrid"
+                                                id="SaleOrderGrid"
                                                 columns={[
                                                     {
                                                         fieldName: "actions",
@@ -286,7 +289,7 @@ class SalesOrdListService extends Component {
                                                             />
                                                         ),
                                                         displayTemplate: row => {
-                                                            return (
+                                                            return this.state.dataExists === true ? parseFloat(row.quantity) : (
                                                                 <AlagehFormGroup
                                                                     div={{}}
                                                                     textBox={{
@@ -351,7 +354,7 @@ class SalesOrdListService extends Component {
                                                             />
                                                         ),
                                                         displayTemplate: row => {
-                                                            return (
+                                                            return this.state.dataExists === true ? row.discount_percentage : (
                                                                 <AlagehFormGroup
                                                                     div={{}}
                                                                     textBox={{
@@ -463,7 +466,7 @@ class SalesOrdListService extends Component {
                                                 ]}
                                                 keyId="service_type_id"
                                                 dataSource={{
-                                                    data: this.state.sales_quotation_services
+                                                    data: this.state.sales_order_services
                                                 }}
                                                 paging={{ page: 0, rowsPerPage: 10 }}
 
