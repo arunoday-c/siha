@@ -85,7 +85,11 @@ class LeaveEncashmentProcess extends Component {
     return (
       <div className="leave_en_auth row">
         <div className="col-12">
-          <div className="row inner-top-search" data-validate="loadEncash">
+          <div
+            className="row inner-top-search"
+            data-validate="loadEncash"
+            style={{ marginTop: 2 }}
+          >
             <AlagehAutoComplete
               div={{ className: "col-1 form-group mandatory" }}
               label={{
@@ -404,8 +408,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(LeaveEncashmentProcess)
+  connect(mapStateToProps, mapDispatchToProps)(LeaveEncashmentProcess)
 );

@@ -314,7 +314,10 @@ class NewSalaryProcessing extends Component {
                   disabled={this.state.finalizeBtn}
                 >
                   <AlgaehLabel
-                    label={{ forceLabel: "Finalize", returnText: true }}
+                    label={{
+                      forceLabel: "Send for Payment",
+                      returnText: true
+                    }}
                   />
                 </button>
 
