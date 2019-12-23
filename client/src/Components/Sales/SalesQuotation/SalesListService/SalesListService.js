@@ -144,6 +144,9 @@ class SalesListService extends Component {
                                             ref={attReg => {
                                                 this.attReg = attReg;
                                             }}
+                                            others={{
+                                                disabled: this.state.dataExists
+                                            }}
                                         />
 
 
@@ -261,8 +264,17 @@ class SalesListService extends Component {
                                                                         context,
                                                                         row
                                                                     )}
+
+
                                                                 >
-                                                                    <i className="fas fa-trash-alt" />
+                                                                    <i
+                                                                        style={{
+                                                                            pointerEvents:
+                                                                                this.state.dataExists ? "none" : "",
+                                                                            opacity:
+                                                                                this.state.dataExists ? "0.1" : ""
+                                                                        }}
+                                                                        className="fas fa-trash-alt" />
                                                                 </span>
                                                             );
                                                         }
@@ -287,7 +299,7 @@ class SalesListService extends Component {
                                                             />
                                                         ),
                                                         displayTemplate: row => {
-                                                            return (
+                                                            return this.state.dataExists === true ? parseFloat(row.quantity) : (
                                                                 <AlagehFormGroup
                                                                     div={{}}
                                                                     textBox={{
@@ -352,7 +364,7 @@ class SalesListService extends Component {
                                                             />
                                                         ),
                                                         displayTemplate: row => {
-                                                            return (
+                                                            return this.state.dataExists === true ? row.discount_percentage : (
                                                                 <AlagehFormGroup
                                                                     div={{}}
                                                                     textBox={{

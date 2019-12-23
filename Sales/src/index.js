@@ -32,35 +32,35 @@ app.use((req, res, next) => {
 //   console.log(path.resolve("./", "client/dist"), "dev");
 //   app.use("/finbuild/", express.static(path.resolve("./", "client/dist")));
 // }
-app.use("/api/v1", routes);
+app.use("/api/v1", routes());
 
 process.on("warning", warning => {
-  utliites
+  utilities
     .AlgaehUtilities()
     .logger()
     .log("warn", warning, "warn");
 });
 
 process.on("uncaughtException", error => {
-  utliites
+  utilities
     .AlgaehUtilities()
     .logger()
     .log("uncatched Exception", error, "error");
 });
 
 process.on("unhandledRejection", (reason, promise) => {
-  utliites
+  utilities
     .AlgaehUtilities()
     .logger()
     .log("Unhandled rejection", { reason: reason, promise: promise }, "error");
 });
 app.use((error, req, res, next) => {
   error.status =
-    error.status || utliites.AlgaehUtilities().httpStatus().internalServer;
+    error.status || utilities.AlgaehUtilities().httpStatus().internalServer;
   const errorMessage =
     error.sqlMessage != null ? error.sqlMessage : error.message;
   const reqH = req.headers;
-  utliites
+  utilities
     .AlgaehUtilities()
     .logger()
     .log(

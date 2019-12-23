@@ -127,13 +127,6 @@ class SalesOrdListItems extends Component {
                                                                 </h4>
                                                                 <small>{result.uom_description}</small>
                                                             </div>
-                                                            {/* <div className="col-4">
-                                                                                <h6 className="price">
-                                                                                    {getAmountFormart(
-                                                                                        result.sale_price
-                                                                                    )}
-                                                                                </h6>
-                                                                            </div> */}
                                                         </div>
                                                     </section>
                                                 );
@@ -146,6 +139,9 @@ class SalesOrdListItems extends Component {
                                             onClick={itemchangeText.bind(this, this)}
                                             ref={attReg => {
                                                 this.attReg = attReg;
+                                            }}
+                                            others={{
+                                                disabled: this.state.dataExists
                                             }}
                                         />
 
@@ -255,9 +251,9 @@ class SalesOrdListItems extends Component {
                             <div className="col-9">
                                 <div className="portlet portlet-bordered margin-bottom-15">
                                     <div className="row">
-                                        <div className="col-12" id="SaleQuotationGrid_Cntr">
+                                        <div className="col-12" id="SaleOrderGrid_Cntr">
                                             <AlgaehDataGrid
-                                                id="SaleQuotationGrid"
+                                                id="SaleOrderGrid"
                                                 columns={[
                                                     {
                                                         fieldName: "actions",
@@ -301,7 +297,7 @@ class SalesOrdListItems extends Component {
                                                             />
                                                         ),
                                                         displayTemplate: row => {
-                                                            return (
+                                                            return this.state.dataExists === true ? parseFloat(row.quantity) : (
                                                                 <AlagehFormGroup
                                                                     div={{}}
                                                                     textBox={{
@@ -378,7 +374,7 @@ class SalesOrdListItems extends Component {
                                                             />
                                                         ),
                                                         displayTemplate: row => {
-                                                            return (
+                                                            return this.state.dataExists === true ? row.discount_percentage : (
                                                                 <AlagehFormGroup
                                                                     div={{}}
                                                                     textBox={{
@@ -490,7 +486,7 @@ class SalesOrdListItems extends Component {
                                                 ]}
                                                 keyId="service_type_id"
                                                 dataSource={{
-                                                    data: this.state.sales_quotation_items
+                                                    data: this.state.sales_order_items
                                                 }}
                                                 paging={{ page: 0, rowsPerPage: 10 }}
 

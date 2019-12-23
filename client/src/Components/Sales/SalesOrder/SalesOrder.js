@@ -14,7 +14,6 @@ import {
 import Options from "../../../Options.json";
 import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-// import POItemList from "./POItemList/POItemList";
 import {
   customerTexthandle,
   datehandle,
@@ -24,8 +23,7 @@ import {
   SavePOEnrty,
   getCtrlCode,
   generatePOReceipt,
-  generatePOReceiptNoPrice,
-  clearItemDetails
+  generatePOReceiptNoPrice
 } from "./SalesOrderEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
@@ -40,10 +38,12 @@ class SalesOrder extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hims_f_sales_quotation_id: null,
+      hims_f_sales_order_id: null,
       sales_quotation_number: null,
-      sales_quotation_date: new Date(),
-      sales_quotation_mode: "I",
+      sales_quotation_id: null,
+      sales_order_number: null,
+      sales_order_date: new Date(),
+      sales_order_mode: "I",
       reference_number: null,
       customer_id: null,
       quote_validity: null,
@@ -58,11 +58,11 @@ class SalesOrder extends Component {
       net_payable: null,
       narration: null,
       project_id: null,
-
+      customer_po_no: null,
       tax_percentage: null,
 
-      sales_quotation_items: [],
-      sales_quotation_services: [],
+      sales_order_items: [],
+      sales_order_services: [],
       decimal_place: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).decimal_places,
@@ -140,15 +140,15 @@ class SalesOrder extends Component {
       this.state.po_from === null
         ? []
         : Enumerable.from(this.props.polocations)
-            .where(w => w.location_type === "WH")
-            .toArray();
+          .where(w => w.location_type === "WH")
+          .toArray();
 
     const class_finder =
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === true
-        ? " disableFinder"
-        : "";
+          ? " disableFinder"
+          : "";
     return (
       <div>
         <BreadCrumb
@@ -188,9 +188,9 @@ class SalesOrder extends Component {
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "Purchase.POEntry"
+              fieldName: "Sales.SalesOrder"
             },
-            searchName: "POEntry"
+            searchName: "SalesOrder"
           }}
           userArea={
             <div className="row">
@@ -201,8 +201,8 @@ class SalesOrder extends Component {
                   }}
                 />
                 <h6>
-                  {this.state.so_date
-                    ? moment(this.state.so_date).format(Options.dateFormat)
+                  {this.state.sales_order_date
+                    ? moment(this.state.sales_order_date).format(Options.dateFormat)
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -211,25 +211,25 @@ class SalesOrder extends Component {
           printArea={
             this.state.hims_f_procurement_po_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Receipt for Internal",
-                      events: {
-                        onClick: () => {
-                          generatePOReceipt(this.state);
-                        }
-                      }
-                    },
-                    {
-                      label: "Receipt for Vendor",
-                      events: {
-                        onClick: () => {
-                          generatePOReceiptNoPrice(this.state);
-                        }
+                menuitems: [
+                  {
+                    label: "Receipt for Internal",
+                    events: {
+                      onClick: () => {
+                        generatePOReceipt(this.state);
                       }
                     }
-                  ]
-                }
+                  },
+                  {
+                    label: "Receipt for Vendor",
+                    events: {
+                      onClick: () => {
+                        generatePOReceiptNoPrice(this.state);
+                      }
+                    }
+                  }
+                ]
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -243,15 +243,15 @@ class SalesOrder extends Component {
             <div className="col-lg-12">
               <div className="row">
                 <div className="col ">
-                  <label>Quotation Mode</label>
+                  <label>Order Mode</label>
                   <div className="customRadio">
                     <label className="radio inline">
                       <input
                         type="radio"
                         value="I"
-                        name="sales_quotation_mode"
+                        name="sales_order_mode"
                         checked={
-                          this.state.sales_quotation_mode === "I" ? true : false
+                          this.state.sales_order_mode === "I" ? true : false
                         }
                         onChange={texthandle.bind(this, this)}
                       />
@@ -261,9 +261,9 @@ class SalesOrder extends Component {
                       <input
                         type="radio"
                         value="S"
-                        name="sales_quotation_mode"
+                        name="sales_order_mode"
                         checked={
-                          this.state.sales_quotation_mode === "S" ? true : false
+                          this.state.sales_order_mode === "S" ? true : false
                         }
                         onChange={texthandle.bind(this, this)}
                       />
@@ -273,11 +273,11 @@ class SalesOrder extends Component {
                 </div>
 
                 <div className={"col-2 globalSearchCntr" + class_finder}>
-                  <AlgaehLabel label={{ forceLabel: "Search Quotation No." }} />
+                  <AlgaehLabel label={{ forceLabel: "Search Order No." }} />
                   <h6 onClick={SalesQuotationSearch.bind(this, this)}>
                     {this.state.sales_quotation_number
                       ? this.state.sales_quotation_number
-                      : "Quotation No."}
+                      : "Quatation No."}
                     <i className="fas fa-search fa-lg"></i>
                   </h6>
                 </div>
@@ -302,10 +302,7 @@ class SalesOrder extends Component {
                     },
                     autoComplete: "off",
                     others: {
-                      // disabled:
-                      //     this.state.sales_quotation_items.length > 0
-                      //         ? true
-                      //         : false
+                      disabled: this.state.dataExists
                     }
                   }}
                 />
@@ -360,7 +357,12 @@ class SalesOrder extends Component {
                     className: "txt-fld",
                     name: "sales_man",
                     value: this.state.sales_man,
-                    onChange: texthandle.bind(this, this)
+                    events: {
+                      onChange: texthandle.bind(this, this)
+                    },
+                    others: {
+                      disabled: this.state.dataExists
+                    }
                   }}
                 />
                 <AlagehFormGroup
@@ -373,7 +375,12 @@ class SalesOrder extends Component {
                     className: "txt-fld",
                     name: "reference_number",
                     value: this.state.reference_number,
-                    onChange: texthandle.bind(this, this)
+                    events: {
+                      onChange: texthandle.bind(this, this)
+                    },
+                    others: {
+                      disabled: this.state.dataExists
+                    }
                   }}
                 />
 
@@ -387,11 +394,16 @@ class SalesOrder extends Component {
                     className: "txt-fld",
                     name: "other_terms",
                     value: this.state.other_terms,
-                    onChange: texthandle.bind(this, this)
+                    events: {
+                      onChange: texthandle.bind(this, this)
+                    },
+                    others: {
+                      disabled: this.state.dataExists
+                    }
                   }}
                 />
 
-                {this.state.sales_quotation_mode === "S" ? (
+                {this.state.sales_order_mode === "S" ? (
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
@@ -402,7 +414,12 @@ class SalesOrder extends Component {
                       className: "txt-fld",
                       name: "service_terms",
                       value: this.state.service_terms,
-                      onChange: texthandle.bind(this, this)
+                      events: {
+                        onChange: texthandle.bind(this, this)
+                      },
+                      others: {
+                        disabled: this.state.dataExists
+                      }
                     }}
                   />
                 ) : null}
@@ -424,7 +441,7 @@ class SalesOrder extends Component {
                     },
                     onChange: texthandle.bind(this, this),
                     others: {
-                      tabIndex: "2"
+                      disabled: this.state.dataExists
                     },
                     onClear: () => {
                       this.setState({
@@ -450,6 +467,9 @@ class SalesOrder extends Component {
                       data: this.props.projects
                     },
                     onChange: texthandle.bind(this, this),
+                    others: {
+                      disabled: this.state.dataExists
+                    },
                     onClear: () => {
                       this.setState({
                         project_id: null
@@ -466,9 +486,14 @@ class SalesOrder extends Component {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "sales_man",
+                    name: "customer_po_no",
                     value: this.state.customer_po_no,
-                    onChange: texthandle.bind(this, this)
+                    events: {
+                      onChange: texthandle.bind(this, this)
+                    },
+                    others: {
+                      disabled: this.state.dataExists
+                    }
                   }}
                 />
               </div>
@@ -476,7 +501,6 @@ class SalesOrder extends Component {
           </div>
 
           <div className="row">
-            {" "}
             <MyContext.Provider
               value={{
                 state: this.state,
@@ -485,11 +509,11 @@ class SalesOrder extends Component {
                 }
               }}
             >
-              {this.state.sales_quotation_mode === "S" ? (
+              {this.state.sales_order_mode === "S" ? (
                 <SalesOrdListService SALESIOputs={this.state} />
               ) : (
-                <SalesOrdListItems SALESIOputs={this.state} />
-              )}
+                  <SalesOrdListItems SALESIOputs={this.state} />
+                )}
             </MyContext.Provider>
           </div>
         </div>
@@ -548,8 +572,11 @@ class SalesOrder extends Component {
                   className: "txt-fld",
                   name: "narration",
                   value: this.state.narration,
-                  onChange: texthandle.bind(this, this),
+                  events: {
+                    onChange: texthandle.bind(this, this)
+                  },
                   others: {
+                    disabled: this.state.dataExists,
                     multiline: true,
                     rows: "4"
                   }

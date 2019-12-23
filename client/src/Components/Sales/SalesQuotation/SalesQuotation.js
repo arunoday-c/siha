@@ -14,7 +14,8 @@ import {
     changeTexts,
     customerTexthandle,
     ClearData,
-    SaveSalesQuotation
+    SaveSalesQuotation,
+    getCtrlCode
 } from "./SalesQuotationEvents";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import "./SalesQuotation.scss";
@@ -143,13 +144,13 @@ class SalesQuotation extends Component {
                             value: this.state.sales_quotation_number,
                             selectValue: "sales_quotation_number",
                             events: {
-                                // onChange: getCtrlCode.bind(this, this)
+                                onChange: getCtrlCode.bind(this, this)
                             },
                             jsonFile: {
                                 fileName: "spotlightSearch",
-                                fieldName: "RequisitionEntry.ReqEntry"
+                                fieldName: "Sales.SalesQuotation"
                             },
-                            searchName: "InvREQEntry"
+                            searchName: "SalesQuotation"
                         }}
                         userArea={
                             <div className="row">
@@ -202,6 +203,7 @@ class SalesQuotation extends Component {
                                                 type="radio"
                                                 value="I"
                                                 name="sales_quotation_mode"
+                                                disabled={this.state.dataExists}
                                                 checked={
                                                     this.state.sales_quotation_mode === "I" ? true : false
                                                 }
@@ -214,6 +216,7 @@ class SalesQuotation extends Component {
                                                 type="radio"
                                                 value="S"
                                                 name="sales_quotation_mode"
+                                                disabled={this.state.dataExists}
                                                 checked={
                                                     this.state.sales_quotation_mode === "S" ? true : false
                                                 }
@@ -244,10 +247,7 @@ class SalesQuotation extends Component {
                                         },
                                         autoComplete: "off",
                                         others: {
-                                            disabled:
-                                                this.state.sales_quotation_items.length > 0
-                                                    ? true
-                                                    : false
+                                            disabled: this.state.dataExists
                                         }
                                     }}
                                 />
@@ -301,7 +301,12 @@ class SalesQuotation extends Component {
                                         className: "txt-fld",
                                         name: "sales_man",
                                         value: this.state.sales_man,
-                                        onChange: changeTexts.bind(this, this)
+                                        events: {
+                                            onChange: changeTexts.bind(this, this)
+                                        },
+                                        others: {
+                                            disabled: this.state.dataExists
+                                        }
                                     }}
                                 />
                                 <AlagehFormGroup
@@ -314,7 +319,12 @@ class SalesQuotation extends Component {
                                         className: "txt-fld",
                                         name: "reference_number",
                                         value: this.state.reference_number,
-                                        onChange: changeTexts.bind(this, this)
+                                        events: {
+                                            onChange: changeTexts.bind(this, this)
+                                        },
+                                        others: {
+                                            disabled: this.state.dataExists
+                                        }
                                     }}
                                 />
 
@@ -328,7 +338,12 @@ class SalesQuotation extends Component {
                                         className: "txt-fld",
                                         name: "other_terms",
                                         value: this.state.other_terms,
-                                        onChange: changeTexts.bind(this, this)
+                                        events: {
+                                            onChange: changeTexts.bind(this, this)
+                                        },
+                                        others: {
+                                            disabled: this.state.dataExists
+                                        }
                                     }}
                                 />
 
@@ -343,7 +358,12 @@ class SalesQuotation extends Component {
                                             className: "txt-fld",
                                             name: "service_terms",
                                             value: this.state.service_terms,
-                                            onChange: changeTexts.bind(this, this)
+                                            events: {
+                                                onChange: changeTexts.bind(this, this)
+                                            },
+                                            others: {
+                                                disabled: this.state.dataExists
+                                            }
                                         }}
                                     />
                                 ) : null}
@@ -422,9 +442,12 @@ class SalesQuotation extends Component {
                                             className: "txt-fld",
                                             name: "narration",
                                             value: this.state.narration,
-                                            onChange: changeTexts.bind(this, this),
+                                            events: {
+                                                onChange: changeTexts.bind(this, this)
+                                            },
                                             others: {
                                                 multiline: true,
+                                                disabled: this.state.dataExists,
                                                 rows: "4"
                                             }
                                         }}
