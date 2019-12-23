@@ -444,7 +444,7 @@ export default function Filter(props) {
                 employee_id: employeeID,
                 employee_group_id: empGroupId,
                 month: month,
-                year: moment().format("YYYY")
+                year: selYear //moment().format("YYYY")
               });
             } else {
               swalMessage({
@@ -478,7 +478,7 @@ export default function Filter(props) {
                 employee_id: employeeID,
                 employee_group_id: empGroupId,
                 month: month,
-                year: moment().format("YYYY"),
+                year: selYear, //moment().format("YYYY"),
                 upload: upload
               },
               props
