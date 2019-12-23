@@ -13,15 +13,21 @@ export default {
     const _mysql = new algaehMysql();
     let input = req.body;
 
+    let worked_hrs_mints = input.worked_hours
+      .toString()
+      .split(".");
+      
     _mysql
       .executeQuery({
         query:
           "UPDATE hims_f_project_roster set project_id=? where hims_f_project_roster_id=?;\
-          UPDATE hims_f_daily_time_sheet set worked_hours=? where hims_f_daily_time_sheet_id=?;",
+          UPDATE hims_f_daily_time_sheet set worked_hours=?, hours=?, minutes=? where hims_f_daily_time_sheet_id=?;",
         values: [
           input.project_id,
           input.hims_f_project_roster_id,
           input.worked_hours,
+          worked_hrs_mints[0] === undefined ? 0 : worked_hrs_mints[0],
+          worked_hrs_mints[1] === undefined ? 0 : worked_hrs_mints[1],
           input.hims_f_daily_time_sheet_id
         ],
         printQuery: false
@@ -437,8 +443,8 @@ export default {
         const endOfMonth =
           leave_end_date == null
             ? moment(yearAndMonth)
-                .endOf("month")
-                .format("YYYY-MM-DD")
+              .endOf("month")
+              .format("YYYY-MM-DD")
             : moment(leave_end_date).format("YYYY-MM-DD");
 
         const totalMonthDays = moment(yearAndMonth, "YYYY-MM").daysInMonth();
@@ -721,7 +727,7 @@ export default {
                           .Where(
                             w =>
                               w.employee_id ==
-                                allEmployees[i]["hims_d_employee_id"] &&
+                              allEmployees[i]["hims_d_employee_id"] &&
                               w.leave_type == "P"
                           )
                           .Sum(s => s.present_month);
@@ -732,7 +738,7 @@ export default {
                           .Where(
                             w =>
                               w.employee_id ==
-                                allEmployees[i]["hims_d_employee_id"] &&
+                              allEmployees[i]["hims_d_employee_id"] &&
                               w.leave_type == "U"
                           )
                           .Sum(s => s.present_month);
@@ -743,7 +749,7 @@ export default {
                           .Where(
                             w =>
                               w.employee_id ==
-                                allEmployees[i]["hims_d_employee_id"] &&
+                              allEmployees[i]["hims_d_employee_id"] &&
                               w.include_weekoff == "Y"
                           )
                           .Sum(s => s.weekoff_days);
@@ -754,7 +760,7 @@ export default {
                           .Where(
                             w =>
                               w.employee_id ==
-                                allEmployees[i]["hims_d_employee_id"] &&
+                              allEmployees[i]["hims_d_employee_id"] &&
                               w.include_holiday == "Y"
                           )
                           .Sum(s => s.holidays);
@@ -790,9 +796,9 @@ export default {
                                   (w.holiday == "Y" &&
                                     w.holiday_type == "RS" &&
                                     w.religion_id ==
-                                      allEmployees[i]["religion_id"])) &&
+                                    allEmployees[i]["religion_id"])) &&
                                 w.holiday_date >
-                                  allEmployees[i]["date_of_joining"]
+                                allEmployees[i]["date_of_joining"]
                             )
                             .Count();
 
@@ -803,7 +809,7 @@ export default {
                                 obj.weekoff === "Y" &&
                                 obj.holiday_type === "RE" &&
                                 obj.holiday_date >
-                                  allEmployees[i]["date_of_joining"]
+                                allEmployees[i]["date_of_joining"]
                               );
                             }
                           ).length;
@@ -822,7 +828,7 @@ export default {
                                   (w.holiday == "Y" &&
                                     w.holiday_type == "RS" &&
                                     w.religion_id ==
-                                      allEmployees[i]["religion_id"])) &&
+                                    allEmployees[i]["religion_id"])) &&
                                 w.holiday_date < allEmployees[i]["exit_date"]
                             )
                             .Count();
@@ -852,7 +858,7 @@ export default {
                                   (w.holiday == "Y" &&
                                     w.holiday_type == "RS" &&
                                     w.religion_id ==
-                                      allEmployees[i]["religion_id"])) &&
+                                    allEmployees[i]["religion_id"])) &&
                                 (w.holiday_date >
                                   allEmployees[i]["date_of_joining"] &&
                                   w.holiday_date < allEmployees[i]["exit_date"])
@@ -866,7 +872,7 @@ export default {
                                 obj.weekoff === "Y" &&
                                 obj.holiday_type === "RE" &&
                                 obj.holiday_date >
-                                  allEmployees[i]["date_of_joining"] &&
+                                allEmployees[i]["date_of_joining"] &&
                                 obj.holiday_date < allEmployees[i]["exit_date"]
                               );
                             }
@@ -881,7 +887,7 @@ export default {
                                 (w.holiday == "Y" &&
                                   w.holiday_type == "RS" &&
                                   w.religion_id ==
-                                    allEmployees[i]["religion_id"])
+                                  allEmployees[i]["religion_id"])
                             )
                             .Count();
 
@@ -910,10 +916,10 @@ export default {
                           req.query.leave_salary == "Y"
                             ? 0
                             : allEmployees[i]["defaults"].total_work_days -
-                              allEmployees[i]["defaults"].emp_absent_days -
-                              allEmployees[i]["defaults"].total_leaves -
-                              allEmployees[i]["defaults"].total_week_off -
-                              allEmployees[i]["defaults"].total_holidays;
+                            allEmployees[i]["defaults"].emp_absent_days -
+                            allEmployees[i]["defaults"].total_leaves -
+                            allEmployees[i]["defaults"].total_week_off -
+                            allEmployees[i]["defaults"].total_holidays;
 
                         allEmployees[i]["defaults"].paid_days =
                           parseFloat(allEmployees[i]["defaults"].present_days) +
@@ -1261,8 +1267,8 @@ export default {
         let to_date_plus_one = moment(input.to_date)
           .add(1, "days")
           .format("YYYY-MM-DD");
-        let from_date = moment(input.from_date,"YYYY-MM-DD").format("YYYY-MM-DD");
-        let to_date = moment(input.to_date,"YYYY-MM-DD").format("YYYY-MM-DD");
+        let from_date = moment(input.from_date, "YYYY-MM-DD").format("YYYY-MM-DD");
+        let to_date = moment(input.to_date, "YYYY-MM-DD").format("YYYY-MM-DD");
 
         let stringData = "";
         if (input.sub_department_id > 0) {
@@ -1290,12 +1296,12 @@ export default {
                     .clone()
                     .format("YYYY-MM-") + options[0]["payroll_payment_date"];
                 const _prevDays = options[0]["payroll_payment_date"] + 1;
-                const _prevMonthYear = moment(input.from_date,"YYYY-MM-DD")
+                const _prevMonthYear = moment(input.from_date, "YYYY-MM-DD")
                   .clone()
                   .add(-1, "months");
-                _lastDayInPreMonth = moment(_prevMonthYear,"YYYY-MM-DD").endOf("month");
+                _lastDayInPreMonth = moment(_prevMonthYear, "YYYY-MM-DD").endOf("month");
                 from_date =
-                  moment(_prevMonthYear,"YYYY-MM-DD")
+                  moment(_prevMonthYear, "YYYY-MM-DD")
                     .clone()
                     .format("YYYY-MM") +
                   "-" +
@@ -1397,7 +1403,7 @@ export default {
                   //---------------------------------------------------
                   // connect to your database
                   sql.close();
-                  sql.connect(config, function(err) {
+                  sql.connect(config, function (err) {
                     if (err) {
                       next(err);
                     }
@@ -1441,7 +1447,7 @@ export default {
                     FROM CTE
                     GROUP BY UserID, AccessDate
                     ORDER BY  AccessDate `,
-                      function(err, attResult) {
+                      function (err, attResult) {
                         sql.close();
                         if (err) {
                           _mysql.releaseConnection();
@@ -1460,7 +1466,7 @@ export default {
                               .Where(
                                 w =>
                                   w.employee_id ==
-                                    AllEmployees[i]["hims_d_employee_id"] &&
+                                  AllEmployees[i]["hims_d_employee_id"] &&
                                   w.shift_date == from_date
                               )
                               .Select(s => {
@@ -1509,7 +1515,7 @@ export default {
                                 .Where(
                                   w =>
                                     w.UserID ==
-                                      AllEmployees[i]["biometric_id"] &&
+                                    AllEmployees[i]["biometric_id"] &&
                                     moment(w.Date, "MM-DD-YYYY").format(
                                       "YYYY-MM-DD"
                                     ) == shiftData.shift_date
@@ -1537,7 +1543,7 @@ export default {
                                 .Where(
                                   w =>
                                     w.UserID ==
-                                      AllEmployees[i]["biometric_id"] &&
+                                    AllEmployees[i]["biometric_id"] &&
                                     moment(w.Date, "MM-DD-YYYY").format(
                                       "YYYY-MM-DD"
                                     ) == shiftData.shift_end_date
@@ -1565,8 +1571,8 @@ export default {
                               ) {
                                 let inDateTime = moment(
                                   punchIn.attendance_date +
-                                    " " +
-                                    punchIn.in_time,
+                                  " " +
+                                  punchIn.in_time,
                                   "YYYY-MM-DD HH:mm"
                                 );
                                 let outDateTime = moment(
@@ -1749,7 +1755,7 @@ export default {
                               .Where(
                                 w =>
                                   w.employee_id ==
-                                    AllEmployees[0]["hims_d_employee_id"] &&
+                                  AllEmployees[0]["hims_d_employee_id"] &&
                                   w.shift_date == date_range[i]
                               )
                               .Select(s => {
@@ -1943,8 +1949,8 @@ export default {
         let to_date_plus_one = moment(input.to_date)
           .add(1, "days")
           .format("YYYY-MM-DD");
-        let from_date = moment(input.from_date,"YYYY-MM-DD").format("YYYY-MM-DD");
-        let to_date = moment(input.to_date,"YYYY-MM-DD").format("YYYY-MM-DD");
+        let from_date = moment(input.from_date, "YYYY-MM-DD").format("YYYY-MM-DD");
+        let to_date = moment(input.to_date, "YYYY-MM-DD").format("YYYY-MM-DD");
 
         let stringData = "";
         if (input.sub_department_id > 0) {
@@ -1972,12 +1978,12 @@ export default {
                     .clone()
                     .format("YYYY-MM-") + options[0]["payroll_payment_date"];
                 const _prevDays = options[0]["payroll_payment_date"] + 1;
-                const _prevMonthYear = moment(input.from_date,"YYYY-MM-DD")
+                const _prevMonthYear = moment(input.from_date, "YYYY-MM-DD")
                   .clone()
                   .add(-1, "months");
-                _lastDayInPreMonth = moment(_prevMonthYear,"YYYY-MM-DD").endOf("month");
+                _lastDayInPreMonth = moment(_prevMonthYear, "YYYY-MM-DD").endOf("month");
                 from_date =
-                  moment(_prevMonthYear,"YYYY-MM-DD")
+                  moment(_prevMonthYear, "YYYY-MM-DD")
                     .clone()
                     .format("YYYY-MM") +
                   "-" +
@@ -2079,7 +2085,7 @@ export default {
                   //---------------------------------------------------
                   // connect to your database
                   sql.close();
-                  sql.connect(config, function(err) {
+                  sql.connect(config, function (err) {
                     if (err) {
                       next(err);
                     }
@@ -2123,7 +2129,7 @@ export default {
                     FROM CTE
                     GROUP BY UserID, AccessDate
                     ORDER BY  AccessDate `,
-                      function(err, attResult) {
+                      function (err, attResult) {
                         sql.close();
                         if (err) {
                           _mysql.releaseConnection();
@@ -2142,7 +2148,7 @@ export default {
                               .Where(
                                 w =>
                                   w.employee_id ==
-                                    AllEmployees[i]["hims_d_employee_id"] &&
+                                  AllEmployees[i]["hims_d_employee_id"] &&
                                   w.shift_date == from_date
                               )
                               .Select(s => {
@@ -2191,7 +2197,7 @@ export default {
                                 .Where(
                                   w =>
                                     w.UserID ==
-                                      AllEmployees[i]["biometric_id"] &&
+                                    AllEmployees[i]["biometric_id"] &&
                                     moment(w.Date, "MM-DD-YYYY").format(
                                       "YYYY-MM-DD"
                                     ) == shiftData.shift_date
@@ -2219,7 +2225,7 @@ export default {
                                 .Where(
                                   w =>
                                     w.UserID ==
-                                      AllEmployees[i]["biometric_id"] &&
+                                    AllEmployees[i]["biometric_id"] &&
                                     moment(w.Date, "MM-DD-YYYY").format(
                                       "YYYY-MM-DD"
                                     ) == shiftData.shift_end_date
@@ -2247,8 +2253,8 @@ export default {
                               ) {
                                 let inDateTime = moment(
                                   punchIn.attendance_date +
-                                    " " +
-                                    punchIn.in_time,
+                                  " " +
+                                  punchIn.in_time,
                                   "YYYY-MM-DD HH:mm"
                                 );
                                 let outDateTime = moment(
@@ -2431,7 +2437,7 @@ export default {
                               .Where(
                                 w =>
                                   w.employee_id ==
-                                    AllEmployees[0]["hims_d_employee_id"] &&
+                                  AllEmployees[0]["hims_d_employee_id"] &&
                                   w.shift_date == date_range[i]
                               )
                               .Select(s => {
@@ -2595,19 +2601,19 @@ export default {
       next(e);
     }
   },
-  
+
   getDailyTimeSheet_new2019_DEC_02: (req, res, next) => {
     const _mysql = new algaehMysql();
-  
+
     const utilities = new algaehUtilities();
-  
+
     let options = [];
     let allHolidays = [];
     let AllLeaves = [];
     let AllEmployees = [];
     let AllShifts = [];
     let biometric_ids = [];
-  
+
     let input = req.query;
     try {
       if (
@@ -2622,7 +2628,7 @@ export default {
         let singleEmployee = "N";
         let shiftRange = "";
         let totalTime = "";
-  
+
         let to_date_plus_one = moment(input.to_date)
           .add(1, "days")
           .format("YYYY-MM-DD");
@@ -2630,7 +2636,7 @@ export default {
           "YYYY-MM-DD"
         );
         let to_date = moment(input.to_date, "YYYY-MM-DD").format("YYYY-MM-DD");
-  
+
         let stringData = "";
         if (input.sub_department_id > 0) {
           stringData += " and sub_department_id=" + input.sub_department_id;
@@ -2648,7 +2654,7 @@ export default {
           })
           .then(options => {
             // options = hrms_options;
-  
+
             if (
               input.attendance_type == "MW" &&
               options[0]["attendance_starts"] == "PM" &&
@@ -2659,11 +2665,11 @@ export default {
                 moment(input.from_date, "YYYY-MM-DD")
                   .clone()
                   .format("YYYY-MM-") + options[0]["at_end_date"];
-  
+
               const _prevMonthYear = moment(input.from_date, "YYYY-MM-DD")
                 .clone()
                 .add(-1, "months");
-  
+
               from_date =
                 moment(_prevMonthYear, "YYYY-MM-DD")
                   .clone()
@@ -2673,10 +2679,10 @@ export default {
               to_date = _endDate;
 
               to_date_plus_one = moment(_endDate)
-          .add(1, "days")
-          .format("YYYY-MM-DD");
+                .add(1, "days")
+                .format("YYYY-MM-DD");
             }
-  
+
             _mysql
               .executeQuery({
                 query: ` select hims_d_holiday_id, hospital_id, holiday_date, holiday_description,weekoff, holiday, holiday_type,\
@@ -2719,7 +2725,7 @@ export default {
                 AllLeaves = result[1];
                 AllEmployees = result[2];
                 AllShifts = result[3];
-  
+
                 if (
                   AllEmployees.length > 0 &&
                   options.length > 0 &&
@@ -2728,7 +2734,7 @@ export default {
                   standard_hours = options[0]["standard_working_hours"]
                     .toString()
                     .split(".")[0];
-  
+
                   if (
                     options[0]["standard_working_hours"]
                       .toString()
@@ -2738,9 +2744,9 @@ export default {
                       .toString()
                       .split(".")[1];
                   }
-  
+
                   var sql = require("mssql");
-  
+
                   // config for your database
                   var config = {
                     user: options[0]["biometric_database_login"],
@@ -2748,15 +2754,15 @@ export default {
                     server: options[0]["biometric_server_name"],
                     database: options[0]["biometric_database_name"]
                   };
-  
+
                   biometric_ids = new LINQ(AllEmployees)
                     .Select(s => s.biometric_id)
                     .ToArray();
-  
+
                   let employee_ids = new LINQ(AllEmployees)
                     .Select(s => s.hims_d_employee_id)
                     .ToArray();
-  
+
                   let returnQry = `  select hims_f_daily_time_sheet_id,TS.sub_department_id, TS.employee_id,TS.biometric_id, TS.attendance_date, \
                 in_time, out_date, out_time, year, month, status,\
                  posted, hours, minutes, actual_hours, actual_minutes, worked_hours,consider_ot_shrtg,\
@@ -2766,23 +2772,23 @@ export default {
                 left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date
               left join hims_d_project P on PR.project_id=P.hims_d_project_id
                 where  TS.hospital_id=${input.hospital_id} and  TS.attendance_date between ('${from_date}') and ('${to_date}') and TS.employee_id in (${employee_ids}) order by TS.attendance_date ;`;
-  
+
                   //---------------------------------------------------
                   // connect to your database
                   sql.close();
-                  sql.connect(config, function(err) {
+                  sql.connect(config, function (err) {
                     if (err) {
                       next(err);
                     }
                     // create Request object
                     var request = new sql.Request();
-  
+
                     // query to the biometric database and get the records
-  
+
                     // select  TOP (100) UserID as biometric_id ,PDate as attendance_date,Punch1 as in_time,Punch2 as out_time,\
                     // Punch2 as out_date   from Mx_DATDTrn  where UserID in (${biometric_id}) and PDate>='${from_date}'  and\
                     // PDate<='${to_date}'
-  
+
                     request.query(
                       `;WITH CTE AS(
                       SELECT
@@ -2814,20 +2820,20 @@ export default {
                     FROM CTE
                     GROUP BY UserID, AccessDate
                     ORDER BY  AccessDate `,
-                      function(err, attResult) {
+                      function (err, attResult) {
                         sql.close();
                         if (err) {
                           _mysql.releaseConnection();
                           next(err);
                           return;
                         }
-  
-                    
+
+
                         // utilities
                         //   .logger()
                         //   .log("attResult", attResult["recordset"]);
                         attendcResult = attResult["recordset"];
-  
+
 
 
                         //single day data 
@@ -2837,7 +2843,7 @@ export default {
                               .Where(
                                 w =>
                                   w.employee_id ==
-                                    AllEmployees[i]["hims_d_employee_id"] &&
+                                  AllEmployees[i]["hims_d_employee_id"] &&
                                   w.shift_date == from_date
                               )
                               .Select(s => {
@@ -2856,15 +2862,15 @@ export default {
                                 shift_time: 0.0,
                                 shift_end_time: 0
                               });
-  
+
                             let actual_hours = 0;
                             let actual_mins = 0;
-  
+
                             if (shiftData["shift_time"] > 0) {
                               actual_hours = shiftData.shift_time
                                 .toString()
                                 .split(".")[0];
-  
+
                               if (
                                 shiftData.shift_time.toString().split(".")[1] !=
                                 undefined
@@ -2877,9 +2883,9 @@ export default {
                               actual_hours = standard_hours;
                               actual_mins = standard_mins;
                             }
-  
+
                             //---------------------------------begin logic
-  
+
                             if (shiftData.shift_end_day == "ND") {
                               //--ST--punchin
                               let punchIn = new LINQ(attendcResult)
@@ -2905,9 +2911,9 @@ export default {
                                   attendance_date: shiftData.shift_date,
                                   in_time: null
                                 });
-  
+
                               //--EN--punchin
-  
+
                               //--ST--punchout
                               let punchOut = new LINQ(attendcResult)
                                 .Where(
@@ -2931,7 +2937,7 @@ export default {
                                   out_date: shiftData.shift_end_date,
                                   out_time: null
                                 });
-  
+
                               //--EN--punchout
                               if (
                                 punchIn.in_time != null &&
@@ -2949,7 +2955,7 @@ export default {
                                   outDateTime.diff(inDateTime, "hours") +
                                   "." +
                                   (outDateTime.diff(inDateTime, "minute") % 60);
-  
+
                                 biometricData.push({
                                   biometric_id: punchIn.biometric_id,
                                   attendance_date: punchIn.attendance_date,
@@ -2978,7 +2984,7 @@ export default {
                                 });
                               } else {
                                 //exception
-  
+
                                 biometricData.push({
                                   biometric_id: punchIn.biometric_id,
                                   attendance_date: punchIn.attendance_date,
@@ -3075,9 +3081,9 @@ export default {
                               );
                             }
                           }
-                          console.log("ggggggggggg:","HERE")
+                          console.log("ggggggggggg:", "HERE")
                           ///----end logic
-  
+
                           insertTimeSheet(
                             returnQry,
                             biometricData,
@@ -3098,25 +3104,25 @@ export default {
                           from_date < to_date
                         ) {
 
-                          console.log("ggggggggggg:","ooooo")
+                          console.log("ggggggggggg:", "ooooo")
                           singleEmployee = "Y";
-  
+
                           let fr_date = from_date;
                           if (AllEmployees[0]["date_of_joining"] > from_date) {
                             fr_date = AllEmployees[0]["date_of_joining"];
                           }
-  
+
                           let date_range = getDays(
                             new Date(fr_date),
                             new Date(to_date)
                           );
-  
+
                           for (let i = 0; i < date_range.length; i++) {
                             let shiftData = new LINQ(AllShifts)
                               .Where(
                                 w =>
                                   w.employee_id ==
-                                    AllEmployees[0]["hims_d_employee_id"] &&
+                                  AllEmployees[0]["hims_d_employee_id"] &&
                                   w.shift_date == date_range[i]
                               )
                               .Select(s => {
@@ -3135,15 +3141,15 @@ export default {
                                 shift_time: 0,
                                 shift_end_time: 0
                               });
-  
+
                             let actual_hours = 0;
                             let actual_mins = 0;
-  
+
                             if (shiftData["shift_time"] > 0) {
                               actual_hours = shiftData.shift_time
                                 .toString()
                                 .split(".")[0];
-  
+
                               if (
                                 shiftData.shift_time.toString().split(".")[1] !==
                                 undefined
@@ -3156,7 +3162,7 @@ export default {
                               actual_hours = standard_hours;
                               actual_mins = standard_mins;
                             }
-  
+
                             biometricData.push(
                               new LINQ(attendcResult)
                                 .Where(
@@ -3219,7 +3225,7 @@ export default {
                                 })
                             );
                           }
-  
+
                           insertTimeSheet(
                             returnQry,
                             biometricData,
@@ -3239,7 +3245,7 @@ export default {
                             message: "Biometric Data Not Available"
                           };
                           _mysql.releaseConnection();
-  
+
                           next();
                         }
                       }
@@ -3253,18 +3259,18 @@ export default {
                     message: "Biometric Database or Employees not found "
                   };
                   _mysql.releaseConnection();
-  
+
                   next();
                 }
               })
               .catch(e => {
-                console.log("error2:",error);
+                console.log("error2:", error);
                 _mysql.releaseConnection();
                 next(e);
               });
           })
           .catch(error => {
-            console.log("error1:",error);
+            console.log("error1:", error);
             _mysql.releaseConnection();
             next(error);
           });
@@ -3276,7 +3282,7 @@ export default {
         next();
       }
     } catch (e) {
-      console.log("error23:",e);
+      console.log("error23:", e);
       next(e);
     }
   },
@@ -3404,16 +3410,16 @@ export default {
                     shortage_hours:
                       parseInt(attResult[i]["total_working_hours"]) -
                         parseInt(attResult[i]["total_hours"]) >
-                      0
+                        0
                         ? parseInt(attResult[i]["total_working_hours"]) -
-                          parseInt(attResult[i]["total_hours"])
+                        parseInt(attResult[i]["total_hours"])
                         : 0,
                     ot_work_hours:
                       parseInt(attResult[i]["total_hours"]) -
                         parseInt(attResult[i]["total_working_hours"]) >
-                      0
+                        0
                         ? parseInt(attResult[i]["total_hours"]) -
-                          parseInt(attResult[i]["total_working_hours"])
+                        parseInt(attResult[i]["total_working_hours"])
                         : 0,
                     pending_unpaid_leave: pending_leaves
                   });
@@ -3568,11 +3574,11 @@ export default {
             }
 
 
-            let presntdayStr="";
-            if(options[0]["attendance_type"]=="D"){
-              presntdayStr=" present_days ";
+            let presntdayStr = "";
+            if (options[0]["attendance_type"] == "D") {
+              presntdayStr = " present_days ";
             }
-            
+
 
             _mysql
               .executeQuery({
@@ -3717,7 +3723,7 @@ export default {
 
       let employee_id = "";
 
-      if (input.hims_d_employee_id >0) {
+      if (input.hims_d_employee_id > 0) {
         employee_id = " and employee_id=" + input.hims_d_employee_id;
       }
 
@@ -4093,16 +4099,16 @@ export default {
                           shortage_hours:
                             attResult[i]["shortage_hourss"] -
                               attResult[i]["ot_hourss"] >=
-                            0
+                              0
                               ? attResult[i]["shortage_hourss"] -
-                                attResult[i]["ot_hourss"]
+                              attResult[i]["ot_hourss"]
                               : 0,
                           ot_work_hours:
                             attResult[i]["ot_hourss"] -
                               attResult[i]["shortage_hourss"] >=
-                            0
+                              0
                               ? attResult[i]["ot_hourss"] -
-                                attResult[i]["shortage_hourss"]
+                              attResult[i]["shortage_hourss"]
                               : 0
                         });
                       }
@@ -4440,8 +4446,8 @@ export default {
                             AttenResult[i]["consider_ot_shrtg"] == "Y"
                               ? AttenResult[i]["worked_hours"]
                               : AttenResult[i]["actual_hours"] +
-                                "." +
-                                AttenResult[i]["actual_minutes"],
+                              "." +
+                              AttenResult[i]["actual_minutes"],
                           hours:
                             AttenResult[i]["consider_ot_shrtg"] == "Y"
                               ? AttenResult[i]["hours"]
@@ -4516,7 +4522,7 @@ export default {
                                 (w.holiday == "Y" &&
                                   w.holiday_type == "RS" &&
                                   w.religion_id ==
-                                    RosterResult[0]["religion_id"]))
+                                  RosterResult[0]["religion_id"]))
                           )
                           .Select(s => {
                             return {
@@ -4548,8 +4554,8 @@ export default {
                                   whichLeave == 0 && s.holiday == "Y" ? 1 : 0,
                                 present_days:
                                   whichLeave == 0 &&
-                                  s.weekoff == "N" &&
-                                  s.holiday == "N"
+                                    s.weekoff == "N" &&
+                                    s.holiday == "N"
                                     ? 1
                                     : 0,
                                 absent_days: 0,
@@ -4579,18 +4585,18 @@ export default {
 
                               weekoff_days:
                                 whichLeave == 0 &&
-                                holiday_or_weekOff.weekoff == "Y"
+                                  holiday_or_weekOff.weekoff == "Y"
                                   ? 1
                                   : 0,
                               holidays:
                                 whichLeave == 0 &&
-                                holiday_or_weekOff.holiday == "Y"
+                                  holiday_or_weekOff.holiday == "Y"
                                   ? 1
                                   : 0,
                               present_days:
                                 whichLeave == 0 &&
-                                holiday_or_weekOff.weekoff == "N" &&
-                                holiday_or_weekOff.holiday == "N"
+                                  holiday_or_weekOff.weekoff == "N" &&
+                                  holiday_or_weekOff.holiday == "N"
                                   ? 1
                                   : 0,
                               absent_days: 0,
@@ -4603,8 +4609,8 @@ export default {
                               minutes: 0,
                               working_hours:
                                 whichLeave != 0 ||
-                                holiday_or_weekOff.weekoff == "Y" ||
-                                holiday_or_weekOff.holiday == "Y"
+                                  holiday_or_weekOff.weekoff == "Y" ||
+                                  holiday_or_weekOff.holiday == "Y"
                                   ? 0
                                   : options[0]["standard_working_hours"],
                               shortage_hours: 0,
@@ -4682,8 +4688,8 @@ export default {
                             LastTenDaysResult[i]["consider_ot_shrtg"] == "Y"
                               ? LastTenDaysResult[i]["worked_hours"]
                               : LastTenDaysResult[i]["actual_hours"] +
-                                "." +
-                                LastTenDaysResult[i]["actual_minutes"],
+                              "." +
+                              LastTenDaysResult[i]["actual_minutes"],
                           hours:
                             LastTenDaysResult[i]["consider_ot_shrtg"] == "Y"
                               ? LastTenDaysResult[i]["hours"]
@@ -5077,11 +5083,11 @@ export default {
 
 
 
-             let   standard_hours = options[0]["standard_working_hours"]
+              let standard_hours = options[0]["standard_working_hours"]
                 .toString()
                 .split(".")[0];
 
-                let standard_mins=0;
+              let standard_mins = 0;
               if (
                 options[0]["standard_working_hours"]
                   .toString()
@@ -5171,7 +5177,7 @@ export default {
                   let total_biom_attend = AttenResult.concat(LastTenDaysResult);
                   if (total_biom_attend.length > 0) {
                     let excptions = new LINQ(total_biom_attend)
-                      .Where(w => w.status == "EX" ||w.status == "AB")
+                      .Where(w => w.status == "EX" || w.status == "AB")
                       .Select(s => {
                         return {
                           employee_code: s.employee_code,
@@ -5250,8 +5256,8 @@ export default {
                             AttenResult[i]["consider_ot_shrtg"] == "Y"
                               ? AttenResult[i]["worked_hours"]
                               : AttenResult[i]["actual_hours"] +
-                                "." +
-                                AttenResult[i]["actual_minutes"],
+                              "." +
+                              AttenResult[i]["actual_minutes"],
                           hours:
                             AttenResult[i]["consider_ot_shrtg"] == "Y"
                               ? AttenResult[i]["hours"]
@@ -5326,7 +5332,7 @@ export default {
                                 (w.holiday == "Y" &&
                                   w.holiday_type == "RS" &&
                                   w.religion_id ==
-                                    RosterResult[0]["religion_id"]))
+                                  RosterResult[0]["religion_id"]))
                           )
                           .Select(s => {
                             return {
@@ -5338,14 +5344,14 @@ export default {
                             holiday: "N",
                             weekoff: "N"
                           });
-                         
+
                         RosterAttendance.push(
                           new LINQ(RosterResult)
                             .Where(w => roster_Date_range[i] == w.shift_date)
                             .Select(s => {
 
 
-                             
+
                               return {
                                 employee_id: s.employee_id,
                                 hospital_id: s.hospital_id,
@@ -5361,8 +5367,8 @@ export default {
                                   whichLeave == 0 && s.holiday == "Y" ? 1 : 0,
                                 present_days:
                                   whichLeave == 0 &&
-                                  s.weekoff == "N" &&
-                                  s.holiday == "N"
+                                    s.weekoff == "N" &&
+                                    s.holiday == "N"
                                     ? 1
                                     : 0,
                                 absent_days: 0,
@@ -5381,10 +5387,10 @@ export default {
                               };
                             })
                             .FirstOrDefault({
-                              employee_id:  input.hims_d_employee_id,
+                              employee_id: input.hims_d_employee_id,
                               hospital_id: input.hospital_id,
                               sub_department_id:
-                              input.sub_department_id,
+                                input.sub_department_id,
                               attendance_date: roster_Date_range[i],
                               year: moment(roster_Date_range[i]).format("YYYY"),
                               month: moment(roster_Date_range[i]).format("M"),
@@ -5392,18 +5398,18 @@ export default {
 
                               weekoff_days:
                                 whichLeave == 0 &&
-                                holiday_or_weekOff.weekoff == "Y"
+                                  holiday_or_weekOff.weekoff == "Y"
                                   ? 1
                                   : 0,
                               holidays:
                                 whichLeave == 0 &&
-                                holiday_or_weekOff.holiday == "Y"
+                                  holiday_or_weekOff.holiday == "Y"
                                   ? 1
                                   : 0,
                               present_days:
                                 whichLeave == 0 &&
-                                holiday_or_weekOff.weekoff == "N" &&
-                                holiday_or_weekOff.holiday == "N"
+                                  holiday_or_weekOff.weekoff == "N" &&
+                                  holiday_or_weekOff.holiday == "N"
                                   ? 1
                                   : 0,
                               absent_days: 0,
@@ -5415,23 +5421,23 @@ export default {
                               hours: (whichLeave != 0 ||
                                 holiday_or_weekOff.weekoff == "Y" ||
                                 holiday_or_weekOff.holiday == "Y")
-                                  ? 0
-                                  : standard_hours,
-                              minutes:  (whichLeave != 0 ||
+                                ? 0
+                                : standard_hours,
+                              minutes: (whichLeave != 0 ||
                                 holiday_or_weekOff.weekoff == "Y" ||
                                 holiday_or_weekOff.holiday == "Y")
-                                  ? 0
-                                  :standard_mins,
+                                ? 0
+                                : standard_mins,
                               working_hours:
                                 (whichLeave != 0 ||
-                                holiday_or_weekOff.weekoff == "Y" ||
-                                holiday_or_weekOff.holiday == "Y")
+                                  holiday_or_weekOff.weekoff == "Y" ||
+                                  holiday_or_weekOff.holiday == "Y")
                                   ? 0
                                   : options[0]["standard_working_hours"],
-                                  total_hours:
+                              total_hours:
                                 (whichLeave != 0 ||
-                                holiday_or_weekOff.weekoff == "Y" ||
-                                holiday_or_weekOff.holiday == "Y")
+                                  holiday_or_weekOff.weekoff == "Y" ||
+                                  holiday_or_weekOff.holiday == "Y")
                                   ? 0
                                   : options[0]["standard_working_hours"],
                               shortage_hours: 0,
@@ -5441,7 +5447,7 @@ export default {
                             })
                         );
                       }
-                 
+
                       //last month 10 days
                       for (let i = 0; i < LastTenDaysResult.length; i++) {
                         let shortage_time = 0;
@@ -5509,8 +5515,8 @@ export default {
                             LastTenDaysResult[i]["consider_ot_shrtg"] == "Y"
                               ? LastTenDaysResult[i]["worked_hours"]
                               : LastTenDaysResult[i]["actual_hours"] +
-                                "." +
-                                LastTenDaysResult[i]["actual_minutes"],
+                              "." +
+                              LastTenDaysResult[i]["actual_minutes"],
                           hours:
                             LastTenDaysResult[i]["consider_ot_shrtg"] == "Y"
                               ? LastTenDaysResult[i]["hours"]
@@ -5543,11 +5549,11 @@ export default {
                       }
 
 
-                     
+
                       mergedArray = dailyAttendance.concat(RosterAttendance);
 
 
-                     
+
 
                       const insurtColumns = [
                         "employee_id",
@@ -5591,7 +5597,7 @@ export default {
                           bulkInsertOrUpdate: true
                         })
                         .then(insertResult => {
-                          
+
 
                           _mysql
                             .executeQuery({
@@ -5634,7 +5640,7 @@ export default {
 
 
 
-                             
+
                               for (let i = 0; i < attResult.length; i++) {
                                 //ST--shortage
                                 let short_hrs = new LINQ(previousMonthData)
@@ -5654,9 +5660,9 @@ export default {
                                   .Sum(s => s.shortage_minutes);
 
 
-                             
 
-                                short_hrs =parseInt(short_hrs)+
+
+                                short_hrs = parseInt(short_hrs) +
                                   parseInt(parseInt(short_min) / parseInt(60)) +
                                   "." +
                                   (parseInt(short_min) % parseInt(60));
@@ -5679,7 +5685,7 @@ export default {
                                   )
                                   .Sum(s => s.ot_minutes);
 
-                                ot_hrs =parseInt(ot_hrs)+
+                                ot_hrs = parseInt(ot_hrs) +
                                   parseInt(parseInt(ot_min) / parseInt(60)) +
                                   "." +
                                   (parseInt(ot_min) % parseInt(60));
@@ -5718,7 +5724,7 @@ export default {
                                   prev_month_ot_hr: ot_hrs
                                 });
                               }
-                        
+
                               const insurtColumns = [
                                 "employee_id",
                                 "year",
@@ -6065,8 +6071,8 @@ export default {
                             AttenResult[i]["consider_ot_shrtg"] == "Y"
                               ? AttenResult[i]["worked_hours"]
                               : AttenResult[i]["actual_hours"] +
-                                "." +
-                                AttenResult[i]["actual_minutes"],
+                              "." +
+                              AttenResult[i]["actual_minutes"],
                           hours:
                             AttenResult[i]["consider_ot_shrtg"] == "Y"
                               ? AttenResult[i]["hours"]
@@ -6141,7 +6147,7 @@ export default {
                                 (w.holiday == "Y" &&
                                   w.holiday_type == "RS" &&
                                   w.religion_id ==
-                                    RosterResult[0]["religion_id"]))
+                                  RosterResult[0]["religion_id"]))
                           )
                           .Select(s => {
                             return {
@@ -6173,8 +6179,8 @@ export default {
                                   whichLeave == 0 && s.holiday == "Y" ? 1 : 0,
                                 present_days:
                                   whichLeave == 0 &&
-                                  s.weekoff == "N" &&
-                                  s.holiday == "N"
+                                    s.weekoff == "N" &&
+                                    s.holiday == "N"
                                     ? 1
                                     : 0,
                                 absent_days: 0,
@@ -6204,18 +6210,18 @@ export default {
 
                               weekoff_days:
                                 whichLeave == 0 &&
-                                holiday_or_weekOff.weekoff == "Y"
+                                  holiday_or_weekOff.weekoff == "Y"
                                   ? 1
                                   : 0,
                               holidays:
                                 whichLeave == 0 &&
-                                holiday_or_weekOff.holiday == "Y"
+                                  holiday_or_weekOff.holiday == "Y"
                                   ? 1
                                   : 0,
                               present_days:
                                 whichLeave == 0 &&
-                                holiday_or_weekOff.weekoff == "N" &&
-                                holiday_or_weekOff.holiday == "N"
+                                  holiday_or_weekOff.weekoff == "N" &&
+                                  holiday_or_weekOff.holiday == "N"
                                   ? 1
                                   : 0,
                               absent_days: 0,
@@ -6228,8 +6234,8 @@ export default {
                               minutes: 0,
                               working_hours:
                                 whichLeave != 0 ||
-                                holiday_or_weekOff.weekoff == "Y" ||
-                                holiday_or_weekOff.holiday == "Y"
+                                  holiday_or_weekOff.weekoff == "Y" ||
+                                  holiday_or_weekOff.holiday == "Y"
                                   ? 0
                                   : options[0]["standard_working_hours"],
                               shortage_hours: 0,
@@ -6307,8 +6313,8 @@ export default {
                             LastTenDaysResult[i]["consider_ot_shrtg"] == "Y"
                               ? LastTenDaysResult[i]["worked_hours"]
                               : LastTenDaysResult[i]["actual_hours"] +
-                                "." +
-                                LastTenDaysResult[i]["actual_minutes"],
+                              "." +
+                              LastTenDaysResult[i]["actual_minutes"],
                           hours:
                             LastTenDaysResult[i]["consider_ot_shrtg"] == "Y"
                               ? LastTenDaysResult[i]["hours"]
@@ -6612,7 +6618,7 @@ export default {
       next(e);
     }
   },
- 
+
   getActivityFeed: (req, res, next) => {
     const _mysql = new algaehMysql();
 
@@ -6882,101 +6888,101 @@ export default {
     }
   },
 
-//created by irfan:
-getDailyAttendance: (req, res, next) => {
-  const _mysql = new algaehMysql();
-  let input = req.query;
-  _mysql
-    .executeQuery({
-      query:
-        "select attendance_starts,at_st_date,at_end_date ,attendance_type from hims_d_hrms_options;"
-    })
-    .then(options => {
-      if (options.length > 0) {
-        let presntdayStr = "";
-        if (options[0]["attendance_type"] == "D") {
-          presntdayStr = " present_days ";
-        }
-        _mysql
-          .executeQuery({
-            query: `select hims_f_daily_attendance_id,employee_id,hospital_id,sub_department_id,year,month,attendance_date,\
+  //created by irfan:
+  getDailyAttendance: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.query;
+    _mysql
+      .executeQuery({
+        query:
+          "select attendance_starts,at_st_date,at_end_date ,attendance_type from hims_d_hrms_options;"
+      })
+      .then(options => {
+        if (options.length > 0) {
+          let presntdayStr = "";
+          if (options[0]["attendance_type"] == "D") {
+            presntdayStr = " present_days ";
+          }
+          _mysql
+            .executeQuery({
+              query: `select hims_f_daily_attendance_id,employee_id,hospital_id,sub_department_id,year,month,attendance_date,\
           total_days,${presntdayStr} display_present_days,absent_days,total_work_days,weekoff_days,holidays,\
           paid_leave,unpaid_leave,hours,minutes,total_hours,working_hours,shortage_hours,shortage_minutes,\
           ot_work_hours,ot_minutes,ot_weekoff_hours,ot_weekoff_minutes,ot_holiday_hours,ot_holiday_minutes,project_id\
            from hims_f_daily_attendance  where hospital_id=? and year=? and month=? and employee_id=?;`,
-            values: [
-              input.hospital_id,
-              input.year,
-              input.month,
-              input.employee_id
-            ],
-            printQuery: false
-          })
-          .then(result => {
-            _mysql.releaseConnection();
+              values: [
+                input.hospital_id,
+                input.year,
+                input.month,
+                input.employee_id
+              ],
+              printQuery: false
+            })
+            .then(result => {
+              _mysql.releaseConnection();
 
-            let outputArray = [];
-            for (let i = 0; i < result.length; i++) {
-              let lay_off = "";
+              let outputArray = [];
+              for (let i = 0; i < result.length; i++) {
+                let lay_off = "";
 
-              if (parseFloat(result[i]["weekoff_days"]) > 0) {
-                lay_off = "W";
-              } else if (parseFloat(result[i]["holidays"]) > 0) {
-                lay_off = "H";
-              } else if (parseFloat(result[i]["paid_leave"]) > 0) {
-                lay_off = "P";
-              } else if (parseFloat(result[i]["unpaid_leave"]) > 0) {
-                lay_off = "U";
+                if (parseFloat(result[i]["weekoff_days"]) > 0) {
+                  lay_off = "W";
+                } else if (parseFloat(result[i]["holidays"]) > 0) {
+                  lay_off = "H";
+                } else if (parseFloat(result[i]["paid_leave"]) > 0) {
+                  lay_off = "P";
+                } else if (parseFloat(result[i]["unpaid_leave"]) > 0) {
+                  lay_off = "U";
+                }
+                outputArray.push({
+                  ...result[i],
+                  lay_off: lay_off,
+                  complete_shortage_hr:
+                    result[i]["shortage_hours"] +
+                    "." +
+                    String("0" + parseInt(result[i]["shortage_minutes"])).slice(
+                      -2
+                    ),
+
+                  complete_ot_hr:
+                    result[i]["ot_work_hours"] +
+                    "." +
+                    String("0" + parseInt(result[i]["ot_minutes"])).slice(-2),
+                  complete_weekoff_ot_hr:
+                    result[i]["ot_weekoff_hours"] +
+                    "." +
+                    String("0" + parseInt(result[i]["ot_weekoff_minutes"])).slice(
+                      -2
+                    ),
+                  complete_holiday_ot_hr:
+                    result[i]["ot_holiday_hours"] +
+                    "." +
+                    String("0" + parseInt(result[i]["ot_holiday_minutes"])).slice(
+                      -2
+                    )
+                });
               }
-              outputArray.push({
-                ...result[i],
-                lay_off: lay_off,
-                complete_shortage_hr:
-                  result[i]["shortage_hours"] +
-                  "." +
-                  String("0" + parseInt(result[i]["shortage_minutes"])).slice(
-                    -2
-                  ),
-
-                complete_ot_hr:
-                  result[i]["ot_work_hours"] +
-                  "." +
-                  String("0" + parseInt(result[i]["ot_minutes"])).slice(-2),
-                complete_weekoff_ot_hr:
-                  result[i]["ot_weekoff_hours"] +
-                  "." +
-                  String("0" + parseInt(result[i]["ot_weekoff_minutes"])).slice(
-                    -2
-                  ),
-                complete_holiday_ot_hr:
-                  result[i]["ot_holiday_hours"] +
-                  "." +
-                  String("0" + parseInt(result[i]["ot_holiday_minutes"])).slice(
-                    -2
-                  )
-              });
-            }
-            req.records = outputArray;
-            next();
-          })
-          .catch(e => {
-            _mysql.releaseConnection();
-            next(e);
-          });
-      } else {
+              req.records = outputArray;
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            message: "Please define HRMS options",
+            invalid_input: true
+          };
+          next();
+        }
+      })
+      .catch(e => {
         _mysql.releaseConnection();
-        req.records = {
-          message: "Please define HRMS options",
-          invalid_input: true
-        };
-        next();
-      }
-    })
-    .catch(e => {
-      _mysql.releaseConnection();
-      next(e);
-    });
-},
+        next(e);
+      });
+  },
 
 
   //created by irfan:
@@ -7188,7 +7194,7 @@ getDailyAttendance: (req, res, next) => {
                     w =>
                       w.employee_id == input.employee_id &&
                       w.from_date <=
-                        moment(date_range[i]).format("YYYY-MM-DD") &&
+                      moment(date_range[i]).format("YYYY-MM-DD") &&
                       w.to_date >= moment(date_range[i]).format("YYYY-MM-DD")
                   )
                   .Select(s => {
@@ -7553,9 +7559,9 @@ getDailyAttendance: (req, res, next) => {
                           w =>
                             w.employee_id == input.employee_id &&
                             w.from_date <=
-                              moment(date_range[i]).format("YYYY-MM-DD") &&
+                            moment(date_range[i]).format("YYYY-MM-DD") &&
                             w.to_date >=
-                              moment(date_range[i]).format("YYYY-MM-DD")
+                            moment(date_range[i]).format("YYYY-MM-DD")
                         )
                         .Select(s => {
                           return {
@@ -7946,8 +7952,8 @@ getDailyAttendance: (req, res, next) => {
                         AttenResult[i]["consider_ot_shrtg"] == "Y"
                           ? AttenResult[i]["worked_hours"]
                           : AttenResult[i]["actual_hours"] +
-                            "." +
-                            AttenResult[i]["actual_minutes"],
+                          "." +
+                          AttenResult[i]["actual_minutes"],
                       hours:
                         AttenResult[i]["consider_ot_shrtg"] == "Y"
                           ? AttenResult[i]["hours"]
@@ -8500,9 +8506,9 @@ getDailyAttendance: (req, res, next) => {
                 inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
                 left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
                 where    E.hospital_id=?  ${strQry.replace(
-                  /PR/gi,
-                  "LA"
-                )} and status='APR' and ((  date(?)>=date(from_date) and
+                      /PR/gi,
+                      "LA"
+                    )} and status='APR' and ((  date(?)>=date(from_date) and
                 date(?)<=date(to_date)) or ( date(?)>=date(from_date) and   date(?)<=date(to_date))
                 or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or
                 (date(to_date)>=date(?) and date(to_date)<= date(?) ))  ;
@@ -8600,7 +8606,7 @@ getDailyAttendance: (req, res, next) => {
                                   s.from_date == s.to_date &&
                                   s.to_date == row["attendance_date"] &&
                                   parseFloat(s.total_applied_days) ==
-                                    parseFloat(0.5)
+                                  parseFloat(0.5)
                                 ) {
                                   leave_status =
                                     leave_status == "P" ? "HPL" : "HUL";
@@ -8914,9 +8920,9 @@ getDailyAttendance: (req, res, next) => {
                 inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
                 left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
                 where    E.hospital_id=?  ${strQry.replace(
-                  /PR/gi,
-                  "LA"
-                )} and status='APR' and ((  date(?)>=date(from_date) and
+                      /PR/gi,
+                      "LA"
+                    )} and status='APR' and ((  date(?)>=date(from_date) and
                 date(?)<=date(to_date)) or ( date(?)>=date(from_date) and   date(?)<=date(to_date))
                 or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or
                 (date(to_date)>=date(?) and date(to_date)<= date(?) ))  ;
@@ -9032,188 +9038,162 @@ getDailyAttendance: (req, res, next) => {
                           .Select(s => s)
                           .ToArray();
 
-                          employee.forEach((row, i) => {
-                            let leave = null;
-                            if (empLeave.length > 0) {
-                              leave = new LINQ(empLeave)
-                                .Where(
-                                  w =>
-                                    w.from_date <= row["attendance_date"] &&
-                                    w.to_date >= row["attendance_date"]
-                                )
-                                .Select(s => {
-                                  let leave_status = s.leave_type;
-                          
+                        employee.forEach((row, i) => {
+                          let leave = null;
+                          if (empLeave.length > 0) {
+                            leave = new LINQ(empLeave)
+                              .Where(
+                                w =>
+                                  w.from_date <= row["attendance_date"] &&
+                                  w.to_date >= row["attendance_date"]
+                              )
+                              .Select(s => {
+                                let leave_status = s.leave_type;
+
+                                if (
+                                  s.from_date == s.to_date &&
+                                  s.to_date == row["attendance_date"] &&
+                                  parseFloat(s.total_applied_days) == parseFloat(0.5)
+                                ) {
+                                  leave_status = leave_status == "P" ? "HPL" : "HUL";
+                                } else if (s.from_date != s.to_date) {
                                   if (
-                                    s.from_date == s.to_date &&
-                                    s.to_date == row["attendance_date"] &&
-                                    parseFloat(s.total_applied_days) == parseFloat(0.5)
+                                    s.from_date == row["attendance_date"] &&
+                                    s.from_leave_session == "SH"
                                   ) {
                                     leave_status = leave_status == "P" ? "HPL" : "HUL";
-                                  } else if (s.from_date != s.to_date) {
-                                    if (
-                                      s.from_date == row["attendance_date"] &&
-                                      s.from_leave_session == "SH"
-                                    ) {
-                                      leave_status = leave_status == "P" ? "HPL" : "HUL";
-                                    } else if (
-                                      s.to_date == row["attendance_date"] &&
-                                      s.to_leave_session == "FH"
-                                    ) {
-                                      leave_status = leave_status == "P" ? "HPL" : "HUL";
-                                    }
+                                  } else if (
+                                    s.to_date == row["attendance_date"] &&
+                                    s.to_leave_session == "FH"
+                                  ) {
+                                    leave_status = leave_status == "P" ? "HPL" : "HUL";
                                   }
-                          
-                                  if (leave_status == "P") {
-                                    leave_status = "PL";
-                                  } else if (leave_status == "U") {
-                                    leave_status = "UL";
-                                  }
-                          
-                                  return {
-                                    holiday_included: s.holiday_included,
-                                    weekoff_included: s.weekoff_included,
-                                    hospital_id: input.branch_id,
-                                    employee_id: row.employee_id,
-                                    project_id: row.project_id,
-                                    project_desc: row.project_desc,
-                                    full_name: row.full_name,
-                                    sub_department_id: row.sub_department_id,
-                                    employee_code: row.employee_code,
-                                    attendance_date: row["attendance_date"],
-                                    status: leave_status,
-                                    designation: row.designation,
-                                    leave_description:s.leave_description
-                                  };
-                                })
-                                .FirstOrDefault(null);
-                            }
-                          
-                            const holiday_or_weekOff = new LINQ(empHolidayweekoff)
-                              .Where(w => w.holiday_date == row["attendance_date"])
-                              .Select(s => {
+                                }
+
+                                if (leave_status == "P") {
+                                  leave_status = "PL";
+                                } else if (leave_status == "U") {
+                                  leave_status = "UL";
+                                }
+
                                 return {
-                                  holiday: s.holiday,
-                                  weekoff: s.weekoff
+                                  holiday_included: s.holiday_included,
+                                  weekoff_included: s.weekoff_included,
+                                  hospital_id: input.branch_id,
+                                  employee_id: row.employee_id,
+                                  project_id: row.project_id,
+                                  project_desc: row.project_desc,
+                                  full_name: row.full_name,
+                                  sub_department_id: row.sub_department_id,
+                                  employee_code: row.employee_code,
+                                  attendance_date: row["attendance_date"],
+                                  status: leave_status,
+                                  designation: row.designation,
+                                  leave_description: s.leave_description
                                 };
                               })
                               .FirstOrDefault(null);
-                          
-                            //----------------------------
-                          
-                            if (
-                              (holiday_or_weekOff == null && leave != null) ||
-                              (leave != null &&
-                                holiday_or_weekOff != null &&
-                                holiday_or_weekOff.holiday == "Y" &&
-                                leave.holiday_included == "Y") ||
-                              (leave != null &&
-                                holiday_or_weekOff != null &&
-                                holiday_or_weekOff.weekoff == "Y" &&
-                                leave.weekoff_included == "Y")
-                            ) {
-                              let color = "";
-                          
-                              if (leave.status == "PL" || leave.status == "HPL") color = "#ec7c00";
-                              if (leave.status == "UL" || leave.status == "HUL") color = "#ff0000";
-                          
+                          }
+
+                          const holiday_or_weekOff = new LINQ(empHolidayweekoff)
+                            .Where(w => w.holiday_date == row["attendance_date"])
+                            .Select(s => {
+                              return {
+                                holiday: s.holiday,
+                                weekoff: s.weekoff
+                              };
+                            })
+                            .FirstOrDefault(null);
+
+                          //----------------------------
+
+                          if (
+                            (holiday_or_weekOff == null && leave != null) ||
+                            (leave != null &&
+                              holiday_or_weekOff != null &&
+                              holiday_or_weekOff.holiday == "Y" &&
+                              leave.holiday_included == "Y") ||
+                            (leave != null &&
+                              holiday_or_weekOff != null &&
+                              holiday_or_weekOff.weekoff == "Y" &&
+                              leave.weekoff_included == "Y")
+                          ) {
+                            let color = "";
+
+                            if (leave.status == "PL" || leave.status == "HPL") color = "#ec7c00";
+                            if (leave.status == "UL" || leave.status == "HUL") color = "#ff0000";
+
+                            if (row.isTimeSheet != undefined && row.isTimeSheet == "Y") {
+                              outputArray.push({
+                                project_id: row.project_id,
+                                project_desc: leave.leave_description,
+                                attendance_date: leave.attendance_date,
+                                status: leave.status,
+                                [moment(leave.attendance_date, "YYYY-MM-DD").format(
+                                  "YYYYMMDD"
+                                )]: row.worked_hours,
+                                color: color
+                              });
+                            } else {
+                              outputArray.push({
+                                project_id: row.project_id,
+                                project_desc: leave.leave_description,
+                                attendance_date: leave.attendance_date,
+                                status: leave.status,
+                                [moment(leave.attendance_date, "YYYY-MM-DD").format(
+                                  "YYYYMMDD"
+                                )]: leave.status,
+                                color: color
+                              });
+                            }
+                          } else if (holiday_or_weekOff != null) {
+                            if (holiday_or_weekOff.weekoff == "Y") {
                               if (row.isTimeSheet != undefined && row.isTimeSheet == "Y") {
                                 outputArray.push({
                                   project_id: row.project_id,
-                                  project_desc: leave.leave_description,
-                                  attendance_date: leave.attendance_date,
-                                  status: leave.status,
-                                  [moment(leave.attendance_date, "YYYY-MM-DD").format(
+                                  project_desc: row.project_desc,
+                                  attendance_date: row["attendance_date"],
+                                  status: "WO",
+                                  [moment(row["attendance_date"], "YYYY-MM-DD").format(
                                     "YYYYMMDD"
                                   )]: row.worked_hours,
-                                  color: color
+                                  color: "#E7FEFD"
                                 });
                               } else {
                                 outputArray.push({
                                   project_id: row.project_id,
-                                  project_desc:  leave.leave_description,
-                                  attendance_date: leave.attendance_date,
-                                  status: leave.status,
-                                  [moment(leave.attendance_date, "YYYY-MM-DD").format(
+                                  project_desc: row.project_desc,
+                                  attendance_date: row["attendance_date"],
+                                  status: "WO",
+                                  [moment(row["attendance_date"], "YYYY-MM-DD").format(
                                     "YYYYMMDD"
-                                  )]: leave.status,
-                                  color: color
+                                  )]: "WO",
+                                  color: "#E7FEFD"
                                 });
                               }
-                            } else if (holiday_or_weekOff != null) {
-                              if (holiday_or_weekOff.weekoff == "Y") {
-                                if (row.isTimeSheet != undefined && row.isTimeSheet == "Y") {
-                                  outputArray.push({
-                                    project_id: row.project_id,
-                                    project_desc: row.project_desc,
-                                    attendance_date: row["attendance_date"],
-                                    status: "WO",
-                                    [moment(row["attendance_date"], "YYYY-MM-DD").format(
-                                      "YYYYMMDD"
-                                    )]: row.worked_hours,
-                                    color: "#E7FEFD"
-                                  });
-                                } else {
-                                  outputArray.push({
-                                    project_id: row.project_id,
-                                    project_desc: row.project_desc,
-                                    attendance_date: row["attendance_date"],
-                                    status: "WO",
-                                    [moment(row["attendance_date"], "YYYY-MM-DD").format(
-                                      "YYYYMMDD"
-                                    )]: "WO",
-                                    color: "#E7FEFD"
-                                  });
-                                }
-                              } else if (holiday_or_weekOff.holiday == "Y") {
-                                if (row.isTimeSheet != undefined && row.isTimeSheet == "Y") {
-                                  outputArray.push({
-                                    project_id: row.project_id,
-                                    project_desc: row.project_desc,
-                                    attendance_date: row["attendance_date"],
-                                    status: "HO",
-                                    [moment(row["attendance_date"], "YYYY-MM-DD").format(
-                                      "YYYYMMDD"
-                                    )]: row.worked_hours,
-                                    color: "#EAEAFD"
-                                  });
-                                } else {
-                                  outputArray.push({
-                                    project_id: row.project_id,
-                                    project_desc: row.project_desc,
-                                    attendance_date: row["attendance_date"],
-                                    status: "HO",
-                                    [moment(row["attendance_date"], "YYYY-MM-DD").format(
-                                      "YYYYMMDD"
-                                    )]: "HO",
-                                    color: "#EAEAFD"
-                                  });
-                                }
+                            } else if (holiday_or_weekOff.holiday == "Y") {
+                              if (row.isTimeSheet != undefined && row.isTimeSheet == "Y") {
+                                outputArray.push({
+                                  project_id: row.project_id,
+                                  project_desc: row.project_desc,
+                                  attendance_date: row["attendance_date"],
+                                  status: "HO",
+                                  [moment(row["attendance_date"], "YYYY-MM-DD").format(
+                                    "YYYYMMDD"
+                                  )]: row.worked_hours,
+                                  color: "#EAEAFD"
+                                });
                               } else {
-                                if (row.isTimeSheet != undefined && row.isTimeSheet == "Y") {
-                                  outputArray.push({
-                                    project_id: row.project_id,
-                                    project_desc: row.project_desc,
-                                    attendance_date: row["attendance_date"],
-                                    status: row.project_id > 0 ? "PR" : "N",
-                                    [moment(row["attendance_date"], "YYYY-MM-DD").format(
-                                      "YYYYMMDD"
-                                    )]: row.worked_hours,
-                                    color: row.project_id > 0 ? "" : "#F5F5F5",
-                                    project_desc: row.project_desc
-                                  });
-                                } else {
-                                  outputArray.push({
-                                    project_id: row.project_id,
-                                    project_desc: row.project_desc,
-                                    attendance_date: row["attendance_date"],
-                                    status: row.project_id > 0 ? "PR" : "N",
-                                    [moment(row["attendance_date"], "YYYY-MM-DD").format("YYYYMMDD")]:
-                                      row.project_id > 0 ? "PR" : "N",
-                                    color: row.project_id > 0 ? "" : "#F5F5F5",
-                                    project_desc: row.project_desc
-                                  });
-                                }
+                                outputArray.push({
+                                  project_id: row.project_id,
+                                  project_desc: row.project_desc,
+                                  attendance_date: row["attendance_date"],
+                                  status: "HO",
+                                  [moment(row["attendance_date"], "YYYY-MM-DD").format(
+                                    "YYYYMMDD"
+                                  )]: "HO",
+                                  color: "#EAEAFD"
+                                });
                               }
                             } else {
                               if (row.isTimeSheet != undefined && row.isTimeSheet == "Y") {
@@ -9241,7 +9221,33 @@ getDailyAttendance: (req, res, next) => {
                                 });
                               }
                             }
-                          });
+                          } else {
+                            if (row.isTimeSheet != undefined && row.isTimeSheet == "Y") {
+                              outputArray.push({
+                                project_id: row.project_id,
+                                project_desc: row.project_desc,
+                                attendance_date: row["attendance_date"],
+                                status: row.project_id > 0 ? "PR" : "N",
+                                [moment(row["attendance_date"], "YYYY-MM-DD").format(
+                                  "YYYYMMDD"
+                                )]: row.worked_hours,
+                                color: row.project_id > 0 ? "" : "#F5F5F5",
+                                project_desc: row.project_desc
+                              });
+                            } else {
+                              outputArray.push({
+                                project_id: row.project_id,
+                                project_desc: row.project_desc,
+                                attendance_date: row["attendance_date"],
+                                status: row.project_id > 0 ? "PR" : "N",
+                                [moment(row["attendance_date"], "YYYY-MM-DD").format("YYYYMMDD")]:
+                                  row.project_id > 0 ? "PR" : "N",
+                                color: row.project_id > 0 ? "" : "#F5F5F5",
+                                project_desc: row.project_desc
+                              });
+                            }
+                          }
+                        });
 
                         final_roster.push({
                           full_name: employee[0].full_name,
@@ -9404,12 +9410,12 @@ getDailyAttendance: (req, res, next) => {
                       } else {
                         errorString += ` <li> ${
                           employee["employee_code"]
-                        } on  ${moment(
-                          day.attendance_date,
-                          "YYYY-MM-DD"
-                        ).format("DD-MM-YYYY")} is ${
+                          } on  ${moment(
+                            day.attendance_date,
+                            "YYYY-MM-DD"
+                          ).format("DD-MM-YYYY")} is ${
                           day["status"]
-                        } not  PR </li>`;
+                          } not  PR </li>`;
                       }
                       break;
 
@@ -9431,12 +9437,12 @@ getDailyAttendance: (req, res, next) => {
                       } else {
                         errorString += ` <li> ${
                           employee["employee_code"]
-                        } on  ${moment(
-                          day.attendance_date,
-                          "YYYY-MM-DD"
-                        ).format("DD-MM-YYYY")} is ${
+                          } on  ${moment(
+                            day.attendance_date,
+                            "YYYY-MM-DD"
+                          ).format("DD-MM-YYYY")} is ${
                           day["status"]
-                        } not  PR   </li>`;
+                          } not  PR   </li>`;
                       }
 
                       break;
@@ -9514,10 +9520,10 @@ getDailyAttendance: (req, res, next) => {
 
                         errorString += ` <li> ${
                           employee["employee_code"]
-                        } on  ${moment(
-                          day.attendance_date,
-                          "YYYY-MM-DD"
-                        ).format("DD-MM-YYYY")} is ${actual} not ${neww} </li>`;
+                          } on  ${moment(
+                            day.attendance_date,
+                            "YYYY-MM-DD"
+                          ).format("DD-MM-YYYY")} is ${actual} not ${neww} </li>`;
                       }
 
                       break;
@@ -9591,10 +9597,10 @@ getDailyAttendance: (req, res, next) => {
 
                         errorString += ` <li> ${
                           employee["employee_code"]
-                        } on  ${moment(
-                          day.attendance_date,
-                          "YYYY-MM-DD"
-                        ).format("DD-MM-YYYY")} is ${actual} not ${neww} </li>`;
+                          } on  ${moment(
+                            day.attendance_date,
+                            "YYYY-MM-DD"
+                          ).format("DD-MM-YYYY")} is ${actual} not ${neww} </li>`;
                       }
                       break;
 
@@ -9630,10 +9636,10 @@ getDailyAttendance: (req, res, next) => {
                       } else {
                         errorString += ` <li> No project is Assigned for ${
                           employee["employee_code"]
-                        } on  ${moment(
-                          day.attendance_date,
-                          "YYYY-MM-DD"
-                        ).format("DD-MM-YYYY")} </li>`;
+                          } on  ${moment(
+                            day.attendance_date,
+                            "YYYY-MM-DD"
+                          ).format("DD-MM-YYYY")} </li>`;
                       }
                       break;
                   }
@@ -9917,8 +9923,8 @@ getDailyAttendance: (req, res, next) => {
                   AttenResult[i]["consider_ot_shrtg"] == "Y"
                     ? AttenResult[i]["worked_hours"]
                     : AttenResult[i]["actual_hours"] +
-                      "." +
-                      AttenResult[i]["actual_minutes"],
+                    "." +
+                    AttenResult[i]["actual_minutes"],
                 hours:
                   AttenResult[i]["consider_ot_shrtg"] == "Y"
                     ? AttenResult[i]["hours"]
@@ -10372,7 +10378,7 @@ function insertTimeSheet(
 
       for (let i = 0; i < biometricData.length; i++) {
         if (
-         
+
           biometricData[i]["in_time"] != null &&
           biometricData[i]["out_time"] != null
         ) {
@@ -10386,8 +10392,8 @@ function insertTimeSheet(
         ) {
           //Exception
           insertArray.push({ ...biometricData[i], status: "EX" });
-        } else if (  biometricData[i]["out_time"] == null ||
-           biometricData[i]["in_time"] == null) {
+        } else if (biometricData[i]["out_time"] == null ||
+          biometricData[i]["in_time"] == null) {
           let leave = new LINQ(AllLeaves)
             .Where(
               w =>
@@ -10458,7 +10464,7 @@ function insertTimeSheet(
             insertArray.push({
               ...biometricData[i],
               status: "AB",
-             
+
             });
           }
         }
@@ -10767,9 +10773,9 @@ function BulktimesheetCalc(req, res, next) {
                   inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
                   left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
                   where    E.hospital_id=?  ${strQry.replace(
-                    /PR/gi,
-                    "LA"
-                  )} and status='APR' and ((  date(?)>=date(from_date) and
+                      /PR/gi,
+                      "LA"
+                    )} and status='APR' and ((  date(?)>=date(from_date) and
                   date(?)<=date(to_date)) or ( date(?)>=date(from_date) and   date(?)<=date(to_date))
                   or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or
                   (date(to_date)>=date(?) and date(to_date)<= date(?) ))  ;
@@ -10868,7 +10874,7 @@ function BulktimesheetCalc(req, res, next) {
                                   s.from_date == s.to_date &&
                                   s.to_date == row["attendance_date"] &&
                                   parseFloat(s.total_applied_days) ==
-                                    parseFloat(0.5)
+                                  parseFloat(0.5)
                                 ) {
                                   leave_status =
                                     leave_status == "P" ? "HPL" : "HUL";
@@ -11111,8 +11117,8 @@ function bulkTimeValidate(day, employee_code, STDWH, STDWM, HALF_HR, HALF_MIN) {
           error: true,
           message: ` invalid time for ${employee_code} on
                       ${moment(day.worked_date, "YYYY-MM-DD").format(
-                        "DD-MM-YYYY"
-                      )}`
+            "DD-MM-YYYY"
+          )}`
         };
       }
     }
