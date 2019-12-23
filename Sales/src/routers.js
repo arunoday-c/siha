@@ -1,7 +1,7 @@
-import Router from "koa-router";
+import express from "express";
 import SalesQuotation from "./controller/SalesQuotation";
 export default function Routing(BASE_URL) {
-  const router = new Router();
-  router.use(`${BASE_URL}`, SalesQuotation().routes());
+  const router = express();
+  router.use("/quotations", SalesQuotation());
   return router;
 }

@@ -1,170 +1,180 @@
 import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 // import mysql from "mysql";
+export function testFun(ctx) {
+  console.log("Hey due im here");
+  ctx.status = 200;
+  ctx.body = "Hello";
+}
 
-export const addSalesQuotation = (ctx, next) => {
-    const _mysql = new algaehMysql();
-    try {
-        let input = ctx.request.body;
-        let sales_quotation_number = "";
-        const utilities = new algaehUtilities();
-        //  utilities.logger().log("addDeliveryNoteEntry: ");
+export function addSalesQuotation(ctx, next) {
+  const _mysql = new algaehMysql();
+
+  try {
+    let input = ctx.request.body;
+    let sales_quotation_number = "";
+    const utilities = new algaehUtilities();
+    utilities.logger().log("addDeliveryNoteEntry: ");
+
+    _mysql
+      .generateRunningNumber({
+        modules: ["SALES_QUOTE"],
+        tableName: "hims_f_sales_numgen",
+        identity: {
+          algaeh_d_app_user_id: ctx.userIdentity.algaeh_d_app_user_id,
+          hospital_id: ctx.userIdentity.hospital_id
+        }
+      })
+      .then(generatedNumbers => {
+        sales_quotation_number = generatedNumbers[0];
 
         _mysql
-            .generateRunningNumber({
-                modules: ["SALES_QUOTE"],
-                tableName: "hims_f_sales_numgen",
-                identity: {
-                    algaeh_d_app_user_id: ctx.userIdentity.algaeh_d_app_user_id,
-                    hospital_id: ctx.userIdentity.hospital_id
-                }
-            })
-            .then(generatedNumbers => {
-                sales_quotation_number = generatedNumbers[0];
-
-                _mysql
-                    .executeQuery({
-                        query:
-                            "INSERT INTO hims_f_sales_quotation (sales_quotation_number, sales_quotation_date, \
+          .executeQuery({
+            query:
+              "INSERT INTO hims_f_sales_quotation (sales_quotation_number, sales_quotation_date, \
                                 sales_quotation_mode, reference_number, customer_id, quote_validity, sales_man, \
                                 payment_terms, service_terms, other_terms, sub_total, discount_amount, net_total, \
                                 total_tax, net_payable, narration, created_date, created_by, updated_date, \
                                 updated_by, hospital_id)\
                         values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                        values: [
-                            sales_quotation_number,
-                            new Date(),
-                            input.sales_quotation_mode,
-                            input.reference_number,
-                            input.customer_id,
-                            input.quote_validity,
+            values: [
+              sales_quotation_number,
+              new Date(),
+              input.sales_quotation_mode,
+              input.reference_number,
+              input.customer_id,
+              input.quote_validity,
 
-                            input.sales_man,
-                            input.payment_terms,
-                            input.service_terms,
-                            input.other_terms,
-                            input.sub_total,
-                            input.discount_amount,
-                            input.net_total,
-                            input.total_tax,
-                            input.net_payable,
-                            input.narration,
-                            new Date(),
-                            ctx.userIdentity.algaeh_d_app_user_id,
-                            new Date(),
-                            ctx.userIdentity.algaeh_d_app_user_id,
-                            ctx.userIdentity.hospital_id
-                        ],
-                        printQuery: true
-                    })
-                    .then(headerResult => {
-                        console.log("headerResult", headerResult);
-                        let IncludeValues = [];
-                        if (input.sales_quotation_items.length > 0) {
-                            IncludeValues = [
-                                "item_id",
-                                "uom_id",
-                                "unit_cost",
-                                "quantity",
-                                "extended_cost",
-                                "discount_percentage",
-                                "discount_amount",
-                                "net_extended_cost",
-                                "tax_percentage",
-                                "tax_amount",
-                                "total_amount"
-                            ];
+              input.sales_man,
+              input.payment_terms,
+              input.service_terms,
+              input.other_terms,
+              input.sub_total,
+              input.discount_amount,
+              input.net_total,
+              input.total_tax,
+              input.net_payable,
+              input.narration,
+              new Date(),
+              ctx.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              ctx.userIdentity.algaeh_d_app_user_id,
+              ctx.userIdentity.hospital_id
+            ],
+            printQuery: true
+          })
+          .then(headerResult => {
+            console.log("headerResult", headerResult);
+            let IncludeValues = [];
+            if (input.sales_quotation_items.length > 0) {
+              IncludeValues = [
+                "item_id",
+                "uom_id",
+                "unit_cost",
+                "quantity",
+                "extended_cost",
+                "discount_percentage",
+                "discount_amount",
+                "net_extended_cost",
+                "tax_percentage",
+                "tax_amount",
+                "total_amount"
+              ];
 
-                            _mysql
-                                .executeQuery({
-                                    query:
-                                        "INSERT INTO hims_f_sales_quotation_items(??) VALUES ?",
-                                    values: input.sales_quotation_items,
-                                    includeValues: IncludeValues,
-                                    extraValues: {
-                                        sales_quotation_id: headerResult.insertId
-                                    },
-                                    bulkInsertOrUpdate: true,
-                                    printQuery: true
-                                })
-                                .then(detailResult => {
-                                    _mysql.commitTransaction(() => {
-                                        _mysql.releaseConnection();
-                                        ctx.body = {
-                                            sales_quotation_number: sales_quotation_number,
-                                            hims_f_sales_quotation_id: headerResult.insertId
-                                        };
-                                        next();
-                                    });
-                                })
-                                .catch(error => {
-                                    utilities.logger().log("erroe: ", error);
-                                    _mysql.rollBackTransaction(() => {
-                                        next(error);
-                                    });
-                                });
-                        } else if (input.sales_quotation_services.length > 0) {
-                            IncludeValues = [
-                                "services_id",
-                                "unit_cost",
-                                "quantity",
-                                "extended_cost",
-                                "discount_percentage",
-                                "discount_amount",
-                                "net_extended_cost",
-                                "tax_percentage",
-                                "tax_amount",
-                                "total_amount"
-                            ];
-
-                            _mysql
-                                .executeQuery({
-                                    query:
-                                        "INSERT INTO hims_f_sales_quotation_services(??) VALUES ?",
-                                    values: input.sales_quotation_services,
-                                    includeValues: IncludeValues,
-                                    extraValues: {
-                                        sales_quotation_id: headerResult.insertId
-                                    },
-                                    bulkInsertOrUpdate: true,
-                                    printQuery: true
-                                })
-                                .then(detailResult => {
-                                    _mysql.commitTransaction(() => {
-                                        _mysql.releaseConnection();
-                                        ctx.body = {
-                                            sales_quotation_number: sales_quotation_number,
-                                            hims_f_sales_quotation_id: headerResult.insertId
-                                        };
-                                        next();
-                                    });
-                                })
-                                .catch(error => {
-                                    utilities.logger().log("erroe: ", error);
-                                    _mysql.rollBackTransaction(() => {
-                                        next(error);
-                                    });
-                                });
-                        }
-                    })
-                    .catch(e => {
-                        console.log("error: ", e)
-                        _mysql.rollBackTransaction(() => {
-                            next(e);
-                        });
-                    });
-            })
-            .catch(e => {
-                _mysql.rollBackTransaction(() => {
-                    next(e);
+              _mysql
+                .executeQuery({
+                  query:
+                    "INSERT INTO hims_f_sales_quotation_items(??) VALUES ?",
+                  values: input.sales_quotation_items,
+                  includeValues: IncludeValues,
+                  extraValues: {
+                    sales_quotation_id: headerResult.insertId
+                  },
+                  bulkInsertOrUpdate: true,
+                  printQuery: true
+                })
+                .then(detailResult => {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    ctx.body = {
+                      sales_quotation_number: sales_quotation_number,
+                      hims_f_sales_quotation_id: headerResult.insertId
+                    };
+                    return next();
+                  });
+                })
+                .catch(error => {
+                  //   utilities.logger().log("erroe: ", error);
+                  _mysql.rollBackTransaction(() => {
+                    // next(error);
+                    ctx.app.emit("error", error, ctx);
+                  });
                 });
+            } else if (input.sales_quotation_services.length > 0) {
+              IncludeValues = [
+                "services_id",
+                "unit_cost",
+                "quantity",
+                "extended_cost",
+                "discount_percentage",
+                "discount_amount",
+                "net_extended_cost",
+                "tax_percentage",
+                "tax_amount",
+                "total_amount"
+              ];
+
+              _mysql
+                .executeQuery({
+                  query:
+                    "INSERT INTO hims_f_sales_quotation_services(??) VALUES ?",
+                  values: input.sales_quotation_services,
+                  includeValues: IncludeValues,
+                  extraValues: {
+                    sales_quotation_id: headerResult.insertId
+                  },
+                  bulkInsertOrUpdate: true,
+                  printQuery: true
+                })
+                .then(detailResult => {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    ctx.body = {
+                      sales_quotation_number: sales_quotation_number,
+                      hims_f_sales_quotation_id: headerResult.insertId
+                    };
+                    return next();
+                  });
+                })
+                .catch(error => {
+                  //   utilities.logger().log("erroe: ", error);
+                  _mysql.rollBackTransaction(() => {
+                    //next(error);
+                    ctx.app.emit("error", error, ctx);
+                  });
+                });
+            }
+          })
+          .catch(e => {
+            console.log("error: ", e);
+            _mysql.rollBackTransaction(() => {
+              // next(e);
+              ctx.app.emit("error", e, ctx);
             });
-    } catch (e) {
+          });
+      })
+      .catch(e => {
         _mysql.rollBackTransaction(() => {
-            next(e);
+          //   next(e);
+          ctx.app.emit("error", e, ctx);
         });
-    }
-};
+      });
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      ctx.app.emit("error", e, ctx);
+    });
+  }
+}
 
 // export default {
 //     getPurchaseOrderEntry: (req, res, next) => {

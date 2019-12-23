@@ -15,7 +15,7 @@ function resolvePaths(list) {
 module.exports = {
   target: "node",
   entry: {
-    app: ["./src/index.js"]
+    app: ["@babel/polyfill", "./src/index.js"]
   },
   output: {
     path: path.resolve(__dirname, "build"),

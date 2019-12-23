@@ -1,10 +1,9 @@
-import Router from "koa-router";
-// import { tested, tested2 } from "../models/test"
+import { Router } from "express";
+import { Response } from "algaeh-utilities/response";
 import { addSalesQuotation } from "../models/SalesQuotation";
-
+import { tested2, tested } from "../models/test";
 export default function SalesQuotation() {
-  const router = new Router();
-  router.post(`/addSalesQuotation`, addSalesQuotation);
-  // router.post(`/addSalesQuotation`, tested, tested2);//ctx.userIdentity
-  return router;
+  const api = Router();
+  api.post(`/addSalesQuotation`, tested, tested2); //addSalesQuotation);
+  return api;
 }
