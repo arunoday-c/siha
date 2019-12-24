@@ -435,7 +435,7 @@ export default {
       });
   },
   //created by irfan: to
-  postDayEndDataOLD: (req, res, next) => {
+  postDayEndData: (req, res, next) => {
     const _mysql = new algaehMysql();
     // const utilities = new algaehUtilities();
     let input = req.body;
@@ -605,7 +605,7 @@ export default {
   },
 
   //created by irfan: to
-  postDayEndData: (req, res, next) => {
+  postDayEndDataNEW: (req, res, next) => {
     const _mysql = new algaehMysql();
     // const utilities = new algaehUtilities();
     let input = req.body;
@@ -682,7 +682,6 @@ export default {
             .groupBy(g => g.day_end_header_id)
             .value();
 
-
           _mysql
             .executeQueryWithTransaction({
               query: ` select head_id,	child_id,(coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)) as deb_minus_cred,
@@ -695,7 +694,6 @@ export default {
               //ST- CHECK FOR CLOSING BALANCE BEFORE CREDITING ASSET AND EXPENCE
 
               for (let item in day_end_header_group) {
-              
                 let temp_item = day_end_header_group[item].filter(f => {
                   return (
                     (f.root_id == 1 || f.root_id == 5) && f.payment_type == "CR"

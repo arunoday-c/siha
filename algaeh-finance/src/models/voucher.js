@@ -5,7 +5,7 @@ import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
   //created by irfan:
-  addVoucher_dec_20BAKUp: (req, res, next) => {
+  addVoucher: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
 
@@ -193,7 +193,7 @@ export default {
     }
   },
   //created by irfan:
-  addVoucher: (req, res, next) => {
+  addVoucher_NEW: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
 
