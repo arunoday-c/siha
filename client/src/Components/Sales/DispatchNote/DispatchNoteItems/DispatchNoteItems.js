@@ -39,14 +39,14 @@ class DispatchNoteItems extends Component {
 
     CloseOrent(context) {
         this.setState({
-            selected_quantity: 0,
+            dispatched_quantity: 0,
             item_details: null,
             batch_detail_view: false
         });
 
         if (context !== undefined) {
             context.updateState({
-                selected_quantity: 0,
+                dispatched_quantity: 0,
                 item_details: null,
                 batch_detail_view: false
             });
@@ -54,13 +54,13 @@ class DispatchNoteItems extends Component {
     }
 
     ChangesOrent(context, item) {
-        let selected_quantity = _.sumBy(item.batches, s =>
-            parseFloat(s.select_quantity)
+        let dispatched_quantity = _.sumBy(item.batches, s =>
+            parseFloat(s.dispatch_quantity)
         );
 
         let stock_enable = item.batches.length > 0 ? false : true;
         this.setState({
-            selected_quantity: selected_quantity,
+            dispatched_quantity: dispatched_quantity,
             item_details: item,
             batch_detail_view: true,
             stock_enable: stock_enable
@@ -68,7 +68,7 @@ class DispatchNoteItems extends Component {
 
         if (context !== undefined) {
             context.updateState({
-                selected_quantity: selected_quantity,
+                dispatched_quantity: dispatched_quantity,
                 item_details: item,
                 batch_detail_view: true,
                 stock_enable: stock_enable
@@ -103,12 +103,12 @@ class DispatchNoteItems extends Component {
                                                         </span>
                                                         <span>
                                                             Ordered Qty:
-                                                        <span>{item.quantity}</span>
+                                                        <span>{item.ordered_quantity}</span>
                                                         </span>
 
                                                         <span>
-                                                            Seleted Qty:
-                                                        <span>{item.selected_quantity}</span>
+                                                            Dispatched Qty:
+                                                        <span>{item.dispatched_quantity}</span>
                                                         </span>
                                                         <span>
                                                             Out Std. Qty:
@@ -417,7 +417,7 @@ class DispatchNoteItems extends Component {
                                                         </div>
                                                     ) : null}
                                                 </div>
-                                                {qty_auth < this.state.selected_quantity
+                                                {qty_auth < this.state.dispatched_quantity
                                                     ? "Greater than required qty"
                                                     : null}
                                                 <div className="portlet-body">
@@ -468,7 +468,7 @@ class DispatchNoteItems extends Component {
                                                                         label: (
                                                                             <AlgaehLabel
                                                                                 label={{
-                                                                                    forceLabel: "Selected Quantity"
+                                                                                    forceLabel: "Dispatch Quantity"
                                                                                 }}
                                                                             />
                                                                         ),
@@ -524,11 +524,11 @@ class DispatchNoteItems extends Component {
                                                 <div className="row">
                                                     <div className="col">
                                                         <AlgaehLabel
-                                                            label={{ forceLabel: "Selected Qty" }}
+                                                            label={{ forceLabel: "Dispatch Qty" }}
                                                         />
                                                         <h6>
-                                                            {this.state.selected_quantity
-                                                                ? this.state.selected_quantity
+                                                            {this.state.dispatched_quantity
+                                                                ? this.state.dispatched_quantity
                                                                 : "----------"}
                                                         </h6>
                                                     </div>

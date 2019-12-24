@@ -68,7 +68,7 @@ class DispatchNote extends Component {
 
             item_details: [],
             batch_detail_view: false,
-            selected_quantity: 0,
+            dispatched_quantity: 0,
             inventory_stock_detail: []
         };
     }
