@@ -18,6 +18,7 @@ import CompanyAccount from "./CompanyAccount/CompanyAccount";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import _ from "lodash";
+import { CheckElement } from "../Wrapper";
 
 class BusinessSetup extends Component {
   constructor(props) {
@@ -179,19 +180,21 @@ class BusinessSetup extends Component {
                   />
                 }
               </li>
-              <li
-                algaehtabs={"BankMaster"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Bank Master"
-                    }}
-                  />
-                }
-              </li>{" "}
+              <CheckElement permission={"businesssetup-bankmaster"}>
+                <li
+                  algaehtabs={"BankMaster"}
+                  className={"nav-item tab-button"}
+                  onClick={this.openTab.bind(this)}
+                >
+                  {
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Bank Master"
+                      }}
+                    />
+                  }
+                </li>
+              </CheckElement>
               <li
                 algaehtabs={"CompanyAccount"}
                 className={"nav-item tab-button"}
