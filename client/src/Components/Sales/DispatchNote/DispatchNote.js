@@ -74,7 +74,6 @@ class DispatchNote extends Component {
     }
 
     componentDidMount() {
-
         this.props.getItemCategory({
             uri: "/inventory/getItemCategory",
             module: "inventory",
@@ -84,7 +83,6 @@ class DispatchNote extends Component {
                 mappingName: "inventoryitemcategory"
             }
         });
-
 
         this.props.getItemGroup({
             uri: "/inventory/getItemGroup",
@@ -128,11 +126,9 @@ class DispatchNote extends Component {
                 mappingName: "locations"
             }
         });
-
     }
 
     render() {
-
         const class_finder =
             this.state.dataFinder === true
                 ? " disableFinder"
@@ -143,7 +139,9 @@ class DispatchNote extends Component {
             <div>
                 <BreadCrumb
                     title={
-                        <AlgaehLabel label={{ forceLabel: "Dispatch Note", align: "ltr" }} />
+                        <AlgaehLabel
+                            label={{ forceLabel: "Dispatch Note", align: "ltr" }}
+                        />
                     }
                     breadStyle={this.props.breadStyle}
                     pageNavPath={[
@@ -192,7 +190,9 @@ class DispatchNote extends Component {
                                 />
                                 <h6>
                                     {this.state.dispatch_note_date
-                                        ? moment(this.state.dispatch_note_date).format(Options.dateFormat)
+                                        ? moment(this.state.dispatch_note_date).format(
+                                            Options.dateFormat
+                                        )
                                         : Options.dateFormat}
                                 </h6>
                             </div>
@@ -245,7 +245,10 @@ class DispatchNote extends Component {
                                             data: this.props.locations
                                         },
                                         others: {
-                                            disabled: this.state.dataExists === true ? true : this.state.selectedData
+                                            disabled:
+                                                this.state.dataExists === true
+                                                    ? true
+                                                    : this.state.selectedData
                                         },
                                         onChange: texthandle.bind(this, this),
                                         onClear: () => {
@@ -256,7 +259,6 @@ class DispatchNote extends Component {
                                         }
                                     }}
                                 />
-
 
                                 <div className={"col-2 globalSearchCntr" + class_finder}>
                                     <AlgaehLabel label={{ forceLabel: "Search Order No." }} />
@@ -295,7 +297,6 @@ class DispatchNote extends Component {
                                     </h6>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
@@ -309,14 +310,12 @@ class DispatchNote extends Component {
                             }}
                         >
                             <DispatchNoteItems DELNOTEIOputs={this.state} />
-
                         </MyContext.Provider>
                     </div>
                 </div>
 
                 <div className="row">
-                    <div className="col-3"></div>
-                    <div className="col-9" style={{ textAlign: "right" }}>
+                    <div className="col-12" style={{ textAlign: "right" }}>
                         <div className="row">
                             <div className="col">
                                 <AlgaehLabel
@@ -359,7 +358,7 @@ class DispatchNote extends Component {
                                 <h6>{getAmountFormart(this.state.net_payable)}</h6>
                             </div>
                             <AlagehFormGroup
-                                div={{ className: "col-3 textAreaLeft" }}
+                                div={{ className: "col-5 textAreaLeft" }}
                                 label={{
                                     forceLabel: "Narration",
                                     isImp: false
@@ -372,9 +371,9 @@ class DispatchNote extends Component {
                                         onChange: texthandle.bind(this, this)
                                     },
                                     others: {
-                                        disabled: this.state.dataExists,
-                                        multiline: true,
-                                        rows: "4"
+                                        disabled: this.state.dataExists
+                                        // multiline: true,
+                                        // rows: "4"
                                     }
                                 }}
                             />
@@ -422,7 +421,7 @@ function mapStateToProps(state) {
         locations: state.locations,
         inventoryitemuom: state.inventoryitemuom,
         inventoryitemcategory: state.inventoryitemcategory,
-        inventoryitemgroup: state.inventoryitemgroup,
+        inventoryitemgroup: state.inventoryitemgroup
     };
 }
 
@@ -433,7 +432,7 @@ function mapDispatchToProps(dispatch) {
             getItemGroup: AlgaehActions,
             getItems: AlgaehActions,
             getLocation: AlgaehActions,
-            getItemUOM: AlgaehActions,
+            getItemUOM: AlgaehActions
         },
         dispatch
     );
