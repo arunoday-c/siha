@@ -10,6 +10,7 @@ import { applyMiddleware, createStore } from "redux";
 import "./index.scss";
 import "./styles/site.scss";
 import "./loader.scss";
+import { PermissionProvider } from "./Permission";
 // import * as serviceWorker from "./serviceWorker";
 
 const middleware =
@@ -20,7 +21,9 @@ const middleware =
 const store = createStore(AlagehReducers, middleware);
 
 ReactDOM.render(
-  <Provider store={store}>{routes}</Provider>,
+  <Provider store={store}>
+    <PermissionProvider>{routes}</PermissionProvider>
+  </Provider>,
   document.getElementById("root")
 );
 

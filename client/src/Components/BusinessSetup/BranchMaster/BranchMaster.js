@@ -5,6 +5,8 @@ import {
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 
+import { CheckElement } from "../../Wrapper";
+
 import {
   algaehApiCall,
   swalMessage,
@@ -634,16 +636,21 @@ export default class BranchMaster extends Component {
                     }}
                   />
                   <div className="col-12">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      style={{ float: "right" }}
-                      onClick={this.addBranches.bind(this)}
+                    <CheckElement
+                      disabled={true}
+                      permission={"businesssetup-bankmaster-add"}
                     >
-                      {this.state.editBranch === true
-                        ? "Update"
-                        : "Add to List"}
-                    </button>
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        style={{ float: "right" }}
+                        onClick={this.addBranches.bind(this)}
+                      >
+                        {this.state.editBranch === true
+                          ? "Update"
+                          : "Add to List"}
+                      </button>
+                    
                     <button
                       type="button"
                       className="btn btn-default"
@@ -652,6 +659,7 @@ export default class BranchMaster extends Component {
                     >
                       Clear
                     </button>
+                    </CheckElement>
                   </div>
                 </div>
               </div>
