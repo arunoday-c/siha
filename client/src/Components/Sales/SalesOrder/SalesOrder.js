@@ -16,11 +16,10 @@ import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import {
   customerTexthandle,
-  datehandle,
   texthandle,
   SalesQuotationSearch,
   ClearData,
-  SavePOEnrty,
+  SaveSalesOrderEnrty,
   getCtrlCode,
   generatePOReceipt,
   generatePOReceiptNoPrice
@@ -60,7 +59,7 @@ class SalesOrder extends Component {
       project_id: null,
       customer_po_no: null,
       tax_percentage: null,
-
+      selectedData: false,
       sales_order_items: [],
       sales_order_services: [],
       decimal_place: JSON.parse(
@@ -136,13 +135,6 @@ class SalesOrder extends Component {
   }
 
   render() {
-    const _mainStore =
-      this.state.po_from === null
-        ? []
-        : Enumerable.from(this.props.polocations)
-          .where(w => w.location_type === "WH")
-          .toArray();
-
     const class_finder =
       this.state.dataFinder === true
         ? " disableFinder"
@@ -302,7 +294,7 @@ class SalesOrder extends Component {
                     },
                     autoComplete: "off",
                     others: {
-                      disabled: this.state.dataExists
+                      disabled: this.state.selectedData
                     }
                   }}
                 />
@@ -320,7 +312,7 @@ class SalesOrder extends Component {
                       data: GlobalVariables.PAYMENT_TERMS
                     },
                     others: {
-                      disabled: this.state.dataExists
+                      disabled: this.state.selectedData
                     },
                     onChange: texthandle.bind(this, this),
                     onClear: () => {
@@ -331,7 +323,7 @@ class SalesOrder extends Component {
                   }}
                 />
 
-                <AlgaehDateHandler
+                {/* <AlgaehDateHandler
                   div={{ className: "col mandatory form-group " }}
                   label={{ forceLabel: "quote validity", isImp: true }}
                   textBox={{
@@ -344,9 +336,7 @@ class SalesOrder extends Component {
                   }}
                   disabled={this.state.dataExists}
                   value={this.state.quote_validity}
-                />
-              </div>
-              <div className="row">
+                /> */}
                 <AlagehFormGroup
                   div={{ className: "col-3" }}
                   label={{
@@ -365,6 +355,9 @@ class SalesOrder extends Component {
                     }
                   }}
                 />
+              </div>
+              <div className="row">
+
                 <AlagehFormGroup
                   div={{ className: "col" }}
                   label={{
@@ -591,7 +584,7 @@ class SalesOrder extends Component {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={SavePOEnrty.bind(this, this)}
+                onClick={SaveSalesOrderEnrty.bind(this, this)}
                 disabled={this.state.saveEnable}
               >
                 <AlgaehLabel
@@ -623,7 +616,6 @@ class SalesOrder extends Component {
 function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
-    locations: state.locations,
     itemuom: state.itemuom,
     customer_data: state.customer_data,
     organizations: state.organizations,
@@ -635,7 +627,6 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getItems: AlgaehActions,
-      getLocation: AlgaehActions,
       getItemUOM: AlgaehActions,
       getCustomerMaster: AlgaehActions,
       getOrganizations: AlgaehActions,

@@ -201,7 +201,6 @@ export function algaehApiCall(options) {
             timeout: settings.timeout !== undefined ? settings.timeout : 60000
           }
           : {};
-      debugger
       axios({
         method: settings.method,
         url: settings.baseUrl + settings.uri + queryParametres,
@@ -223,12 +222,10 @@ export function algaehApiCall(options) {
         ...cancelRequest
       })
         .then(response => {
-          debugger
           if (typeof settings.onSuccess === "function")
             settings.onSuccess(response);
         })
         .catch(err => {
-          debugger
           AlgaehLoader({ show: false });
           if (!showOtherPopup) {
             return;
