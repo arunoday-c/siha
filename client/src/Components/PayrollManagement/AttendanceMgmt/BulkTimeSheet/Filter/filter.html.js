@@ -3,7 +3,10 @@ import "./filter.html.scss";
 import { AlagehAutoComplete } from "../../../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../../../Wrapper/autoSearch";
 import { swalMessage } from "../../../../../utils/algaehApiCall";
-import { AlgaehOpenContainer } from "../../../../../utils/GlobalFunctions";
+import {
+  AlgaehOpenContainer,
+  getYears
+} from "../../../../../utils/GlobalFunctions";
 import {
   getHospitals,
   getAttendanceDates,
@@ -48,17 +51,19 @@ export default function Filter(props) {
   const [loadingPriew, setLoadingPriew] = useState(false);
   const [onlyExcel, setOnlyExcel] = useState("");
   const [upload, setUpload] = useState("Y");
-  const dateCalcl = (starttDt, enddtDt) => {
+  const [selYear, setSelYear] = useState("");
+  const [loadYear, setLoadYear] = useState([]);
+  const dateCalcl = (starttDt, enddtDt, passedYear) => {
     starttDt = starttDt || startDt;
     enddtDt = enddtDt || endDt;
     if (enddtDt === 0) {
       return;
     }
-    const year = moment().format("YYYY");
+    const year = passedYear || moment().format("YYYY");
 
     const searchYear =
       month === "01"
-        ? moment()
+        ? moment(`01-01-${year}`, "DD-MM-YYYY")
             .add(-1, "year")
             .format("YYYY")
         : year;
@@ -76,6 +81,8 @@ export default function Filter(props) {
   };
 
   useEffect(() => {
+    setLoadYear(getYears());
+    setSelYear(parseInt(moment().format("YYYY")));
     getHospitals(data => {
       setHospitals(data);
     });
@@ -104,7 +111,7 @@ export default function Filter(props) {
   }, [hospitalID]);
 
   useEffect(() => {
-    dateCalcl();
+    dateCalcl(undefined, undefined, selYear);
   }, [month]);
 
   return (
@@ -136,6 +143,30 @@ export default function Filter(props) {
         showLoading={true}
       />
       <AlagehAutoComplete
+        div={{ className: "col-1" }}
+        label={{
+          forceLabel: "Select Year",
+          isImp: true
+        }}
+        selector={{
+          name: "year",
+          className: "select-fld",
+          value: selYear,
+          dataSource: {
+            textField: "name",
+            valueField: "value",
+            data: loadYear
+          },
+          onChange: e => {
+            setSelYear(e.value);
+            dateCalcl(startDt, endDt, e.value);
+          },
+          onClear: () => {
+            setSelYear("");
+          }
+        }}
+      />
+      <AlagehAutoComplete
         div={{ className: "col-2 form-group mandatory" }}
         label={{
           forceLabel: "Select Month"
@@ -164,6 +195,15 @@ export default function Filter(props) {
             ]
           },
           onChange: e => {
+            if (selYear === undefined || selYear === "") {
+              setFromDate("");
+              setToDate("");
+              swalMessage({
+                type: "error",
+                title: "Please select year fist"
+              });
+              return;
+            }
             setMonth(e.value);
           },
           onClear: () => {
@@ -404,7 +444,7 @@ export default function Filter(props) {
                 employee_id: employeeID,
                 employee_group_id: empGroupId,
                 month: month,
-                year: moment().format("YYYY")
+                year: selYear //moment().format("YYYY")
               });
             } else {
               swalMessage({
@@ -438,7 +478,7 @@ export default function Filter(props) {
                 employee_id: employeeID,
                 employee_group_id: empGroupId,
                 month: month,
-                year: moment().format("YYYY"),
+                year: selYear, //moment().format("YYYY"),
                 upload: upload
               },
               props

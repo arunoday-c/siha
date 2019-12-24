@@ -19,45 +19,34 @@ import {
     numberchangeTexts,
     AddItems,
     deleteSalesDetail,
-    UomchangeTexts,
-    dateFormater,
     onchangegridcol,
     qtyonchangegridcol,
 } from "./SalesListItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import Options from "../../../../Options.json";
-import moment from "moment"
 
 class SalesListItems extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectBatch: false,
-            selectBatchButton: true,
 
             addItemButton: true,
             item_description: "",
             addedItem: true,
-            item_category_id: null,
-            item_group_id: null,
+
             item_id: null,
             quantity: 0,
             uom_id: null,
             uom_description: null,
             discount_percentage: 0,
-            barcode: null,
-            ItemUOM: [],
-            Batch_Items: [],
             unit_cost: 0,
-            Real_unit_cost: 0,
             tax_percent: 0
         };
     }
 
     UNSAFE_componentWillMount() {
-        let InputOutput = this.props.POSIOputs;
+        let InputOutput = this.props.SALESIOputs;
         this.setState({ ...this.state, ...InputOutput });
     }
 
@@ -108,12 +97,9 @@ class SalesListItems extends Component {
         }
     }
 
-    componentWillUnmount() {
-        document.removeEventListener("keypress", this.onKeyPress, false);
-    }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
-        this.setState(nextProps.POSIOputs);
+        this.setState(nextProps.SALESIOputs);
     }
 
     render() {
@@ -127,7 +113,7 @@ class SalesListItems extends Component {
                                     <div className="row">
                                         <AlgaehAutoSearch
                                             div={{ className: "col-12 form-group mandatory" }}
-                                            label={{ forceLabel: "Item Name (Ctrl + i)" }}
+                                            label={{ forceLabel: "Item Name" }}
                                             title="Search Items"
                                             id="item_id_search"
                                             template={result => {
@@ -140,13 +126,6 @@ class SalesListItems extends Component {
                                                                 </h4>
                                                                 <small>{result.uom_description}</small>
                                                             </div>
-                                                            {/* <div className="col-4">
-                                                                                <h6 className="price">
-                                                                                    {getAmountFormart(
-                                                                                        result.sale_price
-                                                                                    )}
-                                                                                </h6>
-                                                                            </div> */}
                                                         </div>
                                                     </section>
                                                 );
@@ -156,38 +135,27 @@ class SalesListItems extends Component {
                                             displayField="item_description"
                                             value={this.state.item_description}
                                             searchName="salesitemmaster"
-                                            extraParameters={{
-                                                inventory_location_id: this.state.location_id
-                                            }}
                                             onClick={itemchangeText.bind(this, this)}
                                             ref={attReg => {
                                                 this.attReg = attReg;
                                             }}
-                                        />
-
-                                        <AlagehAutoComplete
-                                            div={{ className: "col-6 form-group mandatory" }}
-                                            label={{ forceLabel: "UOM", isImp: true }}
-                                            selector={{
-                                                name: "uom_id",
-                                                className: "select-fld",
-                                                value: this.state.uom_id,
-                                                dataSource: {
-                                                    textField: "uom_description",
-                                                    valueField: "uom_id",
-                                                    data: this.state.ItemUOM
-                                                },
-                                                onChange: UomchangeTexts.bind(
-                                                    this,
-                                                    this,
-                                                    context
-                                                ),
-                                                others: {
-                                                    disabled: true,
-                                                    tabIndex: "2"
-                                                }
+                                            others={{
+                                                disabled: this.state.dataExists
                                             }}
                                         />
+
+                                        <div className="col-6 form-group">
+                                            <AlgaehLabel
+                                                label={{
+                                                    forceLabel: "UOM"
+                                                }}
+                                            />
+                                            <h6>
+                                                {this.state.uom_description
+                                                    ? this.state.uom_description
+                                                    : "-----------"}
+                                            </h6>
+                                        </div>
                                         <AlagehFormGroup
                                             div={{ className: "col-6 form-group mandatory" }}
                                             label={{
@@ -217,7 +185,7 @@ class SalesListItems extends Component {
                                         />
 
                                         <AlagehFormGroup
-                                            div={{ className: "col-6 form-group mandatory" }}
+                                            div={{ className: "col-6 form-group" }}
                                             label={{
                                                 forceLabel: "Discount (%)",
                                                 isImp: false
@@ -247,8 +215,8 @@ class SalesListItems extends Component {
                                                 }}
                                             />
                                             <h6>
-                                                {this.state.tax_percent
-                                                    ? this.state.tax_percent
+                                                {this.state.tax_percentage
+                                                    ? this.state.tax_percentage
                                                     : "-----------"}
                                             </h6>
                                         </div>
@@ -276,13 +244,13 @@ class SalesListItems extends Component {
                                         </div>
                                     </div>
                                 </div>
-                              
+
                             </div>
 
                             <div className="col-9">
                                 <div className="portlet portlet-bordered margin-bottom-15">
                                     <div className="row">
-                                    <div className="col-12" id="SaleQuotationGrid_Cntr">
+                                        <div className="col-12" id="SaleQuotationGrid_Cntr">
                                             <AlgaehDataGrid
                                                 id="SaleQuotationGrid"
                                                 columns={[
@@ -303,56 +271,26 @@ class SalesListItems extends Component {
                                                                         row
                                                                     )}
                                                                 >
-                                                                    <i className="fas fa-trash-alt" />
+                                                                    <i
+                                                                        style={{
+                                                                            pointerEvents:
+                                                                                this.state.dataExists ? "none" : "",
+                                                                            opacity:
+                                                                                this.state.dataExists ? "0.1" : ""
+                                                                        }}
+                                                                        className="fas fa-trash-alt" />
                                                                 </span>
                                                             );
                                                         }
                                                     },
                                                     {
-                                                        fieldName: "item_id",
+                                                        fieldName: "item_description",
                                                         label: (
                                                             <AlgaehLabel
                                                                 label={{ forceLabel: "Item Name" }}
                                                             />
                                                         ),
-                                                        displayTemplate: row => {
-                                                            let display =
-                                                                this.props.opitemlist === undefined
-                                                                    ? []
-                                                                    : this.props.opitemlist.filter(
-                                                                        f =>
-                                                                            f.hims_d_inventory_item_master_id ===
-                                                                            row.item_id
-                                                                    );
-
-                                                            return (
-                                                                <span>
-                                                                    {display !== undefined &&
-                                                                        display.length !== 0
-                                                                        ? display[0].item_description
-                                                                        : ""}
-                                                                </span>
-                                                            );
-                                                        },
-                                                        editorTemplate: row => {
-                                                            let display =
-                                                                this.props.opitemlist === undefined
-                                                                    ? []
-                                                                    : this.props.opitemlist.filter(
-                                                                        f =>
-                                                                            f.hims_d_inventory_item_master_id ===
-                                                                            row.item_id
-                                                                    );
-
-                                                            return (
-                                                                <span>
-                                                                    {display !== undefined &&
-                                                                        display.length !== 0
-                                                                        ? display[0].item_description
-                                                                        : ""}
-                                                                </span>
-                                                            );
-                                                        },
+                                                        disabled: true,
                                                         others: {
                                                             minWidth: 200
                                                         }
@@ -365,7 +303,7 @@ class SalesListItems extends Component {
                                                             />
                                                         ),
                                                         displayTemplate: row => {
-                                                            return (
+                                                            return this.state.dataExists === true ? parseFloat(row.quantity) : (
                                                                 <AlagehFormGroup
                                                                     div={{}}
                                                                     textBox={{
@@ -399,52 +337,13 @@ class SalesListItems extends Component {
                                                         }
                                                     },
                                                     {
-                                                        fieldName: "uom_id",
+                                                        fieldName: "uom_description",
                                                         label: (
                                                             <AlgaehLabel
                                                                 label={{ forceLabel: "UOM" }}
                                                             />
                                                         ),
-                                                        displayTemplate: row => {
-                                                            let display =
-                                                                this.props.inventoryitemuom ===
-                                                                    undefined
-                                                                    ? []
-                                                                    : this.props.inventoryitemuom.filter(
-                                                                        f =>
-                                                                            f.hims_d_inventory_uom_id ===
-                                                                            row.uom_id
-                                                                    );
-
-                                                            return (
-                                                                <span>
-                                                                    {display !== null &&
-                                                                        display.length !== 0
-                                                                        ? display[0].uom_description
-                                                                        : ""}
-                                                                </span>
-                                                            );
-                                                        },
-                                                        editorTemplate: row => {
-                                                            let display =
-                                                                this.props.inventoryitemuom ===
-                                                                    undefined
-                                                                    ? []
-                                                                    : this.props.inventoryitemuom.filter(
-                                                                        f =>
-                                                                            f.hims_d_inventory_uom_id ===
-                                                                            row.uom_id
-                                                                    );
-
-                                                            return (
-                                                                <span>
-                                                                    {display !== null &&
-                                                                        display.length !== 0
-                                                                        ? display[0].uom_description
-                                                                        : ""}
-                                                                </span>
-                                                            );
-                                                        },
+                                                        disabled: true,
                                                         others: {
                                                             minWidth: 90
                                                         }
@@ -481,7 +380,7 @@ class SalesListItems extends Component {
                                                             />
                                                         ),
                                                         displayTemplate: row => {
-                                                            return (
+                                                            return this.state.dataExists === true ? row.discount_percentage : (
                                                                 <AlagehFormGroup
                                                                     div={{}}
                                                                     textBox={{
@@ -558,7 +457,7 @@ class SalesListItems extends Component {
                                                         disabled: true
                                                     },
                                                     {
-                                                        fieldName: "tax_percent",
+                                                        fieldName: "tax_percentage",
                                                         label: (
                                                             <AlgaehLabel
                                                                 label={{
@@ -593,7 +492,7 @@ class SalesListItems extends Component {
                                                 ]}
                                                 keyId="service_type_id"
                                                 dataSource={{
-                                                    data: this.state.sales_quotation_detail
+                                                    data: this.state.sales_quotation_items
                                                 }}
                                                 paging={{ page: 0, rowsPerPage: 10 }}
 
@@ -613,9 +512,7 @@ class SalesListItems extends Component {
 function mapStateToProps(state) {
     return {
         opitemlist: state.opitemlist,
-        inventoryitemcategory: state.inventoryitemcategory,
-        inventoryitemuom: state.inventoryitemuom,
-        inventoryitemgroup: state.inventoryitemgroup
+        inventoryitemuom: state.inventoryitemuom
     };
 }
 

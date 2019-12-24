@@ -3,7 +3,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext";
-// import "./SalesListService.scss";
 import "./../../../../styles/site.scss";
 import {
     AlgaehDataGrid,
@@ -20,13 +19,13 @@ import {
     deleteSalesDetail,
     onchangegridcol,
     qtyonchangegridcol,
-} from "./SalesListServiceEvents";
+} from "./SalesOrdListServiceEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import _ from "lodash";
 
-class SalesListService extends Component {
+class SalesOrdListService extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -244,9 +243,9 @@ class SalesListService extends Component {
                             <div className="col-9">
                                 <div className="portlet portlet-bordered margin-bottom-15">
                                     <div className="row">
-                                        <div className="col-12" id="SaleQuotationGrid_Cntr">
+                                        <div className="col-12" id="SaleOrderGrid_Cntr">
                                             <AlgaehDataGrid
-                                                id="SaleQuotationGrid"
+                                                id="SaleOrderGrid"
                                                 columns={[
                                                     {
                                                         fieldName: "actions",
@@ -264,17 +263,8 @@ class SalesListService extends Component {
                                                                         context,
                                                                         row
                                                                     )}
-
-
                                                                 >
-                                                                    <i
-                                                                        style={{
-                                                                            pointerEvents:
-                                                                                this.state.dataExists ? "none" : "",
-                                                                            opacity:
-                                                                                this.state.dataExists ? "0.1" : ""
-                                                                        }}
-                                                                        className="fas fa-trash-alt" />
+                                                                    <i className="fas fa-trash-alt" />
                                                                 </span>
                                                             );
                                                         }
@@ -476,7 +466,7 @@ class SalesListService extends Component {
                                                 ]}
                                                 keyId="service_type_id"
                                                 dataSource={{
-                                                    data: this.state.sales_quotation_services
+                                                    data: this.state.sales_order_services
                                                 }}
                                                 paging={{ page: 0, rowsPerPage: 10 }}
 
@@ -518,5 +508,5 @@ export default withRouter(
     connect(
         mapStateToProps,
         mapDispatchToProps
-    )(SalesListService)
+    )(SalesOrdListService)
 );

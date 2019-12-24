@@ -151,7 +151,10 @@ export default function JournalLedger() {
                   {
                     key: "slno",
                     title: "Sl No.",
-                    sortable: true
+                    sortable: true,
+                    others: {
+                      width: 100
+                    }
                   },
                   {
                     key: "sourceName",
@@ -219,62 +222,25 @@ export default function JournalLedger() {
                     }
                   },
                   {
-                    key: "debit_amount",
-                    title: "Debit Amount",
+                    key: "amount",
+                    title: "Amount",
                     displayTemplate: (row, records) => {
-                      const disabled =
-                        records["credit_amount"] !== undefined &&
-                        records["credit_amount"] !== null &&
-                        records["credit_amount"] !== ""
-                          ? { disabled: true }
-                          : {};
-
                       return (
                         <AlgaehFormGroupGrid
                           type="number"
                           value={row === undefined ? "" : row}
                           onChange={e => {
-                            records["debit_amount"] =
+                            records["amount"] =
                               e.target.value === "" ? "" : e.target.value;
-                            records["payment_type"] = "DR";
-                          }}
-                          others={{
-                            ...disabled
+                            if (records["payment_type"] === "DR")
+                              records["debit_amount"] = records["amount"];
+                            else records["credit_amount"] = records["amount"];
                           }}
                         />
                       );
                     }
-                    // align: "left"
                   },
-                  {
-                    key: "credit_amount",
-                    title: "Credit Amount",
-                    displayTemplate: (row, records) => {
-                      const disabled =
-                        records["debit_amount"] !== undefined &&
-                        records["debit_amount"] !== null &&
-                        records["debit_amount"] !== ""
-                          ? { disabled: true }
-                          : {};
 
-                      return (
-                        <AlgaehFormGroupGrid
-                          type="number"
-                          value={row === undefined ? "" : row}
-                          onChange={e => {
-                            records["credit_amount"] =
-                              e.target.value === "" ? "" : e.target.value;
-                            records["payment_type"] = "CR";
-                          }}
-                          others={{
-                            className: "form-control",
-                            ...disabled
-                          }}
-                        />
-                      );
-                    }
-                    // align: "left"
-                  },
                   {
                     key: "payment_mode",
                     title: "Payment Mode",
@@ -420,7 +386,7 @@ export default function JournalLedger() {
                 addJurnorLedger({
                   transaction_date: voucherDate,
                   voucher_type: voucherType,
-                  voucher_no: voucher_no,
+                  voucher_no: `${prefix}${voucher_no}`,
                   ...costcenter,
                   from_screen: getCookie("ScreenCode"),
                   hospital_id: getCookie("HospitalId"),

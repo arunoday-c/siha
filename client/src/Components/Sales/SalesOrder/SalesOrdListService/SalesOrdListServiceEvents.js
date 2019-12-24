@@ -65,33 +65,31 @@ const numberchangeTexts = ($this, context, e) => {
     }
 };
 
-const itemchangeText = ($this, e, ctrl) => {
+const servicechangeText = ($this, e, ctrl) => {
     let name = ctrl;
 
-    let value = e.hims_d_inventory_item_master_id;
+    let value = e.hims_d_services_id;
 
     $this.setState({
         [name]: value,
-        uom_id: e.sales_uom_id,
         quantity: 1,
         addItemButton: false,
-        item_description: e.item_description,
+        service_name: e.service_name,
         unit_cost: e.standard_fee,
-        uom_description: e.uom_description,
-        tax_percent: e.vat_percent
     });
 
 };
 
-const AddItems = ($this, context) => {
-    let itemData = Enumerable.from($this.state.sales_quotation_items)
+const AddSerices = ($this, context) => {
+    let serviceData = Enumerable.from($this.state.sales_order_services)
         .where(
-            w => w.item_id === $this.state.item_id
+            w =>
+                w.services_id === $this.state.services_id
         )
         .toArray();
-    if ($this.state.item_id === null) {
+    if ($this.state.services_id === null) {
         swalMessage({
-            title: "Please Select Item.",
+            title: "Please Select Service.",
             type: "warning"
         });
         return
@@ -105,13 +103,13 @@ const AddItems = ($this, context) => {
         });
         return
     }
-    if (itemData.length > 0) {
+    if (serviceData.length > 0) {
         swalMessage({
-            title: "Selected Item already added in the list.",
+            title: "Selected Setvice already added in the list.",
             type: "warning"
         });
     } else {
-        let sales_quotation_items = $this.state.sales_quotation_items;
+        let sales_order_services = $this.state.sales_order_services;
 
         const extended_cost = parseFloat($this.state.unit_cost) * parseFloat($this.state.quantity)
         const discount_amount = ((parseFloat(extended_cost) * parseFloat($this.state.discount_percentage)) / 100).toFixed(
@@ -127,11 +125,9 @@ const AddItems = ($this, context) => {
         );
 
         const ItemInput = {
-            item_description: $this.state.item_description,
-            item_id: $this.state.item_id,
+            service_name: $this.state.service_name,
+            services_id: $this.state.services_id,
             quantity: $this.state.quantity,
-            uom_id: $this.state.uom_id,
-            uom_description: $this.state.uom_description,
             discount_percentage: $this.state.discount_percentage,
             unit_cost: $this.state.unit_cost,
             extended_cost: extended_cost,
@@ -141,37 +137,34 @@ const AddItems = ($this, context) => {
             tax_amount: tax_amount,
             total_amount: total_amount
         };
-        sales_quotation_items.push(ItemInput);
+        sales_order_services.push(ItemInput);
 
-        const sub_total = _.sumBy(sales_quotation_items, s =>
+        const sub_total = _.sumBy(sales_order_services, s =>
             parseFloat(s.extended_cost)
         );
-        const h_discount_amount = _.sumBy(sales_quotation_items, s =>
+        const h_discount_amount = _.sumBy(sales_order_services, s =>
             parseFloat(s.discount_amount)
         );
-        const net_total = _.sumBy(sales_quotation_items, s =>
+        const net_total = _.sumBy(sales_order_services, s =>
             parseFloat(s.net_extended_cost)
         );
 
-        const total_tax = _.sumBy(sales_quotation_items, s =>
+        const total_tax = _.sumBy(sales_order_services, s =>
             parseFloat(s.tax_amount)
         );
 
-        const net_payable = _.sumBy(sales_quotation_items, s =>
+        const net_payable = _.sumBy(sales_order_services, s =>
             parseFloat(s.total_amount)
         );
 
         $this.setState({
-            sales_quotation_items: sales_quotation_items,
+            sales_order_services: sales_order_services,
 
             addItemButton: true,
-            item_description: "",
+            service_name: "",
             addedItem: true,
-
-            item_id: null,
+            services_id: null,
             quantity: 0,
-            uom_id: null,
-            uom_description: null,
             discount_percentage: 0,
             unit_cost: 0,
             tax_percent: 0
@@ -179,7 +172,7 @@ const AddItems = ($this, context) => {
 
         if (context !== undefined) {
             context.updateState({
-                sales_quotation_items: sales_quotation_items,
+                sales_order_services: sales_order_services,
                 saveEnable: false,
                 sub_total: sub_total,
                 discount_amount: h_discount_amount,
@@ -192,14 +185,14 @@ const AddItems = ($this, context) => {
 };
 
 const deleteSalesDetail = ($this, context, row) => {
-    let sales_quotation_items = $this.state.sales_quotation_items;
-    const _index = sales_quotation_items.indexOf(row);
-    sales_quotation_items.splice(_index, 1);
+    let sales_order_services = $this.state.sales_order_services;
+    const _index = sales_order_services.indexOf(row);
+    sales_order_services.splice(_index, 1);
 
-    if (sales_quotation_items.length === 0) {
+    if (sales_order_services.length === 0) {
         if (context !== undefined) {
             context.updateState({
-                sales_quotation_items: sales_quotation_items,
+                sales_order_services: sales_order_services,
                 discount_amount: 0,
                 sub_total: 0,
                 total_tax: 0,
@@ -210,29 +203,29 @@ const deleteSalesDetail = ($this, context, row) => {
         }
     } else {
 
-        const sub_total = _.sumBy(sales_quotation_items, s =>
+        const sub_total = _.sumBy(sales_order_services, s =>
             parseFloat(s.extended_cost)
         );
-        const discount_amount = _.sumBy(sales_quotation_items, s =>
+        const discount_amount = _.sumBy(sales_order_services, s =>
             parseFloat(s.discount_amount)
         );
 
-        const net_total = _.sumBy(sales_quotation_items, s =>
+        const net_total = _.sumBy(sales_order_services, s =>
             parseFloat(s.net_extended_cost)
         );
 
-        const total_tax = _.sumBy(sales_quotation_items, s =>
+        const total_tax = _.sumBy(sales_order_services, s =>
             parseFloat(s.tax_amount)
         );
 
-        const net_payable = _.sumBy(sales_quotation_items, s =>
+        const net_payable = _.sumBy(sales_order_services, s =>
             parseFloat(s.total_amount)
         );
 
 
         if (context !== undefined) {
             context.updateState({
-                sales_quotation_items: sales_quotation_items,
+                sales_order_services: sales_order_services,
 
                 sub_total: sub_total,
                 discount_amount: discount_amount,
@@ -247,7 +240,7 @@ const deleteSalesDetail = ($this, context, row) => {
 
 //Calculate Row Detail
 const calculateAmount = ($this, context, row, _index) => {
-    let sales_quotation_items = $this.state.sales_quotation_items;
+    let sales_order_services = $this.state.sales_order_services;
     row.extended_cost = (parseFloat(row.unit_cost) * parseFloat(row.quantity)).toFixed(
         $this.state.decimal_place
     )
@@ -258,6 +251,7 @@ const calculateAmount = ($this, context, row, _index) => {
         $this.state.decimal_place
     )
 
+    debugger
     row.tax_amount = ((parseFloat(row.net_extended_cost) * parseFloat(row.tax_percentage)) / 100).toFixed(
         $this.state.decimal_place
     );
@@ -266,31 +260,31 @@ const calculateAmount = ($this, context, row, _index) => {
         $this.state.decimal_place
     );
 
-    sales_quotation_items[_index] = row
+    sales_order_services[_index] = row
 
-    const sub_total = _.sumBy(sales_quotation_items, s =>
+    const sub_total = _.sumBy(sales_order_services, s =>
         parseFloat(s.extended_cost)
     );
-    const discount_amount = _.sumBy(sales_quotation_items, s =>
+    const discount_amount = _.sumBy(sales_order_services, s =>
         parseFloat(s.discount_amount)
     );
 
-    const net_total = _.sumBy(sales_quotation_items, s =>
+    const net_total = _.sumBy(sales_order_services, s =>
         parseFloat(s.net_extended_cost)
     );
 
-    const total_tax = _.sumBy(sales_quotation_items, s =>
+    const total_tax = _.sumBy(sales_order_services, s =>
         parseFloat(s.tax_amount)
     );
 
-    const net_payable = _.sumBy(sales_quotation_items, s =>
+    const net_payable = _.sumBy(sales_order_services, s =>
         parseFloat(s.total_amount)
     );
 
 
     if (context !== undefined) {
         context.updateState({
-            sales_quotation_items: sales_quotation_items,
+            sales_order_services: sales_order_services,
             sub_total: sub_total,
             discount_amount: discount_amount,
             net_total: net_total,
@@ -308,16 +302,16 @@ const dateFormater = ($this, value) => {
 const onchangegridcol = ($this, context, row, e) => {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
-    let sales_quotation_items = $this.state.sales_quotation_items;
-    let _index = $this.state.sales_quotation_items.indexOf(row);
+    let sales_order_services = $this.state.sales_order_services;
+    let _index = $this.state.sales_order_services.indexOf(row);
 
     if (name === "discount_percentage") {
         if (parseFloat(value) > 100) {
             row[name] = 0;
             row["discount_amount"] = 0;
-            sales_quotation_items[_index] = row;
+            sales_order_services[_index] = row;
             $this.setState({
-                sales_quotation_items: sales_quotation_items
+                sales_order_services: sales_order_services
             });
             swalMessage({
                 title: "Discount % cannot be greater than 100.",
@@ -328,9 +322,9 @@ const onchangegridcol = ($this, context, row, e) => {
         } else if (parseFloat(value) < 0) {
             row[name] = 0;
             row["discount_amount"] = 0;
-            sales_quotation_items[_index] = row;
+            sales_order_services[_index] = row;
             $this.setState({
-                sales_quotation_items: sales_quotation_items
+                sales_order_services: sales_order_services
             });
             swalMessage({
                 title: "Discount % cannot be less than Zero",
@@ -346,9 +340,9 @@ const onchangegridcol = ($this, context, row, e) => {
 
             row[name] = 0;
             row["discount_percentage"] = 0
-            sales_quotation_items[_index] = row;
+            sales_order_services[_index] = row;
             $this.setState({
-                sales_quotation_items: sales_quotation_items
+                sales_order_services: sales_order_services
             });
             swalMessage({
                 title: "Discount Amount cannot be less than Zero",
@@ -360,9 +354,9 @@ const onchangegridcol = ($this, context, row, e) => {
 
             row[name] = 0;
             row["discount_percentage"] = 0
-            sales_quotation_items[_index] = row;
+            sales_order_services[_index] = row;
             $this.setState({
-                sales_quotation_items: sales_quotation_items
+                sales_order_services: sales_order_services
             });
             swalMessage({
                 title: "Discount Amount cannot be greater than Gross Amount.",
@@ -379,7 +373,7 @@ const onchangegridcol = ($this, context, row, e) => {
 const qtyonchangegridcol = ($this, context, row, e) => {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
-    let _index = $this.state.sales_quotation_items.indexOf(row);
+    let _index = $this.state.sales_order_services.indexOf(row);
 
     if (value <= 0) {
         swalMessage({
@@ -399,9 +393,9 @@ const qtyonchangegridcol = ($this, context, row, e) => {
 
 export {
     UomchangeTexts,
-    itemchangeText,
+    servicechangeText,
     numberchangeTexts,
-    AddItems,
+    AddSerices,
     deleteSalesDetail,
     calculateAmount,
     dateFormater,

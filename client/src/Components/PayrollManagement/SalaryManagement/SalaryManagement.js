@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import "./SalaryManagement.scss";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
-// import SalaryPayments from "./SalaryPayments/SalaryPayments";
-// import SalaryProcessing from "./SalaryProcessing/SalaryProcessing";
 import NewSalaryProcessing from "./SalaryProcessing/NewSalaryProcessing";
-import NewSalaryPayments from "./SalaryPayments/NewSalaryPayments";
 import MiscEarningsDeductions from "./MiscEarningsDeductions/MiscEarningsDeductions";
 import MiscEarningsDeductionsNew from "./MiscEarningsDeductionsNew/MiscEarningsDeductionsNew";
+import LeaveSalaryProcess from "./LeaveSalaryProcess/LeaveSalaryProcess";
 
 export default class SalaryManagement extends Component {
   constructor(props) {
@@ -81,7 +79,7 @@ export default class SalaryManagement extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Salary Processing"
+                      forceLabel: "Normal Salary Process"
                     }}
                   />
                 }
@@ -98,16 +96,16 @@ export default class SalaryManagement extends Component {
                     }}
                   />
                 }
-              </li> */}
+              </li> */}{" "}
               <li
-                algaehtabs={"NewSalaryPayments"}
+                algaehtabs={"LeaveSalaryProcess"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Salary Payments"
+                      forceLabel: "Leave Salary Process"
                     }}
                   />
                 }
@@ -116,20 +114,14 @@ export default class SalaryManagement extends Component {
           </div>
         </div>
         <div className="salary-setion">
-          {//   this.state.pageDisplay === "SalaryProcessing" ? (
-          //   <SalaryProcessing />
-          // ) :
-          this.state.pageDisplay === "NewSalaryProcessing" ? (
+          {this.state.pageDisplay === "NewSalaryProcessing" ? (
             <NewSalaryProcessing />
-          ) : // this.state.pageDisplay === "SalaryPayments" ? (
-          //   <SalaryPayments />
-          // ) :
-          this.state.pageDisplay === "NewSalaryPayments" ? (
-            <NewSalaryPayments />
           ) : this.state.pageDisplay === "MiscEarningsDeductions" ? (
             <MiscEarningsDeductions />
           ) : this.state.pageDisplay === "MiscEarningsDeductionsNew" ? (
             <MiscEarningsDeductionsNew />
+          ) : this.state.pageDisplay === "LeaveSalaryProcess" ? (
+            <LeaveSalaryProcess />
           ) : null}
         </div>
       </div>

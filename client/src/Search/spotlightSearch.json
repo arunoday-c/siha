@@ -848,5 +848,62 @@
         "label": "Item Category"
       }
     ]
+  },
+  "Sales": {
+    "SalesQuotation": [
+      {
+        "fieldName": "sales_quotation_number",
+        "label": "Quotation Number"
+      },
+      {
+        "fieldName": "sales_quotation_date",
+        "label": "Quotation Date"
+      },
+      {
+        "fieldName": "sales_quotation_mode",
+        "label": "Quotation Mode",
+        "required": "N"
+      },
+      {
+        "fieldName": "customer_name",
+        "label": "Customer Name",
+        "required": "N"
+      },
+      {
+        "fieldName": "quote_validity",
+        "label": "Quote Validity",
+        "required": "N"
+      }
+    ],
+    "SalesOrder": [
+      {
+        "fieldName": "sales_order_number",
+        "label": "Order Number"
+      },
+      {
+        "fieldName": "sales_order_date",
+        "label": "Order Date"
+      },
+      {
+        "fieldName": "sales_quotation_number",
+        "label": "sales Quotation Number",
+        "required": "N"
+      },
+      {
+        "fieldName": "sales_order_mode",
+        "label": "Order Mode",
+        "required": "N"
+      },
+      {
+        "fieldName": "customer_name",
+        "label": "Customer Name",
+        "required": "N"
+      },
+      {
+        "fieldName": "quote_validity",
+        "label": "Quote Validity",
+        "required": "N"
+      }
+    ]
   }
 }

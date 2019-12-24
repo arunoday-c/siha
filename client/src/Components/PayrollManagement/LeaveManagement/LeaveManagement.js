@@ -3,9 +3,9 @@ import "./leave_mgmt.scss";
 import LeaveAuth from "./LeaveAuthorization/LeaveAuthorization";
 // import LeaveEncashmentProcess from "./LeaveEncashmentProcess/LeaveEncashmentProcess";
 import LeaveEncashAuth from "./LeaveEncashmentAuth/LeaveEncashmentAuth";
-import LeaveSalaryProcess from "./LeaveSalaryProcess/LeaveSalaryProcess";
+// import LeaveSalaryProcess from "./LeaveSalaryProcess/LeaveSalaryProcess";
 import LeaveYearlyProcess from "./LeaveYearlyProcess/LeaveYearlyProcess";
-//import LeaveSalaryAccural from "./LeaveSalaryAccural/LeaveSalaryAccural";
+import LeaveSalaryAccural from "./LeaveSalaryAccural/LeaveSalaryAccural";
 
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 
@@ -60,19 +60,7 @@ export default class LeaveManagement extends Component {
                 />
               }
             </li>
-            <li
-              algaehtabs={"LeaveSalaryProcess"}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Annual Leave Salary Process"
-                  }}
-                />
-              }
-            </li>
+
             <li
               algaehtabs={"LeaveYearlyProcess"}
               className={"nav-item tab-button"}
@@ -94,13 +82,11 @@ export default class LeaveManagement extends Component {
             <LeaveAuth />
           ) : this.state.pageDisplay === "LeaveEncashAuth" ? (
             <LeaveEncashAuth />
-          ) : this.state.pageDisplay === "LeaveSalaryProcess" ? (
-            <LeaveSalaryProcess />
           ) : this.state.pageDisplay === "LeaveYearlyProcess" ? (
             <LeaveYearlyProcess />
-          ) : // : this.state.pageDisplay === "LeaveSalaryAccural" ? (
-          //   <LeaveSalaryAccural />
-          null}
+          ) : this.state.pageDisplay === "LeaveSalaryAccural" ? (
+            <LeaveSalaryAccural />
+          ) : null}
         </div>
       </div>
     );

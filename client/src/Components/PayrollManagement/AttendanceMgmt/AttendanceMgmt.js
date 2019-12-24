@@ -4,6 +4,7 @@ import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import NewMonthlyAttendence from "./MonthlyAttendance/NewMonthlyAttendance";
 import WeeklyAttendance from "./WeeklyAttendance/WeeklyAttendance";
 import AbsenceManagement from "./AbsenceManagement/AbsenceManagement";
+import OverTimeMgmt from "./OvertimeManagement/OvertimeManagement";
 // import ManualAttendance from "./ManualAttendance/ManualAttendance";
 import BulkTimeSheet from "./BulkTimeSheet";
 import "./AttendanceMgmt.scss";
@@ -98,7 +99,20 @@ export default class AttendanceMgmt extends Component {
                     }}
                   />
                 }
-              </li>
+              </li>{" "}
+              {/* <li
+                algaehtabs={"OverTimeMgmt"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "OverTime Management"
+                    }}
+                  />
+                }
+              </li> */}
               {/* <li
                 algaehtabs={"WeeklyAttendance"}
                 className={"nav-item tab-button"}
@@ -142,19 +156,16 @@ export default class AttendanceMgmt extends Component {
           </div>
         </div>
         <div className="attendance-setion">
-          {//   this.state.pageDisplay === "MonthlyAttendance" ? (
-          //   <MonthlyAttendance />
-          // ) :
-          this.state.pageDisplay === "NewMonthlyAttendance" ? (
+          {this.state.pageDisplay === "NewMonthlyAttendance" ? (
             <NewMonthlyAttendence />
           ) : this.state.pageDisplay === "WeeklyAttendance" ? (
             <WeeklyAttendance />
           ) : this.state.pageDisplay === "AbsenceManagement" ? (
             <AbsenceManagement />
-          ) : // ) : this.state.pageDisplay === "ManualAttendance" ? (
-          //   <ManualAttendance />
-          this.state.pageDisplay === "BulkManualTimeSheet" ? (
+          ) : this.state.pageDisplay === "BulkManualTimeSheet" ? (
             <BulkTimeSheet />
+          ) : this.state.pageDisplay === "OverTimeMgmt" ? (
+            <OverTimeMgmt />
           ) : null}
         </div>
       </div>

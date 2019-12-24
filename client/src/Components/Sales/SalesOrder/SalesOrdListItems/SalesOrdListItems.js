@@ -3,30 +3,29 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext";
-// import "./SalesListService.scss";
 import "./../../../../styles/site.scss";
 import {
     AlgaehDataGrid,
     AlgaehLabel,
-    AlagehFormGroup
+    AlagehFormGroup,
+    AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 
 import {
-    servicechangeText,
+    itemchangeText,
     numberchangeTexts,
-    AddSerices,
+    AddItems,
     deleteSalesDetail,
     onchangegridcol,
     qtyonchangegridcol,
-} from "./SalesListServiceEvents";
+} from "./SalesOrdListItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import _ from "lodash";
 
-class SalesListService extends Component {
+class SalesOrdListItems extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -34,11 +33,13 @@ class SalesListService extends Component {
             selectBatchButton: true,
 
             addItemButton: true,
-            service_name: "",
+            item_description: "",
             addedItem: true,
 
-            services_id: null,
+            item_id: null,
             quantity: 0,
+            uom_id: null,
+            uom_description: null,
             discount_percentage: 0,
             unit_cost: 0,
             tax_percent: 0
@@ -97,6 +98,7 @@ class SalesListService extends Component {
         }
     }
 
+
     UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState(nextProps.SALESIOputs);
     }
@@ -112,35 +114,29 @@ class SalesListService extends Component {
                                     <div className="row">
                                         <AlgaehAutoSearch
                                             div={{ className: "col-12 form-group mandatory" }}
-                                            label={{ forceLabel: "Service Name" }}
+                                            label={{ forceLabel: "Item Name" }}
                                             title="Search Items"
                                             id="item_id_search"
-                                            template={({ service_name, service_type }) => {
+                                            template={result => {
                                                 return (
-
                                                     <section className="resultSecStyles">
                                                         <div className="row">
                                                             <div className="col-12">
                                                                 <h4 className="title">
-                                                                    {_.startCase(_.toLower(service_name))}
+                                                                    {result.item_description}
                                                                 </h4>
-                                                                <p className="searchMoreDetails">
-                                                                    <span>
-                                                                        Service Type:
-                                                                        <b>{_.startCase(_.toLower(service_type))}</b>
-                                                                    </span>
-                                                                </p>
+                                                                <small>{result.uom_description}</small>
                                                             </div>
                                                         </div>
                                                     </section>
                                                 );
                                             }}
-                                            name="services_id"
-                                            columns={spotlightSearch.Services.servicemaster}
-                                            displayField="service_name"
-                                            value={this.state.service_name}
-                                            searchName="servicemaster"
-                                            onClick={servicechangeText.bind(this, this)}
+                                            name="item_id"
+                                            columns={spotlightSearch.Items.Invitemmaster}
+                                            displayField="item_description"
+                                            value={this.state.item_description}
+                                            searchName="salesitemmaster"
+                                            onClick={itemchangeText.bind(this, this)}
                                             ref={attReg => {
                                                 this.attReg = attReg;
                                             }}
@@ -149,7 +145,18 @@ class SalesListService extends Component {
                                             }}
                                         />
 
-
+                                        <div className="col-6 form-group">
+                                            <AlgaehLabel
+                                                label={{
+                                                    forceLabel: "UOM"
+                                                }}
+                                            />
+                                            <h6>
+                                                {this.state.uom_description
+                                                    ? this.state.uom_description
+                                                    : "-----------"}
+                                            </h6>
+                                        </div>
                                         <AlagehFormGroup
                                             div={{ className: "col-6 form-group mandatory" }}
                                             label={{
@@ -179,7 +186,7 @@ class SalesListService extends Component {
                                         />
 
                                         <AlagehFormGroup
-                                            div={{ className: "col-6 form-group mandatory" }}
+                                            div={{ className: "col-6 form-group" }}
                                             label={{
                                                 forceLabel: "Discount (%)",
                                                 isImp: false
@@ -228,12 +235,12 @@ class SalesListService extends Component {
                                         </div> <div className="col-12 subFooter-btn">
                                             <button
                                                 className="btn btn-primary"
-                                                onClick={AddSerices.bind(this, this, context)}
+                                                onClick={AddItems.bind(this, this, context)}
                                                 disabled={this.state.addItemButton}
                                                 tabIndex="5"
                                             >
                                                 Add Item
-                                            </button>
+                                                        </button>
 
                                         </div>
                                     </div>
@@ -244,9 +251,9 @@ class SalesListService extends Component {
                             <div className="col-9">
                                 <div className="portlet portlet-bordered margin-bottom-15">
                                     <div className="row">
-                                        <div className="col-12" id="SaleQuotationGrid_Cntr">
+                                        <div className="col-12" id="SaleOrderGrid_Cntr">
                                             <AlgaehDataGrid
-                                                id="SaleQuotationGrid"
+                                                id="SaleOrderGrid"
                                                 columns={[
                                                     {
                                                         fieldName: "actions",
@@ -264,26 +271,17 @@ class SalesListService extends Component {
                                                                         context,
                                                                         row
                                                                     )}
-
-
                                                                 >
-                                                                    <i
-                                                                        style={{
-                                                                            pointerEvents:
-                                                                                this.state.dataExists ? "none" : "",
-                                                                            opacity:
-                                                                                this.state.dataExists ? "0.1" : ""
-                                                                        }}
-                                                                        className="fas fa-trash-alt" />
+                                                                    <i className="fas fa-trash-alt" />
                                                                 </span>
                                                             );
                                                         }
                                                     },
                                                     {
-                                                        fieldName: "service_name",
+                                                        fieldName: "item_description",
                                                         label: (
                                                             <AlgaehLabel
-                                                                label={{ forceLabel: "Service Name" }}
+                                                                label={{ forceLabel: "Item Name" }}
                                                             />
                                                         ),
                                                         disabled: true,
@@ -328,6 +326,18 @@ class SalesListService extends Component {
                                                                 />
                                                             );
                                                         },
+                                                        others: {
+                                                            minWidth: 90
+                                                        }
+                                                    },
+                                                    {
+                                                        fieldName: "uom_description",
+                                                        label: (
+                                                            <AlgaehLabel
+                                                                label={{ forceLabel: "UOM" }}
+                                                            />
+                                                        ),
+                                                        disabled: true,
                                                         others: {
                                                             minWidth: 90
                                                         }
@@ -476,7 +486,7 @@ class SalesListService extends Component {
                                                 ]}
                                                 keyId="service_type_id"
                                                 dataSource={{
-                                                    data: this.state.sales_quotation_services
+                                                    data: this.state.sales_order_items
                                                 }}
                                                 paging={{ page: 0, rowsPerPage: 10 }}
 
@@ -496,9 +506,7 @@ class SalesListService extends Component {
 function mapStateToProps(state) {
     return {
         opitemlist: state.opitemlist,
-        inventoryitemcategory: state.inventoryitemcategory,
-        inventoryitemuom: state.inventoryitemuom,
-        inventoryitemgroup: state.inventoryitemgroup
+        inventoryitemuom: state.inventoryitemuom
     };
 }
 
@@ -518,5 +526,5 @@ export default withRouter(
     connect(
         mapStateToProps,
         mapDispatchToProps
-    )(SalesListService)
+    )(SalesOrdListItems)
 );

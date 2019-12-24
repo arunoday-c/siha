@@ -96,6 +96,12 @@
       "url": "",
       "path": "/reports",
       "name": "Reports"
+    },
+    "sales": {
+      "port": 3021,
+      "url": "",
+      "path": "/sales",
+      "name": "Sales"
     }
   },
   "apiAuth": {
@@ -113,16 +119,34 @@
   },
   "colors": {
     "bp": {
-      "sys": { "backgroundColor": "#F5AB5C", "borderColor": "#e5c8ac" },
+      "sys": {
+        "backgroundColor": "#F5AB5C",
+        "borderColor": "#e5c8ac"
+      },
       "dia": {
         "backgroundColor": "#ED3833",
         "borderColor": "#f27674"
       }
     },
-    "resp_rate": { "backgroundColor": "#48A36F", "borderColor": "#75b28f" },
-    "temperature": { "backgroundColor": "#FBD67B", "borderColor": "#ffe9b7" },
-    "heart_rate": { "backgroundColor": "#BC353C", "borderColor": "#d17b7f" },
-    "bmi": { "backgroundColor": "#7DBFE1", "borderColor": "#b8def2" },
-    "weight": { "backgroundColor": "#C8A65C", "borderColor": "#b2a079" }
+    "resp_rate": {
+      "backgroundColor": "#48A36F",
+      "borderColor": "#75b28f"
+    },
+    "temperature": {
+      "backgroundColor": "#FBD67B",
+      "borderColor": "#ffe9b7"
+    },
+    "heart_rate": {
+      "backgroundColor": "#BC353C",
+      "borderColor": "#d17b7f"
+    },
+    "bmi": {
+      "backgroundColor": "#7DBFE1",
+      "borderColor": "#b8def2"
+    },
+    "weight": {
+      "backgroundColor": "#C8A65C",
+      "borderColor": "#b2a079"
+    }
   }
 }

@@ -101,7 +101,7 @@ class LeaveSalaryProcess extends Component {
     return (
       <div className="leave_en_auth row">
         <div className="col-12">
-          <div className="row inner-top-search">
+          <div className="row inner-top-search" style={{ marginTop: 2 }}>
             {/* <div className="col-2 globalSearchCntr">
               <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
               <h6 onClick={employeeSearch.bind(this, this)}>
@@ -411,6 +411,26 @@ class LeaveSalaryProcess extends Component {
                     paging={{ page: 0, rowsPerPage: 10 }}
                   />
                 </div>
+                <div className="col-12" style={{ textAlign: "right" }}>
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={MainClearData.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Clear", returnText: true }}
+                    />
+                  </button>{" "}
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    disabled={this.state.ProcessBtn}
+                    onClick={LeaveSalProcess.bind(this, this)}
+                    style={{ marginLeft: 10 }}
+                  >
+                    Load
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -507,23 +527,6 @@ class LeaveSalaryProcess extends Component {
               >
                 <AlgaehLabel
                   label={{ forceLabel: "Send for Payment", returnText: true }}
-                />
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                disabled={this.state.ProcessBtn}
-                onClick={LeaveSalProcess.bind(this, this)}
-              >
-                Process Leave Salary
-              </button>
-              <button
-                type="button"
-                className="btn btn-default"
-                onClick={MainClearData.bind(this, this)}
-              >
-                <AlgaehLabel
-                  label={{ forceLabel: "Clear", returnText: true }}
                 />
               </button>
             </div>

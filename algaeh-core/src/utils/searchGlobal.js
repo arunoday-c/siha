@@ -830,6 +830,25 @@ let algaehSearchConfig = (searchName, req) => {
           where VH.req_quotation_header_id = RQ.hims_f_procurement_req_quotation_header_id and VH.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_procurement_vendor_quotation_header_id desc"
+      },
+      {
+        searchName: "SalesQuotation",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS  SQ.*,  CASE SQ.sales_quotation_mode WHEN 'I' then 'Items' else 'Services' \
+          end as sales_quotation_mode, C.customer_name from hims_f_sales_quotation SQ, hims_d_customer C \
+          where SQ.customer_id = C.hims_d_customer_id and SQ.hospital_id=" +
+          hospitalId,
+        orderBy: "hims_f_sales_quotation_id desc"
+      },
+      {
+        searchName: "SalesOrder",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS  SO.*,  CASE SO.sales_order_mode WHEN 'I' then 'Items' else 'Services' \
+          end as sales_order_mode, C.customer_name, SQ.sales_quotation_number from hims_f_sales_order SO, \
+          hims_d_customer C, hims_f_sales_quotation SQ where SO.customer_id = C.hims_d_customer_id and \
+          SO.sales_quotation_id = SQ.hims_f_sales_quotation_id and SQ.hospital_id=" +
+          hospitalId,
+        orderBy: "hims_f_sales_order_id desc"
       }
     ]
   };
