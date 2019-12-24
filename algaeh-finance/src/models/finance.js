@@ -131,8 +131,8 @@ export default {
     }
   },
 
-  //created by irfan: to
-  addAccountHeads: (req, res, next) => {
+  //created by irfan: before removing child maping
+  addAccountHeads_BKP_24_dec: (req, res, next) => {
     const _mysql = new algaehMysql();
     //. const utilities = new algaehUtilities();
     let input = req.body;
@@ -313,6 +313,191 @@ export default {
         });
     }
   },
+
+  //created by irfan: to
+  addAccountHeads: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    //. const utilities = new algaehUtilities();
+    let input = req.body;
+
+    if (input.leaf_node == "Y") {
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "INSERT INTO `finance_account_child` (child_name,head_id,created_from\
+            ,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?)",
+          values: [
+            input.account_name,
+            input.finance_account_head_id,
+            "U",
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id
+          ],
+          printQuery: false
+        })
+        .then(result => {
+          if (result.insertId > 0) {
+            if (input.opening_bal > 0) {
+              let debit_amount = 0;
+              let credit_amount = input.opening_bal;
+              let payment_type = "CR";
+
+              if (input.chart_of_account == 1 || input.chart_of_account == 5) {
+                payment_type = "DR";
+                credit_amount = 0;
+                debit_amount = input.opening_bal;
+              }
+
+              const month = moment().format("M");
+              const year = moment().format("YYYY");
+
+              _mysql
+                .executeQuery({
+                  query:
+                    "insert into finance_voucher_details ( payment_date,month,year,head_account_code,head_id,child_id,debit_amount,\
+                        payment_type,credit_amount,entered_by,entered_date)  VALUE(?,?,?,?,?,?,?,?,?,?,?);",
+                  values: [
+                    new Date(),
+                    month,
+                    year,
+                    input.account_code,
+                    input.finance_account_head_id,
+                    result.insertId,
+                    debit_amount,
+                    payment_type,
+                    credit_amount,
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date()
+                  ],
+                  printQuery: false
+                })
+                .then(subdetail => {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = {
+                      head_id: input.finance_account_head_id,
+                      child_id: result.insertId
+                    };
+                    next();
+                  });
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            } else {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = {
+                  head_id: input.finance_account_head_id,
+                  child_id: result.insertId
+                };
+                next();
+              });
+            }
+          } else {
+            req.records = {
+              invalid_input: true,
+              message: "Please provide valid input"
+            };
+            _mysql.rollBackTransaction(() => {
+              next();
+            });
+          }
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } else {
+      _mysql
+        .executeQuery({
+          query:
+            "select finance_account_head_id,account_code,account_name,\
+        account_level,hierarchy_path, concat(account_code,'.',(\
+        select SUBSTRING_INDEX(max(account_code), '.', -1)+1\
+        FROM finance_account_head where parent_acc_id=?)) as new_code\
+        FROM finance_account_head where finance_account_head_id=?;\
+        select coalesce(max(sort_order),0)as sort_order FROM finance_account_head where parent_acc_id=?;\
+        select case  group_type when 'P' then finance_account_head_id else root_id end as root_id from\
+        finance_account_head where finance_account_head_id=?;",
+          values: [
+            input.finance_account_head_id,
+            input.finance_account_head_id,
+            input.finance_account_head_id,
+            input.finance_account_head_id
+          ],
+          printQuery: false
+        })
+        .then(result => {
+          const data = result[0][0];
+          const sort_order = parseInt(result[1][0]["sort_order"]) + 1;
+
+          let account_code = 0;
+          let root_id = result[2][0]["root_id"];
+
+          if (data["new_code"] == null) {
+            account_code = data["account_code"] + "." + 1;
+          } else {
+            account_code = data["new_code"];
+          }
+
+          const account_parent = data["account_code"];
+          const group_type = "C";
+          const account_level = parseInt(data["account_level"]) + 1;
+          const created_from = "U";
+          const parent_acc_id = input.finance_account_head_id;
+          const hierarchy_path =
+            data["hierarchy_path"] + "," + input.finance_account_head_id;
+
+          _mysql
+            .executeQuery({
+              query:
+                "INSERT INTO `finance_account_head` (account_code,account_name,account_parent,\
+                group_type,account_level,created_from,sort_order,parent_acc_id,hierarchy_path,root_id\
+                ,created_date, created_by, updated_date, updated_by)\
+                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              values: [
+                account_code,
+                input.account_name,
+                account_parent,
+                group_type,
+                account_level,
+                created_from,
+                sort_order,
+                parent_acc_id,
+                hierarchy_path,
+                root_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id
+              ],
+              printQuery: false
+            })
+            .then(resul => {
+              _mysql.releaseConnection();
+              req.records = {
+                account_code: account_code,
+                finance_account_head_id: resul.insertId
+              };
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    }
+  },
   //created by irfan: to
   updateFinanceAccountsMaping: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -321,8 +506,7 @@ export default {
     let strQry = "";
 
     input.forEach(item => {
-      strQry += `update finance_accounts_maping set child_id=${item.child_id},head_id=${item.head_id},
-      head_account_code=(select account_code from finance_account_head where finance_account_head_id =${item.head_id} limit 1)
+      strQry += `update finance_accounts_maping set child_id=${item.child_id},head_id=${item.head_id}
        where account='${item.account}';`;
     });
 
@@ -358,7 +542,7 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "select account,child_id,head_id,H.account_name,C.child_name from \
+          "select account,child_id,M.head_id,H.account_name,C.child_name from \
           finance_accounts_maping M left join finance_account_head H\
           on M.head_id=H.finance_account_head_id left join finance_account_child C \
           on M.child_id=C.finance_account_child_id ;",
@@ -847,8 +1031,8 @@ export default {
         next(e);
       });
   },
-  //created by irfan: to
-  removeAccountHead: (req, res, next) => {
+  //created by irfan: before removing child maping
+  removeAccountHead_BKP_24_dec: (req, res, next) => {
     const _mysql = new algaehMysql();
     // const utilities = new algaehUtilities();
     let input = req.body;
@@ -996,6 +1180,145 @@ export default {
                   next(e);
                 });
             }
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    }
+  },
+  //created by irfan: to
+  removeAccountHead: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    // const utilities = new algaehUtilities();
+    let input = req.body;
+
+    if (input.leaf_node == "Y") {
+      _mysql
+        .executeQuery({
+          query: `select created_from from finance_account_child where \
+                head_id=? and child_id=?;\
+                select finance_voucher_id from finance_voucher_details where head_id=? and child_id=? limit 1;`,
+          values: [
+            input.head_id,
+            input.child_id,
+            input.head_id,
+            input.child_id
+          ],
+          printQuery: false
+        })
+        .then(result => {
+          if (result[0][0]["created_from"] == "S") {
+            _mysql.releaseConnection();
+            req.records = {
+              invalid_input: true,
+              message: "Cant Delete System Generated Account "
+            };
+            next();
+          } else {
+            if (result[1].length > 0) {
+              _mysql.releaseConnection();
+              req.records = {
+                invalid_input: true,
+                message: "Transactions Found Cant Delete this Account "
+              };
+              next();
+            } else {
+              _mysql
+                .executeQueryWithTransaction({
+                  query: ` delete from finance_account_child where finance_account_child_id=?;`,
+                  values: [input.child_id],
+                  printQuery: false
+                })
+                .then(resu => {
+                  // _mysql.releaseConnection();
+                  // req.records = resu;
+                  // next();
+
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = resu;
+                    next();
+                  });
+                })
+                .catch(e => {
+                  _mysql.releaseConnection();
+                  next(e);
+                });
+            }
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else if (input.leaf_node == "N") {
+      _mysql
+        .executeQuery({
+          query: `SELECT finance_account_head_id, created_from FROM finance_account_head\
+                   where finance_account_head_id=?;\
+
+                   with recursive cte  as (          
+                    select  finance_account_head_id
+                    from finance_account_head where finance_account_head_id=?
+                    union                  
+                    select H.finance_account_head_id
+                    from finance_account_head  H inner join cte
+                    on H.parent_acc_id = cte.finance_account_head_id    
+                    )select * from cte;`,
+          values: [input.head_id, input.head_id],
+          printQuery: false
+        })
+        .then(result => {
+          if (result[0][0]["created_from"] == "S") {
+            _mysql.releaseConnection();
+            req.records = {
+              invalid_input: true,
+              message: "Cant Delete System Generated Account Heads"
+            };
+            next();
+          } else {
+            const head_ids = result[1].map(m => m.finance_account_head_id);
+            _mysql
+              .executeQuery({
+                query: `select finance_voucher_id from finance_voucher_details where head_id in  (?)`,
+                values: [head_ids],
+                printQuery: false
+              })
+              .then(resul => {
+                if (resul.length > 0) {
+                  _mysql.releaseConnection();
+                  req.records = {
+                    invalid_input: true,
+                    message: "Transactions Found ,Cant Delete this Account "
+                  };
+                  next();
+                } else {
+                  _mysql
+                    .executeQueryWithTransaction({
+                      query: `delete from finance_account_child where head_id in (?);                    
+                        delete from finance_account_head  where finance_account_head_id in (?);`,
+                      values: [head_ids, head_ids],
+                      printQuery: true
+                    })
+                    .then(deleteRes => {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = deleteRes;
+                        next();
+                      });
+                    })
+                    .catch(e => {
+                      _mysql.releaseConnection();
+                      next(e);
+                    });
+                }
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
           }
         })
         .catch(e => {

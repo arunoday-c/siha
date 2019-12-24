@@ -526,3 +526,9 @@ export default {
       });
   }
 };
+
+// select head_office_id,H.hospital_name as head_office,
+// case cost_center_type when 'P' then 'project wise' when 'SD' then
+// 'sub department wise' else 'None' end as cost_center_type
+//  from finance_options F
+// left join hims_d_hospital H on F.head_office_id=H.hims_d_hospital_id
