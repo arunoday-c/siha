@@ -37,6 +37,14 @@ const executePDF = function executePDFMethod(options) {
         str += ` and status='${input.status}'`;
       }
 
+      let is_local = "";
+
+      if (input.is_local === "Y") {
+        is_local = " and H.default_nationality=E.nationality ";
+      } else if (input.is_local === "N") {
+        is_local = " and H.default_nationality<>E.nationality ";
+      }
+
       options.mysql
         .executeQuery({
           query: `select hims_f_leave_application_id, leave_application_code, LA.employee_id, leave_id ,
@@ -50,8 +58,9 @@ const executePDF = function executePDFMethod(options) {
          left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id \
          left join hims_d_department D on SD.department_id=D.hims_d_department_id \
          left join hims_f_employee_annual_leave EAL on EAL.leave_application_id=LA.hims_f_leave_application_id \
-         left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id\
-			   where((from_date>= ? and from_date <= ?) or (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?))	${str};`,
+         left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id\          	left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id \
+
+			   where((from_date>= ? and from_date <= ?) or (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?)) ${is_local}	${str};`,
           values: [
             input.from_date,
             input.to_date,

@@ -21,6 +21,13 @@ const executePDF = function executePDFMethod(options) {
       if (input.earning_deductions_id > 0) {
         str += ` and ED.earning_deductions_id= ${input.earning_deductions_id}`;
       }
+      let is_local = "";
+
+      if (input.is_local === "Y") {
+        is_local = " and H.default_nationality=E.nationality ";
+      } else if (input.is_local === "N") {
+        is_local = " and H.default_nationality<>E.nationality ";
+      }
 
       options.mysql
         .executeQuery({
@@ -31,7 +38,9 @@ const executePDF = function executePDFMethod(options) {
             inner join hims_d_earning_deduction as D on D.hims_d_earning_deduction_id = ED.earning_deductions_id \
             left join hims_d_employee_group EG on E.employee_group_id = EG.hims_d_employee_group_id \
             left join hims_d_designation DG on E.employee_designation_id=DG.hims_d_designation_id\
-            where year=? and month=? and ED.hospital_id=? and category=?  ${str} `,
+                      left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id \
+
+            where year=? and month=? and ED.hospital_id=? and category=? ${is_local}  ${str} `,
           values: [input.year, input.month, input.hospital_id, input.edType],
           printQuery: true
         })

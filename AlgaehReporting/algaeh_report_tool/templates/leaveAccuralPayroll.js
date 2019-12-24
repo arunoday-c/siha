@@ -9,6 +9,7 @@ const executePDF = function executePDFMethod(options) {
       params.forEach(para => {
         input[para["name"]] = para["value"];
       });
+      const decimal_places = options.args.crypto.decimal_places;
 
       let strData = "";
 
@@ -37,16 +38,30 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true
         })
         .then(ress => {
+          let sum_leave_salary = 0;
+          let sum_airfare_amount = 0;
+
           if (ress.length > 0) {
+            sum_leave_salary = _.sumBy(ress, s => parseFloat(s.leave_salary));
+            sum_airfare_amount = _.sumBy(ress, s =>
+              parseFloat(s.airfare_amount)
+            );
+
             const result = {
-              detailsList: ress
+              detailsList: ress,
+              sum_leave_salary: sum_leave_salary.toFixed(decimal_places),
+              sum_airfare_amount: sum_airfare_amount.toFixed(decimal_places)
             };
 
             // utilities.logger().log("outputArray:", result);
             resolve(result);
           } else {
             resolve({
-              result: { detailsList: ress }
+              result: {
+                detailsList: ress,
+                sum_leave_salary: sum_leave_salary.toFixed(decimal_places),
+                sum_airfare_amount: sum_airfare_amount.toFixed(decimal_places)
+              }
             });
           }
         })

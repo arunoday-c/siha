@@ -24,19 +24,25 @@ const executePDF = function executePDFMethod(options) {
       if (input.sub_department_id > 0) {
         strData += " and E.sub_department_id=" + input.sub_department_id;
       }
+      let is_local = "";
 
+      if (input.is_local === "Y") {
+        is_local = " and H.default_nationality=E.nationality ";
+      } else if (input.is_local === "N") {
+        is_local = " and H.default_nationality<>E.nationality ";
+      }
       options.mysql
         .executeQuery({
           query: `select S.salary_amount,S.leave_amount,S.airfare_amount,S.total_amount,
             S.leave_salary_number,E.employee_code,full_name as employee_name,
             E.mode_of_payment,SD.hims_d_sub_department_id,SD.sub_department_code,SD.sub_department_name,
-            DP.hims_d_department_id, DP.department_name, NA.nationality,HO.hospital_name
+            DP.hims_d_department_id, DP.department_name, NA.nationality,H.hospital_name
             from hims_f_leave_salary_header S inner join  hims_d_employee E  on S.employee_id=E.hims_d_employee_id
             left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
             left join hims_d_department DP on SD.department_id=DP.hims_d_department_id
             left join  hims_d_nationality NA  on E.nationality=NA.hims_d_nationality_id
-            left join  hims_d_hospital HO  on E.hospital_id=HO.hims_d_hospital_id
-            WHERE  E.hospital_id=? and S.year=? and S.month=? ${strData} ;`,
+               	left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id \
+            WHERE  E.hospital_id=? and S.year=? and S.month=? ${is_local} ${strData} ;`,
           values: [input.hospital_id, input.year, input.month],
           printQuery: true
         })

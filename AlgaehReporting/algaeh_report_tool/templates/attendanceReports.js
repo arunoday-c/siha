@@ -30,6 +30,13 @@ const executePDF = function executePDFMethod(options) {
       if (input.department_id > 0) {
         str += ` and SD.department_id=${input.department_id}`;
       }
+      let is_local = "";
+
+      if (input.is_local === "Y") {
+        is_local = " and H.default_nationality=E.nationality ";
+      } else if (input.is_local === "N") {
+        is_local = " and H.default_nationality<>E.nationality ";
+      }
 
       // 	const month_number =
       // 	req.query.yearAndMonth === undefined ? req.query.month : moment(req.query.yearAndMonth).format('M');
@@ -47,7 +54,8 @@ const executePDF = function executePDFMethod(options) {
 					shortage_hours,ot_work_hours,ot_weekoff_hours,ot_holiday_hours from hims_f_attendance_monthly AM \
 					inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
           left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id \
-					where AM.record_status='A' and AM.year= ? and AM.month=? ${str} `,
+          	left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id \
+					where AM.record_status='A' and AM.year= ? and AM.month=? ${is_local} ${str} `,
           values: [input.year, input.month],
           printQuery: true
         })

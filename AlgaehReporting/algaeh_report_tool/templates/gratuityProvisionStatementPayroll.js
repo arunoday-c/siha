@@ -10,6 +10,7 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
+      const decimal_places = options.args.crypto.decimal_places;
       let strData = "";
 
       if (input.employee_group_id > 0) {
@@ -24,6 +25,14 @@ const executePDF = function executePDFMethod(options) {
         strData += " and E.sub_department_id=" + input.sub_department_id;
       }
 
+      let is_local = "";
+
+      if (input.is_local === "Y") {
+        is_local = " and H.default_nationality=E.nationality ";
+      } else if (input.is_local === "N") {
+        is_local = " and H.default_nationality<>E.nationality ";
+      }
+
       options.mysql
         .executeQuery({
           query: `select hims_f_gratuity_provision_id, employee_id, gratuity_amount, E.employee_code, E.full_name,  \
@@ -31,22 +40,31 @@ const executePDF = function executePDFMethod(options) {
 					inner join hims_d_employee E on GP.employee_id = E.hims_d_employee_id \
 					left join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id  \
 					left join hims_d_department D on SD.department_id=D.hims_d_department_id \
-					left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id \
-					where GP.year=? and GP.month=? and E.hospital_id=?  ${strData} ;`,
+          left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id \
+           left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id \
+					where GP.year=? and GP.month=? and E.hospital_id=?  ${is_local}  ${strData} ;`,
           values: [input.year, input.month, input.hospital_id],
           printQuery: true
         })
         .then(ress => {
+          let sum_gratuity_amount = 0;
           if (ress.length > 0) {
+            sum_gratuity_amount = _.sumBy(ress, s =>
+              parseFloat(s.gratuity_amount)
+            );
             const result = {
-              details: ress
+              details: ress,
+              sum_gratuity_amount: sum_gratuity_amount.toFixed(decimal_places)
             };
 
             // utilities.logger().log("outputArray:", result);
             resolve(result);
           } else {
             resolve({
-              result: { details: ress }
+              result: {
+                details: ress,
+                sum_gratuity_amount: sum_gratuity_amount.toFixed(decimal_places)
+              }
             });
           }
         })

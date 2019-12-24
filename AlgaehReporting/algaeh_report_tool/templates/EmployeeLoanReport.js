@@ -25,6 +25,13 @@ const executePDF = function executePDFMethod(options) {
         strData += " and E.sub_department_id=" + input.sub_department_id;
       }
 
+      let is_local = "";
+      if (input.is_local === "Y") {
+        is_local = " and H.default_nationality=E.nationality ";
+      } else if (input.is_local === "N") {
+        is_local = " and H.default_nationality<>E.nationality ";
+      }
+
       options.mysql
         .executeQuery({
           query: `select loan_application_number, employee_id, loan_id, L.loan_description, application_reason, date_format(loan_application_date,'%d-%m-%Y') as loan_application_date, \
@@ -36,8 +43,8 @@ const executePDF = function executePDFMethod(options) {
 						inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id \
 						inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id \
 						left join hims_d_department D on SD.department_id=D.hims_d_department_id \
-						left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id \
-						where date(loan_application_date) between date(?) and date(?) and LA.hospital_id=? ${strData} ;`,
+						left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id \ left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id \
+						where date(loan_application_date) between date(?) and date(?) and LA.hospital_id=?  ${is_local} ${strData} ;`,
           values: [input.from_date, input.to_date, input.hospital_id],
           printQuery: true
         })
