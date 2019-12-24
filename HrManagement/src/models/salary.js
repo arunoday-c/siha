@@ -2914,26 +2914,44 @@ export default {
                   let ot_hours = 0;
                   let ot_min = 0;
 
-                  ot_hours += parseInt(
-                    salary[i]["ot_work_hours"].toString().split(".")[0]
-                  );
-                  ot_min += parseInt(
-                    salary[i]["ot_work_hours"].toString().split(".")[1]
-                  );
+                  ot_hours +=
+                    salary[i]["ot_work_hours"] === null
+                      ? 0
+                      : parseInt(
+                          salary[i]["ot_work_hours"].toString().split(".")[0]
+                        );
+                  ot_min +=
+                    salary[i]["ot_work_hours"] === null
+                      ? 0
+                      : parseInt(
+                          salary[i]["ot_work_hours"].toString().split(".")[1]
+                        );
 
-                  ot_hours += parseInt(
-                    salary[i]["ot_weekoff_hours"].toString().split(".")[0]
-                  );
-                  ot_min += parseInt(
-                    salary[i]["ot_weekoff_hours"].toString().split(".")[1]
-                  );
+                  ot_hours +=
+                    salary[i]["ot_weekoff_hours"] === null
+                      ? 0
+                      : parseInt(
+                          salary[i]["ot_weekoff_hours"].toString().split(".")[0]
+                        );
+                  ot_min +=
+                    salary[i]["ot_weekoff_hours"] === null
+                      ? 0
+                      : parseInt(
+                          salary[i]["ot_weekoff_hours"].toString().split(".")[1]
+                        );
 
-                  ot_hours += parseInt(
-                    salary[i]["ot_holiday_hours"].toString().split(".")[0]
-                  );
-                  ot_min += parseInt(
-                    salary[i]["ot_holiday_hours"].toString().split(".")[1]
-                  );
+                  ot_hours +=
+                    salary[i]["ot_holiday_hours"] === null
+                      ? 0
+                      : parseInt(
+                          salary[i]["ot_holiday_hours"].toString().split(".")[0]
+                        );
+                  ot_min +=
+                    salary[i]["ot_holiday_hours"] === null
+                      ? 0
+                      : parseInt(
+                          salary[i]["ot_holiday_hours"].toString().split(".")[1]
+                        );
 
                   ot_hours += parseInt(parseInt(ot_min) / parseInt(60));
 
