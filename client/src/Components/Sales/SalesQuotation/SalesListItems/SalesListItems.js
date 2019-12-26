@@ -17,6 +17,7 @@ import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import {
     itemchangeText,
     numberchangeTexts,
+    UomchangeTexts,
     AddItems,
     deleteSalesDetail,
     onchangegridcol,
@@ -144,18 +145,33 @@ class SalesListItems extends Component {
                                             }}
                                         />
 
-                                        <div className="col-6 form-group">
-                                            <AlgaehLabel
-                                                label={{
-                                                    forceLabel: "UOM"
-                                                }}
-                                            />
-                                            <h6>
-                                                {this.state.uom_description
-                                                    ? this.state.uom_description
-                                                    : "-----------"}
-                                            </h6>
-                                        </div>
+                                        <AlagehAutoComplete
+                                            div={{ className: "col-6 form-group mandatory" }}
+                                            label={{ forceLabel: "UOM", isImp: true }}
+                                            selector={{
+                                                name: "uom_id",
+                                                className: "select-fld",
+                                                value: this.state.uom_id,
+                                                dataSource: {
+                                                    textField: "uom_description",
+                                                    valueField: "uom_id",
+                                                    data: this.state.ItemUOM
+                                                },
+                                                onChange: UomchangeTexts.bind(
+                                                    this,
+                                                    this
+                                                ),
+                                                onClear: () => {
+                                                    this.setState({
+                                                        uom_id: null
+                                                    });
+                                                },
+                                                others: {
+                                                    disabled: this.state.dataExitst,
+                                                    tabIndex: "2"
+                                                }
+                                            }}
+                                        />
                                         <AlagehFormGroup
                                             div={{ className: "col-6 form-group mandatory" }}
                                             label={{

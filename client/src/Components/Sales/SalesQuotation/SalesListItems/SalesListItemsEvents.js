@@ -2,24 +2,61 @@ import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
 import Options from "../../../../Options.json";
-import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import _ from "lodash";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
-const UomchangeTexts = ($this, context, ctrl, e) => {
+const UomchangeTexts = ($this, ctrl, e) => {
     e = ctrl || e;
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
+
     if ($this.state.uom_id !== value) {
         let unit_cost = 0;
-        if (e.selected.conversion_factor === 1) {
-            unit_cost = $this.state.Real_unit_cost;
+
+        if ($this.state.sales_uom_id === $this.state.stocking_uom_id) {
+            if (
+                parseFloat($this.state.sales_conversion_factor) ===
+                parseFloat(e.selected.conversion_factor)
+            ) {
+                unit_cost = $this.state.Real_unit_cost;
+            } else if (
+                parseFloat($this.state.sales_conversion_factor) >
+                parseFloat(e.selected.conversion_factor)
+            ) {
+                unit_cost =
+                    parseFloat($this.state.Real_unit_cost) /
+                    parseFloat($this.state.sales_conversion_factor);
+
+            } else {
+                unit_cost =
+                    parseFloat(e.selected.conversion_factor) *
+                    parseFloat($this.state.Real_unit_cost);
+            }
         } else {
-            unit_cost = e.selected.conversion_factor * $this.state.Real_unit_cost;
+            if (
+                parseFloat($this.state.sales_conversion_factor) ===
+                parseFloat(e.selected.conversion_factor)
+            ) {
+                unit_cost = $this.state.Real_unit_cost;
+            } else if (
+                parseFloat($this.state.sales_conversion_factor) >
+                parseFloat(e.selected.conversion_factor)
+            ) {
+                unit_cost =
+                    parseFloat($this.state.Real_unit_cost) /
+                    parseFloat($this.state.sales_conversion_factor);
+            } else {
+                unit_cost =
+                    parseFloat(e.selected.conversion_factor) *
+                    parseFloat($this.state.Real_unit_cost);
+            }
         }
+
         $this.setState({
             [name]: value,
             conversion_factor: e.selected.conversion_factor,
-            unit_cost: unit_cost
+            unit_cost: unit_cost,
+            uom_description: e.selected.text
         });
     }
 };
@@ -66,20 +103,59 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const itemchangeText = ($this, e, ctrl) => {
+    AlgaehLoader({ show: true });
     let name = ctrl;
 
     let value = e.hims_d_inventory_item_master_id;
 
-    $this.setState({
-        [name]: value,
-        uom_id: e.sales_uom_id,
-        quantity: 1,
-        addItemButton: false,
-        item_description: e.item_description,
-        unit_cost: e.standard_fee,
-        uom_description: e.uom_description,
-        tax_percent: e.vat_percent
+    algaehApiCall({
+        uri: "/inventoryGlobal/getListUomSelectedItem",
+        module: "inventory",
+        method: "GET",
+        data: {
+            item_id: value
+        },
+        onSuccess: response => {
+            if (response.data.success) {
+                let data = response.data.records;
+                if (data.length > 0) {
+                    const sales_conversion_factor = _.find(
+                        data,
+                        f => f.uom_id === e.sales_uom_id
+                    );
+
+                    $this.setState({
+                        [name]: value,
+                        uom_id: e.sales_uom_id,
+                        quantity: 1,
+                        addItemButton: false,
+                        item_description: e.item_description,
+                        unit_cost: e.standard_fee,
+                        Real_unit_cost: e.standard_fee,
+                        uom_description: e.uom_description,
+                        tax_percent: e.vat_percent,
+                        ItemUOM: data,
+                        sales_conversion_factor: sales_conversion_factor
+                    });
+
+                }
+            } else {
+                swalMessage({
+                    title: response.data.message,
+                    type: "error"
+                });
+            }
+            AlgaehLoader({ show: false });
+        },
+        onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+                title: error.message,
+                type: "error"
+            });
+        }
     });
+
 
 };
 
@@ -101,6 +177,12 @@ const AddItems = ($this, context) => {
     ) {
         swalMessage({
             title: "Enter the Quantity.",
+            type: "warning"
+        });
+        return
+    } else if ($this.state.uom_id === null) {
+        swalMessage({
+            title: "Enter the UOM.",
             type: "warning"
         });
         return

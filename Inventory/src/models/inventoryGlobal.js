@@ -378,5 +378,33 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
+
+  getListUomSelectedItem: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_m_inventory_item_uom_id, item_master_id, uom_id, stocking_uom, conversion_factor,\
+              IIU.uom_status, IU.uom_description  from hims_m_inventory_item_uom IIU \
+              inner join hims_d_inventory_uom IU  on IIU.uom_id = IU.hims_d_inventory_uom_id \
+              where IIU.record_status='A' and IIU.item_master_id=?;",
+          values: [req.query.item_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
 };
