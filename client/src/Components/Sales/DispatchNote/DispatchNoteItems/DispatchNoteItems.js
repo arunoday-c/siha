@@ -105,21 +105,21 @@ class DispatchNoteItems extends Component {
                                                             </span>
                                                             <span>
                                                                 Ordered Qty:
-                                <span>{item.quantity}</span>
+                                                                <span>{item.ordered_quantity}</span>
                                                             </span>
 
                                                             <span>
                                                                 Seleted Qty:
-                                <span>{item.dispatched_quantity}</span>
+                                                                <span>{item.dispatched_quantity}</span>
                                                             </span>
                                                             <span>
                                                                 Out Std. Qty:
-                                <span>{item.quantity_outstanding}</span>
+                                                                <span>{item.quantity_outstanding}</span>
                                                             </span>
 
                                                             <span>
                                                                 Delivered Till Date:
-                                <span>{item.delivered_to_date}</span>
+                                                                <span>{item.delivered_to_date}</span>
                                                             </span>
                                                         </div>
                                                         <div className="itemAction">
@@ -554,7 +554,7 @@ class DispatchNoteItems extends Component {
                                                         }}
                                                     >
                                                         Save
-                        </button>
+                                                    </button>
                                                     <button
                                                         type="button"
                                                         className="btn btn-default"
@@ -562,7 +562,7 @@ class DispatchNoteItems extends Component {
                                                         style={{ marginTop: 8, float: "right" }}
                                                     >
                                                         Close
-                        </button>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>

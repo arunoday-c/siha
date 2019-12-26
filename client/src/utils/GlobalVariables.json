@@ -2445,6 +2445,10 @@
     {
       "name": "Stock Adjustment",
       "value": "AD"
+    },
+    {
+      "name": "Sales Dispatch Note",
+      "value": "SDN"
     }
   ],
   "MODULE_PLAN": [
