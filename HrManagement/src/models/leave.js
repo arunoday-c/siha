@@ -7722,6 +7722,8 @@ function validateLeaveApplictn(inputs, my_sql, req) {
             //FIRST YEAR CALCULATION
             calculateNoLeaveDays(input, _mysql)
               .then(partA_res => {
+
+                console.log("PART A COMPLETED");
                 if (
                   partA_res.annual_leave == "Y" &&
                   partA_res.is_projected_leave == "Y"
@@ -8563,7 +8565,11 @@ function calculateNoLeaveDays(inputs, _mysql) {
                         ((currentClosingBal < calculatedLeaveDays &&
                           annual_leave == "Y") ||
                           (annual_leave == "Y" &&
-                            input.is_across_year_leave == "Y"))
+                            input.is_across_year_leave == "Y"   &&
+                            moment().format("YYYYMMDD") <
+                              moment(input.to_date, "YYYY-MM-DD").format(
+                                "YYYYMMDD"
+                              )))
                       ) {
                         let Pr_from_date = "";
                         let Pr_to_date = "";
@@ -8700,7 +8706,10 @@ function calculateNoLeaveDays(inputs, _mysql) {
                           annual_leave == "Y" &&
                           input.cancel != "Y") ||
                         (annual_leave == "Y" &&
-                          input.is_across_year_leave == "Y")
+                          input.is_across_year_leave == "Y" &&  moment().format("YYYYMMDD") <
+                          moment(input.to_date, "YYYY-MM-DD").format(
+                            "YYYYMMDD"
+                          ))
                       ) {
                         let Pr_from_date = "";
                         let Pr_to_date = "";
