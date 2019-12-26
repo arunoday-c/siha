@@ -5,7 +5,7 @@ import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
   //created by irfan:
-  addVoucher: (req, res, next) => {
+  addVoucher_BKP_26_dec: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
 
@@ -193,7 +193,7 @@ export default {
     }
   },
   //created by irfan:
-  addVoucher_NEW: (req, res, next) => {
+  addVoucher: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
 
@@ -231,11 +231,11 @@ export default {
       }
     });
 
-    const insertDetail = [
-      { payment_mode: "CA", amount: cash },
-      { payment_mode: "CH", amount: card },
-      { payment_mode: "CD", amount: cheque }
-    ];
+    // const insertDetail = [
+    //   { payment_mode: "CA", amount: cash },
+    //   { payment_mode: "CH", amount: card },
+    //   { payment_mode: "CD", amount: cheque }
+    // ];
 
     if (credit_amount === debit_amount) {
       _mysql
@@ -255,85 +255,61 @@ export default {
             } else if (resul[0]["cost_center_type"] == "SD") {
               subDept_cost_center = input.cost_center_id;
             }
+
+            const month = moment(transaction_date, "YYYY-MM-DD").format("M");
+            const year = moment(transaction_date, "YYYY-MM-DD").format("YYYY");
+
             _mysql
               .executeQueryWithTransaction({
                 query:
-                  "INSERT INTO `finance_day_end_header` (transaction_date,amount,voucher_type,voucher_no,\
-                from_screen,transaction_type,hospital_id)\
-                  VALUE(?,?,?,?,?,?,?)",
+                  "INSERT INTO `finance_voucher_header` (amount, payment_date, month, year,\
+                      narration, voucher_no, voucher_type,from_screen)\
+                  VALUE(?,?,?,?,?,?,?,?)",
                 values: [
-                  transaction_date,
                   credit_amount,
-                  input.voucher_type,
+                  transaction_date,
+                  month,
+                  year,
+                  input.narration,
                   input.voucher_no,
-                  input.from_screen,
-                  "JV",
-                  input.hospital_id
-                ]
+                  input.voucher_type,
+                  input.from_screen
+                ],
+                printQuery: false
               })
               .then(result => {
-                const IncludeValues = ["amount", "payment_mode"];
+                // const IncludeValues = ["amount", "payment_mode"];
+                const insertColumns = [
+                  "head_id",
+                  "child_id",
+                  "debit_amount",
+                  "credit_amount",
+                  "payment_type",
+                  "hospital_id",
+                  "project_id",
+                  "sub_department_id"
+                ];
                 _mysql
                   .executeQueryWithTransaction({
-                    query: "INSERT INTO finance_day_end_detail (??) VALUES ? ",
-                    values: insertDetail,
-                    includeValues: IncludeValues,
+                    query: "insert into finance_voucher_details (??) values ?;",
+                    values: input.details,
+                    includeValues: insertColumns,
                     bulkInsertOrUpdate: true,
+                    printQuery: false,
                     extraValues: {
-                      day_end_header_id: result["insertId"]
-                    },
-                    printQuery: false
+                      payment_date: transaction_date,
+                      month: month,
+                      year: year,
+                      voucher_header_id: result.insertId,
+                      entered_by: req.userIdentity.algaeh_d_app_user_id
+                    }
                   })
-                  .then(detail => {
-                    const month = moment(transaction_date, "YYYY-MM-DD").format(
-                      "M"
-                    );
-                    const year = moment(transaction_date, "YYYY-MM-DD").format(
-                      "YYYY"
-                    );
-                    const IncludeValuess = [
-                      "day_end_header_id",
-                      "head_account_code",
-
-                      "head_id",
-                      "child_id",
-                      "debit_amount",
-                      "payment_type",
-                      "credit_amount",
-                      "narration"
-                    ];
-                    _mysql
-                      .executeQueryWithTransaction({
-                        query:
-                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ",
-                        values: input.details,
-                        includeValues: IncludeValuess,
-                        bulkInsertOrUpdate: true,
-                        extraValues: {
-                          year: year,
-                          month: month,
-                          entered_date: new Date(),
-                          entered_by: req.userIdentity.algaeh_d_app_user_id,
-                          day_end_header_id: result.insertId,
-                          payment_date: transaction_date,
-                          hospital_id: input.hospital_id,
-                          project_id: project_cost_center,
-                          sub_department_id: subDept_cost_center
-                        },
-                        printQuery: false
-                      })
-                      .then(subResult => {
-                        _mysql.commitTransaction(() => {
-                          _mysql.releaseConnection();
-                          req.records = result;
-                          next();
-                        });
-                      })
-                      .catch(error => {
-                        _mysql.rollBackTransaction(() => {
-                          next(error);
-                        });
-                      });
+                  .then(result2 => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = result2;
+                      next();
+                    });
                   })
                   .catch(error => {
                     _mysql.rollBackTransaction(() => {

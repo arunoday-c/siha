@@ -147,6 +147,96 @@ function getAccountHeadsForReport(decimal_places, finance_account_head_id) {
 
       _mysql
         .executeQuery({
+          query: `select finance_account_head_id,account_code,account_name,account_parent,account_level,
+          H.created_from as created_status ,sort_order,parent_acc_id,root_id,
+          finance_account_child_id,child_name,head_id,C.created_from as child_created_from
+          from finance_account_head H left join 
+          finance_account_child C on C.head_id=H.finance_account_head_id
+           where (root_id=? or finance_account_head_id=?) order by account_level,sort_order;           
+           select C.head_id,finance_account_child_id as child_id,child_name
+          ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
+          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount, 
+          ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
+          ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
+          from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
+          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
+          where (H.root_id=? or H.finance_account_head_id=?)
+          group by C.finance_account_child_id;
+          select max(account_level) as account_level from finance_account_head 
+          where (root_id=? or finance_account_head_id=?);
+          select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
+          ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
+          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount
+          from finance_account_head H              
+          left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id 
+          where (H.root_id=? or H.finance_account_head_id=?)
+          group by H.finance_account_head_id  order by account_level;  `,
+
+          values: [
+            finance_account_head_id,
+            finance_account_head_id,
+            finance_account_head_id,
+            finance_account_head_id,
+            finance_account_head_id,
+            finance_account_head_id,
+            finance_account_head_id,
+            finance_account_head_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          const child_data = result[1];
+
+          calcAmount(result[3], result[2], decimal_places)
+            .then(head_data => {
+              const outputArray = createHierarchy(
+                result[0],
+                child_data,
+                head_data,
+                trans_symbol,
+                default_total,
+                decimal_places
+              );
+
+              resolve(outputArray[0]);
+            })
+            .catch(e => {
+              console.log("m4:", e);
+              next(e);
+            });
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          reject(e);
+        });
+    } else {
+      reject({
+        invalid_input: true,
+        message: "Please provide Valid Input"
+      });
+    }
+  });
+}
+//created by irfan:
+function getAccountHeadsForReport_BKP_24_dec(
+  decimal_places,
+  finance_account_head_id
+) {
+  const utilities = new algaehUtilities();
+  const _mysql = new algaehMysql();
+
+  return new Promise((resolve, reject) => {
+    if (finance_account_head_id > 0 && finance_account_head_id < 6) {
+      const default_total = parseFloat(0).toFixed(decimal_places);
+      let trans_symbol = "Cr.";
+      if (finance_account_head_id == 1 || finance_account_head_id == 5) {
+        trans_symbol = "Dr.";
+      }
+
+      _mysql
+        .executeQuery({
           query: `with recursive cte (finance_account_head_id,account_code, account_name, parent_acc_id,
               finance_account_child_id,child_name,child_created_from,account_level,sort_order,head_id,created_status) as (              
               select finance_account_head_id,H.account_code,account_name,parent_acc_id,
