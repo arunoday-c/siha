@@ -10,56 +10,11 @@ const texthandle = ($this, ctrl, e) => {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     switch (name) {
-        case "sales_quotation_mode":
+        case "location_id":
             $this.setState({
                 [name]: value,
-                hims_f_sales_order_id: null,
-                sales_quotation_number: null,
-                sales_quotation_id: null,
-                sales_order_number: null,
-                sales_order_date: new Date(),
-                reference_number: null,
-                customer_id: null,
-                quote_validity: null,
-                sales_man: null,
-                payment_terms: null,
-                service_terms: null,
-                other_terms: null,
-                sub_total: null,
-                discount_amount: null,
-                net_total: null,
-                total_tax: null,
-                net_payable: null,
-                narration: null,
-                project_id: null,
-                customer_po_no: null,
-                tax_percentage: null,
-
-                sales_order_items: [],
-                sales_order_services: [],
-                decimal_place: JSON.parse(
-                    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-                ).decimal_places,
-                saveEnable: true,
-                dataExists: false,
-                hospital_id: JSON.parse(
-                    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-                ).hims_d_hospital_id,
-
-                addItemButton: true,
-                item_description: "",
-                addedItem: true,
-
-                item_id: null,
-                quantity: 0,
-                uom_id: null,
-                uom_description: null,
-                discount_percentage: 0,
-                unit_cost: 0,
-                tax_percent: 0
+                ReqData: false
             });
-            break;
-
         default:
             $this.setState({
                 [name]: value
@@ -69,33 +24,15 @@ const texthandle = ($this, ctrl, e) => {
 
 };
 
-const customerTexthandle = ($this, e) => {
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
 
-    $this.setState({
-        [name]: value,
-        vendor_name: e.selected.vendor_name,
-        payment_terms: e.selected.payment_terms,
-        tax_percentage: e.selected.vat_percentage,
-    });
-};
-
-
-const datehandle = ($this, ctrl, e) => {
-    $this.setState({
-        [e]: moment(ctrl)._d
-    });
-};
-
-const SalesQuotationSearch = ($this, e) => {
+const SalesOrderSearch = ($this, e) => {
     AlgaehSearch({
         searchGrid: {
-            columns: spotlightSearch.Sales.SalesQuotation
+            columns: spotlightSearch.Sales.SalesOrder
         },
-        searchName: "SalesQuotation",
+        searchName: "SalesOrder",
         uri: "/gloabelSearch/get",
-        inputs: " sales_quotation_mode= '" + $this.state.sales_order_mode + "'",
+        inputs: " sales_order_mode = 'I'",
 
         onContainsChange: (text, serchBy, callBack) => {
             callBack(text);
@@ -103,29 +40,26 @@ const SalesQuotationSearch = ($this, e) => {
         onRowSelect: row => {
             AlgaehLoader({ show: true });
             algaehApiCall({
-                uri: "/SalesQuotation/getSalesQuotation",
+                uri: "/DispatchNote/getSalesOrderItem",
                 module: "sales",
                 method: "GET",
-                data: { sales_quotation_number: row.sales_quotation_number },
+                data: { sales_order_number: row.sales_order_number, location_id: $this.state.location_id },
                 onSuccess: response => {
+                    debugger
                     if (response.data.success) {
                         let data = response.data.records;
 
                         data.sales_quotation_id = data.hims_f_sales_quotation_id;
+                        data.saveEnable = true;
+                        data.selectedData = true
+                        data.sub_total = 0;
+                        data.discount_amount = 0;
+                        data.net_total = 0;
+                        data.total_tax = 0;
+                        data.net_payable = 0;
 
-                        if (data.sales_quotation_mode === "I") {
-                            data.sales_order_items = data.qutation_detail
-                        } else {
-                            data.sales_order_services = data.qutation_detail
-                        }
-                        data.saveEnable = false;
-                        data.selectedData = true;
-                        data.tax_percentage = data.vat_percentage;
-                        // data.addedItem = false;
                         $this.setState(data);
                         AlgaehLoader({ show: false });
-
-                        // $this.setState({ ...response.data.records });
                     }
                     AlgaehLoader({ show: false });
                 },
@@ -143,19 +77,12 @@ const SalesQuotationSearch = ($this, e) => {
 
 const ClearData = ($this, e) => {
     let IOputs = {
-        hims_f_sales_order_id: null,
-        sales_quotation_number: null,
-        sales_quotation_id: null,
+        hims_f_delivery_note_id: null,
+        delivery_note_number: null,
+        sales_order_id: null,
         sales_order_number: null,
-        sales_order_date: new Date(),
-        sales_order_mode: "I",
-        reference_number: null,
+        delivery_note_date: new Date(),
         customer_id: null,
-        quote_validity: null,
-        sales_man: null,
-        payment_terms: null,
-        service_terms: null,
-        other_terms: null,
         sub_total: null,
         discount_amount: null,
         net_total: null,
@@ -165,9 +92,7 @@ const ClearData = ($this, e) => {
         project_id: null,
         customer_po_no: null,
         tax_percentage: null,
-
-        sales_order_items: [],
-        sales_order_services: [],
+        location_id: null,
         decimal_place: JSON.parse(
             AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
         ).decimal_places,
@@ -176,24 +101,26 @@ const ClearData = ($this, e) => {
         hospital_id: JSON.parse(
             AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
         ).hims_d_hospital_id,
+        ReqData: true,
+        selectedData: false,
+        customer_name: null,
+        branch_name: null,
+        project_name: null,
+        item_details: [],
+        batch_detail_view: false,
+        selected_quantity: 0,
+        inventory_stock_detail: [],
+        stock_detail: [],
+        customer_name: null,
+        hospital_name: null,
+        project_name: null,
 
-        addItemButton: true,
-        item_description: "",
-        addedItem: true,
-
-        item_id: null,
-        quantity: 0,
-        uom_id: null,
-        uom_description: null,
-        discount_percentage: 0,
-        unit_cost: 0,
-        tax_percent: 0
     };
 
     $this.setState(IOputs)
 };
 
-const SaveSalesOrderEnrty = $this => {
+const SaveDispatchNote = $this => {
     AlgaehLoader({ show: true });
     algaehApiCall({
         uri: "/SalesOrder/addSalesOrder",
@@ -243,17 +170,10 @@ const getCtrlCode = ($this, docNumber) => {
         onSuccess: response => {
             if (response.data.success) {
                 let data = response.data.records;
-
-                if (data.sales_order_mode === "I") {
-                    data.sales_order_items = data.qutation_detail
-                } else {
-                    data.sales_order_services = data.qutation_detail
-                }
                 data.saveEnable = true;
                 data.dataExists = true;
 
                 data.addedItem = true;
-                data.selectedData = true;
                 $this.setState(data);
             }
             AlgaehLoader({ show: false });
@@ -349,11 +269,9 @@ const generatePOReceiptNoPrice = data => {
 
 export {
     texthandle,
-    datehandle,
-    SalesQuotationSearch,
-    customerTexthandle,
+    SalesOrderSearch,
     ClearData,
-    SaveSalesOrderEnrty,
+    SaveDispatchNote,
     getCtrlCode,
     generatePOReceipt,
     generatePOReceiptNoPrice

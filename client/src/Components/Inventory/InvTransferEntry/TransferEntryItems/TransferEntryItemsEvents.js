@@ -501,6 +501,7 @@ const AddSelectedBatches = ($this, context) => {
           return { ...item, ...details };
         })
       );
+      debugger
       saveEnable = _inventory_stock_detail.length > 0 ? false : true;
       context.updateState({
         stock_detail: _stock_detail,

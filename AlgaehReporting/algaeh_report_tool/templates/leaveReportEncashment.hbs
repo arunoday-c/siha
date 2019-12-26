@@ -20,6 +20,12 @@
                     </tr>
                 </thead>
                 <tbody>{{#hasElement detail}}
+                    <tr class="numberFld numberFldTotalBottom">
+                        <td colspan="8"></td>
+                        <td class="numberFld numberFldTotal">{{sum_encash_amt}}</td>
+                        <td></td>
+                    </tr>
+
                     {{#each detail}}
                     <tr>
                         <td>{{inc @index}}</td>

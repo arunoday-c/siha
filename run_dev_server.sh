@@ -34,6 +34,7 @@ startServer "./AlgaehReporting" "report_server"
 startServer "./Sockets" "sockets"
 startServer "./client" "client"
 startServer "./algaeh-finance" "finance"  
+startServer "./Sales" "sales"  
 #add additional servers here if you want
 
 echo "HINT: use the command 'tmux ls' to view the running servers,

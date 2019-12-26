@@ -17,6 +17,10 @@
                     </tr>
                 </thead>
                 <tbody>{{#hasElement details}}
+                    <tr class="numberFld numberFldTotalBottom">
+                        <td colspan="6"></td>
+                        <td class="numberFld">{{sum_gratuity_amount}}</td>
+                    </tr>
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
@@ -25,7 +29,7 @@
                         <td>{{group_description}}</td>
                         <td>{{department_name}}</td>
                         <td>{{sub_department_name}}</td>
-                        <td>{{gratuity_amount}}</td>
+                        <td class="numberFld">{{gratuity_amount}}</td>
                     </tr>
                     {{/each }}
                     {{else}}

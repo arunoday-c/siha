@@ -534,6 +534,14 @@ const PageToPlot = {
   SalesOrder: React.lazy(() =>
     retry(() => import("./Components/Sales/SalesOrder/SalesOrder"))
   ),
+  DispatchNote: React.lazy(() =>
+    retry(() => import("./Components/Sales/DispatchNote/DispatchNote"))
+  ),
+  ContractManagement: React.lazy(() =>
+    retry(() =>
+      import("./Components/Sales/ContractManagement/ContractManagement")
+    )
+  ),
 
   Accounts,
   Transactions,

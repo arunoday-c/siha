@@ -34,7 +34,7 @@
 
 
                     {{#hasElement details}}
-                    <tr>
+                    <tr class="numberFld numberFldTotalBottom">
                         <td colspan="5"></td>
                         <td>{{total_salary_amount}}</td>
                         <td>{{total_leave_amount}}</td>
@@ -75,10 +75,14 @@
                         <td excelalignment='{"vertical":"middle","horizontal":"left"}'>{{employee_name}}</td>
                         <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{leave_salary_number}}</td>
                         <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{nationality}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{salary_amount}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{leave_amount}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{airfare_amount}}</td>
-                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{total_amount}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"center"}'>
+                            {{salary_amount}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"center"}'>
+                            {{leave_amount}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{airfare_amount}}</td>
+                        <td class="numberFld" excelalignment='{"vertical":"middle","horizontal":"right"}'>
+                            {{total_amount}}</td>
                     </tr>
                     {{/each }}{{/each }}{{/each }}
 
