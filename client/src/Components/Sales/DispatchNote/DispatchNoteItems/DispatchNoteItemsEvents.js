@@ -41,7 +41,7 @@ const onchangegridcol = ($this, context, row, e) => {
         item_details.dispatched_quantity = dispatched_quantity;
 
         item_details.quantity_outstanding =
-            item_details.quantity -
+            item_details.ordered_quantity -
             item_details.delivered_to_date -
             dispatched_quantity;
 
@@ -58,7 +58,7 @@ const onchangegridcol = ($this, context, row, e) => {
             item_details.dispatched_quantity = dispatched_quantity;
 
             item_details.quantity_outstanding =
-                item_details.quantity -
+                item_details.ordered_quantity -
                 item_details.delivered_to_date -
                 dispatched_quantity;
         }

@@ -264,7 +264,8 @@ class InvItemMomentEnquiry extends Component {
                                             : row.transaction_type === "PR"
                                               ? "Purchase Return"
                                               : row.transaction_type === "AD"
-                                                ? "Stock Adjustment" : "";
+                                                ? "Stock Adjustment" : row.transaction_type === "SDN"
+                                                  ? "Sales Dispatch Note" : "";
                       }
                     },
                     {

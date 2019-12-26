@@ -12,7 +12,6 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
 import {
     texthandle,
     SalesOrderSearch,
@@ -28,7 +27,6 @@ import {
     getAmountFormart
 } from "../../../utils/GlobalFunctions";
 import DispatchNoteItems from "./DispatchNoteItems/DispatchNoteItems";
-// import SalesOrdListService from "./SalesOrdListService/SalesOrdListService";
 
 class DispatchNote extends Component {
     constructor(props) {
@@ -50,6 +48,7 @@ class DispatchNote extends Component {
             customer_po_no: null,
             tax_percentage: null,
             location_id: null,
+            location_type: null,
 
             stock_detail: [],
             decimal_place: JSON.parse(
@@ -65,12 +64,14 @@ class DispatchNote extends Component {
             hospital_name: null,
             project_name: null,
             selectedData: false,
+            cannotEdit: false,
 
             item_details: [],
             batch_detail_view: false,
             dispatched_quantity: 0,
             inventory_stock_detail: []
         };
+        this.baseState = this.state;
     }
 
     componentDidMount() {
@@ -260,6 +261,23 @@ class DispatchNote extends Component {
                                     }}
                                 />
 
+                                <div className="col">
+                                    <AlgaehLabel
+                                        label={{
+                                            forceLabel: "Location Type"
+                                        }}
+                                    />
+                                    <h6>
+                                        {this.state.location_type
+                                            ? this.state.location_type === "WH"
+                                                ? "Warehouse"
+                                                : this.state.location_type === "MS"
+                                                    ? "Main Store"
+                                                    : "Sub Store"
+                                            : "Location Type"}
+                                    </h6>
+                                </div>
+
                                 <div className={"col-2 globalSearchCntr" + class_finder}>
                                     <AlgaehLabel label={{ forceLabel: "Search Order No." }} />
                                     <h6 onClick={SalesOrderSearch.bind(this, this)}>
@@ -391,7 +409,7 @@ class DispatchNote extends Component {
                             >
                                 <AlgaehLabel
                                     label={{
-                                        forceLabel: "Save Order",
+                                        forceLabel: "Save",
                                         returnText: true
                                     }}
                                 />

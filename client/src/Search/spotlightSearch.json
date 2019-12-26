@@ -904,6 +904,25 @@
         "label": "Quote Validity",
         "required": "N"
       }
+    ],
+    "DispatchNote": [
+      {
+        "fieldName": "dispatch_note_number",
+        "label": "DN Number"
+      },
+      {
+        "fieldName": "dispatch_note_date",
+        "label": "DN Date"
+      },
+      {
+        "fieldName": "sales_order_number",
+        "label": "Sales Order"
+      },
+      {
+        "fieldName": "location",
+        "label": "Location",
+        "required": "N"
+      }
     ]
   }
 }

@@ -4,6 +4,7 @@ import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
+import _ from "lodash";
 
 const texthandle = ($this, ctrl, e) => {
     e = ctrl || e;
@@ -13,6 +14,7 @@ const texthandle = ($this, ctrl, e) => {
         case "location_id":
             $this.setState({
                 [name]: value,
+                location_type: e.selected.location_type,
                 ReqData: false
             });
         default:
@@ -32,7 +34,7 @@ const SalesOrderSearch = ($this, e) => {
         },
         searchName: "SalesOrder",
         uri: "/gloabelSearch/get",
-        inputs: " sales_order_mode = 'I'",
+        inputs: " sales_order_mode = 'I' and is_completed = 'N'",
 
         onContainsChange: (text, serchBy, callBack) => {
             callBack(text);
@@ -49,7 +51,7 @@ const SalesOrderSearch = ($this, e) => {
                     if (response.data.success) {
                         let data = response.data.records;
 
-                        data.sales_quotation_id = data.hims_f_sales_quotation_id;
+                        data.sales_order_id = data.hims_f_sales_order_id;
                         data.saveEnable = true;
                         data.selectedData = true
                         data.sub_total = 0;
@@ -76,78 +78,75 @@ const SalesOrderSearch = ($this, e) => {
 };
 
 const ClearData = ($this, e) => {
-    let IOputs = {
-        hims_f_delivery_note_id: null,
-        delivery_note_number: null,
-        sales_order_id: null,
-        sales_order_number: null,
-        delivery_note_date: new Date(),
-        customer_id: null,
-        sub_total: null,
-        discount_amount: null,
-        net_total: null,
-        total_tax: null,
-        net_payable: null,
-        narration: null,
-        project_id: null,
-        customer_po_no: null,
-        tax_percentage: null,
-        location_id: null,
-        decimal_place: JSON.parse(
-            AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        ).decimal_places,
-        saveEnable: true,
-        dataExists: false,
-        hospital_id: JSON.parse(
-            AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        ).hims_d_hospital_id,
-        ReqData: true,
-        selectedData: false,
-        customer_name: null,
-        branch_name: null,
-        project_name: null,
-        item_details: [],
-        batch_detail_view: false,
-        selected_quantity: 0,
-        inventory_stock_detail: [],
-        stock_detail: [],
-        customer_name: null,
-        hospital_name: null,
-        project_name: null,
-
-    };
-
-    $this.setState(IOputs)
+    $this.setState($this.baseState)
 };
 
 const SaveDispatchNote = $this => {
+    let InputObj = $this.state
     AlgaehLoader({ show: true });
-    algaehApiCall({
-        uri: "/SalesOrder/addSalesOrder",
-        module: "sales",
-        method: "POST",
-        data: $this.state,
-        onSuccess: response => {
+    InputObj.transaction_type = "SDN";
+    InputObj.transaction_date = moment(InputObj.dispatch_note_date, "YYYY-MM-DD").format("YYYY-MM-DD");
 
-            if (response.data.success) {
+    for (let i = 0; i < InputObj.inventory_stock_detail.length; i++) {
+        InputObj.inventory_stock_detail[i].location_id =
+            InputObj.location_id;
+        InputObj.inventory_stock_detail[i].location_type =
+            InputObj.location_type;
+        InputObj.inventory_stock_detail[i].operation = "-";
+
+        InputObj.inventory_stock_detail[i].quantity =
+            InputObj.inventory_stock_detail[i].dispatch_quantity;
+
+        InputObj.inventory_stock_detail[i].net_total = InputObj.inventory_stock_detail[i].total_amount;
+
+        InputObj.inventory_stock_detail[i].expiry_date =
+            moment(InputObj.inventory_stock_detail[i].expiry_date, "YYYY-MM-DD").format("YYYY-MM-DD");
+    }
+
+    delete InputObj.item_details;
+
+    for (let j = 0; j < InputObj.stock_detail.length; j++) {
+        if (InputObj.stock_detail[j].inventory_stock_detail === undefined) {
+            InputObj.stock_detail[j].removed = "Y";
+        } else {
+            delete InputObj.stock_detail[j].batches;
+        }
+    }
+
+    let stock_detail = _.filter(InputObj.stock_detail, f => {
+        return f.removed === "N";
+    });
+
+    InputObj.stock_detail = stock_detail;
+
+
+    const settings = { header: undefined, footer: undefined };
+    debugger
+    algaehApiCall({
+        uri: "/DispatchNote/addDispatchNote",
+        module: "sales",
+        skipParse: true,
+        data: Buffer.from(JSON.stringify(InputObj), "utf8"),
+        method: "POST",
+        header: {
+            "content-type": "application/octet-stream",
+            ...settings
+        },
+        onSuccess: response => {
+            if (response.data.success === true) {
                 $this.setState({
-                    sales_order_number: response.data.records.sales_order_number,
-                    hims_f_sales_order_id:
-                        response.data.records.hims_f_sales_order_id,
+                    dispatch_note_number: response.data.records.dispatch_note_number,
+                    hims_f_sales_dispatch_note_header_id:
+                        response.data.records.hims_f_sales_dispatch_note_header_id,
                     saveEnable: true,
-                    dataExists: true
+                    dataExists: true,
+                    cannotEdit: true
                 });
                 swalMessage({
-                    type: "success",
-                    title: "Saved successfully ..."
+                    title: "Saved successfully . .",
+                    type: "success"
                 });
                 AlgaehLoader({ show: false });
-            } else {
-                AlgaehLoader({ show: false });
-                swalMessage({
-                    type: "error",
-                    title: response.data.records.message
-                });
             }
         },
         onFailure: error => {
@@ -160,32 +159,81 @@ const SaveDispatchNote = $this => {
     });
 };
 
-const getCtrlCode = ($this, docNumber) => {
-    AlgaehLoader({ show: true });
-    algaehApiCall({
-        uri: "/SalesOrder/getSalesOrder",
-        module: "sales",
-        method: "GET",
-        data: { sales_order_number: docNumber },
-        onSuccess: response => {
-            if (response.data.success) {
-                let data = response.data.records;
-                data.saveEnable = true;
-                data.dataExists = true;
+const getCtrlCode = ($this, docNumber, row) => {
 
-                data.addedItem = true;
-                $this.setState(data);
+    $this.setState($this.baseState, () => {
+        algaehApiCall({
+            uri: "/DispatchNote/getDispatchNote",
+            module: "sales",
+            method: "GET",
+            data: { dispatch_note_number: docNumber },
+            onSuccess: response => {
+                if (response.data.success === true) {
+                    let inventory_stock_detail = [];
+                    let data = response.data.records[0];
+                    for (let i = 0; i < data.stock_detail.length; i++) {
+                        if (inventory_stock_detail.length === 0) {
+                            inventory_stock_detail =
+                                data.stock_detail[i].inventory_stock_detail;
+                        } else {
+                            inventory_stock_detail = inventory_stock_detail.concat(
+                                data.stock_detail[i].inventory_stock_detail
+                            );
+                        }
+
+                    }
+                    data.inventory_stock_detail = inventory_stock_detail;
+
+                    data.saveEnable = true;
+                    data.dataExists = true;
+
+                    data.cannotEdit = true;
+                    data.dataExitst = true;
+
+
+                    data.sales_order_number = row.sales_order_number;
+                    data.customer_name = row.customer_name;
+                    data.project_name = row.project_desc;
+                    data.hospital_name = row.hospital_name;
+
+                    $this.setState(data);
+                }
+                AlgaehLoader({ show: false });
+            },
+            onFailure: error => {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                    title: error.message,
+                    type: "error"
+                });
             }
-            AlgaehLoader({ show: false });
-        },
-        onFailure: error => {
-            AlgaehLoader({ show: false });
-            swalMessage({
-                title: error.message,
-                type: "error"
-            });
-        }
+        });
     });
+    // AlgaehLoader({ show: true });
+    // algaehApiCall({
+    //     uri: "/DispatchNote/getDispatchNote",
+    //     module: "sales",
+    //     method: "GET",
+    //     data: { dispatch_note_number: docNumber },
+    //     onSuccess: response => {
+    //         if (response.data.success) {
+    //             let data = response.data.records;
+    //             data.saveEnable = true;
+    //             data.dataExists = true;
+    //             data.cannotEdit = true;
+    //             data.addedItem = true;
+    //             $this.setState(data);
+    //         }
+    //         AlgaehLoader({ show: false });
+    //     },
+    //     onFailure: error => {
+    //         AlgaehLoader({ show: false });
+    //         swalMessage({
+    //             title: error.message,
+    //             type: "error"
+    //         });
+    //     }
+    // });
 
 };
 
