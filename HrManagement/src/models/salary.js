@@ -1959,7 +1959,10 @@ export default {
                 f.hims_f_employee_annual_leave_id === null
               );
             });
-            if (inputParam.employee_id != null) {
+            if (
+              inputParam.employee_id != null &&
+              inputParam.salary_type !== "LS"
+            ) {
               let _annual_salary = _.filter(salary_process, f => {
                 return (
                   f.from_normal_salary === "N" ||
@@ -1976,10 +1979,16 @@ export default {
                 return;
               }
             }
-            const _salaryHeader_id = _salary_data.map(item => {
-              return item.hims_f_salary_id;
-            });
-            salaryprocess_header = _salary_data;
+            const _salaryHeader_id =
+              inputParam.salary_type === "LS"
+                ? salary_process.map(item => {
+                    return item.hims_f_salary_id;
+                  })
+                : _salary_data.map(item => {
+                    return item.hims_f_salary_id;
+                  });
+            salaryprocess_header =
+              inputParam.salary_type === "LS" ? salary_process : _salary_data;
 
             _mysql
               .executeQuery({

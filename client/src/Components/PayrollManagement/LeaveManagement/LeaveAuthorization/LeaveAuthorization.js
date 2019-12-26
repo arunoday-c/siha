@@ -532,14 +532,7 @@ export default class LeaveAuthorization extends Component {
                           <AlgaehLabel label={{ forceLabel: "Designation" }} />
                         )
                       },
-                      // {
-                      //   fieldName: "sub_department_name",
-                      //   label: (
-                      //     <AlgaehLabel
-                      //       label={{ forceLabel: "Sub Department" }}
-                      //     />
-                      //   )
-                      // },
+
                       {
                         fieldName: "leave_description",
                         label: (
@@ -552,6 +545,23 @@ export default class LeaveAuthorization extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Request Code" }} />
                         )
+                      },
+                      {
+                        fieldName: "application_date",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Requested Date" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {moment(row.application_date).format(
+                                "DD-MM-YYYY"
+                              )}
+                            </span>
+                          );
+                        }
                       },
                       {
                         fieldName: "total_applied_days",

@@ -252,7 +252,7 @@ class ApplyLeave extends Component {
       onSuccess: res => {
         if (res.data.success) {
           AlgaehLoader({ show: false });
-          if (res.data.records.is_projected_leave === "Y") {
+          if (res.data.records.is_across_year_leave === "Y") {
             const { calculatedLeaveDays } = res.data.records;
             const { available_balance } = this.state;
             swal({

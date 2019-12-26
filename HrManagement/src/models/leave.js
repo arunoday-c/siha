@@ -4066,7 +4066,7 @@ export default {
                 query:
                   "SELECT hims_f_leave_application_id,LA.leave_application_code,LA.hospital_id,LA.employee_id,\
             LA.application_date,LA.sub_department_id,LA.leave_id,LA.from_leave_session,\
-            LA.from_date,LA.to_date,LA.to_leave_session,\
+            LA.from_date,LA.to_date,LA.to_leave_session,EAL.from_normal_salary,\
             LA.total_applied_days,LA.leave_from,LA.absent_id,LA.total_approved_days,LA.status,LA.is_projected_leave \
             ,L.leave_code,L.leave_description,L.leave_type,L.leave_category,E.employee_code,\
             E.full_name as employee_name,E.religion_id,SD.sub_department_code,SD.sub_department_name, DE.designation,remarks,E.nationality \
@@ -4076,6 +4076,7 @@ export default {
             on LA.sub_department_id=SD.hims_d_sub_department_id left join hims_d_designation DE on\
             E.employee_designation_id = DE.hims_d_designation_id  \
             left join hims_d_authorization_setup AUS on  AUS.employee_id=E.hims_d_employee_id \
+            left join hims_f_employee_annual_leave EAL on  EAL.leave_application_id=LA.hims_f_leave_application_id \
             where LA.hospital_id=? and " +
                   leave_status +
                   "" +
@@ -4083,8 +4084,7 @@ export default {
                   "" +
                   range +
                   "" +
-                  employee +
-                  " order by hims_f_leave_application_id desc",
+                  employee,
                 values: [req.query.hospital_id],
 
                 printQuery: false
@@ -9336,6 +9336,7 @@ function acrossYearAuthorize(
               parseFloat(cur_year_leaveData[0]["close_balance"]) ||
               deductionResult.is_projected_leave == "Y")
           ) {
+
             let newCloseBal = "";
             let actualClosingBal = 0;
             let projected_applied_leaves = 0;
@@ -9411,7 +9412,7 @@ function acrossYearAuthorize(
             let insertPendLeave = "";
             if (input.salary_processed == "Y" && input.leave_type == "U") {
               insertPendLeave = ` insert into hims_f_pending_leave (employee_id, year, month,leave_application_id,updaid_leave_duration)\
-                VALUE(${input.employee_id},${input.year},  ${month_number}, ${input.hims_f_leave_application_id},${updaid_leave_duration});`;
+                VALUE(${input.employee_id},${deductionResult.from_year},  ${month_number}, ${input.hims_f_leave_application_id},${updaid_leave_duration});`;
             }
 
             let anualLeave = "";
@@ -9421,7 +9422,7 @@ function acrossYearAuthorize(
               input.leave_category == "A"
             ) {
               anualLeave = ` insert into hims_f_employee_annual_leave (employee_id,year,month,leave_application_id,hospital_id,from_normal_salary) VALUE(${input.employee_id},\
-                            ${input.year},${month_number},${input.hims_f_leave_application_id},${input.hospital_id},'${input.from_normal_salary}');`;
+                            ${deductionResult.from_year},${month_number},${input.hims_f_leave_application_id},${input.hospital_id},'${input.from_normal_salary}');`;
             }
 
             //if he is regularizing absent to leave

@@ -44,12 +44,14 @@ export default {
 
               if (annul_leave_app.length > 0) {
                 let leave_salary_detail = [];
-                let from_date = moment(annul_leave_app[0].from_date, "YYYY-MM-DD").format(
+                let from_date = moment(
+                  annul_leave_app[0].from_date,
                   "YYYY-MM-DD"
-                );
-                let to_date = moment(annul_leave_app[0].to_date, "YYYY-MM-DD").format(
+                ).format("YYYY-MM-DD");
+                let to_date = moment(
+                  annul_leave_app[0].to_date,
                   "YYYY-MM-DD"
-                );
+                ).format("YYYY-MM-DD");
 
                 let to_date_month = moment(annul_leave_app[0].to_date).format(
                   "M"
@@ -89,11 +91,12 @@ export default {
                 }
 
                 let leave_start_date = moment(
-                  annul_leave_app[0].from_date, "YYYY-MM-DD"
+                  annul_leave_app[0].from_date,
+                  "YYYY-MM-DD"
                 ).format("YYYY-MM-DD");
                 console.log("from_date", from_date);
                 console.log("to_date", to_date);
-                let intValue = 0
+                let intValue = 0;
                 while (from_date <= to_date) {
                   console.log("from_date", from_date);
                   console.log("to_date_month", to_date_month);
@@ -112,7 +115,10 @@ export default {
 
                   let no_of_days = 0;
 
-                  console.log("attendance_starts", hrms_options.attendance_starts);
+                  console.log(
+                    "attendance_starts",
+                    hrms_options.attendance_starts
+                  );
                   if (hrms_options.attendance_starts === "PM") {
                     let selected_year = moment(from_date).year();
                     let selected_month = moment(from_date).format("M");
@@ -137,25 +143,24 @@ export default {
 
                     if (to_date_month === date_month) {
                       let end_selected_day = moment(to_date).format("DD");
-                      console.log("end_selected_day", end_selected_day)
-                      console.log("at_end_date", hrms_options.at_end_date)
+                      console.log("end_selected_day", end_selected_day);
+                      console.log("at_end_date", hrms_options.at_end_date);
                       if (intValue > 0) {
                         fromDate_firstDate = moment(
                           selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_st_date,
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_st_date,
                           "YYYY-MM-DD"
-                        )
-                          .format("YYYY-MM-DD");
+                        ).format("YYYY-MM-DD");
 
                         fromDate_lastDate = moment(
                           selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_end_date,
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_end_date,
                           "YYYY-MM-DD"
                         )
                           .add(1, "M")
@@ -163,10 +168,10 @@ export default {
                       } else {
                         fromDate_firstDate = moment(
                           selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_st_date,
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_st_date,
                           "YYYY-MM-DD"
                         )
                           .add(-1, "M")
@@ -174,13 +179,12 @@ export default {
 
                         fromDate_lastDate = moment(
                           selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_end_date,
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_end_date,
                           "YYYY-MM-DD"
-                        )
-                          .format("YYYY-MM-DD");
+                        ).format("YYYY-MM-DD");
                       }
                       // }
                     } else {
@@ -194,19 +198,19 @@ export default {
 
                         fromDate_firstDate = moment(
                           selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_st_date,
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_st_date,
                           "YYYY-MM-DD"
                         ).format("YYYY-MM-DD");
 
                         fromDate_lastDate = moment(
                           selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_end_date,
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_end_date,
                           "YYYY-MM-DD"
                         )
                           .add(1, "M")
@@ -214,10 +218,10 @@ export default {
                       } else {
                         fromDate_firstDate = moment(
                           selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_st_date,
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_st_date,
                           "YYYY-MM-DD"
                         )
                           .add(-1, "M")
@@ -225,10 +229,10 @@ export default {
 
                         fromDate_lastDate = moment(
                           selected_year +
-                          "-" +
-                          selected_month +
-                          "-" +
-                          hrms_options.at_end_date,
+                            "-" +
+                            selected_month +
+                            "-" +
+                            hrms_options.at_end_date,
                           "YYYY-MM-DD"
                         ).format("YYYY-MM-DD");
                       }
@@ -374,7 +378,6 @@ export default {
           let leave_amount = 0;
           let airfare_amount = 0;
 
-
           let intValue = 0;
           // if (balance_leave_days > 0) {
           if (employee_result[0].airfare_process === "Y") {
@@ -424,7 +427,7 @@ export default {
               end_date_month = String(end_date_month).toString();
             }
           }
-          const syscCall = async function () {
+          const syscCall = async function() {
             while (start_date <= end_date) {
               try {
                 let fromDate_lastDate = null;
@@ -459,9 +462,9 @@ export default {
                   date_month = selected_month;
                   req.query.yearAndMonth = moment(
                     selected_year +
-                    "-" +
-                    selected_month +
-                    hrms_options[0].at_st_date,
+                      "-" +
+                      selected_month +
+                      hrms_options[0].at_st_date,
                     "YYYY-MM-DD"
                   )._d;
                 } else {
@@ -552,10 +555,10 @@ export default {
 
                   fromDate_lastDate = moment(
                     _selected_year +
-                    "-" +
-                    _selected_month +
-                    "-" +
-                    hrms_options[0].at_end_date
+                      "-" +
+                      _selected_month +
+                      "-" +
+                      hrms_options[0].at_end_date
                   ).format("YYYY-MM-DD");
                 } else {
                   fromDate_lastDate = moment(start_date)
@@ -733,7 +736,7 @@ export default {
                         inputParam.leave_salary_detail
                       )
                         .groupBy("leave_application_id")
-                        .map(function (items, data) {
+                        .map(function(items, data) {
                           return data;
                         })
                         .value();
@@ -753,9 +756,10 @@ export default {
                             }
                           );
 
-                          let strQuery = ""
+                          let strQuery = "";
                           if (inputParam.annual_leave_calculation === "A") {
-                            strQuery = "UPDATE hims_f_salary SET salary_processed = 'Y' where hims_f_salary_id in (?);\
+                            strQuery =
+                              "UPDATE hims_f_salary SET salary_processed = 'Y' where hims_f_salary_id in (?);\
                             select E.hims_d_employee_id as employee_id,EG.monthly_accrual_days as leave_days, " +
                               inputParam.year +
                               " as year," +
@@ -766,9 +770,12 @@ export default {
                             from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, hims_d_employee_earnings EE ,hims_d_earning_deduction ED\
                             where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
                             EE.earnings_id=ED.hims_d_earning_deduction_id and \
-                            ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';"
-                          } else if (inputParam.annual_leave_calculation === "M") {
-                            strQuery = "UPDATE hims_f_salary SET salary_processed = 'Y' where hims_f_salary_id in (?);\
+                            ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';";
+                          } else if (
+                            inputParam.annual_leave_calculation === "M"
+                          ) {
+                            strQuery =
+                              "UPDATE hims_f_salary SET salary_processed = 'Y' where hims_f_salary_id in (?);\
                             select E.hims_d_employee_id as employee_id,EG.monthly_accrual_days as leave_days, " +
                               inputParam.year +
                               " as year," +
@@ -779,7 +786,7 @@ export default {
                             from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, hims_d_employee_earnings EE ,hims_d_earning_deduction ED\
                             where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
                             EE.earnings_id=ED.hims_d_earning_deduction_id and \
-                            ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';"
+                            ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';";
                           }
 
                           _mysql
@@ -1029,7 +1036,8 @@ export default {
                   "select E.hims_d_employee_id, E.employee_code, E.full_name from hims_f_leave_application LA \
                   inner join hims_d_employee E on LA.employee_id = E.hims_d_employee_id\
                   inner join hims_f_employee_annual_leave EAL on EAL.leave_application_id = LA.hims_f_leave_application_id \
-                  where LA.hospital_id=? and LA.leave_id = 4 and LA.processed='N' and EAL.from_normal_salary = 'N' and EAL.cancelled='N';",
+                  where LA.hospital_id=? and LA.leave_id = 4 and LA.processed='N' and LA.status='APR' and \
+                  EAL.from_normal_salary = 'N' and EAL.cancelled='N';",
                 values: [inputParam.hospital_id, leave_id],
                 printQuery: true
               })
