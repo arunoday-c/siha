@@ -255,7 +255,7 @@ export function getSalesOrderItem(req, res, next) {
                     _mysql
                         .executeQuery({
                             query:
-                                "select D.*,LOC.*,IM.*, PU.uom_description from hims_f_sales_order_items D \
+                                "select D.*, D.quantity as ordered_quantity ,LOC.*,IM.*, PU.uom_description from hims_f_sales_order_items D \
                             left join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id \
                             inner join `hims_d_inventory_item_master` IM  on IM.hims_d_inventory_item_master_id=D.item_id \
                             inner join `hims_d_inventory_uom` PU  on PU.hims_d_inventory_uom_id=D.uom_id \

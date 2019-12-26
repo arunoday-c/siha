@@ -31,36 +31,36 @@ const onchangegridcol = ($this, context, row, e) => {
         let item_details = $this.state.item_details;
 
         row[name] = value;
-        let selected_quantity = _.sumBy(item_details.batches, s => {
+        let dispatched_quantity = _.sumBy(item_details.batches, s => {
             return s.dispatch_quantity !== null ? parseFloat(s.dispatch_quantity) : 0;
         });
 
         const _index = item_details.batches.indexOf(row);
         item_details.batches[_index] = row;
 
-        item_details.selected_quantity = selected_quantity;
+        item_details.dispatched_quantity = dispatched_quantity;
 
         item_details.quantity_outstanding =
             item_details.quantity -
             item_details.delivered_to_date -
-            selected_quantity;
+            dispatched_quantity;
 
-        item_details.ordered_quantity = item_details.quantity
+        // item_details.ordered_quantity = item_details.quantity
         if (item_details.quantity_outstanding < 0) {
             swalMessage({
                 title: "Quantity cannot be greater than Ordered quantity.",
                 type: "warning"
             });
             row[name] = 0;
-            selected_quantity = _.sumBy(item_details.batches, s => {
+            dispatched_quantity = _.sumBy(item_details.batches, s => {
                 return s.dispatch_quantity !== null ? parseFloat(s.dispatch_quantity) : 0;
             });
-            item_details.selected_quantity = selected_quantity;
+            item_details.dispatched_quantity = dispatched_quantity;
 
             item_details.quantity_outstanding =
                 item_details.quantity -
                 item_details.delivered_to_date -
-                selected_quantity;
+                dispatched_quantity;
         }
 
         item_details.extended_cost = (parseFloat(item_details.unit_cost) * parseFloat(value)).toFixed(
@@ -86,7 +86,7 @@ const onchangegridcol = ($this, context, row, e) => {
 
         $this.setState({
             item_details: item_details,
-            selected_quantity: selected_quantity
+            dispatched_quantity: dispatched_quantity
         });
 
 
@@ -94,7 +94,7 @@ const onchangegridcol = ($this, context, row, e) => {
         if (context !== undefined) {
             context.updateState({
                 item_details: item_details,
-                selected_quantity: selected_quantity
+                dispatched_quantity: dispatched_quantity
             });
         }
     }
@@ -137,7 +137,7 @@ const getItemLocationStock = ($this, value) => {
 
 const AddSelectedBatches = ($this, context) => {
     if (
-        parseFloat($this.state.item_details.selected_quantity) >
+        parseFloat($this.state.item_details.dispatched_quantity) >
         parseFloat($this.state.item_details.quantity)
     ) {
         swalMessage({
