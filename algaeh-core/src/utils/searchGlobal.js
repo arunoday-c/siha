@@ -849,8 +849,22 @@ let algaehSearchConfig = (searchName, req) => {
           SO.sales_quotation_id = SQ.hims_f_sales_quotation_id and SQ.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_sales_order_id desc"
+      },
+      {
+        searchName: "DispatchNote",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS H.*, L.location_description as location, SO.sales_order_number, \
+          C.customer_name, P.project_desc, B.hospital_name from hims_f_sales_dispatch_note_header H \
+          inner join hims_d_inventory_location L on L.hims_d_inventory_location_id = H.location_id \
+          inner join hims_f_sales_order SO on SO.hims_f_sales_order_id = H.sales_order_id \
+          inner join hims_d_customer C on C.hims_d_customer_id = H.customer_id \
+          inner join hims_d_project P on P.hims_d_project_id = H.project_id \
+          inner join hims_d_hospital B on B.hims_d_hospital_id = H.hospital_id",
+        orderBy: "hims_f_dispatch_note_header_id desc"
       }
     ]
+
+
   };
 
   let row = new LINQ(queries.algaehSeach)
