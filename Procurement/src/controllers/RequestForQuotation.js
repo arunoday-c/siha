@@ -5,6 +5,7 @@ import requestQuotation from "../models/RequestForQuotation";
 const {
     getRequestForQuotation,
     addRequestForQuotation,
+    getRequestQuotationToComapre
 } = requestQuotation;
 
 export default () => {
@@ -25,6 +26,13 @@ export default () => {
             });
         }
     );
+
+    api.get("/getRequestQuotationToComapre", getRequestQuotationToComapre, (req, res, next) => {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+            success: true,
+            records: req.records
+        });
+    });
 
     return api;
 };

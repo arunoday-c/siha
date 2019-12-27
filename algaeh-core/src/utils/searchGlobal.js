@@ -816,7 +816,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "RequestQuotation",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS RQ.*, CASE RQ.quotation_for \
-          WHEN 'INV' then 'Inventory' else 'Pharmacy' end as quotation_for from \
+          WHEN 'INV' then 'Inventory' else 'Pharmacy' end as quotation_for, RQ.quotation_for as q_f from \
           hims_f_procurement_req_quotation_header RQ where RQ.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_procurement_req_quotation_header_id desc"
