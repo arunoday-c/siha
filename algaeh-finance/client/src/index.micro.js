@@ -1,13 +1,13 @@
 import Accounts from "./Components/FinanceAccounts";
 import Transactions from "./Components/Transactions";
-import JournalLedger from "./Components/JournalLedger";
+import JournalVoucher from "./Components/JournalVoucher";
 import FinanceReports from "./Components/FinanceReports";
 import Mapping from "./Components/Mapping";
 import FinanceOptions from "./Components/FinanceOptions";
 const Pages = {
   Accounts,
   Transactions,
-  JournalLedger,
+  JournalVoucher,
   FinanceReports,
   Mapping,
   FinanceOptions

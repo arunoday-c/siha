@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./day_end_prc.scss";
+import "./JournalAuthorization.scss";
 
 import {
   AlgaehDataGrid,
@@ -70,7 +70,7 @@ const modules = [
   { name: "IP Bill", value: "IP" }
 ];
 
-class DayEndProcess extends Component {
+class JournalAuthorization extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -498,4 +498,4 @@ class DayEndProcess extends Component {
   }
 }
 
-export default DayEndProcess;
+export default JournalAuthorization;

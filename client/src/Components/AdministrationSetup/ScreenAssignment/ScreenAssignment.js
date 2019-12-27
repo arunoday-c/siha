@@ -92,7 +92,7 @@ class ScreenAssignment extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col">
+                  <div className="col-7">
                     <div className="moduleList list-group-check">
                       <ul className="mainmenu" style={{ minHeight: "59vh" }}>
                         {this.state.modules.map((data, index) => {
@@ -139,6 +139,8 @@ class ScreenAssignment extends Component {
                       </ul>
                     </div>
                   </div>
+
+                  <div className="col-5"></div>
                 </div>
               </div>
             </div>

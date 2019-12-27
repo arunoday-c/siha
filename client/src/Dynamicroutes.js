@@ -33,7 +33,7 @@ import FinanceFragment from "./Components/FinanceFragment";
 
 const Accounts = () => <FinanceFragment path="Accounts" />;
 const Transactions = () => <FinanceFragment path="Transactions" />;
-const JournalLedger = () => <FinanceFragment path="JournalLedger" />;
+const JournalVoucher = () => <FinanceFragment path="JournalVoucher" />;
 const FinanceReports = () => <FinanceFragment path="FinanceReports" />;
 const FinanceOptions = () => <FinanceFragment path="FinanceOptions" />;
 
@@ -314,6 +314,11 @@ const PageToPlot = {
   DayEndProcess: React.lazy(() =>
     retry(() => import("./Components/Finance/DayEndProcess/DayEndProcess"))
   ),
+  JournalAuthorization: React.lazy(() =>
+    retry(() =>
+      import("./Components/Finance/JournalAuthorization/JournalAuthorization")
+    )
+  ),
   FinanceMapping: () => <FinanceFragment path="Mapping" />,
   //  React.lazy(() =>
   //   retry(() => import("./Components/Finance/FinanceMapping/FinanceMapping"))
@@ -545,7 +550,7 @@ const PageToPlot = {
 
   Accounts,
   Transactions,
-  JournalLedger,
+  JournalVoucher,
   FinanceReports,
   FinanceOptions
 };
