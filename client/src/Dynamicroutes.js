@@ -358,6 +358,11 @@ const PageToPlot = {
       import("./Components/Procurement/VendorsQuotation/VendorsQuotation")
     )
   ),
+  QuotationCompare: React.lazy(() =>
+    retry(() =>
+      import("./Components/Procurement/QuotationCompare/QuotationCompare")
+    )
+  ),
   AcquisitionEntry: React.lazy(() =>
     retry(() =>
       import("./Components/AssetManagement/AcquisitionEntry/AcquisitionEntry")
