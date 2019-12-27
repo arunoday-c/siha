@@ -22,7 +22,7 @@ class InventorySetup extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pageDisplay: "InventoryOptions", sidBarOpen: true };
+    this.state = { pageDisplay: "Location", sidBarOpen: true };
   }
 
   openTab(e) {
@@ -65,7 +65,7 @@ class InventorySetup extends Component {
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
-              <li
+              {/* <li
                 algaehtabs={"InventoryOptions"}
                 className={"nav-item tab-button active "}
                 onClick={this.openTab.bind(this)}
@@ -77,9 +77,9 @@ class InventorySetup extends Component {
                     }}
                   />
                 }
-              </li>
+              </li> */}
               <li
-                className={"nav-item tab-button "}
+                className={"nav-item tab-button active"}
                 algaehtabs={"Location"}
                 onClick={this.openTab.bind(this)}
               >
@@ -147,11 +147,11 @@ class InventorySetup extends Component {
             </ul>
           </div>
         </div>
-
-        <div className="common-section">
-          {this.state.pageDisplay === "InventoryOptions" ? (
+        {/* this.state.pageDisplay === "InventoryOptions" ? (
             <InventoryOptions />
-          ) : this.state.pageDisplay === "ItemCategory" ? (
+          ) : */}
+        <div className="common-section">
+          {this.state.pageDisplay === "ItemCategory" ? (
             <ItemCategory />
           ) : this.state.pageDisplay === "ItemGroup" ? (
             <ItemGroup />
