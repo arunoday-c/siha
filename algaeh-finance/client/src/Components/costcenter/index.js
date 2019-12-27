@@ -54,10 +54,10 @@ export default forwardRef(function CostCenter(props, ref) {
       className={noborder === undefined ? "col-12 costCenterFilter" : "col-12"}
     >
       <div className="row">
-        <div className="col-6">
+        <div className="col">
           <AlgaehAutoComplete
             div={{ ...div }}
-            label={{ forceLabel: "Branch" }}
+            label={{ forceLabel: "Select a Branch" }}
             selector={{
               dataSource: {
                 data: branch,
@@ -77,10 +77,10 @@ export default forwardRef(function CostCenter(props, ref) {
             }}
           />
         </div>
-        <div className="col-6">
+        <div className="col">
           <AlgaehAutoComplete
             div={{ ...div }}
-            label={{ forceLabel: "Cost Center" }}
+            label={{ forceLabel: "Select a Cost Center" }}
             selector={{
               dataSource: {
                 data: data,

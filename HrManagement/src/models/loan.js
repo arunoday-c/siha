@@ -241,7 +241,7 @@ export default {
     }
 
     if (req.query.hospital_id > 0) {
-      employee = ` and  LA.hospital_id=${req.query.hospital_id} `;
+      employee += ` and  LA.hospital_id=${req.query.hospital_id} `;
     }
 
     if (

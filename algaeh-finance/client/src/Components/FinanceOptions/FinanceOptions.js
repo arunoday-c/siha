@@ -22,7 +22,7 @@ export default function FinanceOptions() {
             <div className="portlet-body">
               <div className="row">
                 <AlgaehAutoComplete
-                  div={{ className: "col-2 form-group" }}
+                  div={{ className: "col-2" }}
                   label={{
                     forceLabel: "Head/Parent Office",
                     isImp: true
@@ -38,7 +38,7 @@ export default function FinanceOptions() {
                     }
                   }}
                 />{" "}
-                <div className="col-3">
+                <div className="col">
                   <label>Cost Center Type</label>
                   <div className="customRadio">
                     <label className="radio inline">
@@ -68,7 +68,7 @@ export default function FinanceOptions() {
                 </div>{" "}
                 <AlgaehDateHandler
                   div={{
-                    className: "col-2 algaeh-date-fld form-group"
+                    className: "col-2 algaeh-date-fld"
                   }}
                   label={{
                     forceLabel: "Financial Start Date",
@@ -88,7 +88,7 @@ export default function FinanceOptions() {
                 />{" "}
                 <AlgaehDateHandler
                   div={{
-                    className: "col-2 algaeh-date-fld form-group"
+                    className: "col-2 algaeh-date-fld"
                   }}
                   label={{
                     forceLabel: "Financial End Date",
@@ -162,6 +162,14 @@ export default function FinanceOptions() {
                 />{" "}
               </div>
             </div>
+          </div>
+        </div>
+      </div>{" "}
+      <div className="hptl-phase1-footer">
+        <div className="row">
+          <div className="col">
+            {" "}
+            <button className="btn btn-primary">Save</button>
           </div>
         </div>
       </div>

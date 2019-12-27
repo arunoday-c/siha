@@ -311,6 +311,10 @@ const PageToPlot = {
   CustomerSetup: React.lazy(() =>
     retry(() => import("./Components/CustomerSetup/CustomerSetup"))
   ),
+  ERPSettings: React.lazy(() =>
+    retry(() => import("./Components/ERPSettings/ERPSettings"))
+  ),
+
   DayEndProcess: React.lazy(() =>
     retry(() => import("./Components/Finance/DayEndProcess/DayEndProcess"))
   ),

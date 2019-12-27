@@ -49,12 +49,11 @@ class LoanAuthorization extends Component {
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
-
           let auth_level =
             res.data.records.auth_levels.length > 0
               ? Enumerable.from(res.data.records.auth_levels).maxBy(
-                w => w.value
-              )
+                  w => w.value
+                )
               : null;
 
           this.setState({
@@ -89,7 +88,7 @@ class LoanAuthorization extends Component {
             employee_name: row.full_name,
             employee_id: row.hims_d_employee_id
           },
-          () => { }
+          () => {}
         );
       }
     });
@@ -147,7 +146,7 @@ class LoanAuthorization extends Component {
         }
       },
 
-      onFailure: err => { }
+      onFailure: err => {}
     });
   }
 
@@ -163,7 +162,7 @@ class LoanAuthorization extends Component {
         }
       },
 
-      onFailure: err => { }
+      onFailure: err => {}
     });
   }
 
@@ -193,7 +192,8 @@ class LoanAuthorization extends Component {
       employee_name: null,
       auth_loan: auth_loan !== null ? auth_loan.value : null,
       loan_status: "PEN",
-      loan_applns: []
+      loan_applns: [],
+      employee_id: null
     });
   }
   reloadAuths() {
@@ -239,7 +239,7 @@ class LoanAuthorization extends Component {
             />
 
             <AlgaehDateHandler
-              div={{ className: "col form-group mandatory" }}
+              div={{ className: "col-2 form-group mandatory" }}
               label={{ forceLabel: "From Date", isImp: true }}
               textBox={{
                 className: "txt-fld",
@@ -256,7 +256,7 @@ class LoanAuthorization extends Component {
               value={this.state.from_date}
             />
             <AlgaehDateHandler
-              div={{ className: "col form-group mandatory" }}
+              div={{ className: "col-2 form-group mandatory" }}
               label={{ forceLabel: "To Date", isImp: true }}
               textBox={{
                 className: "txt-fld",
@@ -312,7 +312,7 @@ class LoanAuthorization extends Component {
               }}
             />
 
-            <div className="col-3 globalSearchCntr">
+            <div className="col-2 globalSearchCntr">
               <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
               <h6 onClick={this.employeeSearch.bind(this)}>
                 {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
@@ -323,25 +323,25 @@ class LoanAuthorization extends Component {
               </h6>
             </div>
 
-            <div className="col form-group" style={{ textAlign: "right" }}>
+            <div className="col-12 form-group" style={{ textAlign: "right" }}>
               {" "}
-              <button
-                onClick={this.getLoanApplications.bind(this)}
-                style={{ marginLeft: 5 }}
-                className="btn btn-primary"
-              >
-                {!this.state.loading ? (
-                  <span>Load</span>
-                ) : (
-                    <i className="fas fa-spinner fa-spin" />
-                  )}
-              </button>{" "}
               <button
                 onClick={this.clearState.bind(this)}
                 className="btn btn-default"
               >
                 Clear
-              </button>
+              </button>{" "}
+              <button
+                onClick={this.getLoanApplications.bind(this)}
+                style={{ marginRight: 5 }}
+                className="btn btn-primary"
+              >
+                {!this.state.loading ? (
+                  <span>Load</span>
+                ) : (
+                  <i className="fas fa-spinner fa-spin" />
+                )}
+              </button>{" "}
             </div>
           </div>
         </div>
@@ -374,17 +374,17 @@ class LoanAuthorization extends Component {
                           return row.loan_authorized === "APR" ? (
                             <i className="fas fa-thumbs-up" />
                           ) : (
-                              <a
-                                onClick={() => {
-                                  this.setState({
-                                    selRow: row,
-                                    openAuth: true
-                                  });
-                                }}
-                              >
-                                <i className="fas fa-file-signature" />
-                              </a>
-                            );
+                            <a
+                              onClick={() => {
+                                this.setState({
+                                  selRow: row,
+                                  openAuth: true
+                                });
+                              }}
+                            >
+                              <i className="fas fa-file-signature" />
+                            </a>
+                          );
                         },
                         others: {
                           filterable: false,
@@ -414,8 +414,8 @@ class LoanAuthorization extends Component {
                                   Issued
                                 </span>
                               ) : (
-                                        "------"
-                                      )}
+                                "------"
+                              )}
                             </span>
                           );
                         }

@@ -224,9 +224,9 @@ class LoanModal extends Component {
           </div>
           <div className="row" data-validate="loanModalDiv">
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col-2 form-group" }}
               label={{
-                forceLabel: "Start Month",
+                forceLabel: "EMI Start On",
                 isImp: true
               }}
               selector={{
@@ -243,9 +243,9 @@ class LoanModal extends Component {
               }}
             />
             <AlagehFormGroup
-              div={{ className: "col form-group" }}
+              div={{ className: "col-1 form-group" }}
               label={{
-                forceLabel: "Start Year",
+                forceLabel: ".",
                 isImp: true
               }}
               textBox={{
@@ -261,7 +261,7 @@ class LoanModal extends Component {
               }}
             />
             <AlagehFormGroup
-              div={{ className: "col form-group" }}
+              div={{ className: "col-2 form-group mandatory" }}
               label={{
                 forceLabel: "Approved Amount",
                 isImp: true
@@ -277,7 +277,7 @@ class LoanModal extends Component {
               }}
             />
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col-1 form-group mandatory" }}
               label={{
                 forceLabel: "No. of EMI",
                 isImp: true
@@ -296,7 +296,7 @@ class LoanModal extends Component {
               }}
             />
             <AlagehFormGroup
-              div={{ className: "col form-group" }}
+              div={{ className: "col-2 form-group" }}
               label={{
                 forceLabel: "Instalment Amount",
                 isImp: true
@@ -314,9 +314,8 @@ class LoanModal extends Component {
                 }
               }}
             />
-          </div>
-          <div className="row">
-            <div className="col-12">
+
+            <div className="col" style={{ paddingTop: 19 }}>
               <button
                 onClick={this.authorizeLoan.bind(this, "A")}
                 type="button"
@@ -338,9 +337,8 @@ class LoanModal extends Component {
           <hr />
           <div className="row">
             <div className="col-12" id="requestedLoanAppGrid_Cntr">
-              <h6>
-                <b>{this.state.employee_name + "'s"}</b> previous loan requests
-              </h6>
+              {/* <b>{this.state.employee_name + "'s"} </b> */}
+              <h6>Loan History</h6>
               <AlgaehDataGrid
                 id="requestedLoanAppGrid"
                 datavalidate="requestedLoanAppGrid"
