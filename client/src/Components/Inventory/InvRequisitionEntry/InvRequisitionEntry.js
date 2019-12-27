@@ -199,27 +199,30 @@ class InvRequisitionEntry extends Component {
                       )
                       : Options.dateFormat}
                   </h6>
-                </div>{" "}
-                {/* {this.state.dataExitst === true ? ( */}
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Requisition Status"
-                    }}
-                  />
-                  <h6>
-                    {this.state.authorize1 === "Y" &&
-                      this.state.authorie2 === "Y" ? (
-                        <span className="badge badge-success">Authorized</span>
-                      ) : this.state.authorize1 === "Y" &&
-                        this.state.authorie2 === "N" ? (
-                          <span className="badge badge-danger">Pending</span>
-                        ) : (
-                          "-------"
-                        )}
-                  </h6>
                 </div>
-                {/* ) : null} */}
+                {this.state.hims_f_inventory_material_header_id !== null ? (
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Requisition Status"
+                      }}
+                    />
+                    <h6>
+                      {this.state.authorize1 === "Y" &&
+                        this.state.authorie2 === "Y" ? (
+                          <span className="badge badge-success">Authorized</span>
+                        ) : this.state.authorize1 === "Y" &&
+                          this.state.authorie2 === "N" ? (
+                            <span className="badge badge-danger">Pending</span>
+                          ) : this.state.authorize1 === "N" &&
+                            this.state.authorize2 === "N" ? (
+                              <span className="badge badge-danger">Pending</span>
+                            ) : (
+                              "-------"
+                            )}
+                    </h6>
+                  </div>
+                ) : null}
               </div>
             }
             printArea={

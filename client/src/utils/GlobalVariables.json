@@ -4995,16 +4995,20 @@
       "value": "0"
     },
     {
-      "name": "Pending To Authorize",
+      "name": "Pending To Authorize 1",
       "value": "1"
     },
     {
-      "name": "Delivery Pending",
+      "name": "Pending To Authorize 2",
       "value": "2"
     },
     {
-      "name": "Delivery Completed",
+      "name": "Delivery Pending",
       "value": "3"
+    },
+    {
+      "name": "Delivery Completed",
+      "value": "4"
     }
   ],
   "COMPARISON": [

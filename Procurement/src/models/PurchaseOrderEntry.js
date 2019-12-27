@@ -9,12 +9,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT PH.hims_f_procurement_po_header_id, PH.purchase_number, PH.po_date, PH.po_type, PH.po_from, \
-            PH.pharmcy_location_id, PH.inventory_location_id, PH.location_type,PH.vendor_id,PH.expected_date, \
-            PH.on_hold,PH.phar_requisition_id,PH.inv_requisition_id, PH.from_multiple_requisition, PH.payment_terms, \
-            PH.sub_total,PH.detail_discount, PH.extended_total, PH.sheet_level_discount_percent, \
-            PH.sheet_level_discount_amount,PH.description,PH.net_total,PH.total_tax, PH.net_payable,PH.is_completed, \
-            PH.completed_date,PH.cancelled,PH.cancel_by,PH.cancel_date,PH.authorize1, VQH.vendor_quotation_number, \
+            "SELECT PH.*, VQH.vendor_quotation_number, \
             CASE WHEN PH.po_from = 'INV' THEN (select material_requisition_number from hims_f_inventory_material_header \
             where hims_f_inventory_material_header_id=PH.inv_requisition_id ) \
             else (select material_requisition_number from hims_f_pharamcy_material_header  \
@@ -273,10 +268,13 @@ export default {
       _mysql
         .executeQueryWithTransaction({
           query:
-            "UPDATE `hims_f_procurement_po_header` SET `authorize1`=?, `authorize_by_date`=?, `authorize_by_1`=? \
-          WHERE `hims_f_procurement_po_header_id`=?",
+            "UPDATE `hims_f_procurement_po_header` SET `authorize1`=?, `authorize_by_date`=?, `authorize_by_1`=?, \
+            `authorize2`=?, `authorize2_date`=?, `authorize2_by`=? WHERE `hims_f_procurement_po_header_id`=?",
           values: [
             inputParam.authorize1,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            inputParam.authorize2,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             inputParam.hims_f_procurement_po_header_id
@@ -408,10 +406,28 @@ export default {
         //Pending To Authorize 1
         strQuery += " and authorize1 = 'N'";
       } else if (inputParam.status == "2") {
-        strQuery += " and authorize1 = 'Y' and is_completed='N'";
+        //Pending To Authorize 2
+        strQuery += " and authorize1 = 'Y' and authorize2 = 'N'";
       } else if (inputParam.status == "3") {
+        strQuery +=
+          " and authorize1 = 'Y' and authorize2 = 'Y' and is_completed='N'";
+      } else if (inputParam.status == "4") {
         strQuery += " and is_completed='Y'";
       }
+
+      // if (inputParam.status == null || inputParam.status == "0") {
+      //   strQuery += "";
+      // } else if (inputParam.status == "1") {
+      //   //Pending To Authorize 1
+      //   strQuery += " and authorize1 = 'N'";
+      // } else if (inputParam.status == "2") {
+      //   strQuery += " and authorize1 = 'Y' and is_completed='N'";
+      // } else if (inputParam.status == "3") {
+      //   strQuery += " and is_completed='Y'";
+      // }
+      // else if (inputParam.status == "3") {
+      //   strQuery += " and authorize1 = 'Y' and authorie2 = 'N'";
+      // }
 
       _mysql
         .executeQuery({

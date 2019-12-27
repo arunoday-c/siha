@@ -599,7 +599,7 @@ const generatePOReceiptNoPrice = data => {
   });
 };
 
-const AuthorizePOEntry = $this => {
+const AuthorizePOEntry = ($this, authorize) => {
   let stock_detail =
     $this.state.po_from === "PHR"
       ? $this.state.pharmacy_stock_detail
@@ -625,7 +625,28 @@ const AuthorizePOEntry = $this => {
     } else {
       $this.state.po_entry_detail = $this.state.inventory_stock_detail;
     }
-    $this.state.authorize1 = "Y";
+    // $this.state.authorize1 = "Y";
+
+    let authorize1 = "";
+    let authorize2 = "";
+    if ($this.state.requisition_auth_level === "1") {
+      $this.state.authorize1 = "Y";
+      $this.state.authorize2 = "Y";
+      authorize1 = "Y";
+      authorize2 = "Y";
+    } else {
+      if (authorize === "authorize1") {
+        $this.state.authorize1 = "Y";
+        authorize1 = "Y";
+        authorize2 = "N";
+      } else if (authorize === "authorize2") {
+        $this.state.authorize1 = "Y";
+        $this.state.authorize2 = "Y";
+        authorize1 = "Y";
+        authorize2 = "Y";
+      }
+    }
+
     algaehApiCall({
       uri: "/PurchaseOrderEntry/updatePurchaseOrderEntry",
       module: "procurement",
@@ -634,7 +655,8 @@ const AuthorizePOEntry = $this => {
       onSuccess: response => {
         if (response.data.success === true) {
           $this.setState({
-            authorize1: "Y"
+            authorize1: authorize1,
+            authorize2: authorize2
           });
           swalMessage({
             title: "Authorized successfully . .",
