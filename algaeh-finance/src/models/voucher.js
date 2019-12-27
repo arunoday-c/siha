@@ -263,8 +263,8 @@ export default {
               .executeQueryWithTransaction({
                 query:
                   "INSERT INTO `finance_voucher_header` (amount, payment_date, month, year,\
-                      narration, voucher_no, voucher_type,from_screen)\
-                  VALUE(?,?,?,?,?,?,?,?)",
+                      narration, voucher_no, voucher_type,from_screen,posted_from)\
+                  VALUE(?,?,?,?,?,?,?,?,?)",
                 values: [
                   credit_amount,
                   transaction_date,
@@ -273,7 +273,8 @@ export default {
                   input.narration,
                   input.voucher_no,
                   input.voucher_type,
-                  input.from_screen
+                  input.from_screen,
+                  "V"
                 ],
                 printQuery: false
               })
