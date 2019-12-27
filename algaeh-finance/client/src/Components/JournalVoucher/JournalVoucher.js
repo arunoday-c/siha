@@ -153,7 +153,7 @@ export default function JournalVoucher() {
                     title: "Sl No.",
                     sortable: true,
                     others: {
-                      width: 100
+                      width: 60
                     }
                   },
                   {
@@ -192,7 +192,8 @@ export default function JournalVoucher() {
                           }}
                         />
                       );
-                    }
+                    },
+                    others: {}
                   },
                   {
                     key: "payment_type",
@@ -219,6 +220,9 @@ export default function JournalVoucher() {
                           }}
                         />
                       );
+                    },
+                    others: {
+                      width: 150
                     }
                   },
                   {
@@ -238,6 +242,9 @@ export default function JournalVoucher() {
                           }}
                         />
                       );
+                    },
+                    others: {
+                      width: 100
                     }
                   },
 
@@ -267,6 +274,9 @@ export default function JournalVoucher() {
                           }}
                         />
                       );
+                    },
+                    others: {
+                      width: 150
                     }
                   }
                 ]}
