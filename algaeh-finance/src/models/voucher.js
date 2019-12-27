@@ -660,13 +660,45 @@ export default {
       strQry += ` and H.voucher_type ='${input.voucher_type}'`;
     }
 
+    if (input.auth_level == 1) {
+      strQry += ` and VD.auth1 ='N'`;
+    }
+
+    if (input.auth_level == 2) {
+      strQry += ` and VD.auth1 ='Y' and VD.auth2 ='N'`;
+    }
+    _mysql
+      .executeQuery({
+        query: `select distinct finance_voucher_header_id,voucher_type,amount,H.payment_date,posted_from,\
+          narration,voucher_no from finance_voucher_header H\
+          inner join finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id\
+          where posted_from='V' and VD.auth_status='N'  ${strQry};`
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+  //created by irfan:
+  getVouchersDetailsToAuthorize: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    const input = req.query;
+
     _mysql
       .executeQuery({
         query:
-          "select distinct finance_voucher_header_id,voucher_type,amount,H.payment_date,posted_from,\
-          narration,voucher_no from finance_voucher_header H\
-          inner join finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id\
-          where posted_from='V' and VD.auth_status='Y' ; "
+          "select debit_amount,credit_amount,concat(H.account_name,'->',C.child_name) as ledger\
+          from finance_voucher_details VD \
+          left join finance_account_head H on VD.head_id=H.finance_account_head_id\
+          left join finance_account_child C on VD.child_id=C.finance_account_child_id\
+          where VD.voucher_header_id=?; ",
+        values: [input.finance_voucher_header_id]
       })
       .then(result => {
         _mysql.releaseConnection();
