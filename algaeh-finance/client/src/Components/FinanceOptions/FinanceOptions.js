@@ -164,6 +164,14 @@ export default function FinanceOptions() {
             </div>
           </div>
         </div>
+      </div>{" "}
+      <div className="hptl-phase1-footer">
+        <div className="row">
+          <div className="col">
+            {" "}
+            <button className="btn btn-primary">Save</button>
+          </div>
+        </div>
       </div>
     </div>
   );
