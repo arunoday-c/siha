@@ -488,7 +488,7 @@ class JournalAuthorization extends Component {
                 className="btn btn-primary"
                 onClick={this.postDayEndProcess.bind(this)}
               >
-                Post to Finance
+                Authorize
               </button>
             </div>
           </div>

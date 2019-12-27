@@ -67,7 +67,9 @@ export default function FinanceReports() {
 
   return (
     <div className="row">
-      <div className="col-3 reportMenuSecLeft">
+      {" "}
+      <CostCenter result={resultdata} />
+      <div className="col reportMenuSecLeft">
         <h6>Favourite Reports</h6>
         <ul className="menuListUl">
           <li
@@ -108,8 +110,7 @@ export default function FinanceReports() {
           </li>
         </ul>
       </div>
-      <div className="col-9 reportPreviewSecLeft">
-        <CostCenter result={resultdata} />
+      <div className="col reportPreviewSecLeft">
         <Spin spinning={loading} tip="Please wait report data is fetching..">
           {selected === "BS" ? (
             <Balance data={data} result={["asset", "liabilities"]} />

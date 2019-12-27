@@ -1,13 +1,15 @@
 .reportMenuSecLeft {
-  border-right: 1px solid #000;
-  min-height: 93vh;
+  border-right: 1px solid #d3d3d3;
+  min-height: 82vh;
   background: #f9f9f9;
+  max-width: 280px;
   h6 {
     margin: 0 -15px 0;
-    font-size: 1rem;
-    background: #404040;
+    font-size: 0.75rem;
+    background: #848484;
     padding: 10px 15px;
     color: #fff;
+    text-transform: uppercase;
   }
   ul.menuListUl {
     margin: 0 -15px;
@@ -16,8 +18,8 @@
     li {
       margin: 0;
       padding: 6px 15px;
-      list-style: none;
-      border-bottom: 1px solid #000;
+      list-style: inside;
+      border-bottom: 1px solid #d3d3d3;
       cursor: pointer;
       &:hover {
         background: #00a796;
@@ -34,7 +36,7 @@
 }
 .reportPreviewSecLeft {
   padding: 20px;
-  background: #404040;
+  background: #e9e9e9;
   overflow: auto;
   max-height: 93vh;
   i.fa-print {
@@ -43,12 +45,12 @@
     top: 0;
     font-size: 2rem;
     padding: 10px;
-    border: 1px solid #000;
+    border: 1px solid #d3d3d3;
     cursor: pointer;
   }
   .reportTableStyle {
     width: 100%;
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid #d3d3d3;
     margin-bottom: 2px;
     padding: 15px;
     ul.treeListUL {
@@ -112,14 +114,14 @@
   }
   .ant-spin-nested-loading {
     background: #fff;
-    border: 1px solid #000;
+    border: 1px solid #d3d3d3;
     border-radius: 2px;
     min-height: 76vh;
     padding: 15px;
   }
   .financeReportHeader {
     text-align: center;
-    border-bottom: 2px solid #000;
+    border-bottom: 2px solid #d3d3d3;
     margin-bottom: 0;
     padding-bottom: 10px;
     p {
