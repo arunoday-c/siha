@@ -452,13 +452,12 @@ export default {
               _mysql
                 .executeQuery({
                   query:
-                    "insert into finance_voucher_details ( payment_date,month,year,head_account_code,head_id,child_id,debit_amount,\
-                        payment_type,credit_amount,entered_by,entered_date,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?);",
+                    "insert into finance_voucher_details ( payment_date,month,year,head_id,child_id,debit_amount,\
+                        payment_type,credit_amount,entered_by,entered_date,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?);",
                   values: [
                     new Date(),
                     month,
                     year,
-                    input.account_code,
                     input.finance_account_head_id,
                     result.insertId,
                     debit_amount,
@@ -735,9 +734,9 @@ export default {
       .executeQueryWithTransaction({
         query:
           "insert into finance_voucher_header (voucher_type,voucher_no,day_end_header_id,amount,\
-            payment_date,narration,from_screen)\
+            payment_date,narration,from_screen,posted_from)\
             select voucher_type,document_number,finance_day_end_header_id,amount,transaction_date,\
-            narration,from_screen from finance_day_end_header where finance_day_end_header_id=? ",
+            narration,from_screen,'D' from finance_day_end_header where finance_day_end_header_id=? ",
         values: [input.finance_day_end_header_ids],
         printQuery: false
       })
@@ -833,7 +832,6 @@ export default {
 
               const insertColumns = [
                 "payment_date",
-
                 "head_id",
                 "child_id",
                 "debit_amount",
@@ -853,7 +851,10 @@ export default {
                   values: result,
                   includeValues: insertColumns,
                   bulkInsertOrUpdate: true,
-                  extraValues: { voucher_header_id: headRes.insertId },
+                  extraValues: {
+                    voucher_header_id: headRes.insertId,
+                    auth_status: "Y"
+                  },
                   printQuery: false
                 })
                 .then(result2 => {
@@ -1711,6 +1712,105 @@ export default {
         message: "Please provide Valid Input"
       };
       next();
+    }
+  },
+
+  //created by irfan: to
+  renameAccountHeads: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    //. const utilities = new algaehUtilities();
+    let input = req.body;
+
+    if (input.leaf_node == "Y") {
+      _mysql
+        .executeQuery({
+          query:
+            "select created_from from finance_account_child where finance_account_child_id=?;",
+          values: [input.finance_account_child_id],
+          printQuery: false
+        })
+        .then(result => {
+          if (result[0]["created_from"] == "U") {
+            _mysql
+              .executeQuery({
+                query:
+                  "update finance_account_child set child_name=?,updated_by=?,updated_date=? where\
+                  finance_account_child_id=? and created_from='U';",
+                values: [
+                  input.child_name,
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  input.finance_account_child_id
+                ],
+                printQuery: false
+              })
+              .then(result2 => {
+                _mysql.releaseConnection();
+                req.records = result2;
+                next();
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
+          } else {
+            _mysql.releaseConnection();
+            req.records = {
+              invalid_input: true,
+              message: "Cannot Modify System defined Ledgers"
+            };
+            next();
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      _mysql
+        .executeQuery({
+          query:
+            "select created_from from finance_account_head where finance_account_head_id=?;",
+          values: [input.finance_account_head_id],
+          printQuery: false
+        })
+        .then(result => {
+          if (result[0]["created_from"] == "U") {
+            _mysql
+              .executeQuery({
+                query:
+                  "update finance_account_head set account_name=?,updated_by=?,updated_date=?\
+                 where finance_account_head_id=? and created_from='U';",
+                values: [
+                  input.account_name,
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  input.finance_account_head_id
+                ],
+                printQuery: false
+              })
+              .then(result2 => {
+                _mysql.releaseConnection();
+                req.records = result2;
+                next();
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
+          } else {
+            _mysql.releaseConnection();
+            req.records = {
+              invalid_input: true,
+              message: "Cannot Modify System defined Ledgers"
+            };
+            next();
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
     }
   }
 };

@@ -7,9 +7,7 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import MyContext from "../../../utils/MyContext";
 import {
   AlgaehLabel,
-  AlagehFormGroup,
   AlagehAutoComplete
-  // AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -35,8 +33,6 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import POEntry from "../../../Models/POEntry";
 import Enumerable from "linq";
 import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
-// import AlgaehReport from "../../Wrapper/printReports";
-// import _ from "lodash";
 
 class PurchaseOrderEntry extends Component {
   constructor(props) {
@@ -45,6 +41,7 @@ class PurchaseOrderEntry extends Component {
       decimal_places: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).decimal_places,
+      po_auth_level: "2"
     };
     getVendorMaster(this, this);
   }
@@ -143,11 +140,18 @@ class PurchaseOrderEntry extends Component {
                     }}
                   />
                   <h6>
-                    {this.state.authorize1 === "Y" ? (
-                      <span className="badge badge-success">Authorized</span>
-                    ) : (
-                        <span className="badge badge-danger">Pending</span>
-                      )}
+                    {this.state.authorize1 === "Y" &&
+                      this.state.authorize2 === "Y" ? (
+                        <span className="badge badge-success">Authorized</span>
+                      ) : this.state.authorize1 === "Y" &&
+                        this.state.authorize2 === "N" ? (
+                          <span className="badge badge-danger">Pending</span>
+                        ) : this.state.authorize1 === "N" &&
+                          this.state.authorize2 === "N" ? (
+                            <span className="badge badge-danger">Pending</span>
+                          ) : (
+                            "-------"
+                          )}
                   </h6>
                 </div>
               ) : null}
@@ -420,23 +424,56 @@ class PurchaseOrderEntry extends Component {
               </button>
 
               {this.props.purchase_auth === true ? (
+
                 <button
                   type="button"
                   className="btn btn-other"
                   disabled={
-                    this.state.authorize1 === "Y"
+                    this.state.authBtnEnable === true
                       ? true
-                      : this.state.authorizeBtn
+                      : this.state.authorize1 === "Y" &&
+                        this.state.authorize2 === "Y"
+                        ? true
+                        : false
                   }
-                  onClick={AuthorizePOEntry.bind(this, this)}
+                  onClick={AuthorizePOEntry.bind(
+                    this,
+                    this,
+                    this.state.authorize1 === "N"
+                      ? "authorize1"
+                      : "authorize2"
+                  )}
                 >
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Authorize",
+                      forceLabel:
+                        this.state.authorize1 === "N"
+                          ? "Authorize 1"
+                          : this.state.po_auth_level === "2"
+                            ? "Authorize 2"
+                            : "Authorize 1",
                       returnText: true
                     }}
                   />
                 </button>
+
+                // <button
+                //   type="button"
+                //   className="btn btn-other"
+                //   disabled={
+                //     this.state.authorize1 === "Y"
+                //       ? true
+                //       : this.state.authorizeBtn
+                //   }
+                //   onClick={AuthorizePOEntry.bind(this, this)}
+                // >
+                //   <AlgaehLabel
+                //     label={{
+                //       forceLabel: "Authorize",
+                //       returnText: true
+                //     }}
+                //   />
+                // </button>
               ) : null}
             </div>
           </div>
