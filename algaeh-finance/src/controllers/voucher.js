@@ -2,7 +2,13 @@ import { Router } from "express";
 import utlities from "algaeh-utilities";
 import voucher from "../models/voucher";
 
-const { addVoucher, getVoucherNo, getCostCenters } = voucher;
+const {
+  addVoucher,
+  getVoucherNo,
+  getCostCenters,
+  authorizeVoucher,
+  getVouchersToAuthorize
+} = voucher;
 
 export default () => {
   const api = Router();
@@ -64,5 +70,47 @@ export default () => {
         .end();
     }
   });
+  api.post("/authorizeVoucher", authorizeVoucher, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+        .json({
+          success: false,
+          message: req.records.message
+        })
+        .end();
+    } else {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records
+        })
+        .end();
+    }
+  });
+  api.get(
+    "/getVouchersToAuthorize",
+    getVouchersToAuthorize,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res
+          .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+          .json({
+            success: false,
+            message: req.records.message
+          })
+          .end();
+      } else {
+        res
+          .status(utlities.AlgaehUtilities().httpStatus().ok)
+          .json({
+            success: true,
+            result: req.records
+          })
+          .end();
+      }
+    }
+  );
   return api;
 };
