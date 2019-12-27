@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CostCenter from "../costcenter";
 import moment from "moment";
-import "./JournalLedger.scss";
+import "./JournalVoucher.scss";
 import {
   AlgaehFormGroup,
   AlgaehDateHandler,
@@ -15,10 +15,10 @@ import {
   getVoucherNumber,
   getHeaders,
   addJurnorLedger
-} from "./JournalLedger.events";
+} from "./JournalVoucher.events";
 import { getCookie } from "../../utils/algaehApiCall";
 let records_av = {};
-export default function JournalLedger() {
+export default function JournalVoucher() {
   const [voucherDate, setVoucherDate] = useState(undefined);
   const [voucher_no, setVoucherNo] = useState(undefined);
   const [voucherType, setVoucherType] = useState(undefined);
@@ -59,7 +59,7 @@ export default function JournalLedger() {
   }, []);
 
   return (
-    <div className="journalLedgerScreen">
+    <div className="JournalVoucherScreen">
       <div
         className="row inner-top-search margin-bottom-15"
         style={{ paddingBottom: "10px" }}
