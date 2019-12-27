@@ -181,41 +181,29 @@ class RequisitionEntry extends Component {
                       )
                       : Options.dateFormat}
                   </h6>
-                </div>{" "}
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Requisition Status"
-                    }}
-                  />
-                  <h6>
-                    {this.state.authorize1 === "Y" &&
-                      this.state.authorie2 === "Y" ? (
-                        <span className="badge badge-success">Authorized</span>
-                      ) : this.state.authorize1 === "Y" &&
-                        this.state.authorie2 === "N" ? (
-                          <span className="badge badge-danger">Pending</span>
-                        ) : (
-                          "-------"
-                        )}
-                  </h6>
                 </div>
-                {/* <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Transfer Status"
-                    }}
-                  />
-                  <h6>
-                    {this.state.authorize1 === "Y" &&
-                    this.state.authorie2 === "Y"
-                      ? "Authorized"
-                      : this.state.authorize1 === "Y" &&
-                        this.state.authorie2 === "N"
-                      ? "Pending"
-                      : null}
-                  </h6>
-                </div> */}
+                {this.state.hims_f_pharamcy_material_header_id !== null ?
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Requisition Status"
+                      }}
+                    />
+                    <h6>
+                      {this.state.authorize1 === "Y" &&
+                        this.state.authorie2 === "Y" ? (
+                          <span className="badge badge-success">Authorized</span>
+                        ) : this.state.authorize1 === "Y" &&
+                          this.state.authorie2 === "N" ? (
+                            <span className="badge badge-danger">Pending</span>
+                          ) : this.state.authorize1 === "N" &&
+                            this.state.authorize2 === "N" ? (
+                              <span className="badge badge-danger">Pending</span>
+                            ) : (
+                              "-------"
+                            )}
+                    </h6>
+                  </div> : null}
               </div>
             }
             printArea={

@@ -3,7 +3,7 @@ export default {
     var output;
 
     output = {
-      hims_f_pharamcy_material_header_id: null,
+      hims_f_inventory_material_header_id: null,
       material_requisition_number: null,
       from_location_type: null,
       from_location_id: null,

@@ -23,8 +23,8 @@ class PersistentDrawer extends React.Component {
     const Activated_Modueles =
       sessionStorage.getItem("ModuleDetails") !== null
         ? JSON.parse(
-          AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-        )
+            AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+          )
         : [];
     let Hims_active = false;
     let Hrms_active = false;
@@ -346,16 +346,16 @@ class PersistentDrawer extends React.Component {
   handleDrawerClose = () => {
     const _activeNodes =
       this.state.activeNode.menuselected === "" &&
-        this.state.activeNode.lastSelected !== ""
+      this.state.activeNode.lastSelected !== ""
         ? {
-          activeNode: {
-            ...this.state.activeNode,
-            ...{
-              menuselected: this.state.activeNode.lastSelected,
-              lastSelected: ""
+            activeNode: {
+              ...this.state.activeNode,
+              ...{
+                menuselected: this.state.activeNode.lastSelected,
+                lastSelected: ""
+              }
             }
           }
-        }
         : {};
 
     this.setState({
@@ -377,11 +377,11 @@ class PersistentDrawer extends React.Component {
     const isModfySelect =
       this.state.activeNode.menuselected === data.module_code
         ? {
-          activeNode: {
-            ...this.state.activeNode,
-            ...{ menuselected: "", lastSelected: data.module_code }
+            activeNode: {
+              ...this.state.activeNode,
+              ...{ menuselected: "", lastSelected: data.module_code }
+            }
           }
-        }
         : {};
     _putData = isModfySelect.activeNode !== undefined ? "" : _putData;
     this.setState({ onlyToggeleMenu: _putData, ...isModfySelect });
@@ -409,6 +409,8 @@ class PersistentDrawer extends React.Component {
     //     ? this.state.Language.charAt(0).toUpperCase() +
     //       this.state.Language.slice(1)
     //     : "");
+
+    debugger;
 
     let screenName = submenu.page_to_redirect.replace(/\s/g, "");
 
@@ -522,8 +524,8 @@ class PersistentDrawer extends React.Component {
               {_menuSelected === menu.module_code || _toggle ? (
                 <i className="fas fa-angle-up" />
               ) : (
-                  <i className="fas fa-angle-down" />
-                )}
+                <i className="fas fa-angle-down" />
+              )}
             </div>
           </div>
           {_menuSelected === menu.module_code || _toggle ? (
@@ -590,8 +592,8 @@ class PersistentDrawer extends React.Component {
             {this.state.Hims_active === true ? (
               <p className="appLogoHIMSOnly" />
             ) : (
-                <p className="appLogoHRMSOnly" />
-              )}
+              <p className="appLogoHRMSOnly" />
+            )}
           </div>
 
           <h5 className="topNavbar-title mr-auto">
