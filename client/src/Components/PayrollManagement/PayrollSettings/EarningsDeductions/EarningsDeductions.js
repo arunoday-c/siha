@@ -33,7 +33,6 @@ class EarningsDeductions extends Component {
       overtime_applicable: false,
       selectCalculate: "d-none",
       calculator_values: "",
-      displayNationality: false,
       specific_nationality: false,
       nationality_id: null,
       print_report: "N",
@@ -187,7 +186,7 @@ class EarningsDeductions extends Component {
             });
           }
         });
-      } 
+      }
     });
   }
 
@@ -343,10 +342,10 @@ class EarningsDeductions extends Component {
 
   SpecificChecks(e) {
     this.setState({
-      specific_nationality: !this.state.specific_nationality,
-      displayNationality: !this.state.displayNationality
+      specific_nationality: !this.state.specific_nationality
     });
   }
+
   componentDidMount() {
     if (
       this.props.nationalities === undefined ||
@@ -490,8 +489,6 @@ class EarningsDeductions extends Component {
   onEditHandler(row) {
     let edit_data = extend({}, row);
     edit_data.on_edit = true;
-    edit_data.displayNationality =
-      row.displayNationality === "Y" ? true : false;
     edit_data.specific_nationality =
       row.specific_nationality === "Y" ? true : false;
     edit_data.allow_round_off = row.allow_round_off === "Y" ? true : false;
@@ -1049,26 +1046,27 @@ class EarningsDeductions extends Component {
                       </label>
                     </div>
 
-                    {this.state.displayNationality === true ? (
-                      <AlagehAutoComplete
-                        div={{ className: "" }}
-                        label={{
-                          forceLabel: "Nationality",
-                          isImp: true
-                        }}
-                        selector={{
-                          name: "nationality_id",
-                          className: "select-fld",
-                          value: this.state.nationality_id,
-                          dataSource: {
-                            textField: "nationality",
-                            valueField: "hims_d_nationality_id",
-                            data: this.props.nationalities
-                          },
-                          onChange: this.dropDownHandler.bind(this)
-                        }}
-                      />
-                    ) : null}
+                    <AlagehAutoComplete
+                      div={{ className: "" }}
+                      label={{
+                        forceLabel: "Nationality",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "nationality_id",
+                        className: "select-fld",
+                        value: this.state.nationality_id,
+                        dataSource: {
+                          textField: "nationality",
+                          valueField: "hims_d_nationality_id",
+                          data: this.props.nationalities
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                        others: {
+                          disabled: !this.state.specific_nationality
+                        }
+                      }}
+                    />
                   </div>
                   <div className="col-4">
                     <label>Overtime Applicable</label>
@@ -2104,8 +2102,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(EarningsDeductions)
+  connect(mapStateToProps, mapDispatchToProps)(EarningsDeductions)
 );
