@@ -157,10 +157,10 @@ class YearlyLeaveDetail extends Component {
                       fieldName: "processed",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Leave Closed" }} />
-                      ),
-                      displayTemplate: row => {
-                        return row.processed === "Y" ? "Yes" : "No";
-                      }
+                      )
+                      // displayTemplate: row => {
+                      //   return row.processed === "Y" ? "Yes" : "No";
+                      // }
                     }
                   ]}
                   keyId="hims_f_employee_monthly_leave_id"
