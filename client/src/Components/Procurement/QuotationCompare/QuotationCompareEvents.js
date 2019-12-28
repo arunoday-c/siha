@@ -29,7 +29,7 @@ const QuotationSearch = ($this, e) => {
         },
         onRowSelect: row => {
             AlgaehLoader({ show: true });
-            debugger
+
             algaehApiCall({
                 uri: "/RequestForQuotation/getRequestQuotationToComapre",
                 module: "procurement",
@@ -40,7 +40,7 @@ const QuotationSearch = ($this, e) => {
                 },
                 onSuccess: response => {
                     if (response.data.success) {
-                        debugger
+
 
                         let vendor_headers = [];
                         let vendor_body = [];
@@ -69,33 +69,6 @@ const QuotationSearch = ($this, e) => {
                                 return k;
                             })
                             .toArray();
-
-                        // let vendor_headers = vendor_inputs.map((item, index) => {
-                        //     return {
-                        //         fieldName: item.vendor_name
-                        //     };
-                        // })
-
-
-
-                        // let item_details = Enumerable.from(response.data.records)
-                        //     .groupBy("$.item_id", null, (k, g) => {
-
-                        //         let firstRecordSet = Enumerable.from(g).firstOrDefault();
-                        //         return {
-                        //             item_description: firstRecordSet.item_description,
-                        //             uom_description: firstRecordSet.uom_description,
-                        //             unit_price: firstRecordSet.unit_price,
-                        //         };
-                        //     })
-                        //     .toArray();
-
-
-
-
-
-
-                        debugger
                         $this.setState({
                             quotation_number: row.quotation_number,
                             vendor_headers: vendor_headers,

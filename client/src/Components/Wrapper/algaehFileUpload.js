@@ -220,13 +220,22 @@ export default class AlgaehFileUploader extends Component {
           const ctx = elem.getContext("2d");
           ctx.drawImage(img, 0, 0, img.width, img.height);
           const _dataURL = elem.toDataURL("image/webp", 1);
-          this.setState({
-            showCropper: true,
-            filePreview: _dataURL, //this.resizingAndCompressImage(_file),
-            fileExtention: "image/webp",
-            croppingDone: false,
-            forceRefreshed: undefined
-          });
+          this.setState(
+            {
+              showCropper: true,
+              filePreview: _dataURL, //this.resizingAndCompressImage(_file),
+              fileExtention: "image/webp",
+              croppingDone: false,
+              forceRefreshed: undefined
+            },
+            () => {
+              this.SavingImageOnServer(
+                _dataURL,
+                _fileExtention[_fileExtention.length - 1],
+                _file.name
+              );
+            }
+          );
         };
       };
       //---End compression
@@ -360,6 +369,7 @@ export default class AlgaehFileUploader extends Component {
 
   SavingImageOnServer(dataToSave, fileExtention, fileName, uniqueID, callBack) {
     const that = this;
+
     dataToSave = dataToSave || that.state.filePreview;
     fileExtention = fileExtention || that.state.fileExtention;
     fileName = fileName || "";
@@ -450,7 +460,7 @@ export default class AlgaehFileUploader extends Component {
             });
           }
         },
-        onFailure: failure => {
+        onCatch: failure => {
           if (typeof callBack === "function") callBack("failure");
           swalMessage({
             title: failure.message,

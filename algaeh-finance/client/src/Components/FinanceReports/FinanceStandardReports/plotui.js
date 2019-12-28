@@ -1,4 +1,7 @@
 import React from "react";
+import ParentIcon from "./parentIcon";
+import ChildIcon from "./childIcon";
+import ParentIconOpen from "./parentIconOpen";
 function hasChildren(node) {
   return (
     typeof node === "object" &&
@@ -28,6 +31,10 @@ export function PlotUI(node, style, indexIds) {
             : null
         }
       >
+        {" "}
+        <span>
+          <img src={ChildIcon} />
+        </span>
         <span>{node !== undefined ? node["label"] : null}</span>
         <span>{node !== undefined ? node["subtitle"] : null}</span>
       </li>
@@ -51,10 +58,14 @@ export function PlotUI(node, style, indexIds) {
               ul.getAttribute("isexpand") === null ||
               ul.getAttribute("isexpand") === "true"
             ) {
+              currentElement.classList.remove("collapsed");
+              currentElement.classList.add("expand");
               ul.classList.remove("hide");
               ul.classList.add("show");
               ul.setAttribute("isexpand", "false");
             } else {
+              currentElement.classList.remove("expand");
+              currentElement.classList.add("collapsed");
               ul.classList.remove("show");
               ul.classList.add("hide");
               ul.setAttribute("isexpand", "true");
@@ -67,8 +78,13 @@ export function PlotUI(node, style, indexIds) {
               ? node.head_id
               : null
           }
+          className="collapsed"
         >
-          <span>&#x27A5;</span>
+          {/* <span>&#x27A5;</span> */}
+          <span>
+            <img className="closedIcon" src={ParentIcon} />
+            <img className="opendIcon" src={ParentIconOpen} />
+          </span>
           <span>{node !== undefined ? node["label"] : null}</span>
           <span>
             <b>{node !== undefined ? node["subtitle"] : null}</b>

@@ -559,7 +559,7 @@ class ApplyLeave extends Component {
       module: "hrManagement",
       data: {
         employee_id: this.state.employee_id,
-        year: moment().year(),
+        // year: moment().year(),
         gender: this.state.employee.gender,
         employee_type: this.state.employee.employee_type
         // selfservice: "Y"

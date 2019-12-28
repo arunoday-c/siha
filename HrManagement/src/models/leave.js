@@ -3173,7 +3173,8 @@ let year='';
             "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, L.leave_code,\
         L.leave_description,L.leave_type,total_eligible, availed_till_date, close_balance,\
         E.employee_code ,E.full_name as employee_name,\
-        LD.hims_d_leave_detail_id,LD.employee_type, LD.eligible_days \
+        LD.hims_d_leave_detail_id,LD.employee_type, LD.eligible_days ,\
+          case  ML.processed when 'Y' then 'YES' else 'NO' end as processed\
         from hims_f_employee_monthly_leave  ML inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id       \
         inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id  \
         inner join hims_d_employee E on ML.employee_id=E.hims_d_employee_id and E.record_status='A' \

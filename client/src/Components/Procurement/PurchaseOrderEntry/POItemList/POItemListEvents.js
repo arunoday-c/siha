@@ -746,6 +746,16 @@ const onchhangegriddiscount = ($this, row, e) => {
         ? 0
         : (parseFloat(extended_price) * sub_discount_percentage) / 100;
     discount_amount = sub_discount_amount;
+    if (sub_discount_percentage > 100) {
+      swalMessage({
+        title: "Discount % cannot be greater than 100.",
+        type: "warning"
+      });
+      // return
+      sub_discount_percentage = 0;
+      sub_discount_amount = 0;
+      discount_amount = 0
+    }
   } else if (name === "sub_discount_amount") {
     sub_discount_amount = value === "" || value === undefined ? null : parseFloat(value);
     discount_amount = sub_discount_amount === null ? 0 : parseFloat(value);
@@ -754,6 +764,17 @@ const onchhangegriddiscount = ($this, row, e) => {
         ? 0
         : (sub_discount_amount / parseFloat(extended_price)) * 100;
     sub_discount_percentage = sub_discount_percentage.toFixed(3);
+
+    if (parseFloat(discount_amount) > parseFloat(extended_price)) {
+      swalMessage({
+        title: "Discount Amount cannot be greater than Ext. Price.",
+        type: "warning"
+      });
+      // return
+      sub_discount_amount = 0;
+      sub_discount_percentage = 0;
+      discount_amount = 0
+    }
   } else {
     extended_price =
       parseFloat(row.authorize_quantity) * parseFloat(row.unit_price);
@@ -763,43 +784,30 @@ const onchhangegriddiscount = ($this, row, e) => {
       (parseFloat(extended_price) * parseFloat(sub_discount_percentage)) / 100;
     discount_amount = sub_discount_amount
   }
-  if (sub_discount_percentage > 100) {
-    swalMessage({
-      title: "Discount % cannot be greater than 100.",
-      type: "warning"
-    });
-  } else if (sub_discount_percentage < 0) {
-    swalMessage({
-      title: "Cannot be less than 0.",
-      type: "warning"
-    });
-  } else {
-    //
 
-    extended_cost = parseFloat(extended_price) - parseFloat(discount_amount);
-    row["unit_cost"] =
-      $this.state.hims_f_procurement_po_header_id !== null
-        ? extended_cost / parseFloat(row.authorize_quantity)
-        : extended_cost / parseFloat(row.total_quantity);
+  //
 
-    tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
-    tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
-    // extended_cost = getAmountFormart(extended_cost, { appendSymbol: false });
+  extended_cost = parseFloat(extended_price) - parseFloat(discount_amount);
+  row["unit_cost"] =
+    $this.state.hims_f_procurement_po_header_id !== null
+      ? extended_cost / parseFloat(row.authorize_quantity)
+      : extended_cost / parseFloat(row.total_quantity);
 
-    row["extended_cost"] = getAmountFormart(extended_cost, {
-      appendSymbol: false
-    });
-    row["tax_amount"] = (extended_cost * parseFloat(row.tax_percentage)) / 100;
-    row["total_amount"] = parseFloat(tax_amount) + parseFloat(extended_cost);
+  tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
+  tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
+  row["extended_cost"] = getAmountFormart(extended_cost, {
+    appendSymbol: false
+  });
+  row["tax_amount"] = (extended_cost * parseFloat(row.tax_percentage)) / 100;
+  row["total_amount"] = parseFloat(tax_amount) + parseFloat(extended_cost);
 
-    row["sub_discount_percentage"] = sub_discount_percentage;
-    row["sub_discount_amount"] = sub_discount_amount;
-    // row["extended_cost"] = extended_cost;
-    row["net_extended_cost"] = getAmountFormart(extended_cost, {
-      appendSymbol: false
-    });
-    row.update();
-  }
+  row["sub_discount_percentage"] = sub_discount_percentage;
+  row["sub_discount_amount"] = sub_discount_amount;
+  row["net_extended_cost"] = getAmountFormart(extended_cost, {
+    appendSymbol: false
+  });
+
+  row.update();
 };
 
 const AssignData = $this => {

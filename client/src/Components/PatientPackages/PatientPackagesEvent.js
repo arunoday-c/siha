@@ -19,7 +19,7 @@ export default function PackageSetupEvent() {
     ShowPackageUtilize: ($this, row) => {
       $this.setState({
         isPackUtOpen: !$this.state.isPackUtOpen,
-        package_detail: row
+        package_detail: [row]
       });
     },
     ClosePackageUtilize: $this => {

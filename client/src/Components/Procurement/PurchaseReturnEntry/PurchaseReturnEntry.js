@@ -61,7 +61,6 @@ class PurchaseReturnEntry extends Component {
                     .where(w => w.location_type === "WH")
                     .toArray();
 
-        debugger
         const class_finder = this.state.dataFinder === true
             ? " disableFinder"
             : this.state.ReqData === false

@@ -277,7 +277,7 @@ class EmployeeDocuments extends Component {
             </div>
           </div>
         </div>
-        <div className="col-9">
+        <div className="col-6">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
@@ -322,7 +322,15 @@ class EmployeeDocuments extends Component {
                             label={{ forceLabel: "View/ Download" }}
                           />
                         ),
-                        displayTemplate: row => <button>Download</button>,
+                        displayTemplate: row => (
+                          <button
+                            onClick={e => {
+                              console.log("row", row);
+                            }}
+                          >
+                            Download
+                          </button>
+                        ),
                         others: {
                           maxWidth: 150
                         }
@@ -331,7 +339,7 @@ class EmployeeDocuments extends Component {
                     keyId="documentManagement"
                     dataSource={{ data: this.state.document_grid }}
                     isEditable={true}
-                    paging={{ page: 0, rowsPerPage: 10 }}
+                    paging={{ page: 0, rowsPerPage: 20 }}
                     events={{
                       onDelete: rows => {}, //deleteDeptUser.bind(this, this),
                       onEdit: row => {},
@@ -340,7 +348,13 @@ class EmployeeDocuments extends Component {
                   />
                 </div>
               </div>
-              <div className="row margin-top-15">
+            </div>
+          </div>
+        </div>
+        <div className="col-3">
+          <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet-body documentMasterCntr">
+              <div className="row">
                 {this.state.selected_id !== undefined
                   ? this.state.document_type_list.map((item, index) => (
                       <div className="col" key={index}>

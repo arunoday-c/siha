@@ -27,7 +27,8 @@ import {
   generatePOReceipt,
   generatePOReceiptNoPrice,
   clearItemDetails,
-  VendorQuotationSearch
+  VendorQuotationSearch,
+  getPOOptions
 } from "./PurchaseOrderEntryEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POEntry from "../../../Models/POEntry";
@@ -41,10 +42,12 @@ class PurchaseOrderEntry extends Component {
       decimal_places: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).decimal_places,
-      po_auth_level: "2"
+      // po_auth_level: "1"
     };
     getVendorMaster(this, this);
+    getPOOptions(this, this)
   }
+
 
   UNSAFE_componentWillMount() {
     let IOputs = POEntry.inputParam();

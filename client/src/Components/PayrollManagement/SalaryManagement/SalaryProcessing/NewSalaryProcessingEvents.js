@@ -87,7 +87,6 @@ const SalaryProcess = ($this, inputs, from) => {
                   });
                 }
               } else {
-                debugger
                 AlgaehLoader({ show: false });
                 swalMessage({
                   title: response.data.result.message,

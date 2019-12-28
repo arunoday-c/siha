@@ -128,8 +128,6 @@ export default function BalanceSheet(props) {
             <ul className="treeListUL">
               {PlotUI(data[result[0]], style, [0])}
             </ul>
-          </div>
-          <div className="reportTableStyle">
             <ul className="treeListUL">
               {PlotUI(data[result[1]], style, [0])}
             </ul>{" "}

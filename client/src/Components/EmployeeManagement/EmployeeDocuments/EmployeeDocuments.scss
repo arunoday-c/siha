@@ -49,7 +49,12 @@
   }
   #EmployeeDocumentGrid {
     .ReactTable {
-      max-height: 50vh !important;
+      max-height: 68.5vh !important;
     }
   }
+}
+.documentMasterCntr {
+  max-height: 74.7vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
