@@ -460,6 +460,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let superUser = "";
+    console.log("req.userIdentity", req.userIdentity);
     //for admin login
     if (req.userIdentity.role_type == "AD") {
       superUser = " and access_by <> 'SU'";
@@ -484,7 +485,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
           select algaeh_app_screens_id, screen_code, screen_name, page_to_redirect,S.other_language, module_id
           from algaeh_d_app_module M inner join algaeh_d_app_screens S on M.algaeh_d_module_id =S.module_id
           where  M.record_status=md5('A') and S.record_status='A' ${superUser}  order by display_order `,
-
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -541,7 +542,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
             inner join algaeh_d_app_screens S on SRM.screen_id=S.algaeh_app_screens_id\
             where MRP.record_status='A'  and SRM.record_status='A' and S.record_status='A' and  MRP.role_id =?",
           values: [role_id, role_id],
-          printQuery:true
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -597,48 +598,73 @@ let getRoleBaseActiveModules = (req, res, next) => {
 };
 
 //created by irfan: to get
-let getRoleBaseInActiveComponentsOLD = (req, res, next) => {
+let getRoleBaseInActiveComponents_OLD = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
+    let from_assignment = "N";
+    let role_id = req.userIdentity.role_id;
+    if (req.query.from_assignment == "Y" && req.query.role_id > 0) {
+      from_assignment = "Y";
+      role_id = req.query.role_id;
+    }
+
     _mysql
       .executeQuery({
         query:
-          "SELECT  SERM.view_privilege, screen_element_id,screen_element_code,screen_element_name,component_code,\
-        screen_code, module_code from algaeh_m_scrn_elmnt_role_privilage_mapping SERM\
-        inner join algaeh_d_app_scrn_elements  SE on SERM.screen_element_id=SE.algaeh_d_app_scrn_elements_id\
-        inner join algaeh_d_app_component C on SE.component_id=C.algaeh_d_app_component_id  \
-        inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
-        inner join  algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
-         where SERM.record_status='A' and SE.record_status='A' and  C.record_status='A'\
-         and  S.record_status='A' and M.record_status=md5('A') and role_id=?",
-        values: [req.userIdentity.role_id]
+          "   SELECT algaeh_m_component_role_privilage_mapping_id,module_code,screen_code,component_code,view_privilege from\
+          algaeh_m_component_role_privilage_mapping CRM inner join algaeh_d_app_component C\
+              on CRM.component_id=C.algaeh_d_app_component_id\
+              inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
+              inner join algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
+              where  CRM.record_status='A' and C.record_status='A' and  M.record_status= md5('A') and\
+              S.record_status='A'  and CRM.role_id=?;\
+              SELECT   component_role_map_id, screen_element_code,screen_element_name,component_code,\
+          screen_code, module_code from algaeh_m_component_role_privilage_mapping CRM   \
+          inner join algaeh_m_scrn_elmnt_role_privilage_mapping SERM on \
+          CRM.algaeh_m_component_role_privilage_mapping_id=SERM.component_role_map_id \
+              inner join algaeh_d_app_scrn_elements  SE on SERM.screen_element_id=SE.algaeh_d_app_scrn_elements_id\
+              inner join algaeh_d_app_component C on SE.component_id=C.algaeh_d_app_component_id  \
+              inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
+              inner join  algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
+          where SERM.record_status='A' and SE.record_status='A' and  C.record_status='A'\
+          and  S.record_status='A' and M.record_status=md5('A') and CRM.role_id=?",
+        values: [role_id, role_id]
       })
-      .then(elementsHide => {
-        _mysql
-          .executeQuery({
-            query:
-              "SELECT module_code,\
-        component_code,screen_code from \
-        algaeh_m_component_role_privilage_mapping CRM inner join algaeh_d_app_component C\
-         on CRM.component_id=C.algaeh_d_app_component_id\
-         inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
-         inner join algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
-         where  CRM.record_status='A' and C.record_status='A' and  M.record_status= md5('A') and \
-         S.record_status='A'  and role_id=?",
-            values: [req.userIdentity.role_id]
-          })
-          .then(componentHide => {
-            _mysql.releaseConnection();
-            req.records = {
-              listOfComponentsToHide: componentHide,
-              screenElementsToHide: elementsHide
-            };
-            next();
-          })
-          .catch(error => {
-            _mysql.releaseConnection();
-            next(error);
-          });
+      .then(result => {
+        _mysql.releaseConnection();
+        let components = result[0];
+        let elements = result[1];
+        let outputArray = [];
+        for (let i = 0; i < components.length; i++) {
+          if (components[i]["view_privilege"] == "Y") {
+            let screenElementsToHide = new LINQ(elements)
+              .Where(
+                w =>
+                  w.component_role_map_id ==
+                  components[i]["algaeh_m_component_role_privilage_mapping_id"]
+              )
+              .Select(s => {
+                return {
+                  screen_element_code: s.screen_element_code,
+                  screen_element_name: s.screen_element_name,
+                  component_code: s.component_code,
+                  screen_code: s.screen_code,
+                  module_code: s.module_code
+                };
+              })
+              .ToArray();
+
+            outputArray.push({
+              ...components[i],
+              screenElementsToHide: screenElementsToHide
+            });
+          } else {
+            outputArray.push(components[i]);
+          }
+        }
+
+        req.records = outputArray;
+        next();
       })
       .catch(error => {
         _mysql.releaseConnection();
@@ -650,7 +676,6 @@ let getRoleBaseInActiveComponentsOLD = (req, res, next) => {
   }
 };
 
-//created by irfan: to get
 let getRoleBaseInActiveComponents = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
@@ -1572,7 +1597,7 @@ let assignScreens = (req, res, next) => {
                     " INSERT IGNORE INTO `algaeh_m_screen_role_privilage_mapping` (module_role_map_id, screen_id, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?); ",
                     [
                       input.update_screens[i][
-                      "algaeh_m_module_role_privilage_mapping_id"
+                        "algaeh_m_module_role_privilage_mapping_id"
                       ],
                       input.update_screens[i]["insert_screens"][k],
                       req.userIdentity.algaeh_d_app_user_id,
@@ -2032,18 +2057,15 @@ let addLisMachineConfiguration = (req, res, next) => {
         _mysql.releaseConnection();
         next(error);
       });
-
   } catch (e) {
     _mysql.releaseConnection();
     next(e);
   }
 };
 
-
 let getLisMachineConfiguration = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
-
     _mysql
       .executeQuery({
         query:
@@ -2059,7 +2081,6 @@ let getLisMachineConfiguration = (req, res, next) => {
         _mysql.releaseConnection();
         next(error);
       });
-
   } catch (e) {
     _mysql.releaseConnection();
     next(e);
@@ -2101,7 +2122,7 @@ let updateLisMachineConfiguration = (req, res, next) => {
           new Date(),
           input.updated_by,
           input.hims_d_lis_configuration_id
-        ],
+        ]
         // printQuery: true
       })
       .then(result => {
@@ -2113,7 +2134,6 @@ let updateLisMachineConfiguration = (req, res, next) => {
         _mysql.releaseConnection();
         next(error);
       });
-
   } catch (e) {
     _mysql.releaseConnection();
     next(e);

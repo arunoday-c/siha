@@ -48,7 +48,7 @@ export default ({ config, db }) => {
     (req, res, next) => {
       const { post } = req.body;
       const bodyDetails = JSON.parse(clientDecrypt(post));
-      console.log("bodyDetails", bodyDetails);
+
       req.body = bodyDetails;
       next();
     },
