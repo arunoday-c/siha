@@ -97,8 +97,8 @@ const savePOOptions = ($this) => {
     }
     if (inputObj.hims_d_procurement_options_id !== null) {
         algaehApiCall({
-            uri: "/inventory/updateInventoryOptions",
-            module: "inventory",
+            uri: "/POSettings/updatePOOptions",
+            module: "procurement",
             data: $this.state,
             method: "PUT",
             onSuccess: res => {
@@ -107,13 +107,15 @@ const savePOOptions = ($this) => {
                         title: "Record Updated Successfully",
                         type: "success"
                     });
+
                 }
             }
         });
+
     } else {
         algaehApiCall({
-            uri: "/inventory/addInventoryOptions",
-            module: "inventory",
+            uri: "/POSettings/addPOOptions",
+            module: "procurement",
             data: $this.state,
             method: "POST",
             onSuccess: res => {

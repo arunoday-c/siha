@@ -366,7 +366,6 @@ const openSalaryComponents = ($this, row) => {
     data: inputObj,
     method: "GET",
     onSuccess: response => {
-      debugger;
       if (response.data.success) {
         let data = response.data.result;
         if (data.length === 0) {

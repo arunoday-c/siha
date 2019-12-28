@@ -47,7 +47,7 @@ const SalesOrderSearch = ($this, e) => {
                 method: "GET",
                 data: { sales_order_number: row.sales_order_number, location_id: $this.state.location_id },
                 onSuccess: response => {
-                    debugger
+
                     if (response.data.success) {
                         let data = response.data.records;
 
@@ -121,7 +121,7 @@ const SaveDispatchNote = $this => {
 
 
     const settings = { header: undefined, footer: undefined };
-    debugger
+
     algaehApiCall({
         uri: "/DispatchNote/addDispatchNote",
         module: "sales",

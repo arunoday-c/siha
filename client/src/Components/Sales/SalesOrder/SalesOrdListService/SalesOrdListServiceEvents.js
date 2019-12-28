@@ -251,7 +251,7 @@ const calculateAmount = ($this, context, row, _index) => {
         $this.state.decimal_place
     )
 
-    debugger
+
     row.tax_amount = ((parseFloat(row.net_extended_cost) * parseFloat(row.tax_percentage)) / 100).toFixed(
         $this.state.decimal_place
     );

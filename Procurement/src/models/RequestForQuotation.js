@@ -1,6 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
+import _ from "lodash";
 
 export default {
     getRequestForQuotation: (req, res, next) => {
@@ -169,7 +170,53 @@ export default {
                 next(e);
             });
         }
+    },
+    getRequestQuotationToComapre: (req, res, next) => {
+        const _mysql = new algaehMysql();
+        try {
+            console.log("req.query.quotation_for", req.query.quotation_for)
+            let strQuery = ""
+            if (req.query.quotation_for === "INV") {
+                strQuery = mysql.format(
+                    "SELECT  hims_f_procurement_vendor_quotation_header_id,V.vendor_name, vendor_id, IM.item_description, D.quantity, D.unit_price, \
+                    IU.uom_description, inv_item_id as item_id FROM hims_f_procurement_vendor_quotation_header H \
+                    inner join hims_f_procurement_vendor_quotation_detail D on D.vendor_quotation_header_id = H.hims_f_procurement_vendor_quotation_header_id\
+                    inner join hims_d_vendor V on V.hims_d_vendor_id = H.vendor_id   \
+                    inner join hims_d_inventory_item_master IM on D.inv_item_id = IM.hims_d_inventory_item_master_id \
+                    inner join hims_d_inventory_uom IU on D.inventory_uom_id = IU.hims_d_inventory_uom_id \
+                    where H.req_quotation_header_id=? ;",
+                    [req.query.hims_f_procurement_req_quotation_header_id]
+                );
+            } else if (req.query.quotation_for === "PHR") {
+                strQuery = mysql.format(
+                    "SELECT  hims_f_procurement_vendor_quotation_header_id,V.vendor_name, vendor_id,IM.item_description, D.quantity, D.unit_price, \
+                    IU.uom_description, phar_item_id as item_id FROM hims_f_procurement_vendor_quotation_header H \
+                    inner join hims_f_procurement_vendor_quotation_detail D on D.vendor_quotation_header_id = H.hims_f_procurement_vendor_quotation_header_id\
+                    inner join hims_d_vendor V on V.hims_d_vendor_id = H.vendor_id   \
+                    inner join hims_d_item_master IM on D.inv_item_id = IM.hims_d_item_master_id \
+                    inner join hims_d_pharmacy_uom IU on D.inventory_uom_id = IU.hims_d_pharmacy_uom_id \
+                    where H.req_quotation_header_id=? ;",
+                    [req.query.hims_f_procurement_req_quotation_header_id]
+                );
+            }
+            _mysql
+                .executeQuery({
+                    query: strQuery,
+                    printQuery: true
+                })
+                .then(result => {
+                    _mysql.releaseConnection();
+                    req.records = result;
+                    next();
+                })
+                .catch(error => {
+                    _mysql.releaseConnection();
+                    next(error);
+                });
+        } catch (e) {
+            _mysql.releaseConnection();
+            next(e);
+        }
     }
-
 
 };

@@ -348,6 +348,21 @@ const datehandle = ($this, ctrl, e) => {
         [e]: moment(ctrl)._d
     });
 };
+
+const dateValidate = ($this, value, event) => {
+    let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
+    if (inRange) {
+        swalMessage({
+            title: "Expected Arrival cannot be past Date.",
+            type: "warning"
+        });
+        event.target.focus();
+        $this.setState({
+            [event.target.name]: null
+        });
+    }
+};
+
 export {
     texthandle,
     poforhandle,
@@ -357,5 +372,6 @@ export {
     getCtrlCode,
     generateRequestQuotation,
     datehandle,
-    clearItemDetails
+    clearItemDetails,
+    dateValidate
 };

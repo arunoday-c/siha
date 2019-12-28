@@ -559,7 +559,20 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Total Qty" }}
                                 />
                               ),
-                              disabled: true
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {parseFloat(row.total_quantity)}
+                                  </span>
+                                );
+                              },
+                              editorTemplate: row => {
+                                return (
+                                  <span>
+                                    {parseFloat(row.total_quantity)}
+                                  </span>
+                                );
+                              }
                             },
                             {
                               fieldName: "extended_price",

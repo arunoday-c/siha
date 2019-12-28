@@ -18,7 +18,8 @@ import ReportLauncher from "../AccountReport";
 import {
   getAccounts,
   removeAccount,
-  isPositive
+  isPositive,
+  renameAccount
   // getChartData
 } from ".././FinanceAccountEvent";
 import "../alice.scss";
@@ -139,7 +140,6 @@ export default function Assets() {
   //     });
   // }
   useEffect(loadAccount, []);
-
   return (
     <div className="container-fluid assetsModuleScreen">
       <AddNewAccount
@@ -412,10 +412,39 @@ export default function Assets() {
                                       <Icon
                                         type="save"
                                         onClick={e => {
-                                          // const editedValue =
-                                          //   e.currentTarget.offsetParent
-                                          //     .previousElementSibling.value;
-                                          setEditorRecord({});
+                                          const editedValue =
+                                            e.currentTarget.offsetParent
+                                              .previousElementSibling.value;
+
+                                          const rowNode = rowInfo.node;
+                                          let input = {
+                                            leaf_node: rowNode.leafnode
+                                          };
+                                          if (rowNode.leafnode === "Y") {
+                                            input["child_name"] = editedValue;
+                                            input["finance_account_child_id"] =
+                                              rowNode.finance_account_child_id;
+                                          } else {
+                                            input["account_name"] = editedValue;
+                                            input["finance_account_head_id"] =
+                                              rowNode.finance_account_head_id;
+                                          }
+                                          renameAccount(input)
+                                            .then(() => {
+                                              node["title"] = editedValue;
+                                              setEditorRecord({});
+                                              AlgaehMessagePop({
+                                                type: "success",
+                                                display: "Renamed successfull"
+                                              });
+                                            })
+                                            .catch(error => {
+                                              console.log("error", error);
+                                              AlgaehMessagePop({
+                                                type: "error",
+                                                display: error
+                                              });
+                                            });
                                         }}
                                       />
                                     }

@@ -164,15 +164,14 @@ class VisitClose extends Component {
                         <AlgaehLabel label={{ forceLabel: "Department" }} />
                       ),
                       displayTemplate: row => {
-                        debugger;
                         let display =
                           this.props.subDepartments === undefined
                             ? []
                             : this.props.subDepartments.filter(
-                                f =>
-                                  f.hims_d_sub_department_id ===
-                                  row.sub_department_id
-                              );
+                              f =>
+                                f.hims_d_sub_department_id ===
+                                row.sub_department_id
+                            );
 
                         return (
                           <span>
@@ -192,8 +191,8 @@ class VisitClose extends Component {
                           this.props.viewproviders === undefined
                             ? []
                             : this.props.viewproviders.filter(
-                                f => f.hims_d_employee_id === row.doctor_id
-                              );
+                              f => f.hims_d_employee_id === row.doctor_id
+                            );
 
                         return (
                           <span>

@@ -453,7 +453,7 @@ export default {
                 .executeQuery({
                   query:
                     "insert into finance_voucher_details ( payment_date,month,year,head_id,child_id,debit_amount,\
-                        payment_type,credit_amount,entered_by,entered_date,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?);",
+                        payment_type,credit_amount,entered_by,entered_date,auth_status,is_opening_bal)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?);",
                   values: [
                     new Date(),
                     month,
@@ -465,6 +465,7 @@ export default {
                     credit_amount,
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
+                    "Y",
                     "Y"
                   ],
                   printQuery: false
@@ -806,7 +807,7 @@ export default {
                   debit_amount: 0,
                   credit_amount: balance,
                   payment_type: "CR",
-                  is_opening_bal: "Y",
+                  
                   hospital_id: result[0]["hospital_id"],
                   year: moment().format("YYYY"),
                   month: moment().format("M"),
@@ -822,7 +823,7 @@ export default {
                   debit_amount: Math.abs(balance),
                   credit_amount: 0,
                   payment_type: "DR",
-                  is_opening_bal: "Y",
+                 
                   hospital_id: result[0]["hospital_id"],
                   year: moment().format("YYYY"),
                   month: moment().format("M"),
@@ -837,7 +838,7 @@ export default {
                 "debit_amount",
                 "credit_amount",
                 "payment_type",
-                "is_opening_bal",
+               
                 "hospital_id",
                 "year",
                 "month",

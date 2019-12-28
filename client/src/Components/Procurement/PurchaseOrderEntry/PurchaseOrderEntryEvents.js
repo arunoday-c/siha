@@ -286,6 +286,7 @@ const ClearData = ($this, e) => {
   IOputs.dataExitst = false;
   $this.setState(IOputs);
   clearItemDetails($this)
+  getPOOptions($this)
 };
 
 const SavePOEnrty = $this => {
@@ -629,7 +630,7 @@ const AuthorizePOEntry = ($this, authorize) => {
 
     let authorize1 = "";
     let authorize2 = "";
-    if ($this.state.requisition_auth_level === "1") {
+    if ($this.state.po_auth_level === "1") {
       $this.state.authorize1 = "Y";
       $this.state.authorize2 = "Y";
       authorize1 = "Y";
@@ -855,6 +856,19 @@ const VendorQuotationSearch = ($this) => {
   });
 }
 
+const getPOOptions = ($this) => {
+  algaehApiCall({
+    uri: "/POSettings/getPOOptions",
+    method: "GET",
+    module: "procurement",
+    onSuccess: res => {
+      if (res.data.success) {
+        $this.setState({ po_auth_level: res.data.records[0].po_auth_level });
+      }
+    }
+  });
+}
+
 export {
   texthandle,
   poforhandle,
@@ -872,5 +886,6 @@ export {
   generatePOReceipt,
   generatePOReceiptNoPrice,
   clearItemDetails,
-  VendorQuotationSearch
+  VendorQuotationSearch,
+  getPOOptions
 };

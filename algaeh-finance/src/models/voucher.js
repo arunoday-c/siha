@@ -3,6 +3,53 @@ import _ from "lodash";
 import moment from "moment";
 import algaehUtilities from "algaeh-utilities/utilities";
 
+//created by irfan: to get hieghest auth level
+function getMaxAuth(options) {
+  const _mysql = options.mysql;
+  let MaxAuth;
+  return new Promise((resolve, reject) => {
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT auth_level,auth1_limit,auth2_limit FROM finance_options limit 1;"
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        //LEAVE
+        switch (result[0]["auth_level"]) {
+          case "1":
+            MaxAuth = "1";
+            limit = result[0]["auth1_limit"];
+            break;
+
+          case "2":
+            MaxAuth = "2";
+            limit = result[0]["auth2_limit"];
+            break;
+          default:
+        }
+
+        resolve({
+          MaxAuth: MaxAuth,
+          limit: [
+            {
+              auth_level: 1,
+              auth_limit: result[0]["auth1_limit"]
+            },
+            {
+              auth_level: 2,
+              auth_limit: result[0]["auth2_limit"]
+            }
+          ]
+        });
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        reject(e);
+      });
+  });
+}
+
 export default {
   //created by irfan:
   addVoucher_BKP_26_dec: (req, res, next) => {
@@ -501,6 +548,167 @@ export default {
         _mysql.releaseConnection();
         next(e);
       });
+  },
+  //created by irfan:
+  authorizeVoucher: (req, res, next) => {
+    const utilities = new algaehUtilities();
+    let input = req.body;
+
+    if (req.userIdentity.finance_authorize_privilege != "N") {
+      const _mysql = new algaehMysql();
+      // get highest auth level
+      getMaxAuth({
+        mysql: _mysql
+      })
+        .then(option => {
+          if (
+            req.userIdentity.finance_authorize_privilege < option.MaxAuth ||
+            input.auth_level < option.MaxAuth
+          ) {
+            getFinanceAuthFields(input["auth_level"]).then(authFields => {
+              _mysql
+                .executeQuery({
+                  query:
+                    "update finance_voucher_details set " +
+                    authFields +
+                    "  where voucher_header_id=?",
+
+                  values: [
+                    "Y",
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                    input.voucher_header_id
+                  ],
+                  printQuery: false
+                })
+                .then(authResult => {
+                  _mysql.releaseConnection();
+                  req.records = authResult;
+                  next();
+                })
+                .catch(error => {
+                  _mysql.releaseConnection();
+                  next(error);
+                });
+            });
+          } else if (
+            req.userIdentity.finance_authorize_privilege >= option.MaxAuth &&
+            input.auth_level >= option.MaxAuth
+          ) {
+            getFinanceAuthFields(input["auth_level"]).then(authFields => {
+              _mysql
+                .executeQuery({
+                  query:
+                    "update finance_voucher_details set " +
+                    authFields +
+                    " auth_status='Y'  where voucher_header_id=?",
+                  values: [
+                    "Y",
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                    input.voucher_header_id
+                  ],
+                  printQuery: false
+                })
+                .then(authResult => {
+                  _mysql.releaseConnection();
+                  req.records = authResult;
+                  next();
+                })
+                .catch(error => {
+                  _mysql.releaseConnection();
+                  next(error);
+                });
+            });
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_user: true,
+        message: "you dont have authorization privilege"
+      };
+      next();
+    }
+  },
+
+  //created by irfan:
+  getVouchersToAuthorize: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    const input = req.query;
+
+    let strQry = "";
+    if (input.hospital_id) {
+      strQry += ` and VD.hospital_id=${input.hospital_id} `;
+    }
+    if (
+      moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD") > 0 &&
+      moment(input.to_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
+    ) {
+      strQry += ` and H.payment_date  between date('${input.from_date}') and date('${input.to_date}') `;
+    }
+
+    if (input.voucher_no != undefined && input.voucher_no != null) {
+      strQry += ` and H.voucher_no ='${input.voucher_no}'`;
+    }
+
+    if (input.voucher_type != undefined && input.voucher_type != null) {
+      strQry += ` and H.voucher_type ='${input.voucher_type}'`;
+    }
+
+    if (input.auth_level == 1) {
+      strQry += ` and VD.auth1 ='N'`;
+    }
+
+    if (input.auth_level == 2) {
+      strQry += ` and VD.auth1 ='Y' and VD.auth2 ='N'`;
+    }
+    _mysql
+      .executeQuery({
+        query: `select distinct finance_voucher_header_id,voucher_type,amount,H.payment_date,posted_from,\
+          narration,voucher_no from finance_voucher_header H\
+          inner join finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id\
+          where posted_from='V' and VD.auth_status='N'  ${strQry};`
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+  //created by irfan:
+  getVouchersDetailsToAuthorize: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    const input = req.query;
+
+    _mysql
+      .executeQuery({
+        query:
+          "select debit_amount,credit_amount,concat(H.account_name,'->',C.child_name) as ledger\
+          from finance_voucher_details VD \
+          left join finance_account_head H on VD.head_id=H.finance_account_head_id\
+          left join finance_account_child C on VD.child_id=C.finance_account_child_id\
+          where VD.voucher_header_id=?; ",
+        values: [input.finance_voucher_header_id]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };
 
@@ -509,3 +717,24 @@ export default {
 // 'sub department wise' else 'None' end as cost_center_type
 //  from finance_options F
 // left join hims_d_hospital H on F.head_office_id=H.hims_d_hospital_id
+
+//created by irfan: to get database field for authrzation
+function getFinanceAuthFields(auth_level) {
+  return new Promise((resolve, reject) => {
+    let authFields;
+
+    switch (auth_level) {
+      case "1":
+        authFields = ["auth1=?", "auth1_by=?", "auth1_date=?"];
+        break;
+
+      case "2":
+        authFields = ["auth2=?", "auth2_by=?", "auth2_date=?"];
+        break;
+
+      default:
+    }
+
+    resolve(authFields);
+  });
+}
