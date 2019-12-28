@@ -168,7 +168,7 @@ class SelfPersonalDetails extends Component {
               this.getEmployeeEducation();
             }
           },
-          onFailure: err => { }
+          onFailure: err => {}
         });
       }
     });
@@ -196,7 +196,7 @@ class SelfPersonalDetails extends Component {
           this.getEmployeeEducation();
         }
       },
-      onFailure: err => { }
+      onFailure: err => {}
     });
   }
   updateEmployeeWorkExperience(data) {
@@ -223,7 +223,7 @@ class SelfPersonalDetails extends Component {
           this.getEmployeeWorkExp();
         }
       },
-      onFailure: err => { }
+      onFailure: err => {}
     });
   }
 
@@ -333,7 +333,7 @@ class SelfPersonalDetails extends Component {
           });
         }
       },
-      onFailure: err => { }
+      onFailure: err => {}
     });
   }
 
@@ -352,7 +352,7 @@ class SelfPersonalDetails extends Component {
           });
         }
       },
-      onFailure: err => { }
+      onFailure: err => {}
     });
   }
 
@@ -406,7 +406,7 @@ class SelfPersonalDetails extends Component {
               this.getEmployeeWorkExp();
             }
           },
-          onFailure: err => { }
+          onFailure: err => {}
         });
       }
     });
@@ -640,7 +640,7 @@ class SelfPersonalDetails extends Component {
               });
             }
           },
-          onFailure: err => { }
+          onFailure: err => {}
         });
       }
     });
@@ -699,7 +699,7 @@ class SelfPersonalDetails extends Component {
           });
         }
       },
-      onFailure: err => { }
+      onFailure: err => {}
     });
   }
 
@@ -773,59 +773,6 @@ class SelfPersonalDetails extends Component {
       <div className="SelfPersonalDetails">
         <div className="row">
           <div className="col-7">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div
-                  className="caption"
-                  ref={c => {
-                    this.offcialDetails = c;
-                  }}
-                >
-                  <h3 className="caption-subject">Offical Details</h3>
-                </div>
-                <div className="actions" />
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-3">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Employee Code"
-                      }}
-                    />
-                    <h6>{empDetails.employee_code}</h6>
-                  </div>
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Designation"
-                      }}
-                    />
-                    <h6>{empDetails.designation}</h6>
-                  </div>
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Department"
-                      }}
-                    />
-                    <h6>{empDetails.sub_department_name}</h6>
-                  </div>
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Reporting To"
-                      }}
-                    />
-                    <h6>
-                      {empDetails.reporting_to_name !== null
-                        ? empDetails.reporting_to_name
-                        : "----------"}
-                    </h6>
-                  </div>
-                </div>
-              </div>
-            </div>
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div
@@ -1031,75 +978,146 @@ class SelfPersonalDetails extends Component {
 
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Name"
+                  <div className="col-3">
+                    <AlgaehFile
+                      name="attach_photo"
+                      accept="image/*"
+                      textAltMessage={empDetails.full_name}
+                      showActions={true}
+                      serviceParameters={{
+                        uniqueID: empDetails.employee_code,
+                        destinationName: empDetails.employee_code,
+                        fileType: "Employees"
                       }}
                     />
-                    <h6>{empDetails.full_name}</h6>
                   </div>
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Arabic Full Name"
-                      }}
-                    />
-                    <h6>{empDetails.arabic_name}</h6>
-                  </div>
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Date of Birth"
-                      }}
-                    />
-                    <h6>{empDetails.date_of_birth}</h6>
+                  <div className="col-8">
+                    <div className="row">
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Name"
+                          }}
+                        />
+                        <h6>{empDetails.full_name}</h6>
+                      </div>
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Arabic Full Name"
+                          }}
+                        />
+                        <h6>{empDetails.arabic_name}</h6>
+                      </div>
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Date of Birth"
+                          }}
+                        />
+                        <h6>{empDetails.date_of_birth}</h6>
+                      </div>
+                    </div>
+                    <hr />
+                    <div className="row">
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Gender"
+                          }}
+                        />
+                        <h6>{empDetails.sex}</h6>
+                      </div>{" "}
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Mobile"
+                          }}
+                        />
+                        <h6>{empDetails.primary_contact_no}</h6>
+                      </div>{" "}
+                      <div className="col employeeEmail">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Personal Email"
+                          }}
+                        />
+                        <h6>{empDetails.email}</h6>
+                      </div>
+                    </div>
+                    <hr />
+                    <div className="row">
+                      <div className="col-6">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Present Address"
+                          }}
+                        />
+                        <h6>{empDetails.present_address}</h6>
+                      </div>
+                      <div className="col-6">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Permanent Address"
+                          }}
+                        />
+                        <h6>{empDetails.permanent_address}</h6>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <hr />
-                <div className="row">
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Gender"
-                      }}
-                    />
-                    <h6>{empDetails.sex}</h6>
-                  </div>{" "}
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Mobile"
-                      }}
-                    />
-                    <h6>{empDetails.primary_contact_no}</h6>
-                  </div>{" "}
-                  <div className="col employeeEmail">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Personal Email"
-                      }}
-                    />
-                    <h6>{empDetails.email}</h6>
-                  </div>
+              </div>
+            </div>
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div
+                  className="caption"
+                  ref={c => {
+                    this.offcialDetails = c;
+                  }}
+                >
+                  <h3 className="caption-subject">Offical Details</h3>
                 </div>
-                <hr />
+                <div className="actions" />
+              </div>
+              <div className="portlet-body">
                 <div className="row">
-                  <div className="col-6">
+                  {" "}
+                  <div className="col-3">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Present Address"
+                        forceLabel: "Employee Code"
                       }}
                     />
-                    <h6>{empDetails.present_address}</h6>
+                    <h6>{empDetails.employee_code}</h6>
                   </div>
-                  <div className="col-6">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Permanent Address"
+                        forceLabel: "Designation"
                       }}
                     />
-                    <h6>{empDetails.permanent_address}</h6>
+                    <h6>{empDetails.designation}</h6>
+                  </div>
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Department"
+                      }}
+                    />
+                    <h6>{empDetails.sub_department_name}</h6>
+                  </div>
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Reporting To"
+                      }}
+                    />
+                    <h6>
+                      {empDetails.reporting_to_name !== null
+                        ? empDetails.reporting_to_name
+                        : "----------"}
+                    </h6>
                   </div>
                 </div>
               </div>
@@ -1270,16 +1288,16 @@ class SelfPersonalDetails extends Component {
                                 {row.dependent_type === "SP"
                                   ? "Spouse"
                                   : row.dependent_type === "FT"
-                                    ? "Father"
-                                    : row.dependent_type === "MT"
-                                      ? "Mother"
-                                      : row.dependent_type === "GU"
-                                        ? "Guardian"
-                                        : row.dependent_type === "SO"
-                                          ? "Son"
-                                          : row.dependent_type === "DG"
-                                            ? "Daughter"
-                                            : "------"}
+                                  ? "Father"
+                                  : row.dependent_type === "MT"
+                                  ? "Mother"
+                                  : row.dependent_type === "GU"
+                                  ? "Guardian"
+                                  : row.dependent_type === "SO"
+                                  ? "Son"
+                                  : row.dependent_type === "DG"
+                                  ? "Daughter"
+                                  : "------"}
                               </span>
                             );
                           },
@@ -1405,7 +1423,7 @@ class SelfPersonalDetails extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onEdit: () => { },
+                        onEdit: () => {},
                         onDelete: this.deleteEmployeeDependentDetails.bind(
                           this
                         ),
@@ -1712,7 +1730,7 @@ class SelfPersonalDetails extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onEdit: () => { },
+                        onEdit: () => {},
                         onDelete: this.deleteIdDetails.bind(this),
                         onDone: this.updateIdDetails.bind(this)
                       }}
@@ -2075,7 +2093,7 @@ class SelfPersonalDetails extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onEdit: () => { },
+                        onEdit: () => {},
                         onDelete: this.deleteEmpWrkExp.bind(this),
                         onDone: this.updateEmployeeWorkExperience.bind(this)
                       }}
@@ -2283,8 +2301,8 @@ class SelfPersonalDetails extends Component {
                                 {row.qualitfication_type === "FT"
                                   ? "Full Time"
                                   : row.qualitfication_type === "PT"
-                                    ? "Part Time"
-                                    : null}
+                                  ? "Part Time"
+                                  : null}
                               </span>
                             );
                           },
@@ -2381,7 +2399,7 @@ class SelfPersonalDetails extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onEdit: () => { },
+                        onEdit: () => {},
                         onDelete: this.deleteEmployeeEdu.bind(this),
                         onDone: this.updateEmployeeEdu.bind(this)
                       }}
@@ -2393,20 +2411,6 @@ class SelfPersonalDetails extends Component {
           </div>
 
           <div className="col-5">
-            <div className="EmployeeImgEdit">
-              <AlgaehFile
-                name="attach_photo"
-                accept="image/*"
-                textAltMessage={empDetails.full_name}
-                showActions={true}
-                serviceParameters={{
-                  uniqueID: empDetails.employee_code,
-                  destinationName: empDetails.employee_code,
-                  fileType: "Employees"
-                }}
-              />
-            </div>
-
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
