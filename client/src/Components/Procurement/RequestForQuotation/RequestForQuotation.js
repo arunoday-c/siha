@@ -25,7 +25,8 @@ import {
     getCtrlCode,
     generateRequestQuotation,
     datehandle,
-    clearItemDetails
+    clearItemDetails,
+    dateValidate
 } from "./RequestForQuotationEvents";
 
 
@@ -187,7 +188,8 @@ class RequestForQuotation extends Component {
                                     }}
                                     minDate={new Date()}
                                     events={{
-                                        onChange: datehandle.bind(this, this)
+                                        onChange: datehandle.bind(this, this),
+                                        onBlur: dateValidate.bind(this, this)
                                     }}
                                     disabled={this.state.dataExitst}
                                     value={this.state.expected_date}

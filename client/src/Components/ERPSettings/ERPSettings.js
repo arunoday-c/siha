@@ -51,8 +51,6 @@ export default class ERPSettings extends Component {
             po_auth_level: "1"
         };
 
-        debugger;
-
         if (this.PHCY_Active) {
             this.getPharmacyOptions();
         }

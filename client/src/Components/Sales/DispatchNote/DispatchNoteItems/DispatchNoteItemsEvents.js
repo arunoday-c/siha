@@ -13,7 +13,7 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const onchangegridcol = ($this, context, row, e) => {
-    debugger
+
     let name = e.target.name;
     let value = e.target.value === "" ? null : e.target.value;
 
@@ -145,7 +145,7 @@ const AddSelectedBatches = ($this, context) => {
             type: "warning"
         });
     } else {
-        debugger
+
         if (context !== null) {
             let saveEnable = true;
             let _inventory_stock_detail = $this.state.inventory_stock_detail;

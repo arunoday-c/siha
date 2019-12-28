@@ -106,7 +106,6 @@ const PaySalary = $this => {
     salary_payment: _salarypayment
   };
   AlgaehLoader({ show: true });
-  debugger
   const settings = { header: undefined, footer: undefined };
   algaehApiCall({
     uri: "/salary/SaveSalaryPayment",

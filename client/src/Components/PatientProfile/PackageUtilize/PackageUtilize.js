@@ -32,6 +32,7 @@ class PackageUtilize extends Component {
 
     this.state = {
       package_details: [],
+      package_detail: [],
       AdvanceOpen: false,
       itemBatches: false,
       service_id: null,
@@ -47,9 +48,10 @@ class PackageUtilize extends Component {
     this.baseState = this.state;
   }
 
-  componentDidMount() {}
+  componentDidMount() { }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
+
     if (nextProps.from_billing === true) {
       let consultation = nextProps.from === "frontDesk" ? true : false;
       this.setState({
@@ -58,6 +60,7 @@ class PackageUtilize extends Component {
         consumtion_items: []
       });
     } else {
+
       if (
         nextProps.package_detail !== null &&
         nextProps.package_detail !== undefined
@@ -183,6 +186,7 @@ class PackageUtilize extends Component {
     this.setState({ package_utilize: !this.state.package_utilize });
   }
   render() {
+
     return (
       <div className="hptl-phase1-ordering-services-form">
         <AlgaehModalPopUp
@@ -221,15 +225,15 @@ class PackageUtilize extends Component {
                     }}
                   />
                 ) : (
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Package Name"
-                      }}
-                    />
-                    <h5 style={{ margin: 0 }}>{this.state.package_name}</h5>
-                  </div>
-                )}
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Package Name"
+                        }}
+                      />
+                      <h5 style={{ margin: 0 }}>{this.state.package_name}</h5>
+                    </div>
+                  )}
                 {this.state.consultation === true ? (
                   <label className="checkbox inline">
                     <input
@@ -282,10 +286,10 @@ class PackageUtilize extends Component {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -307,8 +311,8 @@ class PackageUtilize extends Component {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.service_id
-                                );
+                                f => f.hims_d_services_id === row.service_id
+                              );
 
                           return (
                             <span>
@@ -368,28 +372,28 @@ class PackageUtilize extends Component {
                           return row.service_type_id === 4 ? (
                             row.quantity
                           ) : (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                number: {
-                                  allowNegative: false,
-                                  thousandSeparator: ","
-                                },
-                                value: row.quantity,
-                                className: "txt-fld",
-                                name: "quantity",
-                                dontAllowKeys: ["-", "e", "."],
-                                events: {
-                                  onChange: this.onquantitycol.bind(this, row)
-                                },
-                                others: {
-                                  onFocus: e => {
-                                    e.target.oldvalue = e.target.value;
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  number: {
+                                    allowNegative: false,
+                                    thousandSeparator: ","
+                                  },
+                                  value: row.quantity,
+                                  className: "txt-fld",
+                                  name: "quantity",
+                                  dontAllowKeys: ["-", "e", "."],
+                                  events: {
+                                    onChange: this.onquantitycol.bind(this, row)
+                                  },
+                                  others: {
+                                    onFocus: e => {
+                                      e.target.oldvalue = e.target.value;
+                                    }
                                   }
-                                }
-                              }}
-                            />
-                          );
+                                }}
+                              />
+                            );
                         },
                         disabled: true,
                         others: {
@@ -724,14 +728,14 @@ class PackageUtilize extends Component {
                       ) : null}
 
                       {this.props.from_billing === true &&
-                      this.props.from !== "frontDesk" ? (
-                        <button
-                          className="btn btn-default"
-                          onClick={this.ShowVistUtilizedSer.bind(this)}
-                        >
-                          Utilized Services
+                        this.props.from !== "frontDesk" ? (
+                          <button
+                            className="btn btn-default"
+                            onClick={this.ShowVistUtilizedSer.bind(this)}
+                          >
+                            Utilized Services
                         </button>
-                      ) : null}
+                        ) : null}
 
                       {this.props.from_billing === true ? (
                         <button
