@@ -264,7 +264,7 @@ class EOSGratuity extends Component {
               style={{ marginTop: 19 }}
               className="btn btn-default"
             >
-              Cleear
+              Clear
             </button>{" "}
             <button
               onClick={this.loadEmployeeDetails.bind(this)}
