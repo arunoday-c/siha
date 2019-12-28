@@ -17,5 +17,6 @@
   "symbol_position": null,
   "currency_symbol": null,
   "thousand_separator": null,
-  "decimal_separator": null
+  "decimal_separator": null,
+  "finance_authorize_privilege":null
 }

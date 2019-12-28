@@ -106,7 +106,7 @@ let authUser = (req, res, next) => {
         query:
           "SELECT algaeh_d_app_user_id, username, user_display_name,  locked, user_type,login_attempts,\
      password_expiry_rule, algaeh_m_role_user_mappings_id,app_d_app_roles_id,app_group_id,\
-     role_code, role_name, role_discreption, role_type,loan_authorize_privilege,leave_authorize_privilege,edit_monthly_attendance,\
+     role_code, role_name, role_discreption, role_type,loan_authorize_privilege,leave_authorize_privilege,finance_authorize_privilege,edit_monthly_attendance,\
      algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc, group_type, \
       U.employee_id, E.sub_department_id,UEM.hospital_id,S.page_to_redirect\
      FROM  algaeh_d_app_user U inner join algaeh_m_role_user_mappings RU on RU.user_id=U.algaeh_d_app_user_id\
@@ -152,15 +152,15 @@ let apiAuthentication = (req, res, next) => {
   let authModel = {
     username: ""
   };
-console.log("Inside api authentication");
+  console.log("Inside api authentication");
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let inputData = extend(authModel, req.query);
 
     _mysql
-        .executeQuery({
-          query:
-              "SELECT algaeh_d_app_user_id, username, user_display_name,P.password as gatepass,  locked, user_type,login_attempts,\
+      .executeQuery({
+        query:
+          "SELECT algaeh_d_app_user_id, username, user_display_name,P.password as gatepass,  locked, user_type,login_attempts,\
          password_expiry_rule, algaeh_m_role_user_mappings_id,app_d_app_roles_id,app_group_id,\
          role_code, role_name, role_discreption, role_type,loan_authorize_privilege,leave_authorize_privilege,edit_monthly_attendance,\
          algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc, group_type, \
@@ -181,22 +181,18 @@ console.log("Inside api authentication");
        decimal_places, symbol_position, thousand_separator, decimal_separator, negative_separator,unique_id_for_appointmt, requied_emp_id FROM \
        hims_d_hospital, hims_d_currency CUR WHERE hims_d_hospital.record_status='A' AND \
        CUR.hims_d_currency_id=default_currency AND hims_d_hospital_id=?;",
-          values: [
-            inputData.username,
-            inputData.item_id,
-            inputData.item_id
-          ],
-          printQuery: true
-        })
-        .then(result => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
-        })
-        .catch(error => {
-          _mysql.releaseConnection();
-          next(error);
-        });
+        values: [inputData.username, inputData.item_id, inputData.item_id],
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
     _mysql.releaseConnection();
     next(e);

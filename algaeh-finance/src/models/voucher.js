@@ -19,12 +19,12 @@ function getMaxAuth(options) {
         switch (result[0]["auth_level"]) {
           case "1":
             MaxAuth = "1";
-            limit = result[0]["auth1_limit"];
+
             break;
 
           case "2":
             MaxAuth = "2";
-            limit = result[0]["auth2_limit"];
+
             break;
           default:
         }
@@ -244,9 +244,9 @@ export default {
     const _mysql = new algaehMysql();
     let input = req.body;
 
-    let cash = 0;
-    let card = 0;
-    let cheque = 0;
+    // let cash = 0;
+    // let card = 0;
+    // let cheque = 0;
     let transaction_date = "";
 
     if (moment(input.transaction_date, "YYYY-MM-DD").format("YYYYMMDD") > 0) {
@@ -259,22 +259,21 @@ export default {
     let debit_amount = 0;
     input.details.forEach(item => {
       if (item.payment_type == "CR") {
-        credit_amount =
-          parseFloat(credit_amount) + parseFloat(item.credit_amount);
-        item["credit_amount"] = item.credit_amount;
+        credit_amount = parseFloat(credit_amount) + parseFloat(item.amount);
+        item["credit_amount"] = item.amount;
         item["debit_amount"] = 0;
       } else if (item.payment_type == "DR") {
-        debit_amount = parseFloat(debit_amount) + parseFloat(item.debit_amount);
+        debit_amount = parseFloat(debit_amount) + parseFloat(item.amount);
         item["credit_amount"] = 0;
-        item["debit_amount"] = item.debit_amount;
+        item["debit_amount"] = item.amount;
 
-        if (item.payment_mode == "CA") {
-          cash = parseFloat(cash) + parseFloat(item.debit_amount);
-        } else if (item.payment_mode == "CD") {
-          card = parseFloat(card) + parseFloat(item.debit_amount);
-        } else if (item.payment_mode == "CH") {
-          cheque = parseFloat(cheque) + parseFloat(item.debit_amount);
-        }
+        // if (item.payment_mode == "CA") {
+        //   cash = parseFloat(cash) + parseFloat(item.debit_amount);
+        // } else if (item.payment_mode == "CD") {
+        //   card = parseFloat(card) + parseFloat(item.debit_amount);
+        // } else if (item.payment_mode == "CH") {
+        //   cheque = parseFloat(cheque) + parseFloat(item.debit_amount);
+        // }
       }
     });
 
@@ -284,7 +283,9 @@ export default {
     //   { payment_mode: "CD", amount: cheque }
     // ];
 
-    if (credit_amount === debit_amount) {
+    console.log("debit:", debit_amount);
+    console.log("credit_amount:", credit_amount);
+    if (credit_amount == debit_amount) {
       _mysql
         .executeQuery({
           query: "SELECT cost_center_type  FROM finance_options limit 1; "
@@ -554,6 +555,10 @@ export default {
     const utilities = new algaehUtilities();
     let input = req.body;
 
+    console.log(
+      "req.userIdentity.finance_authorize_privilege:",
+      req.userIdentity.finance_authorize_privilege
+    );
     if (req.userIdentity.finance_authorize_privilege != "N") {
       const _mysql = new algaehMysql();
       // get highest auth level
@@ -579,7 +584,7 @@ export default {
                     new Date(),
                     input.voucher_header_id
                   ],
-                  printQuery: false
+                  printQuery: true
                 })
                 .then(authResult => {
                   _mysql.releaseConnection();
@@ -601,14 +606,14 @@ export default {
                   query:
                     "update finance_voucher_details set " +
                     authFields +
-                    " auth_status='Y'  where voucher_header_id=?",
+                    ", auth_status='Y'  where voucher_header_id=?",
                   values: [
                     "Y",
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
                     input.voucher_header_id
                   ],
-                  printQuery: false
+                  printQuery: true
                 })
                 .then(authResult => {
                   _mysql.releaseConnection();
@@ -620,6 +625,8 @@ export default {
                   next(error);
                 });
             });
+          } else {
+            console.log("DD");
           }
         })
         .catch(e => {
@@ -669,7 +676,7 @@ export default {
     }
     _mysql
       .executeQuery({
-        query: `select distinct finance_voucher_header_id,voucher_type,amount,H.payment_date,posted_from,\
+        query: `select distinct finance_voucher_header_id,voucher_type,amount,H.payment_date,\
           narration,voucher_no from finance_voucher_header H\
           inner join finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id\
           where posted_from='V' and VD.auth_status='N'  ${strQry};`
@@ -723,7 +730,7 @@ function getFinanceAuthFields(auth_level) {
   return new Promise((resolve, reject) => {
     let authFields;
 
-    switch (auth_level) {
+    switch (auth_level.toString()) {
       case "1":
         authFields = ["auth1=?", "auth1_by=?", "auth1_date=?"];
         break;

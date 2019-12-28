@@ -19,6 +19,7 @@ let encryption = data => {
       user_type: data["user_type"],
       loan_authorize_privilege: data["loan_authorize_privilege"],
       leave_authorize_privilege: data["leave_authorize_privilege"],
+      finance_authorize_privilege: data["finance_authorize_privilege"],
       decimal_places: data["decimal_places"],
       edit_monthly_attendance: data["edit_monthly_attendance"],
       hospital_id: data["hospital_id"],

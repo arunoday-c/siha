@@ -3135,7 +3135,7 @@ export default {
   },
   //created by irfan: to get which leaves applicable  for employee
   getEmployeeLeaveData: (req, res, next) => {
-    if (req.query.year > 0 && req.query.employee_id > 0) {
+    if (req.query.employee_id > 0) {
       const _mysql = new algaehMysql();
       let strQryAppend = ""
       console.log("req.query.leave_encash", req.query.leave_encash);
@@ -3143,6 +3143,30 @@ export default {
       if (req.query.leave_encash !== null && req.query.leave_encash !== undefined) {
         strQryAppend += ` and leave_encash = '${req.query.leave_encash}' `;
       }
+let year='';
+
+
+      _mysql
+      .executeQuery({
+        query:
+          " select attendance_starts,at_end_date from hims_d_hrms_options limit 1; ",
+        printQuery: false
+      })
+      .then(ress => {
+
+       if(req.query.year>0){
+
+         year=req.query.year;
+       }else{
+
+        if(ress[0]["attendance_starts"] == "PM" &&ress[0]["at_end_date"]>moment().format("D")&&moment().format("M")==12){
+        year=parseInt(moment().format("YYYY"))+1;
+
+        }else{
+          year=moment().format("YYYY")
+        }
+
+       }
       _mysql
         .executeQuery({
           query:
@@ -3156,8 +3180,8 @@ export default {
         and L.record_status='A' where ML.year=? and ML.employee_id=?  and  LD.employee_type=E.employee_type and  \
         (LD.gender=E.sex or LD.gender='BOTH' ) " + strQryAppend +
           "order by hims_f_employee_monthly_leave_id desc;",
-          values: [req.query.year, req.query.employee_id],
-          printQuery: false
+          values: [year, req.query.employee_id],
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -3168,10 +3192,15 @@ export default {
           _mysql.releaseConnection();
           next(e);
         });
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
     } else {
       req.records = {
         invalid_input: true,
-        message: "Please Provide  Valid year and employee_id "
+        message: "Please Provide  Valid  employee_id "
       };
 
       next();
