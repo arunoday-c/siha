@@ -3155,18 +3155,15 @@ let year='';
       .then(ress => {
 
        if(req.query.year>0){
-
          year=req.query.year;
        }else{
-
-        if(ress[0]["attendance_starts"] == "PM" &&ress[0]["at_end_date"]>moment().format("D")&&moment().format("M")==12){
-        year=parseInt(moment().format("YYYY"))+1;
-
-        }else{
+         if (ress[0]["attendance_starts"] == "PM" && ress[0]["at_end_date"] < moment().format("D") && moment().format("M") == 12) {
+              year=parseInt(moment().format("YYYY"))+1;
+         } else {         
           year=moment().format("YYYY")
+            }
         }
-
-       }
+       
       _mysql
         .executeQuery({
           query:
@@ -3182,7 +3179,7 @@ let year='';
         (LD.gender=E.sex or LD.gender='BOTH' ) " + strQryAppend +
           "order by hims_f_employee_monthly_leave_id desc;",
           values: [year, req.query.employee_id],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
