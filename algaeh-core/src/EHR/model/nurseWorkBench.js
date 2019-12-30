@@ -56,8 +56,8 @@ let addPatientNurseChiefComplaintsBackup = (req, res, next) => {
 
         connection.query(
           "INSERT INTO hims_f_nurse_episode_chief_complaint(`" +
-            insurtColumns.join("`,`") +
-            "`,created_date,updated_date) VALUES ?",
+          insurtColumns.join("`,`") +
+          "`,created_date,updated_date) VALUES ?",
           [
             jsonArrayToObject({
               sampleInputObject: insurtColumns,
@@ -92,8 +92,8 @@ let addPatientNurseChiefComplaintsBackup = (req, res, next) => {
 
               connection.query(
                 "INSERT INTO hims_f_patient_vitals(" +
-                  insurtColumns.join(",") +
-                  ",created_date,updated_date) VALUES ?",
+                insurtColumns.join(",") +
+                ",created_date,updated_date) VALUES ?",
                 [
                   jsonArrayToObject({
                     sampleInputObject: insurtColumns,
@@ -215,8 +215,8 @@ let addPatientNurseChiefComplaints = (req, res, next) => {
 
               connection.query(
                 "INSERT INTO hims_f_nurse_episode_chief_complaint(`" +
-                  insurtColumns.join("`,`") +
-                  "`,created_date,updated_date,hospital_id) VALUES ?",
+                insurtColumns.join("`,`") +
+                "`,created_date,updated_date,hospital_id) VALUES ?",
                 [
                   jsonArrayToObject({
                     sampleInputObject: insurtColumns,
@@ -279,8 +279,8 @@ let addPatientNurseChiefComplaints = (req, res, next) => {
 
                 connection.query(
                   "INSERT INTO hims_f_patient_vitals(" +
-                    insurtColumns.join(",") +
-                    ",created_by,updated_by,created_date,updated_date,hospital_id) VALUES ?",
+                  insurtColumns.join(",") +
+                  ",created_by,updated_by,created_date,updated_date,hospital_id) VALUES ?",
                   [
                     jsonArrayToObject({
                       sampleInputObject: insurtColumns,
@@ -606,7 +606,7 @@ let getNurseMyDay = (req, res, next) => {
           E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id ,sub_department_id from hims_f_patient_encounter E\
           INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
           inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id  \
-          where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and v.hospital_id=? AND " +
+          where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and V.hospital_id=? AND " +
           _query,
         values: [req.userIdentity.hospital_id],
         printQuery: true

@@ -81,6 +81,13 @@ const servicechangeText = ($this, e, ctrl) => {
 };
 
 const AddSerices = ($this, context) => {
+    if ($this.state.customer_id === null) {
+        swalMessage({
+            title: "Please Customer.",
+            type: "warning"
+        });
+        return
+    }
     let serviceData = Enumerable.from($this.state.sales_order_services)
         .where(
             w =>

@@ -1,7 +1,7 @@
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { AlgaehOpenContainer, AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -27,6 +27,8 @@ const changeTexts = ($this, ctrl, e) => {
         total_tax: null,
         net_payable: null,
         narration: null,
+        delivery_date: null,
+        no_of_days_followup: 0,
         tax_percentage: null,
 
 
@@ -81,6 +83,8 @@ const ClearData = ($this, e) => {
     net_payable: null,
     narration: null,
     tax_percentage: null,
+    delivery_date: null,
+    no_of_days_followup: 0,
 
 
     sales_quotation_items: [],
@@ -108,40 +112,48 @@ const ClearData = ($this, e) => {
 };
 
 const SaveSalesQuotation = $this => {
-  AlgaehLoader({ show: true });
-  algaehApiCall({
-    uri: "/SalesQuotation/addSalesQuotation",
-    module: "sales",
-    method: "POST",
-    data: $this.state,
-    onSuccess: response => {
 
-      if (response.data.success) {
-        $this.setState({
-          sales_quotation_number: response.data.records.sales_quotation_number,
-          hims_f_sales_quotation_id:
-            response.data.records.hims_f_sales_quotation_id,
-          saveEnable: true,
-          dataExists: true
-        });
-        swalMessage({
-          type: "success",
-          title: "Saved successfully ..."
-        });
-        AlgaehLoader({ show: false });
-      } else {
-        AlgaehLoader({ show: false });
-        swalMessage({
-          type: "error",
-          title: response.data.records.message
-        });
-      }
-    },
-    onFailure: error => {
-      AlgaehLoader({ show: false });
-      swalMessage({
-        title: error.message,
-        type: "error"
+
+  AlgaehValidation({
+    querySelector: "data-validate='HeaderDiv'",
+    alertTypeIcon: "warning",
+    onSuccess: () => {
+      AlgaehLoader({ show: true });
+      algaehApiCall({
+        uri: "/SalesQuotation/addSalesQuotation",
+        module: "sales",
+        method: "POST",
+        data: $this.state,
+        onSuccess: response => {
+
+          if (response.data.success) {
+            $this.setState({
+              sales_quotation_number: response.data.records.sales_quotation_number,
+              hims_f_sales_quotation_id:
+                response.data.records.hims_f_sales_quotation_id,
+              saveEnable: true,
+              dataExists: true
+            });
+            swalMessage({
+              type: "success",
+              title: "Saved successfully ..."
+            });
+            AlgaehLoader({ show: false });
+          } else {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              type: "error",
+              title: response.data.records.message
+            });
+          }
+        },
+        onFailure: error => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
       });
     }
   });
@@ -155,7 +167,7 @@ const customerTexthandle = ($this, e) => {
     [name]: value,
     vendor_name: e.selected.vendor_name,
     payment_terms: e.selected.payment_terms,
-    tax_percentage: e.selected.vat_percentage,
+    // tax_percentage: e.selected.vat_percentage,
   });
 };
 
@@ -201,6 +213,20 @@ const getCtrlCode = ($this, docNumber) => {
 
 };
 
+const dateValidate = ($this, value, event) => {
+  let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
+  if (inRange) {
+    swalMessage({
+      title: "Selected Date cannot be past Date.",
+      type: "warning"
+    });
+    event.target.focus();
+    $this.setState({
+      [event.target.name]: null
+    });
+  }
+};
+
 export {
   changeTexts,
   ClearData,
@@ -208,5 +234,6 @@ export {
   // LocationchangeTexts,  
   customerTexthandle,
   datehandle,
-  getCtrlCode
+  getCtrlCode,
+  dateValidate
 };

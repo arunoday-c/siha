@@ -309,7 +309,7 @@ class SalesOrdListItems extends Component {
                                                         fieldName: "quantity",
                                                         label: (
                                                             <AlgaehLabel
-                                                                label={{ forceLabel: "Qty Req." }}
+                                                                label={{ forceLabel: "Quantity" }}
                                                             />
                                                         ),
                                                         displayTemplate: row => {

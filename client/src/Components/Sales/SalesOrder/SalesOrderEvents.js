@@ -1,6 +1,6 @@
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { AlgaehOpenContainer, AlgaehValidation } from "../../../utils/GlobalFunctions";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
@@ -194,40 +194,46 @@ const ClearData = ($this, e) => {
 };
 
 const SaveSalesOrderEnrty = $this => {
-    AlgaehLoader({ show: true });
-    algaehApiCall({
-        uri: "/SalesOrder/addSalesOrder",
-        module: "sales",
-        method: "POST",
-        data: $this.state,
-        onSuccess: response => {
+    AlgaehValidation({
+        querySelector: "data-validate='HeaderDiv'",
+        alertTypeIcon: "warning",
+        onSuccess: () => {
+            AlgaehLoader({ show: true });
+            algaehApiCall({
+                uri: "/SalesOrder/addSalesOrder",
+                module: "sales",
+                method: "POST",
+                data: $this.state,
+                onSuccess: response => {
 
-            if (response.data.success) {
-                $this.setState({
-                    sales_order_number: response.data.records.sales_order_number,
-                    hims_f_sales_order_id:
-                        response.data.records.hims_f_sales_order_id,
-                    saveEnable: true,
-                    dataExists: true
-                });
-                swalMessage({
-                    type: "success",
-                    title: "Saved successfully ..."
-                });
-                AlgaehLoader({ show: false });
-            } else {
-                AlgaehLoader({ show: false });
-                swalMessage({
-                    type: "error",
-                    title: response.data.records.message
-                });
-            }
-        },
-        onFailure: error => {
-            AlgaehLoader({ show: false });
-            swalMessage({
-                title: error.message,
-                type: "error"
+                    if (response.data.success) {
+                        $this.setState({
+                            sales_order_number: response.data.records.sales_order_number,
+                            hims_f_sales_order_id:
+                                response.data.records.hims_f_sales_order_id,
+                            saveEnable: true,
+                            dataExists: true
+                        });
+                        swalMessage({
+                            type: "success",
+                            title: "Saved successfully ..."
+                        });
+                        AlgaehLoader({ show: false });
+                    } else {
+                        AlgaehLoader({ show: false });
+                        swalMessage({
+                            type: "error",
+                            title: response.data.records.message
+                        });
+                    }
+                },
+                onFailure: error => {
+                    AlgaehLoader({ show: false });
+                    swalMessage({
+                        title: error.message,
+                        type: "error"
+                    });
+                }
             });
         }
     });

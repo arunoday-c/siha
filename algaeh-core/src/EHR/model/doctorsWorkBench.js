@@ -747,7 +747,7 @@ let getMyDay = (req, res, next) => {
             inner join hims_d_sub_department SD on sub_department_id=SD.hims_d_sub_department_id  \
             left join hims_d_identity_document ID on  \
             ID.hims_d_identity_document_id = P.primary_identity_id \
-            where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and v.hospital_id=? AND " +
+            where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and V.hospital_id=? AND " +
           _query,
         values: [req.userIdentity.hospital_id],
         printQuery: true

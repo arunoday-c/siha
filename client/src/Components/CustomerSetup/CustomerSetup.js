@@ -26,7 +26,19 @@ class CustomerSetup extends Component {
             vat_applicable: false,
             btn_txt: "ADD",
             hims_d_customer_id: null,
-            customer_status: "A"
+            customer_status: "A",
+
+            purchase_inch_name: null,
+            purchase_inch_number: null,
+            purchase_inch_emailid: null,
+
+            project_inch_name: null,
+            project_inch_number: null,
+            project_inch_emailid: null,
+
+            finance_inch_name: null,
+            finance_inch_number: null,
+            finance_inch_emailid: null
         };
         this.getAllCustomers();
         this.getCountries();
@@ -52,7 +64,19 @@ class CustomerSetup extends Component {
             bank_name: null,
             address: "",
             hims_d_customer_id: null,
-            openModal: false
+            openModal: false,
+
+            purchase_inch_name: null,
+            purchase_inch_number: null,
+            purchase_inch_emailid: null,
+
+            project_inch_name: null,
+            project_inch_number: null,
+            project_inch_emailid: null,
+
+            finance_inch_name: null,
+            finance_inch_number: null,
+            finance_inch_emailid: null
         });
     }
 
@@ -127,7 +151,19 @@ class CustomerSetup extends Component {
                     postal_code: this.state.postal_code,
                     bank_name: this.state.bank_name,
                     address: this.state.address,
-                    customer_status: this.state.customer_status
+                    customer_status: this.state.customer_status,
+
+                    purchase_inch_name: this.state.purchase_inch_name,
+                    purchase_inch_number: this.state.purchase_inch_number,
+                    purchase_inch_emailid: this.state.purchase_inch_emailid,
+
+                    project_inch_name: this.state.project_inch_name,
+                    project_inch_number: this.state.project_inch_number,
+                    project_inch_emailid: this.state.project_inch_emailid,
+
+                    finance_inch_name: this.state.finance_inch_name,
+                    finance_inch_number: this.state.finance_inch_number,
+                    finance_inch_emailid: this.state.finance_inch_emailid
                 };
 
                 algaehApiCall({
@@ -545,44 +581,159 @@ class CustomerSetup extends Component {
                                             }
                                         }}
                                     />
-                                    <div
-                                        className="col-2 customCheckbox"
-                                        style={{ paddingTop: "10px" }}
-                                    >
-                                        <label className="checkbox inline">
-                                            <input
-                                                type="checkbox"
-                                                name="vat_applicable"
-                                                value="Y"
-                                                checked={this.state.vat_applicable}
-                                                onChange={this.changeChecks.bind(this)}
-                                            />
-                                            <span>
-                                                <AlgaehLabel
-                                                    label={{ forceLabel: "VAT Applicable" }}
-                                                />
-                                            </span>
-                                        </label>
-                                    </div>
+                                </div>
+
+                                <h6 style={{ marginTop: 30 }}>Finance Incharge Detsil</h6>
+                                <hr style={{ margin: 0 }} />
+                                <div className="row">
+                                    <AlagehFormGroup
+                                        div={{ className: "col-3" }}
+                                        label={{
+                                            forceLabel: "Name"
+                                        }}
+                                        textBox={{
+                                            className: "txt-fld",
+                                            name: "finance_inch_name",
+                                            value: this.state.finance_inch_name,
+                                            events: {
+                                                onChange: this.changeTexts.bind(this)
+                                            }
+                                        }}
+                                    />
 
                                     <AlagehFormGroup
                                         div={{ className: "col-2" }}
                                         label={{
-                                            fieldName: "vat_percentage",
-                                            isImp: this.state.vat_applicable
+                                            forceLabel: "Contact Number"
                                         }}
                                         textBox={{
                                             className: "txt-fld",
-                                            name: "vat_percentage",
-                                            value: this.state.vat_percentage,
+                                            name: "finance_inch_number",
+                                            value: this.state.finance_inch_number,
                                             events: {
                                                 onChange: this.changeTexts.bind(this)
                                             },
                                             others: {
-                                                min: 0,
-                                                max: 100,
                                                 type: "number",
-                                                disabled: !this.state.vat_applicable
+                                                min: 0
+                                            }
+                                        }}
+                                    />
+                                    <AlagehFormGroup
+                                        div={{ className: "col-3" }}
+                                        label={{
+                                            forceLabel: "Email ID"
+                                        }}
+                                        textBox={{
+                                            className: "txt-fld",
+                                            name: "finance_inch_emailid",
+                                            value: this.state.finance_inch_emailid,
+                                            events: {
+                                                onChange: this.changeTexts.bind(this)
+                                            }
+                                        }}
+                                    />
+                                </div>
+
+                                <h6 style={{ marginTop: 30 }}>Project Incharge Detsil</h6>
+                                <hr style={{ margin: 0 }} />
+                                <div className="row">
+                                    <AlagehFormGroup
+                                        div={{ className: "col-3" }}
+                                        label={{
+                                            forceLabel: "Name"
+                                        }}
+                                        textBox={{
+                                            className: "txt-fld",
+                                            name: "project_inch_name",
+                                            value: this.state.project_inch_name,
+                                            events: {
+                                                onChange: this.changeTexts.bind(this)
+                                            }
+                                        }}
+                                    />
+
+                                    <AlagehFormGroup
+                                        div={{ className: "col-2" }}
+                                        label={{
+                                            forceLabel: "Contatc Number"
+                                        }}
+                                        textBox={{
+                                            className: "txt-fld",
+                                            name: "project_inch_number",
+                                            value: this.state.project_inch_number,
+                                            events: {
+                                                onChange: this.changeTexts.bind(this)
+                                            },
+                                            others: {
+                                                type: "number",
+                                                min: 0
+                                            }
+                                        }}
+                                    />
+                                    <AlagehFormGroup
+                                        div={{ className: "col-3" }}
+                                        label={{
+                                            forceLabel: "Email ID"
+                                        }}
+                                        textBox={{
+                                            className: "txt-fld",
+                                            name: "project_inch_emailid",
+                                            value: this.state.project_inch_emailid,
+                                            events: {
+                                                onChange: this.changeTexts.bind(this)
+                                            }
+                                        }}
+                                    />
+                                </div>
+
+                                <h6 style={{ marginTop: 30 }}>Purchase Incharge Detsil</h6>
+                                <hr style={{ margin: 0 }} />
+                                <div className="row">
+                                    <AlagehFormGroup
+                                        div={{ className: "col-3" }}
+                                        label={{
+                                            forceLabel: "Name"
+                                        }}
+                                        textBox={{
+                                            className: "txt-fld",
+                                            name: "purchase_inch_name",
+                                            value: this.state.purchase_inch_name,
+                                            events: {
+                                                onChange: this.changeTexts.bind(this)
+                                            }
+                                        }}
+                                    />
+
+                                    <AlagehFormGroup
+                                        div={{ className: "col-2" }}
+                                        label={{
+                                            forceLabel: "Contatc Number"
+                                        }}
+                                        textBox={{
+                                            className: "txt-fld",
+                                            name: "purchase_inch_number",
+                                            value: this.state.purchase_inch_number,
+                                            events: {
+                                                onChange: this.changeTexts.bind(this)
+                                            },
+                                            others: {
+                                                type: "number",
+                                                min: 0
+                                            }
+                                        }}
+                                    />
+                                    <AlagehFormGroup
+                                        div={{ className: "col-3" }}
+                                        label={{
+                                            forceLabel: "Email ID"
+                                        }}
+                                        textBox={{
+                                            className: "txt-fld",
+                                            name: "purchase_inch_emailid",
+                                            value: this.state.purchase_inch_emailid,
+                                            events: {
+                                                onChange: this.changeTexts.bind(this)
                                             }
                                         }}
                                     />

@@ -5224,5 +5224,23 @@
       "name": "Vendor Quotation",
       "value": "VQ"
     }
+  ],
+  "SERVICE_FREQUENCY": [
+    {
+      "name": "Monthly",
+      "value": "M"
+    },
+    {
+      "name": "Weekly",
+      "value": "W"
+    },
+    {
+      "name": "Daily",
+      "value": "D"
+    },
+    {
+      "name": "Hourly",
+      "value": "H"
+    }
   ]
 }

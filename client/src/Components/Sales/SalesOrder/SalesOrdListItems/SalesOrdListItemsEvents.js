@@ -158,6 +158,13 @@ const itemchangeText = ($this, e, ctrl) => {
 };
 
 const AddItems = ($this, context) => {
+    if ($this.state.customer_id === null) {
+        swalMessage({
+            title: "Please Customer.",
+            type: "warning"
+        });
+        return
+    }
     let itemData = Enumerable.from($this.state.sales_order_items)
         .where(
             w => w.item_id === $this.state.item_id
