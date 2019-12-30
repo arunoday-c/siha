@@ -99,6 +99,8 @@ export default {
                             parseFloat(liability.subtitle)
                         ).toFixed(decimal_places);
 
+                        newCapital.children = [{ ...newCapital }];
+
                         req.records = {
                           asset: asset,
                           liability: liability,
