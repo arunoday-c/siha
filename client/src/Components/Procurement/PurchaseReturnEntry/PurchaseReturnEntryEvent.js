@@ -122,8 +122,8 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const ReceiptSearch = ($this, e) => {
-  let Inputs = "grn_for = '" + $this.state.po_return_from + "' and return_done = 'N'";
-
+  let Inputs =
+    "grn_for = '" + $this.state.po_return_from + "' and return_done = 'N'";
 
   if (
     $this.state.po_return_from === "PHR" &&
@@ -165,7 +165,6 @@ const ReceiptSearch = ($this, e) => {
         method: "GET",
         onSuccess: response => {
           if (response.data.success) {
-
             let data = response.data.records;
 
             data.saveEnable = false;
@@ -173,13 +172,12 @@ const ReceiptSearch = ($this, e) => {
             data.dataFinder = true;
 
             data.grn_number = row.grn_number;
-            data.location_type = row.location_type
-            data.grn_header_id = row.hims_f_procurement_grn_header_id
+            data.location_type = row.location_type;
+            data.grn_header_id = row.hims_f_procurement_grn_header_id;
             $this.setState(data, () => {
               getData($this);
             });
             AlgaehLoader({ show: false });
-
           }
         }
       });
@@ -201,7 +199,6 @@ const SavePOReutrnEnrty = $this => {
   } else {
     $this.state.po_return_entry_detail = $this.state.inventory_stock_detail;
   }
-
 
   algaehApiCall({
     uri: "/PurchaseReturnEntry/addPurchaseReturnEntry",
@@ -256,9 +253,9 @@ const getCtrlCode = ($this, docNumber) => {
           data.dataFinder = true;
 
           if (data.is_posted === "N") {
-            data.postEnable = false
+            data.postEnable = false;
           } else {
-            data.postEnable = true
+            data.postEnable = true;
           }
 
           if (data.po_return_from === "PHR") {
@@ -267,10 +264,8 @@ const getCtrlCode = ($this, docNumber) => {
             data.inventory_stock_detail = data.po_return_entry_detail;
           }
 
-
           $this.setState(data);
           AlgaehLoader({ show: false });
-
         }
         AlgaehLoader({ show: false });
       },
@@ -282,7 +277,6 @@ const getCtrlCode = ($this, docNumber) => {
         });
       }
     });
-
   });
 };
 
@@ -374,7 +368,7 @@ const getData = ($this, po_return_from) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "poitemcategory"
       },
-      afterSuccess: data => { }
+      afterSuccess: data => {}
     });
 
     $this.props.getItemGroup({
@@ -413,8 +407,8 @@ const generatePOReceipt = data => {
       report: {
         reportName:
           data.po_return_from === "PHR"
-            ? "poPharmacyProcurement"
-            : "poInventoryProcurement",
+            ? "poPharmacyProcurementReturn"
+            : "poInventoryProcurementReturn",
         reportParams: [
           {
             name: "purchase_return_number",
@@ -452,8 +446,8 @@ const generatePOReceiptNoPrice = data => {
       report: {
         reportName:
           data.po_return_from === "PHR"
-            ? "poPharmacyProcurementNoPrice"
-            : "poInventoryProcurementNoPrice",
+            ? "poPharmacyProcurementReturnNoPrice"
+            : "poInventoryProcurementReturnNoPrice",
         reportParams: [
           {
             name: "purchase_return_number",
@@ -472,30 +466,29 @@ const generatePOReceiptNoPrice = data => {
       myWindow.document.write(
         "<iframe src= '" + url + "' width='100%' height='100%' />"
       );
-      myWindow.document.title = "Purchase Order Receipt";
+      myWindow.document.title = "Purchase Order Return ReceipT";
     }
   });
 };
 
 const PostPOReturnEntry = $this => {
-
-
   AlgaehLoader({ show: true });
-  let InputObj = $this.state
+  let InputObj = $this.state;
   InputObj.transaction_type = "PR";
   InputObj.transaction_id = $this.state.hims_f_procurement_return_po_header_id;
   InputObj.transaction_date = $this.state.return_date;
-  InputObj.year = moment().format("YYYY")
-  InputObj.period = moment().format("MM")
-  delete InputObj.po_return_entry_detail
+  InputObj.year = moment().format("YYYY");
+  InputObj.period = moment().format("MM");
+  delete InputObj.po_return_entry_detail;
   if ($this.state.po_return_from === "PHR") {
     for (let i = 0; i < InputObj.pharmacy_stock_detail.length; i++) {
       InputObj.pharmacy_stock_detail[i].location_id =
         InputObj.pharmcy_location_id;
       InputObj.pharmacy_stock_detail[i].location_type = InputObj.location_type;
 
-      InputObj.pharmacy_stock_detail[i].quantity =
-        parseFloat(InputObj.pharmacy_stock_detail[i].return_qty)
+      InputObj.pharmacy_stock_detail[i].quantity = parseFloat(
+        InputObj.pharmacy_stock_detail[i].return_qty
+      );
 
       InputObj.pharmacy_stock_detail[i].uom_id =
         InputObj.pharmacy_stock_detail[i].pharmacy_uom_id;
@@ -516,17 +509,16 @@ const PostPOReturnEntry = $this => {
         InputObj.pharmacy_stock_detail[i].net_extended_cost;
       InputObj.pharmacy_stock_detail[i].operation = "-";
     }
-    InputObj.po_return_entry_detail = InputObj.pharmacy_stock_detail
-
+    InputObj.po_return_entry_detail = InputObj.pharmacy_stock_detail;
   } else {
-
     for (let i = 0; i < InputObj.inventory_stock_detail.length; i++) {
       InputObj.inventory_stock_detail[i].location_id =
         InputObj.inventory_location_id;
       InputObj.inventory_stock_detail[i].location_type = InputObj.location_type;
 
-      InputObj.inventory_stock_detail[i].quantity =
-        parseFloat(InputObj.inventory_stock_detail[i].return_qty)
+      InputObj.inventory_stock_detail[i].quantity = parseFloat(
+        InputObj.inventory_stock_detail[i].return_qty
+      );
 
       InputObj.inventory_stock_detail[i].uom_id =
         InputObj.inventory_stock_detail[i].inventory_uom_id;
@@ -546,12 +538,8 @@ const PostPOReturnEntry = $this => {
         InputObj.inventory_stock_detail[i].net_extended_cost;
       InputObj.inventory_stock_detail[i].operation = "-";
     }
-    InputObj.po_return_entry_detail = InputObj.inventory_stock_detail
+    InputObj.po_return_entry_detail = InputObj.inventory_stock_detail;
   }
-
-
-
-
 
   algaehApiCall({
     uri: "/PurchaseReturnEntry/postPurchaseOrderEntry",
@@ -579,7 +567,6 @@ const PostPOReturnEntry = $this => {
       });
     }
   });
-
 };
 
 const getVendorMaster = $this => {
