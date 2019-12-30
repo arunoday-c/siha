@@ -9,7 +9,8 @@ import {
   AlgaehDataGrid,
   AlgaehTreeSearch,
   AlgaehMessagePop,
-  AlgaehFormGroupGrid
+  AlgaehFormGroupGrid,
+  AlgaehButton
 } from "algaeh-react-components";
 import {
   getVoucherNumber,
@@ -25,6 +26,8 @@ export default function JournalVoucher() {
   const [accounts, setAccounts] = useState([{}]);
   const [narration, setNarration] = useState("");
   const [prefix, setPrefix] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [clearLoading, setClearLoading] = useState(false);
   const [journerList, setJournerList] = useState([
     {
       child_id: undefined,
@@ -153,7 +156,7 @@ export default function JournalVoucher() {
                     title: "Sl No.",
                     sortable: true,
                     others: {
-                      width: 60
+                      width: 80
                     }
                   },
                   {
@@ -192,12 +195,12 @@ export default function JournalVoucher() {
                           }}
                         />
                       );
-                    },
-                    others: {}
+                    }
                   },
                   {
                     key: "payment_type",
                     title: "Account Type ",
+                    // filtered: true,
                     displayTemplate: (row, record) => {
                       return (
                         <AlgaehAutoComplete
@@ -246,42 +249,43 @@ export default function JournalVoucher() {
                     others: {
                       width: 100
                     }
-                  },
-
-                  {
-                    key: "payment_mode",
-                    title: "Payment Mode",
-                    displayTemplate: (row, record) => {
-                      return (
-                        <AlgaehAutoComplete
-                          div={{}}
-                          label={{}}
-                          selector={{
-                            value: row,
-                            dataSource: {
-                              //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
-                              data: [
-                                { value: "CA", label: "Cash" },
-                                { value: "CH", label: "Cheque" },
-                                { value: "CD", label: "Card" }
-                              ],
-                              valueField: "value",
-                              textField: "label"
-                            },
-                            onChange: selected => {
-                              record["payment_mode"] = selected.value;
-                            }
-                          }}
-                        />
-                      );
-                    },
-                    others: {
-                      width: 150
-                    }
                   }
+
+                  // {
+                  //   key: "payment_mode",
+                  //   title: "Payment Mode",
+                  //   displayTemplate: (row, record) => {
+                  //     return (
+                  //       <AlgaehAutoComplete
+                  //         div={{}}
+                  //         label={{}}
+                  //         selector={{
+                  //           value: row,
+                  //           dataSource: {
+                  //             //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
+                  //             data: [
+                  //               { value: "CA", label: "Cash" },
+                  //               { value: "CH", label: "Cheque" },
+                  //               { value: "CD", label: "Card" }
+                  //             ],
+                  //             valueField: "value",
+                  //             textField: "label"
+                  //           },
+                  //           onChange: selected => {
+                  //             record["payment_mode"] = selected.value;
+                  //           }
+                  //         }}
+                  //       />
+                  //     );
+                  //   },
+                  //   others: {
+                  //     width: 150
+                  //   }
+                  // }
                 ]}
                 loading={false}
                 isEditable="onlyDelete"
+                height="40vh"
                 dataSource={{
                   data: journerList
                 }}
@@ -298,6 +302,9 @@ export default function JournalVoucher() {
                       return [...otherDetals];
                     });
                   }
+                }}
+                others={{
+                  id: "voucher_table"
                 }}
               />
             </div>
@@ -329,6 +336,8 @@ export default function JournalVoucher() {
             forceLabel: "Narration",
             isImp: false
           }}
+          multiline={true}
+          no_of_lines={3}
           textBox={{
             type: "text",
             className: "form-control",
@@ -339,17 +348,18 @@ export default function JournalVoucher() {
               setNarration(e.target.value);
             }
           }}
-          // multiline="true"
         />
       </div>{" "}
       <div className="hptl-phase1-footer">
         <div className="row">
           <div className="col-12">
-            <button
-              type="button"
+            <AlgaehButton
               className="btn btn-primary"
+              loading={loading}
               onClick={() => {
+                setLoading(true);
                 if (journerList.length === 0) {
+                  setLoading(false);
                   AlgaehMessagePop({
                     type: "error",
                     display: "Empty data !"
@@ -357,6 +367,7 @@ export default function JournalVoucher() {
                   return;
                 }
                 if (voucherDate === "") {
+                  setLoading(false);
                   AlgaehMessagePop({
                     type: "error",
                     display: "Voucher Date can't blank"
@@ -364,6 +375,7 @@ export default function JournalVoucher() {
                   return;
                 }
                 if (voucherType === "") {
+                  setLoading(false);
                   AlgaehMessagePop({
                     type: "error",
                     display: "Voucher Type can't blank"
@@ -372,6 +384,7 @@ export default function JournalVoucher() {
                 }
                 let costcenter = {};
                 if (Object.keys(records_av).length === 0) {
+                  setLoading(false);
                   AlgaehMessagePop({
                     type: "info",
                     display: "Please Branch and Cost Center is mandatory"
@@ -382,6 +395,7 @@ export default function JournalVoucher() {
                     records_av["hospital_id"] === undefined ||
                     records_av["cost_center_id"] === undefined
                   ) {
+                    setLoading(false);
                     AlgaehMessagePop({
                       type: "info",
                       display: "Branch and Cost Center is mandatory"
@@ -400,15 +414,34 @@ export default function JournalVoucher() {
                   ...costcenter,
                   from_screen: getCookie("ScreenCode"),
                   hospital_id: getCookie("HospitalId"),
-                  details: journerList
+                  details: journerList,
+                  narration: narration
                 })
                   .then(() => {
+                    setLoading(false);
+                    setClearLoading(true);
+                    setJournerList([]);
+                    setNarration("");
+                    getVoucherNumber()
+                      .then(result => {
+                        setClearLoading(false);
+                        setVoucherNo(result.voucher_no);
+                      })
+                      .catch(error => {
+                        setClearLoading(false);
+                        AlgaehMessagePop({
+                          type: "error",
+                          display: error
+                        });
+                      });
+
                     AlgaehMessagePop({
                       type: "success",
                       display: "Successfully updated.."
                     });
                   })
                   .catch(error => {
+                    setLoading(false);
                     AlgaehMessagePop({
                       type: "error",
                       display: error
@@ -417,10 +450,31 @@ export default function JournalVoucher() {
               }}
             >
               Save
-            </button>
-            <button type="button" className="btn btn-default">
+            </AlgaehButton>
+            <AlgaehButton
+              loading={clearLoading}
+              className="btn btn-default"
+              onClick={() => {
+                setLoading(true);
+                setClearLoading(true);
+                getVoucherNumber()
+                  .then(result => {
+                    setLoading(false);
+                    setClearLoading(false);
+                    setVoucherNo(result.voucher_no);
+                  })
+                  .catch(error => {
+                    setLoading(false);
+                    setClearLoading(false);
+                    AlgaehMessagePop({
+                      type: "error",
+                      display: error
+                    });
+                  });
+              }}
+            >
               Clear
-            </button>
+            </AlgaehButton>
           </div>
         </div>
       </div>
