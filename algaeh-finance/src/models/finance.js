@@ -166,7 +166,7 @@ export default {
           ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
           ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
           from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
-          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='Y'
+          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'
           where (H.root_id=? or H.finance_account_head_id=?) 
           group by C.finance_account_child_id;
           select max(account_level) as account_level from finance_account_head 
@@ -175,7 +175,7 @@ export default {
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
           ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount
           from finance_account_head H              
-          left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id and VD.auth_status='Y'
+          left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id and VD.auth_status='A'
           where (H.root_id=? or H.finance_account_head_id=?) 
           group by H.finance_account_head_id  order by account_level;  `,
 
@@ -465,7 +465,7 @@ export default {
                     credit_amount,
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
-                    "Y",
+                    "A",
                     "Y"
                   ],
                   printQuery: false
@@ -807,7 +807,7 @@ export default {
                   debit_amount: 0,
                   credit_amount: balance,
                   payment_type: "CR",
-                  
+
                   hospital_id: result[0]["hospital_id"],
                   year: moment().format("YYYY"),
                   month: moment().format("M"),
@@ -823,7 +823,7 @@ export default {
                   debit_amount: Math.abs(balance),
                   credit_amount: 0,
                   payment_type: "DR",
-                 
+
                   hospital_id: result[0]["hospital_id"],
                   year: moment().format("YYYY"),
                   month: moment().format("M"),
@@ -838,7 +838,7 @@ export default {
                 "debit_amount",
                 "credit_amount",
                 "payment_type",
-               
+
                 "hospital_id",
                 "year",
                 "month",
@@ -854,7 +854,7 @@ export default {
                   bulkInsertOrUpdate: true,
                   extraValues: {
                     voucher_header_id: headRes.insertId,
-                    auth_status: "Y"
+                    auth_status: "A"
                   },
                   printQuery: false
                 })
