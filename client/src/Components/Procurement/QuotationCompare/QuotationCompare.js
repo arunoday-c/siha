@@ -4,56 +4,52 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import "./QuotationCompare.scss";
 import {
-    AlgaehDataGrid,
-    AlgaehLabel,
-    AlagehAutoComplete
+  AlgaehDataGrid,
+  AlgaehLabel,
+  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
-    texthandle,
-    QuotationSearch,
-    generateVendorQuotation,
-    getVendorMaster
+  texthandle,
+  QuotationSearch,
+  generateVendorQuotation,
+  getVendorMaster
 } from "./QuotationCompareEvents";
 
 class QuotationCompare extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            vendor_body: [],
-            vendor_headers: [],
-            vendor_id: null,
-            quotation_number: null,
-        };
-        getVendorMaster(this, this);
-    }
+    this.state = {
+      vendor_body: [],
+      vendor_headers: [],
+      vendor_id: null,
+      quotation_number: null
+    };
+    getVendorMaster(this, this);
+  }
 
-    render() {
+  render() {
+    return (
+      <div>
+        <div className="hims-request-for-quotation">
+          <div
+            className="row inner-top-search"
+            style={{ paddingBottom: "10px" }}
+          >
+            <div className="col-lg-12">
+              <div className="row">
+                <div className={"col-3 globalSearchCntr"}>
+                  <AlgaehLabel label={{ forceLabel: "Search Quotation No." }} />
+                  <h6 onClick={QuotationSearch.bind(this, this)}>
+                    {this.state.quotation_number
+                      ? this.state.quotation_number
+                      : "Quotation No."}
+                    <i className="fas fa-search fa-lg"></i>
+                  </h6>
+                </div>
 
-        return (
-            <div>
-
-                <div className="hims-request-for-quotation">
-                    <div
-                        className="row inner-top-search"
-                        style={{ paddingBottom: "10px" }}
-                    >
-                        <div className="col-lg-12">
-                            <div className="row">
-
-
-                                <div className={"col-3 globalSearchCntr"}>
-                                    <AlgaehLabel label={{ forceLabel: "Search Quotation No." }} />
-                                    <h6 onClick={QuotationSearch.bind(this, this)}>
-                                        {this.state.quotation_number
-                                            ? this.state.quotation_number
-                                            : "Quotation No."}
-                                        <i className="fas fa-search fa-lg"></i>
-                                    </h6>
-                                </div>
-
-                                {/* <AlagehAutoComplete
+                {/* <AlagehAutoComplete
                                     div={{ className: "col-2" }}
                                     label={{ forceLabel: "Vendor No." }}
                                     selector={{
@@ -73,46 +69,52 @@ class QuotationCompare extends Component {
                                         }
                                     }}
                                 /> */}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="portlet-body">
-                        <div className="row">
+              </div>
+            </div>
+          </div>
+          <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">Quotation Comparison List</h3>
+              </div>
+              {/* <div className="actions"></div> */}
+            </div>
 
-                            <div className="col-12">
+            <div className="portlet-body">
+              <div className="row">
+                <div className="col-12">
+                  <table className="QuotationCompareGrid">
+                    <thead>
+                      <tr>
+                        <th>Item Description</th>
+                        <th>UOM</th>
+                        <th>Requested Qty</th>
+                        {this.state.vendor_headers.map((data, index) => (
+                          <th key={index}>{data}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {this.state.vendor_body.map((data, index) => (
+                        <tr key={index}>
+                          <td>{data.item_description}</td>
+                          <td>{data.uom_description}</td>
+                          <td>{data.quantity}</td>
+                          {Object.keys(data).map((elemnt, idx) => {
+                            const exist = elemnt.includes("unit_price");
+                            if (exist) {
+                              return <td key={idx}>{data[elemnt]}</td>;
+                            } else {
+                              return null;
+                            }
+                          })}
+                        </tr>
+                      ))}
 
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th> Item Description </th>
-                                            <th> UOM </th>
-                                            <th> Req. Quantity </th>
-                                            {this.state.vendor_headers.map((data, index) => (<th key={index}>{data}</th>))}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                        {this.state.vendor_body.map((data, index) => (
-                                            <tr key={index}>
-                                                <td>{data.item_description}</td>
-                                                <td>{data.uom_description}</td>
-                                                <td>{data.quantity}</td>
-                                                {Object.keys(data).map((elemnt, idx) => {
-                                                    const exist = elemnt.includes("unit_price");
-                                                    if (exist) {
-                                                        return (<td key={idx}>{data[elemnt]}</td>);
-                                                    } else {
-                                                        return null;
-                                                    }
-                                                })}
-                                            </tr>
-                                        ))}
-
-
-                                        {/* map statement has to come here */}
-                                    </tbody>
-                                </table>
-                                {/* <AlgaehDataGrid
+                      {/* map statement has to come here */}
+                    </tbody>
+                  </table>
+                  {/* <AlgaehDataGrid
                                     id="vendor_quotation"
                                     columns={this.state.vendor_data}
                                     keyId="vendor_quotation_compare"
@@ -131,31 +133,31 @@ class QuotationCompare extends Component {
                                         allowDelete: false
                                     }}
                                 /> */}
-                            </div>
-
-                        </div>
-                    </div>
                 </div>
+              </div>
             </div>
-        );
-    }
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 function mapStateToProps(state) {
-    return {
-        povendors: state.povendors
-    };
+  return {
+    povendors: state.povendors
+  };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators(
-        {
-            getVendorMaster: AlgaehActions
-        },
-        dispatch
-    );
+  return bindActionCreators(
+    {
+      getVendorMaster: AlgaehActions
+    },
+    dispatch
+  );
 }
 
 export default withRouter(
-    connect(mapStateToProps, mapDispatchToProps)(QuotationCompare)
+  connect(mapStateToProps, mapDispatchToProps)(QuotationCompare)
 );
