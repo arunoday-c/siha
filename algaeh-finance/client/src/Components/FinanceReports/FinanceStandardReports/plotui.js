@@ -33,7 +33,7 @@ export function PlotUI(node, style, indexIds) {
       >
         {" "}
         <span>
-          <img src={ChildIcon} />
+          <img src={ChildIcon} alt="" />
         </span>
         <span>{node !== undefined ? node["label"] : null}</span>
         <span>{node !== undefined ? node["subtitle"] : null}</span>
@@ -82,8 +82,8 @@ export function PlotUI(node, style, indexIds) {
         >
           {/* <span>&#x27A5;</span> */}
           <span>
-            <img className="closedIcon" src={ParentIcon} />
-            <img className="opendIcon" src={ParentIconOpen} />
+            <img className="closedIcon" src={ParentIcon} alt="" />
+            <img className="opendIcon" src={ParentIconOpen} alt="" />
           </span>
           <span>{node !== undefined ? node["label"] : null}</span>
           <span>

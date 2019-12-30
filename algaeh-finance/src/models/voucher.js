@@ -350,7 +350,10 @@ export default {
                       month: month,
                       year: year,
                       voucher_header_id: result.insertId,
-                      entered_by: req.userIdentity.algaeh_d_app_user_id
+                      entered_by: req.userIdentity.algaeh_d_app_user_id,
+                      hospital_id: input.hospital_id,
+                      project_id: project_cost_center,
+                      sub_department_id: subDept_cost_center
                     }
                   })
                   .then(result2 => {
@@ -555,10 +558,6 @@ export default {
     const utilities = new algaehUtilities();
     let input = req.body;
 
-    console.log(
-      "req.userIdentity.finance_authorize_privilege:",
-      req.userIdentity.finance_authorize_privilege
-    );
     if (req.userIdentity.finance_authorize_privilege != "N") {
       const _mysql = new algaehMysql();
       // get highest auth level
@@ -571,62 +570,232 @@ export default {
             input.auth_level < option.MaxAuth
           ) {
             getFinanceAuthFields(input["auth_level"]).then(authFields => {
-              _mysql
-                .executeQuery({
-                  query:
-                    "update finance_voucher_details set " +
-                    authFields +
-                    "  where voucher_header_id=?",
+              if (input.auth_status == "A") {
+                _mysql
+                  .executeQuery({
+                    query:
+                      "update finance_voucher_details set " +
+                      authFields +
+                      "  where voucher_header_id=?",
 
-                  values: [
-                    "Y",
-                    req.userIdentity.algaeh_d_app_user_id,
-                    new Date(),
-                    input.voucher_header_id
-                  ],
-                  printQuery: true
-                })
-                .then(authResult => {
-                  _mysql.releaseConnection();
-                  req.records = authResult;
-                  next();
-                })
-                .catch(error => {
-                  _mysql.releaseConnection();
-                  next(error);
-                });
+                    values: [
+                      "Y",
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date(),
+                      input.voucher_header_id
+                    ],
+                    printQuery: true
+                  })
+                  .then(authResult => {
+                    _mysql.releaseConnection();
+                    req.records = authResult;
+                    next();
+                  })
+                  .catch(error => {
+                    _mysql.releaseConnection();
+                    next(error);
+                  });
+              } else if (input.auth_status == "R") {
+                _mysql
+                  .executeQuery({
+                    query:
+                      "update finance_voucher_details set \
+                      auth_status=?,rejected_by=?,rejected_date=?,rejected_reason=? where voucher_header_id=?",
+
+                    values: [
+                      "R",
+                      req.userIdentity.algaeh_d_app_user_id,
+                      input.rejected_reason,
+                      new Date(),
+                      input.voucher_header_id
+                    ],
+                    printQuery: true
+                  })
+                  .then(authResult => {
+                    _mysql.releaseConnection();
+                    req.records = authResult;
+                    next();
+                  })
+                  .catch(error => {
+                    _mysql.releaseConnection();
+                    next(error);
+                  });
+              } else {
+                req.records = {
+                  invalid_user: true,
+                  message: "Please provide valid input"
+                };
+                next();
+              }
             });
           } else if (
             req.userIdentity.finance_authorize_privilege >= option.MaxAuth &&
             input.auth_level >= option.MaxAuth
           ) {
             getFinanceAuthFields(input["auth_level"]).then(authFields => {
-              _mysql
-                .executeQuery({
-                  query:
-                    "update finance_voucher_details set " +
-                    authFields +
-                    ", auth_status='Y'  where voucher_header_id=?",
-                  values: [
-                    "Y",
-                    req.userIdentity.algaeh_d_app_user_id,
-                    new Date(),
-                    input.voucher_header_id
-                  ],
-                  printQuery: true
-                })
-                .then(authResult => {
-                  _mysql.releaseConnection();
-                  req.records = authResult;
-                  next();
-                })
-                .catch(error => {
-                  _mysql.releaseConnection();
-                  next(error);
-                });
+              if (input.auth_status == "A") {
+                _mysql
+                  .executeQuery({
+                    query:
+                      "select VD.debit_amount,VD.credit_amount,VD.payment_type,H.root_id,VD.hospital_id\
+                     from finance_voucher_details VD\
+                    inner join finance_account_head H on VD.head_id=H.finance_account_head_id\
+                    where voucher_header_id=? and auth_status='P';",
+                    values: [input.voucher_header_id],
+                    printQuery: true
+                  })
+                  .then(result => {
+                    let total_income = 0;
+                    let total_expense = 0;
+                    let balance = 0;
+                    result.forEach(m => {
+                      if (m.root_id == 4) {
+                        if (m.payment_type == "CR") {
+                          total_income =
+                            parseFloat(total_income) +
+                            parseFloat(m.credit_amount);
+                        } else if (m.payment_type == "DR") {
+                          total_income =
+                            parseFloat(total_income) -
+                            parseFloat(m.debit_amount);
+                        }
+                      } else if (m.root_id == 5) {
+                        if (m.payment_type == "DR") {
+                          total_expense =
+                            parseFloat(total_expense) +
+                            parseFloat(m.debit_amount);
+                        } else if (m.payment_type == "CR") {
+                          total_expense =
+                            parseFloat(total_expense) -
+                            parseFloat(m.credit_amount);
+                        }
+                      }
+                    });
+
+                    balance =
+                      parseFloat(total_income) - parseFloat(total_expense);
+
+                    let pl_account = "";
+                    if (balance > 0) {
+                      pl_account = {
+                        payment_date: new Date(),
+                        head_id: 61,
+                        child_id: 51,
+                        debit_amount: 0,
+                        credit_amount: balance,
+                        payment_type: "CR",
+                        hospital_id: result[0]["hospital_id"],
+                        year: moment().format("YYYY"),
+                        month: moment().format("M")
+                      };
+                    } else if (balance < 0) {
+                      pl_account = {
+                        payment_date: new Date(),
+                        head_id: 61,
+                        child_id: 51,
+                        debit_amount: Math.abs(balance),
+                        credit_amount: 0,
+                        payment_type: "DR",
+                        hospital_id: result[0]["hospital_id"],
+                        year: moment().format("YYYY"),
+                        month: moment().format("M")
+                      };
+                    }
+
+                    let strQry = "";
+
+                    if (pl_account != "") {
+                      strQry += _mysql.mysqlQueryFormat(
+                        "INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,\
+                    payment_type,hospital_id,year,month,pl_entry,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
+                        [
+                          pl_account.payment_date,
+                          pl_account.head_id,
+                          pl_account.child_id,
+                          pl_account.debit_amount,
+                          pl_account.credit_amount,
+                          pl_account.payment_type,
+                          pl_account.hospital_id,
+                          pl_account.year,
+                          pl_account.month,
+                          "Y",
+                          req.userIdentity.algaeh_d_app_user_id,
+                          "A"
+                        ]
+                      );
+                    }
+
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "update finance_voucher_details set " +
+                          authFields +
+                          ", auth_status='A'  where voucher_header_id=? and auth_status='P';" +
+                          strQry,
+                        values: [
+                          "Y",
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
+                          input.voucher_header_id
+                        ],
+                        printQuery: true
+                      })
+                      .then(authResult => {
+                        _mysql.commitTransaction(() => {
+                          _mysql.releaseConnection();
+                          req.records = authResult;
+                          next();
+                        });
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  })
+                  .catch(error => {
+                    _mysql.releaseConnection();
+                    next(error);
+                  });
+              } else if (input.auth_status == "R") {
+                _mysql
+                  .executeQuery({
+                    query:
+                      "update finance_voucher_details set \
+                      auth_status=?,rejected_by=?,rejected_date=?,rejected_reason=? where voucher_header_id=?",
+
+                    values: [
+                      "R",
+                      req.userIdentity.algaeh_d_app_user_id,
+                      input.rejected_reason,
+                      new Date(),
+                      input.voucher_header_id
+                    ],
+                    printQuery: true
+                  })
+                  .then(authResult => {
+                    _mysql.releaseConnection();
+                    req.records = authResult;
+                    next();
+                  })
+                  .catch(error => {
+                    _mysql.releaseConnection();
+                    next(error);
+                  });
+              } else {
+                req.records = {
+                  invalid_user: true,
+                  message: "Please provide valid input"
+                };
+                next();
+              }
             });
           } else {
-            console.log("DD");
+            req.records = {
+              invalid_user: true,
+              message: "you dont have authorization privilege"
+            };
+            next();
           }
         })
         .catch(e => {
@@ -679,7 +848,7 @@ export default {
         query: `select distinct finance_voucher_header_id,voucher_type,amount,H.payment_date,\
           narration,voucher_no from finance_voucher_header H\
           inner join finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id\
-          where posted_from='V' and VD.auth_status='N'  ${strQry};`
+          where posted_from='V' and VD.auth_status='P'  ${strQry};`
       })
       .then(result => {
         _mysql.releaseConnection();
