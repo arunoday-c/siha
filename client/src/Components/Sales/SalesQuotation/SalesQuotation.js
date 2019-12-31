@@ -19,7 +19,8 @@ import {
   dateValidate,
   getSalesOptions,
   employeeSearch,
-  addToTermCondition
+  addToTermCondition,
+  deleteComment
 } from "./SalesQuotationEvents";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import "./SalesQuotation.scss";
@@ -90,7 +91,7 @@ class SalesQuotation extends Component {
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).hims_d_hospital_id,
       hims_f_terms_condition_id: null,
-      selected_terms_conditions: null,
+      selected_terms_conditions: "",
       comment_list: []
     };
     getSalesOptions(this, this)
@@ -473,16 +474,61 @@ class SalesQuotation extends Component {
                       }}
                     />
 
-                    <div className="actions">
-                      <a
-                        className="btn btn-primary btn-circle active"
-                        onClick={addToTermCondition.bind(this, this)}
-                      >
-                        <i className="fas fa-plus" />
-                      </a>
-                    </div>
 
-                    <AlagehFormGroup
+
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Enter T&C"
+                        }}
+                      />
+
+                      <textarea
+                        value={this.state.selected_terms_conditions}
+                        name="selected_terms_conditions"
+                        onChange={changeTexts.bind(this, this)}
+                        disabled={this.state.dataExists}
+                      />
+                    </div>
+                    {this.state.dataExists ? null :
+                      <div className="col-1 actions">
+                        <a
+                          className="btn btn-primary btn-circle active"
+                          onClick={addToTermCondition.bind(this, this)}
+                        >
+                          <i className="fas fa-plus" />
+                        </a>
+                      </div>
+                    }
+
+                    <div className="col-12 finalCommentsSection">
+                      <h6>View T&C</h6>
+                      <ol>
+                        {this.state.comment_list.length > 0
+                          ? this.state.comment_list.map((row, index) => {
+                            return (
+                              <React.Fragment key={index}>
+                                <li key={index}>
+                                  <span>{row}</span>
+                                  {this.state.dataExists ? null :
+                                    <i
+                                      className="fas fa-times"
+                                      onClick={deleteComment.bind(
+                                        this,
+                                        this,
+                                        row
+                                      )}
+                                    ></i>
+                                  }
+
+                                </li>
+                              </React.Fragment>
+                            );
+                          })
+                          : null}
+                      </ol>
+                    </div>
+                    {/* <AlagehFormGroup
                       div={{ className: "col-12 termsCondition" }}
                       label={{
                         forceLabel: "Terms & Conditions",
@@ -501,7 +547,7 @@ class SalesQuotation extends Component {
                           rows: "8"
                         }
                       }}
-                    />
+                    /> */}
                   </div>
                 </div>
               </div>
@@ -626,6 +672,7 @@ class SalesQuotation extends Component {
                       type="button"
                       className="btn btn-default"
                       onClick={SaveSalesQuotation.bind(this, this)}
+                      disabled={this.state.qotation_status === "G" ? true : false}
                     >
                       <AlgaehLabel
                         label={{ forceLabel: "Update", returnText: true }}

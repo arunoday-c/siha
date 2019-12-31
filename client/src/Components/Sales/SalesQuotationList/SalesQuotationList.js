@@ -217,6 +217,25 @@ class SalesQuotationList extends Component {
                                                 }
                                             },
                                             {
+                                                fieldName: "qotation_status",
+                                                label: (
+                                                    <AlgaehLabel
+                                                        label={{ forceLabel: "Qotation Status" }}
+                                                    />
+                                                ),
+                                                displayTemplate: row => {
+                                                    return row.qotation_status === "G" ? "Generated" :
+                                                        row.qotation_status === "O" ? "Order Created" : "Closed";
+                                                },
+                                                disabled: true,
+                                                others: {
+                                                    maxWidth: 200,
+                                                    resizable: false,
+                                                    style: { textAlign: "left" },
+                                                    filterable: false
+                                                }
+                                            },
+                                            {
                                                 fieldName: "customer_name",
                                                 label: (
                                                     <AlgaehLabel
@@ -291,6 +310,7 @@ class SalesQuotationList extends Component {
                                                     filterable: false
                                                 }
                                             },
+
 
                                         ]}
                                         keyId="sales_quotation_number"

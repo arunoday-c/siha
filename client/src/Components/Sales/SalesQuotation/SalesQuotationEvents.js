@@ -74,7 +74,7 @@ const ClearData = ($this, e) => {
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
     ).hims_d_hospital_id,
     hims_f_terms_condition_id: null,
-    selected_terms_conditions: null,
+    selected_terms_conditions: "",
     comment_list: []
   };
 
@@ -203,11 +203,18 @@ const getCtrlCode = ($this, docNumber) => {
       if (response.data.success) {
         let data = response.data.records;
 
-        if (data.sales_quotation_mode === "I") {
-          data.sales_quotation_items = data.qutation_detail
-        } else {
-          data.sales_quotation_services = data.qutation_detail
-        }
+        debugger
+        // data.sales_quotation_items = data.qutation_detail[0]
+        // data.sales_quotation_services = data.qutation_detail[1]
+        // if (data.sales_quotation_mode === "I") {
+
+        // } else {
+
+        // }
+        data.comment_list =
+          data.terms_conditions !== null
+            ? data.terms_conditions.split("<br/>")
+            : []
         data.saveEnable = true;
         data.dataExists = true;
 
@@ -277,20 +284,32 @@ const employeeSearch = ($this) => {
 }
 
 const addToTermCondition = ($this) => {
-  if ($this.state.hims_f_terms_condition_id === null) {
+  if ($this.state.hims_f_terms_condition_id === null && $this.state.selected_terms_conditions === "") {
     swalMessage({
-      title: "Select T&C.",
+      title: "Select or Enter T&C.",
       type: "warning"
     });
+    return
   }
   let comment_list = $this.state.comment_list;
   comment_list.push($this.state.selected_terms_conditions);
 
   $this.setState({
     hims_f_terms_condition_id: null,
+    selected_terms_conditions: "",
     comment_list: comment_list
   })
 }
+
+const deleteComment = ($this, row) => {
+  let comment_list = $this.state.comment_list;
+  let _index = comment_list.indexOf(row);
+  comment_list.splice(_index, 1);
+
+  $this.setState({
+    comment_list: comment_list
+  });
+};
 
 export {
   changeTexts,
@@ -302,5 +321,6 @@ export {
   dateValidate,
   getSalesOptions,
   employeeSearch,
-  addToTermCondition
+  addToTermCondition,
+  deleteComment
 };
