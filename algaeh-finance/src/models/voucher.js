@@ -875,7 +875,7 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "select debit_amount,credit_amount,concat(H.account_name,'->',C.child_name) as ledger\
+          "select finance_voucher_id, debit_amount,credit_amount,concat(H.account_name,'->',C.child_name) as ledger\
           from finance_voucher_details VD \
           left join finance_account_head H on VD.head_id=H.finance_account_head_id\
           left join finance_account_child C on VD.child_id=C.finance_account_child_id\
