@@ -570,7 +570,7 @@ export default {
             input.auth_level < option.MaxAuth
           ) {
             getFinanceAuthFields(input["auth_level"]).then(authFields => {
-              if (input.auth_status == "A") {
+              if (input.auth_status == "A" && input.voucher_header_id > 0) {
                 _mysql
                   .executeQuery({
                     query:
@@ -595,7 +595,10 @@ export default {
                     _mysql.releaseConnection();
                     next(error);
                   });
-              } else if (input.auth_status == "R") {
+              } else if (
+                input.auth_status == "R" &&
+                input.voucher_header_id > 0
+              ) {
                 _mysql
                   .executeQuery({
                     query:
@@ -633,7 +636,7 @@ export default {
             input.auth_level >= option.MaxAuth
           ) {
             getFinanceAuthFields(input["auth_level"]).then(authFields => {
-              if (input.auth_status == "A") {
+              if (input.auth_status == "A" && input.voucher_header_id > 0) {
                 _mysql
                   .executeQuery({
                     query:
@@ -757,7 +760,10 @@ export default {
                     _mysql.releaseConnection();
                     next(error);
                   });
-              } else if (input.auth_status == "R") {
+              } else if (
+                input.auth_status == "R" &&
+                input.voucher_header_id > 0
+              ) {
                 _mysql
                   .executeQuery({
                     query:
