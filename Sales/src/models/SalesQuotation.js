@@ -226,3 +226,82 @@ export function addSalesQuotation(req, res, next) {
     });
   }
 };
+
+
+export function getSalesQuotationList(req, res, next) {
+  const _mysql = new algaehMysql();
+  // const utilities = new algaehUtilities();
+  try {
+    console.log("getSalesQuotation: ")
+    let _strAppend = ""
+    if (
+      req.query.from_date != "null" &&
+      req.query.from_date != "" &&
+      req.query.from_date != null &&
+      req.query.to_date != "null" &&
+      req.query.to_date != "" &&
+      req.query.to_date != null
+    ) {
+      _strAppend += ` and date(sales_quotation_date)
+      between date('${req.query.from_date}') and date('${req.query.to_date}') `;
+    }
+
+    if (req.query.customer_id > 0) {
+      _strAppend += ` and customer_id= '${req.query.customer_id}'`
+    }
+
+    if (req.query.sales_quotation_number !== null && req.query.sales_quotation_number !== undefined) {
+      _strAppend += ` and sales_quotation_number= '${req.query.sales_quotation_number}'`
+    }
+
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT SQ.*, C.customer_name from hims_f_sales_quotation SQ, hims_d_customer C  \
+          where SQ.customer_id = C.hims_d_customer_id " + _strAppend,
+        printQuery: true
+      })
+      .then(headerResult => {
+
+        _mysql.releaseConnection();
+        req.records = headerResult;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
+export function updateSalesQuotation(req, res, next) {
+  const _mysql = new algaehMysql();
+  // const utilities = new algaehUtilities();
+  try {
+
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_f_sales_quotation set comments=? where hims_f_sales_quotation_id=?",
+        values: [req.body.comments, req.body.hims_f_sales_quotation_id],
+        printQuery: true
+      })
+      .then(headerResult => {
+
+        _mysql.releaseConnection();
+        req.records = headerResult;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
