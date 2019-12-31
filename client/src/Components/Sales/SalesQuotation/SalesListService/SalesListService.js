@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext";
 // import "./SalesListService.scss";
 import "./../../../../styles/site.scss";
@@ -23,8 +20,6 @@ import {
     qtyonchangegridcol,
     changeTexts
 } from "./SalesListServiceEvents";
-import { AlgaehActions } from "../../../../actions/algaehActions";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import _ from "lodash";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
@@ -54,53 +49,6 @@ class SalesListService extends Component {
         this.setState({ ...this.state, ...InputOutput });
     }
 
-    componentDidMount() {
-        if (
-            this.props.inventoryitemcategory === undefined ||
-            this.props.inventoryitemcategory.length === 0
-        ) {
-            this.props.getItemCategory({
-                uri: "/inventory/getItemCategory",
-                module: "inventory",
-                method: "GET",
-                redux: {
-                    type: "ITEM_CATEGORY_GET_DATA",
-                    mappingName: "inventoryitemcategory"
-                }
-            });
-        }
-
-        if (
-            this.props.inventoryitemgroup === undefined ||
-            this.props.inventoryitemgroup.length === 0
-        ) {
-            this.props.getItemGroup({
-                uri: "/inventory/getItemGroup",
-                module: "inventory",
-                method: "GET",
-                redux: {
-                    type: "ITEM_GROUOP_GET_DATA",
-                    mappingName: "inventoryitemgroup"
-                }
-            });
-        }
-
-        if (
-            this.props.inventoryitemuom === undefined ||
-            this.props.inventoryitemuom.length === 0
-        ) {
-            this.props.getItemUOM({
-                uri: "/inventory/getInventoryUom",
-                module: "inventory",
-                method: "GET",
-                redux: {
-                    type: "ITEM_UOM_GET_DATA",
-                    mappingName: "inventoryitemuom"
-                }
-            });
-        }
-    }
-
     UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState(nextProps.SALESIOputs);
     }
@@ -111,11 +59,11 @@ class SalesListService extends Component {
                 <MyContext.Consumer>
                     {context => (
                         <>
-                            <div className="col-12">
+                            <div className="col-3">
                                 <div className="portlet portlet-bordered margin-bottom-15">
                                     <div className="row">
                                         <AlgaehAutoSearch
-                                            div={{ className: "col-3 mandatory" }}
+                                            div={{ className: "col-12 mandatory" }}
                                             label={{ forceLabel: "Service Name" }}
                                             title="Search Service"
                                             id="item_id_search"
@@ -155,7 +103,7 @@ class SalesListService extends Component {
 
 
                                         <AlagehFormGroup
-                                            div={{ className: "col mandatory" }}
+                                            div={{ className: "col-6 mandatory" }}
                                             label={{
                                                 forceLabel: "Quantity"
                                             }}
@@ -183,7 +131,7 @@ class SalesListService extends Component {
                                         />
 
                                         <AlagehAutoComplete
-                                            div={{ className: "col mandatory" }}
+                                            div={{ className: "col-6 mandatory" }}
                                             label={{ forceLabel: "Frequency", isImp: true }}
                                             selector={{
                                                 sort: "off",
@@ -209,7 +157,7 @@ class SalesListService extends Component {
                                         />
 
                                         <AlagehFormGroup
-                                            div={{ className: "col mandatory" }}
+                                            div={{ className: "col-6 mandatory" }}
                                             label={{
                                                 forceLabel: "Discount (%)",
                                                 isImp: false
@@ -234,7 +182,7 @@ class SalesListService extends Component {
 
 
                                         <AlagehFormGroup
-                                            div={{ className: "col mandatory" }}
+                                            div={{ className: "col-6 mandatory" }}
                                             label={{
                                                 forceLabel: "Unit Cost",
                                                 isImp: false
@@ -256,7 +204,7 @@ class SalesListService extends Component {
                                                 }
                                             }}
                                         />
-                                        <div className="col mandatory">
+                                        <div className="col-6 mandatory">
                                             <AlgaehLabel
                                                 label={{
                                                     forceLabel: "Tax %"
@@ -268,7 +216,7 @@ class SalesListService extends Component {
                                                     : "-----------"}
                                             </h6>
                                         </div>
-                                        <div className="col-12 subFooter-btn">
+                                        <div className="col-6 subFooter-btn">
                                             <button
                                                 className="btn btn-primary"
                                                 onClick={AddSerices.bind(this, this, context)}
@@ -465,34 +413,7 @@ class SalesListService extends Component {
                                                                     forceLabel: "discount Amt."
                                                                 }}
                                                             />
-                                                        ),
-                                                        // displayTemplate: row => {
-                                                        //     return (
-                                                        //         <AlagehFormGroup
-                                                        //             div={{}}
-                                                        //             textBox={{
-                                                        //                 decimal: { allowNegative: false },
-                                                        //                 value: row.discount_amount,
-                                                        //                 className: "txt-fld",
-                                                        //                 name: "discount_amount",
-                                                        //                 events: {
-                                                        //                     onChange: onchangegridcol.bind(
-                                                        //                         this,
-                                                        //                         this,
-                                                        //                         context,
-                                                        //                         row
-                                                        //                     )
-                                                        //                 },
-                                                        //                 others: {
-                                                        //                     onFocus: e => {
-                                                        //                         e.target.oldvalue =
-                                                        //                             e.target.value;
-                                                        //                     }
-                                                        //                 }
-                                                        //             }}
-                                                        //         />
-                                                        //     );
-                                                        // }
+                                                        )
                                                     },
 
                                                     {
@@ -559,30 +480,5 @@ class SalesListService extends Component {
     }
 }
 
-function mapStateToProps(state) {
-    return {
-        opitemlist: state.opitemlist,
-        inventoryitemcategory: state.inventoryitemcategory,
-        inventoryitemuom: state.inventoryitemuom,
-        inventoryitemgroup: state.inventoryitemgroup
-    };
-}
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators(
-        {
-
-            getItemCategory: AlgaehActions,
-            getItemUOM: AlgaehActions,
-            getItemGroup: AlgaehActions
-        },
-        dispatch
-    );
-}
-
-export default withRouter(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps
-    )(SalesListService)
-);
+export default SalesListService

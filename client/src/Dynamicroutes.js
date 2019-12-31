@@ -558,6 +558,16 @@ const PageToPlot = {
       import("./Components/Sales/ContractManagement/ContractManagement")
     )
   ),
+  SalesInvoice: React.lazy(() =>
+    retry(() =>
+      import("./Components/Sales/SalesInvoice/SalesInvoice")
+    )
+  ),
+  SalesQuotationList: React.lazy(() =>
+    retry(() =>
+      import("./Components/Sales/SalesQuotationList/SalesQuotationSwitch")
+    )
+  ),
 
   Accounts,
   Transactions,

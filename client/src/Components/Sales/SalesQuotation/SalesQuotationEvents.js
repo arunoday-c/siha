@@ -113,50 +113,85 @@ const ClearData = ($this, e) => {
 
 const SaveSalesQuotation = $this => {
 
+  debugger
+  if ($this.state.hims_f_sales_quotation_id !== null) {
 
-  AlgaehValidation({
-    querySelector: "data-validate='HeaderDiv'",
-    alertTypeIcon: "warning",
-    onSuccess: () => {
-      AlgaehLoader({ show: true });
-      algaehApiCall({
-        uri: "/SalesQuotation/addSalesQuotation",
-        module: "sales",
-        method: "POST",
-        data: $this.state,
-        onSuccess: response => {
+    if ($this.state.comments === null || $this.state.comments === "") {
+      swalMessage({
+        type: "warning",
+        title: "To update comments is mandatory"
+      });
+      return
+    }
+    AlgaehLoader({ show: true });
+    let inputObj = { hims_f_sales_quotation_id: $this.state.hims_f_sales_quotation_id, comments: $this.state.comments }
+    algaehApiCall({
+      uri: "/SalesQuotation/updateSalesQuotation",
+      module: "sales",
+      method: "PUT",
+      data: inputObj,
+      onSuccess: response => {
 
-          if (response.data.success) {
-            $this.setState({
-              sales_quotation_number: response.data.records.sales_quotation_number,
-              hims_f_sales_quotation_id:
-                response.data.records.hims_f_sales_quotation_id,
-              saveEnable: true,
-              dataExists: true
-            });
-            swalMessage({
-              type: "success",
-              title: "Saved successfully ..."
-            });
-            AlgaehLoader({ show: false });
-          } else {
-            AlgaehLoader({ show: false });
-            swalMessage({
-              type: "error",
-              title: response.data.records.message
-            });
-          }
-        },
-        onFailure: error => {
+        if (response.data.success) {
+          swalMessage({
+            type: "success",
+            title: "Updated successfully ..."
+          });
+          AlgaehLoader({ show: false });
+        } else {
           AlgaehLoader({ show: false });
           swalMessage({
-            title: error.message,
-            type: "error"
+            type: "error",
+            title: response.data.records.message
           });
         }
-      });
-    }
-  });
+      }
+    });
+  } else {
+    AlgaehValidation({
+      querySelector: "data-validate='HeaderDiv'",
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        AlgaehLoader({ show: true });
+        algaehApiCall({
+          uri: "/SalesQuotation/addSalesQuotation",
+          module: "sales",
+          method: "POST",
+          data: $this.state,
+          onSuccess: response => {
+
+            if (response.data.success) {
+              $this.setState({
+                sales_quotation_number: response.data.records.sales_quotation_number,
+                hims_f_sales_quotation_id:
+                  response.data.records.hims_f_sales_quotation_id,
+                saveEnable: true,
+                dataExists: true
+              });
+              swalMessage({
+                type: "success",
+                title: "Saved successfully ..."
+              });
+              AlgaehLoader({ show: false });
+            } else {
+              AlgaehLoader({ show: false });
+              swalMessage({
+                type: "error",
+                title: response.data.records.message
+              });
+            }
+          },
+          onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      }
+    });
+  }
 };
 
 const customerTexthandle = ($this, e) => {

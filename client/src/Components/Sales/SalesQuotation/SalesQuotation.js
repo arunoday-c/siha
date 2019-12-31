@@ -67,7 +67,9 @@ class SalesQuotation extends Component {
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).decimal_places,
       saveEnable: true,
-      dataExists: false
+      dataExists: false,
+      comments: null,
+      terms_conditions: null
     };
   }
 
@@ -103,6 +105,14 @@ class SalesQuotation extends Component {
         }
       });
     }
+
+    if (
+      this.props.sales_quotation_number !== undefined &&
+      this.props.sales_quotation_number.length !== 0
+    ) {
+      getCtrlCode(this, this.props.sales_quotation_number);
+    }
+
   }
 
   render() {
@@ -166,8 +176,8 @@ class SalesQuotation extends Component {
                   <h6>
                     {this.state.sales_quotation_date
                       ? moment(this.state.sales_quotation_date).format(
-                          Options.dateFormat
-                        )
+                        Options.dateFormat
+                      )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -176,17 +186,17 @@ class SalesQuotation extends Component {
             printArea={
               this.state.sales_quotation_number !== null
                 ? {
-                    menuitems: [
-                      {
-                        label: "Print Receipt",
-                        events: {
-                          onClick: () => {
-                            // generateMaterialReqInv(this.state);
-                          }
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          // generateMaterialReqInv(this.state);
                         }
                       }
-                    ]
-                  }
+                    }
+                  ]
+                }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -372,45 +382,6 @@ class SalesQuotation extends Component {
                     }
                   }}
                 />
-                {/* <AlagehFormGroup
-                                    div={{ className: "col" }}
-                                    label={{
-                                        forceLabel: "Other Terms",
-                                        isImp: false
-                                    }}
-                                    textBox={{
-                                        className: "txt-fld",
-                                        name: "other_terms",
-                                        value: this.state.other_terms,
-                                        events: {
-                                            onChange: changeTexts.bind(this, this)
-                                        },
-                                        others: {
-                                            disabled: this.state.dataExists
-                                        }
-                                    }}
-                                /> */}
-
-                {/* {this.state.sales_quotation_mode === "S" ? (
-                                    <AlagehFormGroup
-                                        div={{ className: "col" }}
-                                        label={{
-                                            forceLabel: "Service Terms",
-                                            isImp: false
-                                        }}
-                                        textBox={{
-                                            className: "txt-fld",
-                                            name: "service_terms",
-                                            value: this.state.service_terms,
-                                            events: {
-                                                onChange: changeTexts.bind(this, this)
-                                            },
-                                            others: {
-                                                disabled: this.state.dataExists
-                                            }
-                                        }}
-                                    />
-                                ) : null} */}
               </div>
             </div>
           </div>
@@ -425,13 +396,15 @@ class SalesQuotation extends Component {
                   }
                 }}
               >
-                {this.state.sales_quotation_mode === "S" ? (
-                  <SalesListService SALESIOputs={this.state} />
+                <SalesListItems SALESIOputs={this.state} />
+                <SalesListService SALESIOputs={this.state} />
+                {/* {this.state.sales_quotation_mode === "S" ? (
+                  
                 ) : (
-                  <SalesListItems SALESIOputs={this.state} />
-                )}
+                    
+                  )} */}
               </MyContext.Provider>
-              <div className="col-3">
+              <div className="col-6">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="row">
                     <AlagehAutoComplete
@@ -443,7 +416,9 @@ class SalesQuotation extends Component {
                         value: "",
                         dataSource: {},
 
-                        others: {}
+                        others: {
+                          disabled: this.state.dataExists,
+                        }
                       }}
                     />
                     <AlagehFormGroup
@@ -454,8 +429,8 @@ class SalesQuotation extends Component {
                       }}
                       textBox={{
                         className: "txt-fld",
-                        name: "narration",
-                        value: this.state.narration,
+                        name: "terms_conditions",
+                        value: this.state.terms_conditions,
                         events: {
                           onChange: changeTexts.bind(this, this)
                         },
@@ -469,9 +444,9 @@ class SalesQuotation extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-12" style={{ textAlign: "right" }}>
+              <div className="col-6" style={{ textAlign: "right" }}>
                 <div className="row">
-                  <div className="col">
+                  {/* <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Sub Total"
@@ -510,9 +485,9 @@ class SalesQuotation extends Component {
                       }}
                     />
                     <h6>{getAmountFormart(this.state.net_payable)}</h6>
-                  </div>{" "}
+                  </div> */}
                   <AlagehFormGroup
-                    div={{ className: "col-3 textAreaLeft" }}
+                    div={{ className: "col-12 textAreaLeft" }}
                     label={{
                       forceLabel: "Narration",
                       isImp: false
@@ -531,6 +506,28 @@ class SalesQuotation extends Component {
                       }
                     }}
                   />
+
+                  {this.props.requisition_auth ?
+                    <AlagehFormGroup
+                      div={{ className: "col-12 textAreaLeft" }}
+                      label={{
+                        forceLabel: "Comments",
+                        isImp: false
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "comments",
+                        value: this.state.comments,
+                        events: {
+                          onChange: changeTexts.bind(this, this)
+                        },
+                        others: {
+                          multiline: true,
+                          rows: "8"
+                        }
+                      }}
+                    /> : null}
+
                 </div>
               </div>
             </div>
@@ -556,11 +553,23 @@ class SalesQuotation extends Component {
                     type="button"
                     className="btn btn-default"
                     onClick={ClearData.bind(this, this)}
+                    disabled={this.props.requisition_auth ? true : false}
                   >
                     <AlgaehLabel
                       label={{ forceLabel: "Clear", returnText: true }}
                     />
                   </button>
+
+                  {this.props.requisition_auth ?
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={SaveSalesQuotation.bind(this, this)}
+                    >
+                      <AlgaehLabel
+                        label={{ forceLabel: "Update", returnText: true }}
+                      />
+                    </button> : null}
                 </div>
               </div>
             </div>
