@@ -97,6 +97,8 @@ const numberchangeTexts = ($this, context, e) => {
         } else {
             $this.setState({ [name]: value });
         }
+    } else if (name === "unit_cost") {
+        $this.setState({ [name]: value === undefined ? null : value });
     } else {
         $this.setState({ [name]: value });
     }
@@ -133,7 +135,7 @@ const itemchangeText = ($this, e, ctrl) => {
                         unit_cost: e.standard_fee,
                         Real_unit_cost: e.standard_fee,
                         uom_description: e.uom_description,
-                        tax_percent: e.vat_percent,
+                        tax_percentage: e.vat_percent,
                         ItemUOM: data,
                         sales_conversion_factor: sales_conversion_factor
                     });
@@ -160,6 +162,13 @@ const itemchangeText = ($this, e, ctrl) => {
 };
 
 const AddItems = ($this, context) => {
+    if ($this.state.customer_id === null) {
+        swalMessage({
+            title: "Please Customer.",
+            type: "warning"
+        });
+        return
+    }
     let itemData = Enumerable.from($this.state.sales_quotation_items)
         .where(
             w => w.item_id === $this.state.item_id
@@ -183,6 +192,12 @@ const AddItems = ($this, context) => {
     } else if ($this.state.uom_id === null) {
         swalMessage({
             title: "Enter the UOM.",
+            type: "warning"
+        });
+        return
+    } else if ($this.state.unit_cost === null || parseFloat($this.state.unit_cost) === 0) {
+        swalMessage({
+            title: "Enter the Unit Cost.",
             type: "warning"
         });
         return

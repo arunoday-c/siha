@@ -2,28 +2,33 @@
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
+      // resolve(options.result[0]);
+
       // const utilities = new algaehUtilities();
 
       // utilities.logger().log("outpoy: ", options.result);
-
       const decimal_places = options.args.crypto.decimal_places;
       if (options.result.length > 0) {
         options.result.map(item => {
-          item.total_quantity = parseFloat(item["total_quantity"]).toFixed(
+          item.dn_quantity = parseFloat(item["dn_quantity"]).toFixed(
             decimal_places
           );
-          item.unit_price = parseFloat(item["unit_price"]).toFixed(
+          item.qtyhand = parseFloat(item["qtyhand"]).toFixed(decimal_places);
+          item.return_qty = parseFloat(item["return_qty"]).toFixed(
             decimal_places
           );
-          item.extended_price = parseFloat(item["extended_price"]).toFixed(
+          item.unit_cost = parseFloat(item["unit_cost"]).toFixed(
             decimal_places
           );
-          item.sub_discount_percentage = parseFloat(
-            item["sub_discount_percentage"]
+          item.extended_cost = parseFloat(item["extended_cost"]).toFixed(
+            decimal_places
+          );
+          item.discount_percentage = parseFloat(
+            item["discount_percentage"]
           ).toFixed(decimal_places);
-          item.sub_discount_amount = parseFloat(
-            item["sub_discount_amount"]
-          ).toFixed(decimal_places);
+          item.discount_amount = parseFloat(item["discount_amount"]).toFixed(
+            decimal_places
+          );
           item.net_extended_cost = parseFloat(
             item["net_extended_cost"]
           ).toFixed(decimal_places);
@@ -36,12 +41,13 @@ const executePDF = function executePDFMethod(options) {
 
           return item;
         });
+
         resolve({
-          net_payable: parseFloat(options.result[0]["net_payable"]).toFixed(
+          return_total: parseFloat(options.result[0]["return_total"]).toFixed(
             decimal_places
           ),
-          purchase_number: options.result[0]["purchase_number"],
-          po_date: options.result[0]["po_date"],
+          purchase_return_number: options.result[0]["purchase_return_number"],
+          return_date: options.result[0]["return_date"],
           location_description: options.result[0]["location_description"],
           vendor_name: options.result[0]["vendor_name"],
           sub_department_name: options.result[0]["sub_department_name"],

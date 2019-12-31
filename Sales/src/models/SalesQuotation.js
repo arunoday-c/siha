@@ -10,7 +10,7 @@ export function getSalesQuotation(req, res, next) {
     _mysql
       .executeQuery({
         query:
-          "SELECT SQ.*, C.vat_percentage from hims_f_sales_quotation SQ, hims_d_customer C  \
+          "SELECT SQ.*, C.customer_name from hims_f_sales_quotation SQ, hims_d_customer C  \
           where SQ.customer_id = C.hims_d_customer_id and SQ.sales_quotation_number=?",
         values: [req.query.sales_quotation_number],
         printQuery: true
@@ -91,8 +91,8 @@ export function addSalesQuotation(req, res, next) {
             query:
               "INSERT INTO hims_f_sales_quotation (sales_quotation_number, sales_quotation_date, \
                                   sales_quotation_mode, reference_number, customer_id, quote_validity, sales_man, \
-                                  payment_terms, service_terms, other_terms, sub_total, discount_amount, net_total, \
-                                  total_tax, net_payable, narration, created_date, created_by, updated_date, \
+                                  payment_terms, sub_total, discount_amount, net_total, \
+                                  total_tax, net_payable, narration, delivery_date, no_of_days_followup, created_date, created_by, updated_date, \
                                   updated_by, hospital_id)\
                           values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
@@ -105,14 +105,14 @@ export function addSalesQuotation(req, res, next) {
 
               input.sales_man,
               input.payment_terms,
-              input.service_terms,
-              input.other_terms,
               input.sub_total,
               input.discount_amount,
               input.net_total,
               input.total_tax,
               input.net_payable,
               input.narration,
+              input.delivery_date,
+              input.no_of_days_followup,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),

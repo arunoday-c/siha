@@ -15,7 +15,8 @@ import {
     customerTexthandle,
     ClearData,
     SaveSalesQuotation,
-    getCtrlCode
+    getCtrlCode,
+    dateValidate
 } from "./SalesQuotationEvents";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import "./SalesQuotation.scss";
@@ -55,8 +56,10 @@ class SalesQuotation extends Component {
             total_tax: null,
             net_payable: null,
             narration: null,
+            delivery_date: null,
+            no_of_days_followup: 0,
 
-            tax_percentage: null,
+            // tax_percentage: null,
 
             sales_quotation_items: [],
             sales_quotation_services: [],
@@ -190,6 +193,7 @@ class SalesQuotation extends Component {
                     />
                     <div
                         className="row  inner-top-search"
+                        data-validate="HeaderDiv"
                         style={{ marginTop: 76, paddingBottom: 10 }}
                     >
                         {/* Patient code */}
@@ -285,10 +289,27 @@ class SalesQuotation extends Component {
                                     }}
                                     minDate={new Date()}
                                     events={{
-                                        onChange: datehandle.bind(this, this)
+                                        onChange: datehandle.bind(this, this),
+                                        onBlur: dateValidate.bind(this, this)
                                     }}
                                     disabled={this.state.dataExists}
                                     value={this.state.quote_validity}
+                                />
+
+                                <AlgaehDateHandler
+                                    div={{ className: "col mandatory" }}
+                                    label={{ forceLabel: "Delivery Date", isImp: true }}
+                                    textBox={{
+                                        className: "txt-fld",
+                                        name: "delivery_date"
+                                    }}
+                                    minDate={new Date()}
+                                    events={{
+                                        onChange: datehandle.bind(this, this),
+                                        onBlur: dateValidate.bind(this, this)
+                                    }}
+                                    disabled={this.state.dataExists}
+                                    value={this.state.delivery_date}
                                 />
 
                                 <AlagehFormGroup
@@ -309,6 +330,7 @@ class SalesQuotation extends Component {
                                         }
                                     }}
                                 />
+
                                 <AlagehFormGroup
                                     div={{ className: "col" }}
                                     label={{
@@ -329,6 +351,28 @@ class SalesQuotation extends Component {
                                 />
 
                                 <AlagehFormGroup
+                                    div={{ className: "col form-group" }}
+                                    label={{
+                                        forceLabel: "No.of Days To Follow Up"
+                                    }}
+                                    textBox={{
+                                        number: {
+                                            allowNegative: false,
+                                            thousandSeparator: ","
+                                        },
+                                        className: "txt-fld",
+                                        name: "no_of_days_followup",
+                                        value: this.state.no_of_days_followup,
+                                        dontAllowKeys: ["-", "e", "."],
+                                        events: {
+                                            onChange: changeTexts.bind(this, this)
+                                        },
+                                        others: {
+                                            disabled: this.state.dataExists
+                                        }
+                                    }}
+                                />
+                                {/* <AlagehFormGroup
                                     div={{ className: "col" }}
                                     label={{
                                         forceLabel: "Other Terms",
@@ -345,9 +389,9 @@ class SalesQuotation extends Component {
                                             disabled: this.state.dataExists
                                         }
                                     }}
-                                />
+                                /> */}
 
-                                {this.state.sales_quotation_mode === "S" ? (
+                                {/* {this.state.sales_quotation_mode === "S" ? (
                                     <AlagehFormGroup
                                         div={{ className: "col" }}
                                         label={{
@@ -366,7 +410,7 @@ class SalesQuotation extends Component {
                                             }
                                         }}
                                     />
-                                ) : null}
+                                ) : null} */}
                             </div>
                         </div>
                     </div>

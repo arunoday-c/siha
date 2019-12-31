@@ -285,7 +285,7 @@ class SalesOrdListService extends Component {
                                                         fieldName: "quantity",
                                                         label: (
                                                             <AlgaehLabel
-                                                                label={{ forceLabel: "Qty Req." }}
+                                                                label={{ forceLabel: "Quantity" }}
                                                             />
                                                         ),
                                                         displayTemplate: row => {
@@ -297,7 +297,8 @@ class SalesOrdListService extends Component {
                                                                             allowNegative: false,
                                                                             thousandSeparator: ","
                                                                         },
-                                                                        value: row.quantity,
+                                                                        dontAllowKeys: ["-", "e", "."],
+                                                                        value: parseFloat(row.quantity),
                                                                         className: "txt-fld",
                                                                         name: "quantity",
                                                                         events: {

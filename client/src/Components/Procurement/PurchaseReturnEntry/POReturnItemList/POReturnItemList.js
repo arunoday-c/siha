@@ -307,7 +307,12 @@ class POReturnItemList extends Component {
                                 ? this.state.pharmacy_stock_detail
                                 : this.state.inventory_stock_detail
                           }}
-                          isEditable={true}
+                          isEditable={
+                            this.state.purchase_return_number !== null &&
+                            this.state.purchase_return_number !== ""
+                              ? false
+                              : true
+                          }
                           actions={{
                             allowEdit: false
                           }}

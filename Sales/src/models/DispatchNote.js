@@ -100,7 +100,7 @@ export function getSalesOrderItem(req, res, next) {
         _mysql
             .executeQuery({
                 query:
-                    "SELECT SQ.*, C.vat_percentage, C.customer_name, H.hospital_name, P.project_desc as project_name from hims_f_sales_order SQ \
+                    "SELECT SQ.*, C.customer_name, H.hospital_name, P.project_desc as project_name from hims_f_sales_order SQ \
                 inner join hims_d_customer C on SQ.customer_id = C.hims_d_customer_id \
                 inner join hims_d_hospital H  on SQ.hospital_id = H.hims_d_hospital_id \
                 inner join hims_d_project P  on SQ.project_id = P.hims_d_project_id \

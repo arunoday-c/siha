@@ -9,7 +9,6 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -25,7 +24,6 @@ import {
   generatePOReceiptNoPrice
 } from "./SalesOrderEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import Enumerable from "linq";
 import {
   AlgaehOpenContainer,
   getAmountFormart
@@ -229,6 +227,7 @@ class SalesOrder extends Component {
         <div className="hims-purchase-order-entry">
           <div
             className="row  inner-top-search"
+            data-validate="HeaderDiv"
             style={{ marginTop: 76, paddingBottom: 10 }}
           >
             {/* Patient code */}
@@ -377,7 +376,7 @@ class SalesOrder extends Component {
                   }}
                 />
 
-                <AlagehFormGroup
+                {/* <AlagehFormGroup
                   div={{ className: "col" }}
                   label={{
                     forceLabel: "Other Terms",
@@ -415,7 +414,7 @@ class SalesOrder extends Component {
                       }
                     }}
                   />
-                ) : null}
+                ) : null} */}
 
                 <AlagehAutoComplete
                   div={{ className: "col-2 mandatory" }}

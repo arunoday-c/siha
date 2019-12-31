@@ -60,6 +60,8 @@ const numberchangeTexts = ($this, context, e) => {
         } else {
             $this.setState({ [name]: value });
         }
+    } else if (name === "unit_cost") {
+        $this.setState({ [name]: value === undefined ? null : value });
     } else {
         $this.setState({ [name]: value });
     }
@@ -76,11 +78,19 @@ const servicechangeText = ($this, e, ctrl) => {
         addItemButton: false,
         service_name: e.service_name,
         unit_cost: e.standard_fee,
+        tax_percentage: e.vat_percent
     });
 
 };
 
 const AddSerices = ($this, context) => {
+    if ($this.state.customer_id === null) {
+        swalMessage({
+            title: "Please Customer.",
+            type: "warning"
+        });
+        return
+    }
     let serviceData = Enumerable.from($this.state.sales_quotation_services)
         .where(
             w =>
@@ -102,7 +112,21 @@ const AddSerices = ($this, context) => {
             type: "warning"
         });
         return
+    } else if ($this.state.unit_cost === null || parseFloat($this.state.unit_cost) === 0) {
+        swalMessage({
+            title: "Enter the Unit Cost.",
+            type: "warning"
+        });
+        return
+    } else if ($this.state.service_frequency === null) {
+        swalMessage({
+            title: "Select Frequency",
+            type: "warning"
+        });
+        return
     }
+
+
     if (serviceData.length > 0) {
         swalMessage({
             title: "Selected Setvice already added in the list.",
@@ -125,9 +149,11 @@ const AddSerices = ($this, context) => {
         );
 
         const ItemInput = {
+
             service_name: $this.state.service_name,
             services_id: $this.state.services_id,
             quantity: $this.state.quantity,
+            service_frequency: $this.state.service_frequency,
             discount_percentage: $this.state.discount_percentage,
             unit_cost: $this.state.unit_cost,
             extended_cost: extended_cost,
@@ -167,7 +193,8 @@ const AddSerices = ($this, context) => {
             quantity: 0,
             discount_percentage: 0,
             unit_cost: 0,
-            tax_percent: 0
+            tax_percent: 0,
+            service_frequency: null
         });
 
         if (context !== undefined) {
@@ -391,6 +418,19 @@ const qtyonchangegridcol = ($this, context, row, e) => {
     }
 };
 
+
+const changeTexts = ($this, ctrl, e) => {
+    e = ctrl || e;
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+
+    $this.setState({
+        [name]: value
+    });
+
+
+};
+
 export {
     UomchangeTexts,
     servicechangeText,
@@ -400,5 +440,6 @@ export {
     calculateAmount,
     dateFormater,
     onchangegridcol,
-    qtyonchangegridcol
+    qtyonchangegridcol,
+    changeTexts
 };

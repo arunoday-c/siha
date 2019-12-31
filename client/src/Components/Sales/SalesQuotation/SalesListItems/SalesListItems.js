@@ -236,7 +236,30 @@ class SalesListItems extends Component {
                                                     : "-----------"}
                                             </h6>
                                         </div>
-                                        <div className="col-6 form-group mandatory">
+                                        <AlagehFormGroup
+                                            div={{ className: "col-6 form-group mandatory" }}
+                                            label={{
+                                                forceLabel: "Unit Cost",
+                                                isImp: false
+                                            }}
+                                            textBox={{
+                                                decimal: { allowNegative: false },
+                                                className: "txt-fld",
+                                                name: "unit_cost",
+                                                value: this.state.unit_cost,
+                                                events: {
+                                                    onChange: numberchangeTexts.bind(
+                                                        this,
+                                                        this,
+                                                        context
+                                                    )
+                                                },
+                                                others: {
+                                                    tabIndex: "4"
+                                                }
+                                            }}
+                                        />
+                                        {/* <div className="col-6 form-group mandatory">
                                             <AlgaehLabel
                                                 label={{
                                                     forceLabel: "Unit Cost"
@@ -247,7 +270,8 @@ class SalesListItems extends Component {
                                                     ? getAmountFormart(this.state.unit_cost)
                                                     : "-----------"}
                                             </h6>
-                                        </div> <div className="col-12 subFooter-btn">
+                                        </div>  */}
+                                        <div className="col-12 subFooter-btn">
                                             <button
                                                 className="btn btn-primary"
                                                 onClick={AddItems.bind(this, this, context)}
@@ -255,7 +279,7 @@ class SalesListItems extends Component {
                                                 tabIndex="5"
                                             >
                                                 Add Item
-                                                        </button>
+                                            </button>
 
                                         </div>
                                     </div>
@@ -315,7 +339,7 @@ class SalesListItems extends Component {
                                                         fieldName: "quantity",
                                                         label: (
                                                             <AlgaehLabel
-                                                                label={{ forceLabel: "Qty Req." }}
+                                                                label={{ forceLabel: "Quantity" }}
                                                             />
                                                         ),
                                                         displayTemplate: row => {
