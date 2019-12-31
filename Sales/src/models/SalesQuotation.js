@@ -148,6 +148,7 @@ export function addSalesQuotation(req, res, next) {
               if (input.sales_quotation_services.length > 0) {
                 IncludeValues = [
                   "services_id",
+                  "service_frequency",
                   "unit_cost",
                   "quantity",
                   "extended_cost",
@@ -325,6 +326,7 @@ function InsertSalesItemService(options) {
           if (input.sales_quotation_services.length > 0) {
             IncludeValues = [
               "services_id",
+              "service_frequency",
               "unit_cost",
               "quantity",
               "extended_cost",
