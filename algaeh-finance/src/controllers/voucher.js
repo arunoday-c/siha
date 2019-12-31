@@ -72,7 +72,7 @@ export default () => {
     }
   });
   api.post("/authorizeVoucher", authorizeVoucher, (req, res, next) => {
-    if (req.records.invalid_input == true) {
+    if (req.records.invalid_user == true) {
       res
         .status(utlities.AlgaehUtilities().httpStatus().internalServer)
         .json({
