@@ -608,8 +608,9 @@ export default {
                     values: [
                       "R",
                       req.userIdentity.algaeh_d_app_user_id,
-                      input.rejected_reason,
+
                       new Date(),
+                      input.rejected_reason,
                       input.voucher_header_id
                     ],
                     printQuery: true
@@ -773,8 +774,9 @@ export default {
                     values: [
                       "R",
                       req.userIdentity.algaeh_d_app_user_id,
-                      input.rejected_reason,
                       new Date(),
+                      input.rejected_reason,
+
                       input.voucher_header_id
                     ],
                     printQuery: true
