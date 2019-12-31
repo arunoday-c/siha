@@ -16,7 +16,9 @@ import {
   ClearData,
   SaveSalesQuotation,
   getCtrlCode,
-  dateValidate
+  dateValidate,
+  getSalesOptions,
+  employeeSearch
 } from "./SalesQuotationEvents";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import "./SalesQuotation.scss";
@@ -30,13 +32,23 @@ import SalesListService from "./SalesListService/SalesListService";
 import MyContext from "../../../utils/MyContext";
 import Options from "../../../Options.json";
 import {
-  AlgaehOpenContainer,
-  getAmountFormart
+  AlgaehOpenContainer
 } from "../../../utils/GlobalFunctions";
 
 class SalesQuotation extends Component {
   constructor(props) {
     super(props);
+
+    let Activated_Modueles = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+    );
+
+    const HRMNGMT_Active = Activated_Modueles.filter(f => {
+      return f.module_code === "HRMNGMT";
+    });
+
+
+    this.HRMNGMT_Active = HRMNGMT_Active.length > 0 ? true : false;
 
     this.state = {
       hims_f_sales_quotation_id: null,
@@ -69,8 +81,15 @@ class SalesQuotation extends Component {
       saveEnable: true,
       dataExists: false,
       comments: null,
-      terms_conditions: null
+      terms_conditions: null,
+      services_required: "N",
+      sales_person_id: null,
+      employee_name: null,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
     };
+    getSalesOptions(this, this)
   }
 
   componentDidMount() {
@@ -209,7 +228,7 @@ class SalesQuotation extends Component {
             {/* Patient code */}
             <div className="col-lg-12">
               <div className="row">
-                <div className="col">
+                {/* <div className="col">
                   <label>Quotation Mode</label>
                   <div className="customRadio">
                     <label className="radio inline">
@@ -239,7 +258,7 @@ class SalesQuotation extends Component {
                       <span>Service</span>
                     </label>
                   </div>
-                </div>
+                </div> */}
 
                 <AlagehAutoComplete
                   div={{ className: "col mandatory" }}
@@ -322,16 +341,49 @@ class SalesQuotation extends Component {
                   value={this.state.delivery_date}
                 />
 
+                {this.HRMNGMT_Active ? <div className="col globalSearchCntr form-group mandatory">
+                  <AlgaehLabel label={{ forceLabel: "Sales Person", isImp: true }} />
+                  <h6 onClick={employeeSearch.bind(this, this)}>
+                    {this.state.employee_name
+                      ? this.state.employee_name
+                      : "Search Employee"}
+                    <i className="fas fa-search fa-lg" />
+                  </h6>
+                </div> :
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Name of Sales Person",
+                      isImp: false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "sales_man",
+                      value: this.state.sales_man,
+                      events: {
+                        onChange: changeTexts.bind(this, this)
+                      },
+                      others: {
+                        disabled: this.state.dataExists
+                      }
+                    }}
+                  />
+                }
+
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col form-group" }}
                   label={{
-                    forceLabel: "Name of Sales Person",
-                    isImp: false
+                    forceLabel: "Days To Follow Up"
                   }}
                   textBox={{
+                    number: {
+                      allowNegative: false,
+                      thousandSeparator: ","
+                    },
                     className: "txt-fld",
-                    name: "sales_man",
-                    value: this.state.sales_man,
+                    name: "no_of_days_followup",
+                    value: this.state.no_of_days_followup,
+                    dontAllowKeys: ["-", "e", "."],
                     events: {
                       onChange: changeTexts.bind(this, this)
                     },
@@ -360,28 +412,7 @@ class SalesQuotation extends Component {
                   }}
                 />
 
-                <AlagehFormGroup
-                  div={{ className: "col form-group" }}
-                  label={{
-                    forceLabel: "Days To Follow Up"
-                  }}
-                  textBox={{
-                    number: {
-                      allowNegative: false,
-                      thousandSeparator: ","
-                    },
-                    className: "txt-fld",
-                    name: "no_of_days_followup",
-                    value: this.state.no_of_days_followup,
-                    dontAllowKeys: ["-", "e", "."],
-                    events: {
-                      onChange: changeTexts.bind(this, this)
-                    },
-                    others: {
-                      disabled: this.state.dataExists
-                    }
-                  }}
-                />
+
               </div>
             </div>
           </div>
@@ -397,12 +428,7 @@ class SalesQuotation extends Component {
                 }}
               >
                 <SalesListItems SALESIOputs={this.state} />
-                <SalesListService SALESIOputs={this.state} />
-                {/* {this.state.sales_quotation_mode === "S" ? (
-                  
-                ) : (
-                    
-                  )} */}
+                {this.state.services_required === "Y" ? <SalesListService SALESIOputs={this.state} /> : null}
               </MyContext.Provider>
               <div className="col-6">
                 <div className="portlet portlet-bordered margin-bottom-15">

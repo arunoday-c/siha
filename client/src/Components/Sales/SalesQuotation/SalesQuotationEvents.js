@@ -2,6 +2,8 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehOpenContainer, AlgaehValidation } from "../../../utils/GlobalFunctions";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -105,10 +107,18 @@ const ClearData = ($this, e) => {
     uom_description: null,
     discount_percentage: 0,
     unit_cost: 0,
-    tax_percent: 0
+    tax_percent: 0,
+    services_required: "N",
+    sales_person_id: null,
+    employee_name: null,
+    hospital_id: JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    ).hims_d_hospital_id,
   };
 
   $this.setState(IOputs)
+
+  getSalesOptions($this)
 };
 
 const SaveSalesQuotation = $this => {
@@ -152,6 +162,14 @@ const SaveSalesQuotation = $this => {
       querySelector: "data-validate='HeaderDiv'",
       alertTypeIcon: "warning",
       onSuccess: () => {
+        debugger
+        if ($this.HRMNGMT_Active && $this.state.sales_person_id === null) {
+          swalMessage({
+            type: "warning",
+            title: "Please select Sales Person"
+          });
+          return
+        }
         AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/SalesQuotation/addSalesQuotation",
@@ -219,7 +237,7 @@ const getCtrlCode = ($this, docNumber) => {
     uri: "/SalesQuotation/getSalesQuotation",
     module: "sales",
     method: "GET",
-    data: { sales_quotation_number: docNumber },
+    data: { sales_quotation_number: docNumber, HRMNGMT_Active: $this.HRMNGMT_Active },
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;
@@ -262,6 +280,41 @@ const dateValidate = ($this, value, event) => {
   }
 };
 
+const getSalesOptions = ($this) => {
+  algaehApiCall({
+    uri: "/SalesSettings/getSalesOptions",
+    method: "GET",
+    module: "sales",
+    onSuccess: res => {
+      if (res.data.success) {
+        $this.setState({ services_required: res.data.records[0].services_required });
+      }
+    }
+  });
+}
+
+const employeeSearch = ($this) => {
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.Employee_details.employee
+    },
+    searchName: "employee_branch_wise",
+    uri: "/gloabelSearch/get",
+    inputs: "hospital_id = " + $this.state.hospital_id,
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: row => {
+      $this.setState(
+        {
+          employee_name: row.full_name,
+          sales_person_id: row.hims_d_employee_id
+        }
+      );
+    }
+  });
+}
+
 export {
   changeTexts,
   ClearData,
@@ -270,5 +323,7 @@ export {
   customerTexthandle,
   datehandle,
   getCtrlCode,
-  dateValidate
+  dateValidate,
+  getSalesOptions,
+  employeeSearch
 };

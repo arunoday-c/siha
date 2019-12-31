@@ -95,7 +95,7 @@ const SalesQuotationSearch = ($this, e) => {
         },
         searchName: "SalesQuotation",
         uri: "/gloabelSearch/get",
-        inputs: " sales_quotation_mode= '" + $this.state.sales_order_mode + "'",
+        // inputs: " sales_quotation_mode= '" + $this.state.sales_order_mode + "'",
 
         onContainsChange: (text, serchBy, callBack) => {
             callBack(text);
@@ -187,7 +187,8 @@ const ClearData = ($this, e) => {
         uom_description: null,
         discount_percentage: 0,
         unit_cost: 0,
-        tax_percent: 0
+        tax_percent: 0,
+        services_required: "N"
     };
 
     $this.setState(IOputs)
@@ -353,6 +354,20 @@ const generatePOReceiptNoPrice = data => {
     });
 };
 
+
+const getSalesOptions = ($this) => {
+    algaehApiCall({
+        uri: "/SalesSettings/getSalesOptions",
+        method: "GET",
+        module: "sales",
+        onSuccess: res => {
+            if (res.data.success) {
+                $this.setState({ services_required: res.data.records[0].services_required });
+            }
+        }
+    });
+}
+
 export {
     texthandle,
     datehandle,
@@ -362,5 +377,6 @@ export {
     SaveSalesOrderEnrty,
     getCtrlCode,
     generatePOReceipt,
-    generatePOReceiptNoPrice
+    generatePOReceiptNoPrice,
+    getSalesOptions
 };

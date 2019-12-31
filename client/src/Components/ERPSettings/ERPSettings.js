@@ -15,7 +15,8 @@ import {
     getPharmacyOptions,
     getInventoryOptions,
     getPOOptions,
-    getSalesOptions
+    getSalesOptions,
+    checkBoxEvent
 } from "./ERPSettingsEvents";
 import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 
@@ -60,7 +61,8 @@ export default class ERPSettings extends Component {
             po_auth_level: "1",
 
             hims_d_sales_options_id: null,
-            sales_order_auth_level: "1"
+            sales_order_auth_level: "1",
+            services_required: "N"
         };
 
         if (this.PHCY_Active) {
@@ -303,7 +305,7 @@ export default class ERPSettings extends Component {
                             <div className="portlet-body">
                                 <div className="row">
                                     <AlagehAutoComplete
-                                        div={{ className: "col form-group" }}
+                                        div={{ className: "col-12 form-group" }}
                                         label={{
                                             forceLabel: "Sales Order Auth level",
                                             isImp: false
@@ -325,6 +327,28 @@ export default class ERPSettings extends Component {
                                             }
                                         }}
                                     />
+
+                                    <div
+                                        className="col-12 customCheckbox"
+                                        style={{ marginTop: 23, border: "none" }}
+                                    >
+                                        <label className="checkbox inline">
+                                            <input
+                                                type="checkbox"
+                                                name="services_required"
+                                                value={this.state.services_required}
+                                                checked={
+                                                    this.state.services_required === "Y" ? true : false
+                                                }
+                                                onChange={checkBoxEvent.bind(this, this)}
+                                            />
+                                            <span>
+                                                <AlgaehLabel
+                                                    label={{ forceLabel: "Sales Services Required" }}
+                                                />
+                                            </span>
+                                        </label>
+                                    </div>
                                     <div className="col-lg-12">
                                         <button
                                             type="button"
@@ -341,20 +365,6 @@ export default class ERPSettings extends Component {
                         </div>
                     </div>
                 ) : null}
-
-                {/* <div className="hptl-phase1-footer">
-                    <div className="row">
-                        <div className="col-lg-12">
-                            <button
-                                type="button"
-                                className="btn btn-default"
-                                onClick={this.saveOptions.bind(this)}
-                            >
-                                <AlgaehLabel label={{ forceLabel: "Save", returnText: true }} />
-                            </button>
-                        </div>
-                    </div>
-                </div> */}
             </div>
         );
     }

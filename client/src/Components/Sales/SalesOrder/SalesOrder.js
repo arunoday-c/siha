@@ -21,7 +21,8 @@ import {
   SaveSalesOrderEnrty,
   getCtrlCode,
   generatePOReceipt,
-  generatePOReceiptNoPrice
+  generatePOReceiptNoPrice,
+  getSalesOptions
 } from "./SalesOrderEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
@@ -67,8 +68,10 @@ class SalesOrder extends Component {
       dataExists: false,
       hospital_id: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id
+      ).hims_d_hospital_id,
+      services_required: "N"
     };
+    getSalesOptions(this, this)
   }
 
   componentDidMount() {
@@ -233,35 +236,37 @@ class SalesOrder extends Component {
             {/* Patient code */}
             <div className="col-lg-12">
               <div className="row">
-                <div className="col ">
-                  <label>Order Mode</label>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="I"
-                        name="sales_order_mode"
-                        checked={
-                          this.state.sales_order_mode === "I" ? true : false
-                        }
-                        onChange={texthandle.bind(this, this)}
-                      />
-                      <span>Item</span>
-                    </label>
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="S"
-                        name="sales_order_mode"
-                        checked={
-                          this.state.sales_order_mode === "S" ? true : false
-                        }
-                        onChange={texthandle.bind(this, this)}
-                      />
-                      <span>Service</span>
-                    </label>
-                  </div>
-                </div>
+                {this.state.services_required === "Y" ?
+                  <div className="col ">
+                    <label>Order Mode</label>
+                    <div className="customRadio">
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="I"
+                          name="sales_order_mode"
+                          checked={
+                            this.state.sales_order_mode === "I" ? true : false
+                          }
+                          onChange={texthandle.bind(this, this)}
+                        />
+                        <span>Item</span>
+                      </label>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="S"
+                          name="sales_order_mode"
+                          checked={
+                            this.state.sales_order_mode === "S" ? true : false
+                          }
+                          onChange={texthandle.bind(this, this)}
+                        />
+                        <span>Service</span>
+                      </label>
+                    </div>
+                  </div> : null}
+
 
                 <div className={"col-2 globalSearchCntr" + class_finder}>
                   <AlgaehLabel label={{ forceLabel: "Search Order No." }} />

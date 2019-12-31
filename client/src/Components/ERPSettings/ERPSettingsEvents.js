@@ -1,6 +1,4 @@
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
-import swal from "sweetalert2";
-import { AlgaehValidation } from "../../utils/GlobalFunctions";
 
 const changeTexts = ($this, e) => {
     let name = e.name || e.target.name;
@@ -140,6 +138,7 @@ const saveSalesOptions = ($this) => {
     let inputObj = {
         hims_d_sales_options_id: $this.state.hims_d_sales_options_id,
         sales_order_auth_level: $this.state.sales_order_auth_level,
+        services_required: $this.state.services_required
     }
     if (inputObj.hims_d_sales_options_id !== null) {
         algaehApiCall({
@@ -233,6 +232,15 @@ const getSalesOptions = ($this) => {
     });
 }
 
+
+
+const checkBoxEvent = ($this, e) => {
+    let name = e.target.name;
+    const _value = e.target.checked ? "Y" : "N";
+    $this.setState({ [name]: _value });
+};
+
+
 export {
     changeTexts,
     savePharmacyOptions,
@@ -242,5 +250,6 @@ export {
     getPharmacyOptions,
     getInventoryOptions,
     getPOOptions,
-    getSalesOptions
+    getSalesOptions,
+    checkBoxEvent
 };
