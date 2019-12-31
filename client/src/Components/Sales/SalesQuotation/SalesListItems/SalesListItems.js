@@ -109,11 +109,11 @@ class SalesListItems extends Component {
                 <MyContext.Consumer>
                     {context => (
                         <>
-                            <div className="col-3">
+                            <div className="col-12">
                                 <div className="portlet portlet-bordered margin-bottom-15">
                                     <div className="row">
                                         <AlgaehAutoSearch
-                                            div={{ className: "col-12 form-group mandatory" }}
+                                            div={{ className: "col-3 mandatory" }}
                                             label={{ forceLabel: "Item Name" }}
                                             title="Search Items"
                                             id="item_id_search"
@@ -146,7 +146,7 @@ class SalesListItems extends Component {
                                         />
 
                                         <AlagehAutoComplete
-                                            div={{ className: "col-6 form-group mandatory" }}
+                                            div={{ className: "col mandatory" }}
                                             label={{ forceLabel: "UOM", isImp: true }}
                                             selector={{
                                                 name: "uom_id",
@@ -173,7 +173,7 @@ class SalesListItems extends Component {
                                             }}
                                         />
                                         <AlagehFormGroup
-                                            div={{ className: "col-6 form-group mandatory" }}
+                                            div={{ className: "col mandatory" }}
                                             label={{
                                                 forceLabel: "Quantity"
                                             }}
@@ -201,7 +201,7 @@ class SalesListItems extends Component {
                                         />
 
                                         <AlagehFormGroup
-                                            div={{ className: "col-6 form-group" }}
+                                            div={{ className: "col form-group" }}
                                             label={{
                                                 forceLabel: "Discount (%)",
                                                 isImp: false
@@ -224,20 +224,9 @@ class SalesListItems extends Component {
                                             }}
                                         />
 
-                                        <div className="col-6 form-group mandatory">
-                                            <AlgaehLabel
-                                                label={{
-                                                    forceLabel: "Tax %"
-                                                }}
-                                            />
-                                            <h6>
-                                                {this.state.tax_percentage
-                                                    ? this.state.tax_percentage
-                                                    : "-----------"}
-                                            </h6>
-                                        </div>
+                                    
                                         <AlagehFormGroup
-                                            div={{ className: "col-6 form-group mandatory" }}
+                                            div={{ className: "col mandatory" }}
                                             label={{
                                                 forceLabel: "Unit Cost",
                                                 isImp: false
@@ -259,24 +248,25 @@ class SalesListItems extends Component {
                                                 }
                                             }}
                                         />
-                                        {/* <div className="col-6 form-group mandatory">
+                                        <div className="col mandatory">
                                             <AlgaehLabel
                                                 label={{
-                                                    forceLabel: "Unit Cost"
+                                                    forceLabel: "Tax %"
                                                 }}
                                             />
                                             <h6>
-                                                {this.state.unit_cost
-                                                    ? getAmountFormart(this.state.unit_cost)
+                                                {this.state.tax_percentage
+                                                    ? this.state.tax_percentage
                                                     : "-----------"}
                                             </h6>
-                                        </div>  */}
-                                        <div className="col-12 subFooter-btn">
+                                        </div>
+                                        <div className="col subFooter-btn">
                                             <button
                                                 className="btn btn-primary"
                                                 onClick={AddItems.bind(this, this, context)}
                                                 disabled={this.state.addItemButton}
                                                 tabIndex="5"
+                                                style={{marginTop:19}}
                                             >
                                                 Add Item
                                             </button>
