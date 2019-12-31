@@ -29,6 +29,7 @@ const savePharmacyOptions = ($this) => {
                         title: "Record Updated Successfully",
                         type: "success"
                     });
+                    getPharmacyOptions($this)
                 }
             }
         });
@@ -44,6 +45,7 @@ const savePharmacyOptions = ($this) => {
                         title: "Saved Successfully",
                         type: "success"
                     });
+                    getPharmacyOptions($this)
                 }
             }
         });
@@ -69,6 +71,7 @@ const saveInventoryOptions = ($this) => {
                         type: "success"
                     });
                 }
+                getInventoryOptions($this)
             }
         });
     } else {
@@ -83,6 +86,7 @@ const saveInventoryOptions = ($this) => {
                         title: "Saved Successfully",
                         type: "success"
                     });
+                    getInventoryOptions($this)
                 }
             }
         });
@@ -107,7 +111,7 @@ const savePOOptions = ($this) => {
                         title: "Record Updated Successfully",
                         type: "success"
                     });
-
+                    getPOOptions($this)
                 }
             }
         });
@@ -124,15 +128,119 @@ const savePOOptions = ($this) => {
                         title: "Saved Successfully",
                         type: "success"
                     });
+                    getPOOptions($this)
                 }
             }
         });
     }
 }
 
+const saveSalesOptions = ($this) => {
+
+    let inputObj = {
+        hims_d_sales_options_id: $this.state.hims_d_sales_options_id,
+        sales_order_auth_level: $this.state.sales_order_auth_level,
+    }
+    if (inputObj.hims_d_sales_options_id !== null) {
+        algaehApiCall({
+            uri: "/SalesSettings/updateSalesOptions",
+            module: "sales",
+            data: $this.state,
+            method: "PUT",
+            onSuccess: res => {
+                if (res.data.success) {
+                    swalMessage({
+                        title: "Record Updated Successfully",
+                        type: "success"
+                    });
+                    getSalesOptions($this)
+                }
+            }
+        });
+
+    } else {
+        algaehApiCall({
+            uri: "/SalesSettings/addSalesOptions",
+            module: "sales",
+            data: $this.state,
+            method: "POST",
+            onSuccess: res => {
+                if (res.data.success) {
+                    swalMessage({
+                        title: "Saved Successfully",
+                        type: "success"
+                    });
+                    getSalesOptions($this)
+                }
+            }
+        });
+    }
+}
+
+
+
+const getPharmacyOptions = ($this) => {
+    algaehApiCall({
+        uri: "/pharmacy/getPharmacyOptions",
+        method: "GET",
+        module: "pharmacy",
+        onSuccess: res => {
+            if (res.data.success) {
+                $this.setState(res.data.records[0]);
+            }
+        }
+    });
+}
+
+const getInventoryOptions = ($this) => {
+    algaehApiCall({
+        uri: "/inventory/getInventoryOptions",
+        method: "GET",
+        module: "inventory",
+        onSuccess: res => {
+            if (res.data.success) {
+                res.data.records[0].inv_requisition_auth_level =
+                    res.data.records[0].requisition_auth_level;
+                $this.setState(res.data.records[0]);
+            }
+        }
+    });
+}
+
+const getPOOptions = ($this) => {
+    algaehApiCall({
+        uri: "/POSettings/getPOOptions",
+        method: "GET",
+        module: "procurement",
+        onSuccess: res => {
+            if (res.data.success) {
+                $this.setState(res.data.records[0]);
+            }
+        }
+    });
+}
+
+const getSalesOptions = ($this) => {
+    algaehApiCall({
+        uri: "/SalesSettings/getSalesOptions",
+        method: "GET",
+        module: "sales",
+        onSuccess: res => {
+            if (res.data.success) {
+                $this.setState(res.data.records[0]);
+            }
+        }
+    });
+}
+
 export {
     changeTexts,
     savePharmacyOptions,
     saveInventoryOptions,
-    savePOOptions
+    savePOOptions,
+    saveSalesOptions,
+    getPharmacyOptions,
+    getInventoryOptions,
+    getPOOptions,
+    getSalesOptions
 };
