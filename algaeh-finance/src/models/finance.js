@@ -1520,6 +1520,20 @@ export default {
           next(e);
         });
     } else {
+      let strQry = "";
+
+      switch (input.voucher_type) {
+        case "journal":
+          strQry = ` where account_type  not  in ('B','C') `;
+          break;
+
+        case "contra":
+          strQry = ` where account_type   in ('B','C') `;
+          break;
+        case "sales":
+          strQry = ` where account_type  not  in ('B','C') `;
+          break;
+      }
       _mysql
         .executeQuery({
           query: `	select finance_account_head_id,H.account_code,account_name,parent_acc_id,
@@ -1527,7 +1541,7 @@ export default {
         ,account_level,H.sort_order,CM.head_id,H.created_from as created_status,H.root_id
         FROM finance_account_head H left join 
         finance_head_m_child CM on H.finance_account_head_id=CM.head_id
-        left join finance_account_child C on CM.child_id=C.finance_account_child_id;        `,
+        left join finance_account_child C on CM.child_id=C.finance_account_child_id ${strQry};`,
 
           printQuery: false,
 
