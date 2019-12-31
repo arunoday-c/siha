@@ -61,19 +61,6 @@ export default class AttendanceMgmt extends Component {
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
-              {/* <li
-                algaehtabs={"MonthlyAttendance"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Monthly Attendance"
-                    }}
-                  />
-                }
-              </li> */}
               <li
                 algaehtabs={"NewMonthlyAttendance"}
                 className={"nav-item tab-button active"}
@@ -113,7 +100,7 @@ export default class AttendanceMgmt extends Component {
                   />
                 }
               </li> */}
-              {/* <li
+              <li
                 algaehtabs={"WeeklyAttendance"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
@@ -125,7 +112,7 @@ export default class AttendanceMgmt extends Component {
                     }}
                   />
                 }
-              </li>{" "} */}
+              </li>{" "}
               {/* <li
                 algaehtabs={"AbsenceManagement"}
                 className={"nav-item tab-button"}
