@@ -36,7 +36,9 @@ const Transactions = () => <FinanceFragment path="Transactions" />;
 const JournalVoucher = () => <FinanceFragment path="JournalVoucher" />;
 const FinanceReports = () => <FinanceFragment path="FinanceReports" />;
 const FinanceOptions = () => <FinanceFragment path="FinanceOptions" />;
-
+const JournalAuthorization = () => (
+  <FinanceFragment path="JournalAuthorization" />
+);
 const PageToPlot = {
   Dashboard: HrDashboard,
   //Dashboard: DynamicDashboard,
@@ -318,11 +320,11 @@ const PageToPlot = {
   DayEndProcess: React.lazy(() =>
     retry(() => import("./Components/Finance/DayEndProcess/DayEndProcess"))
   ),
-  JournalAuthorization: React.lazy(() =>
-    retry(() =>
-      import("./Components/Finance/JournalAuthorization/JournalAuthorization")
-    )
-  ),
+  // JournalAuthorization: React.lazy(() =>
+  //   retry(() =>
+  //     import("./Components/Finance/JournalAuthorization/JournalAuthorization")
+  //   )
+  // ),
   FinanceMapping: () => <FinanceFragment path="Mapping" />,
   //  React.lazy(() =>
   //   retry(() => import("./Components/Finance/FinanceMapping/FinanceMapping"))
@@ -561,7 +563,8 @@ const PageToPlot = {
   Transactions,
   JournalVoucher,
   FinanceReports,
-  FinanceOptions
+  FinanceOptions,
+  JournalAuthorization
 };
 
 const DirectRoutes = React.memo(props => {

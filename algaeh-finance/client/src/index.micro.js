@@ -4,13 +4,15 @@ import JournalVoucher from "./Components/JournalVoucher";
 import FinanceReports from "./Components/FinanceReports";
 import Mapping from "./Components/Mapping";
 import FinanceOptions from "./Components/FinanceOptions";
+import JournalAuthorization from "./Components/JournalAuthorization";
 const Pages = {
   Accounts,
   Transactions,
   JournalVoucher,
   FinanceReports,
   Mapping,
-  FinanceOptions
+  FinanceOptions,
+  JournalAuthorization
 };
 
 window.FinanceComponent = Pages;
