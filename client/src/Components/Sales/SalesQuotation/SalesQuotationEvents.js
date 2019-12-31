@@ -10,52 +10,12 @@ const changeTexts = ($this, ctrl, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   switch (name) {
-    case "sales_quotation_mode":
+    case "hims_f_terms_condition_id":
       $this.setState({
         [name]: value,
-        hims_f_sales_quotation_id: null,
-        sales_quotation_number: null,
-        sales_quotation_date: new Date(),
-        reference_number: null,
-        customer_id: null,
-        quote_validity: null,
-        sales_man: null,
-        payment_terms: null,
-        service_terms: null,
-        other_terms: null,
-        sub_total: null,
-        discount_amount: null,
-        net_total: null,
-        total_tax: null,
-        net_payable: null,
-        narration: null,
-        delivery_date: null,
-        no_of_days_followup: 0,
-        tax_percentage: null,
-
-
-        sales_quotation_items: [],
-        sales_quotation_services: [],
-        decimal_place: JSON.parse(
-          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        ).decimal_places,
-        saveEnable: true,
-        dataExists: false,
-
-        addItemButton: true,
-        item_description: "",
-        addedItem: true,
-
-        item_id: null,
-        quantity: 0,
-        uom_id: null,
-        uom_description: null,
-        discount_percentage: 0,
-        unit_cost: 0,
-        tax_percent: 0
+        selected_terms_conditions: e.selected.terms_cond_description
       });
       break;
-
     default:
       $this.setState({
         [name]: value
@@ -108,17 +68,17 @@ const ClearData = ($this, e) => {
     discount_percentage: 0,
     unit_cost: 0,
     tax_percent: 0,
-    services_required: "N",
     sales_person_id: null,
     employee_name: null,
     hospital_id: JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
     ).hims_d_hospital_id,
+    hims_f_terms_condition_id: null,
+    selected_terms_conditions: null,
+    comment_list: []
   };
 
   $this.setState(IOputs)
-
-  getSalesOptions($this)
 };
 
 const SaveSalesQuotation = $this => {
@@ -170,6 +130,7 @@ const SaveSalesQuotation = $this => {
           });
           return
         }
+        $this.state.terms_conditions = $this.state.comment_list.join("<br/>")
         AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/SalesQuotation/addSalesQuotation",
@@ -315,15 +276,31 @@ const employeeSearch = ($this) => {
   });
 }
 
+const addToTermCondition = ($this) => {
+  if ($this.state.hims_f_terms_condition_id === null) {
+    swalMessage({
+      title: "Select T&C.",
+      type: "warning"
+    });
+  }
+  let comment_list = $this.state.comment_list;
+  comment_list.push($this.state.selected_terms_conditions);
+
+  $this.setState({
+    hims_f_terms_condition_id: null,
+    comment_list: comment_list
+  })
+}
+
 export {
   changeTexts,
   ClearData,
   SaveSalesQuotation,
-  // LocationchangeTexts,  
   customerTexthandle,
   datehandle,
   getCtrlCode,
   dateValidate,
   getSalesOptions,
-  employeeSearch
+  employeeSearch,
+  addToTermCondition
 };

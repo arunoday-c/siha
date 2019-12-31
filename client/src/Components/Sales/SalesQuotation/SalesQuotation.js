@@ -18,7 +18,8 @@ import {
   getCtrlCode,
   dateValidate,
   getSalesOptions,
-  employeeSearch
+  employeeSearch,
+  addToTermCondition
 } from "./SalesQuotationEvents";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import "./SalesQuotation.scss";
@@ -88,6 +89,9 @@ class SalesQuotation extends Component {
       hospital_id: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).hims_d_hospital_id,
+      hims_f_terms_condition_id: null,
+      selected_terms_conditions: null,
+      comment_list: []
     };
     getSalesOptions(this, this)
   }
@@ -124,6 +128,16 @@ class SalesQuotation extends Component {
         }
       });
     }
+
+    this.props.getTermsConditions({
+      uri: "/salseSetup/getTermsConditions",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "TERMS_COND_GET_DATA",
+        mappingName: "terms_conditions"
+      }
+    });
 
     if (
       this.props.sales_quotation_number !== undefined &&
@@ -433,20 +447,41 @@ class SalesQuotation extends Component {
               <div className="col-6">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="row">
+
                     <AlagehAutoComplete
-                      div={{ className: "col-12 form-group mandatory" }}
+                      div={{ className: "col mandatory" }}
                       label={{ forceLabel: "Select T&C", isImp: true }}
                       selector={{
-                        name: "",
+                        name: "hims_f_terms_condition_id",
                         className: "select-fld",
-                        value: "",
-                        dataSource: {},
-
+                        value: this.state.hims_f_terms_condition_id,
+                        dataSource: {
+                          textField: "short_name",
+                          valueField: "hims_f_terms_condition_id",
+                          data: this.props.terms_conditions
+                        },
+                        onChange: changeTexts.bind(this, this),
+                        onClear: () => {
+                          this.setState({
+                            hims_f_terms_condition_id: null
+                          });
+                        },
+                        autoComplete: "off",
                         others: {
-                          disabled: this.state.dataExists,
+                          disabled: this.state.dataExists
                         }
                       }}
                     />
+
+                    <div className="actions">
+                      <a
+                        className="btn btn-primary btn-circle active"
+                        onClick={addToTermCondition.bind(this, this)}
+                      >
+                        <i className="fas fa-plus" />
+                      </a>
+                    </div>
+
                     <AlagehFormGroup
                       div={{ className: "col-12 termsCondition" }}
                       label={{
@@ -455,8 +490,8 @@ class SalesQuotation extends Component {
                       }}
                       textBox={{
                         className: "txt-fld",
-                        name: "terms_conditions",
-                        value: this.state.terms_conditions,
+                        name: "comment_list",
+                        value: this.state.comment_list,
                         events: {
                           onChange: changeTexts.bind(this, this)
                         },
@@ -609,7 +644,8 @@ class SalesQuotation extends Component {
 function mapStateToProps(state) {
   return {
     opitemlist: state.opitemlist,
-    customer_data: state.customer_data
+    customer_data: state.customer_data,
+    terms_conditions: state.terms_conditions
   };
 }
 
@@ -618,7 +654,8 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
-      getCustomerMaster: AlgaehActions
+      getCustomerMaster: AlgaehActions,
+      getTermsConditions: AlgaehActions
     },
     dispatch
   );
