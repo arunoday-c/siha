@@ -50,10 +50,10 @@ export default function TrailBalaceReport(props) {
           </tr>
           <tr className="footerTotalArea">
             <td style={{ width: "50%" }} valign="top">
-              <b>0.00</b>
+              <b>{data.total_debit_amount}</b>
             </td>
             <td style={{ width: "50%" }} valign="top">
-              <b>0.00</b>
+              <b>{data.total_credit_amount}</b>
             </td>
           </tr>
         </table>

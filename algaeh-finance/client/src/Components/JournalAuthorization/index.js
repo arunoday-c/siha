@@ -1,11 +1,12 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useState } from "react";
 import {
   AlgaehDataGrid,
   AlgaehMessagePop,
   AlgaehButton,
   AlgaehAutoComplete,
   AlgaehModal,
-  AlgaehFormGroup
+  AlgaehFormGroup,
+  AlgaehDateHandler
 } from "algaeh-react-components";
 import Details from "./details";
 import {
@@ -22,19 +23,21 @@ export default memo(function(props) {
   const [voucherNo, setVoucherNo] = useState("");
   const [level, setLevel] = useState(undefined);
   const [rejectVisible, setRejectVisible] = useState(false);
-
-  useEffect(() => {
-    LoadVouchersToAuthorize()
-      .then(result => {
-        setData(result);
-      })
-      .catch(error => {
-        AlgaehMessagePop({
-          type: "error",
-          display: error
-        });
-      });
-  }, []);
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState("P");
+  const [dates, setDates] = useState(undefined);
+  // useEffect(() => {
+  //   LoadVouchersToAuthorize()
+  //     .then(result => {
+  //       setData(result);
+  //     })
+  //     .catch(error => {
+  //       AlgaehMessagePop({
+  //         type: "error",
+  //         display: error
+  //       });
+  //     });
+  // }, []);
   return (
     <div className="row">
       <div className="col-lg-12">
@@ -116,32 +119,110 @@ export default memo(function(props) {
             }}
             data={rowDetails}
           />
+          <div className="col-lg-12">
+            <div className="row">
+              <AlgaehAutoComplete
+                div={{
+                  className: "col-3"
+                }}
+                label={{
+                  forceLabel: "Levels"
+                }}
+                selector={{
+                  dataSource: {
+                    data: [
+                      { text: "Level1", value: "1" },
+                      { text: "Level2", value: "2" }
+                    ],
+                    valueField: "value",
+                    textField: "text"
+                  },
+                  value: level,
+                  onChange: selected => {
+                    setLevel(selected.value);
+                  },
+                  onClear: () => {
+                    setLevel(undefined);
+                  }
+                }}
+              />
+              <AlgaehAutoComplete
+                div={{
+                  className: "col-3"
+                }}
+                label={{
+                  forceLabel: "Record Status"
+                }}
+                selector={{
+                  dataSource: {
+                    data: [
+                      { text: "Pending", value: "P" },
+                      { text: "Rejected", value: "R" },
+                      { text: "Approved", value: "A" }
+                    ],
+                    valueField: "value",
+                    textField: "text"
+                  },
+                  value: status,
+                  onChange: selected => {
+                    setStatus(selected.value);
+                  },
+                  onClear: () => {
+                    setStatus(undefined);
+                  }
+                }}
+              />
+              <AlgaehDateHandler
+                div={{ className: "col-3" }}
+                label={{ forceLabel: "Selected Range" }}
+                type="range"
+                textBox={{
+                  value: dates
+                }}
+                events={{
+                  onChange: selected => {
+                    setDates(selected);
+                  }
+                }}
+              />
+              <AlgaehButton
+                type="primary"
+                loading={loading}
+                onClick={() => {
+                  setLoading(true);
+                  if (level === undefined) {
+                    setLoading(false);
+                    AlgaehMessagePop({
+                      type: "info",
+                      display: "Please select Level"
+                    });
+                    return;
+                  }
+                  let others = { auth_status: status };
+                  if (dates !== undefined && dates.length > 0) {
+                    others["from_date"] = dates[0];
+                    others["to_date"] = dates[1];
+                  }
+
+                  LoadVouchersToAuthorize({ auth_level: level, ...others })
+                    .then(result => {
+                      setLoading(false);
+                      setData(result);
+                    })
+                    .catch(error => {
+                      setLoading(false);
+                      AlgaehMessagePop({
+                        type: "error",
+                        display: error
+                      });
+                    });
+                }}
+              >
+                Load
+              </AlgaehButton>
+            </div>
+          </div>
           <div className="col-lg-12 customCheckboxGrid">
-            <AlgaehAutoComplete
-              div={{
-                className: "col-5"
-              }}
-              label={{
-                forceLabel: "Levels"
-              }}
-              selector={{
-                dataSource: {
-                  data: [
-                    { text: "Level1", value: "1" },
-                    { text: "Level2", value: "2" }
-                  ],
-                  valueField: "value",
-                  textField: "text"
-                },
-                value: level,
-                onChange: selected => {
-                  setLevel(selected.value);
-                },
-                onClear: () => {
-                  setLevel(undefined);
-                }
-              }}
-            />
             <AlgaehDataGrid
               columns={[
                 {

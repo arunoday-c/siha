@@ -19,12 +19,13 @@ export function getVoucherNumber() {
     } catch (e) {}
   });
 }
-export function getHeaders() {
+export function getHeaders(input) {
+  input = input || {};
   return new Promise((resolve, reject) => {
     try {
       algaehApiCall({
         uri: "/finance/getAccountHeadsForDropdown",
-
+        data: input,
         method: "GET",
         module: "finance",
         onSuccess: response => {
