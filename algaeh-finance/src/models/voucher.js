@@ -641,7 +641,7 @@ export default {
                 _mysql
                   .executeQuery({
                     query:
-                      "select VD.debit_amount,VD.credit_amount,VD.payment_type,H.root_id,VD.hospital_id\
+                      "select VD.debit_amount,VD.child_id,VD.credit_amount,VD.payment_type,H.root_id,VD.hospital_id\
                      from finance_voucher_details VD\
                     inner join finance_account_head H on VD.head_id=H.finance_account_head_id\
                     where voucher_header_id=? and auth_status='P';",
@@ -652,110 +652,222 @@ export default {
                     let total_income = 0;
                     let total_expense = 0;
                     let balance = 0;
-                    result.forEach(m => {
-                      if (m.root_id == 4) {
-                        if (m.payment_type == "CR") {
-                          total_income =
-                            parseFloat(total_income) +
-                            parseFloat(m.credit_amount);
-                        } else if (m.payment_type == "DR") {
-                          total_income =
-                            parseFloat(total_income) -
-                            parseFloat(m.debit_amount);
-                        }
-                      } else if (m.root_id == 5) {
-                        if (m.payment_type == "DR") {
-                          total_expense =
-                            parseFloat(total_expense) +
-                            parseFloat(m.debit_amount);
-                        } else if (m.payment_type == "CR") {
-                          total_expense =
-                            parseFloat(total_expense) -
-                            parseFloat(m.credit_amount);
-                        }
-                      }
+
+                    const child_ids = [];
+                    result.forEach(child => {
+                      child_ids.push(child.child_id);
                     });
 
-                    balance =
-                      parseFloat(total_income) - parseFloat(total_expense);
+                    new Promise((resolve, reject) => {
+                      _mysql
+                        .executeQuery({
+                          query:
+                            "select child_id,C.child_name,coalesce(sum(credit_amount)- sum(debit_amount),0) as cred_minus_deb,\
+                          coalesce(sum(debit_amount)-sum(credit_amount),0) as deb_minus_cred\
+                        from finance_voucher_details VD \
+                        inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
+                        where VD.child_id in (?) group by VD.child_id;",
+                          values: [child_ids],
+                          printQuery: true
+                        })
+                        .then(closeBalance => {
+                          let internal_eror = false;
+                          //ST-closing balance CHECK
+                          result.forEach(entry => {
+                            //checking debit balance for asset and expence
+                            if (
+                              (entry.root_id == 1 || entry.root_id == 5) &&
+                              entry.payment_type == "CR"
+                            ) {
+                              let ledger = closeBalance.find(f => {
+                                return (f.child_id = entry.child_id);
+                              });
 
-                    let pl_account = "";
-                    if (balance > 0) {
-                      pl_account = {
-                        payment_date: new Date(),
-                        head_id: 61,
-                        child_id: 51,
-                        debit_amount: 0,
-                        credit_amount: balance,
-                        payment_type: "CR",
-                        hospital_id: result[0]["hospital_id"],
-                        year: moment().format("YYYY"),
-                        month: moment().format("M")
-                      };
-                    } else if (balance < 0) {
-                      pl_account = {
-                        payment_date: new Date(),
-                        head_id: 61,
-                        child_id: 51,
-                        debit_amount: Math.abs(balance),
-                        credit_amount: 0,
-                        payment_type: "DR",
-                        hospital_id: result[0]["hospital_id"],
-                        year: moment().format("YYYY"),
-                        month: moment().format("M")
-                      };
-                    }
+                              if (ledger != undefined) {
+                                const temp =
+                                  parseFloat(ledger.deb_minus_cred) -
+                                  parseFloat(entry.credit_amount);
 
-                    let strQry = "";
+                                if (temp < 0) {
+                                  internal_eror = true;
+                                  req.records = {
+                                    invalid_user: true,
+                                    message: `${ledger.child_name} doesn't have debit balance`
+                                  };
+                                  next();
+                                  return;
+                                } else {
+                                  ledger.deb_minus_cred = temp;
+                                }
+                              } else {
+                                internal_eror = true;
+                                req.records = {
+                                  invalid_user: true,
+                                  message: "ledger not found"
+                                };
+                                next();
+                                return;
+                              }
+                            }
+                            //checking credit balance for liabilty,capital and income
+                            else if (
+                              (entry.root_id == 2 ||
+                                entry.root_id == 3 ||
+                                entry.root_id == 4) &&
+                              entry.payment_type == "DR"
+                            ) {
+                              let ledger = closeBalance.find(f => {
+                                return (f.child_id = entry.child_id);
+                              });
 
-                    if (pl_account != "") {
-                      strQry += _mysql.mysqlQueryFormat(
-                        "INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,\
-                    payment_type,hospital_id,year,month,pl_entry,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
-                        [
-                          pl_account.payment_date,
-                          pl_account.head_id,
-                          pl_account.child_id,
-                          pl_account.debit_amount,
-                          pl_account.credit_amount,
-                          pl_account.payment_type,
-                          pl_account.hospital_id,
-                          pl_account.year,
-                          pl_account.month,
-                          "Y",
-                          req.userIdentity.algaeh_d_app_user_id,
-                          "A"
-                        ]
-                      );
-                    }
+                              if (ledger != undefined) {
+                                const temp =
+                                  parseFloat(ledger.cred_minus_deb) -
+                                  parseFloat(entry.debit_amount);
 
-                    _mysql
-                      .executeQueryWithTransaction({
-                        query:
-                          "update finance_voucher_details set " +
-                          authFields +
-                          ", auth_status='A'  where voucher_header_id=? and auth_status='P';" +
-                          strQry,
-                        values: [
-                          "Y",
-                          req.userIdentity.algaeh_d_app_user_id,
-                          new Date(),
-                          input.voucher_header_id
-                        ],
-                        printQuery: true
-                      })
-                      .then(authResult => {
-                        _mysql.commitTransaction(() => {
+                                if (temp < 0) {
+                                  internal_eror = true;
+                                  req.records = {
+                                    invalid_user: true,
+                                    message: `${ledger.child_name} doesn't have credit balance`
+                                  };
+                                  next();
+                                  return;
+                                } else {
+                                  ledger.deb_minus_cred = temp;
+                                }
+                              } else {
+                                internal_eror = true;
+                                req.records = {
+                                  invalid_user: true,
+                                  message: "ledger not found"
+                                };
+                                next();
+                                return;
+                              }
+                            }
+                          });
+
+                          //END-closing balance CHECK
+                          if (internal_eror == false) {
+                            resolve({});
+                          } else {
+                            next();
+                          }
+                        })
+                        .catch(error => {
                           _mysql.releaseConnection();
-                          req.records = authResult;
-                          next();
-                        });
-                      })
-                      .catch(error => {
-                        _mysql.rollBackTransaction(() => {
                           next(error);
                         });
+                    }).then(res => {
+                      console.log("res:", res);
+                      //ST-profit and loss calculation
+                      result.forEach(m => {
+                        if (m.root_id == 4) {
+                          if (m.payment_type == "CR") {
+                            total_income =
+                              parseFloat(total_income) +
+                              parseFloat(m.credit_amount);
+                          } else if (m.payment_type == "DR") {
+                            total_income =
+                              parseFloat(total_income) -
+                              parseFloat(m.debit_amount);
+                          }
+                        } else if (m.root_id == 5) {
+                          if (m.payment_type == "DR") {
+                            total_expense =
+                              parseFloat(total_expense) +
+                              parseFloat(m.debit_amount);
+                          } else if (m.payment_type == "CR") {
+                            total_expense =
+                              parseFloat(total_expense) -
+                              parseFloat(m.credit_amount);
+                          }
+                        }
                       });
+                      //END-profit and loss calculation
+                      balance =
+                        parseFloat(total_income) - parseFloat(total_expense);
+
+                      let pl_account = "";
+                      if (balance > 0) {
+                        pl_account = {
+                          payment_date: new Date(),
+                          head_id: 61,
+                          child_id: 51,
+                          debit_amount: 0,
+                          credit_amount: balance,
+                          payment_type: "CR",
+                          hospital_id: result[0]["hospital_id"],
+                          year: moment().format("YYYY"),
+                          month: moment().format("M")
+                        };
+                      } else if (balance < 0) {
+                        pl_account = {
+                          payment_date: new Date(),
+                          head_id: 61,
+                          child_id: 51,
+                          debit_amount: Math.abs(balance),
+                          credit_amount: 0,
+                          payment_type: "DR",
+                          hospital_id: result[0]["hospital_id"],
+                          year: moment().format("YYYY"),
+                          month: moment().format("M")
+                        };
+                      }
+
+                      let strQry = "";
+
+                      if (pl_account != "") {
+                        strQry += _mysql.mysqlQueryFormat(
+                          "INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,\
+                            payment_type,hospital_id,year,month,pl_entry,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
+                          [
+                            pl_account.payment_date,
+                            pl_account.head_id,
+                            pl_account.child_id,
+                            pl_account.debit_amount,
+                            pl_account.credit_amount,
+                            pl_account.payment_type,
+                            pl_account.hospital_id,
+                            pl_account.year,
+                            pl_account.month,
+                            "Y",
+                            req.userIdentity.algaeh_d_app_user_id,
+                            "A"
+                          ]
+                        );
+                      }
+
+                      _mysql
+                        .executeQueryWithTransaction({
+                          query:
+                            "update finance_voucher_details set " +
+                            authFields +
+                            ", auth_status='A'  where voucher_header_id=? and auth_status='P';" +
+                            strQry,
+                          values: [
+                            "Y",
+                            req.userIdentity.algaeh_d_app_user_id,
+                            new Date(),
+                            input.voucher_header_id
+                          ],
+                          printQuery: true
+                        })
+                        .then(authResult => {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = authResult;
+                            next();
+                          });
+                        })
+                        .catch(error => {
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
+                        });
+                    });
+                    //---------
                   })
                   .catch(error => {
                     _mysql.releaseConnection();

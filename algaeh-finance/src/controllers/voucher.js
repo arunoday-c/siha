@@ -94,7 +94,7 @@ export default () => {
     "/getVouchersToAuthorize",
     getVouchersToAuthorize,
     (req, res, next) => {
-      if (req.records.invalid_user == true) {
+      if (req.records.invalid_input == true) {
         res
           .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({

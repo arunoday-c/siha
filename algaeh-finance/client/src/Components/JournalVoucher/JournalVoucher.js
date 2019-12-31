@@ -56,9 +56,9 @@ export default function JournalVoucher() {
           display: error
         });
       });
-    getHeaders().then(result => {
-      setAccounts(result);
-    });
+    // getHeaders().then(result => {
+    //   setAccounts(result);
+    // });
   }, []);
 
   return (
@@ -130,6 +130,10 @@ export default function JournalVoucher() {
               textField: "label"
             },
             onChange: selected => {
+              getHeaders({ voucher_type: selected.value }).then(result => {
+                setAccounts(result);
+              });
+
               setVoucherType(selected.value);
               setPrefix(selected.shortHand + "-");
             }
@@ -250,38 +254,6 @@ export default function JournalVoucher() {
                       width: 100
                     }
                   }
-
-                  // {
-                  //   key: "payment_mode",
-                  //   title: "Payment Mode",
-                  //   displayTemplate: (row, record) => {
-                  //     return (
-                  //       <AlgaehAutoComplete
-                  //         div={{}}
-                  //         label={{}}
-                  //         selector={{
-                  //           value: row,
-                  //           dataSource: {
-                  //             //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
-                  //             data: [
-                  //               { value: "CA", label: "Cash" },
-                  //               { value: "CH", label: "Cheque" },
-                  //               { value: "CD", label: "Card" }
-                  //             ],
-                  //             valueField: "value",
-                  //             textField: "label"
-                  //           },
-                  //           onChange: selected => {
-                  //             record["payment_mode"] = selected.value;
-                  //           }
-                  //         }}
-                  //       />
-                  //     );
-                  //   },
-                  //   others: {
-                  //     width: 150
-                  //   }
-                  // }
                 ]}
                 loading={false}
                 isEditable="onlyDelete"
