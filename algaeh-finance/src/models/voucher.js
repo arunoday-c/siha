@@ -603,7 +603,7 @@ export default {
                   .executeQuery({
                     query:
                       "update finance_voucher_details set \
-                      auth_status=?,rejected_by=?,rejected_date=?,rejected_reason=? where voucher_header_id=?",
+                      auth_status=?,rejected_by=?,rejected_date=?,rejected_reason=? where voucher_header_id=? and auth_status='P';",
 
                     values: [
                       "R",
@@ -769,7 +769,7 @@ export default {
                   .executeQuery({
                     query:
                       "update finance_voucher_details set \
-                      auth_status=?,rejected_by=?,rejected_date=?,rejected_reason=? where voucher_header_id=?",
+                      auth_status=?,rejected_by=?,rejected_date=?,rejected_reason=? where voucher_header_id=? and auth_status='P';",
 
                     values: [
                       "R",
@@ -824,49 +824,67 @@ export default {
     const _mysql = new algaehMysql();
 
     const input = req.query;
+    if (input.auth_level > 0 && input.auth_level <= 2) {
+      let strQry = "";
 
-    let strQry = "";
-    if (input.hospital_id) {
-      strQry += ` and VD.hospital_id=${input.hospital_id} `;
-    }
-    if (
-      moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD") > 0 &&
-      moment(input.to_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
-    ) {
-      strQry += ` and H.payment_date  between date('${input.from_date}') and date('${input.to_date}') `;
-    }
+      switch (input.auth_status) {
+        case "R":
+          strQry += " and VD.auth_status='R' ";
+          break;
+        case "A":
+          strQry += " and VD.auth_status='A' ";
+          break;
+        default:
+          strQry += " and VD.auth_status='P' ";
+      }
+      // if (input.hospital_id) {
+      //   strQry += ` and VD.hospital_id=${input.hospital_id} `;
+      // }
+      if (
+        moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD") > 0 &&
+        moment(input.to_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
+      ) {
+        strQry += ` and H.payment_date  between date('${input.from_date}') and date('${input.to_date}') `;
+      }
 
-    if (input.voucher_no != undefined && input.voucher_no != null) {
-      strQry += ` and H.voucher_no ='${input.voucher_no}'`;
-    }
+      // if (input.voucher_no != undefined && input.voucher_no != null) {
+      //   strQry += ` and H.voucher_no ='${input.voucher_no}'`;
+      // }
 
-    if (input.voucher_type != undefined && input.voucher_type != null) {
-      strQry += ` and H.voucher_type ='${input.voucher_type}'`;
-    }
+      // if (input.voucher_type != undefined && input.voucher_type != null) {
+      //   strQry += ` and H.voucher_type ='${input.voucher_type}'`;
+      // }
 
-    if (input.auth_level == 1) {
-      strQry += ` and VD.auth1 ='N'`;
-    }
+      if (input.auth_status == "P" && input.auth_level == 1) {
+        strQry += ` and VD.auth1 ='N'`;
+      } else if (input.auth_status == "P" && input.auth_level == 2) {
+        strQry += ` and VD.auth1 ='Y' and VD.auth2 ='N'`;
+      }
 
-    if (input.auth_level == 2) {
-      strQry += ` and VD.auth1 ='Y' and VD.auth2 ='N'`;
-    }
-    _mysql
-      .executeQuery({
-        query: `select distinct finance_voucher_header_id,voucher_type,amount,H.payment_date,\
-          narration,voucher_no from finance_voucher_header H\
+      _mysql
+        .executeQuery({
+          query: `select distinct finance_voucher_header_id,voucher_type,amount,H.payment_date,\
+          narration,voucher_no,VD.auth_status ,U.username as entered_by from finance_voucher_header H\
           inner join finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id\
-          where posted_from='V' and VD.auth_status='P'  ${strQry};`
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        _mysql.releaseConnection();
-        next(e);
-      });
+          left join algaeh_d_app_user U on VD.entered_by=U.algaeh_d_app_user_id
+          where posted_from='V'   ${strQry};`
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide auth level"
+      };
+      next();
+    }
   },
   //created by irfan:
   getVouchersDetailsToAuthorize: (req, res, next) => {
