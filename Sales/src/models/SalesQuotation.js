@@ -1,5 +1,5 @@
 import algaehMysql from "algaeh-mysql";
-import algaehUtilities from "algaeh-utilities/utilities";
+// import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
 
 export function getSalesQuotation(req, res, next) {
@@ -7,11 +7,19 @@ export function getSalesQuotation(req, res, next) {
   // const utilities = new algaehUtilities();
   try {
     console.log("getSalesQuotation: ")
+    if (req.query.HRMNGMT_Active === true) {
+      strQuery = "SELECT SQ.*, C.customer_name, E.full_name from hims_f_sales_quotation SQ \
+      inner join  hims_d_customer C on  SQ.customer_id = C.hims_d_customer_id \
+      inner join  hims_d_employee E on  E.sales_person_id = C.hims_d_employee_id \
+      where and SQ.sales_quotation_number =? "
+    } else {
+      strQuery = "SELECT SQ.*, C.customer_name from hims_f_sales_quotation SQ \
+          inner join  hims_d_customer C on  SQ.customer_id = C.hims_d_customer_id \
+          where and SQ.sales_quotation_number =? "
+    }
     _mysql
       .executeQuery({
-        query:
-          "SELECT SQ.*, C.customer_name from hims_f_sales_quotation SQ, hims_d_customer C  \
-          where SQ.customer_id = C.hims_d_customer_id and SQ.sales_quotation_number=?",
+        query: strQuery,
         values: [req.query.sales_quotation_number],
         printQuery: true
       })
@@ -90,11 +98,10 @@ export function addSalesQuotation(req, res, next) {
           .executeQuery({
             query:
               "INSERT INTO hims_f_sales_quotation (sales_quotation_number, sales_quotation_date, \
-                                  sales_quotation_mode, reference_number, customer_id, quote_validity, sales_man, \
-                                  payment_terms, sub_total, discount_amount, net_total, \
-                                  total_tax, net_payable, narration, delivery_date, no_of_days_followup, created_date, created_by, updated_date, \
-                                  updated_by, hospital_id)\
-                          values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                      sales_quotation_mode, reference_number, customer_id, quote_validity, sales_man, \
+                      payment_terms, sales_person_id, narration, delivery_date, no_of_days_followup, \
+                      created_date, created_by, updated_date, updated_by, hospital_id)\
+              values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               sales_quotation_number,
               new Date(),
@@ -105,11 +112,7 @@ export function addSalesQuotation(req, res, next) {
 
               input.sales_man,
               input.payment_terms,
-              input.sub_total,
-              input.discount_amount,
-              input.net_total,
-              input.total_tax,
-              input.net_payable,
+              input.sales_person_id,
               input.narration,
               input.delivery_date,
               input.no_of_days_followup,
@@ -125,89 +128,74 @@ export function addSalesQuotation(req, res, next) {
             console.log("headerResult", headerResult);
             let IncludeValues = [];
             if (input.sales_quotation_items.length > 0) {
-              IncludeValues = [
-                "item_id",
-                "uom_id",
-                "unit_cost",
-                "quantity",
-                "extended_cost",
-                "discount_percentage",
-                "discount_amount",
-                "net_extended_cost",
-                "tax_percentage",
-                "tax_amount",
-                "total_amount"
-              ];
-
-              _mysql
-                .executeQuery({
-                  query:
-                    "INSERT INTO hims_f_sales_quotation_items(??) VALUES ?",
-                  values: input.sales_quotation_items,
-                  includeValues: IncludeValues,
-                  extraValues: {
-                    sales_quotation_id: headerResult.insertId
-                  },
-                  bulkInsertOrUpdate: true,
-                  printQuery: true
-                })
-                .then(detailResult => {
+              InsertSalesItemService({
+                input: input,
+                _mysql: _mysql,
+                next: next
+              })
+                .then(insert_item_list => {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
                     req.records = {
                       sales_quotation_number: sales_quotation_number,
                       hims_f_sales_quotation_id: headerResult.insertId
                     };
-                    return next();
+                    next();
                   });
-                })
-                .catch(error => {
-                  _mysql.rollBackTransaction(() => {
-                    next(error);
-                  });
+                }
+                )
+                .catch(e => {
+                  _mysql.rollBackTransaction(
+                    () => {
+                      next(e);
+                    }
+                  );
                 });
-            } else if (input.sales_quotation_services.length > 0) {
-              IncludeValues = [
-                "services_id",
-                "unit_cost",
-                "quantity",
-                "extended_cost",
-                "discount_percentage",
-                "discount_amount",
-                "net_extended_cost",
-                "tax_percentage",
-                "tax_amount",
-                "total_amount"
-              ];
+            } else {
+              if (input.sales_quotation_services.length > 0) {
+                IncludeValues = [
+                  "services_id",
+                  "unit_cost",
+                  "quantity",
+                  "extended_cost",
+                  "discount_percentage",
+                  "discount_amount",
+                  "net_extended_cost",
+                  "tax_percentage",
+                  "tax_amount",
+                  "total_amount"
+                ];
 
-              _mysql
-                .executeQuery({
-                  query:
-                    "INSERT INTO hims_f_sales_quotation_services(??) VALUES ?",
-                  values: input.sales_quotation_services,
-                  includeValues: IncludeValues,
-                  extraValues: {
-                    sales_quotation_id: headerResult.insertId
-                  },
-                  bulkInsertOrUpdate: true,
-                  printQuery: true
-                })
-                .then(detailResult => {
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = {
-                      sales_quotation_number: sales_quotation_number,
-                      hims_f_sales_quotation_id: headerResult.insertId
-                    };
-                    return next();
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO hims_f_sales_quotation_services(??) VALUES ?",
+                    values: input.sales_quotation_services,
+                    includeValues: IncludeValues,
+                    extraValues: {
+                      sales_quotation_id: headerResult.insertId
+                    },
+                    bulkInsertOrUpdate: true,
+                    printQuery: true
+                  })
+                  .then(detailResult => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = {
+                        sales_quotation_number: sales_quotation_number,
+                        hims_f_sales_quotation_id: headerResult.insertId
+                      };
+                      next();
+                    });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
                   });
-                })
-                .catch(error => {
-                  _mysql.rollBackTransaction(() => {
-                    next(error);
-                  });
-                });
+              }
             }
+
           })
           .catch(e => {
             _mysql.rollBackTransaction(() => {
@@ -305,3 +293,85 @@ export function updateSalesQuotation(req, res, next) {
   }
 };
 
+
+function InsertSalesItemService(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      let input = options.input;
+      let _mysql = options._mysql;
+
+
+      IncludeValues = [
+        "item_id",
+        "uom_id",
+        "unit_cost",
+        "quantity",
+        "extended_cost",
+        "discount_percentage",
+        "discount_amount",
+        "net_extended_cost",
+        "tax_percentage",
+        "tax_amount",
+        "total_amount"
+      ];
+
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO hims_f_sales_quotation_items(??) VALUES ?",
+          values: input.sales_quotation_items,
+          includeValues: IncludeValues,
+          extraValues: {
+            sales_quotation_id: headerResult.insertId
+          },
+          bulkInsertOrUpdate: true,
+          printQuery: true
+        })
+        .then(detailResult => {
+          if (input.sales_quotation_services.length > 0) {
+            IncludeValues = [
+              "services_id",
+              "unit_cost",
+              "quantity",
+              "extended_cost",
+              "discount_percentage",
+              "discount_amount",
+              "net_extended_cost",
+              "tax_percentage",
+              "tax_amount",
+              "total_amount"
+            ];
+
+            _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO hims_f_sales_quotation_services(??) VALUES ?",
+                values: input.sales_quotation_services,
+                includeValues: IncludeValues,
+                extraValues: {
+                  sales_quotation_id: headerResult.insertId
+                },
+                bulkInsertOrUpdate: true,
+                printQuery: true
+              })
+              .then(detailResult => {
+                resolve();
+              })
+              .catch(error => {
+                reject(error);
+              });
+          } else {
+            resolve();
+          }
+
+        })
+        .catch(error => {
+          reject(error);
+        });
+    } catch (e) {
+      reject(e);
+    }
+  }).catch(e => {
+    options.next(e);
+  });
+}
