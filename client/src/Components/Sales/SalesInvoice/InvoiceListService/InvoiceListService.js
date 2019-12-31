@@ -3,43 +3,41 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext";
-// import "./SalesListItems.scss";
 import "./../../../../styles/site.scss";
 import {
     AlgaehDataGrid,
     AlgaehLabel,
-    AlagehFormGroup,
-    AlagehAutoComplete
+    AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 
 import {
-    itemchangeText,
+    servicechangeText,
     numberchangeTexts,
-    UomchangeTexts,
-    AddItems,
+    AddSerices,
     deleteSalesDetail,
     onchangegridcol,
     qtyonchangegridcol,
-} from "./SalesListItemsEvents";
+} from "./InvoiceListServiceEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
+import _ from "lodash";
 
-class SalesListItems extends Component {
+class InvoiceListService extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            selectBatch: false,
+            selectBatchButton: true,
 
             addItemButton: true,
-            item_description: "",
+            service_name: "",
             addedItem: true,
 
-            item_id: null,
+            services_id: null,
             quantity: 0,
-            uom_id: null,
-            uom_description: null,
             discount_percentage: 0,
             unit_cost: 0,
             tax_percent: 0
@@ -98,7 +96,6 @@ class SalesListItems extends Component {
         }
     }
 
-
     UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState(nextProps.SALESIOputs);
     }
@@ -113,30 +110,36 @@ class SalesListItems extends Component {
                                 <div className="portlet portlet-bordered margin-bottom-15">
                                     <div className="row">
                                         <AlgaehAutoSearch
-                                            div={{ className: "col-12 mandatory" }}
-                                            label={{ forceLabel: "Item Name" }}
+                                            div={{ className: "col-12 form-group mandatory" }}
+                                            label={{ forceLabel: "Service Name" }}
                                             title="Search Items"
                                             id="item_id_search"
-                                            template={result => {
+                                            template={({ service_name, service_type }) => {
                                                 return (
+
                                                     <section className="resultSecStyles">
                                                         <div className="row">
                                                             <div className="col-12">
                                                                 <h4 className="title">
-                                                                    {result.item_description}
+                                                                    {_.startCase(_.toLower(service_name))}
                                                                 </h4>
-                                                                <small>{result.uom_description}</small>
+                                                                <p className="searchMoreDetails">
+                                                                    <span>
+                                                                        Service Type:
+                                                                        <b>{_.startCase(_.toLower(service_type))}</b>
+                                                                    </span>
+                                                                </p>
                                                             </div>
                                                         </div>
                                                     </section>
                                                 );
                                             }}
-                                            name="item_id"
-                                            columns={spotlightSearch.Items.Invitemmaster}
-                                            displayField="item_description"
-                                            value={this.state.item_description}
-                                            searchName="salesitemmaster"
-                                            onClick={itemchangeText.bind(this, this)}
+                                            name="services_id"
+                                            columns={spotlightSearch.Services.servicemaster}
+                                            displayField="service_name"
+                                            value={this.state.service_name}
+                                            searchName="servicemaster"
+                                            onClick={servicechangeText.bind(this, this)}
                                             ref={attReg => {
                                                 this.attReg = attReg;
                                             }}
@@ -145,35 +148,9 @@ class SalesListItems extends Component {
                                             }}
                                         />
 
-                                        <AlagehAutoComplete
-                                            div={{ className: "col-6 mandatory" }}
-                                            label={{ forceLabel: "UOM", isImp: true }}
-                                            selector={{
-                                                name: "uom_id",
-                                                className: "select-fld",
-                                                value: this.state.uom_id,
-                                                dataSource: {
-                                                    textField: "uom_description",
-                                                    valueField: "uom_id",
-                                                    data: this.state.ItemUOM
-                                                },
-                                                onChange: UomchangeTexts.bind(
-                                                    this,
-                                                    this
-                                                ),
-                                                onClear: () => {
-                                                    this.setState({
-                                                        uom_id: null
-                                                    });
-                                                },
-                                                others: {
-                                                    disabled: this.state.dataExitst,
-                                                    tabIndex: "2"
-                                                }
-                                            }}
-                                        />
+
                                         <AlagehFormGroup
-                                            div={{ className: "col-6 mandatory" }}
+                                            div={{ className: "col-6 form-group mandatory" }}
                                             label={{
                                                 forceLabel: "Quantity"
                                             }}
@@ -201,7 +178,7 @@ class SalesListItems extends Component {
                                         />
 
                                         <AlagehFormGroup
-                                            div={{ className: "col-6 form-group" }}
+                                            div={{ className: "col-6 form-group mandatory" }}
                                             label={{
                                                 forceLabel: "Discount (%)",
                                                 isImp: false
@@ -224,31 +201,7 @@ class SalesListItems extends Component {
                                             }}
                                         />
 
-
-                                        <AlagehFormGroup
-                                            div={{ className: "col-6 mandatory" }}
-                                            label={{
-                                                forceLabel: "Unit Cost",
-                                                isImp: false
-                                            }}
-                                            textBox={{
-                                                decimal: { allowNegative: false },
-                                                className: "txt-fld",
-                                                name: "unit_cost",
-                                                value: this.state.unit_cost,
-                                                events: {
-                                                    onChange: numberchangeTexts.bind(
-                                                        this,
-                                                        this,
-                                                        context
-                                                    )
-                                                },
-                                                others: {
-                                                    tabIndex: "4"
-                                                }
-                                            }}
-                                        />
-                                        <div className="col-6 mandatory">
+                                        <div className="col-6 form-group mandatory">
                                             <AlgaehLabel
                                                 label={{
                                                     forceLabel: "Tax %"
@@ -260,13 +213,23 @@ class SalesListItems extends Component {
                                                     : "-----------"}
                                             </h6>
                                         </div>
-                                        <div className="col-6 subFooter-btn">
+                                        <div className="col-6 form-group mandatory">
+                                            <AlgaehLabel
+                                                label={{
+                                                    forceLabel: "Unit Cost"
+                                                }}
+                                            />
+                                            <h6>
+                                                {this.state.unit_cost
+                                                    ? getAmountFormart(this.state.unit_cost)
+                                                    : "-----------"}
+                                            </h6>
+                                        </div> <div className="col-12 subFooter-btn">
                                             <button
                                                 className="btn btn-primary"
-                                                onClick={AddItems.bind(this, this, context)}
+                                                onClick={AddSerices.bind(this, this, context)}
                                                 disabled={this.state.addItemButton}
                                                 tabIndex="5"
-                                                style={{ marginTop: 19 }}
                                             >
                                                 Add Item
                                             </button>
@@ -280,9 +243,9 @@ class SalesListItems extends Component {
                             <div className="col-9">
                                 <div className="portlet portlet-bordered margin-bottom-15">
                                     <div className="row">
-                                        <div className="col-12" id="SaleQuotationGrid_Cntr">
+                                        <div className="col-12" id="SaleOrderGrid_Cntr">
                                             <AlgaehDataGrid
-                                                id="SaleQuotationGrid"
+                                                id="SaleOrderGrid"
                                                 columns={[
                                                     {
                                                         fieldName: "actions",
@@ -301,23 +264,16 @@ class SalesListItems extends Component {
                                                                         row
                                                                     )}
                                                                 >
-                                                                    <i
-                                                                        style={{
-                                                                            pointerEvents:
-                                                                                this.state.dataExists ? "none" : "",
-                                                                            opacity:
-                                                                                this.state.dataExists ? "0.1" : ""
-                                                                        }}
-                                                                        className="fas fa-trash-alt" />
+                                                                    <i className="fas fa-trash-alt" />
                                                                 </span>
                                                             );
                                                         }
                                                     },
                                                     {
-                                                        fieldName: "item_description",
+                                                        fieldName: "service_name",
                                                         label: (
                                                             <AlgaehLabel
-                                                                label={{ forceLabel: "Item Name" }}
+                                                                label={{ forceLabel: "Service Name" }}
                                                             />
                                                         ),
                                                         disabled: true,
@@ -329,7 +285,7 @@ class SalesListItems extends Component {
                                                         fieldName: "quantity",
                                                         label: (
                                                             <AlgaehLabel
-                                                                label={{ forceLabel: "Quantity" }}
+                                                                label={{ forceLabel: "Qty Req." }}
                                                             />
                                                         ),
                                                         displayTemplate: row => {
@@ -362,18 +318,6 @@ class SalesListItems extends Component {
                                                                 />
                                                             );
                                                         },
-                                                        others: {
-                                                            minWidth: 90
-                                                        }
-                                                    },
-                                                    {
-                                                        fieldName: "uom_description",
-                                                        label: (
-                                                            <AlgaehLabel
-                                                                label={{ forceLabel: "UOM" }}
-                                                            />
-                                                        ),
-                                                        disabled: true,
                                                         others: {
                                                             minWidth: 90
                                                         }
@@ -522,7 +466,7 @@ class SalesListItems extends Component {
                                                 ]}
                                                 keyId="service_type_id"
                                                 dataSource={{
-                                                    data: this.state.sales_quotation_items
+                                                    data: this.state.sales_order_services
                                                 }}
                                                 paging={{ page: 0, rowsPerPage: 10 }}
 
@@ -542,7 +486,9 @@ class SalesListItems extends Component {
 function mapStateToProps(state) {
     return {
         opitemlist: state.opitemlist,
-        inventoryitemuom: state.inventoryitemuom
+        inventoryitemcategory: state.inventoryitemcategory,
+        inventoryitemuom: state.inventoryitemuom,
+        inventoryitemgroup: state.inventoryitemgroup
     };
 }
 
@@ -562,5 +508,5 @@ export default withRouter(
     connect(
         mapStateToProps,
         mapDispatchToProps
-    )(SalesListItems)
+    )(InvoiceListService)
 );

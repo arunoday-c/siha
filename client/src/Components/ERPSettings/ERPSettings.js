@@ -5,13 +5,17 @@ import {
     AlgaehLabel,
     AlagehAutoComplete
 } from "../Wrapper/algaehWrapper";
-import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import GlobalVariables from "../../utils/GlobalVariables";
 import {
     changeTexts,
     savePharmacyOptions,
     saveInventoryOptions,
-    savePOOptions
+    savePOOptions,
+    saveSalesOptions,
+    getPharmacyOptions,
+    getInventoryOptions,
+    getPOOptions,
+    getSalesOptions
 } from "./ERPSettingsEvents";
 import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 
@@ -34,9 +38,14 @@ export default class ERPSettings extends Component {
             return f.module_code === "INVTRY";
         });
 
+        const SALES_Active = Activated_Modueles.filter(f => {
+            return f.module_code === "SALES";
+        });
+
         this.PROC_Active = PROC_Active.length > 0 ? true : false;
         this.PHCY_Active = PHCY_Active.length > 0 ? true : false;
         this.INVTRY_Active = INVTRY_Active.length > 0 ? true : false;
+        this.SALES_Active = SALES_Active.length > 0 ? true : false;
 
         this.state = {
             hims_d_pharmacy_options_id: null,
@@ -48,61 +57,28 @@ export default class ERPSettings extends Component {
             inv_requisition_auth_level: "1",
 
             hims_d_procurement_options_id: null,
-            po_auth_level: "1"
+            po_auth_level: "1",
+
+            hims_d_sales_options_id: null,
+            sales_order_auth_level: "1"
         };
 
         if (this.PHCY_Active) {
-            this.getPharmacyOptions();
+            getPharmacyOptions(this, this);
         }
 
         if (this.INVTRY_Active) {
-            this.getInventoryOptions();
+            getInventoryOptions(this, this);
         }
 
         if (this.PROC_Active) {
-            this.getPOOptions();
+            getPOOptions(this, this);
         }
-    }
 
-    getPharmacyOptions() {
-        algaehApiCall({
-            uri: "/pharmacy/getPharmacyOptions",
-            method: "GET",
-            module: "pharmacy",
-            onSuccess: res => {
-                if (res.data.success) {
-                    this.setState(res.data.records[0]);
-                }
-            }
-        });
-    }
+        if (this.SALES_Active) {
+            getSalesOptions(this, this);
+        }
 
-    getInventoryOptions() {
-        algaehApiCall({
-            uri: "/inventory/getInventoryOptions",
-            method: "GET",
-            module: "inventory",
-            onSuccess: res => {
-                if (res.data.success) {
-                    res.data.records[0].inv_requisition_auth_level =
-                        res.data.records[0].requisition_auth_level;
-                    this.setState(res.data.records[0]);
-                }
-            }
-        });
-    }
-
-    getPOOptions() {
-        algaehApiCall({
-            uri: "/POSettings/getPOOptions",
-            method: "GET",
-            module: "procurement",
-            onSuccess: res => {
-                if (res.data.success) {
-                    this.setState(res.data.records[0]);
-                }
-            }
-        });
     }
 
     render() {
@@ -304,6 +280,56 @@ export default class ERPSettings extends Component {
                                             type="button"
                                             className="btn btn-default"
                                             onClick={savePOOptions.bind(this, this)}
+                                        >
+                                            <AlgaehLabel
+                                                label={{ forceLabel: "Save", returnText: true }}
+                                            />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ) : null}
+
+                {this.SALES_Active ? (
+                    <div className="col-3">
+                        <div className="portlet portlet-bordered marginBottom-15">
+                            <div className="portlet-title">
+                                <div className="caption">
+                                    <h3 className="caption-subject">Sales Settings</h3>
+                                </div>
+                            </div>
+                            <div className="portlet-body">
+                                <div className="row">
+                                    <AlagehAutoComplete
+                                        div={{ className: "col form-group" }}
+                                        label={{
+                                            forceLabel: "Sales Order Auth level",
+                                            isImp: false
+                                        }}
+                                        selector={{
+                                            name: "sales_order_auth_level",
+                                            value: this.state.sales_order_auth_level,
+                                            className: "select-fld",
+                                            dataSource: {
+                                                textField: "name",
+                                                valueField: "value",
+                                                data: GlobalVariables.AUTH_LEVEL2
+                                            },
+                                            onChange: changeTexts.bind(this, this),
+                                            onClear: () => {
+                                                this.setState({
+                                                    sales_order_auth_level: null
+                                                });
+                                            }
+                                        }}
+                                    />
+                                    <div className="col-lg-12">
+                                        <button
+                                            type="button"
+                                            className="btn btn-default"
+                                            onClick={saveSalesOptions.bind(this, this)}
                                         >
                                             <AlgaehLabel
                                                 label={{ forceLabel: "Save", returnText: true }}
