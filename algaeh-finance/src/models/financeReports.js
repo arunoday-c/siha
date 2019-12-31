@@ -161,7 +161,7 @@ function getAccountHeadsForReport(decimal_places, finance_account_head_id) {
           ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
           ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
           from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
-          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='Y'
+          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'
           where (H.root_id=? or H.finance_account_head_id=?)
           group by C.finance_account_child_id;
           select max(account_level) as account_level from finance_account_head 
@@ -170,7 +170,7 @@ function getAccountHeadsForReport(decimal_places, finance_account_head_id) {
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
           ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount
           from finance_account_head H              
-          left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='Y'
+          left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'
           where (H.root_id=? or H.finance_account_head_id=?)
           group by H.finance_account_head_id  order by account_level;  `,
 
