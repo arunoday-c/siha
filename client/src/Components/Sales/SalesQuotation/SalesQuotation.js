@@ -448,7 +448,7 @@ class SalesQuotation extends Component {
               <div className="col-12">
                 <div
                   className="portlet portlet-bordered margin-bottom-15"
-                  style={{ marginBototm: 60 }}
+                  style={{ marginBottom: 60 }}
                 >
                   <div className="row">
                     <div className="col-6">
