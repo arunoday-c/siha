@@ -23,7 +23,6 @@ import {
     qtyonchangegridcol,
 } from "./SalesOrdListItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 class SalesOrdListItems extends Component {
@@ -237,18 +236,30 @@ class SalesOrdListItems extends Component {
                                                     : "-----------"}
                                             </h6>
                                         </div>
-                                        <div className="col-6 form-group mandatory">
-                                            <AlgaehLabel
-                                                label={{
-                                                    forceLabel: "Unit Cost"
-                                                }}
-                                            />
-                                            <h6>
-                                                {this.state.unit_cost
-                                                    ? getAmountFormart(this.state.unit_cost)
-                                                    : "-----------"}
-                                            </h6>
-                                        </div> <div className="col-12 subFooter-btn">
+                                        <AlagehFormGroup
+                                            div={{ className: "col-6 mandatory" }}
+                                            label={{
+                                                forceLabel: "Unit Cost",
+                                                isImp: false
+                                            }}
+                                            textBox={{
+                                                decimal: { allowNegative: false },
+                                                className: "txt-fld",
+                                                name: "unit_cost",
+                                                value: this.state.unit_cost,
+                                                events: {
+                                                    onChange: numberchangeTexts.bind(
+                                                        this,
+                                                        this,
+                                                        context
+                                                    )
+                                                },
+                                                others: {
+                                                    tabIndex: "4"
+                                                }
+                                            }}
+                                        />
+                                        <div className="col-12 subFooter-btn">
                                             <button
                                                 className="btn btn-primary"
                                                 onClick={AddItems.bind(this, this, context)}
@@ -313,7 +324,7 @@ class SalesOrdListItems extends Component {
                                                             />
                                                         ),
                                                         displayTemplate: row => {
-                                                            return this.state.dataExists === true ? parseFloat(row.quantity) : (
+                                                            return this.state.grid_edit === true ? parseFloat(row.quantity) : (
                                                                 <AlagehFormGroup
                                                                     div={{}}
                                                                     textBox={{
@@ -321,7 +332,7 @@ class SalesOrdListItems extends Component {
                                                                             allowNegative: false,
                                                                             thousandSeparator: ","
                                                                         },
-                                                                        value: row.quantity,
+                                                                        value: parseFloat(row.quantity),
                                                                         className: "txt-fld",
                                                                         name: "quantity",
                                                                         events: {
@@ -390,7 +401,7 @@ class SalesOrdListItems extends Component {
                                                             />
                                                         ),
                                                         displayTemplate: row => {
-                                                            return this.state.dataExists === true ? row.discount_percentage : (
+                                                            return this.state.grid_edit === true ? row.discount_percentage : (
                                                                 <AlagehFormGroup
                                                                     div={{}}
                                                                     textBox={{
@@ -425,34 +436,7 @@ class SalesOrdListItems extends Component {
                                                                     forceLabel: "discount Amt."
                                                                 }}
                                                             />
-                                                        ),
-                                                        // displayTemplate: row => {
-                                                        //     return (
-                                                        //         <AlagehFormGroup
-                                                        //             div={{}}
-                                                        //             textBox={{
-                                                        //                 decimal: { allowNegative: false },
-                                                        //                 value: row.discount_amount,
-                                                        //                 className: "txt-fld",
-                                                        //                 name: "discount_amount",
-                                                        //                 events: {
-                                                        //                     onChange: onchangegridcol.bind(
-                                                        //                         this,
-                                                        //                         this,
-                                                        //                         context,
-                                                        //                         row
-                                                        //                     )
-                                                        //                 },
-                                                        //                 others: {
-                                                        //                     onFocus: e => {
-                                                        //                         e.target.oldvalue =
-                                                        //                             e.target.value;
-                                                        //                     }
-                                                        //                 }
-                                                        //             }}
-                                                        //         />
-                                                        //     );
-                                                        // }
+                                                        )
                                                     },
 
                                                     {
@@ -498,6 +482,25 @@ class SalesOrdListItems extends Component {
                                                             />
                                                         ),
                                                         disabled: true
+                                                    },
+                                                    {
+                                                        fieldName: "quantity_outstanding",
+                                                        label: (
+                                                            <AlgaehLabel
+                                                                label={{
+                                                                    forceLabel: "Outstanding Qty"
+                                                                }}
+                                                            />
+                                                        ),
+                                                        displayTemplate: row => {
+                                                            return row.quantity_outstanding !== ""
+                                                                ? parseFloat(row.quantity_outstanding)
+                                                                : 0;
+                                                        },
+                                                        disabled: true,
+                                                        others: {
+                                                            minWidth: 130
+                                                        }
                                                     }
                                                 ]}
                                                 keyId="service_type_id"
