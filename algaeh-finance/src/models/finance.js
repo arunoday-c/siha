@@ -520,8 +520,7 @@ export default {
         FROM finance_account_head where parent_acc_id=?)) as new_code\
         FROM finance_account_head where finance_account_head_id=?;\
         select coalesce(max(sort_order),0)as sort_order FROM finance_account_head where parent_acc_id=?;\
-        select case  group_type when 'P' then finance_account_head_id else root_id end as root_id,\
-        account_type from\
+        select case  group_type when 'P' then finance_account_head_id else root_id end as root_id from\
         finance_account_head where finance_account_head_id=?;",
           values: [
             input.finance_account_head_id,
@@ -537,7 +536,6 @@ export default {
 
           let account_code = 0;
 
-          const account_type = result[2][0]["account_type"];
           let root_id = result[2][0]["root_id"];
 
           if (data["new_code"] == null) {
@@ -557,17 +555,14 @@ export default {
           _mysql
             .executeQuery({
               query:
-                "INSERT INTO `finance_account_head` (account_code,account_name,account_parent,account_type,\
+                "INSERT INTO `finance_account_head` (account_code,account_name,account_parent,\
                    group_type,account_level,created_from,sort_order,parent_acc_id,hierarchy_path,root_id\
                 ,created_date, created_by, updated_date, updated_by)\
-                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 account_code,
                 input.account_name,
                 account_parent,
-
-                account_type,
-
                 group_type,
                 account_level,
                 created_from,
@@ -1520,32 +1515,80 @@ export default {
           next(e);
         });
     } else {
-      let strQry = "";
+      // let strQry = "";
+
+      // switch (input.voucher_type) {
+      //   case "journal":
+      //     strQry = ` where account_type  not  in ('B','C') `;
+      //     break;
+
+      //   case "contra":
+      //     strQry = ` where account_type   in ('B','C') `;
+      //     break;
+      //   case "sales":
+      //     strQry = ` where account_type  not  in ('B','C') `;
+      //     break;
+      // }
+
+      let selectStr = "";
+      let whereStr = "";
+      let unionStr = "";
 
       switch (input.voucher_type) {
         case "journal":
-          strQry = ` where account_type  not  in ('B','C') `;
+          selectStr = " ,parent_acc_id ";
+          whereStr = ` where account_type  not in ('B','C') `;
+          unionStr = ` where account_type  not in ('B','C') `;
           break;
 
         case "contra":
-          strQry = ` where account_type   in ('B','C') `;
+          selectStr = ` ,  case  account_type  when 'B' then null when 'C' then null else parent_acc_id end as parent_acc_id `;
+          whereStr = ` where account_type  in ('B','C') `;
           break;
         case "sales":
-          strQry = ` where account_type  not  in ('B','C') `;
+          selectStr = " ,parent_acc_id ";
+          whereStr = ` where account_type  not in ('B','C') `;
+          unionStr = ` where account_type  not in ('B','C') `;
           break;
+        default:
+          selectStr = " ,parent_acc_id ";
       }
+
+      // query: `	select finance_account_head_id,H.account_code,account_name,parent_acc_id,
+      // C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
+      // ,account_level,H.sort_order,CM.head_id,H.created_from as created_status,H.root_id
+      // FROM finance_account_head H left join
+      // finance_head_m_child CM on H.finance_account_head_id=CM.head_id
+      // left join finance_account_child C on CM.child_id=C.finance_account_child_id ${strQry};`,
       _mysql
         .executeQuery({
-          query: `	select finance_account_head_id,H.account_code,account_name,parent_acc_id,
-        C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
-        ,account_level,H.sort_order,CM.head_id,H.created_from as created_status,H.root_id
-        FROM finance_account_head H left join 
-        finance_head_m_child CM on H.finance_account_head_id=CM.head_id
-        left join finance_account_child C on CM.child_id=C.finance_account_child_id ${strQry};`,
+          // query: `select finance_account_head_id,account_code,account_name,account_parent,account_level,
+          // H.created_from as created_status ,sort_order,parent_acc_id,root_id,
+          // finance_account_child_id,child_name,head_id,C.created_from as child_created_from
+          // from finance_account_head H left join
+          // finance_account_child C on C.head_id=H.finance_account_head_id
+          // ${strQry} order by account_level,sort_order;     `,
 
-          printQuery: false,
+          query: ` with recursive cte as (
+            select finance_account_head_id,account_code,account_name,account_parent,account_level,
+            H.created_from as created_status ,sort_order ${selectStr}
+            ,root_id,
+            finance_account_child_id,child_name,head_id,C.created_from as child_created_from
+            from finance_account_head H left join
+            finance_account_child C on C.head_id=H.finance_account_head_id ${whereStr}
+           
+            union                  
+            select H.finance_account_head_id,H.account_code,H.account_name,H.account_parent,H.account_level,
+            H.created_from as created_status ,H.sort_order,H.parent_acc_id,H.root_id,
+            C.finance_account_child_id,C.child_name,C.head_id,C.created_from as child_created_from
+            from finance_account_head H left join
+            finance_account_child C on C.head_id=H.finance_account_head_id
+            inner join cte on H.parent_acc_id = cte.finance_account_head_id   ${unionStr}
+            )
+            select * from cte order by account_level,sort_order;`,
 
-          values: [input.finance_account_head_id]
+          printQuery: true,
+          values: []
         })
         .then(result => {
           _mysql.releaseConnection();
