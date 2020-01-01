@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ReactDom from "react-dom";
 import CostCenter from "../costcenter";
 import moment from "moment";
 import "./JournalVoucher.scss";
@@ -12,6 +13,7 @@ import {
   AlgaehFormGroupGrid,
   AlgaehButton
 } from "algaeh-react-components";
+import Accounts from "../FinanceAccounts";
 import {
   getVoucherNumber,
   getHeaders,
@@ -150,7 +152,18 @@ export default function JournalVoucher() {
               <div className="caption">
                 <h3 className="caption-subject">Journal Voucher List </h3>
               </div>
-              <div className="actions"></div>
+              <div className="actions">
+                <AlgaehButton
+                  type="primary"
+                  icon="play-circle"
+                  onClick={() => {
+                    ReactDom.render(
+                      <Accounts back="journalVoucher" />,
+                      document.getElementById("hisapp")
+                    );
+                  }}
+                />
+              </div>
             </div>
             <div className="portlet-body" id="JLVoucherListGrid">
               <AlgaehDataGrid
