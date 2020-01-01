@@ -636,7 +636,7 @@ class ApplyLeaveEncashment extends Component {
           <div className="col-2">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
-                <div className="row leaveBalanceCntr">
+                <div className="row leaveEcnashBalanceCntr">
                   {this.state.emp_leaves_data.length > 0 ? (
                     this.state.emp_leaves_data.map((data, index) => (
                       <div

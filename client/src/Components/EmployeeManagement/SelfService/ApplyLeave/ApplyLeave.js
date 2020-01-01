@@ -628,12 +628,12 @@ class ApplyLeave extends Component {
                         data: this.state.emp_leaves_data
                       },
                       onChange: this.dropDownHandler.bind(this),
-                      template: item => (
-                        <div className="multiInfoList">
-                          <h6>{item.leave_description}</h6>
-                          <p>{item.leave_type === "U" ? "Unpaid" : "Paid"}</p>
-                        </div>
-                      ),
+                      // template: item => (
+                      //   <div className="multiInfoList">
+                      //     <h6>{item.leave_description}</h6>
+                      //     <p>{item.leave_type === "U" ? "Unpaid" : "Paid"}</p>
+                      //   </div>
+                      // ),
                       onClear: () => {
                         this.setState({
                           leave_id: null,
