@@ -65,11 +65,11 @@ class DNItemList extends Component {
     let tax_amount =
       (extended_cost * parseFloat(item_details.tax_percentage)) / 100;
 
-
     item_details["extended_price"] = parseFloat(extended_price);
     item_details["extended_cost"] = parseFloat(extended_cost);
-    item_details["unit_cost"] =
-      (parseFloat(extended_cost) / parseFloat(dn_quantity)).toFixed(this.state.decimal_places);
+    item_details["unit_cost"] = (
+      parseFloat(extended_cost) / parseFloat(dn_quantity)
+    ).toFixed(this.state.decimal_places);
 
     item_details["tax_amount"] = parseFloat(tax_amount);
     item_details["total_amount"] =
@@ -127,8 +127,8 @@ class DNItemList extends Component {
       this.state.item_details === null
         ? ""
         : this.state.item_details.stock_uom_description === undefined
-          ? "-----"
-          : this.state.item_details.stock_uom_description;
+        ? "-----"
+        : this.state.item_details.stock_uom_description;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -425,17 +425,17 @@ class DNItemList extends Component {
                                       <i className="fas fa-barcode" />
                                     </span>
                                   ) : (
-                                      <span
-                                        onClick={deleteDNDetail.bind(
-                                          this,
-                                          this,
-                                          row,
-                                          context
-                                        )}
-                                      >
-                                        <i className="fas fa-trash-alt" />
-                                      </span>
-                                    );
+                                    <span
+                                      onClick={deleteDNDetail.bind(
+                                        this,
+                                        this,
+                                        row,
+                                        context
+                                      )}
+                                    >
+                                      <i className="fas fa-trash-alt" />
+                                    </span>
+                                  );
                                 },
 
                                 disabled: true,
@@ -462,26 +462,26 @@ class DNItemList extends Component {
 
                                   this.state.dn_from === "PHR"
                                     ? (display =
-                                      this.props.dnitemlist === undefined
-                                        ? []
-                                        : this.props.dnitemlist.filter(
-                                          f =>
-                                            f.hims_d_item_master_id ===
-                                            row.phar_item_id
-                                        ))
+                                        this.props.dnitemlist === undefined
+                                          ? []
+                                          : this.props.dnitemlist.filter(
+                                              f =>
+                                                f.hims_d_item_master_id ===
+                                                row.phar_item_id
+                                            ))
                                     : (display =
-                                      this.props.dnitemlist === undefined
-                                        ? []
-                                        : this.props.dnitemlist.filter(
-                                          f =>
-                                            f.hims_d_inventory_item_master_id ===
-                                            row.inv_item_id
-                                        ));
+                                        this.props.dnitemlist === undefined
+                                          ? []
+                                          : this.props.dnitemlist.filter(
+                                              f =>
+                                                f.hims_d_inventory_item_master_id ===
+                                                row.inv_item_id
+                                            ));
 
                                   return (
                                     <span>
                                       {display !== undefined &&
-                                        display.length !== 0
+                                      display.length !== 0
                                         ? display[0].item_description
                                         : ""}
                                     </span>
@@ -492,26 +492,26 @@ class DNItemList extends Component {
 
                                   this.state.dn_from === "PHR"
                                     ? (display =
-                                      this.props.dnitemlist === undefined
-                                        ? []
-                                        : this.props.dnitemlist.filter(
-                                          f =>
-                                            f.hims_d_item_master_id ===
-                                            row.phar_item_id
-                                        ))
+                                        this.props.dnitemlist === undefined
+                                          ? []
+                                          : this.props.dnitemlist.filter(
+                                              f =>
+                                                f.hims_d_item_master_id ===
+                                                row.phar_item_id
+                                            ))
                                     : (display =
-                                      this.props.dnitemlist === undefined
-                                        ? []
-                                        : this.props.dnitemlist.filter(
-                                          f =>
-                                            f.hims_d_inventory_item_master_id ===
-                                            row.inv_item_id
-                                        ));
+                                        this.props.dnitemlist === undefined
+                                          ? []
+                                          : this.props.dnitemlist.filter(
+                                              f =>
+                                                f.hims_d_inventory_item_master_id ===
+                                                row.inv_item_id
+                                            ));
 
                                   return (
                                     <span>
                                       {display !== undefined &&
-                                        display.length !== 0
+                                      display.length !== 0
                                         ? display[0].item_description
                                         : ""}
                                     </span>
@@ -535,26 +535,26 @@ class DNItemList extends Component {
 
                                   this.state.dn_from === "PHR"
                                     ? (display =
-                                      this.props.dnitemcategory === undefined
-                                        ? []
-                                        : this.props.dnitemcategory.filter(
-                                          f =>
-                                            f.hims_d_item_category_id ===
-                                            row.phar_item_category
-                                        ))
+                                        this.props.dnitemcategory === undefined
+                                          ? []
+                                          : this.props.dnitemcategory.filter(
+                                              f =>
+                                                f.hims_d_item_category_id ===
+                                                row.phar_item_category
+                                            ))
                                     : (display =
-                                      this.props.dnitemcategory === undefined
-                                        ? []
-                                        : this.props.dnitemcategory.filter(
-                                          f =>
-                                            f.hims_d_inventory_tem_category_id ===
-                                            row.inv_item_category_id
-                                        ));
+                                        this.props.dnitemcategory === undefined
+                                          ? []
+                                          : this.props.dnitemcategory.filter(
+                                              f =>
+                                                f.hims_d_inventory_tem_category_id ===
+                                                row.inv_item_category_id
+                                            ));
 
                                   return (
                                     <span>
                                       {display !== undefined &&
-                                        display.length !== 0
+                                      display.length !== 0
                                         ? display[0].category_desc
                                         : ""}
                                     </span>
@@ -565,26 +565,26 @@ class DNItemList extends Component {
 
                                   this.state.dn_from === "PHR"
                                     ? (display =
-                                      this.props.dnitemcategory === undefined
-                                        ? []
-                                        : this.props.dnitemcategory.filter(
-                                          f =>
-                                            f.hims_d_item_category_id ===
-                                            row.phar_item_category
-                                        ))
+                                        this.props.dnitemcategory === undefined
+                                          ? []
+                                          : this.props.dnitemcategory.filter(
+                                              f =>
+                                                f.hims_d_item_category_id ===
+                                                row.phar_item_category
+                                            ))
                                     : (display =
-                                      this.props.dnitemcategory === undefined
-                                        ? []
-                                        : this.props.dnitemcategory.filter(
-                                          f =>
-                                            f.hims_d_inventory_tem_category_id ===
-                                            row.inv_item_category_id
-                                        ));
+                                        this.props.dnitemcategory === undefined
+                                          ? []
+                                          : this.props.dnitemcategory.filter(
+                                              f =>
+                                                f.hims_d_inventory_tem_category_id ===
+                                                row.inv_item_category_id
+                                            ));
 
                                   return (
                                     <span>
                                       {display !== undefined &&
-                                        display.length !== 0
+                                      display.length !== 0
                                         ? display[0].category_desc
                                         : ""}
                                     </span>
@@ -607,26 +607,26 @@ class DNItemList extends Component {
 
                                   this.state.dn_from === "PHR"
                                     ? (display =
-                                      this.props.dnitemgroup === undefined
-                                        ? []
-                                        : this.props.dnitemgroup.filter(
-                                          f =>
-                                            f.hims_d_item_group_id ===
-                                            row.phar_item_group
-                                        ))
+                                        this.props.dnitemgroup === undefined
+                                          ? []
+                                          : this.props.dnitemgroup.filter(
+                                              f =>
+                                                f.hims_d_item_group_id ===
+                                                row.phar_item_group
+                                            ))
                                     : (display =
-                                      this.props.dnitemgroup === undefined
-                                        ? []
-                                        : this.props.dnitemgroup.filter(
-                                          f =>
-                                            f.hims_d_inventory_item_group_id ===
-                                            row.inv_item_group_id
-                                        ));
+                                        this.props.dnitemgroup === undefined
+                                          ? []
+                                          : this.props.dnitemgroup.filter(
+                                              f =>
+                                                f.hims_d_inventory_item_group_id ===
+                                                row.inv_item_group_id
+                                            ));
 
                                   return (
                                     <span>
                                       {display !== undefined &&
-                                        display.length !== 0
+                                      display.length !== 0
                                         ? display[0].group_description
                                         : ""}
                                     </span>
@@ -637,26 +637,26 @@ class DNItemList extends Component {
 
                                   this.state.dn_from === "PHR"
                                     ? (display =
-                                      this.props.dnitemgroup === undefined
-                                        ? []
-                                        : this.props.dnitemgroup.filter(
-                                          f =>
-                                            f.hims_d_item_group_id ===
-                                            row.phar_item_group
-                                        ))
+                                        this.props.dnitemgroup === undefined
+                                          ? []
+                                          : this.props.dnitemgroup.filter(
+                                              f =>
+                                                f.hims_d_item_group_id ===
+                                                row.phar_item_group
+                                            ))
                                     : (display =
-                                      this.props.dnitemgroup === undefined
-                                        ? []
-                                        : this.props.dnitemgroup.filter(
-                                          f =>
-                                            f.hims_d_inventory_item_group_id ===
-                                            row.inv_item_group_id
-                                        ));
+                                        this.props.dnitemgroup === undefined
+                                          ? []
+                                          : this.props.dnitemgroup.filter(
+                                              f =>
+                                                f.hims_d_inventory_item_group_id ===
+                                                row.inv_item_group_id
+                                            ));
 
                                   return (
                                     <span>
                                       {display !== undefined &&
-                                        display.length !== 0
+                                      display.length !== 0
                                         ? display[0].group_description
                                         : ""}
                                     </span>
@@ -745,25 +745,6 @@ class DNItemList extends Component {
                                 }
                               },
 
-                              {
-                                fieldName: "unit_cost",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{ forceLabel: "Unit Cost" }}
-                                  />
-                                ),
-                                displayTemplate: row => {
-                                  return (
-                                    <span>
-                                      {getAmountFormart(row.unit_cost, {
-                                        appendSymbol: false
-                                      })}
-                                    </span>
-                                  );
-                                },
-
-                                disabled: true
-                              },
                               {
                                 fieldName: "sales_price",
                                 label: (
@@ -911,6 +892,25 @@ class DNItemList extends Component {
                                 },
                                 disabled: true
                               },
+                              {
+                                fieldName: "unit_cost",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Unit Cost" }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {getAmountFormart(row.unit_cost, {
+                                        appendSymbol: false
+                                      })}
+                                    </span>
+                                  );
+                                },
+
+                                disabled: true
+                              },
 
                               {
                                 fieldName: "tax_amount",
@@ -1046,10 +1046,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(DNItemList)
+  connect(mapStateToProps, mapDispatchToProps)(DNItemList)
 );
 
 {
