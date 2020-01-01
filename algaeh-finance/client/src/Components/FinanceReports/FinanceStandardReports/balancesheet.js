@@ -134,12 +134,13 @@ export default function BalanceSheet(props) {
           </div>
 
           <table style={{ width: "100%" }}>
-            {" "}
-            <tr className="footerTotalArea">
-              <td style={{ width: "100%" }} valign="top">
-                <b> {typeof footer === "function" ? footer(data) : null}</b>
-              </td>
-            </tr>
+            <tbody>
+              <tr className="footerTotalArea">
+                <td style={{ width: "100%" }} valign="top">
+                  <b> {typeof footer === "function" ? footer(data) : null}</b>
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </>
