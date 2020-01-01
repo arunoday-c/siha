@@ -63,7 +63,7 @@ class SalesListService extends Component {
                                 <div className="portlet portlet-bordered margin-bottom-15">
                                     <div className="row">
                                         <AlgaehAutoSearch
-                                            div={{ className: "col-12 mandatory" }}
+                                            div={{ className: "col-12 form-group mandatory" }}
                                             label={{ forceLabel: "Service Name" }}
                                             title="Search Service"
                                             id="item_id_search"
@@ -103,7 +103,7 @@ class SalesListService extends Component {
 
 
                                         <AlagehFormGroup
-                                            div={{ className: "col-6 mandatory" }}
+                                            div={{ className: "col-6 form-group mandatory" }}
                                             label={{
                                                 forceLabel: "Quantity"
                                             }}
@@ -131,7 +131,7 @@ class SalesListService extends Component {
                                         />
 
                                         <AlagehAutoComplete
-                                            div={{ className: "col-6 mandatory" }}
+                                            div={{ className: "col-6 form-group mandatory" }}
                                             label={{ forceLabel: "Frequency", isImp: true }}
                                             selector={{
                                                 sort: "off",
@@ -157,7 +157,7 @@ class SalesListService extends Component {
                                         />
 
                                         <AlagehFormGroup
-                                            div={{ className: "col-6 mandatory" }}
+                                            div={{ className: "col-6 form-group mandatory" }}
                                             label={{
                                                 forceLabel: "Discount (%)",
                                                 isImp: false
@@ -182,7 +182,7 @@ class SalesListService extends Component {
 
 
                                         <AlagehFormGroup
-                                            div={{ className: "col-6 mandatory" }}
+                                            div={{ className: "col-6 form-group mandatory" }}
                                             label={{
                                                 forceLabel: "Unit Cost",
                                                 isImp: false
@@ -204,7 +204,7 @@ class SalesListService extends Component {
                                                 }
                                             }}
                                         />
-                                        <div className="col-6 mandatory">
+                                        <div className="col-6 form-group mandatory">
                                             <AlgaehLabel
                                                 label={{
                                                     forceLabel: "Tax %"

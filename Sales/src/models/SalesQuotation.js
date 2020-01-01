@@ -6,16 +6,17 @@ export function getSalesQuotation(req, res, next) {
   const _mysql = new algaehMysql();
   // const utilities = new algaehUtilities();
   try {
-    console.log("getSalesQuotation: ")
-    if (req.query.HRMNGMT_Active === true) {
+    console.log("getSalesQuotation: ", req.query.HRMNGMT_Active)
+    let strQuery = ""
+    if (req.query.HRMNGMT_Active) {
       strQuery = "SELECT SQ.*, C.customer_name, E.full_name from hims_f_sales_quotation SQ \
       inner join  hims_d_customer C on  SQ.customer_id = C.hims_d_customer_id \
-      inner join  hims_d_employee E on  E.sales_person_id = C.hims_d_employee_id \
-      where and SQ.sales_quotation_number =? "
+      inner join  hims_d_employee E on  SQ.sales_person_id = E.hims_d_employee_id \
+      where SQ.sales_quotation_number =? "
     } else {
       strQuery = "SELECT SQ.*, C.customer_name from hims_f_sales_quotation SQ \
           inner join  hims_d_customer C on  SQ.customer_id = C.hims_d_customer_id \
-          where and SQ.sales_quotation_number =? "
+          where SQ.sales_quotation_number =? "
     }
     _mysql
       .executeQuery({
@@ -25,32 +26,25 @@ export function getSalesQuotation(req, res, next) {
       })
       .then(headerResult => {
         if (headerResult.length != 0) {
-          let strQuery = "";
 
-          if (headerResult[0].sales_quotation_mode == "I") {
-            strQuery = mysql.format(
-              "select QI.*, IM.item_description, IU.uom_description from hims_f_sales_quotation_items QI \
-                inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = QI.item_id \
-                inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = QI.uom_id where sales_quotation_id=?",
-              [headerResult[0].hims_f_sales_quotation_id]
-            );
-          } else if (headerResult[0].sales_quotation_mode == "S") {
-            strQuery = mysql.format(
-              "select QS.*, S.service_name from hims_f_sales_quotation_services QS \
-                inner join hims_d_services S on S.hims_d_services_id = QS.services_id where sales_quotation_id=?;",
-              [headerResult[0].hims_f_sales_quotation_id]
-            );
-          }
           _mysql
             .executeQuery({
-              query: strQuery,
+              query: "select QI.*, IM.item_description, IU.uom_description from hims_f_sales_quotation_items QI \
+              inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = QI.item_id \
+              inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = QI.uom_id where sales_quotation_id=?;\
+              select QS.*, S.service_name from hims_f_sales_quotation_services QS \
+              inner join hims_d_services S on S.hims_d_services_id = QS.services_id where sales_quotation_id=?;",
+              values: [headerResult[0].hims_f_sales_quotation_id, headerResult[0].hims_f_sales_quotation_id],
               printQuery: true
             })
             .then(qutation_detail => {
+              let sales_quotation_items = qutation_detail[0]
+              let sales_quotation_services = qutation_detail[1]
               _mysql.releaseConnection();
               req.records = {
                 ...headerResult[0],
-                ...{ qutation_detail }
+                ...{ sales_quotation_items },
+                ...{ sales_quotation_services }
               };
               next();
             })
@@ -100,8 +94,8 @@ export function addSalesQuotation(req, res, next) {
               "INSERT INTO hims_f_sales_quotation (sales_quotation_number, sales_quotation_date, \
                       sales_quotation_mode, reference_number, customer_id, quote_validity, sales_man, \
                       payment_terms, sales_person_id, narration, delivery_date, no_of_days_followup, \
-                      created_date, created_by, updated_date, updated_by, hospital_id)\
-              values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                      terms_conditions, created_date, created_by, updated_date, updated_by, hospital_id)\
+              values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               sales_quotation_number,
               new Date(),
@@ -116,6 +110,7 @@ export function addSalesQuotation(req, res, next) {
               input.narration,
               input.delivery_date,
               input.no_of_days_followup,
+              input.terms_conditions,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
@@ -131,7 +126,8 @@ export function addSalesQuotation(req, res, next) {
               InsertSalesItemService({
                 input: input,
                 _mysql: _mysql,
-                next: next
+                next: next,
+                headerResult: headerResult
               })
                 .then(insert_item_list => {
                   _mysql.commitTransaction(() => {
@@ -142,19 +138,17 @@ export function addSalesQuotation(req, res, next) {
                     };
                     next();
                   });
-                }
-                )
-                .catch(e => {
-                  _mysql.rollBackTransaction(
-                    () => {
-                      next(e);
-                    }
-                  );
+                })
+                .catch(error => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
                 });
             } else {
               if (input.sales_quotation_services.length > 0) {
                 IncludeValues = [
                   "services_id",
+                  "service_frequency",
                   "unit_cost",
                   "quantity",
                   "extended_cost",
@@ -299,8 +293,9 @@ function InsertSalesItemService(options) {
     try {
       let input = options.input;
       let _mysql = options._mysql;
+      let headerResult = options.headerResult
 
-
+      let IncludeValues = [];
       IncludeValues = [
         "item_id",
         "uom_id",
@@ -331,6 +326,7 @@ function InsertSalesItemService(options) {
           if (input.sales_quotation_services.length > 0) {
             IncludeValues = [
               "services_id",
+              "service_frequency",
               "unit_cost",
               "quantity",
               "extended_cost",

@@ -860,14 +860,8 @@
         "label": "Quotation Date"
       },
       {
-        "fieldName": "sales_quotation_mode",
-        "label": "Quotation Mode",
-        "required": "N"
-      },
-      {
         "fieldName": "customer_name",
-        "label": "Customer Name",
-        "required": "N"
+        "label": "Customer Name"
       },
       {
         "fieldName": "quote_validity",

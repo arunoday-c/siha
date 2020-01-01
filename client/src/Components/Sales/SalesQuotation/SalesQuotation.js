@@ -19,7 +19,8 @@ import {
   dateValidate,
   getSalesOptions,
   employeeSearch,
-  addToTermCondition
+  addToTermCondition,
+  deleteComment
 } from "./SalesQuotationEvents";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import "./SalesQuotation.scss";
@@ -32,9 +33,7 @@ import SalesListService from "./SalesListService/SalesListService";
 
 import MyContext from "../../../utils/MyContext";
 import Options from "../../../Options.json";
-import {
-  AlgaehOpenContainer
-} from "../../../utils/GlobalFunctions";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 class SalesQuotation extends Component {
   constructor(props) {
@@ -47,7 +46,6 @@ class SalesQuotation extends Component {
     const HRMNGMT_Active = Activated_Modueles.filter(f => {
       return f.module_code === "HRMNGMT";
     });
-
 
     this.HRMNGMT_Active = HRMNGMT_Active.length > 0 ? true : false;
 
@@ -90,10 +88,10 @@ class SalesQuotation extends Component {
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).hims_d_hospital_id,
       hims_f_terms_condition_id: null,
-      selected_terms_conditions: null,
+      selected_terms_conditions: "",
       comment_list: []
     };
-    getSalesOptions(this, this)
+    getSalesOptions(this, this);
   }
 
   componentDidMount() {
@@ -145,7 +143,6 @@ class SalesQuotation extends Component {
     ) {
       getCtrlCode(this, this.props.sales_quotation_number);
     }
-
   }
 
   render() {
@@ -209,8 +206,8 @@ class SalesQuotation extends Component {
                   <h6>
                     {this.state.sales_quotation_date
                       ? moment(this.state.sales_quotation_date).format(
-                        Options.dateFormat
-                      )
+                          Options.dateFormat
+                        )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -219,17 +216,17 @@ class SalesQuotation extends Component {
             printArea={
               this.state.sales_quotation_number !== null
                 ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          // generateMaterialReqInv(this.state);
+                    menuitems: [
+                      {
+                        label: "Print Receipt",
+                        events: {
+                          onClick: () => {
+                            // generateMaterialReqInv(this.state);
+                          }
                         }
                       }
-                    }
-                  ]
-                }
+                    ]
+                  }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -355,15 +352,19 @@ class SalesQuotation extends Component {
                   value={this.state.delivery_date}
                 />
 
-                {this.HRMNGMT_Active ? <div className="col globalSearchCntr form-group mandatory">
-                  <AlgaehLabel label={{ forceLabel: "Sales Person", isImp: true }} />
-                  <h6 onClick={employeeSearch.bind(this, this)}>
-                    {this.state.employee_name
-                      ? this.state.employee_name
-                      : "Search Employee"}
-                    <i className="fas fa-search fa-lg" />
-                  </h6>
-                </div> :
+                {this.HRMNGMT_Active ? (
+                  <div className="col globalSearchCntr form-group mandatory">
+                    <AlgaehLabel
+                      label={{ forceLabel: "Sales Person", isImp: true }}
+                    />
+                    <h6 onClick={employeeSearch.bind(this, this)}>
+                      {this.state.employee_name
+                        ? this.state.employee_name
+                        : "Search Employee"}
+                      <i className="fas fa-search fa-lg" />
+                    </h6>
+                  </div>
+                ) : (
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
@@ -382,7 +383,7 @@ class SalesQuotation extends Component {
                       }
                     }}
                   />
-                }
+                )}
 
                 <AlagehFormGroup
                   div={{ className: "col form-group" }}
@@ -425,8 +426,6 @@ class SalesQuotation extends Component {
                     }
                   }}
                 />
-
-
               </div>
             </div>
           </div>
@@ -442,72 +441,149 @@ class SalesQuotation extends Component {
                 }}
               >
                 <SalesListItems SALESIOputs={this.state} />
-                {this.state.services_required === "Y" ? <SalesListService SALESIOputs={this.state} /> : null}
+                {this.state.services_required === "Y" ? (
+                  <SalesListService SALESIOputs={this.state} />
+                ) : null}
               </MyContext.Provider>
-              <div className="col-6">
-                <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="col-12">
+                <div
+                  className="portlet portlet-bordered margin-bottom-15"
+                  style={{ marginBottom: 60 }}
+                >
                   <div className="row">
+                    <div className="col-6">
+                      <div className="row">
+                        <AlagehAutoComplete
+                          div={{ className: "col-12  form-group mandatory" }}
+                          label={{ forceLabel: "Select T&C", isImp: true }}
+                          selector={{
+                            name: "hims_f_terms_condition_id",
+                            className: "select-fld",
+                            value: this.state.hims_f_terms_condition_id,
+                            dataSource: {
+                              textField: "short_name",
+                              valueField: "hims_f_terms_condition_id",
+                              data: this.props.terms_conditions
+                            },
+                            onChange: changeTexts.bind(this, this),
+                            onClear: () => {
+                              this.setState({
+                                hims_f_terms_condition_id: null
+                              });
+                            },
+                            autoComplete: "off",
+                            others: {
+                              disabled: this.state.dataExists
+                            }
+                          }}
+                        />
 
-                    <AlagehAutoComplete
-                      div={{ className: "col mandatory" }}
-                      label={{ forceLabel: "Select T&C", isImp: true }}
-                      selector={{
-                        name: "hims_f_terms_condition_id",
-                        className: "select-fld",
-                        value: this.state.hims_f_terms_condition_id,
-                        dataSource: {
-                          textField: "short_name",
-                          valueField: "hims_f_terms_condition_id",
-                          data: this.props.terms_conditions
-                        },
-                        onChange: changeTexts.bind(this, this),
-                        onClear: () => {
-                          this.setState({
-                            hims_f_terms_condition_id: null
-                          });
-                        },
-                        autoComplete: "off",
-                        others: {
-                          disabled: this.state.dataExists
-                        }
-                      }}
-                    />
+                        <div className="col-12 form-group">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Enter T&C"
+                            }}
+                          />
 
-                    <div className="actions">
-                      <a
-                        className="btn btn-primary btn-circle active"
-                        onClick={addToTermCondition.bind(this, this)}
-                      >
-                        <i className="fas fa-plus" />
-                      </a>
+                          <textarea
+                            value={this.state.selected_terms_conditions}
+                            name="selected_terms_conditions"
+                            onChange={changeTexts.bind(this, this)}
+                            disabled={this.state.dataExists}
+                          />
+                        </div>
+                        {this.state.dataExists ? null : (
+                          <div className="col" style={{ textAlign: "right" }}>
+                            {" "}
+                            <button
+                              type="button"
+                              className="btn btn-primary"
+                              onClick={addToTermCondition.bind(this, this)}
+                            >
+                              Add
+                            </button>
+                          </div>
+                        )}
+
+                        <div className="col-12  form-group finalCommentsSection">
+                          <h6>View T&C</h6>
+                          <ol>
+                            {this.state.comment_list.length > 0
+                              ? this.state.comment_list.map((row, index) => {
+                                  return (
+                                    <React.Fragment key={index}>
+                                      <li key={index}>
+                                        <span>{row}</span>
+                                        {this.state.dataExists ? null : (
+                                          <i
+                                            className="fas fa-times"
+                                            onClick={deleteComment.bind(
+                                              this,
+                                              this,
+                                              row
+                                            )}
+                                          ></i>
+                                        )}
+                                      </li>
+                                    </React.Fragment>
+                                  );
+                                })
+                              : null}
+                          </ol>
+                        </div>
+                      </div>
                     </div>
+                    <div className="col-6">
+                      <div className="row">
+                        <AlagehFormGroup
+                          div={{ className: "col-12 form-group" }}
+                          label={{
+                            forceLabel: "Narration",
+                            isImp: false
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "narration",
+                            value: this.state.narration,
+                            events: {
+                              onChange: changeTexts.bind(this, this)
+                            },
+                            others: {
+                              multiline: true,
+                              disabled: this.state.dataExists,
+                              rows: "4"
+                            }
+                          }}
+                        />
 
-                    <AlagehFormGroup
-                      div={{ className: "col-12 termsCondition" }}
-                      label={{
-                        forceLabel: "Terms & Conditions",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "comment_list",
-                        value: this.state.comment_list,
-                        events: {
-                          onChange: changeTexts.bind(this, this)
-                        },
-                        others: {
-                          multiline: true,
-                          disabled: this.state.dataExists,
-                          rows: "8"
-                        }
-                      }}
-                    />
+                        {this.props.requisition_auth ? (
+                          <AlagehFormGroup
+                            div={{ className: "col-12  form-group" }}
+                            label={{
+                              forceLabel: "Comments",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "comments",
+                              value: this.state.comments,
+                              events: {
+                                onChange: changeTexts.bind(this, this)
+                              },
+                              others: {
+                                multiline: true,
+                                rows: "8"
+                              }
+                            }}
+                          />
+                        ) : null}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="col-6" style={{ textAlign: "right" }}>
-                <div className="row">
-                  {/* <div className="col">
+
+              {/* <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Sub Total"
@@ -547,50 +623,6 @@ class SalesQuotation extends Component {
                     />
                     <h6>{getAmountFormart(this.state.net_payable)}</h6>
                   </div> */}
-                  <AlagehFormGroup
-                    div={{ className: "col-12 textAreaLeft" }}
-                    label={{
-                      forceLabel: "Narration",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "narration",
-                      value: this.state.narration,
-                      events: {
-                        onChange: changeTexts.bind(this, this)
-                      },
-                      others: {
-                        multiline: true,
-                        disabled: this.state.dataExists,
-                        rows: "4"
-                      }
-                    }}
-                  />
-
-                  {this.props.requisition_auth ?
-                    <AlagehFormGroup
-                      div={{ className: "col-12 textAreaLeft" }}
-                      label={{
-                        forceLabel: "Comments",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "comments",
-                        value: this.state.comments,
-                        events: {
-                          onChange: changeTexts.bind(this, this)
-                        },
-                        others: {
-                          multiline: true,
-                          rows: "8"
-                        }
-                      }}
-                    /> : null}
-
-                </div>
-              </div>
             </div>
 
             <div className="hptl-phase1-footer">
@@ -621,16 +653,20 @@ class SalesQuotation extends Component {
                     />
                   </button>
 
-                  {this.props.requisition_auth ?
+                  {this.props.requisition_auth ? (
                     <button
                       type="button"
                       className="btn btn-default"
                       onClick={SaveSalesQuotation.bind(this, this)}
+                      disabled={
+                        this.state.qotation_status === "G" ? false : true
+                      }
                     >
                       <AlgaehLabel
                         label={{ forceLabel: "Update", returnText: true }}
                       />
-                    </button> : null}
+                    </button>
+                  ) : null}
                 </div>
               </div>
             </div>
