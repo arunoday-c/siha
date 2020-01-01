@@ -10,7 +10,8 @@ import {
     dateFormater,
     getSalesQuotationList,
     datehandle,
-    changeEventHandaler
+    changeEventHandaler,
+    dateFormaterTime
 } from "./SalesQuotationListEvent";
 
 import {
@@ -72,7 +73,7 @@ class SalesQuotationList extends Component {
     }
 
     ourOwnMiniNavigator = obj => {
-        const { requisition_list, radioYes, authorize1, ...rest } = this.state;
+        const { quotation_list, radioYes, authorize1, ...rest } = this.state;
         let sendObj = Object.assign(rest, obj);
         this.props.new_routeComponents(sendObj);
     };
@@ -157,7 +158,7 @@ class SalesQuotationList extends Component {
                                                                     });
                                                                 }}
                                                             />
-                                                            {row.trans_pending === true ? (
+                                                            {/* {row.trans_pending === true ? (
                                                                 <i
                                                                     className="fa fa-exchange-alt"
                                                                     onClick={() => {
@@ -169,7 +170,7 @@ class SalesQuotationList extends Component {
                                                                         });
                                                                     }}
                                                                 />
-                                                            ) : null}
+                                                            ) : null} */}
                                                         </span>
                                                     );
                                                 },
@@ -203,7 +204,7 @@ class SalesQuotationList extends Component {
                                                 displayTemplate: row => {
                                                     return (
                                                         <span>
-                                                            {dateFormater(this, row.sales_quotation_date)}
+                                                            {dateFormaterTime(this, row.sales_quotation_date)}
                                                         </span>
                                                     );
                                                 },
