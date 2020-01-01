@@ -504,14 +504,22 @@ class ApplyLeaveEncashment extends Component {
                     <h6>{getAmountFormart(this.state.total_amount)}</h6>
                   </div>
 
-                  <div className="col-12">
+                  <div className="col-12" style={{ textAlign: "right" }}>
+                    <button
+                      onClick={this.clearState.bind(this)}
+                      type="button"
+                      className="btn btn-default"
+                      style={{ marginRight: 15 }}
+                    >
+                      Clear
+                    </button>
                     <button
                       onClick={this.applyLeave.bind(this)}
                       type="button"
                       className="btn btn-primary"
                       disabled={this.state.Request_enable}
                     >
-                      Request
+                      Request Encashment
                     </button>
                   </div>
                 </div>
@@ -551,8 +559,8 @@ class ApplyLeaveEncashment extends Component {
                                 Rejected
                               </span>
                             ) : (
-                                    "-------"
-                                  );
+                              "-------"
+                            );
                           }
                         },
                         {
@@ -654,8 +662,8 @@ class ApplyLeaveEncashment extends Component {
                       </div>
                     ))
                   ) : (
-                      <div className="noResult">Not Eligible for any Leaves</div>
-                    )}
+                    <div className="noResult">Not Eligible for any Leaves</div>
+                  )}
                 </div>
               </div>
             </div>
