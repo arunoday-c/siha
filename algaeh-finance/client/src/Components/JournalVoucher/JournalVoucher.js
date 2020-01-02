@@ -115,18 +115,17 @@ export default function JournalVoucher() {
             value: voucherType,
             dataSource: {
               data: [
-                { value: "journal", label: "Journal", shortHand: "JOU" },
-                { label: "Contra", value: "contra", shortHand: "CON" },
-                { value: "receipt", label: "Receipt", shortHand: "REC" },
-                { label: "Payment", value: "payment", shortHand: "PAY" },
-                { value: "sales", label: "Sales", shortHand: "SAL" },
-                { label: "Purchase", value: "purchase", shortHand: "PUR" },
+                { value: "journal", label: "Journal" },
+                { label: "Contra", value: "contra" },
+                { value: "receipt", label: "Receipt" },
+                { label: "Payment", value: "payment" },
+                { value: "sales", label: "Sales" },
+                { label: "Purchase", value: "purchase" },
                 {
                   value: "credit_note",
-                  label: "Credit Note",
-                  shortHand: "CRE"
+                  label: "Credit Note"
                 },
-                { value: "debit_note", label: "Debit Note", shortHand: "DEB" }
+                { value: "debit_note", label: "Debit Note" }
               ],
               valueField: "value",
               textField: "label"

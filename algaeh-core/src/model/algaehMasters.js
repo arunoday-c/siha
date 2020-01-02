@@ -6,7 +6,7 @@ import logUtils from "../utils/logging";
 import algaehMysql from "algaeh-mysql";
 const keyPath = require("algaeh-keys/keys");
 import { LINQ } from "node-linq";
-
+import _ from "lodash";
 const { debugLog } = logUtils;
 const { releaseDBConnection } = utils;
 
@@ -460,137 +460,223 @@ let getRoleBaseActiveModules = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let superUser = "";
-    console.log("req.userIdentity", req.userIdentity);
-    //for admin login
-    if (req.userIdentity.role_type == "AD") {
-      superUser = " and access_by <> 'SU'";
-    }
-    let from_assignment = "N";
-    let role_id = req.userIdentity.role_id;
-    if (req.query.from_assignment == "Y" && req.query.role_id > 0) {
-      from_assignment = "Y";
-      role_id = req.query.role_id;
+    const { role_type, role_id } = req.userIdentity;
+    const { from_assignment } = req.query;
+    let _roleId = role_id;
+    let strQuery = "";
+
+    if (from_assignment === "Y") {
+      _roleId = req.query.role_id;
     }
 
     if (
-      (req.userIdentity.role_type == "SU" &&
-        req.userIdentity.user_type == "SU" &&
-        from_assignment == "N") ||
-      (req.userIdentity.role_type == "AD" && from_assignment == "N")
+      (role_type === "SU" && from_assignment === undefined) ||
+      from_assignment === "N" ||
+      (role_type === "AD" && from_assignment === undefined) ||
+      from_assignment === "N"
     ) {
-      _mysql
-        .executeQuery({
-          query: `select algaeh_d_module_id as module_id, module_name,module_code, icons, other_language, module_plan\
-           from algaeh_d_app_module where  record_status=md5('A') ${superUser} order by display_order;
-          select algaeh_app_screens_id, screen_code, screen_name, page_to_redirect,S.other_language, module_id
-          from algaeh_d_app_module M inner join algaeh_d_app_screens S on M.algaeh_d_module_id =S.module_id
-          where  M.record_status=md5('A') and S.record_status='A' ${superUser}  order by display_order `,
-          printQuery: true
-        })
-        .then(result => {
-          _mysql.releaseConnection();
-          let ResModules = result[0];
-          let ResScreen = result[1];
-
-          let outputArray = [];
-
-          if (ResModules.length > 0) {
-            for (let i = 0; i < ResModules.length; i++) {
-              const obj = {
-                ...ResModules[i],
-                ScreenList: new LINQ(ResScreen)
-                  .Where(w => w.module_id == ResModules[i]["module_id"])
-                  .Select(s => {
-                    return {
-                      screen_id: s.algaeh_app_screens_id,
-                      screen_code: s.screen_code,
-                      screen_name: s.screen_name,
-                      page_to_redirect: s.page_to_redirect,
-                      other_language: s.other_language,
-                      module_id: s.module_id,
-                      module_plan: s.module_plan
-                    };
-                  })
-                  .ToArray()
-              };
-
-              outputArray.push(obj);
-            }
-            req.records = outputArray;
-            next();
-          } else {
-            req.records = [];
-            next();
-          }
-        })
-        .catch(error => {
-          _mysql.releaseConnection();
-          next(error);
-        });
+      strQuery = `select m.algaeh_d_module_id,m.module_code,m.module_name,m.icons,m.display_order,m.other_language,
+  s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
+  s.other_language as s_other_language,'' as algaeh_d_app_component_id,'' as component_code,
+  '' as component_name,'' as comp_view_previlage,'' as ele_view_previlage,'' as ele_extra_props,
+  '' as ele_props_type,'' as screen_element_code,'' as screen_element_name 
+  from algaeh_d_app_module as m inner join algaeh_d_app_screens as s
+  on s.module_id = m.algaeh_d_module_id where ${
+    role_type === "SU"
+      ? " m.access_by in ('SU','OU') "
+      : " m.access_by <> 'SU' and m.record_status='A'"
+  }`;
     } else {
-      _mysql
-        .executeQuery({
-          query:
-            "select  algaeh_m_module_role_privilage_mapping_id,module_id,module_code,module_name, module_plan,\
-            icons,module_code,other_language, MRP.module_id from algaeh_m_module_role_privilage_mapping MRP\
-            inner join algaeh_d_app_module M on MRP.module_id=M.algaeh_d_module_id\
-            where MRP.record_status='A' and M.record_status=md5('A') and MRP.role_id=?  order by display_order;\
-            SELECT algaeh_m_screen_role_privilage_mapping_id, \
-            module_role_map_id, screen_id,screen_code,screen_name,page_to_redirect,other_language, SRM.screen_id \
-            from algaeh_m_module_role_privilage_mapping MRP inner join \
-            algaeh_m_screen_role_privilage_mapping SRM on MRP.algaeh_m_module_role_privilage_mapping_id=SRM.module_role_map_id\
-            inner join algaeh_d_app_screens S on SRM.screen_id=S.algaeh_app_screens_id\
-            where MRP.record_status='A'  and SRM.record_status='A' and S.record_status='A' and  MRP.role_id =?",
-          values: [role_id, role_id],
-          printQuery: true
-        })
-        .then(result => {
-          _mysql.releaseConnection();
-          let ResModules = result[0];
-          let ResScreen = result[1];
-
-          let outputArray = [];
-          if (ResModules.length > 0) {
-            for (let i = 0; i < ResModules.length; i++) {
-              const obj = {
-                ...ResModules[i],
-                ScreenList: new LINQ(ResScreen)
-                  .Where(
-                    w =>
-                      w.module_role_map_id ==
-                      ResModules[i]["algaeh_m_module_role_privilage_mapping_id"]
-                  )
-                  .Select(s => {
-                    return {
-                      screen_id: s.screen_id,
-                      screen_code: s.screen_code,
-                      screen_name: s.screen_name,
-                      page_to_redirect: s.page_to_redirect,
-                      other_language: s.other_language,
-                      algaeh_m_screen_role_privilage_mapping_id:
-                        s.algaeh_m_screen_role_privilage_mapping_id,
-                      module_id: s.module_id,
-                      module_plan: s.module_plan
-                    };
-                  })
-                  .ToArray()
-              };
-
-              outputArray.push(obj);
-            }
-
-            req.records = outputArray;
-            next();
-          } else {
-            req.records = [];
-            next();
-          }
-        })
-        .catch(error => {
-          _mysql.releaseConnection();
-          next(error);
-        });
+      strQuery = `select m.algaeh_d_module_id,m.module_code,m.module_name,m.icons,m.display_order,m.other_language,
+  s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
+  s.other_language as s_other_language,c.algaeh_d_app_component_id,c.component_code,c.component_name,
+  cs.view_privilege as comp_view_previlage,se.view_type as ele_view_previlage,se.extra_props as ele_extra_props,
+  se.props_type as ele_props_type,e.screen_element_code,e.screen_element_name
+   from algaeh_m_module_role_privilage_mapping as mr inner 
+   join algaeh_d_app_module as  m
+  on mr.module_id=m.algaeh_d_module_id inner join algaeh_m_screen_role_privilage_mapping as sr
+  on  sr.module_role_map_id = mr.algaeh_m_module_role_privilage_mapping_id inner join algaeh_d_app_screens as s
+  on s.algaeh_app_screens_id=sr.screen_id left join algaeh_m_component_screen_privilage_mapping as cs
+  on cs.algaeh_m_screen_role_privilage_mapping_id =sr.algaeh_m_screen_role_privilage_mapping_id
+  left join algaeh_d_app_component as c on c.algaeh_d_app_component_id =cs.component_id
+  left join screen_element_scren_module_mapping as se on 
+  se.algaeh_m_screen_role_privilage_mapping_id = cs.algaeh_m_screen_role_privilage_mapping_id
+  left join algaeh_d_app_scrn_elements as e on e.algaeh_d_app_scrn_elements_id = se.algaeh_d_app_scrn_elements_id
+  where mr.role_id=${_roleId} and mr.record_status ='A' and m.record_status = 'A' and m.access_by <> 'SU';`;
     }
+
+    _mysql
+      .executeQuery({
+        query: strQuery,
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+
+        if (result.length === 0) {
+          req.records = [];
+          next();
+          return;
+        }
+
+        const records = _.chain(result)
+          .groupBy(g => g.algaeh_d_module_id)
+          .map(function(detail, key) {
+            const first = _.head(detail);
+            return {
+              module_id: key,
+              module_name: first.module_name,
+              module_code: first.module_code,
+              icons: first.icons,
+              other_language: first.other_language,
+              module_plan: first.module_plan,
+              ScreenList: detail.map(m => {
+                return {
+                  ...m,
+                  other_language: m.s_other_language
+                };
+              })
+            };
+          })
+          .value();
+        req.records = records;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+
+    //for admin login
+    // if (req.userIdentity.role_type == "AD") {
+    //   superUser = " and access_by <> 'SU'";
+    // }
+    // let from_assignment = "N";
+    // let role_id = req.userIdentity.role_id;
+    // if (req.query.from_assignment == "Y" && req.query.role_id > 0) {
+    //   from_assignment = "Y";
+    //   role_id = req.query.role_id;
+    // }
+
+    // if (
+    //   (req.userIdentity.role_type == "SU" &&
+    //     req.userIdentity.user_type == "SU" &&
+    //     from_assignment == "N") ||
+    //   (req.userIdentity.role_type == "AD" && from_assignment == "N")
+    // ) {
+    //   _mysql
+    //     .executeQuery({
+    //       query: `select algaeh_d_module_id as module_id, module_name,module_code, icons, other_language, module_plan\
+    //        from algaeh_d_app_module where  record_status=md5('A') ${superUser} order by display_order;
+    //       select algaeh_app_screens_id, screen_code, screen_name, page_to_redirect,S.other_language, module_id
+    //       from algaeh_d_app_module M inner join algaeh_d_app_screens S on M.algaeh_d_module_id =S.module_id
+    //       where  M.record_status=md5('A') and S.record_status='A' ${superUser}  order by display_order `,
+    //       printQuery: true
+    //     })
+    //     .then(result => {
+    //       _mysql.releaseConnection();
+    //       let ResModules = result[0];
+    //       let ResScreen = result[1];
+
+    //       let outputArray = [];
+
+    //       if (ResModules.length > 0) {
+    //         for (let i = 0; i < ResModules.length; i++) {
+    //           const obj = {
+    //             ...ResModules[i],
+    //             ScreenList: new LINQ(ResScreen)
+    //               .Where(w => w.module_id == ResModules[i]["module_id"])
+    //               .Select(s => {
+    //                 return {
+    //                   screen_id: s.algaeh_app_screens_id,
+    //                   screen_code: s.screen_code,
+    //                   screen_name: s.screen_name,
+    //                   page_to_redirect: s.page_to_redirect,
+    //                   other_language: s.other_language,
+    //                   module_id: s.module_id,
+    //                   module_plan: s.module_plan
+    //                 };
+    //               })
+    //               .ToArray()
+    //           };
+
+    //           outputArray.push(obj);
+    //         }
+    //         req.records = outputArray;
+    //         next();
+    //       } else {
+    //         req.records = [];
+    //         next();
+    //       }
+    //     })
+    //     .catch(error => {
+    //       _mysql.releaseConnection();
+    //       next(error);
+    //     });
+    // } else {
+    //   _mysql
+    //     .executeQuery({
+    //       query:
+    //         "select  algaeh_m_module_role_privilage_mapping_id,module_id,module_code,module_name, module_plan,\
+    //         icons,module_code,other_language, MRP.module_id from algaeh_m_module_role_privilage_mapping MRP\
+    //         inner join algaeh_d_app_module M on MRP.module_id=M.algaeh_d_module_id\
+    //         where MRP.record_status='A' and M.record_status=md5('A') and MRP.role_id=?  order by display_order;\
+    //         SELECT algaeh_m_screen_role_privilage_mapping_id, \
+    //         module_role_map_id, screen_id,screen_code,screen_name,page_to_redirect,other_language, SRM.screen_id \
+    //         from algaeh_m_module_role_privilage_mapping MRP inner join \
+    //         algaeh_m_screen_role_privilage_mapping SRM on MRP.algaeh_m_module_role_privilage_mapping_id=SRM.module_role_map_id\
+    //         inner join algaeh_d_app_screens S on SRM.screen_id=S.algaeh_app_screens_id\
+    //         where MRP.record_status='A'  and SRM.record_status='A' and S.record_status='A' and  MRP.role_id =?",
+    //       values: [role_id, role_id],
+    //       printQuery: true
+    //     })
+    //     .then(result => {
+    //       _mysql.releaseConnection();
+    //       let ResModules = result[0];
+    //       let ResScreen = result[1];
+
+    //       let outputArray = [];
+    //       if (ResModules.length > 0) {
+    //         for (let i = 0; i < ResModules.length; i++) {
+    //           const obj = {
+    //             ...ResModules[i],
+    //             ScreenList: new LINQ(ResScreen)
+    //               .Where(
+    //                 w =>
+    //                   w.module_role_map_id ==
+    //                   ResModules[i]["algaeh_m_module_role_privilage_mapping_id"]
+    //               )
+    //               .Select(s => {
+    //                 return {
+    //                   screen_id: s.screen_id,
+    //                   screen_code: s.screen_code,
+    //                   screen_name: s.screen_name,
+    //                   page_to_redirect: s.page_to_redirect,
+    //                   other_language: s.other_language,
+    //                   algaeh_m_screen_role_privilage_mapping_id:
+    //                     s.algaeh_m_screen_role_privilage_mapping_id,
+    //                   module_id: s.module_id,
+    //                   module_plan: s.module_plan
+    //                 };
+    //               })
+    //               .ToArray()
+    //           };
+
+    //           outputArray.push(obj);
+    //         }
+
+    //         req.records = outputArray;
+    //         next();
+    //       } else {
+    //         req.records = [];
+    //         next();
+    //       }
+    //     })
+    //     .catch(error => {
+    //       _mysql.releaseConnection();
+    //       next(error);
+    //     });
+    // }
   } catch (e) {
     _mysql.releaseConnection();
     next(e);
