@@ -261,6 +261,7 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 others: {
+                                  minWidth: 250,
                                   resizable: false,
                                   style: { textAlign: "center" }
                                 }
@@ -310,6 +311,7 @@ class SampleCollectionPatient extends PureComponent {
                                   );
                                 },
                                 others: {
+                                  maxWidth: 200,
                                   resizable: false,
                                   style: { textAlign: "center" }
                                 }
@@ -465,8 +467,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(SampleCollectionPatient)
+  connect(mapStateToProps, mapDispatchToProps)(SampleCollectionPatient)
 );
