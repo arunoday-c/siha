@@ -12,7 +12,7 @@ const texthandle = ($this, ctrl, e) => {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     switch (name) {
-        case "sales_quotation_mode":
+        case "sales_order_mode":
             $this.setState({
                 [name]: value,
                 hims_f_sales_order_id: null,
