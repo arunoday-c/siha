@@ -66,7 +66,7 @@ const executePDF = function executePDFMethod(options) {
 
               options.mysql
                 .executeQuery({
-                  query: `  SELECT finance_voucher_id,month ,head_id,child_id,
+                  query: `  SELECT finance_voucher_id,month ,VD.head_id,child_id,
                 sum(credit_amount) as credit_amount,sum(debit_amount) as debit_amount,
                 coalesce( sum(credit_amount)-sum(debit_amount),0)as credit_minus_debit,               
                 coalesce(sum(debit_amount)- sum(credit_amount),0)as debit_minus_credit,
@@ -75,7 +75,7 @@ const executePDF = function executePDFMethod(options) {
                 inner join finance_account_head H on
                 VD.head_id=H.finance_account_head_id inner join finance_account_child C on 
                 VD.child_id=C.finance_account_child_id where  
-                head_id in (?) and child_id in (?) ${strQry} group by month,head_id,child_id with rollup;;`,
+                VD.head_id in (?) and child_id in (?) ${strQry} group by month,head_id,child_id with rollup;;`,
                   values: [head_ids, child_ids],
                   printQuery: true
                 })
