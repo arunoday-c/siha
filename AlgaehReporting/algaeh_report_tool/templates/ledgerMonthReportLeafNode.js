@@ -60,7 +60,7 @@ const executePDF = function executePDFMethod(options) {
           concat(H.account_name,'->',C.child_name) as account_details FROM
           finance_voucher_details VD left join finance_account_head H on VD.head_id=H.finance_account_head_id
           left join finance_account_child C on VD.child_id=C.finance_account_child_id where 
-          VD.head_id=? and child_id=? ${strQry} group by month with rollup  ;`,
+          VD.auth_status='A' and  VD.head_id=? and child_id=? ${strQry} group by month with rollup  ;`,
                 values: [input.head_id, input.child_id],
                 printQuery: true
               })

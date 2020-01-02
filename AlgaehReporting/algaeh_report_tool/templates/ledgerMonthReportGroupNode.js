@@ -74,7 +74,7 @@ const executePDF = function executePDFMethod(options) {
                 FROM finance_voucher_details VD 
                 inner join finance_account_head H on
                 VD.head_id=H.finance_account_head_id inner join finance_account_child C on 
-                VD.child_id=C.finance_account_child_id where  
+                VD.child_id=C.finance_account_child_id where   VD.auth_status='A' and 
                 VD.head_id in (?) and child_id in (?) ${strQry} group by month,head_id,child_id with rollup;;`,
                   values: [head_ids, child_ids],
                   printQuery: true
