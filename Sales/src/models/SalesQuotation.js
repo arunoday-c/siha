@@ -1,6 +1,4 @@
 import algaehMysql from "algaeh-mysql";
-// import algaehUtilities from "algaeh-utilities/utilities";
-import mysql from "mysql";
 
 export function getSalesQuotation(req, res, next) {
   const _mysql = new algaehMysql();
@@ -9,7 +7,7 @@ export function getSalesQuotation(req, res, next) {
     console.log("getSalesQuotation: ", req.query.HRMNGMT_Active)
     let strQuery = ""
     if (req.query.HRMNGMT_Active) {
-      strQuery = "SELECT SQ.*, C.customer_name, E.full_name from hims_f_sales_quotation SQ \
+      strQuery = "SELECT SQ.*, C.customer_name, E.full_name as employee_name from hims_f_sales_quotation SQ \
       inner join  hims_d_customer C on  SQ.customer_id = C.hims_d_customer_id \
       inner join  hims_d_employee E on  SQ.sales_person_id = E.hims_d_employee_id \
       where SQ.sales_quotation_number =? "
@@ -240,7 +238,7 @@ export function getSalesQuotationList(req, res, next) {
       .executeQuery({
         query:
           "SELECT SQ.*, C.customer_name from hims_f_sales_quotation SQ, hims_d_customer C  \
-          where SQ.customer_id = C.hims_d_customer_id " + _strAppend,
+          where SQ.customer_id = C.hims_d_customer_id " + _strAppend + " order by hims_f_sales_quotation_id desc",
         printQuery: true
       })
       .then(headerResult => {

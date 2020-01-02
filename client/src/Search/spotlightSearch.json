@@ -894,9 +894,8 @@
         "required": "N"
       },
       {
-        "fieldName": "quote_validity",
-        "label": "Quote Validity",
-        "required": "N"
+        "fieldName": "delivery_date",
+        "label": "Delivery Date"
       }
     ],
     "DispatchNote": [

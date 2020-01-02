@@ -345,7 +345,8 @@ const deleteSalesDetail = ($this, context, row) => {
 //Calculate Row Detail
 const calculateAmount = ($this, context, row, _index) => {
     let sales_quotation_items = $this.state.sales_quotation_items;
-    row.extended_cost = (parseFloat(row.unit_cost) * parseFloat(row.quantity)).toFixed(
+    let quantity = row.quantity === "" ? 0 : parseFloat(row.quantity)
+    row.extended_cost = (parseFloat(row.unit_cost) * quantity).toFixed(
         $this.state.decimal_place
     )
     row.discount_amount = ((parseFloat(row.extended_cost) * parseFloat(row.discount_percentage)) / 100).toFixed(
@@ -478,7 +479,7 @@ const qtyonchangegridcol = ($this, context, row, e) => {
     let value = e.value || e.target.value;
     let _index = $this.state.sales_quotation_items.indexOf(row);
 
-    if (value <= 0) {
+    if (value < 0) {
         swalMessage({
             title: "Quantity cannot be less than or equal to Zero",
             type: "warning"

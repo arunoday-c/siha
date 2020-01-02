@@ -73,6 +73,12 @@ const getSalesQuotationList = $this => {
     });
 };
 
+const dateFormaterTime = ($this, value) => {
+    if (value !== null) {
+        return moment(value).format(Options.datetimeFormat24);
+    }
+};
+
 const dateFormater = ($this, value) => {
     if (value !== null) {
         return moment(value).format(Options.dateFormat);
@@ -124,5 +130,6 @@ export {
     dateFormater,
     getSalesQuotationList,
     datehandle,
-    changeEventHandaler
+    changeEventHandaler,
+    dateFormaterTime
 };

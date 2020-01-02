@@ -39,7 +39,7 @@ const executePDF = function executePDFMethod(options) {
         =PC.head_id )select * from cte;
         SELECT cost_center_type  FROM finance_options limit 1;`,
             values: [input.head_id],
-            printQuery: false
+            printQuery: true
           })
           .then(result => {
             if (result[0].length > 0) {
@@ -65,7 +65,7 @@ const executePDF = function executePDFMethod(options) {
               //END-cost center
               options.mysql
                 .executeQuery({
-                  query: `   SELECT finance_voucher_id,payment_date ,head_id,child_id,
+                  query: `   SELECT finance_voucher_id,payment_date ,VD.head_id,child_id,
             sum(credit_amount) as credit_amount,sum(debit_amount) as debit_amount,
             coalesce( sum(credit_amount)-sum(debit_amount),0)as credit_minus_debit,               
             coalesce(sum(debit_amount)- sum(credit_amount),0)as debit_minus_credit,               
@@ -75,7 +75,7 @@ const executePDF = function executePDFMethod(options) {
             inner join finance_account_head H on
             VD.head_id=H.finance_account_head_id inner join finance_account_child C on 
             VD.child_id=C.finance_account_child_id where 
-            head_id in (?) and child_id in (?) ${strQry} group by payment_date,head_id,child_id with rollup;`,
+            VD.head_id in (?) and child_id in (?) ${strQry} group by payment_date,head_id,child_id with rollup;`,
                   values: [head_ids, child_ids],
                   printQuery: true
                 })

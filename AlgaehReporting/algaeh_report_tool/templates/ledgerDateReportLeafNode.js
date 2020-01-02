@@ -57,11 +57,11 @@ const executePDF = function executePDFMethod(options) {
                 query: `SELECT finance_voucher_id,payment_date ,credit_amount, debit_amount,
                       coalesce(debit_amount-credit_amount,0)as debit_minus_credit ,
                       coalesce(credit_amount-debit_amount,0)as credit_minus_debit ,
-                      narration,concat(H.account_name,' -> ',C.child_name) as account_details FROM 
+                      concat(H.account_name,' -> ',C.child_name) as account_details FROM 
                       finance_voucher_details VD inner join finance_account_head H on
                       VD.head_id=H.finance_account_head_id inner join finance_account_child C on 
                       VD.child_id=C.finance_account_child_id where 
-                      head_id=? and child_id=? ${strQry};
+                      VD.head_id=? and child_id=? ${strQry};
                       SELECT finance_voucher_id,payment_date ,sum(credit_amount) as total_credit_amount,
                       sum(debit_amount) as total_debit_amount ,
                       coalesce(sum(debit_amount)-sum(credit_amount),0)as debit_minus_credit ,

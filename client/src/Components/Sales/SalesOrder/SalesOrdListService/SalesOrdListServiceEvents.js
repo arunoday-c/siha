@@ -2,7 +2,7 @@ import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
 import Options from "../../../../Options.json";
-import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+// import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import _ from "lodash";
 
 const UomchangeTexts = ($this, context, ctrl, e) => {
@@ -60,6 +60,8 @@ const numberchangeTexts = ($this, context, e) => {
         } else {
             $this.setState({ [name]: value });
         }
+    } else if (name === "unit_cost") {
+        $this.setState({ [name]: value === undefined ? null : value });
     } else {
         $this.setState({ [name]: value });
     }
@@ -76,6 +78,7 @@ const servicechangeText = ($this, e, ctrl) => {
         addItemButton: false,
         service_name: e.service_name,
         unit_cost: e.standard_fee,
+        tax_percentage: e.vat_percent
     });
 
 };
@@ -106,6 +109,18 @@ const AddSerices = ($this, context) => {
     ) {
         swalMessage({
             title: "Enter the Quantity.",
+            type: "warning"
+        });
+        return
+    } else if ($this.state.unit_cost === null || parseFloat($this.state.unit_cost) === 0) {
+        swalMessage({
+            title: "Enter the Unit Cost.",
+            type: "warning"
+        });
+        return
+    } else if ($this.state.service_frequency === null) {
+        swalMessage({
+            title: "Select Frequency",
             type: "warning"
         });
         return
@@ -142,7 +157,8 @@ const AddSerices = ($this, context) => {
             discount_amount: discount_amount,
             tax_percentage: $this.state.tax_percentage,
             tax_amount: tax_amount,
-            total_amount: total_amount
+            total_amount: total_amount,
+            service_frequency: $this.state.service_frequency,
         };
         sales_order_services.push(ItemInput);
 
@@ -174,7 +190,8 @@ const AddSerices = ($this, context) => {
             quantity: 0,
             discount_percentage: 0,
             unit_cost: 0,
-            tax_percent: 0
+            tax_percent: 0,
+            service_frequency: null
         });
 
         if (context !== undefined) {
@@ -248,9 +265,12 @@ const deleteSalesDetail = ($this, context, row) => {
 //Calculate Row Detail
 const calculateAmount = ($this, context, row, _index) => {
     let sales_order_services = $this.state.sales_order_services;
-    row.extended_cost = (parseFloat(row.unit_cost) * parseFloat(row.quantity)).toFixed(
+
+    let quantity = row.quantity === "" ? 0 : parseFloat(row.quantity)
+    row.extended_cost = (parseFloat(row.unit_cost) * quantity).toFixed(
         $this.state.decimal_place
     )
+
     row.discount_amount = ((parseFloat(row.extended_cost) * parseFloat(row.discount_percentage)) / 100).toFixed(
         $this.state.decimal_place
     );
@@ -382,7 +402,7 @@ const qtyonchangegridcol = ($this, context, row, e) => {
     let value = e.value || e.target.value;
     let _index = $this.state.sales_order_services.indexOf(row);
 
-    if (value <= 0) {
+    if (value < 0) {
         swalMessage({
             title: "Quantity cannot be less than or equal to Zero",
             type: "warning"
@@ -398,6 +418,17 @@ const qtyonchangegridcol = ($this, context, row, e) => {
     }
 };
 
+const changeTexts = ($this, ctrl, e) => {
+    e = ctrl || e;
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+
+    $this.setState({
+        [name]: value
+    });
+};
+
+
 export {
     UomchangeTexts,
     servicechangeText,
@@ -407,5 +438,6 @@ export {
     calculateAmount,
     dateFormater,
     onchangegridcol,
-    qtyonchangegridcol
+    qtyonchangegridcol,
+    changeTexts
 };

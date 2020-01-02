@@ -575,8 +575,9 @@ export default {
                   .executeQuery({
                     query:
                       "select VD.debit_amount,VD.child_id,VD.credit_amount,VD.payment_type,H.root_id,VD.hospital_id\
-                       from finance_voucher_details VD\
+                      ,C.child_name from finance_voucher_details VD\
                       inner join finance_account_head H on VD.head_id=H.finance_account_head_id\
+                       inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
                       where voucher_header_id=? and auth_status='P';",
                     values: [input.voucher_header_id],
                     printQuery: true
@@ -592,11 +593,10 @@ export default {
                         _mysql
                           .executeQuery({
                             query:
-                              "select child_id,C.child_name,coalesce(sum(credit_amount)- sum(debit_amount),0) as cred_minus_deb,\
+                              "select child_id,coalesce(sum(credit_amount)- sum(debit_amount),0) as cred_minus_deb,\
                             coalesce(sum(debit_amount)-sum(credit_amount),0) as deb_minus_cred\
-                          from finance_voucher_details VD \
-                          inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
-                          where VD.auth_status='A' and VD.child_id in (?) group by VD.child_id;",
+                          from finance_voucher_details \
+                          where auth_status='A' and child_id in (?) group by child_id;",
                             values: [child_ids],
                             printQuery: true
                           })
@@ -622,7 +622,7 @@ export default {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
-                                      message: `${ledger.child_name} doesn't have debit balance`
+                                      message: `${entry.child_name} doesn't have debit balance`
                                     };
                                     next();
                                     return;
@@ -633,7 +633,7 @@ export default {
                                   internal_eror = true;
                                   req.records = {
                                     invalid_user: true,
-                                    message: "ledger not found"
+                                    message: `${entry.child_name} doesn't have debit balance`
                                   };
                                   next();
                                   return;
@@ -659,7 +659,7 @@ export default {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
-                                      message: `${ledger.child_name} doesn't have credit balance`
+                                      message: `${entry.child_name} doesn't have credit balance`
                                     };
                                     next();
                                     return;
@@ -670,7 +670,7 @@ export default {
                                   internal_eror = true;
                                   req.records = {
                                     invalid_user: true,
-                                    message: "ledger not found"
+                                    message: `${entry.child_name} doesn't have credit balance`
                                   };
                                   next();
                                   return;
@@ -776,8 +776,9 @@ export default {
                   .executeQuery({
                     query:
                       "select VD.debit_amount,VD.child_id,VD.credit_amount,VD.payment_type,H.root_id,VD.hospital_id\
-                     from finance_voucher_details VD\
+                      ,C.child_name from finance_voucher_details VD\
                     inner join finance_account_head H on VD.head_id=H.finance_account_head_id\
+                    inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
                     where voucher_header_id=? and auth_status='P';",
                     values: [input.voucher_header_id],
                     printQuery: true
@@ -797,11 +798,10 @@ export default {
                         _mysql
                           .executeQuery({
                             query:
-                              "select child_id,C.child_name,coalesce(sum(credit_amount)- sum(debit_amount),0) as cred_minus_deb,\
-                          coalesce(sum(debit_amount)-sum(credit_amount),0) as deb_minus_cred\
-                        from finance_voucher_details VD \
-                        inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
-                        where VD.auth_status='A' and VD.child_id in (?) group by VD.child_id;",
+                              "select child_id,coalesce(sum(credit_amount)- sum(debit_amount),0) as cred_minus_deb,\
+                            coalesce(sum(debit_amount)-sum(credit_amount),0) as deb_minus_cred\
+                          from finance_voucher_details \
+                          where auth_status='A' and child_id in (?) group by child_id;",
                             values: [child_ids],
                             printQuery: true
                           })
@@ -827,7 +827,7 @@ export default {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
-                                      message: `${ledger.child_name} doesn't have debit balance`
+                                      message: `${entry.child_name} doesn't have debit balance`
                                     };
                                     next();
                                     return;
@@ -838,7 +838,7 @@ export default {
                                   internal_eror = true;
                                   req.records = {
                                     invalid_user: true,
-                                    message: "ledger not found"
+                                    message: `${entry.child_name} doesn't have debit balance`
                                   };
                                   next();
                                   return;
@@ -864,7 +864,7 @@ export default {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
-                                      message: `${ledger.child_name} doesn't have credit balance`
+                                      message: `${entry.child_name} doesn't have credit balance`
                                     };
                                     next();
                                     return;
@@ -875,7 +875,7 @@ export default {
                                   internal_eror = true;
                                   req.records = {
                                     invalid_user: true,
-                                    message: "ledger not found"
+                                    message: `${entry.child_name} doesn't have credit balance`
                                   };
                                   next();
                                   return;
