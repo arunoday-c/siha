@@ -144,6 +144,7 @@ const SalesQuotationSearch = ($this, e) => {
                         }
                         data.saveEnable = false;
                         data.selectedData = true;
+                        data.grid_edit = false
                         data.tax_percentage = data.vat_percentage;
 
                         data.sub_total = _.sumBy(data.qutation_detail, s =>

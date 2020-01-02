@@ -313,7 +313,7 @@ export function getSalesQuotationForOrder(req, res, next) {
 
                     if (req.query.sales_order_mode == "I") {
                         strQuery = mysql.format(
-                            "select QI.*, IM.item_description, IU.uom_description from hims_f_sales_quotation_items QI \
+                            "select QI.*, IM.item_description, IU.uom_description, 0 as quantity_outstanding from hims_f_sales_quotation_items QI \
                             inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = QI.item_id \
                             inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = QI.uom_id \
                             where sales_quotation_id=?",
@@ -634,12 +634,12 @@ function updateSalesQuotation(options) {
                             strQuery = mysql.format(
                                 "update hims_f_sales_quotation set qotation_status='O', quote_items_status='O' \
                                 where hims_f_sales_quotation_id=?",
-                                [result[0].sales_quotation_id]
+                                [input.sales_quotation_id]
                             );
                         } else if (result[0].quote_services_status === "G") {
                             strQuery = mysql.format(
                                 "update hims_f_sales_quotation set quote_items_status='O' where hims_f_sales_quotation_id=?",
-                                [result[0].sales_quotation_id]
+                                [input.sales_quotation_id]
                             );
                         }
                     } else if (input.sales_order_mode === "S") {
@@ -647,12 +647,12 @@ function updateSalesQuotation(options) {
                             strQuery = mysql.format(
                                 "update hims_f_sales_quotation set qotation_status='O', quote_services_status='O' \
                                 where hims_f_sales_quotation_id=?",
-                                [result[0].sales_quotation_id]
+                                [input.sales_quotation_id]
                             );
                         } else if (result[0].quote_items_status === "G") {
                             strQuery = mysql.format(
                                 "update hims_f_sales_quotation set quote_services_status='O' where hims_f_sales_quotation_id=?",
-                                [result[0].sales_quotation_id]
+                                [input.sales_quotation_id]
                             );
                         }
                     }
