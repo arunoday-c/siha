@@ -856,18 +856,28 @@ class CustomerSetup extends Component {
                       )
                     },
                     {
-                      fieldName: "email_id_1",
-                      label: <AlgaehLabel label={{ fieldName: "email_id_1" }} />
-                    },
-                    {
                       fieldName: "contact_number",
                       label: (
                         <AlgaehLabel label={{ fieldName: "contact_number" }} />
                       )
                     },
                     {
-                      fieldName: "website",
-                      label: <AlgaehLabel label={{ fieldName: "website" }} />
+                      fieldName: "email_id_1",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "primaryEmail" }} />
+                      )
+                    },
+                    {
+                      fieldName: "payment_terms",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "payment_terms" }} />
+                      )
+                    },
+                    {
+                      fieldName: "payment_mode",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "payment_mode" }} />
+                      )
                     },
 
                     {
