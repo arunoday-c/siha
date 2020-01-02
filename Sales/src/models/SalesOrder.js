@@ -545,24 +545,134 @@ export function updateSalesOrderEntry(req, res, next) {
     }
 }
 
+export function cancelSalesServiceOrder(req, res, next) {
+    const _mysql = new algaehMysql();
+
+    console.log("cancelSalesServiceOrder: ");
+    try {
+        req.mySQl = _mysql;
+        let inputParam = { ...req.body };
+
+        _mysql
+            .executeQueryWithTransaction({
+                query:
+                    "UPDATE `hims_f_sales_order` SET `cancelled`='Y', `cancelled_date`=?, `cancelled_by`=? \
+                    WHERE `hims_f_sales_order_id`=?",
+                values: [
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    inputParam.hims_f_sales_order_id
+                ],
+                printQuery: true
+            })
+            .then(headerResult => {
+                if (headerResult != null) {
+                    if (inputParam.sales_quotation_id !== null) {
+                        _mysql
+                            .executeQuery({
+                                query: "update hims_f_sales_quotation set quote_services_status='G' where hims_f_sales_quotation_id=?",
+                                values: [inputParam.sales_quotation_id],
+                                printQuery: true
+                            })
+                            .then(detailResult => {
+                                _mysql.commitTransaction(() => {
+                                    _mysql.releaseConnection();
+                                    req.records = detailResult;
+                                    next();
+                                });
+                            })
+                            .catch(e => {
+                                _mysql.rollBackTransaction(() => {
+                                    next(e);
+                                });
+                            });
+                    } else {
+                        _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = headerResult;
+                            next();
+                        });
+                    }
+
+                } else {
+                    _mysql.rollBackTransaction(() => {
+                        req.records = {};
+                        next();
+                    });
+                }
+            })
+            .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                    next(e);
+                });
+            });
+    } catch (e) {
+        _mysql.rollBackTransaction(() => {
+            next(e);
+        });
+    }
+}
+
+
 function updateSalesQuotation(options) {
     return new Promise((resolve, reject) => {
         try {
             let input = options.input;
             let _mysql = options._mysql;
+
             _mysql
                 .executeQuery({
-                    query:
-                        "update hims_f_sales_quotation set qotation_status='O' where hims_f_sales_quotation_id=?",
+                    query: "select hims_f_sales_quotation_id, quote_items_status, quote_services_status \
+                    from hims_f_sales_quotation where hims_f_sales_quotation_id=?",
                     values: [input.sales_quotation_id],
                     printQuery: true
                 })
-                .then(headerResult => {
-                    resolve()
+                .then(result => {
+                    let strQuery = ""
+                    if (input.sales_order_mode === "I") {
+                        if (result[0].quote_services_status !== "G") {
+                            strQuery = mysql.format(
+                                "update hims_f_sales_quotation set qotation_status='O', quote_items_status='O' \
+                                where hims_f_sales_quotation_id=?",
+                                [headerResult[0].sales_quotation_id]
+                            );
+                        } else if (result[0].quote_services_status === "G") {
+                            strQuery = mysql.format(
+                                "update hims_f_sales_quotation set quote_items_status='O' where hims_f_sales_quotation_id=?",
+                                [headerResult[0].sales_quotation_id]
+                            );
+                        }
+                    } else if (input.sales_order_mode === "S") {
+                        if (result[0].quote_items_status !== "G") {
+                            strQuery = mysql.format(
+                                "update hims_f_sales_quotation set qotation_status='O', quote_services_status='O' \
+                                where hims_f_sales_quotation_id=?",
+                                [headerResult[0].sales_quotation_id]
+                            );
+                        } else if (result[0].quote_items_status === "G") {
+                            strQuery = mysql.format(
+                                "update hims_f_sales_quotation set quote_services_status='O' where hims_f_sales_quotation_id=?",
+                                [headerResult[0].sales_quotation_id]
+                            );
+                        }
+                    }
+
+                    _mysql
+                        .executeQuery({
+                            query: strQuery,
+                            printQuery: true
+                        })
+                        .then(headerResult => {
+                            resolve()
+                        })
+                        .catch(error => {
+                            reject(error);
+                        });
                 })
                 .catch(error => {
                     reject(error);
                 });
+
         } catch (e) {
             reject(e);
         }

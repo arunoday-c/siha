@@ -92,13 +92,15 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const SalesQuotationSearch = ($this, e) => {
+    let inputObj = " date(quote_validity) >= date('" + moment(new Date()).format("YYYY-MM-DD") + "') and "
+    inputObj = $this.state.sales_order_mode === "I" ? " quote_items_status='G'" : " quote_services_status='G'"
     AlgaehSearch({
         searchGrid: {
             columns: spotlightSearch.Sales.SalesQuotation
         },
         searchName: "SalesQuotation",
         uri: "/gloabelSearch/get",
-        inputs: " date(quote_validity) >= date('" + moment(new Date()).format("YYYY-MM-DD") + "') and qotation_status='G'",
+        inputs: inputObj,
 
         onContainsChange: (text, serchBy, callBack) => {
             callBack(text);
@@ -323,6 +325,7 @@ const getCtrlCode = ($this, docNumber) => {
                     data.authorizeEnable = false;
                     data.ItemDisable = true;
                     data.ClearDisable = true;
+                    data.cancelDisable = data.cancelled === "Y" ? true : false
 
                     for (let i = 0; i < data.order_detail.length; i++) {
                         data.order_detail[i].quantity_outstanding = data.order_detail[i].quantity
@@ -565,7 +568,33 @@ const AuthorizeOrderEntry = ($this, authorize) => {
     });
 
 }
+
+const CancelSalesServiceOrder = ($this) => {
+    algaehApiCall({
+        uri: "/SalesOrder/cancelSalesServiceOrder",
+        module: "sales",
+        data: $this.state,
+        method: "PUT",
+        onSuccess: response => {
+            if (response.data.success === true) {
+                swalMessage({
+                    title: "Cancelled successfully . .",
+                    type: "success"
+                });
+            }
+            AlgaehLoader({ show: false });
+        },
+        onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+                title: error.message,
+                type: "error"
+            });
+        }
+    });
+}
 export {
+
     texthandle,
     datehandle,
     SalesQuotationSearch,
@@ -578,5 +607,6 @@ export {
     getSalesOptions,
     employeeSearch,
     dateValidate,
-    AuthorizeOrderEntry
+    AuthorizeOrderEntry,
+    CancelSalesServiceOrder
 };
