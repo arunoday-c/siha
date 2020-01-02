@@ -65,5 +65,7 @@
 
   "edit_option": "عمل",
   "currency": "دقة",
-  "Cannotbeblank": "لا يمكن أن يكون فارغا"
+  "Cannotbeblank": "لا يمكن أن يكون فارغا",
+  "form_yes": "نعم فعلا",
+  "form_no": "لا"
 }
