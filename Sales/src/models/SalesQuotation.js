@@ -92,8 +92,8 @@ export function addSalesQuotation(req, res, next) {
               "INSERT INTO hims_f_sales_quotation (sales_quotation_number, sales_quotation_date, \
                       sales_quotation_mode, reference_number, customer_id, quote_validity, sales_man, \
                       payment_terms, sales_person_id, narration, delivery_date, no_of_days_followup, \
-                      terms_conditions, created_date, created_by, updated_date, updated_by, hospital_id)\
-              values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                      terms_conditions, quote_items_status, quote_services_status, created_date, created_by, updated_date, updated_by, hospital_id)\
+              values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               sales_quotation_number,
               new Date(),
@@ -109,6 +109,8 @@ export function addSalesQuotation(req, res, next) {
               input.delivery_date,
               input.no_of_days_followup,
               input.terms_conditions,
+              input.quote_items_status,
+              input.quote_services_status,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),

@@ -156,6 +156,9 @@ const SaveSalesQuotation = $this => {
         }
 
         $this.state.terms_conditions = $this.state.comment_list.join("<br/>")
+        $this.state.quote_items_status = $this.state.sales_quotation_items.length > 0 ? "G" : "N"
+        $this.state.quote_services_status = $this.state.sales_quotation_services.length > 0 ? "G" : "N"
+
         AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/SalesQuotation/addSalesQuotation",

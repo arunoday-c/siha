@@ -189,7 +189,7 @@ export default {
             input.finance_account_head_id,
             input.finance_account_head_id
           ],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -752,7 +752,7 @@ export default {
           where  D.day_end_header_id in (SELECT day_end_header_id
           FROM cte_ where is_equal='true');`,
             values: [input.finance_day_end_header_ids],
-            printQuery: true
+            printQuery: false
           })
           .then(result => {
             // _mysql.releaseConnection();
@@ -933,7 +933,7 @@ export default {
             where  D.day_end_header_id in (SELECT day_end_header_id
             FROM cte_ where is_equal='true');`,
         values: [input.finance_day_end_header_ids],
-        printQuery: true
+        printQuery: false
       })
       .then(result => {
         // _mysql.releaseConnection();
@@ -989,7 +989,7 @@ export default {
               C.child_name from finance_voucher_details VD inner join finance_account_child C on
               VD.child_id=C.finance_account_child_id where head_id in (?) and child_id in(?) group by head_id,child_id for update ;`,
               values: [head_ids, child_ids],
-              printQuery: true
+              printQuery: false
             })
             .then(ClosingBal => {
               //ST- CHECK FOR CLOSING BALANCE BEFORE CREDITING ASSET AND EXPENCE
@@ -1417,7 +1417,7 @@ export default {
                       query: `delete from finance_account_child where head_id in (?);                    
                         delete from finance_account_head  where finance_account_head_id in (?);`,
                       values: [head_ids, head_ids],
-                      printQuery: true
+                      printQuery: false
                     })
                     .then(deleteRes => {
                       _mysql.commitTransaction(() => {
@@ -1464,7 +1464,7 @@ export default {
         case when payment_mode = "CH" then amount end as cheque
         from finance_day_end_detail where day_end_header_id=?) as A ;`,
         values: [req.query.day_end_header_id, req.query.day_end_header_id],
-        printQuery: true
+        printQuery: false
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -1587,7 +1587,7 @@ export default {
             )
             select * from cte order by account_level,sort_order;`,
 
-          printQuery: true,
+          printQuery: false,
           values: []
         })
         .then(result => {
