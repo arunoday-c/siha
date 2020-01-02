@@ -634,12 +634,12 @@ function updateSalesQuotation(options) {
                             strQuery = mysql.format(
                                 "update hims_f_sales_quotation set qotation_status='O', quote_items_status='O' \
                                 where hims_f_sales_quotation_id=?",
-                                [headerResult[0].sales_quotation_id]
+                                [result[0].sales_quotation_id]
                             );
                         } else if (result[0].quote_services_status === "G") {
                             strQuery = mysql.format(
                                 "update hims_f_sales_quotation set quote_items_status='O' where hims_f_sales_quotation_id=?",
-                                [headerResult[0].sales_quotation_id]
+                                [result[0].sales_quotation_id]
                             );
                         }
                     } else if (input.sales_order_mode === "S") {
@@ -647,12 +647,12 @@ function updateSalesQuotation(options) {
                             strQuery = mysql.format(
                                 "update hims_f_sales_quotation set qotation_status='O', quote_services_status='O' \
                                 where hims_f_sales_quotation_id=?",
-                                [headerResult[0].sales_quotation_id]
+                                [result[0].sales_quotation_id]
                             );
                         } else if (result[0].quote_items_status === "G") {
                             strQuery = mysql.format(
                                 "update hims_f_sales_quotation set quote_services_status='O' where hims_f_sales_quotation_id=?",
-                                [headerResult[0].sales_quotation_id]
+                                [result[0].sales_quotation_id]
                             );
                         }
                     }
@@ -662,7 +662,7 @@ function updateSalesQuotation(options) {
                             query: strQuery,
                             printQuery: true
                         })
-                        .then(headerResult => {
+                        .then(update_Result => {
                             resolve()
                         })
                         .catch(error => {
