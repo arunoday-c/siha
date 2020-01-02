@@ -7,7 +7,8 @@ import "./../../../../styles/site.scss";
 import {
     AlgaehDataGrid,
     AlgaehLabel,
-    AlagehFormGroup
+    AlagehFormGroup,
+    AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
@@ -19,11 +20,12 @@ import {
     deleteSalesDetail,
     onchangegridcol,
     qtyonchangegridcol,
+    changeTexts
 } from "./SalesOrdListServiceEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import _ from "lodash";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
 class SalesOrdListService extends Component {
     constructor(props) {
@@ -40,7 +42,8 @@ class SalesOrdListService extends Component {
             quantity: 0,
             discount_percentage: 0,
             unit_cost: 0,
-            tax_percent: 0
+            tax_percent: 0,
+            service_frequency: null
         };
     }
 
@@ -177,6 +180,32 @@ class SalesOrdListService extends Component {
                                             }}
                                         />
 
+                                        <AlagehAutoComplete
+                                            div={{ className: "col-6 form-group mandatory" }}
+                                            label={{ forceLabel: "Frequency", isImp: true }}
+                                            selector={{
+                                                sort: "off",
+                                                name: "service_frequency",
+                                                className: "select-fld",
+                                                value: this.state.service_frequency,
+                                                dataSource: {
+                                                    textField: "name",
+                                                    valueField: "value",
+                                                    data: GlobalVariables.SERVICE_FREQUENCY
+                                                },
+                                                onChange: changeTexts.bind(this, this),
+                                                others: {
+                                                    disabled: this.state.dataExitst,
+                                                    tabIndex: "4"
+                                                },
+                                                onClear: () => {
+                                                    this.setState({
+                                                        service_frequency: null
+                                                    });
+                                                }
+                                            }}
+                                        />
+
                                         <AlagehFormGroup
                                             div={{ className: "col-6 form-group mandatory" }}
                                             label={{
@@ -213,25 +242,39 @@ class SalesOrdListService extends Component {
                                                     : "-----------"}
                                             </h6>
                                         </div>
-                                        <div className="col-6 form-group mandatory">
-                                            <AlgaehLabel
-                                                label={{
-                                                    forceLabel: "Unit Cost"
-                                                }}
-                                            />
-                                            <h6>
-                                                {this.state.unit_cost
-                                                    ? getAmountFormart(this.state.unit_cost)
-                                                    : "-----------"}
-                                            </h6>
-                                        </div> <div className="col-12 subFooter-btn">
+
+                                        <AlagehFormGroup
+                                            div={{ className: "col-6 mandatory" }}
+                                            label={{
+                                                forceLabel: "Unit Cost",
+                                                isImp: false
+                                            }}
+                                            textBox={{
+                                                decimal: { allowNegative: false },
+                                                className: "txt-fld",
+                                                name: "unit_cost",
+                                                value: this.state.unit_cost,
+                                                events: {
+                                                    onChange: numberchangeTexts.bind(
+                                                        this,
+                                                        this,
+                                                        context
+                                                    )
+                                                },
+                                                others: {
+                                                    tabIndex: "6"
+                                                }
+                                            }}
+                                        />
+
+                                        <div className="col-12 subFooter-btn">
                                             <button
                                                 className="btn btn-primary"
                                                 onClick={AddSerices.bind(this, this, context)}
                                                 disabled={this.state.addItemButton}
                                                 tabIndex="5"
                                             >
-                                                Add Item
+                                                Add Service
                                             </button>
 
                                         </div>
@@ -324,6 +367,28 @@ class SalesOrdListService extends Component {
                                                         }
                                                     },
                                                     {
+                                                        fieldName: "service_frequency",
+                                                        label: (
+                                                            <AlgaehLabel
+                                                                label={{ forceLabel: "Frequency" }}
+                                                            />
+                                                        ),
+                                                        displayTemplate: row => {
+                                                            let display = GlobalVariables.SERVICE_FREQUENCY.filter(
+                                                                f => f.value === row.service_frequency
+                                                            );
+
+                                                            return (
+                                                                <span>
+                                                                    {display !== undefined && display.length !== 0
+                                                                        ? display[0].name
+                                                                        : ""}
+                                                                </span>
+                                                            );
+                                                        },
+                                                        disabled: true,
+                                                    },
+                                                    {
                                                         fieldName: "unit_cost",
                                                         label: (
                                                             <AlgaehLabel
@@ -390,34 +455,7 @@ class SalesOrdListService extends Component {
                                                                     forceLabel: "discount Amt."
                                                                 }}
                                                             />
-                                                        ),
-                                                        // displayTemplate: row => {
-                                                        //     return (
-                                                        //         <AlagehFormGroup
-                                                        //             div={{}}
-                                                        //             textBox={{
-                                                        //                 decimal: { allowNegative: false },
-                                                        //                 value: row.discount_amount,
-                                                        //                 className: "txt-fld",
-                                                        //                 name: "discount_amount",
-                                                        //                 events: {
-                                                        //                     onChange: onchangegridcol.bind(
-                                                        //                         this,
-                                                        //                         this,
-                                                        //                         context,
-                                                        //                         row
-                                                        //                     )
-                                                        //                 },
-                                                        //                 others: {
-                                                        //                     onFocus: e => {
-                                                        //                         e.target.oldvalue =
-                                                        //                             e.target.value;
-                                                        //                     }
-                                                        //                 }
-                                                        //             }}
-                                                        //         />
-                                                        //     );
-                                                        // }
+                                                        )
                                                     },
 
                                                     {

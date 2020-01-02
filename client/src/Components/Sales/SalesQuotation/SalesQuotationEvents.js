@@ -4,6 +4,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehOpenContainer, AlgaehValidation } from "../../../utils/GlobalFunctions";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
+import Enumerable from "linq";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -75,7 +76,8 @@ const ClearData = ($this, e) => {
     ).hims_d_hospital_id,
     hims_f_terms_condition_id: null,
     selected_terms_conditions: "",
-    comment_list: []
+    comment_list: [],
+    qotation_status: "G"
   };
 
   $this.setState(IOputs)
@@ -130,6 +132,29 @@ const SaveSalesQuotation = $this => {
           });
           return
         }
+
+        let qty_exists = Enumerable.from($this.state.sales_quotation_items).any(
+          w => parseFloat(w.quantity) === 0 || w.quantity === ""
+        );
+        if (qty_exists === true) {
+          swalMessage({
+            title: "Please enter Quantity In Item list.",
+            type: "warning"
+          });
+          return
+        }
+        qty_exists = Enumerable.from($this.state.sales_quotation_services).any(
+          w => parseFloat(w.quantity) === 0 || w.quantity === ""
+        );
+
+        if (qty_exists === true) {
+          swalMessage({
+            title: "Please enter Quantity In Service list.",
+            type: "warning"
+          });
+          return
+        }
+
         $this.state.terms_conditions = $this.state.comment_list.join("<br/>")
         AlgaehLoader({ show: true });
         algaehApiCall({
@@ -179,9 +204,7 @@ const customerTexthandle = ($this, e) => {
 
   $this.setState({
     [name]: value,
-    vendor_name: e.selected.vendor_name,
-    payment_terms: e.selected.payment_terms,
-    // tax_percentage: e.selected.vat_percentage,
+    payment_terms: e.selected.payment_terms
   });
 };
 

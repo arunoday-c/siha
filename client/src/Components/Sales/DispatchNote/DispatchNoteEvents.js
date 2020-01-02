@@ -34,7 +34,7 @@ const SalesOrderSearch = ($this, e) => {
         },
         searchName: "SalesOrder",
         uri: "/gloabelSearch/get",
-        inputs: " sales_order_mode = 'I' and is_completed = 'N'",
+        inputs: " sales_order_mode = 'I' and is_completed='N' and authorize1='Y' and authorize2='Y'",
 
         onContainsChange: (text, serchBy, callBack) => {
             callBack(text);
