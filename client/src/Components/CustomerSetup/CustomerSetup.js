@@ -871,13 +871,29 @@ class CustomerSetup extends Component {
                       fieldName: "payment_terms",
                       label: (
                         <AlgaehLabel label={{ fieldName: "payment_terms" }} />
-                      )
+                      ),
+                      displayTemplate: row => {
+                        return row.payment_terms + " Days";
+                      }
                     },
                     {
                       fieldName: "payment_mode",
                       label: (
                         <AlgaehLabel label={{ fieldName: "payment_mode" }} />
-                      )
+                      ),
+                      displayTemplate: row => {
+                        let display = GlobalVariables.PAYMENT_MODE.filter(
+                          f => f.value === row.payment_mode
+                        );
+
+                        return (
+                          <span>
+                            {display !== undefined && display.length !== 0
+                              ? display[0].name
+                              : ""}
+                          </span>
+                        );
+                      },
                     },
 
                     {

@@ -1,5 +1,4 @@
 import algaehMysql from "algaeh-mysql";
-import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
 import _ from "lodash";
 import moment from "moment";
@@ -247,11 +246,17 @@ export function addDispatchNote(req, res, next) {
 
                     let year = moment().format("YYYY");
 
-                    let today = moment().format("YYYY-MM-DD");
-
                     let month = moment().format("MM");
 
                     let period = month;
+                    let strQuery = ""
+                    if (input.sales_quotation_id !== null) {
+                        strQuery = ""
+                        strQuery = mysql.format(
+                            "UPADTE hims_f_sales_quotation set qotation_status='C' where hims_f_sales_quotation_id = ?;",
+                            [input.sales_quotation_id]
+                        );
+                    }
                     _mysql
                         .executeQuery({
                             query:
@@ -259,7 +264,7 @@ export function addDispatchNote(req, res, next) {
                                     sales_order_id, location_id, customer_id, project_id, \
                                     sub_total, discount_amount, net_total, total_tax, net_payable, narration, \
                                     created_by, created_date, updated_by, updated_date, hospital_id ) \
-                                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?); " + strQuery,
                             values: [
                                 dispatch_note_number,
                                 new Date(),
@@ -346,7 +351,7 @@ export function addDispatchNote(req, res, next) {
                                             })
                                             .then(subResult => {
                                                 if (i == input.stock_detail.length - 1) {
-                                                    console.log("done: ", i);
+                                                    // console.log("done: ", i);
                                                     req.connection = {
                                                         connection: _mysql.connection,
                                                         isTransactionConnection:
