@@ -695,7 +695,7 @@ let getMyDay = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   const { employee_id, sub_department_id, from_app } = req.query;
   let requestValues = [
-    (req.userIdentity.employee_id: employee_id),
+    req.userIdentity.employee_id,
     req.userIdentity.sub_department_id
   ];
   if (from_app === "mobileapp") {
