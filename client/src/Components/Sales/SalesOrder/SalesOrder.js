@@ -27,7 +27,8 @@ import {
   employeeSearch,
   dateValidate,
   datehandle,
-  AuthorizeOrderEntry
+  AuthorizeOrderEntry,
+  CancelSalesServiceOrder
 } from "./SalesOrderEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
@@ -89,7 +90,8 @@ class SalesOrder extends Component {
       employee_name: null,
       delivery_date: null,
       sales_order_auth_level: "1",
-      grid_edit: false
+      grid_edit: false,
+      cancelDisable: false
     };
     getSalesOptions(this, this)
   }
@@ -645,37 +647,51 @@ class SalesOrder extends Component {
 
               {this.props.order_auth === true ? (
 
-                <button
-                  type="button"
-                  className="btn btn-other"
-                  disabled={
-                    this.state.authBtnEnable === true
-                      ? true
-                      : this.state.authorize1 === "Y" &&
-                        this.state.authorize2 === "Y"
+                <div>
+                  {this.state.sales_order_mode === "S" ? <button
+                    type="button"
+                    className="btn btn-default"
+                    disabled={this.state.cancelDisable}
+                    onClick={CancelSalesServiceOrder.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Cancel", returnText: true }}
+                    />
+                  </button> : null}
+
+
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    disabled={
+                      this.state.authBtnEnable === true
                         ? true
-                        : false
-                  }
-                  onClick={AuthorizeOrderEntry.bind(
-                    this,
-                    this,
-                    this.state.authorize1 === "N"
-                      ? "authorize1"
-                      : "authorize2"
-                  )}
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel:
-                        this.state.authorize1 === "N"
-                          ? "Authorize 1"
-                          : this.state.sales_order_auth_level === "2"
-                            ? "Authorize 2"
-                            : "Authorize 1",
-                      returnText: true
-                    }}
-                  />
-                </button>
+                        : this.state.authorize1 === "Y" &&
+                          this.state.authorize2 === "Y"
+                          ? true
+                          : false
+                    }
+                    onClick={AuthorizeOrderEntry.bind(
+                      this,
+                      this,
+                      this.state.authorize1 === "N"
+                        ? "authorize1"
+                        : "authorize2"
+                    )}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel:
+                          this.state.authorize1 === "N"
+                            ? "Authorize 1"
+                            : this.state.sales_order_auth_level === "2"
+                              ? "Authorize 2"
+                              : "Authorize 1",
+                        returnText: true
+                      }}
+                    />
+                  </button>
+                </div>
               ) : null}
             </div>
           </div>

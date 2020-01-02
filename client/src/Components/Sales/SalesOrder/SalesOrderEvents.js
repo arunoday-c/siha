@@ -12,7 +12,7 @@ const texthandle = ($this, ctrl, e) => {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     switch (name) {
-        case "sales_quotation_mode":
+        case "sales_order_mode":
             $this.setState({
                 [name]: value,
                 hims_f_sales_order_id: null,
@@ -92,13 +92,15 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const SalesQuotationSearch = ($this, e) => {
+    let inputObj = " date(quote_validity) >= date('" + moment(new Date()).format("YYYY-MM-DD") + "') and "
+    inputObj = $this.state.sales_order_mode === "I" ? " quote_items_status='G'" : " quote_services_status='G'"
     AlgaehSearch({
         searchGrid: {
             columns: spotlightSearch.Sales.SalesQuotation
         },
         searchName: "SalesQuotation",
         uri: "/gloabelSearch/get",
-        inputs: " date(quote_validity) >= date('" + moment(new Date()).format("YYYY-MM-DD") + "') and qotation_status='G'",
+        inputs: inputObj,
 
         onContainsChange: (text, serchBy, callBack) => {
             callBack(text);
@@ -142,6 +144,7 @@ const SalesQuotationSearch = ($this, e) => {
                         }
                         data.saveEnable = false;
                         data.selectedData = true;
+                        data.grid_edit = false
                         data.tax_percentage = data.vat_percentage;
 
                         data.sub_total = _.sumBy(data.qutation_detail, s =>
@@ -323,6 +326,7 @@ const getCtrlCode = ($this, docNumber) => {
                     data.authorizeEnable = false;
                     data.ItemDisable = true;
                     data.ClearDisable = true;
+                    data.cancelDisable = data.cancelled === "Y" ? true : false
 
                     for (let i = 0; i < data.order_detail.length; i++) {
                         data.order_detail[i].quantity_outstanding = data.order_detail[i].quantity
@@ -565,7 +569,33 @@ const AuthorizeOrderEntry = ($this, authorize) => {
     });
 
 }
+
+const CancelSalesServiceOrder = ($this) => {
+    algaehApiCall({
+        uri: "/SalesOrder/cancelSalesServiceOrder",
+        module: "sales",
+        data: $this.state,
+        method: "PUT",
+        onSuccess: response => {
+            if (response.data.success === true) {
+                swalMessage({
+                    title: "Cancelled successfully . .",
+                    type: "success"
+                });
+            }
+            AlgaehLoader({ show: false });
+        },
+        onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+                title: error.message,
+                type: "error"
+            });
+        }
+    });
+}
 export {
+
     texthandle,
     datehandle,
     SalesQuotationSearch,
@@ -578,5 +608,6 @@ export {
     getSalesOptions,
     employeeSearch,
     dateValidate,
-    AuthorizeOrderEntry
+    AuthorizeOrderEntry,
+    CancelSalesServiceOrder
 };

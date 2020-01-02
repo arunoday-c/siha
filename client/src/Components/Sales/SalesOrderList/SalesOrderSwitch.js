@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import "./SalesOrderList.scss";
 import SalesOrderList from "./SalesOrderList";
 import SalesOrder from "../SalesOrder/SalesOrder";
-// import SalesOrder from "../SalesOrder/SalesOrder";
 import { getCookie } from "../../../utils/algaehApiCall";
 import { removeGlobal } from "../../../utils/GlobalFunctions";
 
