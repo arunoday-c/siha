@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ReactDom from "react-dom";
 import CostCenter from "../costcenter";
 import moment from "moment";
@@ -23,11 +23,11 @@ import { getCookie } from "../../utils/algaehApiCall";
 let records_av = {};
 export default function JournalVoucher() {
   const [voucherDate, setVoucherDate] = useState(undefined);
-  const [voucher_no, setVoucherNo] = useState(undefined);
+  const [voucher_no, setVoucherNo] = useState("");
   const [voucherType, setVoucherType] = useState(undefined);
   const [accounts, setAccounts] = useState([{}]);
   const [narration, setNarration] = useState("");
-  const [prefix, setPrefix] = useState("");
+  // const [prefix, setPrefix] = useState("");
   const [loading, setLoading] = useState(false);
   const [clearLoading, setClearLoading] = useState(false);
   const [journerList, setJournerList] = useState([
@@ -47,21 +47,21 @@ export default function JournalVoucher() {
     }
   ]);
 
-  useEffect(() => {
-    getVoucherNumber()
-      .then(result => {
-        setVoucherNo(result.voucher_no);
-      })
-      .catch(error => {
-        AlgaehMessagePop({
-          type: "error",
-          display: error
-        });
-      });
-    // getHeaders().then(result => {
-    //   setAccounts(result);
-    // });
-  }, []);
+  // useEffect(() => {
+  //   getVoucherNumber()
+  //     .then(result => {
+  //       setVoucherNo(result.voucher_no);
+  //     })
+  //     .catch(error => {
+  //       AlgaehMessagePop({
+  //         type: "error",
+  //         display: error
+  //       });
+  //     });
+  //   // getHeaders().then(result => {
+  //   //   setAccounts(result);
+  //   // });
+  // }, []);
 
   return (
     <div className="JournalVoucherScreen">
@@ -100,7 +100,7 @@ export default function JournalVoucher() {
           textBox={{
             type: "text",
             className: "form-control",
-            value: `${prefix}${voucher_no}`,
+            value: `${voucher_no}`,
             disabled: true
             // autocomplete: false
           }}
@@ -132,12 +132,27 @@ export default function JournalVoucher() {
               textField: "label"
             },
             onChange: selected => {
+              getVoucherNumber({ voucher_type: selected.value })
+                .then(result => {
+                  setVoucherNo(result.voucher_no);
+                })
+                .catch(error => {
+                  AlgaehMessagePop({
+                    type: "error",
+                    display: error
+                  });
+                });
               getHeaders({ voucher_type: selected.value }).then(result => {
                 setAccounts(result);
               });
 
               setVoucherType(selected.value);
-              setPrefix(selected.shortHand + "-");
+              // setPrefix(selected.shortHand + "-");
+            },
+            onClear: () => {
+              setVoucherType("");
+              setVoucherNo("");
+              setAccounts([]);
             }
           }}
         />
@@ -395,7 +410,7 @@ export default function JournalVoucher() {
                 addJurnorLedger({
                   transaction_date: voucherDate,
                   voucher_type: voucherType,
-                  voucher_no: `${prefix}${voucher_no}`,
+                  voucher_no: `${voucher_no}`,
                   ...costcenter,
                   from_screen: getCookie("ScreenCode"),
                   hospital_id: getCookie("HospitalId"),
