@@ -5263,6 +5263,10 @@
     {
       "name": "Dispatch Completed",
       "value": "4"
+    },
+    {
+      "name": "Canelled",
+      "value": "5"
     }
   ]
 }
