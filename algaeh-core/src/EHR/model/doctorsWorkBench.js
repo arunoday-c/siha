@@ -3199,6 +3199,43 @@ let getSickLeave = (req, res, next) => {
   }
 };
 
+let getActiveEncounters = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  const { hospital_id, provider_id } = req.query;
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "select E.hims_f_patient_encounter_id, P.patient_code, P.full_name, P.gender, P.age, E.patient_id,\
+          V.appointment_patient, V.new_visit_patient, E.provider_id, E.`status`, E.nurse_examine, E.checked_in,\
+          E.payment_type, E.episode_id, E.encounter_id, E.`source`, E.updated_date as encountered_date,\
+          V.visit_expiery_date, V.visit_status from hims_f_patient_encounter E \
+          INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
+          inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id \
+          inner join hims_d_sub_department SD on sub_department_id=SD.hims_d_sub_department_id \
+          left join hims_d_identity_document ID on ID.hims_d_identity_document_id = P.primary_identity_id \
+          where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and date(E.updated_date) between \
+          DATE_SUB(current_date(), INTERVAL (select param_value from algaeh_d_app_config where param_name='VISITEXPERIDAY') DAY) \
+          and date(current_date()) and E.provider_id = ? and  E.`status` in ('W','CO') and E.hospital_id=?; \
+          ",
+        values: [provider_id, hospital_id],
+        printQuery: true
+      })
+      .then(result => {
+        req.records = result;
+        _mysql.releaseConnection();
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
 export default {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -3253,7 +3290,7 @@ export default {
   addPatientHistory,
   getPatientHistory,
   getPatientEpisodeSummary,
-
+  getActiveEncounters,
   updatePatientEncounter,
   getPatientEncounter,
   getPatientBasicChiefComplaints,

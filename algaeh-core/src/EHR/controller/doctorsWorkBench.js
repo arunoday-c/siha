@@ -62,7 +62,8 @@ const {
   deleteDietAdvice,
   getSummaryFollowUp,
   addSickLeave,
-  getSickLeave
+  getSickLeave,
+  getActiveEncounters
 } = workBenchModels;
 const { releaseConnection } = utils;
 
@@ -975,6 +976,19 @@ export default () => {
     },
     releaseConnection
   );
+
+  //To get active encounter by provider
+  api.get("/getActiveEncounters", getActiveEncounters, (req, res) => {
+    const result = req.records;
+    delete req.records;
+    res
+      .status(httpStatus.ok)
+      .json({
+        success: true,
+        records: result
+      })
+      .end();
+  });
 
   return api;
 };
