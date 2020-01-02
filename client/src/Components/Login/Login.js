@@ -13,7 +13,8 @@ import { AlgaehCloseContainer, encrypter } from "../../utils/GlobalFunctions";
 import connecting from "../../assets/svg/connecting.svg";
 import "./Login.scss";
 import sockets from "../../sockets";
-export default function() {
+export default function(props) {
+  console.log("props", props);
   const [login, setLogin] = useState({
     username: "",
     password: "",
@@ -85,7 +86,7 @@ export default function() {
               if (success === true) {
                 setCookie("userName", records.user_display_name);
                 // setCookie("keyResources", records.keyResources, 30);
-                setCookie("authToken",records.token);
+                setCookie("authToken", records.token);
                 sessionStorage.setItem(
                   "keyData",
                   AlgaehCloseContainer(JSON.stringify(records.keyData))
@@ -177,7 +178,7 @@ export default function() {
                                   "userName",
                                   records.user_display_name
                                 );
-                                setCookie("authToken",records.token);
+                                setCookie("authToken", records.token);
                                 // setCookie(
                                 //   "keyResources",
                                 //   records.keyResources,

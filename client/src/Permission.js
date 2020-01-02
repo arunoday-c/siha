@@ -9,9 +9,21 @@ export function PermissionProvider({ children }) {
     "businesssetup-branch-add"
   ];
   const [permissions, setPermissions] = useState(permissionList);
-
+  const [algaehObject, setAlgaehObject] = useState({});
+  function setAlgaehObj(data) {
+    setAlgaehObject(result => {
+      return { ...result, ...data };
+    });
+  }
   return (
-    <PermissionContext.Provider value={{ permissions, setPermissions }}>
+    <PermissionContext.Provider
+      value={{
+        permissions,
+        setPermissions,
+        algaehGlobal: algaehObject,
+        setAlgaehGlobal: setAlgaehObj
+      }}
+    >
       {children}
     </PermissionContext.Provider>
   );
