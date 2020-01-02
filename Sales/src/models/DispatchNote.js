@@ -249,14 +249,7 @@ export function addDispatchNote(req, res, next) {
                     let month = moment().format("MM");
 
                     let period = month;
-                    let strQuery = ""
-                    if (input.sales_quotation_id !== null) {
-                        strQuery = ""
-                        strQuery = mysql.format(
-                            "UPADTE hims_f_sales_quotation set qotation_status='C' where hims_f_sales_quotation_id = ?;",
-                            [input.sales_quotation_id]
-                        );
-                    }
+
                     _mysql
                         .executeQuery({
                             query:
@@ -264,7 +257,7 @@ export function addDispatchNote(req, res, next) {
                                     sales_order_id, location_id, customer_id, project_id, \
                                     sub_total, discount_amount, net_total, total_tax, net_payable, narration, \
                                     created_by, created_date, updated_by, updated_date, hospital_id ) \
-                                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?); " + strQuery,
+                                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
                             values: [
                                 dispatch_note_number,
                                 new Date(),
@@ -418,11 +411,20 @@ export function updateinvSalesOrderOnceDispatch(req, res, next) {
             complete = "N";
         }
 
+        let strQuery = ""
+        console.log("inputParam.sales_quotation_id", inputParam.sales_quotation_id)
+        if (inputParam.sales_quotation_id !== null && complete === "Y") {
+            strQuery = mysql.format(
+                "UPDATE hims_f_sales_quotation set qotation_status='C' where hims_f_sales_quotation_id = ?;",
+                [inputParam.sales_quotation_id]
+            );
+        }
+
         _mysql
             .executeQuery({
                 query:
                     "UPDATE `hims_f_sales_order` SET `is_completed`=?, `completed_date`=? \
-                        WHERE `hims_f_sales_order_id`=?",
+                        WHERE `hims_f_sales_order_id`=?; " + strQuery,
                 values: [
                     complete,
                     new Date(),
