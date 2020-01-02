@@ -33,7 +33,7 @@ export default {
                     query:
                         "INSERT INTO `hims_d_sales_options` (`sales_order_auth_level`, `services_required`, \
                         `created_date`, `created_by`, `updated_date`, `updated_by`)\
-                        VALUE(?, ?, ?, ?, ?)",
+                        VALUE(?, ?, ?, ?, ?, ?)",
                     values: [
                         input.sales_order_auth_level,
                         input.services_required,
