@@ -5,7 +5,8 @@ import {
     getSalesOrder,
     getSalesQuotationForOrder,
     getSalesOrderList,
-    updateSalesOrderEntry
+    updateSalesOrderEntry,
+    cancelSalesServiceOrder
 } from "../models/SalesOrder";
 
 export default function SalesOrder() {
@@ -39,6 +40,13 @@ export default function SalesOrder() {
     });
 
     api.put("/updateSalesOrderEntry", updateSalesOrderEntry, (req, res, next) => {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+            success: true,
+            records: req.records
+        });
+    });
+
+    api.put("/cancelSalesServiceOrder", cancelSalesServiceOrder, (req, res, next) => {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
             success: true,
             records: req.records

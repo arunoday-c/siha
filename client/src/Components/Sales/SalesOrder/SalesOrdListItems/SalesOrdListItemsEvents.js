@@ -490,6 +490,14 @@ const qtyonchangegridcol = ($this, context, row, e) => {
             type: "warning"
         });
     } else {
+        debugger
+        if (
+            $this.props.sales_order_number !== undefined &&
+            $this.props.sales_order_number.length !== 0
+        ) {
+            row["quantity_outstanding"] = value
+        }
+
         row[name] = value;
         calculateAmount($this, context, row, _index);
     }

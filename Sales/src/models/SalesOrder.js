@@ -392,15 +392,17 @@ export function getSalesOrderList(req, res, next) {
             _strAppend += "";
         } else if (inputParam.status == "1") {
             //Pending To Authorize 1
-            _strAppend += " and authorize1 = 'N'";
+            _strAppend += " and authorize1 = 'N' and cancelled='N'";
         } else if (inputParam.status == "2") {
             //Pending To Authorize 2
-            _strAppend += " and authorize1 = 'Y' and authorize2 = 'N'";
+            _strAppend += " and authorize1 = 'Y' and authorize2 = 'N' and cancelled='N'";
         } else if (inputParam.status == "3") {
             _strAppend +=
-                " and authorize1 = 'Y' and authorize2 = 'Y' and is_completed='N'";
+                " and authorize1 = 'Y' and authorize2 = 'Y' and is_completed='N' and cancelled='N'";
         } else if (inputParam.status == "4") {
             _strAppend += " and is_completed='Y'";
+        } else if (inputParam.status == "5") {
+            _strAppend += " and cancelled='Y'";
         }
 
         _mysql

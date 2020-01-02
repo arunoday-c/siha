@@ -240,20 +240,22 @@ class SalesOrder extends Component {
                     }}
                   />
                   <h6>
-                    {this.state.authorize1 === "Y" &&
+                    {this.state.cancelled === "Y" ? (
+                      <span className="badge badge-danger">Cancelled</span>
+                    ) : this.state.authorize1 === "Y" &&
                       this.state.authorize2 === "Y" && this.state.is_completed === "N" ? (
-                        <span className="badge badge-success">Authorized</span>
-                      ) : this.state.authorize1 === "Y" &&
-                        this.state.authorize2 === "N" ? (
-                          <span className="badge badge-danger">Authorized 2 Pending</span>
-                        ) : this.state.authorize1 === "N" &&
+                          <span className="badge badge-success">Authorized</span>
+                        ) : this.state.authorize1 === "Y" &&
                           this.state.authorize2 === "N" ? (
-                            <span className="badge badge-danger">Pending</span>
-                          ) : this.state.is_completed === "Y" ? (
-                            <span className="badge badge-success">Invoice Generated</span>
-                          ) : (
-                              "-------"
-                            )}
+                            <span className="badge badge-danger">Authorized 2 Pending</span>
+                          ) : this.state.authorize1 === "N" &&
+                            this.state.authorize2 === "N" ? (
+                              <span className="badge badge-danger">Pending</span>
+                            ) : this.state.is_completed === "Y" ? (
+                              <span className="badge badge-success">Invoice Generated</span>
+                            ) : (
+                                "-------"
+                              )}
                   </h6>
                 </div>
               ) : null}
@@ -544,7 +546,10 @@ class SalesOrder extends Component {
               {this.state.sales_order_mode === "S" ? (
                 <SalesOrdListService SALESIOputs={this.state} />
               ) : (
-                  <SalesOrdListItems SALESIOputs={this.state} />
+                  <SalesOrdListItems
+                    SALESIOputs={this.state}
+                    sales_order_number={this.props.sales_order_number}
+                  />
                 )}
             </MyContext.Provider>
           </div>

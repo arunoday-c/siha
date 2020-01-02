@@ -319,11 +319,12 @@ const getCtrlCode = ($this, docNumber) => {
                 let data = response.data.records;
 
                 data.grid_edit = true
+                debugger
                 if (
                     $this.props.sales_order_number !== undefined &&
                     $this.props.sales_order_number.length !== 0
                 ) {
-                    data.authorizeEnable = false;
+                    data.authBtnEnable = data.cancelled === "Y" ? true : false;
                     data.ItemDisable = true;
                     data.ClearDisable = true;
                     data.cancelDisable = data.cancelled === "Y" ? true : false
@@ -582,6 +583,9 @@ const CancelSalesServiceOrder = ($this) => {
                     title: "Cancelled successfully . .",
                     type: "success"
                 });
+                $this.setState({
+                    cancelDisable: true
+                })
             }
             AlgaehLoader({ show: false });
         },
