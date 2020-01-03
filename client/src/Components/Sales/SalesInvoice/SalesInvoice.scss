@@ -1,0 +1,14 @@
+#SaleInvoiceGrid {
+    .ReactTable {
+      max-height: 40vh !important;
+    }
+  }
+  .textAreaLeft {
+    text-align: left;
+    margin-bottom: 50px;
+  }
+  
+  .disableFinder{
+    opacity: 0.4;
+    pointer-events: none;
+    }

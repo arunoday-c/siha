@@ -862,6 +862,18 @@ let algaehSearchConfig = (searchName, req) => {
           inner join hims_d_project P on P.hims_d_project_id = H.project_id \
           inner join hims_d_hospital B on B.hims_d_hospital_id = H.hospital_id",
         orderBy: "hims_f_dispatch_note_header_id desc"
+      },
+      {
+        searchName: "SalesInvoice",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS  IH.*,  CASE IH.sales_invoice_mode WHEN 'I' then 'Items' else 'Services' \
+          end as sales_invoice_mode, C.customer_name, SO.sales_order_number from hims_f_sales_invoice_header IH \
+          inner join hims_d_customer C on IH.customer_id = C.hims_d_customer_id \
+          inner join  hims_f_sales_order SO on IH.sales_order_id = SO.hims_f_sales_order_id  \
+          where IH.hospital_id=" +
+          hospitalId,
+        orderBy: "hims_f_sales_invoice_header_id desc"
+
       }
     ]
 

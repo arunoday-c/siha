@@ -1,31 +1,20 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext";
 import "./../../../../styles/site.scss";
 import {
     AlgaehDataGrid,
     AlgaehLabel,
-    AlagehFormGroup
+    // AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 
-import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
+// import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 
-import {
-    servicechangeText,
-    numberchangeTexts,
-    AddSerices,
-    deleteSalesDetail,
-    onchangegridcol,
-    qtyonchangegridcol,
-} from "./InvoiceListServiceEvents";
-import { AlgaehActions } from "../../../../actions/algaehActions";
+import { deleteSalesDetail } from "./InvoiceListServiceEvents";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
-import spotlightSearch from "../../../../Search/spotlightSearch.json";
+// import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import _ from "lodash";
 
-class InvoiceListService extends Component {
+export default class InvoiceListService extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -45,59 +34,13 @@ class InvoiceListService extends Component {
     }
 
     UNSAFE_componentWillMount() {
-        let InputOutput = this.props.SALESIOputs;
+        let InputOutput = this.props.SALESInvoiceIOputs;
         this.setState({ ...this.state, ...InputOutput });
     }
 
-    componentDidMount() {
-        if (
-            this.props.inventoryitemcategory === undefined ||
-            this.props.inventoryitemcategory.length === 0
-        ) {
-            this.props.getItemCategory({
-                uri: "/inventory/getItemCategory",
-                module: "inventory",
-                method: "GET",
-                redux: {
-                    type: "ITEM_CATEGORY_GET_DATA",
-                    mappingName: "inventoryitemcategory"
-                }
-            });
-        }
-
-        if (
-            this.props.inventoryitemgroup === undefined ||
-            this.props.inventoryitemgroup.length === 0
-        ) {
-            this.props.getItemGroup({
-                uri: "/inventory/getItemGroup",
-                module: "inventory",
-                method: "GET",
-                redux: {
-                    type: "ITEM_GROUOP_GET_DATA",
-                    mappingName: "inventoryitemgroup"
-                }
-            });
-        }
-
-        if (
-            this.props.inventoryitemuom === undefined ||
-            this.props.inventoryitemuom.length === 0
-        ) {
-            this.props.getItemUOM({
-                uri: "/inventory/getInventoryUom",
-                module: "inventory",
-                method: "GET",
-                redux: {
-                    type: "ITEM_UOM_GET_DATA",
-                    mappingName: "inventoryitemuom"
-                }
-            });
-        }
-    }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
-        this.setState(nextProps.SALESIOputs);
+        this.setState(nextProps.SALESInvoiceIOputs);
     }
 
     render() {
@@ -106,7 +49,7 @@ class InvoiceListService extends Component {
                 <MyContext.Consumer>
                     {context => (
                         <>
-                            <div className="col-3">
+                            {/* <div className="col-3">
                                 <div className="portlet portlet-bordered margin-bottom-15">
                                     <div className="row">
                                         <AlgaehAutoSearch
@@ -238,9 +181,9 @@ class InvoiceListService extends Component {
                                     </div>
                                 </div>
 
-                            </div>
+                            </div> */}
 
-                            <div className="col-9">
+                            <div className="col-12">
                                 <div className="portlet portlet-bordered margin-bottom-15">
                                     <div className="row">
                                         <div className="col-12" id="SaleOrderGrid_Cntr">
@@ -285,37 +228,12 @@ class InvoiceListService extends Component {
                                                         fieldName: "quantity",
                                                         label: (
                                                             <AlgaehLabel
-                                                                label={{ forceLabel: "Qty Req." }}
+                                                                label={{ forceLabel: "Quantity" }}
                                                             />
                                                         ),
                                                         displayTemplate: row => {
-                                                            return this.state.dataExists === true ? parseFloat(row.quantity) : (
-                                                                <AlagehFormGroup
-                                                                    div={{}}
-                                                                    textBox={{
-                                                                        number: {
-                                                                            allowNegative: false,
-                                                                            thousandSeparator: ","
-                                                                        },
-                                                                        value: row.quantity,
-                                                                        className: "txt-fld",
-                                                                        name: "quantity",
-                                                                        events: {
-                                                                            onChange: qtyonchangegridcol.bind(
-                                                                                this,
-                                                                                this,
-                                                                                context,
-                                                                                row
-                                                                            )
-                                                                        },
-                                                                        others: {
-                                                                            onFocus: e => {
-                                                                                e.target.oldvalue =
-                                                                                    e.target.value;
-                                                                            }
-                                                                        }
-                                                                    }}
-                                                                />
+                                                            return (
+                                                                parseFloat(row.quantity)
                                                             );
                                                         },
                                                         others: {
@@ -353,33 +271,33 @@ class InvoiceListService extends Component {
                                                                 }}
                                                             />
                                                         ),
-                                                        displayTemplate: row => {
-                                                            return this.state.dataExists === true ? row.discount_percentage : (
-                                                                <AlagehFormGroup
-                                                                    div={{}}
-                                                                    textBox={{
-                                                                        decimal: { allowNegative: false },
-                                                                        value: row.discount_percentage,
-                                                                        className: "txt-fld",
-                                                                        name: "discount_percentage",
-                                                                        events: {
-                                                                            onChange: onchangegridcol.bind(
-                                                                                this,
-                                                                                this,
-                                                                                context,
-                                                                                row
-                                                                            )
-                                                                        },
-                                                                        others: {
-                                                                            onFocus: e => {
-                                                                                e.target.oldvalue =
-                                                                                    e.target.value;
-                                                                            }
-                                                                        }
-                                                                    }}
-                                                                />
-                                                            );
-                                                        }
+                                                        // displayTemplate: row => {
+                                                        //     return this.state.dataExists === true ? row.discount_percentage : (
+                                                        //         <AlagehFormGroup
+                                                        //             div={{}}
+                                                        //             textBox={{
+                                                        //                 decimal: { allowNegative: false },
+                                                        //                 value: row.discount_percentage,
+                                                        //                 className: "txt-fld",
+                                                        //                 name: "discount_percentage",
+                                                        //                 events: {
+                                                        //                     onChange: onchangegridcol.bind(
+                                                        //                         this,
+                                                        //                         this,
+                                                        //                         context,
+                                                        //                         row
+                                                        //                     )
+                                                        //                 },
+                                                        //                 others: {
+                                                        //                     onFocus: e => {
+                                                        //                         e.target.oldvalue =
+                                                        //                             e.target.value;
+                                                        //                     }
+                                                        //                 }
+                                                        //             }}
+                                                        //         />
+                                                        //     );
+                                                        // }
                                                     },
                                                     {
                                                         fieldName: "discount_amount",
@@ -466,7 +384,7 @@ class InvoiceListService extends Component {
                                                 ]}
                                                 keyId="service_type_id"
                                                 dataSource={{
-                                                    data: this.state.sales_order_services
+                                                    data: this.state.invoice_entry_detail_services
                                                 }}
                                                 paging={{ page: 0, rowsPerPage: 10 }}
 
@@ -483,30 +401,3 @@ class InvoiceListService extends Component {
     }
 }
 
-function mapStateToProps(state) {
-    return {
-        opitemlist: state.opitemlist,
-        inventoryitemcategory: state.inventoryitemcategory,
-        inventoryitemuom: state.inventoryitemuom,
-        inventoryitemgroup: state.inventoryitemgroup
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators(
-        {
-
-            getItemCategory: AlgaehActions,
-            getItemUOM: AlgaehActions,
-            getItemGroup: AlgaehActions
-        },
-        dispatch
-    );
-}
-
-export default withRouter(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps
-    )(InvoiceListService)
-);
