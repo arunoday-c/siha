@@ -20,46 +20,63 @@ export default function TrailBalaceReport(props) {
           <div>Company logo</div>
           <div>Address</div>
           <h3>Report Name</h3>
-        </div>
-        <table
-          width="100%"
-          cellPadding="0"
-          cellSpacing="0"
-          className="trialReportStyle"
-        >
-          <tbody>
-            <tr>
-              <td style={{ width: "50%" }}>
-                {" "}
-                <div className="reportTableStyle" style={{ border: "none" }}>
-                  <ul className="treeListUL">{PlotUI(asset, style, [0])}</ul>
-
-                  <ul className="treeListUL">{PlotUI(expense, style, [0])}</ul>
-                </div>
-              </td>
-              <td style={{ width: "50%" }}>
-                {" "}
-                <div className="reportTableStyle" style={{ border: "none" }}>
+        </div>{" "}
+        <div className="reportTableStyle" style={{ border: "none" }}>
+          <table className="trialReportStyle">
+            <thead>
+              <tr>
+                <th valign="middle" rowSpan="2">
+                  Particulars
+                </th>
+                <th valign="middle" colSpan="2" width="272px">
+                  Closing Balance{" "}
+                </th>
+              </tr>{" "}
+              <tr>
+                <th>Debit</th>
+                <th>Credit </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan="3">
+                  <ul className="treeListUL">{PlotUI(capital, style, [0])}</ul>{" "}
+                </td>
+              </tr>
+              <tr>
+                <td colSpan="3">
                   <ul className="treeListUL">
                     {PlotUI(liability, style, [0])}
                   </ul>
-
-                  <ul className="treeListUL">{PlotUI(capital, style, [0])}</ul>
-
-                  <ul className="treeListUL">{PlotUI(income, style, [0])}</ul>
-                </div>
-              </td>
-            </tr>
-            <tr className="footerTotalArea">
-              <td style={{ width: "50%" }} valign="top">
-                <b>{data.total_debit_amount}</b>
-              </td>
-              <td style={{ width: "50%" }} valign="top">
-                <b>{data.total_credit_amount}</b>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                </td>
+              </tr>
+              <tr>
+                <td colSpan="3">
+                  <ul className="treeListUL">{PlotUI(asset, style, [0])}</ul>{" "}
+                </td>
+              </tr>
+              <tr>
+                <td colSpan="3">
+                  <ul className="treeListUL">{PlotUI(income, style, [0])}</ul>{" "}
+                </td>
+              </tr>
+              <tr>
+                <td colSpan="3">
+                  <ul className="treeListUL">{PlotUI(expense, style, [0])}</ul>{" "}
+                </td>
+              </tr>
+              <tr className="footerTotalArea">
+                <td style={{ textAlign: "left" }}>Grand Total</td>
+                <td valign="top">
+                  <b>{data.total_debit_amount}</b>
+                </td>
+                <td valign="top">
+                  <b>{data.total_credit_amount}</b>
+                </td>
+              </tr>
+            </tbody>
+          </table>{" "}
+        </div>{" "}
       </div>
     </>
   );
