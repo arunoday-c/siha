@@ -1,31 +1,18 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlgaehModalPopUp
 } from "../../../Wrapper/algaehWrapper";
-import { AlgaehActions } from "../../../../actions/algaehActions";
 
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
-import extend from "extend";
 import Options from "../../../../Options.json";
 import moment from "moment";
 
-class OrderItemDetails extends Component {
+export default class OrderItemDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    // this.setState({
-    //   dn_from: nextProps.dn_from,
-    //   dn_item_details: nextProps.dn_item_details
-    // });
   }
 
   changeDateFormat(date) {
@@ -35,15 +22,7 @@ class OrderItemDetails extends Component {
   }
 
   onClose = e => {
-    // this.setState(
-    //   {
-    //     dn_from: null,
-    //     dn_item_details: []
-    //   },
-    //   () => {
-    //     this.props.onClose && this.props.onClose(e);
-    //   }
-    // );
+
     this.props.onClose && this.props.onClose(e);
   };
 
@@ -63,122 +42,15 @@ class OrderItemDetails extends Component {
                 id="DN_details"
                 columns={[
                   {
-                    fieldName:
-                      this.props.grn_for === "PHR"
-                        ? "phar_item_id"
-                        : "inv_item_id",
+                    fieldName: "item_description",
                     label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />,
-                    displayTemplate: row => {
-                      let display;
-
-                      this.props.grn_for === "PHR"
-                        ? (display =
-                          this.props.receiptitemlist === undefined
-                            ? []
-                            : this.props.receiptitemlist.filter(
-                              f =>
-                                f.hims_d_item_master_id === row.phar_item_id
-                            ))
-                        : (display =
-                          this.props.receiptitemlist === undefined
-                            ? []
-                            : this.props.receiptitemlist.filter(
-                              f =>
-                                f.hims_d_inventory_item_master_id ===
-                                row.inv_item_id
-                            ));
-
-                      return (
-                        <span>
-                          {display !== undefined && display.length !== 0
-                            ? display[0].item_description
-                            : ""}
-                        </span>
-                      );
-                    },
-
                     others: { minWidth: 150 }
                   },
-
                   {
-                    fieldName:
-                      this.props.grn_for === "PHR"
-                        ? "phar_item_category"
-                        : "inv_item_category_id",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Item Category" }} />
-                    ),
-                    displayTemplate: row => {
-                      let display;
-
-                      this.props.grn_for === "PHR"
-                        ? (display =
-                          this.props.receiptitemcategory === undefined
-                            ? []
-                            : this.props.receiptitemcategory.filter(
-                              f =>
-                                f.hims_d_item_category_id ===
-                                row.phar_item_category
-                            ))
-                        : (display =
-                          this.props.receiptitemcategory === undefined
-                            ? []
-                            : this.props.receiptitemcategory.filter(
-                              f =>
-                                f.hims_d_inventory_tem_category_id ===
-                                row.inv_item_category_id
-                            ));
-
-                      return (
-                        <span>
-                          {display !== undefined && display.length !== 0
-                            ? display[0].category_desc
-                            : ""}
-                        </span>
-                      );
-                    },
-
-                    others: { minWidth: 250 }
+                    fieldName: "uom_description",
+                    label: <AlgaehLabel label={{ forceLabel: "UOM" }} />,
+                    others: { minWidth: 100 }
                   },
-                  {
-                    fieldName:
-                      this.props.grn_for === "PHR"
-                        ? "phar_item_group"
-                        : "inv_item_group_id",
-                    label: <AlgaehLabel label={{ forceLabel: "Item Group" }} />,
-                    displayTemplate: row => {
-                      let display;
-
-                      this.props.grn_for === "PHR"
-                        ? (display =
-                          this.props.receiptitemgroup === undefined
-                            ? []
-                            : this.props.receiptitemgroup.filter(
-                              f =>
-                                f.hims_d_item_group_id ===
-                                row.phar_item_group
-                            ))
-                        : (display =
-                          this.props.receiptitemgroup === undefined
-                            ? []
-                            : this.props.receiptitemgroup.filter(
-                              f =>
-                                f.hims_d_inventory_item_group_id ===
-                                row.inv_item_group_id
-                            ));
-
-                      return (
-                        <span>
-                          {display !== undefined && display.length !== 0
-                            ? display[0].group_description
-                            : ""}
-                        </span>
-                      );
-                    },
-
-                    others: { minWidth: 150 }
-                  },
-
                   {
                     fieldName: "expiry_date",
                     label: (
@@ -205,14 +77,16 @@ class OrderItemDetails extends Component {
                     }
                   },
                   {
-                    fieldName: "dn_quantity",
+                    fieldName: "dispatch_quantity",
                     label: (
-                      <AlgaehLabel label={{ forceLabel: "Delivery Qty" }} />
+                      <AlgaehLabel label={{ forceLabel: "Dispatched Qty" }} />
                     )
                   },
                   {
-                    fieldName: "free_qty",
-                    label: <AlgaehLabel label={{ forceLabel: "Free Qty" }} />
+                    fieldName: "unit_cost",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
+                    )
                   },
                   {
                     fieldName: "discount_percentage",
@@ -312,29 +186,3 @@ class OrderItemDetails extends Component {
     );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    receiptitemlist: state.receiptitemlist,
-    receiptitemcategory: state.receiptitemcategory,
-    receiptitemgroup: state.receiptitemgroup
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getItems: AlgaehActions,
-      getItemCategory: AlgaehActions,
-      getItemGroup: AlgaehActions
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OrderItemDetails)
-);

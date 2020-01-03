@@ -916,6 +916,28 @@
         "label": "Location",
         "required": "N"
       }
+    ],
+    "SalesInvoice": [
+      {
+        "fieldName": "invoice_number",
+        "label": "Invoice Number"
+      },
+      {
+        "fieldName": "invoice_date",
+        "label": "Invoice Date"
+      },
+      {
+        "fieldName": "sales_invoice_mode",
+        "label": "Invoice Mode"
+      },
+      {
+        "fieldName": "sales_order_number",
+        "label": "Sales Order Number"
+      },
+      {
+        "fieldName": "customer_name",
+        "label": "Customer Name"
+      }
     ]
   }
 }
