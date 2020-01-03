@@ -199,8 +199,6 @@ function getAccountHeadsForReport(
           if (option != undefined && option.tialBalance == "Y") {
             calcAmount(result[3], result[2], decimal_places)
               .then(head_data => {
-                console.log("trial bal");
-
                 const outputArray = createHierarchyForTB(
                   result[0],
                   child_data,
@@ -731,7 +729,6 @@ function createHierarchyForTB(
             subtitle: amount,
             title: item.account_name,
             label: item.account_name,
-
             tr_debit_amount: tr_debit_amount,
             tr_credit_amount: tr_credit_amount,
             leafnode: "N"

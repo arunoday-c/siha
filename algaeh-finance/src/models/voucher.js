@@ -443,7 +443,7 @@ export default {
           length,increment_by,numgen_seperator,postfix_start,postfix_end,current_num,pervious_num\
           from finance_numgen where record_status='A' and numgen_code=? FOR UPDATE;",
           values: [voucher_type],
-           printQuery: false
+          printQuery: false
         })
         .then(voucher_result => {
           if (voucher_result.length == 1) {
@@ -496,7 +496,7 @@ export default {
                   new Date(),
                   voucher_result[0]["finance_numgen_id"]
                 ],
-                 printQuery: false
+                printQuery: false
               })
               .then(result => {
                 if (result.affectedRows > 0) {
@@ -704,7 +704,7 @@ export default {
                        inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
                       where voucher_header_id=? and auth_status='P';",
                     values: [input.voucher_header_id],
-                     printQuery: false
+                    printQuery: false
                   })
                   .then(result => {
                     if (result.length > 0) {
@@ -722,7 +722,7 @@ export default {
                           from finance_voucher_details \
                           where auth_status='A' and child_id in (?) group by child_id;",
                             values: [child_ids],
-                             printQuery: false
+                            printQuery: false
                           })
                           .then(closeBalance => {
                             let internal_eror = false;
@@ -828,7 +828,7 @@ export default {
                               new Date(),
                               input.voucher_header_id
                             ],
-                             printQuery: false
+                            printQuery: false
                           })
                           .then(authResult => {
                             _mysql.releaseConnection();
@@ -871,7 +871,7 @@ export default {
                       input.rejected_reason,
                       input.voucher_header_id
                     ],
-                     printQuery: false
+                    printQuery: false
                   })
                   .then(authResult => {
                     _mysql.releaseConnection();
@@ -905,7 +905,7 @@ export default {
                     inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
                     where voucher_header_id=? and auth_status='P';",
                     values: [input.voucher_header_id],
-                     printQuery: false
+                    printQuery: false
                   })
                   .then(result => {
                     let total_income = 0;
@@ -927,7 +927,7 @@ export default {
                           from finance_voucher_details \
                           where auth_status='A' and child_id in (?) group by child_id;",
                             values: [child_ids],
-                             printQuery: false
+                            printQuery: false
                           })
                           .then(closeBalance => {
                             let internal_eror = false;
@@ -1111,7 +1111,7 @@ export default {
                               new Date(),
                               input.voucher_header_id
                             ],
-                             printQuery: false
+                            printQuery: false
                           })
                           .then(authResult => {
                             _mysql.commitTransaction(() => {
@@ -1157,7 +1157,7 @@ export default {
 
                       input.voucher_header_id
                     ],
-                     printQuery: false
+                    printQuery: false
                   })
                   .then(authResult => {
                     _mysql.releaseConnection();
