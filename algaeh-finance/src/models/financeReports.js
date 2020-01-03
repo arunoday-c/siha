@@ -1,6 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-import moment from "moment";
+// import moment from "moment";
 import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
@@ -75,19 +75,20 @@ export default {
   //created by irfan:
   getTrialBalance: (req, res, next) => {
     const decimal_places = req.userIdentity.decimal_places;
+    let option = { tialBalance: "Y" };
 
-    getAccountHeadsForReport(decimal_places, 1)
+    getAccountHeadsForReport(decimal_places, 1, option)
       .then(asset => {
-        getAccountHeadsForReport(decimal_places, 2)
+        getAccountHeadsForReport(decimal_places, 2, option)
           .then(liability => {
-            getAccountHeadsForReport(decimal_places, 3)
+            getAccountHeadsForReport(decimal_places, 3, option)
               .then(capital => {
                 const newCapital = capital.children[0].children.find(f => {
                   return f.finance_account_child_id == 52;
                 });
-                getAccountHeadsForReport(decimal_places, 4)
+                getAccountHeadsForReport(decimal_places, 4, option)
                   .then(income => {
-                    getAccountHeadsForReport(decimal_places, 5)
+                    getAccountHeadsForReport(decimal_places, 5, option)
                       .then(expense => {
                         const total_debit_amount = parseFloat(
                           parseFloat(asset.subtitle) +
@@ -135,7 +136,11 @@ export default {
 };
 
 //created by irfan:
-function getAccountHeadsForReport(decimal_places, finance_account_head_id) {
+function getAccountHeadsForReport(
+  decimal_places,
+  finance_account_head_id,
+  option
+) {
   const utilities = new algaehUtilities();
   const _mysql = new algaehMysql();
 
@@ -184,30 +189,52 @@ function getAccountHeadsForReport(decimal_places, finance_account_head_id) {
             finance_account_head_id,
             finance_account_head_id
           ],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
 
           const child_data = result[1];
 
-          calcAmount(result[3], result[2], decimal_places)
-            .then(head_data => {
-              const outputArray = createHierarchy(
-                result[0],
-                child_data,
-                head_data,
-                trans_symbol,
-                default_total,
-                decimal_places
-              );
+          if (option != undefined && option.tialBalance == "Y") {
+            calcAmount(result[3], result[2], decimal_places)
+              .then(head_data => {
+                console.log("trial bal");
 
-              resolve(outputArray[0]);
-            })
-            .catch(e => {
-              console.log("m4:", e);
-              next(e);
-            });
+                const outputArray = createHierarchyForTB(
+                  result[0],
+                  child_data,
+                  head_data,
+                  trans_symbol,
+                  default_total,
+                  decimal_places
+                );
+
+                resolve(outputArray[0]);
+              })
+              .catch(e => {
+                console.log("m4:", e);
+                next(e);
+              });
+          } else {
+            calcAmount(result[3], result[2], decimal_places)
+              .then(head_data => {
+                const outputArray = createHierarchy(
+                  result[0],
+                  child_data,
+                  head_data,
+                  trans_symbol,
+                  default_total,
+                  decimal_places
+                );
+
+                resolve(outputArray[0]);
+              })
+              .catch(e => {
+                console.log("m4:", e);
+                next(e);
+              });
+          }
         })
         .catch(e => {
           _mysql.releaseConnection();
@@ -551,6 +578,201 @@ function createHierarchy(
           title: item.account_name,
           label: item.account_name,
           disabled: true,
+          leafnode: "N"
+        });
+      }
+    }
+
+    // utilities.logger().log("roots:", roots);
+    // utilities.logger().log("children:", children);
+
+    // function to recursively build the tree
+    let findChildren = function(parent) {
+      if (children[parent.finance_account_head_id]) {
+        const tempchilds = children[parent.finance_account_head_id];
+
+        parent.children = tempchilds;
+
+        for (let i = 0, len = parent.children.length; i < len; ++i) {
+          findChildren(parent.children[i]);
+        }
+      }
+    };
+
+    // enumerate through to handle the case where there are multiple roots
+    for (let i = 0, len = roots.length; i < len; ++i) {
+      findChildren(roots[i]);
+    }
+
+    return roots;
+  } catch (e) {
+    console.log("MY-ERORR:", e);
+  }
+}
+
+//created by :IRFAN to build tree hierarchy TRIAL BALANCE
+function createHierarchyForTB(
+  arry,
+  child_data,
+  head_data,
+  trans_symbol,
+  default_total,
+  decimal_places
+) {
+  try {
+    // const onlyChilds = [];
+    const utilities = new algaehUtilities();
+    let roots = [],
+      children = {};
+
+    // find the top level nodes and hash the children based on parent_acc_id
+    for (let i = 0, len = arry.length; i < len; ++i) {
+      let item = arry[i],
+        p = item.parent_acc_id,
+        //if it has no parent_acc_id
+        //seprating roots to roots array childerens to childeren array
+        target = !p ? roots : children[p] || (children[p] = []);
+
+      //CHILD ACCOUNT
+      if (
+        item.finance_account_child_id > 0 &&
+        item.finance_account_head_id == item.head_id
+      ) {
+        let child =
+          children[item.finance_account_head_id] ||
+          (children[item.finance_account_head_id] = []);
+
+        //ST---calulating Amount
+        const BALANCE = child_data.find(f => {
+          return (
+            item.finance_account_head_id == f.head_id &&
+            item.finance_account_child_id == f.child_id
+          );
+        });
+
+        let tr_debit_amount = 0;
+        let tr_credit_amount = 0;
+        let amount = 0;
+        if (BALANCE != undefined) {
+          if (trans_symbol == "Dr.") {
+            amount = parseFloat(BALANCE.deb_minus_cred).toFixed(decimal_places);
+          } else {
+            amount = parseFloat(BALANCE.cred_minus_deb).toFixed(decimal_places);
+          }
+
+          tr_debit_amount = parseFloat(BALANCE.debit_amount).toFixed(
+            decimal_places
+          );
+          tr_credit_amount = parseFloat(BALANCE.credit_amount).toFixed(
+            decimal_places
+          );
+
+          // if (trans_symbol == "Dr.") {
+          //   amount = BALANCE.deb_minus_cred;
+          // } else {
+          //   amount = BALANCE.cred_minus_deb;
+          // }
+        } else {
+          amount = default_total;
+        }
+
+        //END---calulating Amount
+        child.push({
+          finance_account_child_id: item["finance_account_child_id"],
+          trans_symbol: trans_symbol,
+          subtitle: amount,
+          title: item.child_name,
+          label: item.child_name,
+          head_id: item["head_id"],
+          tr_debit_amount: tr_debit_amount,
+          tr_credit_amount: tr_credit_amount,
+
+          leafnode: "Y",
+          created_status: item["child_created_from"]
+        });
+
+        //if children array doesnt contain this non-leaf node then push
+        const data = target.find(val => {
+          return val.finance_account_head_id == item.finance_account_head_id;
+        });
+
+        //HEAD ACCOUNT IN SIDE CHILD
+        if (!data) {
+          //ST---calulating Amount
+          const BALANCE = head_data.find(f => {
+            return item.finance_account_head_id == f.finance_account_head_id;
+          });
+
+          let amount = 0;
+          let tr_debit_amount = 0;
+          let tr_credit_amount = 0;
+          if (BALANCE != undefined) {
+            if (trans_symbol == "Dr.") {
+              amount = BALANCE.deb_minus_cred;
+            } else {
+              amount = BALANCE.cred_minus_deb;
+            }
+
+            tr_debit_amount = parseFloat(BALANCE.total_debit_amount).toFixed(
+              decimal_places
+            );
+            tr_credit_amount = parseFloat(BALANCE.total_credit_amount).toFixed(
+              decimal_places
+            );
+          } else {
+            amount = default_total;
+          }
+
+          //END---calulating Amount
+
+          target.push({
+            ...item,
+            trans_symbol: trans_symbol,
+            subtitle: amount,
+            title: item.account_name,
+            label: item.account_name,
+
+            tr_debit_amount: tr_debit_amount,
+            tr_credit_amount: tr_credit_amount,
+            leafnode: "N"
+          });
+        }
+      } //HEAD ACCOUNT
+      else {
+        //ST---calulating Amount
+        const BALANCE = head_data.find(f => {
+          return item.finance_account_head_id == f.finance_account_head_id;
+        });
+
+        let amount = 0;
+        let tr_debit_amount = 0;
+        let tr_credit_amount = 0;
+        if (BALANCE != undefined) {
+          if (trans_symbol == "Dr.") {
+            amount = BALANCE.deb_minus_cred;
+          } else {
+            amount = BALANCE.cred_minus_deb;
+          }
+          tr_debit_amount = parseFloat(BALANCE.total_debit_amount).toFixed(
+            decimal_places
+          );
+          tr_credit_amount = parseFloat(BALANCE.total_credit_amount).toFixed(
+            decimal_places
+          );
+        } else {
+          amount = default_total;
+        }
+
+        //END---calulating Amount
+
+        target.push({
+          ...item,
+          trans_symbol: trans_symbol,
+          subtitle: amount,
+          title: item.account_name,
+          label: item.account_name,
+          tr_debit_amount: tr_debit_amount,
+          tr_credit_amount: tr_credit_amount,
           leafnode: "N"
         });
       }
