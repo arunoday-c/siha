@@ -74,6 +74,11 @@
           text-align: right;
           border-left: 1px solid #ebebeb;
           padding-right: 10px;
+          b {
+            border-bottom: 1px solid #888888;
+            width: 100%;
+            display: inline-block;
+          }
         }
         span:last-child {
           color: black;
@@ -82,6 +87,11 @@
           text-align: right;
           border-left: 1px solid #ebebeb;
           padding-right: 10px;
+          b {
+            border-bottom: 1px solid #888888;
+            width: 100%;
+            display: inline-block;
+          }
         }
         .childNodeLi {
           font-weight: normal;
