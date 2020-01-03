@@ -192,7 +192,10 @@ class LoanRequest extends Component {
       loan_tenure: null,
       installment_amount: null,
       start_year: null,
-      start_month: null
+      start_month: null,
+      employee_name: null,
+      employee_id: null,
+      hims_d_employee_id: null
     });
   }
 
@@ -201,7 +204,10 @@ class LoanRequest extends Component {
       deducting_year: moment().year(),
       deducting_month: parseInt(moment(new Date()).format("M"), 10) + 1,
       advance_amount: null,
-      advance_reason: null
+      advance_reason: null,
+      employee_name: null,
+      employee_id: null,
+      hims_d_employee_id: null
     });
   }
 
@@ -327,8 +333,9 @@ class LoanRequest extends Component {
           this.setState({
             [e.target.name]: e.target.value,
 
-            installment_amount: (e.target.value / this.state.loan_tenure)
-              .toFixed(this.state.decimal_places)
+            installment_amount: (
+              e.target.value / this.state.loan_tenure
+            ).toFixed(this.state.decimal_places)
           });
         } else {
           swalMessage({
@@ -397,8 +404,9 @@ class LoanRequest extends Component {
       case "loan_tenure":
         this.setState({
           [value.name]: value.value,
-          installment_amount: (this.state.loan_amount / value.value)
-            .toFixed(this.state.decimal_places)
+          installment_amount: (this.state.loan_amount / value.value).toFixed(
+            this.state.decimal_places
+          )
         });
         break;
 
@@ -506,8 +514,8 @@ class LoanRequest extends Component {
                                 Issued
                               </span>
                             ) : (
-                                      "------"
-                                    )}
+                              "------"
+                            )}
                           </span>
                         );
                       },
@@ -551,8 +559,8 @@ class LoanRequest extends Component {
                         return row.pending_tenure !== 0 ? (
                           <span>{row.pending_tenure} Month</span>
                         ) : (
-                            <span className="badge badge-success">Closed</span>
-                          );
+                          <span className="badge badge-success">Closed</span>
+                        );
                       }
                     },
 
@@ -645,9 +653,9 @@ class LoanRequest extends Component {
                   isEditable={false}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    onEdit: () => { },
-                    onDelete: () => { },
-                    onDone: () => { }
+                    onEdit: () => {},
+                    onDelete: () => {},
+                    onDone: () => {}
                   }}
                 />
               </div>
@@ -718,9 +726,9 @@ class LoanRequest extends Component {
                           <span>
                             {moment(
                               "01-" +
-                              row.deducting_month +
-                              "-" +
-                              row.deducting_year,
+                                row.deducting_month +
+                                "-" +
+                                row.deducting_year,
                               "DD-MM-YYYY"
                             ).format("MMMM - YYYY")}
                           </span>
@@ -1005,14 +1013,23 @@ class LoanRequest extends Component {
                         }
                       }}
                     />
-                    <div className="col-3 margin-bottom-15">
+
+                    <div className="col-12" style={{ textAlign: "right" }}>
                       <button
+                        onClick={this.clearState.bind(this)}
+                        type="button"
+                        className="btn btn-default"
+                        style={{ marginRight: 15 }}
+                      >
+                        Clear
+                      </button>
+                      <button
+                        onClick={this.applyLoan.bind(this)}
                         type="button"
                         className="btn btn-primary"
-                        style={{ marginTop: 19 }}
-                        onClick={this.applyLoan.bind(this)}
+                        //disabled={this.state.Request_enable}
                       >
-                        Request
+                        Request Loan
                       </button>
                     </div>
                   </div>
@@ -1098,7 +1115,26 @@ class LoanRequest extends Component {
                       }}
                     />
 
-                    <div className="col-12 margin-bottom-15">
+                    <div className="col-12" style={{ textAlign: "right" }}>
+                      <button
+                        onClick={this.clearAdvanceState.bind(this)}
+                        type="button"
+                        className="btn btn-default"
+                        style={{ marginRight: 15 }}
+                      >
+                        Clear
+                      </button>
+                      <button
+                        onClick={this.applyAdvance.bind(this)}
+                        type="button"
+                        className="btn btn-primary"
+                        //disabled={this.state.Request_enable}
+                      >
+                        Request Advance
+                      </button>
+                    </div>
+
+                    {/* <div className="col-12 margin-bottom-15">
                       <button
                         type="button"
                         className="btn btn-primary"
@@ -1107,7 +1143,7 @@ class LoanRequest extends Component {
                       >
                         Request
                       </button>
-                    </div>
+                    </div> */}
                   </div>
                 ) : null}
               </div>

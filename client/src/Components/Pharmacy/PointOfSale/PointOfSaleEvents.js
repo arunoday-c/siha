@@ -25,29 +25,29 @@ const changeTexts = ($this, ctrl, e) => {
     case "pos_customer_type":
       value === "OT"
         ? $this.setState({
-          [name]: value,
-          mode_of_pay: "1",
-          OTItemAddDis: false
-        })
+            [name]: value,
+            mode_of_pay: "1",
+            OTItemAddDis: false
+          })
         : $this.setState({
-          [name]: value,
-          mode_of_pay: "",
-          OTItemAddDis: false
-        });
+            [name]: value,
+            mode_of_pay: "",
+            OTItemAddDis: false
+          });
       break;
 
     case "mode_of_pay":
       value === "1"
         ? $this.setState({
-          [name]: value,
-          insurance_yesno: "N",
-          insured: "N"
-        })
+            [name]: value,
+            insurance_yesno: "N",
+            insured: "N"
+          })
         : $this.setState({
-          [name]: value,
-          insurance_yesno: "Y",
-          insured: "Y"
-        });
+            [name]: value,
+            insurance_yesno: "Y",
+            insured: "Y"
+          });
       break;
 
     default:
@@ -461,12 +461,14 @@ const SavePosEnrty = $this => {
     } else {
       $this.state.pre_approval_req = "N";
     }
-    if (visit_preapproval_Item !== null && visit_preapproval_Item !== undefined) {
+    if (
+      visit_preapproval_Item !== null &&
+      visit_preapproval_Item !== undefined
+    ) {
       $this.state.visit_preapproval = "Y";
     } else {
       $this.state.visit_preapproval = "N";
     }
-
 
     $this.state.posted = "N";
     $this.state.receipt_header_id = null;
@@ -591,7 +593,6 @@ const PostPosEntry = $this => {
       });
       return;
     }
-
 
     const Quantity_zero = _.filter(
       $this.state.pharmacy_stock_detail,
@@ -1108,9 +1109,7 @@ const getCashiersAndShiftMAP = $this => {
 };
 
 const ClosePrescribedItem = ($this, e) => {
-
   if (e !== undefined && e.length > 0 && Array.isArray(e)) {
-
     algaehApiCall({
       uri: "/billing/billingCalculations",
       module: "billing",
@@ -1132,11 +1131,9 @@ const ClosePrescribedItem = ($this, e) => {
           sum_data.company_payable =
             sum_data.company_payble || $this.state.company_payable;
           sum_data.sec_company_responsibility =
-            sum_data.sec_company_res ||
-            $this.state.sec_company_responsibility;
+            sum_data.sec_company_res || $this.state.sec_company_responsibility;
           sum_data.sec_company_payable =
-            sum_data.sec_company_paybale ||
-            $this.state.sec_company_payable;
+            sum_data.sec_company_paybale || $this.state.sec_company_payable;
 
           sum_data.copay_amount =
             sum_data.copay_amount || $this.state.copay_amount;
@@ -1147,8 +1144,11 @@ const ClosePrescribedItem = ($this, e) => {
           sum_data.postEnable = false;
           sum_data.hims_f_pharmacy_pos_detail_id = null;
 
-          $this.setState({ ...sum_data, pharmacy_stock_detail: e, prescribed_item: !$this.state.prescribed_item });
-
+          $this.setState({
+            ...sum_data,
+            pharmacy_stock_detail: e,
+            prescribed_item: !$this.state.prescribed_item
+          });
         } else {
           swalMessage({
             title: response.data.message,
@@ -1174,19 +1174,16 @@ const ClosePrescribedItem = ($this, e) => {
     } else if ($this.state.pos_customer_type === "OT") {
       getPosEntry($this, $this.state.pos_number);
     }
-  }
-  else {
+  } else {
     $this.setState({
       prescribed_item: !$this.state.prescribed_item
     });
   }
-}
+};
 
 const qtyonchangegridcol = ($this, row, e) => {
-
   let name = e.target.name;
   let value = e.target.value === "" ? null : e.target.value;
-
 
   if (parseFloat(value) < 0) {
     swalMessage({
@@ -1203,7 +1200,6 @@ const qtyonchangegridcol = ($this, row, e) => {
     calculateAmount($this, row);
   }
 };
-
 
 //Calculate Row Detail
 const calculateAmount = ($this, row) => {
@@ -1270,8 +1266,6 @@ const calculateAmount = ($this, row) => {
         // data.billdetails[0].select_item = "Y"
         extend(row, data.billdetails[0]);
 
-
-
         // const _index = prescribed_item_list.indexOf(row);
 
         const qty_exists = _.filter(
@@ -1299,18 +1293,27 @@ const calculateAmount = ($this, row) => {
   // }
 };
 
-const processSelectedItems = ($this) => {
-
-  const non_selected_Items = _.filter($this.state.prescribed_item_list, (f) => f.select_item === "N");
-  let selected_item_list = []
+const processSelectedItems = $this => {
+  const non_selected_Items = _.filter(
+    $this.state.prescribed_item_list,
+    f => f.select_item === "N"
+  );
+  let selected_item_list = [];
   if (non_selected_Items.length > 0) {
-
-    let strItemDescription = ""
-    for (let k = 0; k < non_selected_Items.length; k++) {
-      strItemDescription += non_selected_Items[k].item_description
-    }
+    // let strItemDescription = "";
+    // for (let k = 0; k < non_selected_Items.length; k++) {
+    //   strItemDescription += non_selected_Items[k].item_description;
+    // }
     swal({
-      title: "From the Prescribed Items, These " + strItemDescription + " items not selected do you want to proceed",
+      title: "For your information",
+      text:
+        "Items (" +
+        non_selected_Items
+          .map(item => {
+            return item.item_description;
+          })
+          .join(", ") +
+        ") no quantity added. Do you wish to proceed without any quantity?",
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
@@ -1322,16 +1325,22 @@ const processSelectedItems = ($this) => {
         AlgaehLoader({ show: false });
         for (let i = 0; i < $this.state.prescribed_item_list.length; i++) {
           if ($this.state.prescribed_item_list[i].batches.length > 0) {
-            const batch_item_list = _.filter($this.state.prescribed_item_list[i].batches, (f) => f.quantity !== null && parseFloat(f.quantity) > 0);
-            selected_item_list = selected_item_list.concat(batch_item_list)
+            const batch_item_list = _.filter(
+              $this.state.prescribed_item_list[i].batches,
+              f => f.quantity !== null && parseFloat(f.quantity) > 0
+            );
+            selected_item_list = selected_item_list.concat(batch_item_list);
           }
         }
 
-        $this.setState({
-          item_batches: []
-        }, () => {
-          $this.props.onClose && $this.props.onClose(selected_item_list);
-        })
+        $this.setState(
+          {
+            item_batches: []
+          },
+          () => {
+            $this.props.onClose && $this.props.onClose(selected_item_list);
+          }
+        );
       }
     });
   } else {
@@ -1339,20 +1348,24 @@ const processSelectedItems = ($this) => {
 
     for (let i = 0; i < $this.state.prescribed_item_list.length; i++) {
       if ($this.state.prescribed_item_list[i].batches.length > 0) {
-        const batch_item_list = _.filter($this.state.prescribed_item_list[i].batches, (f) => f.quantity !== null && parseFloat(f.quantity) > 0);
-        selected_item_list = selected_item_list.concat(batch_item_list)
+        const batch_item_list = _.filter(
+          $this.state.prescribed_item_list[i].batches,
+          f => f.quantity !== null && parseFloat(f.quantity) > 0
+        );
+        selected_item_list = selected_item_list.concat(batch_item_list);
       }
     }
 
-    $this.setState({
-      item_batches: []
-    }, () => {
-      $this.props.onClose && $this.props.onClose(selected_item_list);
-    })
+    $this.setState(
+      {
+        item_batches: []
+      },
+      () => {
+        $this.props.onClose && $this.props.onClose(selected_item_list);
+      }
+    );
   }
-
 };
-
 
 const getMedicationAprovalList = ($this, row) => {
   if (
@@ -1365,7 +1378,6 @@ const getMedicationAprovalList = ($this, row) => {
     });
     return;
   }
-
 
   let inputobj = { item_id: row.item_id };
 

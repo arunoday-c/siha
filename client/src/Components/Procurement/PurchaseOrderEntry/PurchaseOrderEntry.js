@@ -5,10 +5,7 @@ import { bindActionCreators } from "redux";
 import "./PurchaseOrderEntry.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import MyContext from "../../../utils/MyContext";
-import {
-  AlgaehLabel,
-  AlagehAutoComplete
-} from "../../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -41,13 +38,12 @@ class PurchaseOrderEntry extends Component {
     this.state = {
       decimal_places: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).decimal_places,
+      ).decimal_places
       // po_auth_level: "1"
     };
     getVendorMaster(this, this);
-    getPOOptions(this, this)
+    getPOOptions(this, this);
   }
-
 
   UNSAFE_componentWillMount() {
     let IOputs = POEntry.inputParam();
@@ -68,14 +64,15 @@ class PurchaseOrderEntry extends Component {
       this.state.po_from === null
         ? []
         : Enumerable.from(this.props.polocations)
-          .where(w => w.location_type === "WH")
-          .toArray();
+            .where(w => w.location_type === "WH")
+            .toArray();
 
-    const class_finder = this.state.dataFinder === true
-      ? " disableFinder"
-      : this.state.ReqData === true
+    const class_finder =
+      this.state.dataFinder === true
         ? " disableFinder"
-        : ""
+        : this.state.ReqData === true
+        ? " disableFinder"
+        : "";
     return (
       <div>
         <BreadCrumb
@@ -144,44 +141,44 @@ class PurchaseOrderEntry extends Component {
                   />
                   <h6>
                     {this.state.authorize1 === "Y" &&
-                      this.state.authorize2 === "Y" ? (
-                        <span className="badge badge-success">Authorized</span>
-                      ) : this.state.authorize1 === "Y" &&
-                        this.state.authorize2 === "N" ? (
-                          <span className="badge badge-danger">Pending</span>
-                        ) : this.state.authorize1 === "N" &&
-                          this.state.authorize2 === "N" ? (
-                            <span className="badge badge-danger">Pending</span>
-                          ) : (
-                            "-------"
-                          )}
+                    this.state.authorize2 === "Y" ? (
+                      <span className="badge badge-success">Authorized</span>
+                    ) : this.state.authorize1 === "Y" &&
+                      this.state.authorize2 === "N" ? (
+                      <span className="badge badge-danger">Pending</span>
+                    ) : this.state.authorize1 === "N" &&
+                      this.state.authorize2 === "N" ? (
+                      <span className="badge badge-danger">Pending</span>
+                    ) : (
+                      "-------"
+                    )}
                   </h6>
                 </div>
               ) : null}
             </div>
           }
           printArea={
-            this.state.hims_f_procurement_po_header_id !== null
+            this.state.purchase_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Receipt for Internal",
-                    events: {
-                      onClick: () => {
-                        generatePOReceipt(this.state);
+                  menuitems: [
+                    {
+                      label: "Receipt for Internal",
+                      events: {
+                        onClick: () => {
+                          generatePOReceipt(this.state);
+                        }
+                      }
+                    },
+                    {
+                      label: "Receipt for Vendor",
+                      events: {
+                        onClick: () => {
+                          generatePOReceiptNoPrice(this.state);
+                        }
                       }
                     }
-                  },
-                  {
-                    label: "Receipt for Vendor",
-                    events: {
-                      onClick: () => {
-                        generatePOReceiptNoPrice(this.state);
-                      }
-                    }
-                  }
-                ]
-              }
+                  ]
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -206,7 +203,8 @@ class PurchaseOrderEntry extends Component {
                       data: GlobalVariables.PO_TYPE
                     },
                     others: {
-                      disabled: this.state.po_entry_detail.length > 0 ? true : false
+                      disabled:
+                        this.state.po_entry_detail.length > 0 ? true : false
                     },
                     onChange: texthandle.bind(this, this),
                     onClear: () => {
@@ -230,11 +228,12 @@ class PurchaseOrderEntry extends Component {
                       data: GlobalVariables.PO_FROM
                     },
                     others: {
-                      disabled: this.state.po_entry_detail.length > 0 ? true : false
+                      disabled:
+                        this.state.po_entry_detail.length > 0 ? true : false
                     },
                     onChange: poforhandle.bind(this, this),
                     onClear: () => {
-                      clearItemDetails(this, this)
+                      clearItemDetails(this, this);
                       this.setState({
                         po_from: null,
                         ReqData: true,
@@ -244,7 +243,6 @@ class PurchaseOrderEntry extends Component {
                     }
                   }}
                 />
-
 
                 <AlagehAutoComplete
                   div={{ className: "col-2" }}
@@ -268,7 +266,8 @@ class PurchaseOrderEntry extends Component {
                       data: _mainStore
                     },
                     others: {
-                      disabled: this.state.po_entry_detail.length > 0 ? true : false
+                      disabled:
+                        this.state.po_entry_detail.length > 0 ? true : false
                     },
                     onChange: loctexthandle.bind(this, this),
                     onClear: () => {
@@ -292,7 +291,8 @@ class PurchaseOrderEntry extends Component {
                       data: this.props.povendors
                     },
                     others: {
-                      disabled: this.state.po_entry_detail.length > 0 ? true : false
+                      disabled:
+                        this.state.po_entry_detail.length > 0 ? true : false
                     },
                     onChange: vendortexthandle.bind(this, this),
                     onClear: () => {
@@ -303,30 +303,31 @@ class PurchaseOrderEntry extends Component {
                   }}
                 />
 
-                {this.state.po_type === "MR" ?
-                  (
-                    <div className={"col-2 globalSearchCntr" + class_finder}>
-                      <AlgaehLabel label={{ forceLabel: "Search Requisition No." }} />
-                      <h6 onClick={RequisitionSearch.bind(this, this)}>
-                        {this.state.material_requisition_number
-                          ? this.state.material_requisition_number
-                          : "Requisition No."}
-                        <i className="fas fa-search fa-lg"></i>
-                      </h6>
-                    </div>
-                  ) : this.state.po_type === "VQ" ? (
-                    <div className={"col-2 globalSearchCntr" + class_finder}>
-                      <AlgaehLabel label={{ forceLabel: "Search Vendor Quotation No." }} />
-                      <h6 onClick={VendorQuotationSearch.bind(this, this)}>
-                        {this.state.vendor_quotation_number
-                          ? this.state.vendor_quotation_number
-                          : "Vendor Quotation No."}
-                        <i className="fas fa-search fa-lg"></i>
-                      </h6>
-                    </div>
-                  ) : null
-                }
-
+                {this.state.po_type === "MR" ? (
+                  <div className={"col-2 globalSearchCntr" + class_finder}>
+                    <AlgaehLabel
+                      label={{ forceLabel: "Search Requisition No." }}
+                    />
+                    <h6 onClick={RequisitionSearch.bind(this, this)}>
+                      {this.state.material_requisition_number
+                        ? this.state.material_requisition_number
+                        : "Requisition No."}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>
+                ) : this.state.po_type === "VQ" ? (
+                  <div className={"col-2 globalSearchCntr" + class_finder}>
+                    <AlgaehLabel
+                      label={{ forceLabel: "Search Vendor Quotation No." }}
+                    />
+                    <h6 onClick={VendorQuotationSearch.bind(this, this)}>
+                      {this.state.vendor_quotation_number
+                        ? this.state.vendor_quotation_number
+                        : "Vendor Quotation No."}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>
+                ) : null}
 
                 <AlagehAutoComplete
                   div={{ className: "col" }}
@@ -341,7 +342,8 @@ class PurchaseOrderEntry extends Component {
                       data: GlobalVariables.PAYMENT_TERMS
                     },
                     others: {
-                      disabled: this.state.po_entry_detail.length > 0 ? true : false
+                      disabled:
+                        this.state.po_entry_detail.length > 0 ? true : false
                     },
                     onChange: texthandle.bind(this, this),
                     onClear: () => {
@@ -427,7 +429,6 @@ class PurchaseOrderEntry extends Component {
               </button>
 
               {this.props.purchase_auth === true ? (
-
                 <button
                   type="button"
                   className="btn btn-other"
@@ -436,15 +437,13 @@ class PurchaseOrderEntry extends Component {
                       ? true
                       : this.state.authorize1 === "Y" &&
                         this.state.authorize2 === "Y"
-                        ? true
-                        : false
+                      ? true
+                      : false
                   }
                   onClick={AuthorizePOEntry.bind(
                     this,
                     this,
-                    this.state.authorize1 === "N"
-                      ? "authorize1"
-                      : "authorize2"
+                    this.state.authorize1 === "N" ? "authorize1" : "authorize2"
                   )}
                 >
                   <AlgaehLabel
@@ -453,31 +452,30 @@ class PurchaseOrderEntry extends Component {
                         this.state.authorize1 === "N"
                           ? "Authorize 1"
                           : this.state.po_auth_level === "2"
-                            ? "Authorize 2"
-                            : "Authorize 1",
+                          ? "Authorize 2"
+                          : "Authorize 1",
                       returnText: true
                     }}
                   />
                 </button>
-
-                // <button
-                //   type="button"
-                //   className="btn btn-other"
-                //   disabled={
-                //     this.state.authorize1 === "Y"
-                //       ? true
-                //       : this.state.authorizeBtn
-                //   }
-                //   onClick={AuthorizePOEntry.bind(this, this)}
-                // >
-                //   <AlgaehLabel
-                //     label={{
-                //       forceLabel: "Authorize",
-                //       returnText: true
-                //     }}
-                //   />
-                // </button>
-              ) : null}
+              ) : // <button
+              //   type="button"
+              //   className="btn btn-other"
+              //   disabled={
+              //     this.state.authorize1 === "Y"
+              //       ? true
+              //       : this.state.authorizeBtn
+              //   }
+              //   onClick={AuthorizePOEntry.bind(this, this)}
+              // >
+              //   <AlgaehLabel
+              //     label={{
+              //       forceLabel: "Authorize",
+              //       returnText: true
+              //     }}
+              //   />
+              // </button>
+              null}
             </div>
           </div>
         </div>

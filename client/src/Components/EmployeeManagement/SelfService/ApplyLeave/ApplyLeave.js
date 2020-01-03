@@ -34,6 +34,7 @@ class ApplyLeave extends Component {
       selectedLang: this.props.SelectLanguage,
       emp_leaves_data: [],
       leave_his: [],
+      isEmployee: false,
       available_balance: 0.0,
       total_applied_days: 0.0,
       from_date: props.leave.from_date ? props.leave.from_date : null,
@@ -54,7 +55,7 @@ class ApplyLeave extends Component {
     };
     this.leaveSocket = Socket;
     this.getLeaveTypes();
-    this.getEmployees();
+    // this.getEmployees();
   }
 
   componentWillUnmount() {
@@ -76,8 +77,8 @@ class ApplyLeave extends Component {
     return dates;
   }
 
-  componentDidMount() {
-    if (this.props.empData) {
+  componentDidUpdate(prevProps) {
+    if (this.state.employee_id !== prevProps.empData.hims_d_employee_id) {
       this.setState(
         {
           employee_id: this.props.empData.hims_d_employee_id,
@@ -92,10 +93,6 @@ class ApplyLeave extends Component {
           this.getEmployeeLeaveHistory();
         }
       );
-    } else {
-      this.setState({
-        isEmployee: false
-      });
     }
   }
 
@@ -516,7 +513,7 @@ class ApplyLeave extends Component {
     });
   }
 
-  getEmployeeLeaveHistory() {
+  getEmployeeLeaveHistory = () => {
     algaehApiCall({
       uri: "/leave/getEmployeeLeaveHistory",
       method: "GET",
@@ -534,9 +531,9 @@ class ApplyLeave extends Component {
       },
       onFailure: err => {}
     });
-  }
+  };
 
-  getEmployeeLeaveData() {
+  getEmployeeLeaveData = () => {
     algaehApiCall({
       uri: "/leave/getEmployeeLeaveData",
       method: "GET",
@@ -558,7 +555,7 @@ class ApplyLeave extends Component {
       },
       onFailure: err => {}
     });
-  }
+  };
 
   getLeaveTypes() {
     algaehApiCall({
@@ -615,29 +612,8 @@ class ApplyLeave extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  {/* <AlagehAutoComplete
-                    div={{ className: "col-12 margin-bottom-15" }}
-                    label={{
-                      forceLabel: "Employee",
-                      isImp: false
-                    }}
-                    selector={{
-                      name: "employee_id",
-                      className: "select-fld",
-                      value: this.state.employee_id,
-                      dataSource: {
-                        textField: "full_name",
-                        valueField: "hims_d_employee_id",
-                        data: this.state.employees
-                      },
-                      onChange: this.dropDownHandler.bind(this),
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  /> */}
                   <AlagehAutoComplete
-                    div={{ className: "col-6 margin-bottom-15 form-group" }}
+                    div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "Leave Type",
                       isImp: true
@@ -652,12 +628,12 @@ class ApplyLeave extends Component {
                         data: this.state.emp_leaves_data
                       },
                       onChange: this.dropDownHandler.bind(this),
-                      template: item => (
-                        <div className="multiInfoList">
-                          <h6>{item.leave_description}</h6>
-                          <p>{item.leave_type === "U" ? "Unpaid" : "Paid"}</p>
-                        </div>
-                      ),
+                      // template: item => (
+                      //   <div className="multiInfoList">
+                      //     <h6>{item.leave_description}</h6>
+                      //     <p>{item.leave_type === "U" ? "Unpaid" : "Paid"}</p>
+                      //   </div>
+                      // ),
                       onClear: () => {
                         this.setState({
                           leave_id: null,
@@ -669,7 +645,7 @@ class ApplyLeave extends Component {
                       }
                     }}
                   />
-                  <div className="col-6 margin-bottom-15 form-group">
+                  <div className="col-6 form-group">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Available Balance"
@@ -690,7 +666,7 @@ class ApplyLeave extends Component {
                     </div>
                   ) : null}
                   <AlgaehDateHandler
-                    div={{ className: "col-6 margin-bottom-15" }}
+                    div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "Date From",
                       isImp: true
@@ -732,7 +708,7 @@ class ApplyLeave extends Component {
                     value={this.state.from_date}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-6 margin-bottom-15" }}
+                    div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "From Session",
                       isImp: true
@@ -758,7 +734,7 @@ class ApplyLeave extends Component {
                     }}
                   />
                   <AlgaehDateHandler
-                    div={{ className: "col-6 margin-bottom-15" }}
+                    div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "Date To",
                       isImp: true
@@ -816,7 +792,7 @@ class ApplyLeave extends Component {
                     minDate={this.state.from_date}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-6 margin-bottom-15" }}
+                    div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "To Session",
                       isImp: true
@@ -838,7 +814,7 @@ class ApplyLeave extends Component {
                       }
                     }}
                   />{" "}
-                  <div className="col-12 margin-bottom-15">
+                  <div className="col-12 form-group">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Appliying for"
@@ -847,7 +823,7 @@ class ApplyLeave extends Component {
                     <h6>{this.state.total_applied_days} day(s)</h6>
                   </div>
                   <AlagehFormGroup
-                    div={{ className: "col-12 margin-bottom-15" }}
+                    div={{ className: "col-12 form-group mandatory" }}
                     label={{
                       forceLabel: "Reason for Leave",
                       isImp: true
@@ -861,24 +837,22 @@ class ApplyLeave extends Component {
                       }
                     }}
                   />
-                  <div className="col-3">
-                    {/* <ButtonType
-                      classname="btn-primary"
-                      loading={this.state.loading_Process}
-                      onClick={this.applyLeave.bind(this)}
-                      label={{
-                        forceLabel: "Request",
-                        returnText: true
-                      }}
-                      others={{ disabled: this.state.Request_enable }}
-                    /> */}
+                  <div className="col-12" style={{ textAlign: "right" }}>
+                    <button
+                      onClick={this.clearState.bind(this)}
+                      type="button"
+                      className="btn btn-default"
+                      style={{ marginRight: 15 }}
+                    >
+                      Clear
+                    </button>
                     <button
                       onClick={this.applyLeave.bind(this)}
                       type="button"
                       className="btn btn-primary"
                       disabled={this.state.Request_enable}
                     >
-                      Send for Approval
+                      Request Leave
                     </button>
                   </div>
                 </div>

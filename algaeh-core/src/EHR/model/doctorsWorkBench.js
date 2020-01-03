@@ -693,20 +693,28 @@ let getEncounterReview = (req, res, next) => {
 //created by irfan: get MYDAY in doctors work bench , to show list of todays patients
 let getMyDay = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
+  const { employee_id, sub_department_id, from_app } = req.query;
+  let requestValues = [
+    req.userIdentity.employee_id,
+    req.userIdentity.sub_department_id
+  ];
+  if (from_app === "mobileapp") {
+    requestValues = [employee_id, sub_department_id];
+  }
 
   try {
     let _query = "";
     _query += _mysql.mysqlQueryFormat(
       " provider_id=? and sub_department_id=? and ",
-      [req.userIdentity.employee_id, req.userIdentity.sub_department_id]
+      requestValues
     );
     if (
       req.query.fromDate != null &&
       req.query.fromDate != "" &&
       req.query.fromDate != undefined &&
-      (req.query.toDate != null &&
-        req.query.fromDate != "" &&
-        req.query.fromDate != undefined)
+      req.query.toDate != null &&
+      req.query.fromDate != "" &&
+      req.query.fromDate != undefined
     )
       _query += _mysql.mysqlQueryFormat(
         "date(E.created_date) BETWEEN date(?) and date(?)",
@@ -904,8 +912,8 @@ let getPatientVitalsOLD = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select * from hims_f_patient_vitals where " +
-        where.condition +
-        " order by visit_date desc, visit_time desc;",
+          where.condition +
+          " order by visit_date desc, visit_time desc;",
         where.values,
 
         (error, result) => {
@@ -956,8 +964,8 @@ let getPatientVitals = (req, res, next) => {
         }
         sqlQuery += _mysql.mysqlQueryFormat(
           " group by visit_date , vital_id order by hims_f_patient_vitals_id  desc LIMIT 0," +
-          _limit +
-          ";"
+            _limit +
+            ";"
         );
         _mysql
           .executeQuery({ query: sqlQuery, printQuery: true })
@@ -982,7 +990,6 @@ let getPatientVitals = (req, res, next) => {
 
 //created by irfan: to  getPatientAllergies
 let getPatientAllergies = (req, res, next) => {
-
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let inputData = req.query;
@@ -993,12 +1000,11 @@ let getPatientAllergies = (req, res, next) => {
           "select hims_f_patient_allergy_id,patient_id,allergy_id, onset, onset_date, severity, comment, \
           allergy_inactive,A.allergy_type,A.allergy_name from hims_f_patient_allergy PA, hims_d_allergy A \
           where PA.record_status='A' and patient_id=? and PA.allergy_id=A.hims_d_allergy_id \
-          order by hims_f_patient_allergy_id desc;" ,
+          order by hims_f_patient_allergy_id desc;",
         values: [inputData.patient_id],
         printQuery: true
       })
       .then(result => {
-
         _mysql.releaseConnection();
         req.records = result;
         next();
@@ -1112,7 +1118,6 @@ let getChiefComplaints = (req, res, next) => {
         printQuery: true
       })
       .then(result => {
-
         _mysql.releaseConnection();
         req.records = result;
         next();
@@ -1176,8 +1181,8 @@ let addNewChiefComplaint = (req, res, next) => {
 
       connection.query(
         "INSERT INTO hims_d_hpi_header(" +
-        insurtColumns.join(",") +
-        ",`sub_department_id`,created_date,update_date) VALUES ?",
+          insurtColumns.join(",") +
+          ",`sub_department_id`,created_date,update_date) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
@@ -1238,8 +1243,8 @@ let addPatientChiefComplaints = (req, res, next) => {
 
       connection.query(
         "INSERT INTO hims_f_episode_chief_complaint(`" +
-        insurtColumns.join("`,`") +
-        "`,created_date,updated_date,hospital_id) VALUES ?",
+          insurtColumns.join("`,`") +
+          "`,created_date,updated_date,hospital_id) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
@@ -1408,12 +1413,11 @@ let addPatientNewAllergy = (req, res, next) => {
 
 //created by irfan: to get all allergies
 let getAllAllergies = (req, res, next) => {
-
   const _mysql = new algaehMysql({ path: keyPath });
   try {
-    let strQuery = ""
+    let strQuery = "";
     if (req.query.allergy_type !== null) {
-      strQuery = ` AND allergy_type = '${req.query.allergy_type}'`
+      strQuery = ` AND allergy_type = '${req.query.allergy_type}'`;
     }
     _mysql
       .executeQuery({
@@ -1423,7 +1427,6 @@ let getAllAllergies = (req, res, next) => {
         printQuery: true
       })
       .then(result => {
-
         _mysql.releaseConnection();
         req.records = result;
         next();
@@ -1626,8 +1629,8 @@ let addPatientDiagnosis = (req, res, next) => {
 
       connection.query(
         "INSERT INTO hims_f_patient_diagnosis(" +
-        insurtColumns.join(",") +
-        ",hospital_id) VALUES ?",
+          insurtColumns.join(",") +
+          ",hospital_id) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
@@ -1793,7 +1796,7 @@ let getReviewOfSystem = (req, res, next) => {
           "select RH.hims_d_review_of_system_header_id,RH.description as header_description,RD.hims_d_review_of_system_details_id,RD.description as detail_description from\
         hims_d_review_of_system_header RH,hims_d_review_of_system_details RD where\
          RH.hims_d_review_of_system_header_id=RD.review_of_system_heder_id and RD.record_status='A' and RH.record_status='A' and" +
-          where.condition,
+            where.condition,
           where.values,
 
           (error, result) => {
@@ -2010,8 +2013,8 @@ let addPatientVitals = (req, res, next) => {
 
       const _query = mysql.format(
         "INSERT INTO hims_f_patient_vitals(" +
-        insurtColumns.join(",") +
-        ",created_by,updated_by,created_date,updated_date,hospital_id) VALUES ?",
+          insurtColumns.join(",") +
+          ",created_by,updated_by,created_date,updated_date,hospital_id) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
@@ -2696,8 +2699,8 @@ let addPatientHistory = (req, res, next) => {
 
       connection.query(
         "INSERT INTO hims_f_patient_history(" +
-        insurtColumns.join(",") +
-        ",patient_id,provider_id, created_date,updated_date,hospital_id) VALUES ?",
+          insurtColumns.join(",") +
+          ",patient_id,provider_id, created_date,updated_date,hospital_id) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
@@ -2792,21 +2795,21 @@ let getPatientHistory = (req, res, next) => {
 
           let history = _.chain(result)
             .groupBy(g => g.history_type)
-            .map(function (detail, key) {
+            .map(function(detail, key) {
               return {
                 groupType: key,
                 groupName:
                   key == "SOH"
                     ? "Social History"
                     : key === "MEH"
-                      ? "Medical History"
-                      : key === "SGH"
-                        ? "Surgical History"
-                        : key === "FMH"
-                          ? "Family History"
-                          : key === "BRH"
-                            ? "Birth History"
-                            : "",
+                    ? "Medical History"
+                    : key === "SGH"
+                    ? "Surgical History"
+                    : key === "FMH"
+                    ? "Family History"
+                    : key === "BRH"
+                    ? "Birth History"
+                    : "",
                 groupDetail: detail
               };
             })
@@ -2952,8 +2955,8 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-            ? ","
-            : "";
+          ? ","
+          : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "significant_signs = ?", [
         inputData.significant_signs
       ]);
@@ -2964,10 +2967,10 @@ let updatePatientEncounter = (req, res, next) => {
         inputData.examination_notes != null
           ? ","
           : inputData.assesment_notes != null
-            ? ","
-            : inputData.significant_signs != null
-              ? ","
-              : "";
+          ? ","
+          : inputData.significant_signs != null
+          ? ","
+          : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "other_signs = ?", [
         inputData.other_signs
       ]);
@@ -3196,6 +3199,43 @@ let getSickLeave = (req, res, next) => {
   }
 };
 
+let getActiveEncounters = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  const { hospital_id, provider_id } = req.query;
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "select E.hims_f_patient_encounter_id, P.patient_code, P.full_name, P.gender, P.age, E.patient_id,\
+          V.appointment_patient, V.new_visit_patient, E.provider_id, E.`status`, E.nurse_examine, E.checked_in,\
+          E.payment_type, E.episode_id, E.encounter_id, E.`source`, E.updated_date as encountered_date,\
+          V.visit_expiery_date, V.visit_status from hims_f_patient_encounter E \
+          INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
+          inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id \
+          inner join hims_d_sub_department SD on sub_department_id=SD.hims_d_sub_department_id \
+          left join hims_d_identity_document ID on ID.hims_d_identity_document_id = P.primary_identity_id \
+          where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and date(E.updated_date) between \
+          DATE_SUB(current_date(), INTERVAL (select param_value from algaeh_d_app_config where param_name='VISITEXPERIDAY') DAY) \
+          and date(current_date()) and E.provider_id = ? and  E.`status` in ('W','CO') and E.hospital_id=?; \
+          ",
+        values: [provider_id, hospital_id],
+        printQuery: true
+      })
+      .then(result => {
+        req.records = result;
+        _mysql.releaseConnection();
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
 export default {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -3250,7 +3290,7 @@ export default {
   addPatientHistory,
   getPatientHistory,
   getPatientEpisodeSummary,
-
+  getActiveEncounters,
   updatePatientEncounter,
   getPatientEncounter,
   getPatientBasicChiefComplaints,

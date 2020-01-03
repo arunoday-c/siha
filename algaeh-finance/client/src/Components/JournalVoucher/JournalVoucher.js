@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ReactDom from "react-dom";
 import CostCenter from "../costcenter";
 import moment from "moment";
@@ -21,13 +21,26 @@ import {
 } from "./JournalVoucher.events";
 import { getCookie } from "../../utils/algaehApiCall";
 let records_av = {};
+let dataPayment = [
+  { value: "journal", label: "Journal" },
+  { label: "Contra", value: "contra" },
+  { value: "receipt", label: "Receipt" },
+  { label: "Payment", value: "payment" },
+  { value: "sales", label: "Sales" },
+  { label: "Purchase", value: "purchase" },
+  {
+    value: "credit_note",
+    label: "Credit Note"
+  },
+  { value: "debit_note", label: "Debit Note" }
+];
 export default function JournalVoucher() {
   const [voucherDate, setVoucherDate] = useState(undefined);
-  const [voucher_no, setVoucherNo] = useState(undefined);
+  const [voucher_no, setVoucherNo] = useState("");
   const [voucherType, setVoucherType] = useState(undefined);
   const [accounts, setAccounts] = useState([{}]);
   const [narration, setNarration] = useState("");
-  const [prefix, setPrefix] = useState("");
+  // const [prefix, setPrefix] = useState("");
   const [loading, setLoading] = useState(false);
   const [clearLoading, setClearLoading] = useState(false);
   const [journerList, setJournerList] = useState([
@@ -46,22 +59,6 @@ export default function JournalVoucher() {
       payment_mode: "CA"
     }
   ]);
-
-  useEffect(() => {
-    getVoucherNumber()
-      .then(result => {
-        setVoucherNo(result.voucher_no);
-      })
-      .catch(error => {
-        AlgaehMessagePop({
-          type: "error",
-          display: error
-        });
-      });
-    // getHeaders().then(result => {
-    //   setAccounts(result);
-    // });
-  }, []);
 
   return (
     <div className="JournalVoucherScreen">
@@ -100,7 +97,7 @@ export default function JournalVoucher() {
           textBox={{
             type: "text",
             className: "form-control",
-            value: `${prefix}${voucher_no}`,
+            value: `${voucher_no}`,
             disabled: true
             // autocomplete: false
           }}
@@ -114,30 +111,39 @@ export default function JournalVoucher() {
           selector={{
             value: voucherType,
             dataSource: {
-              data: [
-                { value: "journal", label: "Journal", shortHand: "JOU" },
-                { label: "Contra", value: "contra", shortHand: "CON" },
-                { value: "receipt", label: "Receipt", shortHand: "REC" },
-                { label: "Payment", value: "payment", shortHand: "PAY" },
-                { value: "sales", label: "Sales", shortHand: "SAL" },
-                { label: "Purchase", value: "purchase", shortHand: "PUR" },
-                {
-                  value: "credit_note",
-                  label: "Credit Note",
-                  shortHand: "CRE"
-                },
-                { value: "debit_note", label: "Debit Note", shortHand: "DEB" }
-              ],
+              data: dataPayment,
               valueField: "value",
               textField: "label"
             },
             onChange: selected => {
+              const type = selected["seltype"];
+              if (type === undefined) {
+                getVoucherNumber({ voucher_type: selected.value })
+                  .then(result => {
+                    setVoucherNo(result.voucher_no);
+                    selected["seltype"] = result.voucher_no;
+                  })
+                  .catch(error => {
+                    AlgaehMessagePop({
+                      type: "error",
+                      display: error
+                    });
+                  });
+              } else {
+                setVoucherNo(type);
+              }
+
               getHeaders({ voucher_type: selected.value }).then(result => {
                 setAccounts(result);
               });
 
               setVoucherType(selected.value);
-              setPrefix(selected.shortHand + "-");
+              // setPrefix(selected.shortHand + "-");
+            },
+            onClear: () => {
+              setVoucherType("");
+              setVoucherNo("");
+              setAccounts([]);
             }
           }}
         />
@@ -395,7 +401,7 @@ export default function JournalVoucher() {
                 addJurnorLedger({
                   transaction_date: voucherDate,
                   voucher_type: voucherType,
-                  voucher_no: `${prefix}${voucher_no}`,
+                  voucher_no: `${voucher_no}`,
                   ...costcenter,
                   from_screen: getCookie("ScreenCode"),
                   hospital_id: getCookie("HospitalId"),
@@ -407,19 +413,13 @@ export default function JournalVoucher() {
                     setClearLoading(true);
                     setJournerList([]);
                     setNarration("");
-                    getVoucherNumber()
-                      .then(result => {
-                        setClearLoading(false);
-                        setVoucherNo(result.voucher_no);
-                      })
-                      .catch(error => {
-                        setClearLoading(false);
-                        AlgaehMessagePop({
-                          type: "error",
-                          display: error
-                        });
-                      });
-
+                    setVoucherType("");
+                    setAccounts([]);
+                    setVoucherNo("");
+                    dataPayment = dataPayment.map(m => {
+                      delete m["seltype"];
+                      return m;
+                    });
                     AlgaehMessagePop({
                       type: "success",
                       display: "Successfully updated.."
@@ -442,20 +442,25 @@ export default function JournalVoucher() {
               onClick={() => {
                 setLoading(true);
                 setClearLoading(true);
-                getVoucherNumber()
-                  .then(result => {
-                    setLoading(false);
-                    setClearLoading(false);
-                    setVoucherNo(result.voucher_no);
-                  })
-                  .catch(error => {
-                    setLoading(false);
-                    setClearLoading(false);
-                    AlgaehMessagePop({
-                      type: "error",
-                      display: error
-                    });
-                  });
+                setJournerList([]);
+                setNarration("");
+                setVoucherType("");
+                setAccounts([]);
+                setVoucherNo("");
+                // getVoucherNumber()
+                //   .then(result => {
+                //     setLoading(false);
+                //     setClearLoading(false);
+                //     setVoucherNo(result.voucher_no);
+                //   })
+                //   .catch(error => {
+                //     setLoading(false);
+                //     setClearLoading(false);
+                //     AlgaehMessagePop({
+                //       type: "error",
+                //       display: error
+                //     });
+                //   });
               }}
             >
               Clear

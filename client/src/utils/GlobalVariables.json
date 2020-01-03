@@ -5242,5 +5242,31 @@
       "name": "Hourly",
       "value": "H"
     }
+  ],
+  "SALES_ORDER_STATUS": [
+    {
+      "name": "All",
+      "value": "0"
+    },
+    {
+      "name": "Pending To Authorize 1",
+      "value": "1"
+    },
+    {
+      "name": "Pending To Authorize 2",
+      "value": "2"
+    },
+    {
+      "name": "Dispatch Pending",
+      "value": "3"
+    },
+    {
+      "name": "Dispatch Completed",
+      "value": "4"
+    },
+    {
+      "name": "Canelled",
+      "value": "5"
+    }
   ]
 }

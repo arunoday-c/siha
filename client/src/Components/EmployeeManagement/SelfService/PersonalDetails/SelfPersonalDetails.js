@@ -2411,7 +2411,7 @@ class SelfPersonalDetails extends Component {
           </div>
 
           <div className="col-5">
-            <div className="portlet portlet-bordered margin-bottom-15">
+            {/* <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Attachments Details</h3>
@@ -2557,7 +2557,7 @@ class SelfPersonalDetails extends Component {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

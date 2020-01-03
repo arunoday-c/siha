@@ -504,14 +504,22 @@ class ApplyLeaveEncashment extends Component {
                     <h6>{getAmountFormart(this.state.total_amount)}</h6>
                   </div>
 
-                  <div className="col-12">
+                  <div className="col-12" style={{ textAlign: "right" }}>
+                    <button
+                      onClick={this.clearState.bind(this)}
+                      type="button"
+                      className="btn btn-default"
+                      style={{ marginRight: 15 }}
+                    >
+                      Clear
+                    </button>
                     <button
                       onClick={this.applyLeave.bind(this)}
                       type="button"
                       className="btn btn-primary"
                       disabled={this.state.Request_enable}
                     >
-                      Request
+                      Request Encashment
                     </button>
                   </div>
                 </div>
@@ -551,8 +559,8 @@ class ApplyLeaveEncashment extends Component {
                                 Rejected
                               </span>
                             ) : (
-                                    "-------"
-                                  );
+                              "-------"
+                            );
                           }
                         },
                         {
@@ -628,7 +636,7 @@ class ApplyLeaveEncashment extends Component {
           <div className="col-2">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
-                <div className="row leaveBalanceCntr">
+                <div className="row leaveEcnashBalanceCntr">
                   {this.state.emp_leaves_data.length > 0 ? (
                     this.state.emp_leaves_data.map((data, index) => (
                       <div
@@ -654,8 +662,8 @@ class ApplyLeaveEncashment extends Component {
                       </div>
                     ))
                   ) : (
-                      <div className="noResult">Not Eligible for any Leaves</div>
-                    )}
+                    <div className="noResult">Not Eligible for any Leaves</div>
+                  )}
                 </div>
               </div>
             </div>

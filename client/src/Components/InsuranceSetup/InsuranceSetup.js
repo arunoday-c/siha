@@ -154,7 +154,8 @@ class InsuranceSetup extends Component {
                         return (
                           <AlagehAutoComplete
                             div={{}}
-                            selector={{sort:"off",
+                            selector={{
+                              sort: "off",
                               name: "edit_option",
                               className: "select-fld",
                               value: row.edit_option,
@@ -187,11 +188,11 @@ class InsuranceSetup extends Component {
                           : "Corporate Client";
                       }
                     },
-                    {
-                      fieldName: "currency",
-                      label: <AlgaehLabel label={{ fieldName: "currency" }} />,
-                      disabled: true
-                    },
+                    // {
+                    //   fieldName: "currency",
+                    //   label: <AlgaehLabel label={{ fieldName: "currency" }} />,
+                    //   disabled: true
+                    // },
                     {
                       fieldName: "insurance_provider_name",
                       label: (
@@ -320,8 +321,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(InsuranceSetup)
+  connect(mapStateToProps, mapDispatchToProps)(InsuranceSetup)
 );

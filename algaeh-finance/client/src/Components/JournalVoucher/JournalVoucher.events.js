@@ -1,12 +1,14 @@
 import { algaehApiCall } from "../../utils/algaehApiCall";
 
-export function getVoucherNumber() {
+export function getVoucherNumber(input) {
+  input = input || {};
   return new Promise((resolve, reject) => {
     try {
       algaehApiCall({
         uri: "/voucher/getVoucherNo",
         method: "GET",
         module: "finance",
+        data: input,
         onSuccess: response => {
           if (response.data.success === true) {
             resolve(response.data.result);

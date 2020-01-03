@@ -97,6 +97,8 @@ const numberchangeTexts = ($this, context, e) => {
         } else {
             $this.setState({ [name]: value });
         }
+    } else if (name === "unit_cost") {
+        $this.setState({ [name]: value === undefined ? null : value });
     } else {
         $this.setState({ [name]: value });
     }
@@ -135,7 +137,8 @@ const itemchangeText = ($this, e, ctrl) => {
                         uom_description: e.uom_description,
                         tax_percent: e.vat_percent,
                         ItemUOM: data,
-                        sales_conversion_factor: sales_conversion_factor
+                        sales_conversion_factor: sales_conversion_factor,
+                        tax_percentage: e.vat_percent
                     });
 
                 }
@@ -188,6 +191,12 @@ const AddItems = ($this, context) => {
     } else if ($this.state.uom_id === null) {
         swalMessage({
             title: "Enter the UOM.",
+            type: "warning"
+        });
+        return
+    } else if ($this.state.unit_cost === null || parseFloat($this.state.unit_cost) === 0) {
+        swalMessage({
+            title: "Enter the Unit Cost.",
             type: "warning"
         });
         return
@@ -335,7 +344,8 @@ const deleteSalesDetail = ($this, context, row) => {
 //Calculate Row Detail
 const calculateAmount = ($this, context, row, _index) => {
     let sales_order_items = $this.state.sales_order_items;
-    row.extended_cost = (parseFloat(row.unit_cost) * parseFloat(row.quantity)).toFixed(
+    let quantity = row.quantity === "" ? 0 : parseFloat(row.quantity)
+    row.extended_cost = (parseFloat(row.unit_cost) * quantity).toFixed(
         $this.state.decimal_place
     )
     row.discount_amount = ((parseFloat(row.extended_cost) * parseFloat(row.discount_percentage)) / 100).toFixed(
@@ -464,11 +474,12 @@ const onchangegridcol = ($this, context, row, e) => {
 };
 
 const qtyonchangegridcol = ($this, context, row, e) => {
+    debugger
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     let _index = $this.state.sales_order_items.indexOf(row);
 
-    if (value <= 0) {
+    if (value < 0) {
         swalMessage({
             title: "Quantity cannot be less than or equal to Zero",
             type: "warning"
@@ -479,6 +490,14 @@ const qtyonchangegridcol = ($this, context, row, e) => {
             type: "warning"
         });
     } else {
+        debugger
+        if (
+            $this.props.sales_order_number !== undefined &&
+            $this.props.sales_order_number.length !== 0
+        ) {
+            row["quantity_outstanding"] = value
+        }
+
         row[name] = value;
         calculateAmount($this, context, row, _index);
     }

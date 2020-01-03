@@ -6,6 +6,7 @@ import { bindActionCreators } from "redux";
 import "./InsuranceProvider.scss";
 import "./../../../styles/site.scss";
 import {
+  AlgaehLabel,
   AlgaehDateHandler,
   AlagehFormGroup,
   AlagehAutoComplete
@@ -115,7 +116,7 @@ class InsuranceProvider extends PureComponent {
                 {/* Services Details */}
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{
                       fieldName: "insurance_provider_code",
                       isImp: true
@@ -131,7 +132,7 @@ class InsuranceProvider extends PureComponent {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{
                       fieldName: "insurance_provider_name",
                       isImp: true
@@ -148,7 +149,7 @@ class InsuranceProvider extends PureComponent {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{
                       fieldName: "arabic_provider_name",
                       isImp: true
@@ -165,7 +166,7 @@ class InsuranceProvider extends PureComponent {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{
                       fieldName: "insurance_type",
                       isImp: true
@@ -191,7 +192,7 @@ class InsuranceProvider extends PureComponent {
 
                 <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{
                       fieldName: "company_service_price_type",
                       isImp: true
@@ -212,7 +213,7 @@ class InsuranceProvider extends PureComponent {
                     }}
                   />
                   <AlgaehDateHandler
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{ fieldName: "effective_start_date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
@@ -227,7 +228,7 @@ class InsuranceProvider extends PureComponent {
                   />
 
                   <AlgaehDateHandler
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{ fieldName: "effective_end_date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
@@ -240,7 +241,7 @@ class InsuranceProvider extends PureComponent {
                     value={this.state.effective_end_date}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 form-group " }}
                     label={{
                       fieldName: "payer_id"
                     }}
@@ -257,7 +258,7 @@ class InsuranceProvider extends PureComponent {
                 </div>
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{
                       fieldName: "credit_period",
                       isImp: true
@@ -275,7 +276,7 @@ class InsuranceProvider extends PureComponent {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{
                       fieldName: "package_claim",
                       isImp: true
@@ -297,7 +298,7 @@ class InsuranceProvider extends PureComponent {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{
                       fieldName: "payment_type",
                       isImp: true
@@ -319,7 +320,7 @@ class InsuranceProvider extends PureComponent {
                   />
 
                   {/* <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{
                       fieldName: "lab_result_check"
                     }}
@@ -339,8 +340,53 @@ class InsuranceProvider extends PureComponent {
                     }}
                   /> */}
 
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                  <div className="col-3">
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "resubmit_all"
+                      }}
+                    />
+                    <div className="customRadio" style={{ borderBottom: 0 }}>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="Y"
+                          name="resubmit_all"
+                          checked={
+                            this.state.resubmit_all === "Y" ? true : false
+                          }
+                          onChange={texthandle.bind(this, this, context)}
+                        />
+                        <span>
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "form_yes"
+                            }}
+                          />
+                        </span>
+                      </label>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="N"
+                          name="resubmit_all"
+                          checked={
+                            this.state.resubmit_all === "N" ? true : false
+                          }
+                          onChange={texthandle.bind(this, this, context)}
+                        />
+                        <span>
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "form_no"
+                            }}
+                          />
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                  {/* <AlagehAutoComplete
+                    div={{ className: "col-3 form-group " }}
                     label={{
                       fieldName: "resubmit_all"
                     }}
@@ -358,12 +404,12 @@ class InsuranceProvider extends PureComponent {
                       },
                       onChange: texthandle.bind(this, this, context)
                     }}
-                  />
+                  /> */}
                 </div>
 
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 form-group " }}
                     label={{
                       fieldName: "insurance_limit"
                     }}
@@ -380,7 +426,7 @@ class InsuranceProvider extends PureComponent {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 form-group " }}
                     label={{
                       fieldName: "preapp_valid_days"
                     }}
@@ -397,7 +443,7 @@ class InsuranceProvider extends PureComponent {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 form-group " }}
                     label={{
                       fieldName: "claim_submit_days"
                     }}
@@ -413,8 +459,53 @@ class InsuranceProvider extends PureComponent {
                       }
                     }}
                   />
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                  <div className="col-3">
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "cpt_mandate"
+                      }}
+                    />
+                    <div className="customRadio" style={{ borderBottom: 0 }}>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="Y"
+                          name="cpt_mandate"
+                          checked={
+                            this.state.cpt_mandate === "Y" ? true : false
+                          }
+                          onChange={texthandle.bind(this, this, context)}
+                        />
+                        <span>
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "form_yes"
+                            }}
+                          />
+                        </span>
+                      </label>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="N"
+                          name="cpt_mandate"
+                          checked={
+                            this.state.cpt_mandate === "N" ? true : false
+                          }
+                          onChange={texthandle.bind(this, this, context)}
+                        />
+                        <span>
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "form_no"
+                            }}
+                          />
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                  {/* <AlagehAutoComplete
+                    div={{ className: "col-3 form-group " }}
                     label={{
                       fieldName: "cpt_mandate"
                     }}
@@ -432,7 +523,7 @@ class InsuranceProvider extends PureComponent {
                       },
                       onChange: texthandle.bind(this, this, context)
                     }}
-                  />
+                  /> */}
                 </div>
               </div>
             </div>
@@ -460,8 +551,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(InsuranceProvider)
+  connect(mapStateToProps, mapDispatchToProps)(InsuranceProvider)
 );

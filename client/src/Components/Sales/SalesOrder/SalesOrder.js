@@ -9,6 +9,7 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
+  AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -22,7 +23,12 @@ import {
   getCtrlCode,
   generatePOReceipt,
   generatePOReceiptNoPrice,
-  getSalesOptions
+  getSalesOptions,
+  employeeSearch,
+  dateValidate,
+  datehandle,
+  AuthorizeOrderEntry,
+  CancelSalesServiceOrder
 } from "./SalesOrderEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
@@ -35,6 +41,16 @@ import SalesOrdListService from "./SalesOrdListService/SalesOrdListService";
 class SalesOrder extends Component {
   constructor(props) {
     super(props);
+    let Activated_Modueles = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+    );
+
+    const HRMNGMT_Active = Activated_Modueles.filter(f => {
+      return f.module_code === "HRMNGMT";
+    });
+
+    this.HRMNGMT_Active = HRMNGMT_Active.length > 0 ? true : false;
+
     this.state = {
       hims_f_sales_order_id: null,
       sales_quotation_number: null,
@@ -57,7 +73,7 @@ class SalesOrder extends Component {
       narration: null,
       project_id: null,
       customer_po_no: null,
-      tax_percentage: null,
+      // tax_percentage: null,
       selectedData: false,
       sales_order_items: [],
       sales_order_services: [],
@@ -69,7 +85,13 @@ class SalesOrder extends Component {
       hospital_id: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).hims_d_hospital_id,
-      services_required: "N"
+      services_required: "N",
+      sales_person_id: null,
+      employee_name: null,
+      delivery_date: null,
+      sales_order_auth_level: "1",
+      grid_edit: false,
+      cancelDisable: false
     };
     getSalesOptions(this, this)
   }
@@ -133,15 +155,25 @@ class SalesOrder extends Component {
         mappingName: "projects"
       }
     });
+
+    if (
+      this.props.sales_order_number !== undefined &&
+      this.props.sales_order_number.length !== 0
+    ) {
+      getCtrlCode(this, this.props.sales_order_number);
+    }
   }
 
   render() {
     const class_finder =
-      this.state.dataFinder === true
+      this.state.dataExists === true
         ? " disableFinder"
-        : this.state.ReqData === true
-          ? " disableFinder"
-          : "";
+        : "";
+
+    const class_emp_finder =
+      this.state.selectedData === true
+        ? " disableFinder"
+        : "";
     return (
       <div>
         <BreadCrumb
@@ -199,6 +231,34 @@ class SalesOrder extends Component {
                     : Options.dateFormat}
                 </h6>
               </div>
+
+              {this.state.dataExists === true ? (
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Order Status"
+                    }}
+                  />
+                  <h6>
+                    {this.state.cancelled === "Y" ? (
+                      <span className="badge badge-danger">Cancelled</span>
+                    ) : this.state.authorize1 === "Y" &&
+                      this.state.authorize2 === "Y" && this.state.is_completed === "N" ? (
+                          <span className="badge badge-success">Authorized</span>
+                        ) : this.state.authorize1 === "Y" &&
+                          this.state.authorize2 === "N" ? (
+                            <span className="badge badge-danger">Authorized 2 Pending</span>
+                          ) : this.state.authorize1 === "N" &&
+                            this.state.authorize2 === "N" ? (
+                              <span className="badge badge-danger">Pending</span>
+                            ) : this.state.is_completed === "Y" ? (
+                              <span className="badge badge-success">Invoice Generated</span>
+                            ) : (
+                                "-------"
+                              )}
+                  </h6>
+                </div>
+              ) : null}
             </div>
           }
           printArea={
@@ -327,40 +387,57 @@ class SalesOrder extends Component {
                   }}
                 />
 
-                {/* <AlgaehDateHandler
-                  div={{ className: "col mandatory form-group " }}
-                  label={{ forceLabel: "quote validity", isImp: true }}
+                {this.HRMNGMT_Active ? (
+                  <div className={"col globalSearchCntr form-group mandatory" + class_emp_finder}>
+                    <AlgaehLabel
+                      label={{ forceLabel: "Sales Person", isImp: true }}
+                    />
+                    <h6 onClick={employeeSearch.bind(this, this)}>
+                      {this.state.employee_name
+                        ? this.state.employee_name
+                        : "Search Employee"}
+                      <i className="fas fa-search fa-lg" />
+                    </h6>
+                  </div>
+                ) : (
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Name of Sales Person",
+                        isImp: false
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "sales_man",
+                        value: this.state.sales_man,
+                        events: {
+                          onChange: texthandle.bind(this, this)
+                        },
+                        others: {
+                          disabled: this.state.dataExists
+                        }
+                      }}
+                    />
+                  )}
+
+              </div>
+              <div className="row">
+
+                <AlgaehDateHandler
+                  div={{ className: "col mandatory" }}
+                  label={{ forceLabel: "Delivery Date", isImp: true }}
                   textBox={{
                     className: "txt-fld",
-                    name: "quote_validity"
+                    name: "delivery_date"
                   }}
                   minDate={new Date()}
                   events={{
-                    onChange: datehandle.bind(this, this)
+                    onChange: datehandle.bind(this, this),
+                    onBlur: dateValidate.bind(this, this)
                   }}
                   disabled={this.state.dataExists}
-                  value={this.state.quote_validity}
-                /> */}
-                <AlagehFormGroup
-                  div={{ className: "col-3" }}
-                  label={{
-                    forceLabel: "Name of Sales Person",
-                    isImp: false
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "sales_man",
-                    value: this.state.sales_man,
-                    events: {
-                      onChange: texthandle.bind(this, this)
-                    },
-                    others: {
-                      disabled: this.state.dataExists
-                    }
-                  }}
+                  value={this.state.delivery_date}
                 />
-              </div>
-              <div className="row">
 
                 <AlagehFormGroup
                   div={{ className: "col" }}
@@ -380,46 +457,6 @@ class SalesOrder extends Component {
                     }
                   }}
                 />
-
-                {/* <AlagehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    forceLabel: "Other Terms",
-                    isImp: false
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "other_terms",
-                    value: this.state.other_terms,
-                    events: {
-                      onChange: texthandle.bind(this, this)
-                    },
-                    others: {
-                      disabled: this.state.dataExists
-                    }
-                  }}
-                />
-
-                {this.state.sales_order_mode === "S" ? (
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      forceLabel: "Service Terms",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "service_terms",
-                      value: this.state.service_terms,
-                      events: {
-                        onChange: texthandle.bind(this, this)
-                      },
-                      others: {
-                        disabled: this.state.dataExists
-                      }
-                    }}
-                  />
-                ) : null} */}
 
                 <AlagehAutoComplete
                   div={{ className: "col-2 mandatory" }}
@@ -509,7 +546,10 @@ class SalesOrder extends Component {
               {this.state.sales_order_mode === "S" ? (
                 <SalesOrdListService SALESIOputs={this.state} />
               ) : (
-                  <SalesOrdListItems SALESIOputs={this.state} />
+                  <SalesOrdListItems
+                    SALESIOputs={this.state}
+                    sales_order_number={this.props.sales_order_number}
+                  />
                 )}
             </MyContext.Provider>
           </div>
@@ -609,6 +649,55 @@ class SalesOrder extends Component {
                   label={{ forceLabel: "Clear", returnText: true }}
                 />
               </button>
+
+              {this.props.order_auth === true ? (
+
+                <div>
+                  {this.state.sales_order_mode === "S" ? <button
+                    type="button"
+                    className="btn btn-default"
+                    disabled={this.state.cancelDisable}
+                    onClick={CancelSalesServiceOrder.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Cancel", returnText: true }}
+                    />
+                  </button> : null}
+
+
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    disabled={
+                      this.state.authBtnEnable === true
+                        ? true
+                        : this.state.authorize1 === "Y" &&
+                          this.state.authorize2 === "Y"
+                          ? true
+                          : false
+                    }
+                    onClick={AuthorizeOrderEntry.bind(
+                      this,
+                      this,
+                      this.state.authorize1 === "N"
+                        ? "authorize1"
+                        : "authorize2"
+                    )}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel:
+                          this.state.authorize1 === "N"
+                            ? "Authorize 1"
+                            : this.state.sales_order_auth_level === "2"
+                              ? "Authorize 2"
+                              : "Authorize 1",
+                        returnText: true
+                      }}
+                    />
+                  </button>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

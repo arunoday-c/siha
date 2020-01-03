@@ -11,7 +11,10 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
-import { getYears, AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
+import {
+  getYears,
+  AlgaehOpenContainer
+} from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Socket from "../../../../sockets";
@@ -32,7 +35,7 @@ class LoanRequest extends Component {
       request_type: "LO",
       hospital_id: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      ).hims_d_hospital_id
     };
     this.loanSocket = Socket;
     this.getLoanMaster();
@@ -413,7 +416,7 @@ class LoanRequest extends Component {
                 {this.state.request_type === "LO" ? (
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col-6 form-group" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Loan Type",
                         isImp: true
@@ -440,7 +443,7 @@ class LoanRequest extends Component {
                     </div>
 
                     <AlagehFormGroup
-                      div={{ className: "col-6 form-group" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Loan Amount",
                         isImp: true
@@ -457,7 +460,7 @@ class LoanRequest extends Component {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-6 form-group" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "No. of EMI",
                         isImp: true
@@ -486,7 +489,7 @@ class LoanRequest extends Component {
                     </div>
 
                     <AlagehAutoComplete
-                      div={{ className: "col-6 form-group" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Start Year.",
                         isImp: true
@@ -509,7 +512,7 @@ class LoanRequest extends Component {
                       }}
                     />
                     <AlagehAutoComplete
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Start Month",
                         isImp: true
@@ -543,20 +546,30 @@ class LoanRequest extends Component {
                         }
                       }}
                     />
-                    <div className="col-3 margin-bottom-15">
+
+                    <div className="col-12" style={{ textAlign: "right" }}>
                       <button
+                        onClick={this.clearState.bind(this)}
+                        type="button"
+                        className="btn btn-default"
+                        style={{ marginRight: 15 }}
+                      >
+                        Clear
+                      </button>
+                      <button
+                        onClick={this.applyLoan.bind(this)}
                         type="button"
                         className="btn btn-primary"
-                        onClick={this.applyLoan.bind(this)}
+                        // disabled={this.state.Request_enable}
                       >
-                        Request
+                        Request Loan
                       </button>
                     </div>
                   </div>
                 ) : this.state.request_type === "AD" ? (
                   <div className="row">
                     <AlagehFormGroup
-                      div={{ className: "col-6 form-group" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Advance Amount",
                         isImp: true
@@ -573,7 +586,7 @@ class LoanRequest extends Component {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-6 form-group" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Deducting Year",
                         isImp: true
@@ -597,7 +610,7 @@ class LoanRequest extends Component {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-6 form-group" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Deducting Month",
                         isImp: true
@@ -632,13 +645,22 @@ class LoanRequest extends Component {
                       }}
                     />
 
-                    <div className="col-12 margin-bottom-15">
+                    <div className="col-12" style={{ textAlign: "right" }}>
                       <button
+                        onClick={this.clearAdvanceState.bind(this)}
+                        type="button"
+                        className="btn btn-default"
+                        style={{ marginRight: 15 }}
+                      >
+                        Clear
+                      </button>
+                      <button
+                        onClick={this.applyAdvance.bind(this)}
                         type="button"
                         className="btn btn-primary"
-                        onClick={this.applyAdvance.bind(this)}
+                        // disabled={this.state.Request_enable}
                       >
-                        Send for Approval
+                        Request Advance
                       </button>
                     </div>
                   </div>
@@ -683,8 +705,8 @@ class LoanRequest extends Component {
                                   Issued
                                 </span>
                               ) : (
-                                        "------"
-                                      )}
+                                "------"
+                              )}
                             </span>
                           );
                         },
@@ -734,8 +756,8 @@ class LoanRequest extends Component {
                           return row.pending_tenure !== 0 ? (
                             <span>{row.pending_tenure} Month</span>
                           ) : (
-                              <span className="badge badge-success">Closed</span>
-                            );
+                            <span className="badge badge-success">Closed</span>
+                          );
                         }
                       },
 
@@ -832,9 +854,9 @@ class LoanRequest extends Component {
                     isEditable={false}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => { },
-                      onDelete: () => { },
-                      onDone: () => { }
+                      onEdit: () => {},
+                      onDelete: () => {},
+                      onDone: () => {}
                     }}
                   />
                 </div>
@@ -905,9 +927,9 @@ class LoanRequest extends Component {
                             <span>
                               {moment(
                                 "01-" +
-                                row.deducting_month +
-                                "-" +
-                                row.deducting_year,
+                                  row.deducting_month +
+                                  "-" +
+                                  row.deducting_year,
                                 "DD-MM-YYYY"
                               ).format("MMMM - YYYY")}
                             </span>

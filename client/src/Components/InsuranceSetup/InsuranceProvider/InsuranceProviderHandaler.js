@@ -4,6 +4,7 @@ import { swalMessage } from "../../../utils/algaehApiCall";
 let texthandlerInterval = null;
 
 const texthandle = ($this, context, e) => {
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value === "" ? null : e.value || e.target.value;
 

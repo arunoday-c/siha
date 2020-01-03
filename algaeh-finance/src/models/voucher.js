@@ -397,6 +397,151 @@ export default {
   //created by irfan:
   getVoucherNo: (req, res, next) => {
     const _mysql = new algaehMysql();
+    const input = req.query;
+    const current_year = moment().format("YY");
+
+    let voucher_type = "";
+
+    switch (input.voucher_type) {
+      case "journal":
+        voucher_type = "JOURNAL";
+        break;
+      case "contra":
+        voucher_type = "CONTRA";
+        break;
+      case "receipt":
+        voucher_type = "RECEIPT";
+        break;
+      case "payment":
+        voucher_type = "PAYMENT";
+        break;
+      case "sales":
+        voucher_type = "SALES";
+        break;
+      case "purchase":
+        voucher_type = "PURCHASE";
+        break;
+      case "credit_note":
+        voucher_type = "CREDIT_NOTE";
+        break;
+      case "debit_note":
+        voucher_type = "DEBIT_NOTE";
+        break;
+    }
+
+    if (voucher_type == "") {
+      req.records = {
+        invalid_input: true,
+        message: "Please select voucher type"
+      };
+      next();
+    } else {
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            " select finance_numgen_id,prefix,intermediate_series,postfix,\
+          length,increment_by,numgen_seperator,postfix_start,postfix_end,current_num,pervious_num\
+          from finance_numgen where record_status='A' and numgen_code=? FOR UPDATE;",
+          values: [voucher_type],
+           printQuery: false
+        })
+        .then(voucher_result => {
+          if (voucher_result.length == 1) {
+            let current_num = "";
+            let new_number = "";
+            let complete_number = "";
+            let str = "";
+
+            if (current_year > voucher_result[0]["intermediate_series"]) {
+              current_num =
+                voucher_result[0]["prefix"] +
+                voucher_result[0]["numgen_seperator"] +
+                current_year +
+                voucher_result[0]["numgen_seperator"] +
+                1;
+
+              new_number = 2;
+              complete_number =
+                voucher_result[0]["prefix"] +
+                voucher_result[0]["numgen_seperator"] +
+                current_year +
+                voucher_result[0]["numgen_seperator"] +
+                new_number;
+
+              str = ", intermediate_series =" + current_year;
+            } else if (
+              current_year == voucher_result[0]["intermediate_series"]
+            ) {
+              current_num = voucher_result[0]["current_num"];
+              new_number =
+                parseInt(voucher_result[0]["postfix"]) +
+                parseInt(voucher_result[0]["increment_by"]);
+              complete_number =
+                voucher_result[0]["prefix"] +
+                voucher_result[0]["numgen_seperator"] +
+                current_year +
+                voucher_result[0]["numgen_seperator"] +
+                new_number;
+            }
+
+            _mysql
+              .executeQueryWithTransaction({
+                query: `update finance_numgen set pervious_num=current_num,current_num=?,\
+                    postfix=?,updated_by=?,updated_date=? ${str} where finance_numgen_id=?;`,
+
+                values: [
+                  complete_number,
+                  new_number,
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  voucher_result[0]["finance_numgen_id"]
+                ],
+                 printQuery: false
+              })
+              .then(result => {
+                if (result.affectedRows > 0) {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = {
+                      voucher_no: current_num
+                    };
+                    next();
+                  });
+                } else {
+                  _mysql.rollBackTransaction(() => {
+                    req.records = {
+                      invalid_input: true,
+                      message: "cant generate number "
+                    };
+                    next();
+                  });
+                }
+              })
+              .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
+          } else {
+            _mysql.rollBackTransaction(() => {
+              req.records = {
+                invalid_input: true,
+                message: "Number Generation series not Found"
+              };
+              next();
+            });
+          }
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    }
+  },
+  //created by irfan:
+  getVoucherNoOLD: (req, res, next) => {
+    const _mysql = new algaehMysql();
 
     _mysql
       .executeQueryWithTransaction({
@@ -430,28 +575,7 @@ export default {
         });
       });
   },
-  //created by irfan:
-  getVoucherNoNEW: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    let input = req.body;
-    _mysql
-      .executeQueryWithTransaction({
-        query:
-          "SELECT encounter_id  FROM algaeh_d_app_config where algaeh_d_app_config_id=12 FOR UPDATE;"
-      })
-      .then(voucher_result => {
-        _mysql.releaseConnection();
-        req.records = {
-          voucher_no: voucher_result[0]["encounter_id"]
-        };
-        next();
-      })
-      .catch(e => {
-        _mysql.rollBackTransaction(() => {
-          next(e);
-        });
-      });
-  },
+
   //created by irfan:
   getCostCentersBAKUPDEC20: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -575,11 +699,12 @@ export default {
                   .executeQuery({
                     query:
                       "select VD.debit_amount,VD.child_id,VD.credit_amount,VD.payment_type,H.root_id,VD.hospital_id\
-                       from finance_voucher_details VD\
+                      ,C.child_name from finance_voucher_details VD\
                       inner join finance_account_head H on VD.head_id=H.finance_account_head_id\
+                       inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
                       where voucher_header_id=? and auth_status='P';",
                     values: [input.voucher_header_id],
-                    printQuery: true
+                     printQuery: false
                   })
                   .then(result => {
                     if (result.length > 0) {
@@ -592,13 +717,12 @@ export default {
                         _mysql
                           .executeQuery({
                             query:
-                              "select child_id,C.child_name,coalesce(sum(credit_amount)- sum(debit_amount),0) as cred_minus_deb,\
+                              "select child_id,coalesce(sum(credit_amount)- sum(debit_amount),0) as cred_minus_deb,\
                             coalesce(sum(debit_amount)-sum(credit_amount),0) as deb_minus_cred\
-                          from finance_voucher_details VD \
-                          inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
-                          where VD.auth_status='A' and VD.child_id in (?) group by VD.child_id;",
+                          from finance_voucher_details \
+                          where auth_status='A' and child_id in (?) group by child_id;",
                             values: [child_ids],
-                            printQuery: true
+                             printQuery: false
                           })
                           .then(closeBalance => {
                             let internal_eror = false;
@@ -622,7 +746,7 @@ export default {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
-                                      message: `${ledger.child_name} doesn't have debit balance`
+                                      message: `${entry.child_name} doesn't have debit balance`
                                     };
                                     next();
                                     return;
@@ -633,7 +757,7 @@ export default {
                                   internal_eror = true;
                                   req.records = {
                                     invalid_user: true,
-                                    message: "ledger not found"
+                                    message: `${entry.child_name} doesn't have debit balance`
                                   };
                                   next();
                                   return;
@@ -659,7 +783,7 @@ export default {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
-                                      message: `${ledger.child_name} doesn't have credit balance`
+                                      message: `${entry.child_name} doesn't have credit balance`
                                     };
                                     next();
                                     return;
@@ -670,7 +794,7 @@ export default {
                                   internal_eror = true;
                                   req.records = {
                                     invalid_user: true,
-                                    message: "ledger not found"
+                                    message: `${entry.child_name} doesn't have credit balance`
                                   };
                                   next();
                                   return;
@@ -704,7 +828,7 @@ export default {
                               new Date(),
                               input.voucher_header_id
                             ],
-                            printQuery: true
+                             printQuery: false
                           })
                           .then(authResult => {
                             _mysql.releaseConnection();
@@ -747,7 +871,7 @@ export default {
                       input.rejected_reason,
                       input.voucher_header_id
                     ],
-                    printQuery: true
+                     printQuery: false
                   })
                   .then(authResult => {
                     _mysql.releaseConnection();
@@ -776,11 +900,12 @@ export default {
                   .executeQuery({
                     query:
                       "select VD.debit_amount,VD.child_id,VD.credit_amount,VD.payment_type,H.root_id,VD.hospital_id\
-                     from finance_voucher_details VD\
+                      ,C.child_name from finance_voucher_details VD\
                     inner join finance_account_head H on VD.head_id=H.finance_account_head_id\
+                    inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
                     where voucher_header_id=? and auth_status='P';",
                     values: [input.voucher_header_id],
-                    printQuery: true
+                     printQuery: false
                   })
                   .then(result => {
                     let total_income = 0;
@@ -797,13 +922,12 @@ export default {
                         _mysql
                           .executeQuery({
                             query:
-                              "select child_id,C.child_name,coalesce(sum(credit_amount)- sum(debit_amount),0) as cred_minus_deb,\
-                          coalesce(sum(debit_amount)-sum(credit_amount),0) as deb_minus_cred\
-                        from finance_voucher_details VD \
-                        inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
-                        where VD.auth_status='A' and VD.child_id in (?) group by VD.child_id;",
+                              "select child_id,coalesce(sum(credit_amount)- sum(debit_amount),0) as cred_minus_deb,\
+                            coalesce(sum(debit_amount)-sum(credit_amount),0) as deb_minus_cred\
+                          from finance_voucher_details \
+                          where auth_status='A' and child_id in (?) group by child_id;",
                             values: [child_ids],
-                            printQuery: true
+                             printQuery: false
                           })
                           .then(closeBalance => {
                             let internal_eror = false;
@@ -827,7 +951,7 @@ export default {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
-                                      message: `${ledger.child_name} doesn't have debit balance`
+                                      message: `${entry.child_name} doesn't have debit balance`
                                     };
                                     next();
                                     return;
@@ -838,7 +962,7 @@ export default {
                                   internal_eror = true;
                                   req.records = {
                                     invalid_user: true,
-                                    message: "ledger not found"
+                                    message: `${entry.child_name} doesn't have debit balance`
                                   };
                                   next();
                                   return;
@@ -864,7 +988,7 @@ export default {
                                     internal_eror = true;
                                     req.records = {
                                       invalid_user: true,
-                                      message: `${ledger.child_name} doesn't have credit balance`
+                                      message: `${entry.child_name} doesn't have credit balance`
                                     };
                                     next();
                                     return;
@@ -875,7 +999,7 @@ export default {
                                   internal_eror = true;
                                   req.records = {
                                     invalid_user: true,
-                                    message: "ledger not found"
+                                    message: `${entry.child_name} doesn't have credit balance`
                                   };
                                   next();
                                   return;
@@ -987,7 +1111,7 @@ export default {
                               new Date(),
                               input.voucher_header_id
                             ],
-                            printQuery: true
+                             printQuery: false
                           })
                           .then(authResult => {
                             _mysql.commitTransaction(() => {
@@ -1033,7 +1157,7 @@ export default {
 
                       input.voucher_header_id
                     ],
-                    printQuery: true
+                     printQuery: false
                   })
                   .then(authResult => {
                     _mysql.releaseConnection();

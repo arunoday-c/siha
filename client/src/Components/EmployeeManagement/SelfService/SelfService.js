@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import "./SelfService.scss";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import AlgaehFile from "../../Wrapper/algaehFileUpload";
 import ActivityFeed from "./ActivityFeed/ActivityFeed";
 import SelfPersonalDetails from "./PersonalDetails/SelfPersonalDetails";
 import AttendanceRegularization from "./AttendanceRegularization/AttendanceRegularization";
 import ApplyLeave from "./ApplyLeave/ApplyLeave";
 import LoanRequest from "./LoanRequest/LoanRequest";
-import LeaveEncashment from "./LeaveEncashmemnt/LeaveEncashment";
+
 import HolidayListSelf from "./HolidayListSelf/HolidayListSelf";
 import TimeSheetSelf from "./TimeSheetSelf/TimeSheetSelf";
 import LeaveEncashmentProcess from ".././LeaveEncashmentProcess/LeaveEncashmentProcess";
@@ -23,8 +24,12 @@ export default class SelfService extends Component {
       pageDisplay: "ApplyLeave",
       regularize: {},
       leave: {},
-      employee_details: {}
+      employee_details: {},
+      loading: false
     };
+  }
+
+  componentDidMount() {
     this.getEmployeeDetails();
     this.getLeaveSalaryOptions();
   }
@@ -51,15 +56,23 @@ export default class SelfService extends Component {
   }
 
   getEmployeeDetails() {
+    const { loading } = this.state;
+    AlgaehLoader({ loading });
     algaehApiCall({
       uri: "/selfService/getEmployeeBasicDetails",
       method: "GET",
       module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
-          this.setState({
-            employee_details: res.data.records[0]
-          });
+          this.setState(
+            {
+              employee_details: res.data.records[0]
+            },
+            () => {
+              this.setState({ loading: false });
+              AlgaehLoader({ loading });
+            }
+          );
         }
       },
       onFailure: err => {
@@ -85,7 +98,6 @@ export default class SelfService extends Component {
   }
 
   ChangeRenderTabs(options) {
-
     if (options.pageDisplay === "AttendanceRegularization") {
       this.attReg.click();
     } else if (options.pageDisplay === "ApplyLeave") {
@@ -103,6 +115,9 @@ export default class SelfService extends Component {
       this.state.employee_details !== undefined
         ? this.state.employee_details
         : {};
+    if (this.state.loading) {
+      return null;
+    }
     return (
       <div className="selfServiceModule">
         <button
@@ -259,9 +274,9 @@ export default class SelfService extends Component {
                 algaehtabs={"ApplyLeaveEncashment"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
-              // ref={attReg => {
-              //   this.attReg = attReg;
-              // }}
+                // ref={attReg => {
+                //   this.attReg = attReg;
+                // }}
               >
                 {
                   <AlgaehLabel
@@ -320,8 +335,6 @@ export default class SelfService extends Component {
               empData={this.state.employee_details}
               basic_earning_component={this.state.basic_earning_component}
             />
-          ) : this.state.pageDisplay === "LeaveEncashment" ? (
-            <LeaveEncashment />
           ) : this.state.pageDisplay === "TimeSheetSelf" ? (
             <TimeSheetSelf />
           ) : this.state.pageDisplay === "HolidayListSelf" ? (

@@ -81,7 +81,7 @@ class InsuranceAdd extends PureComponent {
     //     this.setState(IOputs);
     //   }
     // }
-
+    debugger;
     if (
       nextProps.insuranceprovider !== undefined &&
       nextProps.insuranceprovider.length !== 0
@@ -144,7 +144,7 @@ class InsuranceAdd extends PureComponent {
         });
       }
     }
-    
+
     let IOputs = InsuranceSetup.inputParam();
     IOputs.activeStep = 0;
     IOputs.screenName = "InsuranceProvider";
@@ -346,10 +346,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(InsuranceAdd)
+  connect(mapStateToProps, mapDispatchToProps)(InsuranceAdd)
 );
 
 // export default withStyles(styles)(InsuranceAdd);

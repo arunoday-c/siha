@@ -1,8 +1,8 @@
 .reportMenuSecLeft {
   border-right: 1px solid #d3d3d3;
-  min-height: 82vh;
+  min-height: 82vh !important;
   background: #f9f9f9;
-  max-width: 280px;
+  max-width: 280px !important;
   h6 {
     margin: 0 -15px 0;
     font-size: 0.75rem;
@@ -70,6 +70,28 @@
         span:nth-child(3) {
           color: black;
           float: right;
+          width: 130px;
+          text-align: right;
+          border-left: 1px solid #ebebeb;
+          padding-right: 10px;
+          b {
+            border-bottom: 1px solid #888888;
+            width: 100%;
+            display: inline-block;
+          }
+        }
+        span:last-child {
+          color: black;
+          float: right;
+          width: 130px;
+          text-align: right;
+          border-left: 1px solid #ebebeb;
+          padding-right: 10px;
+          b {
+            border-bottom: 1px solid #888888;
+            width: 100%;
+            display: inline-block;
+          }
         }
         .childNodeLi {
           font-weight: normal;
@@ -172,7 +194,7 @@
   margin: 10mm;
 }
 .footerTotalArea {
-  border-top: 1px solid #000;
+  border-top: 1px solid #d3d3d3;
   text-align: right;
   td {
     vertical-align: top;
@@ -184,7 +206,19 @@
   }
 }
 .trialReportStyle {
+  padding: 0;
+  margin: 20px 0 0;
+  table-layout: fixed;
+  width: 100%;
+  th {
+    text-align: center;
+    /* width: 50px; */
+    padding: 0;
+    /* display: table-cell; */
+    border: 1px solid #d3d3d3;
+  }
   td {
     vertical-align: top;
+    border: 1px solid #d3d3d3;
   }
 }

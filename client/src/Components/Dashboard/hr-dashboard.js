@@ -32,6 +32,9 @@ class Dashboard extends Component {
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).hims_d_hospital_id
     };
+  }
+
+  componentWillMount() {
     DashBoardEvents().getEmployeeList(this);
     DashBoardEvents().getEmployeeDepartmentsWise(this);
     DashBoardEvents().getEmployeeDesignationWise(this);
@@ -60,6 +63,7 @@ class Dashboard extends Component {
   }
 
   eventHandaler(e) {
+    console.log(e, "eventObj");
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
 

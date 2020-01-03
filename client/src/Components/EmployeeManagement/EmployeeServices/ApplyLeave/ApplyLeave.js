@@ -649,7 +649,7 @@ class ApplyLeave extends Component {
                   <h3 className="caption-subject">Request Leave</h3>
                 </div>
               </div>
-              <div className="portlet-body" style={{ minHeight: "70.6vh" }}>
+              <div className="portlet-body">
                 <div className="row">
                   <AlagehAutoComplete
                     div={{ className: "col-12 form-group mandatory" }}
@@ -922,24 +922,22 @@ class ApplyLeave extends Component {
                       }
                     }}
                   />
-                  <div className="col-3">
-                    {/* <ButtonType
-                      classname="btn-primary"
-                      loading={this.state.loading_Process}
-                      onClick={this.applyLeave.bind(this)}
-                      label={{
-                        forceLabel: "Request",
-                        returnText: true
-                      }}
-                      others={{ disabled: this.state.Request_enable }}
-                    /> */}
+                  <div className="col-12" style={{ textAlign: "right" }}>
+                    <button
+                      onClick={this.clearState.bind(this)}
+                      type="button"
+                      className="btn btn-default"
+                      style={{ marginRight: 15 }}
+                    >
+                      Clear
+                    </button>
                     <button
                       onClick={this.applyLeave.bind(this)}
                       type="button"
                       className="btn btn-primary"
                       disabled={this.state.Request_enable}
                     >
-                      Request
+                      Request Leave
                     </button>
                   </div>
                 </div>

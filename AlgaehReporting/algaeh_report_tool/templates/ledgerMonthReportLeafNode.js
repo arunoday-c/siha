@@ -54,13 +54,13 @@ const executePDF = function executePDFMethod(options) {
               .executeQuery({
                 query: ` SELECT finance_voucher_id,monthname(concat('1999-',month,'-01')) as month_name ,
           sum(credit_amount) as credit_amount,
-          sum(debit_amount) as debit_amount ,head_id,child_id,month,
+          sum(debit_amount) as debit_amount ,VD.head_id,child_id,month,
           coalesce(sum(debit_amount)-sum(credit_amount),0)as debit_minus_credit ,
           coalesce(sum(credit_amount)-sum(debit_amount),0)as credit_minus_debit ,
           concat(H.account_name,'->',C.child_name) as account_details FROM
           finance_voucher_details VD left join finance_account_head H on VD.head_id=H.finance_account_head_id
           left join finance_account_child C on VD.child_id=C.finance_account_child_id where 
-          head_id=? and child_id=? ${strQry} group by month with rollup  ;`,
+          VD.auth_status='A' and  VD.head_id=? and child_id=? ${strQry} group by month with rollup  ;`,
                 values: [input.head_id, input.child_id],
                 printQuery: true
               })
