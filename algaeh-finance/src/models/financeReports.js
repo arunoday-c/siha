@@ -91,13 +91,19 @@ export default {
                     getAccountHeadsForReport(decimal_places, 5, option)
                       .then(expense => {
                         const total_debit_amount = parseFloat(
-                          parseFloat(asset.subtitle) +
-                            parseFloat(expense.subtitle)
+                          parseFloat(asset.tr_debit_amount) +
+                            parseFloat(newCapital.tr_debit_amount) +
+                            parseFloat(income.tr_debit_amount) +
+                            parseFloat(liability.tr_debit_amount) +
+                            parseFloat(expense.tr_debit_amount)
                         ).toFixed(decimal_places);
+
                         const total_credit_amount = parseFloat(
-                          parseFloat(newCapital.subtitle) +
-                            parseFloat(income.subtitle) +
-                            parseFloat(liability.subtitle)
+                          parseFloat(asset.tr_credit_amount) +
+                            parseFloat(newCapital.tr_credit_amount) +
+                            parseFloat(income.tr_credit_amount) +
+                            parseFloat(liability.tr_credit_amount) +
+                            parseFloat(expense.tr_credit_amount)
                         ).toFixed(decimal_places);
 
                         newCapital.children = [{ ...newCapital }];
