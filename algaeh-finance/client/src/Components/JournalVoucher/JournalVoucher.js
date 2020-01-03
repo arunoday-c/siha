@@ -21,6 +21,19 @@ import {
 } from "./JournalVoucher.events";
 import { getCookie } from "../../utils/algaehApiCall";
 let records_av = {};
+let dataPayment = [
+  { value: "journal", label: "Journal" },
+  { label: "Contra", value: "contra" },
+  { value: "receipt", label: "Receipt" },
+  { label: "Payment", value: "payment" },
+  { value: "sales", label: "Sales" },
+  { label: "Purchase", value: "purchase" },
+  {
+    value: "credit_note",
+    label: "Credit Note"
+  },
+  { value: "debit_note", label: "Debit Note" }
+];
 export default function JournalVoucher() {
   const [voucherDate, setVoucherDate] = useState(undefined);
   const [voucher_no, setVoucherNo] = useState("");
@@ -46,22 +59,6 @@ export default function JournalVoucher() {
       payment_mode: "CA"
     }
   ]);
-
-  // useEffect(() => {
-  //   getVoucherNumber()
-  //     .then(result => {
-  //       setVoucherNo(result.voucher_no);
-  //     })
-  //     .catch(error => {
-  //       AlgaehMessagePop({
-  //         type: "error",
-  //         display: error
-  //       });
-  //     });
-  //   // getHeaders().then(result => {
-  //   //   setAccounts(result);
-  //   // });
-  // }, []);
 
   return (
     <div className="JournalVoucherScreen">
@@ -114,33 +111,28 @@ export default function JournalVoucher() {
           selector={{
             value: voucherType,
             dataSource: {
-              data: [
-                { value: "journal", label: "Journal" },
-                { label: "Contra", value: "contra" },
-                { value: "receipt", label: "Receipt" },
-                { label: "Payment", value: "payment" },
-                { value: "sales", label: "Sales" },
-                { label: "Purchase", value: "purchase" },
-                {
-                  value: "credit_note",
-                  label: "Credit Note"
-                },
-                { value: "debit_note", label: "Debit Note" }
-              ],
+              data: dataPayment,
               valueField: "value",
               textField: "label"
             },
             onChange: selected => {
-              getVoucherNumber({ voucher_type: selected.value })
-                .then(result => {
-                  setVoucherNo(result.voucher_no);
-                })
-                .catch(error => {
-                  AlgaehMessagePop({
-                    type: "error",
-                    display: error
+              const type = selected["seltype"];
+              if (type === undefined) {
+                getVoucherNumber({ voucher_type: selected.value })
+                  .then(result => {
+                    setVoucherNo(result.voucher_no);
+                    selected["seltype"] = result.voucher_no;
+                  })
+                  .catch(error => {
+                    AlgaehMessagePop({
+                      type: "error",
+                      display: error
+                    });
                   });
-                });
+              } else {
+                setVoucherNo(type);
+              }
+
               getHeaders({ voucher_type: selected.value }).then(result => {
                 setAccounts(result);
               });
@@ -421,19 +413,13 @@ export default function JournalVoucher() {
                     setClearLoading(true);
                     setJournerList([]);
                     setNarration("");
-                    getVoucherNumber()
-                      .then(result => {
-                        setClearLoading(false);
-                        setVoucherNo(result.voucher_no);
-                      })
-                      .catch(error => {
-                        setClearLoading(false);
-                        AlgaehMessagePop({
-                          type: "error",
-                          display: error
-                        });
-                      });
-
+                    setVoucherType("");
+                    setAccounts([]);
+                    setVoucherNo("");
+                    dataPayment = dataPayment.map(m => {
+                      delete m["seltype"];
+                      return m;
+                    });
                     AlgaehMessagePop({
                       type: "success",
                       display: "Successfully updated.."
@@ -456,20 +442,25 @@ export default function JournalVoucher() {
               onClick={() => {
                 setLoading(true);
                 setClearLoading(true);
-                getVoucherNumber()
-                  .then(result => {
-                    setLoading(false);
-                    setClearLoading(false);
-                    setVoucherNo(result.voucher_no);
-                  })
-                  .catch(error => {
-                    setLoading(false);
-                    setClearLoading(false);
-                    AlgaehMessagePop({
-                      type: "error",
-                      display: error
-                    });
-                  });
+                setJournerList([]);
+                setNarration("");
+                setVoucherType("");
+                setAccounts([]);
+                setVoucherNo("");
+                // getVoucherNumber()
+                //   .then(result => {
+                //     setLoading(false);
+                //     setClearLoading(false);
+                //     setVoucherNo(result.voucher_no);
+                //   })
+                //   .catch(error => {
+                //     setLoading(false);
+                //     setClearLoading(false);
+                //     AlgaehMessagePop({
+                //       type: "error",
+                //       display: error
+                //     });
+                //   });
               }}
             >
               Clear
