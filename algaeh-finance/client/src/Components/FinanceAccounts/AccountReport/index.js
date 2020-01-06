@@ -133,13 +133,9 @@ export default memo(function Modal(props) {
 
         let reportName = "";
         if (leafnode === "N") {
-          reportName = checkedType
-            ? "ledgerMonthReportGroupNode"
-            : "ledgerDateReportGroupNode";
+          reportName = checkedType ? "MonthWiseGroupNode" : "DateWiseGroupNode";
         } else {
-          reportName = checkedType
-            ? "ledgerMonthReportLeafNode"
-            : "ledgerDateReportLeafNode";
+          reportName = checkedType ? "MonthWiseLeafNode" : "DateWiseLeafNode";
         }
         let outcomeDataHospital = {};
         let outcomeDataCostCenter = {};

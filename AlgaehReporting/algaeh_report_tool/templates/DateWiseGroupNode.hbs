@@ -6,7 +6,6 @@
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
-                        {{!-- <th width="40px">Sl No.</th> --}}
                         <th width="100px">Date</th>
                         <th>Particulars</th>
                         <th width="100px">Voucher Type</th>
@@ -16,7 +15,42 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{#hasElement data}}
+
+                    <tr>
+                        <td class="">Date Here</td>
+                        <td class="">Particulars Name</td>
+                        <td class="">Voucher Type</td>
+                        <td class="">Voucher No.</td>
+                        <td class="numberFld ">0.00</td>
+                        <td class="numberFld ">0.00</td>
+                    </tr>
+                    <tr>
+                        <td class="">Date Here</td>
+                        <td class="">Particulars Name</td>
+                        <td class="">Voucher Type</td>
+                        <td class="">Voucher No.</td>
+                        <td class="numberFld ">0.00</td>
+                        <td class="numberFld ">0.00</td>
+                    </tr>
+                    <tr>
+                        <td class="">Date Here</td>
+                        <td class="">Particulars Name</td>
+                        <td class="">Voucher Type</td>
+                        <td class="">Voucher No.</td>
+                        <td class="numberFld ">0.00</td>
+                        <td class="numberFld ">0.00</td>
+                    </tr>
+                    <tr>
+                        <td class="">Date Here</td>
+                        <td class="">Particulars Name</td>
+                        <td class="">Voucher Type</td>
+                        <td class="">Voucher No.</td>
+                        <td class="numberFld ">0.00</td>
+                        <td class="numberFld ">0.00</td>
+                    </tr>
+
+
+                    {{!-- {{#hasElement data}}
                     {{#each data}}
                     <tr>
                         <td colspan="5" class="tableSubHdg txtFld">{{payment_date}}</td>
@@ -29,20 +63,20 @@
                     </tr>
                     {{#each entries}}
                     <tr>
-                        {{!-- <td>{{inc @index}}</td> --}}
+                      <td>{{inc @index}}
                         <td class="">{{payment_date}}</td>
                         <td class="">{{child_name}}</td>
                         <td class="">Voucher Type</td>
                         <td class="">Voucher No.</td>
                         <td class="numberFld ">{{debit_amount}}</td>
                         <td class="numberFld ">{{credit_amount}}</td>
-                        {{!--  <td class="numberFld numberFldTotal">{{balance_amount}}</td>--}}
                     </tr>
                     {{/each }}
                     {{/each }}
                     {{/each }}
 
-                    {{/hasElement }}<tr class="numberFld ">
+                    {{/hasElement }} --}}
+                    {{!-- <tr class="numberFld ">
                         <td class="numberFld" colspan="4"></td>
                         <td class="numberFld">{{final_debit_amount}}</td>
                         <td class="numberFld">{{final_credit_amount}}</td>
@@ -56,11 +90,27 @@
                         <td class="numberFld" colspan="4"></td>
                         <td class="numberFld">{{final_debit_amount}}</td>
                         <td class="numberFld">{{final_credit_amount}}</td>
-                    </tr>
+                    </tr> --}}
                     {{!-- {{else}}
                                         <tr>
                                             <td class="noResultTextReport">No Records Found</td>
                                         </tr> --}}
+
+                    <tr class="numberFld ">
+                        <td class="numberFld" colspan="4"></td>
+                        <td class="numberFld">Debit Total</td>
+                        <td class="numberFld">Credit Total</td>
+                    </tr>
+                    <tr class="numberFld ">
+                        <td class="numberFld" colspan="4">Closing Balance</td>
+                        <td class="numberFld"></td>
+                        <td class="numberFld">CL amount</td>
+                    </tr>
+                    <tr class="numberFld numberFldTotalBottom">
+                        <td class="numberFld" colspan="4"></td>
+                        <td class="numberFld">Net Debit Total</td>
+                        <td class="numberFld">Net Credit Total</td>
+                    </tr>
                 </tbody>
             </table>
         </section>
