@@ -12,6 +12,7 @@ const onchhangeNumber = ($this, context, row, e) => {
     row.extended_price = value === "" || value === undefined ? 0
       :
       (parseFloat(row.quantity) * parseFloat(value)).toFixed($this.state.decimal_places)
+    row.discount_amount = ((parseFloat(row.extended_price) * parseFloat(row.discount_percentage)) / 100).toFixed($this.state.decimal_places);
   } else {
     if (row.unit_price === 0 || row.unit_price === null) {
       swalMessage({
