@@ -343,8 +343,7 @@ export default {
           values: [
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            inputParam.hims_f_procurement_return_po_header_id,
-            inputParam.grn_header_id
+            inputParam.hims_f_procurement_return_po_header_id
           ],
           printQuery: true
         })
@@ -368,7 +367,7 @@ export default {
             );
           }
           _mysql
-            .executeQueryWithTransaction({
+            .executeQuery({
               query: StrQuery,
               printQuery: true
             })

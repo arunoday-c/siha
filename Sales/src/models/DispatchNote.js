@@ -250,6 +250,16 @@ export function addDispatchNote(req, res, next) {
 
                     let period = month;
 
+                    let strQuery = mysql.format(
+                        "UPDATE hims_f_sales_order SET invoice_generated='Y', invoice_gen_date=?, invoice_gen_by=? \
+                        where  hims_f_sales_order_id = ?;",
+                        [
+                            new Date(),
+                            req.userIdentity.algaeh_d_app_user_id,
+                            input.sales_order_id
+                        ]
+                    );
+
                     _mysql
                         .executeQuery({
                             query:
@@ -257,7 +267,7 @@ export function addDispatchNote(req, res, next) {
                                     sales_order_id, location_id, customer_id, project_id, \
                                     sub_total, discount_amount, net_total, total_tax, net_payable, narration, \
                                     created_by, created_date, updated_by, updated_date, hospital_id ) \
-                                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);" + strQuery,
                             values: [
                                 dispatch_note_number,
                                 new Date(),
@@ -280,10 +290,11 @@ export function addDispatchNote(req, res, next) {
                             printQuery: true
                         })
                         .then(headerResult => {
-                            req.body.transaction_id = headerResult.insertId;
+                            let dispatch_note_header_id = headerResult[0].insertId;
+                            req.body.transaction_id = headerResult[0].insertId;
                             req.body.year = year;
                             req.body.period = period;
-                            console.log("headerResult: ", headerResult.insertId);
+                            console.log("headerResult: ", headerResult[0].insertId);
                             console.log("length: ", input.stock_detail.length);
 
                             for (let i = 0; i < input.stock_detail.length; i++) {
@@ -301,7 +312,7 @@ export function addDispatchNote(req, res, next) {
                                             input.stock_detail[i]["dispatched_quantity"],
                                             input.stock_detail[i]["quantity_outstanding"],
                                             input.stock_detail[i]["delivered_to_date"],
-                                            headerResult.insertId
+                                            dispatch_note_header_id
                                         ],
                                         printQuery: true
                                     })
@@ -355,8 +366,7 @@ export function addDispatchNote(req, res, next) {
 
                                                     req.records = {
                                                         dispatch_note_number: dispatch_note_number,
-                                                        hims_f_sales_dispatch_note_header_id:
-                                                            headerResult.insertId,
+                                                        hims_f_sales_dispatch_note_header_id: dispatch_note_header_id,
                                                         year: year,
                                                         period: period
                                                     };

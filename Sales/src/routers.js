@@ -4,6 +4,7 @@ import SalesOrder from "./controller/SalesOrder";
 import DispatchNote from "./controller/DispatchNote";
 import SalesInvoice from "./controller/SalesInvoice";
 import SalesSettings from "./controller/SalesSettings";
+import SalesReturnEntry from "./controller/SalesReturnEntry";
 
 const router = express();
 export default function Routing() {
@@ -12,5 +13,6 @@ export default function Routing() {
   router.use("/DispatchNote", DispatchNote());
   router.use("/SalesInvoice", SalesInvoice());
   router.use("/SalesSettings", SalesSettings());
+  router.use("/SalesReturnEntry", SalesReturnEntry());
   return router;
 }
