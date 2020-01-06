@@ -7591,6 +7591,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
 }
 
 function validateLeaveApplictn(inputs, my_sql, req) {
+
   return new Promise((resolve, reject) => {
     try {
       const utilities = new algaehUtilities();
@@ -7619,7 +7620,7 @@ function validateLeaveApplictn(inputs, my_sql, req) {
           input["at_st_date"] = authResult[0]["at_st_date"];
 
           if (attendance_starts == "PM" && at_end_date > 0) {
-            const temp_year = moment().format("YYYY");
+            const temp_year = moment(input.from_date, "YYYY-MM-DD").format("YYYY");
             const cur_year_max_date = parseInt(temp_year + "12" + at_end_date);
             const from_date_month_n_date = parseInt(
               moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD")
@@ -8314,7 +8315,7 @@ function calculateNoLeaveDays(inputs, _mysql) {
 
               ],
 
-              printQuery: false
+              printQuery: true
             })
             .then(result => {
               allLeaves = result[0];
