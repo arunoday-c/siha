@@ -7,15 +7,39 @@
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
-                        <th width="40px">Sl No.</th>
-                        <th>Sub Account Name</th>
+                        <th width="100px">Month Here</th>
+                        <th>Particulars</th>
                         <th width="80px">Debit Amt</th>
                         <th width="80px">Credit Amt</th>
-                        <th width="80px">Balance Amt.</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{#hasElement months}}
+
+                    <tr>
+                        <td class="">Month Here</td>
+                        <td class="">Particulars Name</td>
+                        <td class="numberFld ">0.00</td>
+                        <td class="numberFld ">0.00</td>
+                    </tr>
+                    <tr>
+                        <td class="">Month Here</td>
+                        <td class="">Particulars Name</td>
+                        <td class="numberFld ">0.00</td>
+                        <td class="numberFld ">0.00</td>
+                    </tr>
+                    <tr>
+                        <td class="">Month Here</td>
+                        <td class="">Particulars Name</td>
+                        <td class="numberFld ">0.00</td>
+                        <td class="numberFld ">0.00</td>
+                    </tr>
+                    <tr>
+                        <td class="">Month Here</td>
+                        <td class="">Particulars Name</td>
+                        <td class="numberFld ">0.00</td>
+                        <td class="numberFld ">0.00</td>
+                    </tr>
+                    {{!-- {{#hasElement months}}
                     {{#each months}}
                     <tr>
                         <td colspan="4" class="tableSubHdg txtFld">{{month_name}}</td>
@@ -37,11 +61,25 @@
                     {{/each }}
                     {{/each }}
                     {{/each }}
-                    {{!-- {{else}}
-                    <tr>
-                        <td class="noResultTextReport">No Records Found</td>
-                    </tr> --}}
-                    {{/hasElement }}
+                  
+                    {{/hasElement }} --}}
+
+
+                    <tr class="numberFld ">
+                        <td class="numberFld" colspan="2"></td>
+                        <td class="numberFld">Debit Total</td>
+                        <td class="numberFld">Credit Total</td>
+                    </tr>
+                    <tr class="numberFld ">
+                        <td class="numberFld" colspan="2">Closing Balance</td>
+                        <td class="numberFld"></td>
+                        <td class="numberFld">CL amount</td>
+                    </tr>
+                    <tr class="numberFld numberFldTotalBottom">
+                        <td class="numberFld" colspan="2"></td>
+                        <td class="numberFld">Net Debit Total</td>
+                        <td class="numberFld">Net Credit Total</td>
+                    </tr>
                 </tbody>
             </table>
 
