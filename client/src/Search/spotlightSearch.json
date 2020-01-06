@@ -910,6 +910,10 @@
         "label": "Sales Order"
       },
       {
+        "fieldName": "customer_name",
+        "label": "Customer Name"
+      },
+      {
         "fieldName": "location",
         "label": "Location",
         "required": "N"
