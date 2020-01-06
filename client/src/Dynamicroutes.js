@@ -576,6 +576,11 @@ const PageToPlot = {
       import("./Components/Sales/SalesOrderList/SalesOrderSwitch")
     )
   ),
+  SalesReturnEntry: React.lazy(() =>
+    retry(() =>
+      import("./Components/Sales/SalesReturnEntry/SalesReturnEntry")
+    )
+  ),
 
   Accounts,
   Transactions,

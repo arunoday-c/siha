@@ -84,8 +84,19 @@ const executePDF = function executePDFMethod(options) {
                       ).toFixed(decimal_places);
                     });
 
+                    const dateWiseGroup = _.chain(final_result)
+                      .groupBy(g => g.payment_date)
+                      .value();
+
+                    const outputArray = [];
+
+                    for (let i in dateWiseGroup) {
+                      dateWiseGroup[i][0]["transaction_date"] = i;
+                      outputArray.push(...dateWiseGroup[i]);
+                    }
+
                     resolve({
-                      details: final_result,
+                      details: outputArray,
                       total_debit: total_debit,
                       total_credit: total_credit
                     });

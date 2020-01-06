@@ -874,7 +874,21 @@ let algaehSearchConfig = (searchName, req) => {
           hospitalId,
         orderBy: "hims_f_sales_invoice_header_id desc"
 
+      },
+      {
+        searchName: "InvSalesReturn",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS  IH.*,  C.customer_name, P.project_desc, \
+          SO.invoice_number from hims_f_sales_return_header IH \
+          inner join hims_d_customer C on IH.customer_id = C.hims_d_customer_id \
+          inner join  hims_f_sales_invoice_header SO on IH.sales_invoice_header_id = SO.hims_f_sales_invoice_header_id  \
+          inner join hims_d_project P on P.hims_d_project_id = IH.project_id \
+          where IH.hospital_id=" +
+          hospitalId,
+        orderBy: "hims_f_sales_return_header_id desc"
+
       }
+
     ]
 
 

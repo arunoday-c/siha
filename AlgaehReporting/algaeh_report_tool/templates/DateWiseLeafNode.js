@@ -22,19 +22,14 @@ const executePDF = function executePDFMethod(options) {
         moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD") > 0 &&
         moment(input.to_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
       ) {
-        strQry = ` and payment_date between date('${input.from_date}') and date('${input.to_date}') `;
+        strQry = ` and VD.payment_date between date('${input.from_date}') and date('${input.to_date}') `;
       }
 
       if (input.leafnode == "Y") {
         options.mysql
           .executeQuery({
             query: `SELECT cost_center_type  FROM finance_options limit 1;`,
-            values: [
-              input.head_id,
-              input.child_id,
-              input.head_id,
-              input.child_id
-            ],
+            values: [],
             printQuery: true
           })
           .then(resul => {
@@ -54,164 +49,47 @@ const executePDF = function executePDFMethod(options) {
 
             options.mysql
               .executeQuery({
-                query: `SELECT finance_voucher_id,payment_date ,credit_amount, debit_amount,
-                      coalesce(debit_amount-credit_amount,0)as debit_minus_credit ,
-                      coalesce(credit_amount-debit_amount,0)as credit_minus_debit ,
-                      concat(H.account_name,' -> ',C.child_name) as account_details FROM 
-                      finance_voucher_details VD inner join finance_account_head H on
-                      VD.head_id=H.finance_account_head_id inner join finance_account_child C on 
-                      VD.child_id=C.finance_account_child_id where 
-                      VD.auth_status='A' and  VD.head_id=? and child_id=? ${strQry};
-                      SELECT finance_voucher_id,payment_date ,sum(credit_amount) as total_credit_amount,
-                      sum(debit_amount) as total_debit_amount ,
-                      coalesce(sum(debit_amount)-sum(credit_amount),0)as debit_minus_credit ,
-                      coalesce(sum(credit_amount)-sum(debit_amount),0)as credit_minus_debit FROM 
-                      finance_voucher_details  where auth_status='A' and 
-                      head_id=? and child_id=? ${strQry} group by payment_date with rollup  ;`,
-                values: [
-                  input.head_id,
-                  input.child_id,
-                  input.head_id,
-                  input.child_id
-                ],
+                query: `  select finance_voucher_header_id,voucher_type,voucher_no,
+                      VD.head_id,VD.payment_date ,VD.child_id,               
+                      ROUND(sum(debit_amount),${decimal_places}) as debit_amount,
+                      ROUND(sum(credit_amount),${decimal_places})  as credit_amount,C.child_name
+                      from finance_voucher_header H inner join finance_voucher_details VD
+                      on H.finance_voucher_header_id=VD.voucher_header_id inner join finance_account_child C on
+                      VD.child_id=C.finance_account_child_id where  VD.auth_status='A' and
+                      VD.child_id=?  ${strQry} group by VD.payment_date,voucher_no ;   `,
+                values: [input.child_id],
                 printQuery: true
               })
               .then(result => {
                 options.mysql.releaseConnection();
+                let total_debit = parseFloat(0).toFixed(decimal_places);
+                let total_credit = parseFloat(0).toFixed(decimal_places);
+                if (result.length > 0) {
+                  result.forEach(item => {
+                    total_credit = (
+                      parseFloat(total_credit) + parseFloat(item.credit_amount)
+                    ).toFixed(decimal_places);
+                    total_debit = (
+                      parseFloat(total_debit) + parseFloat(item.debit_amount)
+                    ).toFixed(decimal_places);
+                  });
 
-                if (result[0].length > 0) {
-                  const entries = result[0];
-                  const dateWiseSum = result[1];
-
-                  const totals = dateWiseSum.pop();
-
-                  let outputArray = [];
-                  let entriesArray = [];
-                  //ST-all entries
-                  if (input.parent_id == 1 || input.parent_id == 5) {
-                    entriesArray = entries.map(m => {
-                      return {
-                        credit_amount: parseFloat(m.credit_amount).toFixed(
-                          decimal_places
-                        ),
-                        debit_amount: parseFloat(m.debit_amount).toFixed(
-                          decimal_places
-                        ),
-                        account_details: m.account_details,
-                        narration: m.narration,
-                        payment_date: m.payment_date,
-                        balance_amount: parseFloat(
-                          m.debit_minus_credit
-                        ).toFixed(decimal_places)
-                      };
-                    });
-                  } else {
-                    entriesArray = entries.map(m => {
-                      return {
-                        credit_amount: parseFloat(m.credit_amount).toFixed(
-                          decimal_places
-                        ),
-                        debit_amount: parseFloat(m.debit_amount).toFixed(
-                          decimal_places
-                        ),
-                        account_details: m.account_details,
-                        narration: m.narration,
-                        payment_date: m.payment_date,
-                        balance_amount: parseFloat(
-                          m.credit_minus_debit
-                        ).toFixed(decimal_places)
-                      };
-                    });
-                  }
-                  //END-all entries
-                  //ST-Grouping datewise  entries
-                  const entriesGroup = _.chain(entriesArray)
+                  const dateWiseGroup = _.chain(result)
                     .groupBy(g => g.payment_date)
                     .value();
-                  //END-Grouping datewise  entries
-                  let finalTotals = null;
-                  if (input.parent_id == 1 || input.parent_id == 5) {
-                    const symbol = " Dr";
 
-                    //ST-GRAND TOTAL
-                    finalTotals = {
-                      final_credit_amount:
-                        parseFloat(totals.total_credit_amount).toFixed(
-                          decimal_places
-                        ) + symbol,
-                      final_debit_amount:
-                        parseFloat(totals.total_debit_amount).toFixed(
-                          decimal_places
-                        ) + symbol,
-                      final_balance:
-                        parseFloat(totals.debit_minus_credit).toFixed(
-                          decimal_places
-                        ) + symbol
-                    };
-                    //END-GRAND TOTAL
-                    //ST-datewise  entries and thier totals
-                    dateWiseSum.forEach(item => {
-                      outputArray.push({
-                        entries: entriesGroup[item.payment_date],
-                        total_debit_amount:
-                          parseFloat(item.total_debit_amount).toFixed(
-                            decimal_places
-                          ) + symbol,
-                        total_credit_amount:
-                          parseFloat(item.total_credit_amount).toFixed(
-                            decimal_places
-                          ) + symbol,
-                        balance:
-                          parseFloat(item.debit_minus_credit).toFixed(
-                            decimal_places
-                          ) + symbol,
-                        date: item.payment_date
-                      });
-                    });
-                    //END-datewise  entries and thier totals
-                  } else {
-                    const symbol = " Cr";
-                    //ST-GRAND TOTAL
-                    finalTotals = {
-                      final_credit_amount:
-                        parseFloat(totals.total_credit_amount).toFixed(
-                          decimal_places
-                        ) + symbol,
-                      final_debit_amount:
-                        parseFloat(totals.total_debit_amount).toFixed(
-                          decimal_places
-                        ) + symbol,
-                      final_balance:
-                        parseFloat(totals.credit_minus_debit).toFixed(
-                          decimal_places
-                        ) + symbol
-                    };
-                    //END-GRAND TOTAL
-                    //ST-datewise  entries and thier totals
-                    dateWiseSum.forEach(item => {
-                      outputArray.push({
-                        entries: entriesGroup[item.payment_date],
-                        total_debit_amount:
-                          parseFloat(item.total_debit_amount).toFixed(
-                            decimal_places
-                          ) + symbol,
-                        total_credit_amount:
-                          parseFloat(item.total_credit_amount).toFixed(
-                            decimal_places
-                          ) + symbol,
-                        balance:
-                          parseFloat(item.credit_minus_debit).toFixed(
-                            decimal_places
-                          ) + symbol,
-                        date: item.payment_date
-                      });
-                    });
-                    //END-datewise  entries and thier totals
+                  const outputArray = [];
+
+                  for (let i in dateWiseGroup) {
+                    dateWiseGroup[i][0]["transaction_date"] = i;
+                    outputArray.push(...dateWiseGroup[i]);
                   }
 
                   resolve({
                     details: outputArray,
-                    ...finalTotals
+                    account_name: result[0]["child_name"],
+                    total_debit: total_debit,
+                    total_credit: total_credit
                   });
                 } else {
                   resolve({
