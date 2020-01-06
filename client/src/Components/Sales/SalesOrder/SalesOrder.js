@@ -244,18 +244,20 @@ class SalesOrder extends Component {
                       <span className="badge badge-danger">Cancelled</span>
                     ) : this.state.authorize1 === "Y" &&
                       this.state.authorize2 === "Y" && this.state.is_completed === "N" ? (
-                          <span className="badge badge-success">Authorized</span>
+                          <span className="badge badge-success">Authorized / Dispatch Pending</span>
                         ) : this.state.authorize1 === "Y" &&
                           this.state.authorize2 === "N" ? (
                             <span className="badge badge-danger">Authorized 2 Pending</span>
                           ) : this.state.authorize1 === "N" &&
                             this.state.authorize2 === "N" ? (
                               <span className="badge badge-danger">Pending</span>
-                            ) : this.state.is_completed === "Y" ? (
+                            ) : this.state.is_completed === "Y" && this.state.invoice_generated === "N" ? (
+                              <span className="badge badge-danger">Invoice Generation Pending</span>
+                            ) : this.state.invoice_generated === "Y" ? (
                               <span className="badge badge-success">Invoice Generated</span>
                             ) : (
-                                "-------"
-                              )}
+                                  "-------"
+                                )}
                   </h6>
                 </div>
               ) : null}
