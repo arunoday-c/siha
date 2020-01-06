@@ -8,7 +8,8 @@ const {
   getCostCenters,
   authorizeVoucher,
   getVouchersToAuthorize,
-  getVouchersDetailsToAuthorize
+  getVouchersDetailsToAuthorize,
+  addCostCenter
 } = voucher;
 
 export default () => {
@@ -136,5 +137,24 @@ export default () => {
       }
     }
   );
+  api.post("/addCostCenter", addCostCenter, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+        .json({
+          success: false,
+          message: req.records.message
+        })
+        .end();
+    } else {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records
+        })
+        .end();
+    }
+  });
   return api;
 };
