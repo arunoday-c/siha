@@ -479,19 +479,19 @@ let getRoleBaseActiveModules = (req, res, next) => {
   s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
   s.other_language as s_other_language,'' as algaeh_d_app_component_id,'' as component_code,
   '' as component_name,'' as comp_view_previlage,'' as ele_view_previlage,'' as ele_extra_props,
-  '' as ele_props_type,'' as screen_element_code,'' as screen_element_name 
+  '' as ele_props_type,'' as screen_element_code,'' as screen_element_name,'' as screen_id
   from algaeh_d_app_module as m inner join algaeh_d_app_screens as s
-  on s.module_id = m.algaeh_d_module_id where ${
+  on s.module_id = m.algaeh_d_module_id  ${
     role_type === "SU"
-      ? " m.access_by in ('SU','OU') "
-      : " m.access_by <> 'SU' and m.record_status='A'"
+      ? ""
+      : "where m.access_by <> 'SU' and m.record_status='A'"
   }`;
     } else {
       strQuery = `select m.algaeh_d_module_id,m.module_code,m.module_name,m.icons,m.display_order,m.other_language,
   s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
   s.other_language as s_other_language,c.algaeh_d_app_component_id,c.component_code,c.component_name,
   cs.view_privilege as comp_view_previlage,se.view_type as ele_view_previlage,se.extra_props as ele_extra_props,
-  se.props_type as ele_props_type,e.screen_element_code,e.screen_element_name
+  se.props_type as ele_props_type,e.screen_element_code,e.screen_element_name,sr.screen_id
    from algaeh_m_module_role_privilage_mapping as mr inner 
    join algaeh_d_app_module as  m
   on mr.module_id=m.algaeh_d_module_id inner join algaeh_m_screen_role_privilage_mapping as sr
@@ -525,6 +525,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
             const first = _.head(detail);
             return {
               module_id: key,
+              order: first.display_order,
               module_name: first.module_name,
               module_code: first.module_code,
               icons: first.icons,
@@ -538,7 +539,10 @@ let getRoleBaseActiveModules = (req, res, next) => {
               })
             };
           })
-          .value();
+          .value()
+          .sort((a, b) => {
+            return a.order - b.order;
+          });
         req.records = records;
         next();
       })

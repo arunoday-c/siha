@@ -309,6 +309,7 @@ class SalesOrder extends Component {
                             this.state.sales_order_mode === "I" ? true : false
                           }
                           onChange={texthandle.bind(this, this)}
+                          disabled={this.state.dataExitst}
                         />
                         <span>Item</span>
                       </label>
@@ -321,6 +322,7 @@ class SalesOrder extends Component {
                             this.state.sales_order_mode === "S" ? true : false
                           }
                           onChange={texthandle.bind(this, this)}
+                          disabled={this.state.dataExitst}
                         />
                         <span>Service</span>
                       </label>

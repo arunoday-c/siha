@@ -4,10 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import "./SalesInvoice.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
-import {
-    AlgaehLabel,
-    AlagehAutoComplete,
-} from "../../Wrapper/algaehWrapper";
+import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
 // import ReceiptItemList from "./ReceiptItemList/ReceiptItemList";
@@ -15,10 +12,9 @@ import moment from "moment";
 
 import {
     ClearData,
-    SaveReceiptEnrty,
+    SaveInvoiceEnrty,
     getCtrlCode,
     SalesOrderSearch,
-    SalesQuotationSearch,
     texthandle,
     generateSalesInvoiceReport
 } from "./SalesInvoiceEvents";
@@ -29,30 +25,17 @@ import _ from "lodash";
 import { getAmountFormart, AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 import InvoiceListService from "./InvoiceListService/InvoiceListService";
 import InvoiceItemList from "./InvoiceItemList/InvoiceItemList";
+import SalesInvoiceIO from "../../../Models/SalesInvoice";
 
 class SalesInvoice extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            sales_invoice_mode: "I",
-            invoice_date: new Date(),
-            selectedData: false,
-            dataExitst: false,
-            project_name: null,
-            customer_name: null,
-            hospital_name: null,
-            payment_terms: null,
-            customer_id: null,
-            payment_terms: null,
-            sales_order_number: null,
-            sales_quotation_number: null,
-            invoice_entry_detail_item: []
-        };
+        this.state = {};
     }
 
     UNSAFE_componentWillMount() {
-        // let IOputs = SalesInvoiceInp.inputParam();
-        // this.setState(IOputs);
+        let IOputs = SalesInvoiceIO.inputParam();
+        this.setState(IOputs);
     }
 
     componentDidMount() {
@@ -134,14 +117,14 @@ class SalesInvoice extends Component {
                                 label={{ forceLabel: "Invoice Number", returnText: true }}
                             />
                         ),
-                        value: this.state.grn_number,
-                        selectValue: "grn_number",
+                        value: this.state.invoice_number,
+                        selectValue: "invoice_number",
                         events: {
                             onChange: getCtrlCode.bind(this, this)
                         },
                         jsonFile: {
                             fileName: "spotlightSearch",
-                            fieldName: "Receipt.SalesInvoice"
+                            fieldName: "Sales.SalesInvoice"
                         },
                         searchName: "SalesInvoice"
                     }}
@@ -198,6 +181,7 @@ class SalesInvoice extends Component {
                                                     this.state.sales_invoice_mode === "I" ? true : false
                                                 }
                                                 onChange={texthandle.bind(this, this)}
+                                                disabled={this.state.dataExitst}
                                             />
                                             <span>Item</span>
                                         </label>
@@ -210,149 +194,64 @@ class SalesInvoice extends Component {
                                                     this.state.sales_invoice_mode === "S" ? true : false
                                                 }
                                                 onChange={texthandle.bind(this, this)}
+                                                disabled={this.state.dataExitst}
                                             />
                                             <span>Service</span>
                                         </label>
                                     </div>
                                 </div>
 
-                                {this.state.sales_invoice_mode === "I" ?
-                                    <div className="col">
-                                        <div className="row">
-                                            <div className={"col-3 globalSearchCntr" + class_finder}>
-                                                <AlgaehLabel label={{ forceLabel: "Search Order No." }} />
-                                                <h6 onClick={SalesOrderSearch.bind(this, this)}>
-                                                    {this.state.sales_order_number
-                                                        ? this.state.sales_order_number
-                                                        : "Order No."}
-                                                    <i className="fas fa-search fa-lg"></i>
-                                                </h6>
-                                            </div>
 
-                                            <div className="col">
-                                                <AlgaehLabel label={{ forceLabel: "Customer" }} />
-                                                <h6>
-                                                    {this.state.customer_name
-                                                        ? this.state.customer_name
-                                                        : "------"}
-                                                </h6>
-                                            </div>
-
-                                            <div className="col">
-                                                <AlgaehLabel label={{ forceLabel: "Branch" }} />
-                                                <h6>
-                                                    {this.state.hospital_name
-                                                        ? this.state.hospital_name
-                                                        : "------"}
-                                                </h6>
-                                            </div>
-
-                                            <div className="col">
-                                                <AlgaehLabel label={{ forceLabel: "Project" }} />
-                                                <h6>
-                                                    {this.state.project_name
-                                                        ? this.state.project_name
-                                                        : "------"}
-                                                </h6>
-                                            </div>
-
-
-                                            <div className="col">
-                                                <AlgaehLabel label={{ forceLabel: "Payment Terms" }} />
-                                                <h6>
-                                                    {this.state.payment_terms
-                                                        ? this.state.payment_terms + " days"
-                                                        : "0 days"}
-                                                </h6>
-                                            </div>
+                                <div className="col">
+                                    <div className="row">
+                                        <div className={"col-3 globalSearchCntr" + class_finder}>
+                                            <AlgaehLabel label={{ forceLabel: "Search Order No." }} />
+                                            <h6 onClick={SalesOrderSearch.bind(this, this)}>
+                                                {this.state.sales_order_number
+                                                    ? this.state.sales_order_number
+                                                    : "Order No."}
+                                                <i className="fas fa-search fa-lg"></i>
+                                            </h6>
                                         </div>
-                                    </div> :
-                                    <div className="col">
-                                        <div className="row">
-                                            <div className={"col-2 globalSearchCntr" + class_finder}>
-                                                <AlgaehLabel label={{ forceLabel: "Search Order No." }} />
-                                                <h6 onClick={SalesQuotationSearch.bind(this, this)}>
-                                                    {this.state.sales_quotation_number
-                                                        ? this.state.sales_quotation_number
-                                                        : "Quatation No."}
-                                                    <i className="fas fa-search fa-lg"></i>
-                                                </h6>
-                                            </div>
 
-                                            <div className="col">
-                                                <AlgaehLabel label={{ forceLabel: "Customer" }} />
-                                                <h6>
-                                                    {this.state.customer_name
-                                                        ? this.state.customer_name
-                                                        : "------"}
-                                                </h6>
-                                            </div>
-
-
-                                            <div className="col">
-                                                <AlgaehLabel label={{ forceLabel: "Payment Terms" }} />
-                                                <h6>
-                                                    {this.state.payment_terms
-                                                        ? this.state.payment_terms + " days"
-                                                        : "0 days"}
-                                                </h6>
-                                            </div>
-
-                                            <AlagehAutoComplete
-                                                div={{ className: "col mandatory" }}
-                                                label={{
-                                                    forceLabel: "Select Branch",
-                                                    isImp: true
-                                                }}
-                                                selector={{
-                                                    name: "hospital_id",
-                                                    className: "select-fld",
-                                                    value: this.state.hospital_id,
-                                                    dataSource: {
-                                                        textField: "hospital_name",
-                                                        valueField: "hims_d_hospital_id",
-                                                        data: this.props.organizations
-                                                    },
-                                                    onChange: texthandle.bind(this, this),
-                                                    others: {
-                                                        disabled: this.state.dataExists
-                                                    },
-                                                    onClear: () => {
-                                                        this.setState({
-                                                            hospital_id: null
-                                                        });
-                                                    }
-                                                }}
-                                            />
-
-                                            <AlagehAutoComplete
-                                                div={{ className: "col form-group mandatory" }}
-                                                label={{
-                                                    forceLabel: "Select Project",
-                                                    isImp: true
-                                                }}
-                                                selector={{
-                                                    name: "project_id",
-                                                    className: "select-fld",
-                                                    value: this.state.project_id,
-                                                    dataSource: {
-                                                        textField: "project_desc",
-                                                        valueField: "hims_d_project_id",
-                                                        data: this.props.projects
-                                                    },
-                                                    onChange: texthandle.bind(this, this),
-                                                    others: {
-                                                        disabled: this.state.dataExists
-                                                    },
-                                                    onClear: () => {
-                                                        this.setState({
-                                                            project_id: null
-                                                        });
-                                                    }
-                                                }}
-                                            />
+                                        <div className="col">
+                                            <AlgaehLabel label={{ forceLabel: "Customer" }} />
+                                            <h6>
+                                                {this.state.customer_name
+                                                    ? this.state.customer_name
+                                                    : "------"}
+                                            </h6>
                                         </div>
-                                    </div>}
+
+                                        <div className="col">
+                                            <AlgaehLabel label={{ forceLabel: "Branch" }} />
+                                            <h6>
+                                                {this.state.hospital_name
+                                                    ? this.state.hospital_name
+                                                    : "------"}
+                                            </h6>
+                                        </div>
+
+                                        <div className="col">
+                                            <AlgaehLabel label={{ forceLabel: "Project" }} />
+                                            <h6>
+                                                {this.state.project_name
+                                                    ? this.state.project_name
+                                                    : "------"}
+                                            </h6>
+                                        </div>
+
+
+                                        <div className="col">
+                                            <AlgaehLabel label={{ forceLabel: "Payment Terms" }} />
+                                            <h6>
+                                                {this.state.payment_terms
+                                                    ? this.state.payment_terms + " days"
+                                                    : "0 days"}
+                                            </h6>
+                                        </div>
+                                    </div>
+                                </div>
 
                             </div>
                         </div>
@@ -396,6 +295,7 @@ class SalesInvoice extends Component {
                                     />
                                     <h6>{getAmountFormart(this.state.discount_amount)}</h6>
                                 </div>
+
                                 <div className="col">
                                     <AlgaehLabel
                                         label={{
@@ -430,7 +330,7 @@ class SalesInvoice extends Component {
                                 <button
                                     type="button"
                                     className="btn btn-primary"
-                                    onClick={SaveReceiptEnrty.bind(this, this)}
+                                    onClick={SaveInvoiceEnrty.bind(this, this)}
                                     disabled={this.state.saveEnable}
                                 >
                                     <AlgaehLabel

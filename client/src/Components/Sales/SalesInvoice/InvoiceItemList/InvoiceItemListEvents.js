@@ -11,21 +11,35 @@ const deleteInvoiceItemDetail = ($this, row, context) => {
   let _index = invoice_entry_detail_item.indexOf(row);
   invoice_entry_detail_item.splice(_index, 1);
 
-  let sub_total = _.sumBy(invoice_entry_detail_item, s => parseFloat(s.sub_total));
-  let discount_amount = _.sumBy(invoice_entry_detail_item, s => parseFloat(s.discount_amount));
-  let net_total = _.sumBy(invoice_entry_detail_item, s => parseFloat(s.net_total));
-  let total_tax = _.sumBy(invoice_entry_detail_item, s => parseFloat(s.total_tax));
-  let net_payable = _.sumBy(invoice_entry_detail_item, s => parseFloat(s.net_payable));
+  if (invoice_entry_detail_item.length === 0) {
+    if (context !== undefined) {
+      context.updateState({
+        invoice_entry_detail_item: invoice_entry_detail_item,
+        discount_amount: 0,
+        sub_total: 0,
+        total_tax: 0,
+        net_total: 0,
+        net_payable: 0,
+        saveEnable: true
+      });
+    }
+  } else {
+    const sub_total = _.sumBy(invoice_entry_detail_item, s => parseFloat(s.sub_total));
+    const discount_amount = _.sumBy(invoice_entry_detail_item, s => parseFloat(s.discount_amount));
+    const net_total = _.sumBy(invoice_entry_detail_item, s => parseFloat(s.net_total));
+    const total_tax = _.sumBy(invoice_entry_detail_item, s => parseFloat(s.total_tax));
+    const net_payable = _.sumBy(invoice_entry_detail_item, s => parseFloat(s.net_payable));
 
-  if (context !== undefined) {
-    context.updateState({
-      invoice_entry_detail_item: invoice_entry_detail_item,
-      sub_total: sub_total,
-      discount_amount: discount_amount,
-      net_total: net_total,
-      total_tax: total_tax,
-      net_payable: net_payable
-    });
+    if (context !== undefined) {
+      context.updateState({
+        invoice_entry_detail_item: invoice_entry_detail_item,
+        sub_total: sub_total,
+        discount_amount: discount_amount,
+        net_total: net_total,
+        total_tax: total_tax,
+        net_payable: net_payable
+      });
+    }
   }
 
 };
@@ -34,12 +48,13 @@ const deleteInvoiceItemDetail = ($this, row, context) => {
 
 
 const getDeliveryItemDetails = ($this, row) => {
+  debugger
   algaehApiCall({
-    uri: "/ReceiptEntry/getDeliveryItemDetails",
-    module: "procurement",
+    uri: "/SalesInvoice/getDispatchItemDetails",
+    module: "sales",
     method: "GET",
     data: {
-      dn_header_id: row.dn_header_id
+      hims_f_dispatch_note_header_id: row.dispatch_note_header_id
     },
     onSuccess: response => {
       if (response.data.success) {

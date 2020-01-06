@@ -166,7 +166,8 @@ export function addSalesOrder(req, res, next) {
                                         updateSalesQuotation({
                                             input: input,
                                             _mysql: _mysql,
-                                            next: next
+                                            next: next,
+                                            req: req
                                         })
                                             .then(update_sales_quotation => {
                                                 _mysql.commitTransaction(() => {
@@ -231,7 +232,8 @@ export function addSalesOrder(req, res, next) {
                                         updateSalesQuotation({
                                             input: input,
                                             _mysql: _mysql,
-                                            next: next
+                                            next: next,
+                                            req: req
                                         })
                                             .then(update_sales_quotation => {
                                                 _mysql.commitTransaction(() => {
@@ -490,7 +492,7 @@ export function updateSalesOrderEntry(req, res, next) {
                             qry += mysql.format(
                                 "UPDATE hims_f_sales_order_services SET `quantity`=?, extended_cost = ?, \
                                 discount_percentage=?, discount_amount= ?, net_extended_cost= ?, tax_amount= ?,\
-                                total_amount=?, quantity_outstanding=? where `hims_f_sales_order_services_id`=?;",
+                                total_amount=? where `hims_f_sales_order_services_id`=?;",
                                 [
                                     details[i].quantity,
                                     details[i].extended_cost,
@@ -499,7 +501,6 @@ export function updateSalesOrderEntry(req, res, next) {
                                     details[i].net_extended_cost,
                                     details[i].tax_amount,
                                     details[i].total_amount,
-                                    details[i].quantity_outstanding,
                                     details[i].hims_f_sales_order_services_id
                                 ]
                             );
@@ -621,6 +622,7 @@ function updateSalesQuotation(options) {
         try {
             let input = options.input;
             let _mysql = options._mysql;
+            let req = options.req
 
             _mysql
                 .executeQuery({
@@ -634,27 +636,45 @@ function updateSalesQuotation(options) {
                     if (input.sales_order_mode === "I") {
                         if (result[0].quote_services_status !== "G") {
                             strQuery = mysql.format(
-                                "update hims_f_sales_quotation set qotation_status='O', quote_items_status='O' \
-                                where hims_f_sales_quotation_id=?",
-                                [input.sales_quotation_id]
+                                "update hims_f_sales_quotation set qotation_status='O', quote_items_status='O', \
+                                updated_date=?, updated_by=? where hims_f_sales_quotation_id=?",
+                                [
+                                    new Date(),
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                    input.sales_quotation_id
+                                ]
                             );
                         } else if (result[0].quote_services_status === "G") {
                             strQuery = mysql.format(
-                                "update hims_f_sales_quotation set quote_items_status='O' where hims_f_sales_quotation_id=?",
-                                [input.sales_quotation_id]
+                                "update hims_f_sales_quotation set quote_items_status='O', updated_date=?, updated_by=? \
+                                where hims_f_sales_quotation_id=?",
+                                [
+                                    new Date(),
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                    input.sales_quotation_id
+                                ]
                             );
                         }
                     } else if (input.sales_order_mode === "S") {
                         if (result[0].quote_items_status !== "G") {
                             strQuery = mysql.format(
-                                "update hims_f_sales_quotation set qotation_status='O', quote_services_status='O' \
-                                where hims_f_sales_quotation_id=?",
-                                [input.sales_quotation_id]
+                                "update hims_f_sales_quotation set qotation_status='O', quote_services_status='O', \
+                                updated_date=?, updated_by=? where hims_f_sales_quotation_id=?",
+                                [
+                                    new Date(),
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                    input.sales_quotation_id
+                                ]
                             );
                         } else if (result[0].quote_items_status === "G") {
                             strQuery = mysql.format(
-                                "update hims_f_sales_quotation set quote_services_status='O' where hims_f_sales_quotation_id=?",
-                                [input.sales_quotation_id]
+                                "update hims_f_sales_quotation set quote_services_status='O', updated_date=?, updated_by=? \
+                                where hims_f_sales_quotation_id=?",
+                                [
+                                    new Date(),
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                    input.sales_quotation_id
+                                ]
                             );
                         }
                     }
