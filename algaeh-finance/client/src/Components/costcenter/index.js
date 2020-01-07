@@ -36,7 +36,7 @@ export default forwardRef(function CostCenter(props, ref) {
   function onChangeHospitalId(hospitalID) {
     setLoading(true);
     algaehApiCall({
-      uri: `/voucher/getCostCenters`,
+      uri: `/finance_masters/getCostCenters`,
       data: { hims_d_hospital_id: hospitalID },
       method: "GET",
       module: "finance",

@@ -5,11 +5,9 @@ import voucher from "../models/voucher";
 const {
   addVoucher,
   getVoucherNo,
-  getCostCenters,
   authorizeVoucher,
   getVouchersToAuthorize,
-  getVouchersDetailsToAuthorize,
-  addCostCenter
+  getVouchersDetailsToAuthorize
 } = voucher;
 
 export default () => {
@@ -53,25 +51,7 @@ export default () => {
         .end();
     }
   });
-  api.get("/getCostCenters", getCostCenters, (req, res, next) => {
-    if (req.records.invalid_input == true) {
-      res
-        .status(utlities.AlgaehUtilities().httpStatus().internalServer)
-        .json({
-          success: false,
-          message: req.records.message
-        })
-        .end();
-    } else {
-      res
-        .status(utlities.AlgaehUtilities().httpStatus().ok)
-        .json({
-          success: true,
-          result: req.records
-        })
-        .end();
-    }
-  });
+
   api.post("/authorizeVoucher", authorizeVoucher, (req, res, next) => {
     if (req.records.invalid_user == true) {
       res
@@ -137,24 +117,6 @@ export default () => {
       }
     }
   );
-  api.post("/addCostCenter", addCostCenter, (req, res, next) => {
-    if (req.records.invalid_input == true) {
-      res
-        .status(utlities.AlgaehUtilities().httpStatus().internalServer)
-        .json({
-          success: false,
-          message: req.records.message
-        })
-        .end();
-    } else {
-      res
-        .status(utlities.AlgaehUtilities().httpStatus().ok)
-        .json({
-          success: true,
-          result: req.records
-        })
-        .end();
-    }
-  });
+
   return api;
 };
