@@ -1,11 +1,6 @@
 import React, { useEffect, useState, forwardRef } from "react";
 import "./costcenter.scss";
-import {
-  AlgaehFormGroup,
-  AlgaehDateHandler,
-  AlgaehAutoComplete,
-  AlgaehDataGrid
-} from "algaeh-react-components";
+import { AlgaehAutoComplete } from "algaeh-react-components";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 export default forwardRef(function CostCenter(props, ref) {
   const { div, result, noborder } = props;
@@ -36,7 +31,7 @@ export default forwardRef(function CostCenter(props, ref) {
   function onChangeHospitalId(hospitalID) {
     setLoading(true);
     algaehApiCall({
-      uri: `/finance_masters/getCostCenters`,
+      uri: `/voucher/getCostCenters`,
       data: { hims_d_hospital_id: hospitalID },
       method: "GET",
       module: "finance",
@@ -54,15 +49,15 @@ export default forwardRef(function CostCenter(props, ref) {
   }
 
   return (
-    <div ref={ref}>
-      <div
-        className="row inner-top-search margin-bottom-15"
-        style={{ paddingBottom: 10 }}
-      >
-        <div className="col-3">
+    <div
+      ref={ref}
+      className={noborder === undefined ? "col-12 costCenterFilter" : "col-12"}
+    >
+      <div className="row">
+        <div className="col">
           <AlgaehAutoComplete
             div={{ ...div }}
-            label={{ forceLabel: "Select a Project" }}
+            label={{ forceLabel: "Select a Branch" }}
             selector={{
               dataSource: {
                 data: branch,
@@ -82,7 +77,7 @@ export default forwardRef(function CostCenter(props, ref) {
             }}
           />
         </div>
-        <div className="col-3">
+        <div className="col">
           <AlgaehAutoComplete
             div={{ ...div }}
             label={{ forceLabel: "Select a Cost Center" }}
@@ -103,83 +98,6 @@ export default forwardRef(function CostCenter(props, ref) {
               }
             }}
           />
-        </div>
-        <div className="col" style={{ paddingTop: 16 }}>
-          <button className="btn btn-default">Clear</button>
-          <button className="btn btn-primary" style={{ marginLeft: 10 }}>
-            Add to List
-          </button>
-        </div>
-      </div>
-      <div className="row">
-        <div className="col-12">
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">List of Cost Center</h3>
-              </div>{" "}
-              <div className="actions"></div>
-            </div>
-            <div className="portlet-body">
-              <AlgaehDataGrid
-                columns={[
-                  {
-                    key: "id",
-                    title: "Sl No.",
-                    sortable: true,
-                    filtered: false
-                  },
-                  {
-                    key: "desc",
-                    title: "Branch",
-                    filtered: true,
-                    align: "left",
-                    editorTemplate: (text, records) => {
-                      return (
-                        <input
-                          type="text"
-                          value={text}
-                          onChange={e => {
-                            console.log("text", text);
-                            console.log("records", records);
-                            records["title"] = "Hello";
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    key: "debitAmt",
-                    title: "Cost Center",
-                    filtered: true,
-                    align: "left",
-                    editorTemplate: (text, records) => {
-                      return (
-                        <input
-                          type="number"
-                          value={text}
-                          onChange={e => {
-                            console.log("text", text);
-                            console.log("records", records);
-                            records["title"] = "Hello";
-                          }}
-                        />
-                      );
-                    }
-                  }
-                ]}
-                loading={false}
-                isEditable={false}
-                filter={false}
-                dataSource={{
-                  data: []
-                }}
-                rowUnique="id"
-                xaxis={1500}
-                showCheckBox={{}}
-              />
-            </div>
-          </div>
         </div>
       </div>
     </div>

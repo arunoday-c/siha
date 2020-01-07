@@ -6,7 +6,7 @@ const Reports = lazy(() => import("./Components/FinanceReports"));
 const Transactions = lazy(() => import("./Components/Transactions"));
 const JournalVoucher = lazy(() => import("./Components/JournalVoucher"));
 const FinanceOptions = lazy(() => import("./Components/FinanceOptions"));
-const CostCenter = lazy(() => import("./Components/costcenter"));
+const CostCenter = lazy(() => import("./Components/CostCenterModule"));
 const JournalAuthorization = lazy(() =>
   import("./Components/JournalAuthorization")
 );
@@ -21,7 +21,7 @@ export default function Routes(props) {
           <Route path="/transactions" component={Transactions} />
           <Route path="/journal" component={JournalVoucher} />
           <Route path="/options" component={FinanceOptions} />
-          <Route path="/costcenter" component={CostCenter} />
+          <Route path="/CostCenterModule" component={CostCenter} />
           <Route
             path="/JournalAuthorization"
             component={JournalAuthorization}
