@@ -282,7 +282,7 @@ const getCtrlCode = ($this, docNumber) => {
   });
 };
 
-const generatePOReceipt = data => {
+const generateSalesInvoice = data => {
   console.log("data:", data);
   algaehApiCall({
     uri: "/report",
@@ -294,14 +294,11 @@ const generatePOReceipt = data => {
     others: { responseType: "blob" },
     data: {
       report: {
-        reportName:
-          data.po_return_from === "PHR"
-            ? "poPharmacyProcurementReturn"
-            : "poInventoryProcurementReturn",
+        reportName: "InvSalesReturn",
         reportParams: [
           {
-            name: "purchase_return_number",
-            value: data.purchase_return_number
+            name: "sales_return_number",
+            value: data.sales_return_number
           }
         ],
         outputFileType: "PDF"
@@ -316,49 +313,11 @@ const generatePOReceipt = data => {
       myWindow.document.write(
         "<iframe src= '" + url + "' width='100%' height='100%' />"
       );
-      myWindow.document.title = "Purchase Order Receipt";
+      myWindow.document.title = "Return Entry";
     }
   });
 };
 
-const generatePOReceiptNoPrice = data => {
-  console.log("data:", data);
-  algaehApiCall({
-    uri: "/report",
-    method: "GET",
-    module: "reports",
-    headers: {
-      Accept: "blob"
-    },
-    others: { responseType: "blob" },
-    data: {
-      report: {
-        reportName:
-          data.po_return_from === "PHR"
-            ? "poPharmacyProcurementReturnNoPrice"
-            : "poInventoryProcurementReturnNoPrice",
-        reportParams: [
-          {
-            name: "purchase_return_number",
-            value: data.purchase_return_number
-          }
-        ],
-        outputFileType: "PDF"
-      }
-    },
-    onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Purchase Order Return ReceipT";
-    }
-  });
-};
 
 const PostSalesReturnEntry = $this => {
   AlgaehLoader({ show: true });
@@ -423,6 +382,5 @@ export {
   getCtrlCode,
   loctexthandle,
   PostSalesReturnEntry,
-  generatePOReceipt,
-  generatePOReceiptNoPrice
+  generateSalesInvoice
 };

@@ -36,6 +36,7 @@ const Transactions = () => <FinanceFragment path="Transactions" />;
 const JournalVoucher = () => <FinanceFragment path="JournalVoucher" />;
 const FinanceReports = () => <FinanceFragment path="FinanceReports" />;
 const FinanceOptions = () => <FinanceFragment path="FinanceOptions" />;
+const CostCenter = () => <FinanceFragment path="CostCenter" />;
 const JournalAuthorization = () => (
   <FinanceFragment path="JournalAuthorization" />
 );
@@ -562,9 +563,7 @@ const PageToPlot = {
     )
   ),
   SalesInvoice: React.lazy(() =>
-    retry(() =>
-      import("./Components/Sales/SalesInvoice/SalesInvoice")
-    )
+    retry(() => import("./Components/Sales/SalesInvoice/SalesInvoice"))
   ),
   SalesQuotationList: React.lazy(() =>
     retry(() =>
@@ -572,14 +571,10 @@ const PageToPlot = {
     )
   ),
   SalesOrderList: React.lazy(() =>
-    retry(() =>
-      import("./Components/Sales/SalesOrderList/SalesOrderSwitch")
-    )
+    retry(() => import("./Components/Sales/SalesOrderList/SalesOrderSwitch"))
   ),
   SalesReturnEntry: React.lazy(() =>
-    retry(() =>
-      import("./Components/Sales/SalesReturnEntry/SalesReturnEntry")
-    )
+    retry(() => import("./Components/Sales/SalesReturnEntry/SalesReturnEntry"))
   ),
 
   Accounts,
@@ -587,7 +582,8 @@ const PageToPlot = {
   JournalVoucher,
   FinanceReports,
   FinanceOptions,
-  JournalAuthorization
+  JournalAuthorization,
+  CostCenter
 };
 
 const DirectRoutes = React.memo(props => {

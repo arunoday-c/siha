@@ -338,7 +338,7 @@ const generateRequestQuotation = data => {
             myWindow.document.write(
                 "<iframe src= '" + url + "' width='100%' height='100%' />"
             );
-            myWindow.document.title = "Purchase Order Receipt";
+            myWindow.document.title = "Quotation Request";
         }
     });
 };
