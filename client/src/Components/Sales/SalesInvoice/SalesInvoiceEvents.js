@@ -161,7 +161,7 @@ const generateSalesInvoiceReport = data => {
             myWindow.document.write(
                 "<iframe src= '" + url + "' width='100%' height='100%' />"
             );
-            myWindow.document.title = "Receipt Entry Report";
+            myWindow.document.title = "Invoice Report";
         }
     });
 };

@@ -68,6 +68,7 @@ const executePDF = function executePDFMethod(options) {
 
                         //looping each dispatch note
                         dn_header.forEach(dn => {
+                            // console.log("dn:", dn)
                             const dn_details = delv_details.filter(dn_item => {
                                 return (
                                     dn["hims_f_dispatch_note_header_id"] ==
@@ -77,9 +78,7 @@ const executePDF = function executePDFMethod(options) {
 
                             const dispatch_items = [];
 
-                            //dispatch items of each dispatch note
-                            console.log("dn_details", dn_details)
-                            console.log("delv_subDetails", delv_subDetails)
+                            //dispatch items of each dispatch note                            
                             dn_details.forEach(item => {
                                 const batches = delv_subDetails.filter(sub => {
                                     return (
@@ -100,11 +99,11 @@ const executePDF = function executePDFMethod(options) {
 
                     resolve({
                         ...grn_details[0],
-                        inovice_number: input.inovice_number,
+                        invoice_number: outputArray[0].invoice_number,
+                        sales_order_date: outputArray[0].sales_order_date,
                         location_description: outputArray[0].location_description,
                         customer_name: outputArray[0].customer_name,
                         sales_order_number: outputArray[0].sales_order_number,
-                        po_date: outputArray[0].po_date,
                         details: outputArray
                     });
                 })
