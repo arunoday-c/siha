@@ -1,1 +1,1 @@
-export { default as useAlgaehApi } from "./useAlgaehApi";
+export { default as newAlgaehApi } from "./newAlgaehApi";

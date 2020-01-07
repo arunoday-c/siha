@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from "react";
 import OptionsComponent from "./OptionsComponent";
-import { useAlgaehApi } from "../../hooks";
+import { newAlgaehApi } from "../../hooks";
 
 export default function FinanceOptions(props) {
-  const [getFinanceOption] = useAlgaehApi();
-  const [getOrganization] = useAlgaehApi();
-  const [getCostCenter] = useAlgaehApi();
-  const [updateFinanceOption] = useAlgaehApi();
   const [finOptions, setFinOptions] = useState(null);
   const [organization, setOrganization] = useState([]);
   const [costCenters, setCostCenters] = useState([]);
@@ -15,12 +11,12 @@ export default function FinanceOptions(props) {
     async function initData() {
       try {
         const results = await Promise.all([
-          getFinanceOption({
+          newAlgaehApi({
             uri: "/finance_masters/getFinanceOption",
             module: "finance"
           }),
-          getOrganization({ uri: "/organization/getOrganization" }),
-          getCostCenter({
+          newAlgaehApi({ uri: "/organization/getOrganization" }),
+          newAlgaehApi({
             uri: "/finance_masters/getCostCenters",
             module: "finance"
           })
@@ -55,7 +51,7 @@ export default function FinanceOptions(props) {
   }
 
   function handleSubmit() {
-    updateFinanceOption({
+    newAlgaehApi({
       uri: "/finance_masters/updateFinanceOption",
       module: "finance",
       method: "PUT",
@@ -63,7 +59,7 @@ export default function FinanceOptions(props) {
     })
       .then(res => {
         if (res.data.success) {
-          getFinanceOption({
+          newAlgaehApi({
             uri: "/finance_masters/getFinanceOption",
             module: "finance"
           })
