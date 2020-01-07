@@ -62,25 +62,27 @@
                         <td>{{inc @index}}</td>
                         <td>{{item_description}}</td>
                         <td>{{uom_description}}</td>
-                        <td>{{unit_cost}}</td>
-                        <td>{{quantity}}</td>
-                        <td>{{extended_cost}}</td>
-                        <td>{{discount_amount}}</td>
-                        <td>{{net_extended_cost}}</td>
-                        <td>{{tax_amount}}</td>
-                        <td>{{total_amount}}</td>
+                        <td class="numberFld">{{unit_cost}}</td>
+                        <td class="numberFld">{{quantity}}</td>
+                        <td class="numberFld">{{extended_cost}}</td>
+                        <td class="numberFld">{{discount_amount}}</td>
+                        <td class="numberFld">{{net_extended_cost}}</td>
+                        <td class="numberFld">{{tax_amount}}</td>
+                        <td class="numberFld">{{total_amount}}</td>
 
                     </tr>
                     {{/each }}
                     <tr class="footerTotalDown">
-                        <td colspan="6">Narration</td>
-                        <td>{{narration}}</td>
-                    </tr>
-                    <tr class="footerTotalDown">
-                        <td colspan="6">Net Total</td>
-                        <td>{{net_payable}}</td>
+                        <td colspan="9">Net Total</td>
+                        <td class="numberFld">{{net_payable}}</td>
                     </tr>
                 </tbody>
+            </table>
+            <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Narration</label>:<span class="valueText">{{narration}}</span>
+                    </td>
+                </tr>
             </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
