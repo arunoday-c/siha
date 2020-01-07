@@ -296,6 +296,21 @@ class SalesOrderList extends Component {
                           style: { textAlign: "left" },
                           filterable: false
                         }
+                      },
+                      {
+                        fieldName: "invoice_generated",
+                        label: <AlgaehLabel label={{ forceLabel: "Invoice Generated" }} />,
+                        displayTemplate: row => {
+                          return row.invoice_generated === "Y"
+                            ? "Yes"
+                            : "No";
+                        },
+                        others: {
+                          maxWidth: 150,
+                          resizable: false,
+                          style: { textAlign: "center" },
+                          filterable: false
+                        }
                       }
                     ]}
                     keyId="sales_order_number"
