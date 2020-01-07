@@ -112,7 +112,7 @@ export function getSalesOrderItem(req, res, next) {
                     _mysql
                         .executeQuery({
                             query:
-                                "select D.*, D.quantity as ordered_quantity ,LOC.*,IM.*, PU.uom_description \
+                                "select D.*, IM.hims_d_inventory_item_master_id, D.quantity as ordered_quantity ,LOC.*,IM.*, PU.uom_description \
                                 from hims_f_sales_order_items D \
                             left join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id \
                             inner join `hims_d_inventory_item_master` IM  on IM.hims_d_inventory_item_master_id=D.item_id \
@@ -124,23 +124,24 @@ export function getSalesOrderItem(req, res, next) {
                         })
                         .then(inventory_stock_detail => {
                             _mysql.releaseConnection();
-
+                            console.log("inventory_stock_detail", inventory_stock_detail)
                             var item_grp = _(inventory_stock_detail)
-                                .groupBy("item_id")
-                                .map((row, item_id) => item_id)
+                                .groupBy("hims_d_inventory_item_master_id")
+                                .map((row, hims_d_inventory_item_master_id) => hims_d_inventory_item_master_id)
                                 .value();
 
                             let outputArray = [];
+                            console.log("item_grp", item_grp)
 
                             for (let i = 0; i < item_grp.length; i++) {
                                 let item = new LINQ(inventory_stock_detail)
-                                    .Where(w => w.item_id == item_grp[i])
+                                    .Where(w => w.hims_d_inventory_item_master_id == item_grp[i])
                                     .Select(s => {
                                         return {
                                             sales_order_items_id: s.hims_f_sales_order_items_id,
                                             item_category_id: s.category_id,
                                             item_group_id: s.group_id,
-                                            item_id: s.item_id,
+                                            item_id: s.hims_d_inventory_item_master_id,
                                             uom_id: s.uom_id,
                                             quantity_outstanding: parseFloat(s.quantity_outstanding),
                                             item_description: s.item_description,
@@ -158,13 +159,13 @@ export function getSalesOrderItem(req, res, next) {
 
                                 let batches = new LINQ(inventory_stock_detail)
                                     .Where(
-                                        w => w.item_id == item_grp[i] &&
+                                        w => w.hims_d_inventory_item_master_id == item_grp[i] &&
                                             w.qtyhand > 0 &&
                                             w.inventory_location_id == inputParam.location_id
                                     )
                                     .Select(s => {
                                         return {
-                                            item_id: s.item_id,
+                                            item_id: s.hims_d_inventory_item_master_id,
                                             batchno: s.batchno,
                                             expiry_date: s.expirydt,
                                             barcode: s.barcode,
