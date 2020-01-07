@@ -14,8 +14,7 @@ import {
     SaveSalesReutrnEnrty,
     getCtrlCode,
     PostSalesReturnEntry,
-    generatePOReceipt,
-    generatePOReceiptNoPrice
+    generateSalesInvoice
 } from "./SalesReturnEntryEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import ReturnItemList from "./ReturnItemList/ReturnItemList";
@@ -138,22 +137,14 @@ class SalesReturnEntry extends Component {
                         </div>
                     }
                     printArea={
-                        this.state.hims_f_procurement_po_header_id !== null
+                        this.state.hims_f_sales_return_header_id !== null
                             ? {
                                 menuitems: [
                                     {
-                                        label: "Receipt for Internal",
+                                        label: "Print Report",
                                         events: {
                                             onClick: () => {
-                                                generatePOReceipt(this.state);
-                                            }
-                                        }
-                                    },
-                                    {
-                                        label: "Receipt for Vendor",
-                                        events: {
-                                            onClick: () => {
-                                                generatePOReceiptNoPrice(this.state);
+                                                generateSalesInvoice(this.state);
                                             }
                                         }
                                     }
