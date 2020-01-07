@@ -61,7 +61,7 @@ const executePDF = function executePDFMethod(options) {
                   inner join finance_account_child where finance_account_head_id =? union                  
                   select  H.finance_account_head_id from finance_account_head H
                   inner join cte on H.parent_acc_id = cte.finance_account_head_id    
-                  )select * from cte ) ${strQry}   group by VD.payment_date,VD.child_id,voucher_no ;`,
+                  )select * from cte ) ${strQry}   group by VD.payment_date,VD.child_id,voucher_no  order by VD.payment_date;`,
                   values: [input.head_id],
                   printQuery: true
                 })

@@ -154,9 +154,10 @@ export default {
 
           _mysql
             .executeQuery({
-              query: `select finance_cost_center_id,C.hospital_id, cost_center_id,P.project_desc as cost_center from \
+              query: `select finance_cost_center_id,C.hospital_id, cost_center_id,P.project_desc as cost_center,hospital_name from \
                     finance_cost_center C inner join hims_d_project P\
-                    on C.cost_center_id=P.hims_d_project_id ${strQry}; `,
+                    on C.cost_center_id=P.hims_d_project_id\
+                    left join  hims_d_hospital H on H.hims_d_hospital_id=C.hospital_id ${strQry}; `,
 
               printQuery: true
             })
@@ -183,9 +184,11 @@ export default {
 
           _mysql
             .executeQuery({
-              query: `select finance_cost_center_id,C.hospital_id, cost_center_id,SD.sub_department_name as cost_center from 
+              query: `select finance_cost_center_id,C.hospital_id, cost_center_id,
+              SD.sub_department_name as cost_center ,hospital_name from 
               finance_cost_center C inner join hims_d_sub_department SD
-              on C.cost_center_id=SD.hims_d_sub_department_id ${strQry}; `,
+              on C.cost_center_id=SD.hims_d_sub_department_id\
+              left join  hims_d_hospital H on H.hims_d_hospital_id=C.hospital_id ${strQry}; `,
 
               printQuery: true
             })
