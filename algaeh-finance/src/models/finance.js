@@ -1870,56 +1870,6 @@ export default {
           next(e);
         });
     }
-  },
-
-  //created by irfan:
-  getFinanceOption: (req, res, next) => {
-    const utilities = new algaehUtilities();
-    const _mysql = new algaehMysql();
-    let input = req.query;
-
-    _mysql
-      .executeQuery({
-        query: `select head_office_id,P.project_desc as head_office_cost_center,
-      case cost_center_type when 'P' then 'project wise' when 'SD' then
-      'sub department wise' else 'None' end as cost_center_type,
-      start_month,F.start_date,end_month,F.end_date,auth1_limit,auth2_limit
-      from finance_options F
-      left join hims_d_project P on F.head_office_id=P.hims_d_project_id limit 1; `,
-        printQuery: false,
-        values: []
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        let outputArray = [];
-        if (
-          input.finance_account_head_id == 1 ||
-          input.finance_account_head_id == 5
-        ) {
-          outputArray = result.map(m => {
-            return {
-              ...m,
-              amount: m.debit_minus_credit,
-              growth_percent: m.dr_growth_percent
-            };
-          });
-        } else {
-          outputArray = result.map(m => {
-            return {
-              ...m,
-              amount: m.credit_minus_debit,
-              growth_percent: m.cr_growth_percent
-            };
-          });
-        }
-
-        req.records = outputArray;
-        next();
-      })
-      .catch(e => {
-        _mysql.releaseConnection();
-        next(e);
-      });
   }
 };
 //created by :IRFAN to build tree hierarchy
