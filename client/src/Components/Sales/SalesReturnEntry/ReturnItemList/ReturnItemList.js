@@ -46,8 +46,9 @@ export default class ReturnItemList extends Component {
                           columns={[
                             {
                               fieldName: "action",
+
                               label: (
-                                <AlgaehLabel label={{ fieldName: "action" }} />
+                                <AlgaehLabel label={{ forceLabel: "action" }} />
                               ),
                               displayTemplate: row => {
                                 return (
@@ -83,9 +84,7 @@ export default class ReturnItemList extends Component {
                             {
                               fieldName: "uom_description",
                               label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "UOM" }}
-                                />
+                                <AlgaehLabel label={{ forceLabel: "UOM" }} />
                               ),
                               others: {
                                 minWidth: 150
@@ -100,7 +99,9 @@ export default class ReturnItemList extends Component {
                               ),
                               displayTemplate: row => {
                                 return (
-                                  <span>{parseFloat(row.dispatch_quantity)}</span>
+                                  <span>
+                                    {parseFloat(row.dispatch_quantity)}
+                                  </span>
                                 );
                               }
                             },
@@ -136,7 +137,7 @@ export default class ReturnItemList extends Component {
                                 />
                               ),
                               displayTemplate: row => {
-                                debugger
+                                debugger;
                                 return this.state.inv_is_posted === "N" ? (
                                   <AlagehFormGroup
                                     div={{}}
@@ -163,8 +164,8 @@ export default class ReturnItemList extends Component {
                                     }}
                                   />
                                 ) : (
-                                    parseFloat(row.return_qty)
-                                  );
+                                  parseFloat(row.return_qty)
+                                );
                               }
                             },
                             {
@@ -249,9 +250,7 @@ export default class ReturnItemList extends Component {
                             {
                               fieldName: "tax_percentage",
                               label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Tax %" }}
-                                />
+                                <AlgaehLabel label={{ forceLabel: "Tax %" }} />
                               ),
                               others: {
                                 minWidth: 100
@@ -309,7 +308,6 @@ export default class ReturnItemList extends Component {
                 </div>
                 <div className="col-lg-12">
                   <div className="row" style={{ textAlign: "right" }}>
-
                     <div className="col">
                       <AlgaehLabel
                         label={{

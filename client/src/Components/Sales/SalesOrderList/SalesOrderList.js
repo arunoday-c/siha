@@ -35,12 +35,7 @@ class SalesOrderList extends Component {
     let year = moment().format("YYYY");
     //to load the same list when user come back from whatever screen they went.
     if (this.props.backToAuth) {
-      const {
-        from_date,
-        to_date,
-        customer_id,
-        status
-      } = this.props.prev;
+      const { from_date, to_date, customer_id, status } = this.props.prev;
       this.setState(
         {
           from_date,
@@ -76,7 +71,7 @@ class SalesOrderList extends Component {
   }
 
   ourOwnMiniNavigator = obj => {
-    debugger
+    debugger;
     const { order_list, radioYes, authorize1, ...rest } = this.state;
     let sendObj = Object.assign(rest, obj);
     this.props.new_routeComponents(sendObj);
@@ -93,7 +88,7 @@ class SalesOrderList extends Component {
             <div className="col-lg-12">
               <div className="row">
                 <AlgaehDateHandler
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "From Date" }}
                   textBox={{ className: "txt-fld", name: "from_date" }}
                   events={{
@@ -102,7 +97,7 @@ class SalesOrderList extends Component {
                   value={this.state.from_date}
                 />
                 <AlgaehDateHandler
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "To Date" }}
                   textBox={{ className: "txt-fld", name: "to_date" }}
                   events={{
@@ -111,7 +106,7 @@ class SalesOrderList extends Component {
                   value={this.state.to_date}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col-3 mandatory" }}
                   label={{ forceLabel: "Customer", isImp: true }}
                   selector={{
                     name: "customer_id",
@@ -124,16 +119,19 @@ class SalesOrderList extends Component {
                     },
                     onChange: changeEventHandaler.bind(this, this),
                     onClear: () => {
-                      this.setState({
-                        customer_id: null
-                      }, () => getSalesOrderList(this));
+                      this.setState(
+                        {
+                          customer_id: null
+                        },
+                        () => getSalesOrderList(this)
+                      );
                     },
                     autoComplete: "off"
                   }}
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "Status" }}
                   selector={{
                     name: "status",
@@ -155,7 +153,6 @@ class SalesOrderList extends Component {
                     }
                   }}
                 />
-
               </div>
             </div>
           </div>
@@ -179,7 +176,7 @@ class SalesOrderList extends Component {
                                     row.cancel === "Y" ? "none" : "",
                                   opacity: row.cancel === "Y" ? "0.1" : ""
                                 }}
-                                className="fas fa-check"
+                                className="fas fa-eye"
                                 onClick={() => {
                                   this.ourOwnMiniNavigator({
                                     RQ_Screen: "SalesOrder",
@@ -204,7 +201,7 @@ class SalesOrderList extends Component {
                           );
                         },
                         others: {
-                          maxWidth: 100,
+                          maxWidth: 60,
                           resizable: false,
                           style: { textAlign: "center" },
                           filterable: false
@@ -213,12 +210,11 @@ class SalesOrderList extends Component {
                       {
                         fieldName: "sales_order_number",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Sales Order Number" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Order No." }} />
                         ),
                         disabled: true,
                         others: {
+                          maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -226,9 +222,7 @@ class SalesOrderList extends Component {
                       {
                         fieldName: "sales_order_date",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Sales Order Date" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Order Date" }} />
                         ),
                         displayTemplate: row => {
                           return (
@@ -240,9 +234,8 @@ class SalesOrderList extends Component {
 
                         disabled: true,
                         others: {
-                          maxWidth: 200,
+                          maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "left" },
                           filterable: false
                         }
                       },
@@ -255,7 +248,6 @@ class SalesOrderList extends Component {
                         ),
                         disabled: true,
                         others: {
-                          maxWidth: 200,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -269,7 +261,7 @@ class SalesOrderList extends Component {
                         ),
                         disabled: true,
                         others: {
-                          maxWidth: 200,
+                          maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -283,27 +275,30 @@ class SalesOrderList extends Component {
                         ),
                         displayTemplate: row => {
                           return (
-                            <span>
-                              {dateFormater(this, row.delivery_date)}
-                            </span>
+                            <span>{dateFormater(this, row.delivery_date)}</span>
                           );
                         },
 
                         disabled: true,
                         others: {
-                          maxWidth: 200,
+                          maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "left" },
                           filterable: false
                         }
                       },
                       {
                         fieldName: "invoice_generated",
-                        label: <AlgaehLabel label={{ forceLabel: "Invoice Generated" }} />,
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Invoice Generated" }}
+                          />
+                        ),
                         displayTemplate: row => {
-                          return row.invoice_generated === "Y"
-                            ? "Yes"
-                            : "No";
+                          return row.invoice_generated === "Y" ? (
+                            <span className="badge badge-success">Yes</span>
+                          ) : (
+                            <span className="badge badge-danger">No</span>
+                          );
                         },
                         others: {
                           maxWidth: 150,
@@ -347,8 +342,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(SalesOrderList)
+  connect(mapStateToProps, mapDispatchToProps)(SalesOrderList)
 );

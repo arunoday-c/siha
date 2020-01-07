@@ -880,7 +880,7 @@
       },
       {
         "fieldName": "sales_quotation_number",
-        "label": "sales Quotation Number"
+        "label": "Sales Quotation Number"
       },
       {
         "fieldName": "sales_order_mode",
