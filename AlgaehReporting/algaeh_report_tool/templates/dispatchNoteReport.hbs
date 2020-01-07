@@ -1,0 +1,83 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+
+            <table class="tableForLabel" cell-padding="0">
+
+                <tr>
+                    <td><label class="textEnLft">Delivery No.</label>:<span
+                            class="valueText">{{delivery_note_number}}</span></td>
+                    <td><label class="textEnLft">Purchase For</label>:<span
+                            class="valueText">{{location_description}}</span></td>
+
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Delivery Date</label>:<span class="valueText">{{dn_date}}</span>
+                    </td>
+                    <td><label class="textEnLft">Vendor Name</label>:<span class="valueText">{{vendor_name}}</span></td>
+                </tr>
+
+                <tr>
+                    <td><label class="textEnLft">Purchase No</label>:<span class="valueText">{{purchase_number}}</span>
+                    </td>
+                    <td><label class="textEnLft">Purchase Date</label>:<span class="valueText">{{po_date}}</span></td>
+                </tr>
+
+            </table>
+
+
+        </section>
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Vendor Batch No.</th>
+                        <th>PO Quantity</th>
+                        <th>Unit Cost</th>
+                        <th>Sales Price</th>
+                        <th>Discount %</th>
+                        <th>Discount Amt.</th>
+                        <th>Net Ext. Cost</th>
+                        <th>Tax Amt.</th>
+                        <th>Total Amt.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each details}}
+                    <tr>
+                        <td colspan="5" class="tableSubHdg"><small>Item Name:</small><br>{{item_description}} </td>
+                        <td class="tableSubHdg"><small>Item Code:</small><br> {{item_code}}</td>
+                        <td class="tableSubHdg"><small>Purchase UOM:</small><br>{{uom_description}}</td>
+                        <td class="tableSubHdg"><small>Req. Qty:</small><br>{{po_quantity}}</td>
+                        <td class="tableSubHdg"><small>Deliverd Qty:</small><br>{{dn_quantity}}</td>
+                        <td class="tableSubHdg"><small>Out Standing Qty:</small><br>{{quantity_outstanding}}</td>
+                    </tr>
+                    {{#each batches}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{batchno}}</td>
+                        <td>{{po_quantity}}</td>
+                        <td>{{unit_cost}}</td>
+                        <td>{{sales_price}}</td>
+                        <td>{{discount_percentage}}</td>
+                        <td>{{discount_amount}}</td>
+                        <td>{{net_extended_cost}}</td>
+                        <td>{{tax_amount}}</td>
+                        <td>{{total_amount}}</td>
+                    </tr>
+                    {{/each }}
+
+                    {{/each }}<tr class="footerTotalDown">
+                        <td colspan="9">Total Net Amount</td>
+                        <td>{{net_payable}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

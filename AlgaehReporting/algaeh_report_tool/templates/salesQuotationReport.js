@@ -1,63 +1,67 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  const _ = options.loadash;
+  return new Promise(function (resolve, reject) {
     try {
-      // resolve(options.result[0]);
+      let input = {};
+      let params = options.args.reportParams;
 
-      // const utilities = new algaehUtilities();
+      params.forEach(para => {
+        input[para["name"]] = para["value"];
+      });
 
-      // utilities.logger().log("outpoy: ", options.result);
-      const decimal_places = options.args.crypto.decimal_places;
-      if (options.result.length > 0) {
-        options.result.map(item => {
-          item.dn_quantity = parseFloat(item["dn_quantity"]).toFixed(
-            decimal_places
-          );
-          item.qtyhand = parseFloat(item["qtyhand"]).toFixed(decimal_places);
-          item.return_qty = parseFloat(item["return_qty"]).toFixed(
-            decimal_places
-          );
-          item.unit_cost = parseFloat(item["unit_cost"]).toFixed(
-            decimal_places
-          );
-          item.extended_cost = parseFloat(item["extended_cost"]).toFixed(
-            decimal_places
-          );
-          item.discount_percentage = parseFloat(
-            item["discount_percentage"]
-          ).toFixed(decimal_places);
-          item.discount_amount = parseFloat(item["discount_amount"]).toFixed(
-            decimal_places
-          );
-          item.net_extended_cost = parseFloat(
-            item["net_extended_cost"]
-          ).toFixed(decimal_places);
-          item.tax_amount = parseFloat(item["tax_amount"]).toFixed(
-            decimal_places
-          );
-          item.total_amount = parseFloat(item["total_amount"]).toFixed(
-            decimal_places
-          );
-
-          return item;
-        });
-
-        resolve({
-          return_total: parseFloat(options.result[0]["return_total"]).toFixed(
-            decimal_places
-          ),
-          purchase_return_number: options.result[0]["purchase_return_number"],
-          return_date: options.result[0]["return_date"],
-          location_description: options.result[0]["location_description"],
-          vendor_name: options.result[0]["vendor_name"],
-          sub_department_name: options.result[0]["sub_department_name"],
-          employee_code: options.result[0]["employee_code"],
-          full_name: options.result[0]["full_name"],
-          detailList: options.result
-        });
+      console.log("input", input)
+      let strQuery = ""
+      if (input.HRMNGMT_Active) {
+        strQuery = "SELECT SQ.*, C.customer_name, E.full_name as employee_name from hims_f_sales_quotation SQ \
+          inner join  hims_d_customer C on  SQ.customer_id = C.hims_d_customer_id \
+          inner join  hims_d_employee E on  SQ.sales_person_id = E.hims_d_employee_id \
+          where SQ.hims_f_sales_quotation_id =? "
       } else {
-        resolve({ detailList: options.result });
+        strQuery = "SELECT SQ.*, C.customer_name, SQ.sales_man as employee_name from hims_f_sales_quotation SQ \
+          inner join  hims_d_customer C on  SQ.customer_id = C.hims_d_customer_id \
+          where SQ.hims_f_sales_quotation_id =? "
       }
+
+      options.mysql
+        .executeQuery({
+          query: strQuery,
+          values: [input.hims_f_sales_quotation_id],
+          printQuery: true
+        })
+        .then(headerResult => {
+          options.mysql
+            .executeQuery({
+              query: "select QI.*, IM.item_description, IU.uom_description from hims_f_sales_quotation_items QI \
+              inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = QI.item_id \
+              inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = QI.uom_id where sales_quotation_id=?;\
+              select QS.*, S.service_name, CASE WHEN QS.service_frequency='M' THEN 'Monthly' \
+              WHEN QS.service_frequency='W' THEN 'Weekly' WHEN QS.service_frequency='D' THEN 'Daily' \
+              WHEN QS.service_frequency='H' THEN 'Hourly' END as service_frequency from hims_f_sales_quotation_services QS \
+              inner join hims_d_services S on S.hims_d_services_id = QS.services_id where sales_quotation_id=?;",
+              values: [headerResult[0].hims_f_sales_quotation_id, headerResult[0].hims_f_sales_quotation_id],
+              printQuery: true
+            })
+            .then(qutation_detail => {
+              let sales_quotation_items = qutation_detail[0]
+              let sales_quotation_services = qutation_detail[1]
+
+              const result = {
+                ...headerResult[0],
+                ...{ sales_quotation_items },
+                ...{ sales_quotation_services }
+              };
+
+              resolve(result);
+            })
+            .catch(error => {
+              options.mysql.releaseConnection();
+            });
+
+        })
+        .catch(error => {
+          options.mysql.releaseConnection();
+        });
     } catch (e) {
       reject(e);
     }

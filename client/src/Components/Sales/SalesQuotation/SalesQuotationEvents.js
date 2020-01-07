@@ -344,8 +344,9 @@ const deleteComment = ($this, row) => {
   });
 };
 
-const generateSalesQuotation = data => {
+const generateSalesQuotation = ($this, data) => {
   console.log("data:", data);
+  debugger
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -361,6 +362,10 @@ const generateSalesQuotation = data => {
           {
             name: "hims_f_sales_quotation_id",
             value: data.hims_f_sales_quotation_id
+          },
+          {
+            name: "HRMNGMT_Active",
+            value: $this.HRMNGMT_Active
           }
         ],
         outputFileType: "PDF"
