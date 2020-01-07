@@ -8,7 +8,7 @@ export function getDispatchNote(req, res, next) {
     const _mysql = new algaehMysql();
     try {
 
-        console.log("req.query.dispatch_note_number", req.query.dispatch_note_number)
+        // console.log("req.query.dispatch_note_number", req.query.dispatch_note_number)
         _mysql
             .executeQuery({
                 query: `SELECT * from  hims_f_sales_dispatch_note_header \
@@ -124,14 +124,14 @@ export function getSalesOrderItem(req, res, next) {
                         })
                         .then(inventory_stock_detail => {
                             _mysql.releaseConnection();
-                            console.log("inventory_stock_detail", inventory_stock_detail)
+                            // console.log("inventory_stock_detail", inventory_stock_detail)
                             var item_grp = _(inventory_stock_detail)
                                 .groupBy("hims_d_inventory_item_master_id")
                                 .map((row, hims_d_inventory_item_master_id) => hims_d_inventory_item_master_id)
                                 .value();
 
                             let outputArray = [];
-                            console.log("item_grp", item_grp)
+                            // console.log("item_grp", item_grp)
 
                             for (let i = 0; i < item_grp.length; i++) {
                                 let item = new LINQ(inventory_stock_detail)
@@ -231,7 +231,7 @@ export function addDispatchNote(req, res, next) {
             req.body = input
             let dispatch_note_number = "";
 
-            console.log("addDispatchNote: ");
+            // console.log("addDispatchNote: ");
 
             _mysql
                 .generateRunningNumber({
@@ -295,8 +295,8 @@ export function addDispatchNote(req, res, next) {
                             req.body.transaction_id = headerResult[0].insertId;
                             req.body.year = year;
                             req.body.period = period;
-                            console.log("headerResult: ", headerResult[0].insertId);
-                            console.log("length: ", input.stock_detail.length);
+                            // console.log("headerResult: ", headerResult[0].insertId);
+                            // console.log("length: ", input.stock_detail.length);
 
                             for (let i = 0; i < input.stock_detail.length; i++) {
                                 _mysql
@@ -363,7 +363,7 @@ export function addDispatchNote(req, res, next) {
                                                             _mysql.isTransactionConnection,
                                                         pool: _mysql.pool
                                                     };
-                                                    req.flag = 1;
+                                                    // req.flag = 1;
 
                                                     req.records = {
                                                         dispatch_note_number: dispatch_note_number,
@@ -423,7 +423,7 @@ export function updateinvSalesOrderOnceDispatch(req, res, next) {
         }
 
         let strQuery = ""
-        console.log("inputParam.sales_quotation_id", inputParam.sales_quotation_id)
+        // console.log("inputParam.sales_quotation_id", inputParam.sales_quotation_id)
         if (inputParam.sales_quotation_id !== null && complete === "Y") {
             strQuery = mysql.format(
                 "UPDATE hims_f_sales_quotation set qotation_status='C' where hims_f_sales_quotation_id = ?;",

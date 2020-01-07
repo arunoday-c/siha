@@ -1,10 +1,10 @@
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import _ from "lodash";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 const texthandle = ($this, ctrl, e) => {
     e = ctrl || e;
@@ -80,7 +80,46 @@ const SalesOrderSearch = ($this, e) => {
 };
 
 const ClearData = ($this, e) => {
-    $this.setState($this.baseState);
+    $this.setState({
+        hims_f_dispatch_note_id: null,
+        dispatch_note_number: null,
+        sales_order_id: null,
+        sales_order_number: null,
+        dispatch_note_date: new Date(),
+        customer_id: null,
+        sub_total: null,
+        discount_amount: null,
+        net_total: null,
+        total_tax: null,
+        net_payable: null,
+        narration: null,
+        project_id: null,
+        customer_po_no: null,
+        tax_percentage: null,
+        location_id: null,
+        location_type: null,
+
+        stock_detail: [],
+        decimal_place: JSON.parse(
+            AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+        ).decimal_places,
+        saveEnable: true,
+        dataExists: false,
+        hospital_id: JSON.parse(
+            AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+        ).hims_d_hospital_id,
+        ReqData: true,
+        customer_name: null,
+        hospital_name: null,
+        project_name: null,
+        selectedData: false,
+        cannotEdit: false,
+
+        item_details: [],
+        batch_detail_view: false,
+        dispatched_quantity: 0,
+        inventory_stock_detail: []
+    });
 };
 
 const SaveDispatchNote = $this => {
@@ -103,12 +142,13 @@ const SaveDispatchNote = $this => {
         InputObj.inventory_stock_detail[i].net_total =
             InputObj.inventory_stock_detail[i].total_amount;
 
-        InputObj.inventory_stock_detail[i].expiry_date = moment(
+        InputObj.inventory_stock_detail[i].expiry_date = InputObj.inventory_stock_detail[i].expiry_date !== null ? moment(
             InputObj.inventory_stock_detail[i].expiry_date,
             "YYYY-MM-DD"
-        ).format("YYYY-MM-DD");
+        ).format("YYYY-MM-DD") : null;
     }
 
+    debugger
     delete InputObj.item_details;
 
     for (let j = 0; j < InputObj.stock_detail.length; j++) {
@@ -211,35 +251,9 @@ const getCtrlCode = ($this, docNumber, row) => {
             }
         });
     });
-    // AlgaehLoader({ show: true });
-    // algaehApiCall({
-    //     uri: "/DispatchNote/getDispatchNote",
-    //     module: "sales",
-    //     method: "GET",
-    //     data: { dispatch_note_number: docNumber },
-    //     onSuccess: response => {
-    //         if (response.data.success) {
-    //             let data = response.data.records;
-    //             data.saveEnable = true;
-    //             data.dataExists = true;
-    //             data.cannotEdit = true;
-    //             data.addedItem = true;
-    //             $this.setState(data);
-    //         }
-    //         AlgaehLoader({ show: false });
-    //     },
-    //     onFailure: error => {
-    //         AlgaehLoader({ show: false });
-    //         swalMessage({
-    //             title: error.message,
-    //             type: "error"
-    //         });
-    //     }
-    // });
 };
 
 const generateDispatchReport = data => {
-    console.log("data:", data);
     algaehApiCall({
         uri: "/report",
         method: "GET",

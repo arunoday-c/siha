@@ -195,7 +195,7 @@ const SaveTransferEntry = $this => {
     ).toFixed(InputObj.decimal_places);
 
     InputObj.inventory_stock_detail[i].expiry_date =
-      moment(InputObj.inventory_stock_detail[i].expiry_date, "YYYY-MM-DD").format("YYYY-MM-DD");
+      InputObj.inventory_stock_detail[i].expiry_date === null ? null : moment(InputObj.inventory_stock_detail[i].expiry_date, "YYYY-MM-DD").format("YYYY-MM-DD");
   }
 
   delete InputObj.item_details;

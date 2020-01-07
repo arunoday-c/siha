@@ -63,20 +63,20 @@
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{batchno}}</td>
-                        <td>{{dispatch_quantity}}</td>
-                        <td>{{unit_cost}}</td>
-                        <td>{{sales_price}}</td>
-                        <td>{{discount_percentage}}</td>
-                        <td>{{discount_amount}}</td>
-                        <td>{{net_extended_cost}}</td>
-                        <td>{{tax_amount}}</td>
-                        <td>{{total_amount}}</td>
+                        <td class="numberFld">{{dispatch_quantity}}</td>
+                        <td class="numberFld">{{unit_cost}}</td>
+                        <td class="numberFld">{{sales_price}}</td>
+                        <td class="numberFld">{{discount_percentage}}</td>
+                        <td class="numberFld">{{discount_amount}}</td>
+                        <td class="numberFld">{{net_extended_cost}}</td>
+                        <td class="numberFld">{{tax_amount}}</td>
+                        <td class="numberFld">{{total_amount}}</td>
                     </tr>
                     {{/each }}
 
                     {{/each }}<tr class="footerTotalDown">
-                        <td colspan="9">Total Net Amount</td>
-                        <td>{{net_payable}}</td>
+                        <td colspan="9">Net Total</td>
+                        <td class="numberFld">{{net_payable}}</td>
                     </tr>
                 </tbody>
             </table>
