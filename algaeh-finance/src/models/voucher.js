@@ -649,9 +649,9 @@ export default {
           _mysql
             .executeQuery({
               query:
-                "select project_id as cost_center_id,P.project_desc as cost_center from \
-              hims_m_division_project DP inner join hims_d_project P\
-              on DP.project_id=P.hims_d_project_id where DP.division_id=?; ",
+                "select  cost_center_id,P.project_desc as cost_center from \
+                finance_cost_center C inner join hims_d_project P\
+                on C.cost_center_id=P.hims_d_project_id where C.hospital_id=?; ",
               values: [hospital_id]
             })
             .then(results => {
@@ -1284,6 +1284,115 @@ export default {
         _mysql.releaseConnection();
         req.records = result;
         next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  //created by irfan:
+  addCostCenter: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    const input = req.body;
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT cost_center_type ,third_party_payroll FROM finance_options limit 1; "
+      })
+      .then(result => {
+        if (
+          result.length == 1 &&
+          result[0]["cost_center_type"] == "P" &&
+          result[0]["third_party_payroll"] == "Y"
+        ) {
+          _mysql
+            .executeQuery({
+              query:
+                "select finance_cost_center_id from finance_cost_center where hospital_id=?; ",
+              values: [input.hospital_id]
+            })
+            .then(results => {
+              // _mysql.releaseConnection();
+              // req.records = results;
+              // next();
+              if (results.length > 0) {
+                _mysql.releaseConnection();
+                req.records = {
+                  invalid_input: true,
+                  message: "Cost Center is already defined for this branch"
+                };
+                next();
+              } else {
+                _mysql
+                  .executeQuery({
+                    query:
+                      "insert into finance_cost_center (hospital_id,cost_center_id,cost_center_type\
+                      ,created_by,created_date,updated_by,updated_date)  VALUE(?,?,?,?,?,?,?);",
+                    values: [
+                      input.hospital_id,
+                      input.cost_center_id,
+                      "P",
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date()
+                    ],
+                    printQuery: false
+                  })
+                  .then(subdetail => {
+                    _mysql.releaseConnection();
+                    req.records = subdetail;
+                    next();
+                  })
+                  .catch(e => {
+                    _mysql.releaseConnection();
+                    next(e);
+                  });
+              }
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else if (
+          result.length == 1 
+        ) {
+          
+          _mysql
+          .executeQuery({
+            query:
+              "insert into finance_cost_center (hospital_id,cost_center_id,cost_center_type\
+              ,created_by,created_date,updated_by,updated_date)  VALUE(?,?,?,?,?,?,?);",
+            values: [
+              input.hospital_id,
+              input.cost_center_id,
+              "P",
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date()
+            ],
+            printQuery: false
+          })
+          .then(subdetail => {
+            _mysql.releaseConnection();
+            req.records = subdetail;
+            next();
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: "Please Define cost center type"
+          };
+          next();
+        }
       })
       .catch(e => {
         _mysql.releaseConnection();
