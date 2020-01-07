@@ -145,7 +145,7 @@ class SalesInvoice extends Component {
                         </div>
                     }
                     printArea={
-                        this.state.hims_f_procurement_po_header_id !== null
+                        this.state.hims_f_sales_invoice_header_id !== null
                             ? {
                                 menuitems: [
                                     {
@@ -315,7 +315,7 @@ class SalesInvoice extends Component {
                                 <div className="col">
                                     <AlgaehLabel
                                         label={{
-                                            forceLabel: "Net Payable"
+                                            forceLabel: "Net Receivable"
                                         }}
                                     />
                                     <h6>{getAmountFormart(this.state.net_payable)}</h6>

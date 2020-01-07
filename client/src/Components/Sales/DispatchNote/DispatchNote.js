@@ -133,8 +133,8 @@ class DispatchNote extends Component {
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === true
-        ? " disableFinder"
-        : "";
+          ? " disableFinder"
+          : "";
     return (
       <div>
         <BreadCrumb
@@ -191,8 +191,8 @@ class DispatchNote extends Component {
                 <h6>
                   {this.state.dispatch_note_date
                     ? moment(this.state.dispatch_note_date).format(
-                        Options.dateFormat
-                      )
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -201,17 +201,17 @@ class DispatchNote extends Component {
           printArea={
             this.state.dispatch_note_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Dispatch Report",
-                      events: {
-                        onClick: () => {
-                          generateDispatchReport(this.state);
-                        }
+                menuitems: [
+                  {
+                    label: "Dispatch Report",
+                    events: {
+                      onClick: () => {
+                        generateDispatchReport(this.state);
                       }
                     }
-                  ]
-                }
+                  }
+                ]
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -263,8 +263,8 @@ class DispatchNote extends Component {
                       ? this.state.location_type === "WH"
                         ? "Warehouse"
                         : this.state.location_type === "MS"
-                        ? "Main Store"
-                        : "Sub Store"
+                          ? "Main Store"
+                          : "Sub Store"
                       : "Location Type"}
                   </h6>
                 </div>
@@ -361,7 +361,7 @@ class DispatchNote extends Component {
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Net Payable"
+                    forceLabel: "Net Total"
                   }}
                 />
                 <h6>{getAmountFormart(this.state.net_payable)}</h6>

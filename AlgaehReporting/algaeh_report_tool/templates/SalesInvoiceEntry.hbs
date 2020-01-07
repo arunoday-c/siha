@@ -1,0 +1,138 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+        <section>
+
+            <table class="tableForLabel" cell-padding="0">
+
+                <tr>
+                    <td><label class="textEnLft">Order Number</label>:<span
+                            class="valueText">{{sales_order_number}}</span>
+                    </td>
+                    <td><label class="textEnLft">Invoice Number</label>:<span
+                            class="valueText">{{inovice_number}}</span>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td><label class="textEnLft">Order Date</label>:<span class="valueText">{{sales_order_date}}</span>
+                    </td>
+                    <td><label class="textEnLft">Invoice Date</label>:<span class="valueText">{{invoice_date}}</span>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Purchased By</label>:<span
+                            class="valueText">{{location_description}}</span>
+                    </td>
+                    <td><label class="textEnLft">Customer Name</label>:<span class="valueText">{{customer_name}}</span>
+                    </td>
+                </tr>
+
+
+            </table>
+
+
+        </section>
+        {{#each details}}<section class="groupTable">
+            <section>
+
+                <table class="tableForLabel" cell-padding="0" style="padding: 0;margin:0;">
+
+                    <tr>
+                        <td><label class="textEnLft">Dispatch No.</label>:<span
+                                class="valueText">{{dispatch_note_number}}</span></td>
+                        <td><label class="textEnLft">Dispatch Date</label>:<span
+                                class="valueText">{{dispatch_note_date}}</span>
+                        </td>
+
+                    </tr>
+
+                </table>
+
+
+            </section>
+            <section>
+                <table class="tableForData" style="margin:0;padding:0;">
+                    <thead>
+                        <tr>
+                            <th>Sl No.</th>
+                            <th>Batch No.</th>
+                            <th>Quantity</th>
+                            <th>Unit Cost</th>
+                            <th>Ext. Cost</th>
+                            <th>Discount %</th>
+                            <th>Discount Amt.</th>
+                            <th>Net Ext. Cost</th>
+                            <th>Tax Amt.</th>
+                            <th>Total Amt.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each dispatch_items}}
+                        <tr>
+                            <td colspan="3" class="tableSubHdg"><small>Item Name:</small><br>{{item_description}} </td>
+                            <td colspan="2" class="tableSubHdg"><small>Item Code:</small><br> {{item_code}}</td>
+                            <td class="tableSubHdg"><small>Sales
+                                    UOM:</small><br>{{uom_description}}</td>
+                            <td class="tableSubHdg"><small>Req. Qty:</small><br>{{ordered_quantity}}</td>
+                            <td class="tableSubHdg"><small>Dispatched Qty:</small><br>{{dispatched_quantity}}</td>
+                            <td colspan="3" class="tableSubHdg"><small>Out Standing
+                                    Qty:</small><br>{{quantity_outstanding}}
+                            </td>
+                        </tr>
+                        {{#each batches}}
+                        <tr>
+                            <td>{{inc @index}}</td>
+
+                            <td>{{batchno}}</td>
+                            <td>{{dispatch_quantity}}</td>
+
+                            <td>{{unit_cost}}</td>
+                            <td>{{extended_cost}}</td>
+                            <td>{{discount_percentage}}</td>
+                            <td>{{discount_amount}}</td>
+
+                            <td>{{net_extended_cost}}</td>
+                            <td>{{tax_amount}}</td>
+                            <td>{{total_amount}}</td>
+                        </tr>
+                        {{/each }}
+
+                        {{/each }}<tr class="footerTotalDown">
+                            <td colspan="9">Net Recivable</td>
+                            <td>{{net_payable}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </section>
+
+
+        {{/each }}
+        <table class="tableTotal">
+            <tr>
+                <td>Total Amt.</td>
+                <td>{{sub_total}}</td>
+            </tr>
+            <tr>
+                <td>Total Discount</td>
+                <td>{{discount_amount}}</td>
+            </tr>
+            <tr>
+                <td>Net Total</td>
+                <td>{{net_total}}</td>
+            </tr>
+            <tr>
+                <td>Total Tax</td>
+                <td>{{total_tax}}</td>
+            </tr>
+            <tr class="bold">
+                <td>Total Net Recivable</td>
+                <td>{{net_payable}}</td>
+            </tr>
+        </table>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>
