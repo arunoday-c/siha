@@ -4,7 +4,7 @@ import JournalVoucher from "./Components/JournalVoucher";
 import FinanceReports from "./Components/FinanceReports";
 import Mapping from "./Components/Mapping";
 import FinanceOptions from "./Components/FinanceOptions";
-import CostCenter from "./Components/CostCenterModule";
+import CostCenter from "./Components/CostCenterPage";
 import JournalAuthorization from "./Components/JournalAuthorization";
 const Pages = {
   Accounts,

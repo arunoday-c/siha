@@ -6,7 +6,7 @@ const Reports = lazy(() => import("./Components/FinanceReports"));
 const Transactions = lazy(() => import("./Components/Transactions"));
 const JournalVoucher = lazy(() => import("./Components/JournalVoucher"));
 const FinanceOptions = lazy(() => import("./Components/FinanceOptions"));
-const CostCenter = lazy(() => import("./Components/CostCenterModule"));
+const CostCenter = lazy(() => import("./Components/CostCenterPage"));
 const JournalAuthorization = lazy(() =>
   import("./Components/JournalAuthorization")
 );

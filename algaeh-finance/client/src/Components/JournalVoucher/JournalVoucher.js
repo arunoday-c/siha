@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ReactDom from "react-dom";
-import CostCenter from "../costcenter";
+import CostCenter from "../costCenterComponent";
 import moment from "moment";
 import "./JournalVoucher.scss";
 import {

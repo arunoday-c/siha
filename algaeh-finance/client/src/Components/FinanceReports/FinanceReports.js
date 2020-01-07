@@ -3,7 +3,7 @@ import "./financeReportStyle.scss";
 import { Spin, AlgaehMessagePop } from "algaeh-react-components";
 import Balance from "./FinanceStandardReports/balancesheet";
 import TrailBalance from "./FinanceStandardReports/trailbalance";
-import CostCenter from "../costcenter";
+import CostCenter from "../costCenterComponent";
 import { getBalanceSheet } from "./FinanceReportEvents";
 let resultdata = {};
 export default function FinanceReports() {

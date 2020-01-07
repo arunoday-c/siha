@@ -1,4 +1,3 @@
-import React from "react";
 import { getIdentity, getCookie, getToken } from "../utils/algaehApiCall";
 import axios from "axios";
 import config from "../utils/config.json";
@@ -17,6 +16,7 @@ function createUrl(inputs) {
     const path = moduleName
       ? routersAndPorts[moduleName].path
       : routersAndPorts["default"].path;
+    url = `${protocol}//${hostname}${path}${baseUrl}${uri}`;
   }
   return url;
 }
@@ -31,7 +31,6 @@ export default async function newAlgaehApi(
     "x-app-user-identity": getCookie("keyRources")
   };
   try {
-    // setLoading(true);
     let response;
     let responseObj = {
       url: createUrl(inputs),
