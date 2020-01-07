@@ -56,7 +56,7 @@ const executePDF = function executePDFMethod(options) {
                       from finance_voucher_header H inner join finance_voucher_details VD
                       on H.finance_voucher_header_id=VD.voucher_header_id inner join finance_account_child C on
                       VD.child_id=C.finance_account_child_id where  VD.auth_status='A' and
-                      VD.child_id=?  ${strQry} group by VD.payment_date,voucher_no ;   `,
+                      VD.child_id=?  ${strQry} group by VD.payment_date,voucher_no order by VD.payment_date;   `,
                 values: [input.child_id],
                 printQuery: true
               })
