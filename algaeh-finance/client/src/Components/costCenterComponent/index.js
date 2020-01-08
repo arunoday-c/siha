@@ -41,6 +41,7 @@ export default forwardRef(function CostCenter(
         setLoading(false);
         if (response.data.success === true) {
           setData(response.data.result);
+          setCostCenter(null);
         }
       },
       onCatch: error => {
@@ -65,6 +66,11 @@ export default forwardRef(function CostCenter(
       result["cost_center_id_label"] = details["cost_center"];
       result["cost_center_id"] = value;
     }
+  }
+
+  function clearValues() {
+    setCostCenter(null);
+    setHims_d_hospital_id(null);
   }
 
   return (
@@ -109,7 +115,9 @@ export default forwardRef(function CostCenter(
             }}
           />
         </div>
-        {render ? render({ costCenter, hims_d_hospital_id }) : null}
+        {render
+          ? render({ costCenter, hims_d_hospital_id, clearValues })
+          : null}
       </div>
     </div>
   );
