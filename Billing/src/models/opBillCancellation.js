@@ -575,7 +575,8 @@ export default {
         inputParam.billdetails,
         f =>
           f.service_type_id ==
-          appsettings.hims_d_service_type.service_type_id.Procedure && f.ordered_services_id != null
+            appsettings.hims_d_service_type.service_type_id.Procedure &&
+          f.ordered_services_id != null
       );
       console.log("dental_Services: ", dental_Services.length);
       if (dental_Services.length > 0) {
@@ -755,7 +756,7 @@ export default {
                       const servicesIds = inputParam.billdetails.map(m => {
                         return m.services_id;
                       });
-                      fetchServiceDetails = ` SELECT hims_d_services_id,service_type_id,head_account,head_id,child_id FROM hims_d_services
+                      fetchServiceDetails = ` SELECT hims_d_services_id,service_type_id,head_id,child_id FROM hims_d_services
                         where hims_d_services_id in(${servicesIds}); `;
                     }
 
@@ -817,7 +818,7 @@ export default {
                                   insertSubDetail.push({
                                     day_end_header_id: headerDayEnd.insertId,
                                     payment_date: new Date(),
-                                    head_account_code: curService.head_account,
+
                                     head_id: curService.head_id,
                                     child_id: curService.child_id,
                                     debit_amount: serviceData.patient_payable,
@@ -831,7 +832,7 @@ export default {
                                 insertSubDetail.push({
                                   day_end_header_id: headerDayEnd.insertId,
                                   payment_date: new Date(),
-                                  head_account_code: CH_IN_HA.head_account_code,
+
                                   head_id: CH_IN_HA.head_id,
                                   child_id: CH_IN_HA.child_id,
                                   debit_amount: 0,
@@ -845,7 +846,7 @@ export default {
                                   insertSubDetail.push({
                                     day_end_header_id: headerDayEnd.insertId,
                                     payment_date: new Date(),
-                                    head_account_code: OP_REC.head_account_code,
+
                                     head_id: OP_REC.head_id,
                                     child_id: OP_REC.child_id,
                                     debit_amount: 0,
@@ -860,7 +861,7 @@ export default {
                                   insertSubDetail.push({
                                     day_end_header_id: headerDayEnd.insertId,
                                     payment_date: new Date(),
-                                    head_account_code: OP_DEP.head_account_code,
+
                                     head_id: OP_DEP.head_id,
                                     child_id: OP_DEP.child_id,
                                     debit_amount: 0,
@@ -886,7 +887,7 @@ export default {
                             const IncludeValuess = [
                               "day_end_header_id",
                               "payment_date",
-                              "head_account_code",
+
                               "head_id",
                               "child_id",
                               "debit_amount",
