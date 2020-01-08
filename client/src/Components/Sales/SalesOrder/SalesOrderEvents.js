@@ -330,7 +330,7 @@ const getCtrlCode = ($this, docNumber) => {
                 let data = response.data.records;
 
                 data.grid_edit = true;
-                debugger;
+
                 if (
                     $this.props.sales_order_number !== undefined &&
                     $this.props.sales_order_number.length !== 0
@@ -499,7 +499,7 @@ const dateValidate = ($this, value, event) => {
 };
 
 const AuthorizeOrderEntry = ($this, authorize) => {
-    debugger;
+
     let order_detail =
         $this.state.sales_order_mode === "I"
             ? $this.state.sales_order_items

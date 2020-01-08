@@ -16,7 +16,7 @@ const handleNext = ($this, setp, e) => {
         //Save Insurance
         $this.state.preapp_valid_days =
           $this.state.preapp_valid_days === "" ||
-          $this.state.preapp_valid_days === null
+            $this.state.preapp_valid_days === null
             ? 0
             : $this.state.preapp_valid_days;
         algaehApiCall({
@@ -141,7 +141,7 @@ const updatedata = ($this, e) => {
     if (isError === false) {
       $this.state.preapp_valid_days =
         $this.state.preapp_valid_days === "" ||
-        $this.state.preapp_valid_days === null
+          $this.state.preapp_valid_days === null
           ? 0
           : $this.state.preapp_valid_days;
       algaehApiCall({
@@ -169,7 +169,7 @@ const updatedata = ($this, e) => {
             let IOputs = InsuranceSetup.inputParam();
             IOputs.activeStep = 0;
             IOputs.screenName = "InsuranceProvider";
-            debugger;
+
             $this.setState(IOputs, () => {
               $this.props.onClose && $this.props.onClose(e);
             });

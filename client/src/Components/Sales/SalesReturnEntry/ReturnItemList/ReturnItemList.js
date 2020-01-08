@@ -137,7 +137,6 @@ export default class ReturnItemList extends Component {
                                 />
                               ),
                               displayTemplate: row => {
-                                debugger;
                                 return this.state.inv_is_posted === "N" ? (
                                   <AlagehFormGroup
                                     div={{}}
@@ -164,8 +163,8 @@ export default class ReturnItemList extends Component {
                                     }}
                                   />
                                 ) : (
-                                  parseFloat(row.return_qty)
-                                );
+                                    parseFloat(row.return_qty)
+                                  );
                               }
                             },
                             {

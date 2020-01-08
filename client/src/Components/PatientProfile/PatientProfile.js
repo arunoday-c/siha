@@ -57,6 +57,7 @@ class PatientProfile extends Component {
   constructor(props) {
     super(props);
     this.selected_module = getCookie("module_id");
+    debugger
     this.active_modules = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("AlgaehOrbitaryData"))
     );
@@ -648,7 +649,7 @@ class PatientProfile extends Component {
   }
   render() {
     const module_plan = _.find(this.active_modules, f => {
-      return f.module_id === parseInt(this.selected_module);
+      return f.module_id === this.selected_module;
     });
 
     const _pat_profile =

@@ -63,6 +63,9 @@ const onchhangeNumber = ($this, context, row, e) => {
       value === "" || value === undefined
         ? 0
         : ((parseFloat(row.net_extended_cost) * parseFloat(value)) / 100).toFixed($this.state.decimal_places);
+  } else {
+    row.tax_amount =
+      ((parseFloat(row.net_extended_cost) * parseFloat(row.tax_percentage)) / 100).toFixed($this.state.decimal_places);
   }
 
   row.total_amount = parseFloat(row.net_extended_cost) + parseFloat(row.tax_amount)
