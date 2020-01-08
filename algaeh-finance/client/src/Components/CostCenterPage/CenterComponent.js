@@ -46,9 +46,14 @@ export default memo(function CenterComponent({ data }) {
             propBranchID={current.cost_center_id}
             propCenterID={current.hospital_id}
             render={values => (
-              <AlgaehButton type="primary" onClick={() => closeEdit(values)}>
-                Change
-              </AlgaehButton>
+              <div className="col-12 modalCustomFooter">
+                <AlgaehButton type="default" onClick={() => closeEdit(values)}>
+                  Cancel
+                </AlgaehButton>{" "}
+                <AlgaehButton type="primary" onClick={() => closeEdit(values)}>
+                  Update
+                </AlgaehButton>{" "}
+              </div>
             )}
           />
         </AlgaehModal>
