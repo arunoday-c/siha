@@ -1,17 +1,23 @@
-import React, { useEffect, useState, forwardRef } from "react";
+import React, { useEffect, useState, memo } from "react";
 import "./costcenter.scss";
 import { AlgaehAutoComplete } from "algaeh-react-components";
 import { algaehApiCall } from "../../utils/algaehApiCall";
-export default forwardRef(function CostCenter(
-  { div, result, noborder, render, orgUrl },
-  ref
-) {
+export default memo(function CostCenter({
+  div,
+  result,
+  noborder,
+  render,
+  orgUrl,
+  propBranchID,
+  propCenterID
+}) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadBranch, setLoadBranch] = useState(false);
-  const [costCenter, setCostCenter] = useState(undefined);
-  const [hims_d_hospital_id, setHims_d_hospital_id] = useState(undefined);
+  const [costCenter, setCostCenter] = useState(propCenterID);
+  const [hims_d_hospital_id, setHims_d_hospital_id] = useState(propBranchID);
   const [branch, setBranch] = useState([]);
+
   useEffect(() => {
     setLoadBranch(true);
     algaehApiCall({
@@ -28,28 +34,35 @@ export default forwardRef(function CostCenter(
         console.log("error", error);
       }
     });
-  }, []);
+  }, [orgUrl]);
 
-  function onChangeHospitalId(hospitalID) {
-    setLoading(true);
-    algaehApiCall({
-      uri: "/finance_masters/getCostCenters",
-      data: { hospital_id: hospitalID },
-      method: "GET",
-      module: "finance",
-      onSuccess: response => {
-        setLoading(false);
-        if (response.data.success === true) {
-          setData(response.data.result);
-          setCostCenter(null);
-        }
-      },
-      onCatch: error => {
-        setLoading(false);
-        console.log("error", error);
+  useEffect(() => {
+    function onChangeHospitalId() {
+      if (hims_d_hospital_id) {
+        setLoading(true);
+        algaehApiCall({
+          uri: "/finance_masters/getCostCenters",
+          data: { hospital_id: hims_d_hospital_id },
+          method: "GET",
+          module: "finance",
+          onSuccess: response => {
+            setLoading(false);
+            if (response.data.success === true) {
+              setData(response.data.result);
+              // if (propBranchID === hims_d_hospital_id) {
+              //   setCostCenter(propCenterID);
+              // }
+            }
+          },
+          onCatch: error => {
+            setLoading(false);
+            console.log("error", error);
+          }
+        });
       }
-    });
-  }
+    }
+    onChangeHospitalId();
+  }, [hims_d_hospital_id]);
 
   function HandleHospital(details, value) {
     setHims_d_hospital_id(value);
@@ -57,7 +70,7 @@ export default forwardRef(function CostCenter(
       result["hospital_id_label"] = details["hospital_name"];
       result["hospital_id"] = value;
     }
-    onChangeHospitalId(value);
+    setCostCenter(null);
   }
 
   function HandleCostCenter(details, value) {
@@ -75,7 +88,6 @@ export default forwardRef(function CostCenter(
 
   return (
     <div
-      ref={ref}
       className={noborder === undefined ? "col-12 costCenterFilter" : "col-12"}
     >
       <div className="row">

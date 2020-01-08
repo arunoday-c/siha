@@ -17,9 +17,13 @@ export default function TrailBalaceReport(props) {
       />
       <div ref={createPrintObject}>
         <div className="financeReportHeader">
-          <div>Company logo</div>
-          <div>Address</div>
-          <h3>Report Name</h3>
+          <div>Client Name Here</div>
+          <div>Client Address Here</div>
+          <hr></hr>
+          <h3>Balance Sheet</h3>
+          <p>
+            As on: <b>Date Here</b>
+          </p>
         </div>
         <div className="reportTableStyle" style={{ border: "none" }}>
           <table className="trialReportStyle">

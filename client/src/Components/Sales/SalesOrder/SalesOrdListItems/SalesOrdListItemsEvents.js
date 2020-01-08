@@ -301,7 +301,8 @@ const deleteSalesDetail = ($this, context, row) => {
                 total_tax: 0,
                 net_total: 0,
                 net_payable: 0,
-                saveEnable: true
+                saveEnable: true,
+                authBtnEnable: true
             });
         }
     } else {
