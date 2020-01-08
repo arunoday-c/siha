@@ -85,7 +85,7 @@ const ClearData = ($this, e) => {
 };
 
 const SaveSalesQuotation = $this => {
-  debugger;
+
   if ($this.state.hims_f_sales_quotation_id !== null) {
     if ($this.state.comments === null || $this.state.comments === "") {
       swalMessage({
@@ -125,7 +125,7 @@ const SaveSalesQuotation = $this => {
       querySelector: "data-validate='HeaderDiv'",
       alertTypeIcon: "warning",
       onSuccess: () => {
-        debugger;
+
         if ($this.HRMNGMT_Active && $this.state.sales_person_id === null) {
           swalMessage({
             type: "warning",
@@ -233,8 +233,6 @@ const getCtrlCode = ($this, docNumber) => {
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;
-
-        debugger;
         // data.sales_quotation_items = data.qutation_detail[0]
         // data.sales_quotation_services = data.qutation_detail[1]
         // if (data.sales_quotation_mode === "I") {

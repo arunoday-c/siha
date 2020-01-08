@@ -45,6 +45,6 @@ export default async function newAlgaehApi(
     response = await axios(responseObj);
     return response;
   } catch (e) {
-    return e;
+    throw Error(e.response.data.message || e.message);
   }
 }

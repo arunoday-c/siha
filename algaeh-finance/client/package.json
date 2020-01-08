@@ -77,8 +77,8 @@
     "workbox-webpack-plugin": "4.3.1"
   },
   "scripts": {
-    "start": "cross-env REACT_APP_CDN=development node scripts/start.js",
-    "build": "cross-env REACT_APP_CDN=production.min node scripts/build.js",
+    "start": "cross-env REACT_APP_CDN=development GENERATE_SOURCE_MAP=false node scripts/start.js",
+    "build": "cross-env REACT_APP_CDN=production.min GENERATE_SOURCE_MAP=false node scripts/build.js",
     "test": "node scripts/test.js",
     "type_check": "flow"
   },
@@ -153,6 +153,7 @@
   "devDependencies": {
     "assets-webpack-plugin": "^3.9.10",
     "babel-preset-flow": "^6.23.0",
+    "clean-webpack-plugin": "^3.0.0",
     "flow-bin": "^0.107.0"
   }
 }

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { AlgaehMessagePop } from "algaeh-react-components";
 import "./costcenter.scss";
 import CenterComponent from "./CenterComponent";
 import CostCenterComponent from "../costCenterComponent";
 import { newAlgaehApi } from "../../hooks";
 
-function CostCenterPage(props) {
+function CostCenterPage() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -17,14 +18,12 @@ function CostCenterPage(props) {
       module: "finance"
     })
       .then(res => {
-        console.log(res, "res effect");
         setData(res.data.result);
       })
-      .catch(e => console.log(e));
+      .catch(e => AlgaehMessagePop({ type: "error", display: e.message }));
   }, []);
 
   function handleResult(values) {
-    console.log(values);
     newAlgaehApi({
       uri: "/finance_masters/addCostCenter",
       method: "POST",
@@ -36,10 +35,18 @@ function CostCenterPage(props) {
     })
       .then(res => {
         if (res.data.success) {
-          console.log(res.data, "after math");
+          AlgaehMessagePop({
+            type: "info",
+            display: "Successfully added"
+          });
         }
       })
-      .catch(e => console.log(e));
+      .catch(e => {
+        AlgaehMessagePop({
+          type: "error",
+          display: e.message
+        });
+      });
   }
 
   return (
@@ -48,7 +55,9 @@ function CostCenterPage(props) {
         orgUrl="/organization/getOrganization"
         render={result => (
           <div className="col" style={{ paddingTop: 16 }}>
-            <button className="btn btn-default">Clear</button>
+            <button className="btn btn-default" onClick={result.clearValues}>
+              Clear
+            </button>
             <button
               className="btn btn-primary"
               style={{ marginLeft: 10 }}
