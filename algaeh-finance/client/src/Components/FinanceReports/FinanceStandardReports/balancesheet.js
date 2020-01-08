@@ -107,32 +107,38 @@ export default function BalanceSheet(props) {
         />
         <div ref={createPrintObject}>
           <div className="financeReportHeader">
-            <div>Company logo</div>
-
-            <div>Address</div>
-            <h3>Report Name</h3>
-            {/* <p>
-              Applied Filters -{" "}
-              <span>
-                Date: <b>11-04-2019</b>
-              </span>
-              <span>
-                Date: <b>11-04-2019</b>
-              </span>
-              <span>
-                Date: <b>11-04-2019</b>
-              </span>
-            </p> */}
+            <div>Client Name Here</div>
+            <div>Client Address Here</div>
+            <hr></hr>
+            <h3>Balance Sheet</h3>
+            <p>
+              As on: <b>Date Here</b>
+            </p>
           </div>
-          <div className="reportTableStyle">
+          <div
+            className="reportTableStyle"
+            style={{
+              width: "49%",
+              float: "left",
+              borderRight: "1px dashed #000"
+            }}
+          >
             <ul className="treeListUL">
               {PlotUI(data[result[0]], style, [0])}
             </ul>
+          </div>{" "}
+          <div
+            className="reportTableStyle"
+            style={{
+              width: "49%",
+              float: "right",
+              borderLeft: "1px dashed #000"
+            }}
+          >
             <ul className="treeListUL">
               {PlotUI(data[result[1]], style, [0])}
             </ul>{" "}
           </div>
-
           <table style={{ width: "100%" }}>
             <tbody>
               <tr className="footerTotalArea">
