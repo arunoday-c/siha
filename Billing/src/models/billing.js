@@ -3098,8 +3098,8 @@ addtoDayEnd_BKP_26_dec: (req, res, next) => {
                       const servicesIds = inputParam.billdetails.map(m => {
                         return m.services_id;
                       });
-                      fetchServiceDetails = ` SELECT hims_d_services_id,service_type_id,head_account,head_id,child_id, \
-                      insurance_head_account,insurance_head_id,insurance_child_id FROM hims_d_services
+                      fetchServiceDetails = ` SELECT hims_d_services_id,service_type_id,head_id,child_id, \
+                      insurance_head_id,insurance_child_id FROM hims_d_services
                         where hims_d_services_id in(${servicesIds}); `;
                     }
 
@@ -3108,8 +3108,8 @@ addtoDayEnd_BKP_26_dec: (req, res, next) => {
                         query:
                           "SELECT * FROM finance_accounts_maping;\
                   select * from finance_day_end_detail where day_end_header_id=?;\
-                  SELECT head_id,child_id,head_account FROM hims_d_bank_card where hims_d_bank_card_id=?;\
-                  select hims_d_insurance_sub_id,head_account,head_id,child_id from \
+                  SELECT head_id,child_id FROM hims_d_bank_card where hims_d_bank_card_id=?;\
+                  select hims_d_insurance_sub_id,head_id,child_id from \
                   hims_d_insurance_sub where hims_d_insurance_sub_id in (?,?); " +
                           fetchServiceDetails +""+cost_center_str,
                         values: [
@@ -3155,7 +3155,7 @@ addtoDayEnd_BKP_26_dec: (req, res, next) => {
                               insertSubDetail.push({
                                 day_end_header_id: headerDayEnd.insertId,
                                 payment_date: new Date(),
-                                head_account_code: OP_DEP.head_account_code,
+                              
                                 head_id: OP_DEP.head_id,
                                 child_id: OP_DEP.child_id,
                                 debit_amount: 0,
@@ -3169,8 +3169,7 @@ addtoDayEnd_BKP_26_dec: (req, res, next) => {
                                   insertSubDetail.push({
                                     day_end_header_id: headerDayEnd.insertId,
                                     payment_date: new Date(),
-                                    head_account_code:
-                                      CH_IN_HA.head_account_code,
+                             
                                     head_id: CH_IN_HA.head_id,
                                     child_id: CH_IN_HA.child_id,
                                     debit_amount: item.amount,
@@ -3186,7 +3185,7 @@ addtoDayEnd_BKP_26_dec: (req, res, next) => {
                                   insertSubDetail.push({
                                     day_end_header_id: headerDayEnd.insertId,
                                     payment_date: new Date(),
-                                    head_account_code: rest[2][0].head_account,
+                                  
                                     head_id: rest[2][0].head_id,
                                     child_id: rest[2][0].child_id,
                                     debit_amount: item.amount,
@@ -3203,7 +3202,7 @@ addtoDayEnd_BKP_26_dec: (req, res, next) => {
                               insertSubDetail.push({
                                 day_end_header_id: headerDayEnd.insertId,
                                 payment_date: new Date(),
-                                head_account_code: OP_DEP.head_account_code,
+                               
                                 head_id: OP_DEP.head_id,
                                 child_id: OP_DEP.child_id,
                                 debit_amount: amount,
@@ -3217,8 +3216,7 @@ addtoDayEnd_BKP_26_dec: (req, res, next) => {
                                   insertSubDetail.push({
                                     day_end_header_id: headerDayEnd.insertId,
                                     payment_date: new Date(),
-                                    head_account_code:
-                                      CH_IN_HA.head_account_code,
+                                  
                                     head_id: CH_IN_HA.head_id,
                                     child_id: CH_IN_HA.child_id,
                                     debit_amount: 0,
@@ -3233,7 +3231,7 @@ addtoDayEnd_BKP_26_dec: (req, res, next) => {
                                   insertSubDetail.push({
                                     day_end_header_id: headerDayEnd.insertId,
                                     payment_date: new Date(),
-                                    head_account_code: rest[2][0].head_account,
+                               
                                     head_id: rest[2][0].head_id,
                                     child_id: rest[2][0].child_id,
                                     debit_amount: 0,
@@ -3313,7 +3311,7 @@ addtoDayEnd_BKP_26_dec: (req, res, next) => {
                             const IncludeValuess = [
                               "day_end_header_id",
                               "payment_date",
-                              "head_account_code",
+                            
                               "head_id",
                               "child_id",
                               "debit_amount",

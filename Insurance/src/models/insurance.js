@@ -287,7 +287,7 @@ export default {
         "transaction_number",
         "effective_start_date",
         "effective_end_date",
-        "head_account",
+
         "head_id",
         "child_id"
       ];
@@ -333,7 +333,7 @@ export default {
             "update hims_d_insurance_sub SET `insurance_sub_code`=?,`insurance_sub_name`=?,\
             `arabic_sub_name`=?,`insurance_provider_id`=?,`card_format`=?,\
             `transaction_number`=?,`effective_start_date`=?,`effective_end_date`=?,`updated_by`=?,\
-            head_account=?,head_id=?,child_id=?\
+           head_id=?,child_id=?\
              WHERE  `hims_d_insurance_sub_id`=? AND `record_status`='A'",
           values: [
             inputparam.insurance_sub_code,
@@ -345,7 +345,7 @@ export default {
             inputparam.effective_start_date,
             inputparam.effective_end_date,
             req.userIdentity.algaeh_d_app_user_id,
-            inputparam.head_account,
+
             inputparam.head_id,
             inputparam.child_id,
             inputparam.hims_d_insurance_sub_id
@@ -1064,7 +1064,6 @@ export default {
           printQuery: true
         })
         .then(result => {
-
           _mysql
             .executeQuery({
               query:
@@ -1150,7 +1149,6 @@ export default {
                 next(error);
               });
             });
-
         })
         .catch(error => {
           _mysql.rollBackTransaction(() => {
