@@ -343,7 +343,7 @@ export default {
                         query:
                           "SELECT * FROM finance_accounts_maping;\
                     select * from finance_day_end_detail where day_end_header_id=?;\
-                    SELECT head_id,child_id,head_account FROM hims_d_bank_card where hims_d_bank_card_id=?;",
+                    SELECT head_id,child_id FROM hims_d_bank_card where hims_d_bank_card_id=?;",
                         values: [
                           headerDayEnd.insertId,
                           inputParam.bank_card_id
@@ -372,7 +372,7 @@ export default {
                             insertSubDetail.push({
                               day_end_header_id: headerDayEnd.insertId,
                               payment_date: new Date(),
-                              head_account_code: CH_IN_HA.head_account_code,
+
                               head_id: CH_IN_HA.head_id,
                               child_id: CH_IN_HA.child_id,
                               debit_amount: item.amount,
@@ -387,7 +387,7 @@ export default {
                             insertSubDetail.push({
                               day_end_header_id: headerDayEnd.insertId,
                               payment_date: new Date(),
-                              head_account_code: rest[2][0].head_account,
+
                               head_id: rest[2][0].head_id,
                               child_id: rest[2][0].child_id,
                               debit_amount: item.amount,
@@ -402,7 +402,7 @@ export default {
                           insertSubDetail.push({
                             day_end_header_id: headerDayEnd.insertId,
                             payment_date: new Date(),
-                            head_account_code: OP_WF.head_account_code,
+
                             head_id: OP_WF.head_id,
                             child_id: OP_WF.child_id,
                             debit_amount: inputParam.write_off_amount,
@@ -416,7 +416,7 @@ export default {
                         insertSubDetail.push({
                           day_end_header_id: headerDayEnd.insertId,
                           payment_date: new Date(),
-                          head_account_code: OP_REC.head_account_code,
+
                           head_id: OP_REC.head_id,
                           child_id: OP_REC.child_id,
                           debit_amount: 0,
@@ -431,7 +431,7 @@ export default {
                         const IncludeValuess = [
                           "day_end_header_id",
                           "payment_date",
-                          "head_account_code",
+
                           "head_id",
                           "child_id",
                           "debit_amount",

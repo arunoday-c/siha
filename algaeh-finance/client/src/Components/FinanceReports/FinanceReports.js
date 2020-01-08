@@ -125,6 +125,65 @@ export default function FinanceReports() {
           ) : null}
         </Spin>{" "}
       </div>
+      <div className="col reportPreviewToolRight">
+        <ul>
+          <li>
+            <span>
+              <i className="fas fa-eye"></i>
+            </span>
+          </li>{" "}
+          <li>
+            <span>
+              <i className="fas fa-eye"></i>
+            </span>
+          </li>{" "}
+          <li>
+            <span>
+              <i className="fas fa-eye"></i>
+            </span>
+          </li>{" "}
+          <li>
+            <span>
+              <i className="fas fa-eye"></i>
+            </span>
+          </li>{" "}
+          <li>
+            <span>
+              <i className="fas fa-eye"></i>
+            </span>
+          </li>{" "}
+          <li>
+            <span>
+              <i className="fas fa-eye"></i>
+            </span>
+          </li>{" "}
+          <li>
+            <span>
+              <i className="fas fa-eye"></i>
+            </span>
+          </li>{" "}
+          <li>
+            <span>
+              <i className="fas fa-eye"></i>
+            </span>
+          </li>{" "}
+          <li>
+            <span>
+              <i className="fas fa-eye"></i>
+            </span>
+          </li>{" "}
+          <li>
+            <span>
+              <i className="fas fa-eye"></i>
+            </span>
+          </li>{" "}
+          <li>
+            <span>
+              <i className="fas fa-eye"></i>
+            </span>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 }
