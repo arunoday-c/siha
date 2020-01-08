@@ -115,7 +115,7 @@ const SaveVendorQuotationEnrty = $this => {
 
     if (unit_price_exist.length > 0) {
         swalMessage({
-            type: "error",
+            type: "warning",
             title: "Please Enter Unit Price for all the items."
         });
         return

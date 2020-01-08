@@ -751,6 +751,7 @@ export default {
           printQuery: true
         })
         .then(result => {
+          _mysql.releaseConnection();
           var item_grp = _(result)
             .groupBy("item_id")
             .map((row, item_id) => item_id)

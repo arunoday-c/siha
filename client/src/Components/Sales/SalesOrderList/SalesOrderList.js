@@ -71,7 +71,6 @@ class SalesOrderList extends Component {
   }
 
   ourOwnMiniNavigator = obj => {
-    debugger;
     const { order_list, radioYes, authorize1, ...rest } = this.state;
     let sendObj = Object.assign(rest, obj);
     this.props.new_routeComponents(sendObj);
@@ -297,8 +296,8 @@ class SalesOrderList extends Component {
                           return row.invoice_generated === "Y" ? (
                             <span className="badge badge-success">Yes</span>
                           ) : (
-                            <span className="badge badge-danger">No</span>
-                          );
+                              <span className="badge badge-danger">No</span>
+                            );
                         },
                         others: {
                           maxWidth: 150,

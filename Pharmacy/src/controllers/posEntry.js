@@ -32,10 +32,7 @@ export default () => {
       if (req.records.hims_f_receipt_header_id != undefined) {
         getReceiptEntry(req, res, next);
       } else {
-        utilities.logger().log("Outside: ");
-
         req.receptEntry = { receiptdetails: [] };
-        utilities.logger().log("po_from: ", req.receptEntry);
         next();
       }
     },
@@ -62,8 +59,6 @@ export default () => {
     addPosEntry,
 
     (req, res, next) => {
-      // utilities.logger().log("pos_customer_type: ", req.body.pos_customer_type);
-      // utilities.logger().log("pre_approval_req: ", req.body.pre_approval_req);
       console.log("visit_preapproval: ", req.body.visit_preapproval);
       if (
         (req.body.pos_customer_type == "OT" &&
