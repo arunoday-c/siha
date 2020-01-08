@@ -418,59 +418,82 @@ export default {
 
     if (input.leaf_node == "Y") {
       _mysql
-        .executeQueryWithTransaction({
+        .executeQuery({
           query:
-            "INSERT INTO `finance_account_child` (child_name,head_id,created_from\
-            ,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?)",
-          values: [
-            input.account_name,
-            input.finance_account_head_id,
-            "U",
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id
-          ],
-          printQuery: false
+            "select   root_id from finance_account_head where finance_account_head_id=?; ",
+          values: [input.finance_account_head_id]
         })
         .then(result => {
-          if (result.insertId > 0) {
-            if (input.opening_bal > 0) {
-              let debit_amount = 0;
-              let credit_amount = input.opening_bal;
-              let payment_type = "CR";
+          const root_id = result[0]["root_id"];
+          _mysql
+            .executeQueryWithTransaction({
+              query:
+                "INSERT INTO `finance_account_child` (child_name,head_id,created_from\
+            ,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?)",
+              values: [
+                input.account_name,
+                input.finance_account_head_id,
+                "U",
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id
+              ],
+              printQuery: false
+            })
+            .then(result => {
+              if (result.insertId > 0) {
+                if (input.opening_bal > 0) {
+                  let debit_amount = 0;
+                  let credit_amount = input.opening_bal;
+                  let payment_type = "CR";
 
-              if (input.chart_of_account == 1 || input.chart_of_account == 5) {
-                payment_type = "DR";
-                credit_amount = 0;
-                debit_amount = input.opening_bal;
-              }
+                  if (root_id == 1 || root_id == 5) {
+                    payment_type = "DR";
+                    credit_amount = 0;
+                    debit_amount = input.opening_bal;
+                  }
 
-              const month = moment().format("M");
-              const year = moment().format("YYYY");
+                  const month = moment().format("M");
+                  const year = moment().format("YYYY");
 
-              _mysql
-                .executeQuery({
-                  query:
-                    "insert into finance_voucher_details ( payment_date,month,year,head_id,child_id,debit_amount,\
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "insert into finance_voucher_details ( payment_date,month,year,head_id,child_id,debit_amount,\
                         payment_type,credit_amount,entered_by,entered_date,auth_status,is_opening_bal)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?);",
-                  values: [
-                    new Date(),
-                    month,
-                    year,
-                    input.finance_account_head_id,
-                    result.insertId,
-                    debit_amount,
-                    payment_type,
-                    credit_amount,
-                    req.userIdentity.algaeh_d_app_user_id,
-                    new Date(),
-                    "A",
-                    "Y"
-                  ],
-                  printQuery: false
-                })
-                .then(subdetail => {
+                      values: [
+                        new Date(),
+                        month,
+                        year,
+                        input.finance_account_head_id,
+                        result.insertId,
+                        debit_amount,
+                        payment_type,
+                        credit_amount,
+                        req.userIdentity.algaeh_d_app_user_id,
+                        new Date(),
+                        "A",
+                        "Y"
+                      ],
+                      printQuery: false
+                    })
+                    .then(subdetail => {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = {
+                          head_id: input.finance_account_head_id,
+                          child_id: result.insertId
+                        };
+                        next();
+                      });
+                    })
+                    .catch(e => {
+                      _mysql.rollBackTransaction(() => {
+                        next(e);
+                      });
+                    });
+                } else {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
                     req.records = {
@@ -479,36 +502,26 @@ export default {
                     };
                     next();
                   });
-                })
-                .catch(e => {
-                  _mysql.rollBackTransaction(() => {
-                    next(e);
-                  });
-                });
-            } else {
-              _mysql.commitTransaction(() => {
-                _mysql.releaseConnection();
+                }
+              } else {
                 req.records = {
-                  head_id: input.finance_account_head_id,
-                  child_id: result.insertId
+                  invalid_input: true,
+                  message: "Please provide valid input"
                 };
-                next();
+                _mysql.rollBackTransaction(() => {
+                  next();
+                });
+              }
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
               });
-            }
-          } else {
-            req.records = {
-              invalid_input: true,
-              message: "Please provide valid input"
-            };
-            _mysql.rollBackTransaction(() => {
-              next();
+            })
+            .catch(error => {
+              _mysql.releaseConnection();
+              next(error);
             });
-          }
-        })
-        .catch(e => {
-          _mysql.rollBackTransaction(() => {
-            next(e);
-          });
         });
     } else {
       _mysql
@@ -797,8 +810,8 @@ export default {
                   payment_date: new Date(),
                   head_account_code: 3.1,
                   root_id: 3,
-                  head_id: 61,
-                  child_id: 51,
+                  head_id: 3,
+                  child_id: 1,
                   debit_amount: 0,
                   credit_amount: balance,
                   payment_type: "CR",
@@ -813,8 +826,8 @@ export default {
                   payment_date: new Date(),
                   head_account_code: 3.1,
                   root_id: 3,
-                  head_id: 61,
-                  child_id: 51,
+                  head_id: 3,
+                  child_id: 1,
                   debit_amount: Math.abs(balance),
                   credit_amount: 0,
                   payment_type: "DR",

@@ -21,9 +21,8 @@ export default {
           let questionMark = "";
 
           if (appResult.length > 0) {
-            fields =
-              ",head_account,head_id,child_id,insurance_head_account,insurance_head_id,insurance_child_id ";
-            questionMark = ", ?, ?, ?, ?, ?, ?";
+            fields = ",head_id,child_id,insurance_head_id,insurance_child_id ";
+            questionMark = ", ?, ?, ?, ?";
           }
 
           _mysql
@@ -53,10 +52,9 @@ export default {
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
 
-                inputParam.head_account,
                 inputParam.head_id,
                 inputParam.child_id,
-                inputParam.insurance_head_account,
+
                 inputParam.insurance_head_id,
                 inputParam.insurance_child_id
               ],
@@ -187,8 +185,8 @@ export default {
           let str = "";
 
           if (appResult.length > 0) {
-            str = `, head_account= '${inputParam.head_account}',head_id= ${inputParam.head_id},child_id= 
-            ${inputParam.child_id},insurance_head_account= '${inputParam.insurance_head_account}',
+            str = `,head_id= ${inputParam.head_id},child_id= 
+            ${inputParam.child_id},
             insurance_head_id= ${inputParam.insurance_head_id},insurance_child_id=${inputParam.insurance_child_id} `;
           }
 
@@ -331,7 +329,7 @@ export default {
               effective_start_date, effectice_end_date, procedure_type, physiotherapy_service,\
               P.account_name as cash_head_account,C.child_name as cash_child_account,\
               H.account_name as insurance_head_account,CH.child_name as insurance_child_account,\
-              S.head_account,S.head_id,S.child_id,S.insurance_head_account,S.insurance_head_id,S.insurance_child_id, \
+              S.head_id,S.child_id,S.insurance_head_id,S.insurance_child_id, \
               service_status from \
               hims_d_services S left join hims_d_cpt_code CPT on CPT.hims_d_cpt_code_id = S.cpt_code \
               left join finance_account_head P on S.head_id=P.finance_account_head_id\
@@ -1031,7 +1029,7 @@ function InsertintoServiceInsurance(options) {
                 resolve(detailresult);
               })
               .catch(error => {
-                console.log("erroe", error)
+                console.log("erroe", error);
                 reject(error);
               });
           }
