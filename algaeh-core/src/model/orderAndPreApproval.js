@@ -398,7 +398,7 @@ let insertOrderedServices = (req, res, next) => {
                   return f.hims_f_ordered_services_id === null || f.hims_f_ordered_services_id === undefined;
                 });
 
-                // console.log("insert_order_services", insert_order_services)
+                console.log("insert_order_services", insert_order_services)
                 if (insert_order_services.length > 0) {
                   _mysql
                     .executeQuery({
@@ -565,7 +565,6 @@ let insertOrderedServices = (req, res, next) => {
                             // console.log("detailsPush", detailsPush);
                             const insurtCols = [
                               "hims_f_ordered_services_id",
-                              "service_id",
                               "visit_id",
                               "insurance_provider_id",
                               "insurance_network_office_id",
@@ -575,11 +574,11 @@ let insertOrderedServices = (req, res, next) => {
                               "insurance_service_name",
                               "doctor_id",
                               "patient_id",
-                              "ser_gross_amt",
-                              "ser_net_amount",
+                              "gross_amount",
+                              "net_amout",
                               "services_id"
                             ];
-
+                            console.log("detailsPush", detailsPush[0].gross_amount)
                             _mysql
                               .executeQuery({
                                 query: "INSERT INTO hims_f_service_approval(??) VALUES ?",
@@ -587,8 +586,8 @@ let insertOrderedServices = (req, res, next) => {
                                 includeValues: insurtCols,
                                 replcaeKeys: {
                                   services_id: "service_id",
-                                  ser_gross_amt: "gross_amt",
-                                  ser_net_amount: "net_amount",
+                                  gross_amount: "gross_amt",
+                                  net_amout: "net_amount",
                                   hims_f_ordered_services_id: "ordered_services_id"
                                 },
                                 extraValues: {
@@ -621,7 +620,7 @@ let insertOrderedServices = (req, res, next) => {
                           });
                         });
                     } else {
-                      req.records = { resultOrder, ResultOfFetchOrderIds };
+                      req.records = resultOrder;
                       next();
                     }
                   })
@@ -658,215 +657,215 @@ let insertOrderedServices = (req, res, next) => {
 };
 
 //created by irfan: insert ordered services and pre-approval services for insurance
-let insertOrderedServicesBackUp = (req, res, next) => {
-  const insurtColumns = [
-    "patient_id",
-    "visit_id",
-    "doctor_id",
-    "service_type_id",
-    "services_id",
-    "test_type",
-    "insurance_yesno",
-    "insurance_provider_id",
-    "insurance_sub_id",
-    "network_id",
-    "insurance_network_office_id",
-    "policy_number",
-    "pre_approval",
-    "quantity",
-    "unit_cost",
-    "gross_amount",
-    "discount_amout",
-    "discount_percentage",
-    "net_amout",
-    "copay_percentage",
-    "copay_amount",
-    "deductable_amount",
-    "deductable_percentage",
-    "tax_inclusive",
-    "patient_tax",
-    "company_tax",
-    "total_tax",
-    "patient_resp",
-    "patient_payable",
-    "comapany_resp",
-    "company_payble",
-    "sec_company",
-    "sec_deductable_percentage",
-    "sec_deductable_amount",
-    "sec_company_res",
-    "sec_company_tax",
-    "sec_company_paybale",
-    "sec_copay_percntage",
-    "sec_copay_amount",
-    "teeth_number",
-    "d_treatment_id"
-  ];
+// let insertOrderedServicesBackUp = (req, res, next) => {
+//   const insurtColumns = [
+//     "patient_id",
+//     "visit_id",
+//     "doctor_id",
+//     "service_type_id",
+//     "services_id",
+//     "test_type",
+//     "insurance_yesno",
+//     "insurance_provider_id",
+//     "insurance_sub_id",
+//     "network_id",
+//     "insurance_network_office_id",
+//     "policy_number",
+//     "pre_approval",
+//     "quantity",
+//     "unit_cost",
+//     "gross_amount",
+//     "discount_amout",
+//     "discount_percentage",
+//     "net_amout",
+//     "copay_percentage",
+//     "copay_amount",
+//     "deductable_amount",
+//     "deductable_percentage",
+//     "tax_inclusive",
+//     "patient_tax",
+//     "company_tax",
+//     "total_tax",
+//     "patient_resp",
+//     "patient_payable",
+//     "comapany_resp",
+//     "company_payble",
+//     "sec_company",
+//     "sec_deductable_percentage",
+//     "sec_deductable_amount",
+//     "sec_company_res",
+//     "sec_company_tax",
+//     "sec_company_paybale",
+//     "sec_copay_percntage",
+//     "sec_copay_amount",
+//     "teeth_number",
+//     "d_treatment_id"
+//   ];
 
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+//   try {
+//     if (req.db == null) {
+//       next(httpStatus.dataBaseNotInitilizedError());
+//     }
+//     let db = req.db;
 
-    let connection = req.connection;
+//     let connection = req.connection;
 
-    connection.beginTransaction(error => {
-      if (error) {
-        connection.rollback(() => {
-          releaseDBConnection(db, connection);
-          next(error);
-        });
-      }
+//     connection.beginTransaction(error => {
+//       if (error) {
+//         connection.rollback(() => {
+//           releaseDBConnection(db, connection);
+//           next(error);
+//         });
+//       }
 
-      connection.query(
-        "INSERT INTO hims_f_ordered_services(" +
-        insurtColumns.join(",") +
-        ",created_by,updated_by,hospital_id) VALUES ?",
-        [
-          jsonArrayToObject({
-            sampleInputObject: insurtColumns,
-            arrayObj: req.body.billdetails,
-            req: req,
-            newFieldToInsert: [
-              req.userIdentity.algaeh_d_app_user_id,
-              req.userIdentity.algaeh_d_app_user_id,
-              req.userIdentity.hospital_id
-            ]
-          })
-        ],
-        (error, resultOrder) => {
-          if (error) {
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
-              next(error);
-            });
-          }
+//       connection.query(
+//         "INSERT INTO hims_f_ordered_services(" +
+//         insurtColumns.join(",") +
+//         ",created_by,updated_by,hospital_id) VALUES ?",
+//         [
+//           jsonArrayToObject({
+//             sampleInputObject: insurtColumns,
+//             arrayObj: req.body.billdetails,
+//             req: req,
+//             newFieldToInsert: [
+//               req.userIdentity.algaeh_d_app_user_id,
+//               req.userIdentity.algaeh_d_app_user_id,
+//               req.userIdentity.hospital_id
+//             ]
+//           })
+//         ],
+//         (error, resultOrder) => {
+//           if (error) {
+//             connection.rollback(() => {
+//               releaseDBConnection(db, connection);
+//               next(error);
+//             });
+//           }
 
-          let servicesForPreAproval = [];
-          let patient_id;
-          let doctor_id;
-          let visit_id;
+//           let servicesForPreAproval = [];
+//           let patient_id;
+//           let doctor_id;
+//           let visit_id;
 
-          let services = new LINQ(req.body.billdetails)
-            .Select(s => {
-              patient_id = s.patient_id;
-              doctor_id = s.doctor_id;
-              visit_id = s.visit_id;
-              return s.services_id;
-            })
-            .ToArray();
+//           let services = new LINQ(req.body.billdetails)
+//             .Select(s => {
+//               patient_id = s.patient_id;
+//               doctor_id = s.doctor_id;
+//               visit_id = s.visit_id;
+//               return s.services_id;
+//             })
+//             .ToArray();
 
-          if (services.length > 0) {
-            servicesForPreAproval.push(patient_id);
-            servicesForPreAproval.push(doctor_id);
-            servicesForPreAproval.push(visit_id);
-            servicesForPreAproval.push(services);
+//           if (services.length > 0) {
+//             servicesForPreAproval.push(patient_id);
+//             servicesForPreAproval.push(doctor_id);
+//             servicesForPreAproval.push(visit_id);
+//             servicesForPreAproval.push(services);
 
-            connection.query(
-              "SELECT hims_f_ordered_services_id,services_id,created_date, service_type_id, test_type from hims_f_ordered_services\
-                 where `patient_id`=? and `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
-              servicesForPreAproval,
-              (error, ResultOfFetchOrderIds) => {
-                if (error) {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                }
+//             connection.query(
+//               "SELECT hims_f_ordered_services_id,services_id,created_date, service_type_id, test_type from hims_f_ordered_services\
+//                  where `patient_id`=? and `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
+//               servicesForPreAproval,
+//               (error, ResultOfFetchOrderIds) => {
+//                 if (error) {
+//                   releaseDBConnection(db, connection);
+//                   next(error);
+//                 }
 
-                let detailsPush = new LINQ(req.body.billdetails)
-                  .Where(g => g.pre_approval == "Y")
-                  .Select(s => {
-                    return {
-                      ...s,
-                      ...{
-                        hims_f_ordered_services_id: new LINQ(
-                          ResultOfFetchOrderIds
-                        )
-                          .Where(w => w.services_id == s.services_id)
-                          .FirstOrDefault().hims_f_ordered_services_id
-                      }
-                    };
-                  })
-                  .ToArray();
+//                 let detailsPush = new LINQ(req.body.billdetails)
+//                   .Where(g => g.pre_approval == "Y")
+//                   .Select(s => {
+//                     return {
+//                       ...s,
+//                       ...{
+//                         hims_f_ordered_services_id: new LINQ(
+//                           ResultOfFetchOrderIds
+//                         )
+//                           .Where(w => w.services_id == s.services_id)
+//                           .FirstOrDefault().hims_f_ordered_services_id
+//                       }
+//                     };
+//                   })
+//                   .ToArray();
 
-                //if request for pre-aproval needed
-                if (detailsPush.length > 0) {
-                  const insurtCols = [
-                    "ordered_services_id",
-                    "service_id",
-                    "insurance_provider_id",
-                    "insurance_network_office_id",
-                    "icd_code",
-                    "requested_quantity",
-                    "insurance_service_name",
-                    "doctor_id",
-                    "patient_id",
-                    "visit_id",
-                    "gross_amt",
-                    "net_amount"
-                  ];
+//                 //if request for pre-aproval needed
+//                 if (detailsPush.length > 0) {
+//                   const insurtCols = [
+//                     "ordered_services_id",
+//                     "service_id",
+//                     "insurance_provider_id",
+//                     "insurance_network_office_id",
+//                     "icd_code",
+//                     "requested_quantity",
+//                     "insurance_service_name",
+//                     "doctor_id",
+//                     "patient_id",
+//                     "visit_id",
+//                     "gross_amt",
+//                     "net_amount"
+//                   ];
 
-                  connection.query(
-                    "INSERT INTO hims_f_service_approval(" +
-                    insurtCols.join(",") +
-                    ",created_by,updated_by) VALUES ?",
-                    [
-                      jsonArrayToObject({
-                        sampleInputObject: insurtCols,
-                        arrayObj: detailsPush,
-                        replaceObject: [
-                          {
-                            originalKey: "service_id",
-                            NewKey: "services_id"
-                          },
-                          {
-                            originalKey: "gross_amt",
-                            NewKey: "ser_gross_amt"
-                          },
-                          {
-                            originalKey: "net_amount",
-                            NewKey: "ser_net_amount"
-                          },
-                          {
-                            originalKey: "ordered_services_id",
-                            NewKey: "hims_f_ordered_services_id"
-                          }
-                        ],
-                        req: req,
-                        newFieldToInsert: [
-                          req.userIdentity.algaeh_d_app_user_id,
-                          req.userIdentity.algaeh_d_app_user_id
-                        ]
-                      })
-                    ],
-                    (error, resultPreAprvl) => {
-                      if (error) {
-                        connection.rollback(() => {
-                          releaseDBConnection(db, connection);
-                          next(error);
-                        });
-                      }
-                      req.records = { resultPreAprvl, ResultOfFetchOrderIds };
-                      next();
-                    }
-                  );
-                } else {
-                  req.records = { resultOrder, ResultOfFetchOrderIds };
-                  next();
-                }
-              }
-            );
-          } else {
-            req.records = { resultOrder, ResultOfFetchOrderIds };
-            next();
-          }
-        }
-      );
-    });
-  } catch (e) {
-    next(e);
-  }
-};
+//                   connection.query(
+//                     "INSERT INTO hims_f_service_approval(" +
+//                     insurtCols.join(",") +
+//                     ",created_by,updated_by) VALUES ?",
+//                     [
+//                       jsonArrayToObject({
+//                         sampleInputObject: insurtCols,
+//                         arrayObj: detailsPush,
+//                         replaceObject: [
+//                           {
+//                             originalKey: "service_id",
+//                             NewKey: "services_id"
+//                           },
+//                           {
+//                             originalKey: "gross_amt",
+//                             NewKey: "ser_gross_amt"
+//                           },
+//                           {
+//                             originalKey: "net_amount",
+//                             NewKey: "ser_net_amount"
+//                           },
+//                           {
+//                             originalKey: "ordered_services_id",
+//                             NewKey: "hims_f_ordered_services_id"
+//                           }
+//                         ],
+//                         req: req,
+//                         newFieldToInsert: [
+//                           req.userIdentity.algaeh_d_app_user_id,
+//                           req.userIdentity.algaeh_d_app_user_id
+//                         ]
+//                       })
+//                     ],
+//                     (error, resultPreAprvl) => {
+//                       if (error) {
+//                         connection.rollback(() => {
+//                           releaseDBConnection(db, connection);
+//                           next(error);
+//                         });
+//                       }
+//                       req.records = { resultPreAprvl, ResultOfFetchOrderIds };
+//                       next();
+//                     }
+//                   );
+//                 } else {
+//                   req.records = { resultOrder, ResultOfFetchOrderIds };
+//                   next();
+//                 }
+//               }
+//             );
+//           } else {
+//             req.records = { resultOrder, ResultOfFetchOrderIds };
+//             next();
+//           }
+//         }
+//       );
+//     });
+//   } catch (e) {
+//     next(e);
+//   }
+// };
 
 let selectOrderServices = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
