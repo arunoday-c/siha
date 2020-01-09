@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AlgaehModal, Spin, AlgaehMessagePop } from "algaeh-react-components";
 import "./addnewaccount.scss";
 import { AlgaehFormGroup, AlgaehDropDown } from "../../../Wrappers";
@@ -7,14 +7,100 @@ import { AccountType } from "../../../utils/GlobalVariables";
 import { AddNewAccountDetails } from "./AddNewAccEvent";
 // import { swalMessage } from "../../../utils/algaehApiCall";
 
-export default function AddNewAccount(props) {
+export default function AddNewAccount({
+  showPopup,
+  onClose,
+  selectedNode,
+  okText,
+  accountCode,
+  accountName,
+  accountType,
+  openingBal
+}) {
   const [lodingAddtoList, setLoadingAddtoList] = useState(false);
   // const [account_code, setAccountCode] = useState("");
   const [account_name, setAccountName] = useState("");
   const [account_type, setAccountType] = useState("G");
   const [opening_balance, setOpeningBalance] = useState(0);
   // const [opening_balance_date, setOpeningBalanceDate] = useState("");
-  const { showPopup, onClose, selectedNode, okText, accountCode } = props;
+
+  useEffect(() => {
+    if (accountName) {
+      setAccountName(accountName);
+    }
+    if (accountType) {
+      setAccountType(accountType);
+    }
+    if (openingBal) {
+      setOpeningBalance(openingBal);
+    }
+  }, [accountName, accountType, openingBal]);
+
+  function onCancel() {
+    setLoadingAddtoList(false);
+    // setAccountCode("");
+    setAccountName("");
+    setAccountType("G");
+    setOpeningBalance(0);
+    onClose();
+  }
+
+  function onOK() {
+    setLoadingAddtoList(true);
+    const {
+      finance_account_head_id,
+      account_code,
+      parent_acc_id
+    } = selectedNode.node;
+    AddNewAccountDetails(
+      {
+        finance_account_head_id: finance_account_head_id,
+        account_name: account_name,
+        account_code: account_code,
+        chart_of_account: parent_acc_id,
+        leaf_node: account_type === "G" ? "N" : "Y",
+        opening_bal: opening_balance
+      },
+      errorMessage => {
+        // setAccountCode("");
+        setAccountName("");
+        setAccountType("G");
+        setOpeningBalance(0);
+        onClose();
+        setLoadingAddtoList(false);
+        AlgaehMessagePop({
+          type: "error",
+          display: errorMessage
+        });
+      },
+      result => {
+        // setAccountCode("");
+        setAccountName("");
+        setAccountType("G");
+        setOpeningBalance(0);
+        const {
+          finance_account_head_id,
+          account_code,
+          head_id,
+          child_id
+        } = result;
+        onClose({
+          title: account_name,
+          leafnode: account_type === "G" ? "N" : "Y",
+          head_created_from: "U",
+          finance_account_head_id: finance_account_head_id,
+          account_code: account_code,
+          head_id,
+          finance_account_child_id: child_id
+        });
+        setLoadingAddtoList(false);
+        AlgaehMessagePop({
+          type: "success",
+          display: "Added Successfully ..."
+        });
+      }
+    );
+  }
 
   return (
     <AlgaehModal
@@ -27,70 +113,8 @@ export default function AddNewAccount(props) {
       maskClosable={false}
       cancelButtonProps={{ disabled: lodingAddtoList }}
       closable={false}
-      onCancel={() => {
-        setLoadingAddtoList(false);
-        // setAccountCode("");
-        setAccountName("");
-        setAccountType("G");
-        setOpeningBalance(0);
-        onClose();
-      }}
-      onOk={() => {
-        setLoadingAddtoList(true);
-        const {
-          finance_account_head_id,
-          account_code,
-          parent_acc_id
-        } = selectedNode.node;
-        AddNewAccountDetails(
-          {
-            finance_account_head_id: finance_account_head_id,
-            account_name: account_name,
-            account_code: account_code,
-            chart_of_account: parent_acc_id,
-            leaf_node: account_type === "G" ? "N" : "Y",
-            opening_bal: opening_balance
-          },
-          errorMessage => {
-            // setAccountCode("");
-            setAccountName("");
-            setAccountType("G");
-            setOpeningBalance(0);
-            onClose();
-            setLoadingAddtoList(false);
-            AlgaehMessagePop({
-              type: "error",
-              display: errorMessage
-            });
-          },
-          result => {
-            // setAccountCode("");
-            setAccountName("");
-            setAccountType("G");
-            setOpeningBalance(0);
-            const {
-              finance_account_head_id,
-              account_code,
-              head_id,
-              child_id
-            } = result;
-            onClose({
-              title: account_name,
-              leafnode: account_type === "G" ? "N" : "Y",
-              head_created_from: "U",
-              finance_account_head_id: finance_account_head_id,
-              account_code: account_code,
-              head_id,
-              finance_account_child_id: child_id
-            });
-            setLoadingAddtoList(false);
-            AlgaehMessagePop({
-              type: "success",
-              display: "Added Successfully ..."
-            });
-          }
-        );
-      }}
+      onCancel={onCancel}
+      onOk={onOK}
     >
       <Spin tip="Please wait submitting data.." spinning={lodingAddtoList}>
         <div className="row">

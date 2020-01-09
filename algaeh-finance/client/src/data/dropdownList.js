@@ -271,15 +271,15 @@ export const AUTH_LEVELS = [
     name: "None",
     value: "N"
   }
-]
+];
 
 export const BINARY_CHOICES = [
   {
-    name: 'Yes',
-    value: 'Y'
+    name: "Yes",
+    value: "Y"
   },
   {
-    name: 'No',
-    value: 'N'
-  },
-]
+    name: "No",
+    value: "N"
+  }
+];

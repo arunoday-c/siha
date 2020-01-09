@@ -41,7 +41,7 @@ function OptionsComponent({
                     isImp: true
                   }}
                   selector={{
-                    value: default_branch_id,
+                    value: String(default_branch_id),
                     name: "default_branch_id",
                     dataSource: {
                       data: organization,
@@ -59,7 +59,7 @@ function OptionsComponent({
                   }}
                   selector={{
                     name: "default_cost_center_id",
-                    value: default_cost_center_id,
+                    value: String(default_cost_center_id),
                     dataSource: {
                       data: costCenters,
                       valueField: "cost_center_id",
@@ -128,7 +128,7 @@ function OptionsComponent({
                   }}
                   selector={{
                     name: "start_month",
-                    value: start_month,
+                    value: String(start_month),
                     dataSource: {
                       data: MONTHS,
                       valueField: "value",
@@ -145,7 +145,7 @@ function OptionsComponent({
                   }}
                   selector={{
                     name: "end_month",
-                    value: end_month,
+                    value: String(end_month),
                     dataSource: {
                       data: MONTHS,
                       valueField: "value",
@@ -236,4 +236,4 @@ function OptionsComponent({
   );
 }
 
-export default memo(OptionsComponent);
+export default OptionsComponent;
