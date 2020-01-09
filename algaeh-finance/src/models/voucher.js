@@ -1006,8 +1006,8 @@ export default {
                         if (balance > 0) {
                           pl_account = {
                             payment_date: new Date(),
-                            head_id: 61,
-                            child_id: 51,
+                            head_id: 3,
+                            child_id: 1,
                             debit_amount: 0,
                             credit_amount: balance,
                             payment_type: "CR",
@@ -1018,8 +1018,8 @@ export default {
                         } else if (balance < 0) {
                           pl_account = {
                             payment_date: new Date(),
-                            head_id: 61,
-                            child_id: 51,
+                            head_id: 3,
+                            child_id: 1,
                             debit_amount: Math.abs(balance),
                             credit_amount: 0,
                             payment_type: "DR",
