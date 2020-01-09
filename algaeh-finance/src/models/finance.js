@@ -232,9 +232,8 @@ export default {
     const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
     let input = req.query;
-    const decimal_places = 
-      req.userIdentity.decimal_places;
-    
+    const decimal_places = req.userIdentity.decimal_places;
+
     if (
       input.finance_account_head_id > 0 &&
       input.finance_account_head_id < 6
@@ -258,13 +257,13 @@ export default {
                     .then(income => {
                       getAccountHeadsFunc(decimal_places, 5)
                         .then(expense => {
-                          req.records = {
+                          req.records = [
                             asset,
                             liability,
                             capital,
                             income,
                             expense
-                          };
+                          ];
                           next();
                         })
                         .catch(e => {
