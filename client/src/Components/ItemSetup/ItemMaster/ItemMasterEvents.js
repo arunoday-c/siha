@@ -122,7 +122,7 @@ const InsertUpdateItems = $this => {
               $this.state.service_type_id = "12";
               $this.state.service_name = $this.state.item_description;
               $this.state.service_status = "A";
-              $this.state.standard_fee = parseFloat($this.state.standard_fee);
+              // $this.state.standard_fee = parseFloat($this.state.standard_fee);
               $this.state.hospital_id = JSON.parse(
                 AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
               ).hims_d_hospital_id;

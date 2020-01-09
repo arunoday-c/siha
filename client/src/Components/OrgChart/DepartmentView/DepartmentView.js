@@ -123,8 +123,8 @@ export default class DepartmentView extends Component {
                       <i>BR</i>
                     </span>
                     <span className="contentSection">
-                      <h1>{branch.hospital_name}</h1>
-                      <h1>{branch.hospital_code}</h1>
+                      <p>{branch.hospital_name}</p>
+                      <small>{branch.hospital_code}</small>
                     </span>
                   </li>
                 ))}
@@ -166,7 +166,7 @@ export default class DepartmentView extends Component {
                           </i>
                         </span>
                         <span className="contentSection">
-                          <h1>{item.department_name}</h1>
+                          <p>{item.department_name}</p>
                         </span>
                       </li>
                     </CSSTransition>

@@ -155,7 +155,7 @@ class OpeningBalance extends Component {
 
     return (
       <div className="openingBalanceScreen">
-        <div className="row inner-top-search">
+        <div className="row inner-top-search" style={{ marginTop: "-7px" }}>
           <div className="col-4 form-group">
             <label className="label">Enter Opening Balance For</label>
             <div className="customRadio">
@@ -405,8 +405,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OpeningBalance)
+  connect(mapStateToProps, mapDispatchToProps)(OpeningBalance)
 );

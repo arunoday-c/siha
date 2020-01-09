@@ -1,4 +1,6 @@
 import React, { useRef } from "react";
+import { Row, Col } from "antd";
+
 // import { Button } from "algaeh-react-components";
 import ReactToPrint from "react-to-print";
 import { PlotUI } from "./plotui";
@@ -115,39 +117,35 @@ export default function BalanceSheet(props) {
               As on: <b>Date Here</b>
             </p>
           </div>
-          <div
-            className="reportTableStyle"
-            style={{
-              width: "49%",
-              float: "left",
-              borderRight: "1px dashed #000"
-            }}
-          >
-            <ul className="treeListUL">
-              {PlotUI(data[result[0]], style, [0])}
-            </ul>
-          </div>{" "}
-          <div
-            className="reportTableStyle"
-            style={{
-              width: "49%",
-              float: "right",
-              borderLeft: "1px dashed #000"
-            }}
-          >
-            <ul className="treeListUL">
-              {PlotUI(data[result[1]], style, [0])}
-            </ul>{" "}
+          <div className="reportBodyArea">
+            <Row gutter={[8, 8]}>
+              <Col span={24}>
+                <div className="reportTableStyle">
+                  <ul className="treeListUL">
+                    {PlotUI(data[result[0]], style, [0])}
+                  </ul>
+                </div>
+              </Col>
+              <Col span={24}>
+                <div className="reportTableStyle">
+                  <ul className="treeListUL">
+                    {PlotUI(data[result[1]], style, [0])}
+                  </ul>{" "}
+                </div>
+              </Col>
+            </Row>
           </div>
-          <table style={{ width: "100%" }}>
-            <tbody>
-              <tr className="footerTotalArea">
-                <td style={{ width: "100%" }} valign="top">
-                  <b> {typeof footer === "function" ? footer(data) : null}</b>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="reportTotalArea">
+            <table style={{ width: "100%" }}>
+              <tbody>
+                <tr className="footerTotalArea">
+                  <td style={{ width: "100%" }} valign="top">
+                    <b> {typeof footer === "function" ? footer(data) : null}</b>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </>
     );
