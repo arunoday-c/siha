@@ -1796,24 +1796,117 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select created_from from finance_account_child where finance_account_child_id=?;",
-          values: [input.finance_account_child_id],
-          printQuery: false
+            "select finance_account_child_id,C.created_from,H.root_id,C.head_id from finance_account_child C inner join finance_account_head H \
+            on C.head_id=H.finance_account_head_id where finance_account_child_id=?;\
+            select finance_voucher_id,debit_amount,credit_amount,payment_type,head_id,H.root_id\
+            from finance_voucher_details VD inner join finance_account_head H\
+            on VD.head_id=H.finance_account_head_id  where VD.auth_status='A'\
+            and VD.is_opening_bal='Y' and VD.child_id=?;\
+            select default_branch_id FROM finance_options limit 1;",
+          values: [
+            input.finance_account_child_id,
+            input.finance_account_child_id
+          ],
+          printQuery: true
         })
         .then(result => {
-          if (result[0]["created_from"] == "U") {
+          let voucherStr = "";
+          //if update if opening balance exist
+          if (result[1].length > 0) {
+            const data = result[1][0];
+
+            if (data.root_id == 1) {
+              if (data.debit_amount != input.opening_bal) {
+                voucherStr = `update finance_voucher_details set debit_amount=${input.opening_bal} where finance_voucher_id=${data.finance_voucher_id};`;
+              }
+            } else if (data.root_id == 2 || data.root_id == 3) {
+              if (data.credit_amount != input.opening_bal) {
+                voucherStr = `update finance_voucher_details set credit_amount=${input.opening_bal} where finance_voucher_id=${data.finance_voucher_id};`;
+              }
+            }
+          }
+          //inserting new opening balance
+          else {
+            let insert_data = result[0][0];
+
+            let debit_amount = 0;
+            let credit_amount = 0;
+            let payment_type = "CR";
+            if (insert_data["root_id"] == 1 && input.opening_bal > 0) {
+              debit_amount = input.opening_bal;
+              payment_type = "DR";
+
+              voucherStr = _mysql.mysqlQueryFormat(
+                "INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,\
+                      payment_type,hospital_id,year,month,is_opening_bal,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
+                [
+                  new Date(),
+                  insert_data.head_id,
+                  insert_data.finance_account_child_id,
+                  debit_amount,
+                  credit_amount,
+                  payment_type,
+                  result[2][0]["default_branch_id"],
+                  moment().format("YYYYY"),
+                  moment().format("M"),
+                  "Y",
+                  req.userIdentity.algaeh_d_app_user_id,
+                  "A"
+                ]
+              );
+            } else if (
+              (insert_data["root_id"] == 2 || insert_data["root_id"] == 3) &&
+              input.opening_bal > 0
+            ) {
+              credit_amount = input.opening_bal;
+              voucherStr = _mysql.mysqlQueryFormat(
+                "INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,\
+                    payment_type,hospital_id,year,month,is_opening_bal,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
+                [
+                  new Date(),
+                  insert_data.head_id,
+                  insert_data.finance_account_child_id,
+                  debit_amount,
+                  credit_amount,
+                  payment_type,
+                  result[2][0]["default_branch_id"],
+                  moment().format("YYYYY"),
+                  moment().format("M"),
+                  "Y",
+                  req.userIdentity.algaeh_d_app_user_id,
+                  "A"
+                ]
+              );
+            }
+          }
+
+          if (result[0][0]["created_from"] == "U") {
             _mysql
               .executeQuery({
-                query:
-                  "update finance_account_child set child_name=?,updated_by=?,updated_date=? where\
-                  finance_account_child_id=? and created_from='U';",
+                query: `update finance_account_child set  child_name=?,updated_by=?,updated_date=? where\
+                  finance_account_child_id=? and created_from='U'; ${voucherStr};`,
                 values: [
                   input.child_name,
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
                   input.finance_account_child_id
                 ],
-                printQuery: false
+                printQuery: true
+              })
+              .then(result2 => {
+                _mysql.releaseConnection();
+                req.records = result2;
+                next();
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
+          } else if (result[0][0]["created_from"] == "S" && voucherStr != "") {
+            _mysql
+              .executeQuery({
+                query: voucherStr,
+                printQuery: true
               })
               .then(result2 => {
                 _mysql.releaseConnection();
@@ -1843,7 +1936,7 @@ export default {
           query:
             "select created_from from finance_account_head where finance_account_head_id=?;",
           values: [input.finance_account_head_id],
-          printQuery: false
+          printQuery: true
         })
         .then(result => {
           if (result[0]["created_from"] == "U") {
