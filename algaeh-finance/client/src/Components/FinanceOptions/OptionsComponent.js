@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 import "./FinanceOptions.scss";
 import { AlgaehFormGroup, AlgaehAutoComplete } from "algaeh-react-components";
 import { AUTH_LEVELS, MONTHS } from "../../data/dropdownList";

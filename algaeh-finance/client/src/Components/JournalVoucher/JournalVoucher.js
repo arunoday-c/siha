@@ -19,6 +19,7 @@ import {
   getHeaders,
   addJurnorLedger
 } from "./JournalVoucher.events";
+import PaymentComponent from "./PaymentComponent";
 import { getCookie } from "../../utils/algaehApiCall";
 let records_av = {};
 let dataPayment = [
@@ -41,8 +42,15 @@ export default function JournalVoucher() {
   const [accounts, setAccounts] = useState([{}]);
   const [narration, setNarration] = useState("");
   // const [prefix, setPrefix] = useState("");
+  const basePayment = {
+    paymentType: "",
+    ref_no: "",
+    cheque_date: undefined
+  };
+  const [payment, setPayment] = useState(basePayment);
   const [loading, setLoading] = useState(false);
   const [clearLoading, setClearLoading] = useState(false);
+
   const [journerList, setJournerList] = useState([
     {
       child_id: undefined,
@@ -59,6 +67,15 @@ export default function JournalVoucher() {
       payment_mode: "CA"
     }
   ]);
+
+  const show = voucherType === "receipt" || voucherType === "payment";
+
+  function handlePaymentDrop(...args) {
+    const value = args[1];
+    setPayment(state => {
+      return { ...state, paymentType: value };
+    });
+  }
 
   return (
     <div className="JournalVoucherScreen">
@@ -146,6 +163,12 @@ export default function JournalVoucher() {
               setAccounts([]);
             }
           }}
+        />
+        <PaymentComponent
+          show={show}
+          {...payment}
+          handleDrop={handlePaymentDrop}
+          handleChange={setPayment}
         />
         <div className="col-6">
           <CostCenter result={records_av} noborder={false} />

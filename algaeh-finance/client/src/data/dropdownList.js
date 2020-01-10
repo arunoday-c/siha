@@ -283,3 +283,26 @@ export const BINARY_CHOICES = [
     value: "N"
   }
 ];
+
+export const PAYMENT_METHODS = [
+  {
+    name: "Cash",
+    value: "CASH"
+  },
+  {
+    name: "Cheque",
+    value: "CHEQUE"
+  },
+  {
+    name: "RTGS",
+    value: "RTGS"
+  },
+  {
+    name: "NEFT",
+    value: "NEFT"
+  },
+  {
+    name: "IMPS",
+    value: "IMPS"
+  }
+];
