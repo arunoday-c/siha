@@ -238,7 +238,7 @@ export default {
     }
   },
   //created by irfan:
-  addVoucher: (req, res, next) => {
+  addVoucher_BKP_10_JAN: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
 
@@ -392,6 +392,184 @@ export default {
       next();
     }
   },
+
+  //created by irfan:
+  addVoucher: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+    const algaeh_d_app_user_id = req.userIdentity.algaeh_d_app_user_id;
+
+    generateVoucherNo(_mysql, input)
+      .then(numgen => {
+        let transaction_date = "";
+
+        if (
+          moment(input.transaction_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
+        ) {
+          transaction_date = input.transaction_date;
+        } else {
+          transaction_date = new Date();
+        }
+
+        let credit_amount = 0;
+        let debit_amount = 0;
+        input.details.forEach(item => {
+          if (item.payment_type == "CR") {
+            credit_amount = parseFloat(credit_amount) + parseFloat(item.amount);
+            item["credit_amount"] = item.amount;
+            item["debit_amount"] = 0;
+          } else if (item.payment_type == "DR") {
+            debit_amount = parseFloat(debit_amount) + parseFloat(item.amount);
+            item["credit_amount"] = 0;
+            item["debit_amount"] = item.amount;
+          }
+        });
+
+        if (credit_amount == debit_amount) {
+          _mysql
+            .executeQuery({
+              query: "SELECT cost_center_type  FROM finance_options limit 1; "
+            })
+            .then(resul => {
+              if (
+                resul.length == 1 &&
+                (resul[0]["cost_center_type"] == "P" ||
+                  resul[0]["cost_center_type"] == "SD")
+              ) {
+                let project_cost_center = null;
+                let subDept_cost_center = null;
+                if (resul[0]["cost_center_type"] == "P") {
+                  project_cost_center = input.cost_center_id;
+                } else if (resul[0]["cost_center_type"] == "SD") {
+                  subDept_cost_center = input.cost_center_id;
+                }
+
+                const month = moment(transaction_date, "YYYY-MM-DD").format(
+                  "M"
+                );
+                const year = moment(transaction_date, "YYYY-MM-DD").format(
+                  "YYYY"
+                );
+
+                let cheque_date = null;
+                let ref_no = null;
+                let payment_mode = "N";
+                switch (input.payment_mode) {
+                  case "CASH":
+                  case "CHEQUE":
+                  case "RTGS":
+                  case "NEFT":
+                  case "IMPS":
+                    payment_mode = input.payment_mode;
+                }
+
+                if (
+                  input.cheque_date != null &&
+                  input.cheque_date != undefined
+                ) {
+                  cheque_date = input.cheque_date;
+                }
+                if (input.ref_no != null && input.ref_no != undefined) {
+                  ref_no = input.ref_no;
+                }
+                _mysql
+                  .executeQueryWithTransaction({
+                    query:
+                      "INSERT INTO `finance_voucher_header` (payment_mode,ref_no,cheque_date,amount, payment_date, month, year,\
+                       narration, voucher_no, voucher_type,from_screen,posted_from)\
+                       VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      payment_mode,
+                      ref_no,
+                      cheque_date,
+                      credit_amount,
+                      transaction_date,
+                      month,
+                      year,
+                      input.narration,
+                      numgen.voucher_no,
+                      input.voucher_type,
+                      input.from_screen,
+                      "V"
+                    ],
+                    printQuery: true
+                  })
+                  .then(result => {
+                    // const IncludeValues = ["amount", "payment_mode"];
+                    const insertColumns = [
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "credit_amount",
+                      "payment_type",
+                      "hospital_id",
+                      "project_id",
+                      "sub_department_id"
+                    ];
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "insert into finance_voucher_details (??) values ?;",
+                        values: input.details,
+                        includeValues: insertColumns,
+                        bulkInsertOrUpdate: true,
+                        printQuery: true,
+                        extraValues: {
+                          payment_date: transaction_date,
+                          month: month,
+                          year: year,
+                          voucher_header_id: result.insertId,
+                          entered_by: algaeh_d_app_user_id,
+                          hospital_id: input.hospital_id,
+                          project_id: project_cost_center,
+                          sub_department_id: subDept_cost_center
+                        }
+                      })
+                      .then(result2 => {
+                        _mysql.commitTransaction(() => {
+                          _mysql.releaseConnection();
+                          req.records = numgen;
+                          next();
+                        });
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  })
+                  .catch(e => {
+                    _mysql.releaseConnection();
+                    next(e);
+                  });
+              } else {
+                _mysql.releaseConnection();
+                req.records = {
+                  invalid_input: true,
+                  message: "Please Define cost center type"
+                };
+                next();
+              }
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          req.records = {
+            invalid_input: true,
+            message: "Credit and Debit Amount are not equal"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
+  },
+
   //created by irfan:
   getVoucherNo: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -536,42 +714,6 @@ export default {
           });
         });
     }
-  },
-  //created by irfan:
-  getVoucherNoOLD: (req, res, next) => {
-    const _mysql = new algaehMysql();
-
-    _mysql
-      .executeQueryWithTransaction({
-        query:
-          "SELECT encounter_id  FROM algaeh_d_app_config where algaeh_d_app_config_id=12 FOR UPDATE;"
-      })
-      .then(voucher_result => {
-        _mysql
-          .executeQueryWithTransaction({
-            query:
-              "UPDATE algaeh_d_app_config SET encounter_id = encounter_id + 1 where algaeh_d_app_config_id=12;"
-          })
-          .then(result => {
-            _mysql.commitTransaction(() => {
-              _mysql.releaseConnection();
-              req.records = {
-                voucher_no: voucher_result[0]["encounter_id"]
-              };
-              next();
-            });
-          })
-          .catch(e => {
-            _mysql.rollBackTransaction(() => {
-              next(e);
-            });
-          });
-      })
-      .catch(e => {
-        _mysql.rollBackTransaction(() => {
-          next(e);
-        });
-      });
   },
 
   //created by irfan:
@@ -1270,5 +1412,169 @@ function getFinanceAuthFields(auth_level) {
     }
 
     resolve(authFields);
+  });
+}
+
+//created by irfan:
+function generateVoucherNo(_mysql, input, algaeh_d_app_user_id) {
+  return new Promise((resolve, reject) => {
+    // const input = req.query;
+    const current_year = moment().format("YY");
+
+    let voucher_type = "";
+
+    switch (input.voucher_type) {
+      case "journal":
+        voucher_type = "JOURNAL";
+        break;
+      case "contra":
+        voucher_type = "CONTRA";
+        break;
+      case "receipt":
+        voucher_type = "RECEIPT";
+        break;
+      case "payment":
+        voucher_type = "PAYMENT";
+        break;
+      case "sales":
+        voucher_type = "SALES";
+        break;
+      case "purchase":
+        voucher_type = "PURCHASE";
+        break;
+      case "credit_note":
+        voucher_type = "CREDIT_NOTE";
+        break;
+      case "debit_note":
+        voucher_type = "DEBIT_NOTE";
+        break;
+    }
+
+    if (voucher_type == "") {
+      // req.records = {
+      //   invalid_input: true,
+      //   message: "Please select voucher type"
+      // };
+      reject({
+        invalid_input: true,
+        message: "Please select voucher type"
+      });
+    } else {
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            " select finance_numgen_id,prefix,intermediate_series,postfix,\
+          length,increment_by,numgen_seperator,postfix_start,postfix_end,current_num,pervious_num\
+          from finance_numgen where record_status='A' and numgen_code=? FOR UPDATE;",
+          values: [voucher_type],
+          printQuery: true
+        })
+        .then(voucher_result => {
+          if (voucher_result.length == 1) {
+            let current_num = "";
+            let new_number = "";
+            let complete_number = "";
+            let str = "";
+
+            if (current_year > voucher_result[0]["intermediate_series"]) {
+              current_num =
+                voucher_result[0]["prefix"] +
+                voucher_result[0]["numgen_seperator"] +
+                current_year +
+                voucher_result[0]["numgen_seperator"] +
+                1;
+
+              new_number = 2;
+              complete_number =
+                voucher_result[0]["prefix"] +
+                voucher_result[0]["numgen_seperator"] +
+                current_year +
+                voucher_result[0]["numgen_seperator"] +
+                new_number;
+
+              str = ", intermediate_series =" + current_year;
+            } else if (
+              current_year == voucher_result[0]["intermediate_series"]
+            ) {
+              current_num = voucher_result[0]["current_num"];
+              new_number =
+                parseInt(voucher_result[0]["postfix"]) +
+                parseInt(voucher_result[0]["increment_by"]);
+              complete_number =
+                voucher_result[0]["prefix"] +
+                voucher_result[0]["numgen_seperator"] +
+                current_year +
+                voucher_result[0]["numgen_seperator"] +
+                new_number;
+            }
+
+            _mysql
+              .executeQueryWithTransaction({
+                query: `update finance_numgen set pervious_num=current_num,current_num=?,\
+                    postfix=?,updated_by=?,updated_date=? ${str} where finance_numgen_id=?;`,
+
+                values: [
+                  complete_number,
+                  new_number,
+                  algaeh_d_app_user_id,
+                  new Date(),
+                  voucher_result[0]["finance_numgen_id"]
+                ],
+                printQuery: true
+              })
+              .then(result => {
+                if (result.affectedRows > 0) {
+                  // _mysql.commitTransaction(() => {
+                  //   _mysql.releaseConnection();
+                  //   req.records = {
+                  //     voucher_no: current_num
+                  //   };
+                  //   next();
+                  // });
+                  resolve({ voucher_no: current_num });
+                } else {
+                  // _mysql.rollBackTransaction(() => {
+                  //   req.records = {
+                  //     invalid_input: true,
+                  //     message: "cant generate number "
+                  //   };
+                  //   next();
+                  // });
+
+                  reject({
+                    invalid_input: true,
+                    message: "cant generate number "
+                  });
+                }
+              })
+              .catch(e => {
+                // _mysql.rollBackTransaction(() => {
+                //   next(e);
+                // });
+                reject(e);
+              });
+          } else {
+            // _mysql.rollBackTransaction(() => {
+            //   req.records = {
+            //     invalid_input: true,
+            //     message: "Number Generation series not Found"
+            //   };
+            //   next();
+            // });
+
+            reject({
+              invalid_input: true,
+              message: "Number Generation series not Found"
+            });
+          }
+        })
+        .catch(e => {
+          // _mysql.rollBackTransaction(() => {
+          //   next(e);
+          // });
+
+          reject(e);
+        });
+    }
   });
 }
