@@ -665,37 +665,38 @@ function createHierarchyForTB(
           );
         });
 
-        let tr_debit_amount = 0;
-        let tr_credit_amount = 0;
-        let amount = 0;
+        let tr_debit_amount = parseFloat(0).toFixed(decimal_places);
+        let tr_credit_amount = parseFloat(0).toFixed(decimal_places);
+
         if (BALANCE != undefined) {
           if (trans_symbol == "Dr.") {
-            amount = parseFloat(BALANCE.deb_minus_cred).toFixed(decimal_places);
+            if (BALANCE.deb_minus_cred > BALANCE.cred_minus_deb) {
+              tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
+                decimal_places
+              );
+            } else {
+              tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
+                decimal_places
+              );
+            }
           } else {
-            amount = parseFloat(BALANCE.cred_minus_deb).toFixed(decimal_places);
+            if (BALANCE.cred_minus_deb > BALANCE.deb_minus_cred) {
+              tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
+                decimal_places
+              );
+            } else {
+              tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
+                decimal_places
+              );
+            }
           }
-
-          tr_debit_amount = parseFloat(BALANCE.debit_amount).toFixed(
-            decimal_places
-          );
-          tr_credit_amount = parseFloat(BALANCE.credit_amount).toFixed(
-            decimal_places
-          );
-
-          // if (trans_symbol == "Dr.") {
-          //   amount = BALANCE.deb_minus_cred;
-          // } else {
-          //   amount = BALANCE.cred_minus_deb;
-          // }
-        } else {
-          amount = default_total;
         }
 
         //END---calulating Amount
         child.push({
           finance_account_child_id: item["finance_account_child_id"],
           trans_symbol: trans_symbol,
-          subtitle: amount,
+
           title: item.child_name,
           label: item.child_name,
           head_id: item["head_id"],
@@ -718,24 +719,31 @@ function createHierarchyForTB(
             return item.finance_account_head_id == f.finance_account_head_id;
           });
 
-          let amount = 0;
-          let tr_debit_amount = 0;
-          let tr_credit_amount = 0;
+          let tr_debit_amount = parseFloat(0).toFixed(decimal_places);
+          let tr_credit_amount = parseFloat(0).toFixed(decimal_places);
+
           if (BALANCE != undefined) {
             if (trans_symbol == "Dr.") {
-              amount = BALANCE.deb_minus_cred;
+              if (BALANCE.deb_minus_cred > BALANCE.cred_minus_deb) {
+                tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
+                  decimal_places
+                );
+              } else {
+                tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
+                  decimal_places
+                );
+              }
             } else {
-              amount = BALANCE.cred_minus_deb;
+              if (BALANCE.cred_minus_deb > BALANCE.deb_minus_cred) {
+                tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
+                  decimal_places
+                );
+              } else {
+                tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
+                  decimal_places
+                );
+              }
             }
-
-            tr_debit_amount = parseFloat(BALANCE.total_debit_amount).toFixed(
-              decimal_places
-            );
-            tr_credit_amount = parseFloat(BALANCE.total_credit_amount).toFixed(
-              decimal_places
-            );
-          } else {
-            amount = default_total;
           }
 
           //END---calulating Amount
@@ -743,7 +751,6 @@ function createHierarchyForTB(
           target.push({
             ...item,
             trans_symbol: trans_symbol,
-            subtitle: amount,
             title: item.account_name,
             label: item.account_name,
             tr_debit_amount: tr_debit_amount,
@@ -751,30 +758,38 @@ function createHierarchyForTB(
             leafnode: "N"
           });
         }
-      } //HEAD ACCOUNT
+      }
+      //HEAD ACCOUNT
       else {
         //ST---calulating Amount
         const BALANCE = head_data.find(f => {
           return item.finance_account_head_id == f.finance_account_head_id;
         });
 
-        let amount = 0;
-        let tr_debit_amount = 0;
-        let tr_credit_amount = 0;
+        let tr_debit_amount = parseFloat(0).toFixed(decimal_places);
+        let tr_credit_amount = parseFloat(0).toFixed(decimal_places);
         if (BALANCE != undefined) {
           if (trans_symbol == "Dr.") {
-            amount = BALANCE.deb_minus_cred;
+            if (BALANCE.deb_minus_cred > BALANCE.cred_minus_deb) {
+              tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
+                decimal_places
+              );
+            } else {
+              tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
+                decimal_places
+              );
+            }
           } else {
-            amount = BALANCE.cred_minus_deb;
+            if (BALANCE.cred_minus_deb > BALANCE.deb_minus_cred) {
+              tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
+                decimal_places
+              );
+            } else {
+              tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
+                decimal_places
+              );
+            }
           }
-          tr_debit_amount = parseFloat(BALANCE.total_debit_amount).toFixed(
-            decimal_places
-          );
-          tr_credit_amount = parseFloat(BALANCE.total_credit_amount).toFixed(
-            decimal_places
-          );
-        } else {
-          amount = default_total;
         }
 
         //END---calulating Amount
@@ -782,7 +797,7 @@ function createHierarchyForTB(
         target.push({
           ...item,
           trans_symbol: trans_symbol,
-          subtitle: amount,
+
           title: item.account_name,
           label: item.account_name,
           tr_debit_amount: tr_debit_amount,

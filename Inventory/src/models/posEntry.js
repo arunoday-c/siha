@@ -83,7 +83,7 @@ export default {
       _mysql
         .generateRunningNumber({
           modules: ["OPT_INV_POS"],
-          tableName: "hims_f_app_numgen",
+          tableName: "hims_f_inventory_numgen",
           identity: {
             algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
             hospital_id: req.userIdentity.hospital_id

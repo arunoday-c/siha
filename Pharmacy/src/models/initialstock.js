@@ -13,7 +13,7 @@ export default {
       _mysql
         .generateRunningNumber({
           modules: ["STK_DOC"],
-          tableName: "hims_f_app_numgen",
+          tableName: "hims_f_pharmacy_numgen",
           identity: {
             algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
             hospital_id: req.userIdentity.hospital_id
@@ -25,6 +25,8 @@ export default {
             isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool
           };
+
+          console.log("generatedNumbers", generatedNumbers)
           req.body.document_number = generatedNumbers[0];
           next();
         })

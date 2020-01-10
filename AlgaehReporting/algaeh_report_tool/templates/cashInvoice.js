@@ -4,6 +4,7 @@ const executePDF = function executePDFMethod(options) {
     try {
       const header = options.result[0].length > 0 ? options.result[0] : [{}];
       const detail = options.result[1];
+      const userObject = options.args.crypto;
       let otherObj = {};
 
       const result = {
@@ -19,16 +20,42 @@ const executePDF = function executePDFMethod(options) {
             };
           })
           .value(),
-        total_gross_amount: _.sumBy(detail, s => parseFloat(s.gross_amount)),
-        total_discount_amount: _.sumBy(detail, s =>
-          parseFloat(s.discount_amount)
+        total_gross_amount: options.currencyFormat(
+          _.sumBy(detail, s => parseFloat(s.gross_amount)),
+          userObject,
+          false
         ),
-        total_patient_share: _.sumBy(detail, s => parseFloat(s.patient_share)),
+        total_discount_amount: options.currencyFormat(
+          _.sumBy(detail, s => parseFloat(s.discount_amount)),
+          userObject,
+          false
+        ),
+        total_patient_share: options.currencyFormat(
+          _.sumBy(detail, s => parseFloat(s.patient_share)),
+          userObject,
+          false
+        ),
         // total_copay_amount: _.sumBy(detail, s => parseFloat(s.company_resp)),
-        total_patient_tax: _.sumBy(detail, s => parseFloat(s.patient_tax)),
-        total_company_resp: _.sumBy(detail, s => parseFloat(s.company_resp)),
-        total_company_tax: _.sumBy(detail, s => parseFloat(s.company_tax)),
-        total_net_claim: _.sumBy(detail, s => parseFloat(s.patient_payable))
+        total_patient_tax: options.currencyFormat(
+          _.sumBy(detail, s => parseFloat(s.patient_tax)),
+          userObject,
+          false
+        ),
+        total_company_resp: options.currencyFormat(
+          _.sumBy(detail, s => parseFloat(s.company_resp)),
+          userObject,
+          false
+        ),
+        total_company_tax: options.currencyFormat(
+          _.sumBy(detail, s => parseFloat(s.company_tax)),
+          userObject,
+          false
+        ),
+        total_net_claim: options.currencyFormat(
+          _.sumBy(detail, s => parseFloat(s.patient_payable)),
+          userObject,
+          false
+        )
       };
 
       resolve(result);
