@@ -116,6 +116,7 @@ export default function DashBoardEvents() {
         data: { hospital_id: $this.state.hospital_id },
 
         onSuccess: response => {
+          console.log("response:", response);
           if (response.data.success) {
             let no_of_employees = response.data.records;
 

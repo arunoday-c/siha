@@ -112,13 +112,13 @@ class Dashboard extends Component {
           <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
-                <div className="col-4">
+                {/* <div className="col-4">
                   <div className="icon-big text-center">
                     <i className="fas fa-building" />
                   </div>
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
+                </div> */}
+                <div className="col-12">
+                  <div className="text">
                     <p>Total Project</p>
                     {this.state.no_of_projects}
                   </div>
@@ -129,32 +129,99 @@ class Dashboard extends Component {
           <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
-                <div className="col-4">
+                {/* <div className="col-4">
                   <div className="icon-big text-center">
-                    <i className="fas fa-users" />
+                    <i className="fas fa-building" />
                   </div>
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Total Employees</p>
-                    {this.state.no_of_employees}
+                </div> */}
+                <div className="col-12">
+                  <div className="text">
+                    <p>Total Staff</p>
+                    {this.state.no_of_projects}
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
           <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
-                <div className="col-4">
+                {/* <div className="col-4">
                   <div className="icon-big text-center">
-                    <i className="fas fa-money-bill-wave" />
+                    <i className="fas fa-building" />
+                  </div>
+                </div> */}
+                <div className="col-12">
+                  <div className="text">
+                    <p>Total Labour</p>
+                    {this.state.no_of_projects}
                   </div>
                 </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Total Cost to Company</p>
+              </div>
+            </div>
+          </div>
+          <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
+                {/* <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-building" />
+                  </div>
+                </div> */}
+                <div className="col-12">
+                  <div className="text">
+                    <p>Total Omanis</p>
+                    {this.state.no_of_projects}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
+                {/* <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-building" />
+                  </div>
+                </div> */}
+                <div className="col-12">
+                  <div className="text">
+                    <p>Total Expat</p>
+                    {this.state.no_of_projects}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
+                {/* <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-building" />
+                  </div>
+                </div> */}
+                <div className="col-12">
+                  <div className="text">
+                    <p>Staff Cost</p>
+                    {this.state.no_of_projects}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
+                {/* <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-users" />
+                  </div>
+                </div> */}
+                <div className="col-12">
+                  <div className="text">
+                    <p>Labour Cost</p>
                     {getAmountFormart(this.state.total_company_salary)}
                   </div>
                 </div>
