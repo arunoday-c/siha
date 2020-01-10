@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import "./subjective.scss";
 import ReviewofSystems from "../ReviewofSystems/ReviewofSystems";
 import ChiefComplaints from "../ChiefComplaints/ChiefComplaints.js";
@@ -25,11 +26,12 @@ class Subjective extends Component {
   }
 
   getPatientEncounterDetails() {
+    const { encounter_id } = this.props.location.state;
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientEncounter",
       method: "GET",
       data: {
-        encounter_id: Window.global.encounter_id
+        encounter_id: encounter_id //Window.global.encounter_id
       },
       onSuccess: response => {
         let data = response.data.records[0];
@@ -49,13 +51,14 @@ class Subjective extends Component {
   }
 
   componentWillUnmount() {
+    const { encounter_id } = this.props.location.state;
     if (this.state.significant_signs !== null) {
       algaehApiCall({
         uri: "/doctorsWorkBench/updatePatientEncounter",
         method: "PUT",
         data: {
           significant_signs: this.state.significant_signs,
-          encounter_id: Window.global.encounter_id
+          encounter_id: encounter_id // Window.global.encounter_id
         }
       });
     }
@@ -127,31 +130,4 @@ class Subjective extends Component {
   }
 }
 
-export default Subjective;
-
-// <AlagehAutoComplete
-// div={{ className: "col-lg-10 displayInlineBlock" }}
-// label={{
-//   forceLabel: "Chief Complaint",
-//   fieldName: "sample"
-// }}
-// selector={{
-//   name: "chief_complaint_id",
-//   className: "select-fld",
-//   value: this.state.chief_complaint_id,
-//   dataSource: {
-//     textField: "hpi_description",
-//     valueField: "hims_d_hpi_header_id",
-//     data:
-//       this.state.chiefComplainList.length !== 0
-//         ? this.state.chiefComplainList
-//         : null
-//   },
-//   onChange: this.dropDownHandle.bind(this),
-//   userList: list => {
-//     //TODO need to change with appropriate service call --noor
-//
-//     alert(JSON.stringify(list));
-//   }
-// }}
-// />
+export default withRouter(Subjective);

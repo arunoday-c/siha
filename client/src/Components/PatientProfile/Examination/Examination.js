@@ -101,12 +101,13 @@ class Examination extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
+        const { current_patient, episode_id } = this.props.location.state;
         algaehApiCall({
           uri: "/doctorsWorkBench/updatePatientPhysicalExam",
           method: "PUT",
           data: {
-            patient_id: Window.global["current_patient"],
-            episode_id: Window.global["episode_id"],
+            patient_id: current_patient, //Window.global["current_patient"],
+            episode_id: episode_id, //Window.global["episode_id"],
             exam_header_id: row.hims_d_physical_examination_header_id,
             exam_details_id: row.hims_d_physical_examination_details_id,
             exam_subdetails_id: row.hims_d_physical_examination_subdetails_id,
@@ -124,7 +125,7 @@ class Examination extends Component {
             }
           }
         });
-      } 
+      }
     });
   }
 
@@ -142,12 +143,13 @@ class Examination extends Component {
   }
 
   addExaminationToPatient() {
+    const { current_patient, episode_id } = this.props.location.state;
     algaehApiCall({
       uri: "/doctorsWorkBench/addPatientPhysicalExamination",
       method: "POST",
       data: {
-        patient_id: Window.global["current_patient"],
-        episode_id: Window.global["episode_id"],
+        patient_id: current_patient, //Window.global["current_patient"],
+        episode_id: episode_id, //Window.global["episode_id"],
         exam_header_id: this.state.hims_d_physical_examination_header_id,
         exam_details_id: this.state.hims_d_physical_examination_details_id,
         exam_subdetails_id: this.state
@@ -486,8 +488,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Examination)
+  connect(mapStateToProps, mapDispatchToProps)(Examination)
 );

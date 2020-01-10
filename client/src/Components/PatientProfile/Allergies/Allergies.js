@@ -108,11 +108,12 @@ class Allergies extends Component {
       });
       return;
     }
+    const { current_patient } = this.props.location.state;
     algaehApiCall({
       uri: "/doctorsWorkBench/addPatientNewAllergy",
       method: "POST",
       data: {
-        patient_id: Window.global["current_patient"],
+        patient_id: current_patient, //Window.global["current_patient"],
         allergy_id: this.state.hims_d_allergy_id,
         onset: this.state.allergy_onset,
         onset_date: this.state.allergy_onset_date,
@@ -730,8 +731,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Allergies)
+  connect(mapStateToProps, mapDispatchToProps)(Allergies)
 );

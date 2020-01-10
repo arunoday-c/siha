@@ -52,10 +52,8 @@ let createJWTToken = (dataToSave, useStream) => {
 let respond = (req, res) => {
   res.status(200).json({
     user: req.user,
-    // token: req.token,
-    // days: days,
     hospitalList: req.result.hospitalList,
-    activemoduleList: req.result.activemoduleList
+    activemoduleList: [] //req.result.activemoduleList
   });
 };
 

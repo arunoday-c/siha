@@ -12,7 +12,7 @@ import "./styles/site.scss";
 import "./loader.scss";
 import { PermissionProvider } from "./Permission";
 // import * as serviceWorker from "./serviceWorker";
-
+import MainContex from "./indexProps";
 const middleware =
   process.env.NODE_ENV === "development"
     ? applyMiddleware(thunk, logger)
@@ -21,9 +21,11 @@ const middleware =
 const store = createStore(AlagehReducers, middleware);
 
 ReactDOM.render(
-  <Provider store={store}>
-    <PermissionProvider>{routes}</PermissionProvider>
-  </Provider>,
+  <MainContex>
+    <Provider store={store}>
+      <PermissionProvider>{routes}</PermissionProvider>
+    </Provider>
+  </MainContex>,
   document.getElementById("root")
 );
 

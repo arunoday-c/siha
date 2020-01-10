@@ -31,7 +31,7 @@ const numberhandle = ($this, ctrl, e) => {
   let name = e.name;
   if (e.value === "") {
     $this.setState({
-      [name]: value
+      [name]: ""
     });
     return;
   }

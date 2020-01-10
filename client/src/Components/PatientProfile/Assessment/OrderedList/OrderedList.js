@@ -52,19 +52,18 @@ class OrderedList extends PureComponent {
       });
       return;
     }
-
-
-
+    const { visit_id } = this.props.location.state;
     algaehApiCall({
       uri: "/patientRegistration/getVisitServiceAmount",
       module: "frontDesk",
       method: "GET",
-      data: { hims_f_patient_visit_id: Window.global["visit_id"] },
+      data: {
+        hims_f_patient_visit_id: visit_id //Window.global["visit_id"]
+      },
       onSuccess: response => {
-
         if (response.data.success) {
-          let orderedList = this.props.orderedList
-          let preserviceInput = []
+          let orderedList = this.props.orderedList;
+          let preserviceInput = [];
           if (orderedList.length > 0) {
             for (let k = 0; k < orderedList.length; k++) {
               preserviceInput.push({
@@ -72,15 +71,17 @@ class OrderedList extends PureComponent {
                 vat_applicable: this.props.vat_applicable,
                 hims_d_services_id: orderedList[k].hims_d_services_id,
                 service_type_id: orderedList[k].service_type_id,
-                primary_insurance_provider_id: orderedList[k].insurance_provider_id,
+                primary_insurance_provider_id:
+                  orderedList[k].insurance_provider_id,
                 primary_network_office_id:
                   orderedList[k].insurance_network_office_id,
                 primary_network_id: orderedList[k].network_id,
                 approval_amt: orderedList[k].approval_amt,
                 approval_limit_yesno: orderedList[k].approval_limit_yesno,
-                hims_f_ordered_services_id: orderedList[k].hims_f_ordered_services_id,
+                hims_f_ordered_services_id:
+                  orderedList[k].hims_f_ordered_services_id,
                 billed: orderedList[k].billed
-              })
+              });
             }
           }
           this.setState({
@@ -106,11 +107,12 @@ class OrderedList extends PureComponent {
         isPackOpen: !this.state.isPackOpen
       },
       () => {
+        const { current_patient } = this.props.location.state;
         this.props.getPakageList({
           uri: "/orderAndPreApproval/getPatientPackage",
           method: "GET",
           data: {
-            patient_id: Window.global["current_patient"]
+            patient_id: current_patient //Window.global["current_patient"]
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -128,11 +130,12 @@ class OrderedList extends PureComponent {
         isOpen: !this.state.isOpen
       },
       () => {
+        const { visit_id } = this.props.location.state;
         this.props.getOrderList({
           uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
           method: "GET",
           data: {
-            visit_id: Window.global["visit_id"]
+            visit_id: visit_id // Window.global["visit_id"]
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -149,16 +152,17 @@ class OrderedList extends PureComponent {
       method: "GET",
       module: "masterSettings",
       onSuccess: response => {
-
         if (response.data.success === true) {
-          let Depat_data = response.data.records
+          let Depat_data = response.data.records;
+          const { visit_id } = this.props.location.state;
           algaehApiCall({
             uri: "/patientRegistration/getVisitServiceAmount",
             module: "frontDesk",
             method: "GET",
-            data: { hims_f_patient_visit_id: Window.global["visit_id"] },
+            data: {
+              hims_f_patient_visit_id: visit_id //Window.global["visit_id"]
+            },
             onSuccess: response => {
-
               if (response.data.success) {
                 const Departmant_Location = _.filter(Depat_data, f => {
                   return (
@@ -169,9 +173,11 @@ class OrderedList extends PureComponent {
 
                 this.setState({
                   isConsOpen: !this.state.isConsOpen,
-                  inventory_location_id: Departmant_Location[0].inventory_location_id,
+                  inventory_location_id:
+                    Departmant_Location[0].inventory_location_id,
                   approval_amt: response.data.records[0].ins_services_amount,
-                  approval_limit_yesno: response.data.records[0].approval_limit_yesno,
+                  approval_limit_yesno:
+                    response.data.records[0].approval_limit_yesno
                   // preserviceInput: preserviceInput
                 });
               }
@@ -183,7 +189,6 @@ class OrderedList extends PureComponent {
               });
             }
           });
-
         }
       },
       onFailure: error => {
@@ -202,6 +207,7 @@ class OrderedList extends PureComponent {
   }
 
   CloseConsumableModel(e) {
+    const { visit_id } = this.props.location.state;
     this.setState(
       {
         isConsOpen: !this.state.isConsOpen
@@ -211,7 +217,7 @@ class OrderedList extends PureComponent {
           uri: "/orderAndPreApproval/getVisitConsumable",
           method: "GET",
           data: {
-            visit_id: Window.global["visit_id"]
+            visit_id: visit_id //Window.global["visit_id"]
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -256,11 +262,12 @@ class OrderedList extends PureComponent {
         isPackUtOpen: !this.state.isPackUtOpen
       },
       () => {
+        const { current_patient, visit_id } = this.props.location.state;
         this.props.getPakageList({
           uri: "/orderAndPreApproval/getPatientPackage",
           method: "GET",
           data: {
-            patient_id: Window.global["current_patient"]
+            patient_id: current_patient //Window.global["current_patient"]
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -271,7 +278,7 @@ class OrderedList extends PureComponent {
           uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
           method: "GET",
           data: {
-            visit_id: Window.global["visit_id"]
+            visit_id: visit_id //Window.global["visit_id"]
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -282,7 +289,7 @@ class OrderedList extends PureComponent {
           uri: "/orderAndPreApproval/getVisitConsumable",
           method: "GET",
           data: {
-            visit_id: Window.global["visit_id"]
+            visit_id: visit_id //Window.global["visit_id"]
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -392,12 +399,12 @@ class OrderedList extends PureComponent {
         mappingName: "serviceslist"
       }
     });
-
+    const { visit_id, current_patient } = this.props.location.state;
     this.props.getOrderList({
       uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
       method: "GET",
       data: {
-        visit_id: Window.global["visit_id"]
+        visit_id: visit_id //Window.global["visit_id"]
       },
       redux: {
         type: "ORDER_SERVICES_GET_DATA",
@@ -409,7 +416,7 @@ class OrderedList extends PureComponent {
       uri: "/orderAndPreApproval/getVisitConsumable",
       method: "GET",
       data: {
-        visit_id: Window.global["visit_id"]
+        visit_id: visit_id //Window.global["visit_id"]
       },
       redux: {
         type: "ORDER_SERVICES_GET_DATA",
@@ -421,7 +428,7 @@ class OrderedList extends PureComponent {
       uri: "/orderAndPreApproval/getPatientPackage",
       method: "GET",
       data: {
-        patient_id: Window.global["current_patient"]
+        patient_id: current_patient //Window.global["current_patient"]
       },
       redux: {
         type: "PAIENT_PACKAGE_GET_DATA",
@@ -457,10 +464,10 @@ class OrderedList extends PureComponent {
           row.service_type_id === 5
             ? "LAB"
             : row.service_type_id === 11
-              ? "RAD"
-              : row.service_type_id === 2
-                ? "PRO"
-                : null;
+            ? "RAD"
+            : row.service_type_id === 2
+            ? "PRO"
+            : null;
         algaehApiCall({
           uri: "/orderAndPreApproval/deleteOrderService",
           method: "delete",
@@ -472,12 +479,13 @@ class OrderedList extends PureComponent {
             pre_approval: row.pre_approval
           },
           onSuccess: response => {
+            const { visit_id, current_patient } = this.props.location.state;
             if (response.data.success === true) {
               this.props.getOrderList({
                 uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
                 method: "GET",
                 data: {
-                  visit_id: Window.global["visit_id"]
+                  visit_id: visit_id //Window.global["visit_id"]
                 },
                 redux: {
                   type: "ORDER_SERVICES_GET_DATA",
@@ -489,7 +497,7 @@ class OrderedList extends PureComponent {
                 uri: "/orderAndPreApproval/getPatientPackage",
                 method: "GET",
                 data: {
-                  patient_id: Window.global["current_patient"]
+                  patient_id: current_patient //Window.global["current_patient"]
                 },
                 redux: {
                   type: "PAIENT_PACKAGE_GET_DATA",
@@ -524,9 +532,7 @@ class OrderedList extends PureComponent {
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
     }).then(willDelete => {
-
       if (willDelete.value) {
-
         algaehApiCall({
           uri: "/orderAndPreApproval/deleteInvOrderedItems",
           method: "delete",
@@ -535,11 +541,12 @@ class OrderedList extends PureComponent {
           },
           onSuccess: response => {
             if (response.data.success === true) {
+              const { visit_id } = this.props.location.state;
               this.props.getConsumableOrderList({
                 uri: "/orderAndPreApproval/getVisitConsumable",
                 method: "GET",
                 data: {
-                  visit_id: Window.global["visit_id"]
+                  visit_id: visit_id //Window.global["visit_id"]
                 },
                 redux: {
                   type: "ORDER_SERVICES_GET_DATA",
@@ -574,9 +581,7 @@ class OrderedList extends PureComponent {
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
     }).then(willDelete => {
-
       if (willDelete.value) {
-
         algaehApiCall({
           uri: "/orderAndPreApproval/deleteOrderedPackage",
           method: "delete",
@@ -584,13 +589,13 @@ class OrderedList extends PureComponent {
             hims_f_package_header_id: row.hims_f_package_header_id
           },
           onSuccess: response => {
-
             if (response.data.success === true) {
+              const { current_patient } = this.props.location.state;
               this.props.getPakageList({
                 uri: "/orderAndPreApproval/getPatientPackage",
                 method: "GET",
                 data: {
-                  patient_id: Window.global["current_patient"]
+                  patient_id: current_patient //Window.global["current_patient"]
                 },
                 redux: {
                   type: "ORDER_SERVICES_GET_DATA",
@@ -624,6 +629,11 @@ class OrderedList extends PureComponent {
       this.props.patient_profile !== undefined
         ? this.props.patient_profile
         : [];
+    const {
+      current_patient,
+      visit_id,
+      provider_id
+    } = this.props.location.state;
     return (
       <div className="hptl-phase1-ordering-services-form">
         {this.state.openData === "Investigation" ? (
@@ -659,16 +669,16 @@ class OrderedList extends PureComponent {
                                 style={{
                                   pointerEvents:
                                     row.service_type_id === 2 ||
-                                      row.service_type_id === 14 ||
-                                      row.service_type_id === "2" ||
-                                      row.service_type_id === "14"
+                                    row.service_type_id === 14 ||
+                                    row.service_type_id === "2" ||
+                                    row.service_type_id === "14"
                                       ? ""
                                       : "none",
                                   opacity:
                                     row.service_type_id === 2 ||
-                                      row.service_type_id === 14 ||
-                                      row.service_type_id === "2" ||
-                                      row.service_type_id === "14"
+                                    row.service_type_id === 14 ||
+                                    row.service_type_id === "2" ||
+                                    row.service_type_id === "14"
                                       ? ""
                                       : "0.1"
                                 }}
@@ -681,8 +691,15 @@ class OrderedList extends PureComponent {
                               <i
                                 style={{
                                   pointerEvents:
-                                    row.billed === "N" && row.trans_package_detail_id > 0 ? "" : "none",
-                                  opacity: row.billed === "N" && row.trans_package_detail_id > 0 ? "" : "0.1"
+                                    row.billed === "N" &&
+                                    row.trans_package_detail_id > 0
+                                      ? ""
+                                      : "none",
+                                  opacity:
+                                    row.billed === "N" &&
+                                    row.trans_package_detail_id > 0
+                                      ? ""
+                                      : "0.1"
                                 }}
                                 className="fas fa-trash-alt"
                                 onClick={this.DeleteOrderService.bind(
@@ -721,10 +738,10 @@ class OrderedList extends PureComponent {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                f =>
-                                  f.hims_d_service_type_id ===
-                                  row.service_type_id
-                              );
+                                  f =>
+                                    f.hims_d_service_type_id ===
+                                    row.service_type_id
+                                );
 
                           return (
                             <span>
@@ -755,8 +772,8 @@ class OrderedList extends PureComponent {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                f => f.hims_d_services_id === row.services_id
-                              );
+                                  f => f.hims_d_services_id === row.services_id
+                                );
 
                           return (
                             <span>
@@ -909,10 +926,10 @@ class OrderedList extends PureComponent {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                f =>
-                                  f.hims_d_service_type_id ===
-                                  row.service_type_id
-                              );
+                                  f =>
+                                    f.hims_d_service_type_id ===
+                                    row.service_type_id
+                                );
 
                           return (
                             <span>
@@ -939,8 +956,8 @@ class OrderedList extends PureComponent {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                f => f.hims_d_services_id === row.services_id
-                              );
+                                  f => f.hims_d_services_id === row.services_id
+                                );
 
                           return (
                             <span>
@@ -1027,183 +1044,189 @@ class OrderedList extends PureComponent {
             </div>
           </div>
         ) : (
-              <div>
-                <div
-                  className="col-lg-12"
-                  style={{
-                    textAlign: "right",
-                    paddingTop: 10
-                  }}
-                >
-                  <button
-                    className="btn btn-primary"
-                    onClick={this.ShowPackageModel.bind(this)}
-                  >
-                    Order Package
+          <div>
+            <div
+              className="col-lg-12"
+              style={{
+                textAlign: "right",
+                paddingTop: 10
+              }}
+            >
+              <button
+                className="btn btn-primary"
+                onClick={this.ShowPackageModel.bind(this)}
+              >
+                Order Package
               </button>
-                </div>
-                <div className="col-lg-12">
-                  <div className="row">
-                    <div className="col-md-10 col-lg-12" id="doctorOrder">
-                      <AlgaehDataGrid
-                        id="Package_list"
-                        columns={[
-                          {
-                            fieldName: "actions",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Details" }} />
-                            ),
-                            displayTemplate: row => {
-                              return (
-                                <span>
-                                  <i
-                                    className="fas fa-eye"
-                                    onClick={this.ShowPackageUtilize.bind(this, row)}
-                                  />
-
-                                  <i
-                                    onClick={this.DeleteOrderedPackage.bind(this, row)}
-                                    className="fas fa-trash-alt"
-                                  />
-                                </span>
-                              );
-                            },
-                            others: {
-                              fixed: "left"
-                            }
-                          },
-                          {
-                            fieldName: "created_date",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "created_date" }} />
-                            ),
-                            displayTemplate: row => {
-                              return (
-                                <span>{this.dateFormater(row.created_date)}</span>
-                              );
-                            }
-                          },
-
-                          {
-                            fieldName: "service_type_id",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "service_type_id" }}
+            </div>
+            <div className="col-lg-12">
+              <div className="row">
+                <div className="col-md-10 col-lg-12" id="doctorOrder">
+                  <AlgaehDataGrid
+                    id="Package_list"
+                    columns={[
+                      {
+                        fieldName: "actions",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Details" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              <i
+                                className="fas fa-eye"
+                                onClick={this.ShowPackageUtilize.bind(
+                                  this,
+                                  row
+                                )}
                               />
-                            ),
-                            displayTemplate: row => {
-                              let display =
-                                this.props.servicetype === undefined
-                                  ? []
-                                  : this.props.servicetype.filter(
-                                    f =>
-                                      f.hims_d_service_type_id ===
-                                      row.service_type_id
-                                  );
 
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? display[0].service_type
-                                    : ""}
-                                </span>
-                              );
-                            },
-                            others: {
-                              minWidth: 100,
-                              maxWidth: 500
-                            },
-
-                            disabled: true
-                          },
-                          {
-                            fieldName: "services_id",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "services_id" }} />
-                            ),
-                            displayTemplate: row => {
-                              let display =
-                                this.props.serviceslist === undefined
-                                  ? []
-                                  : this.props.serviceslist.filter(
-                                    f => f.hims_d_services_id === row.services_id
-                                  );
-
-                              return (
-                                <span>
-                                  {display !== null && display.length !== 0
-                                    ? display[0].service_name
-                                    : ""}
-                                </span>
-                              );
-                            },
-                            others: {
-                              minWidth: 200,
-                              maxWidth: 400
-                            },
-                            disabled: true
-                          },
-                          {
-                            fieldName: "insurance_yesno",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "insurance" }} />
-                            ),
-                            displayTemplate: row => {
-                              return row.insurance_yesno === "Y"
-                                ? "Covered"
-                                : "Not Covered";
-                            },
-                            disabled: true
-                          },
-                          {
-                            fieldName: "pre_approval",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "pre_approval" }} />
-                            ),
-                            displayTemplate: row => {
-                              return (
-                                <span>
-                                  {row.pre_approval === "Y"
-                                    ? "Required"
-                                    : "Not Required"}
-                                </span>
-                              );
-                            },
-                            disabled: true
-                          },
-                          {
-                            fieldName: "patient_payable",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "patient_payable" }}
+                              <i
+                                onClick={this.DeleteOrderedPackage.bind(
+                                  this,
+                                  row
+                                )}
+                                className="fas fa-trash-alt"
                               />
-                            ),
-                            disabled: true
-                          },
-                          {
-                            fieldName: "company_payble",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "company_payble" }}
-                              />
-                            ),
-                            disabled: true
-                          }
-                        ]}
-                        keyId="list_type_id"
-                        dataSource={{
-                          data:
-                            this.props.pakageList === undefined
+                            </span>
+                          );
+                        },
+                        others: {
+                          fixed: "left"
+                        }
+                      },
+                      {
+                        fieldName: "created_date",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "created_date" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{this.dateFormater(row.created_date)}</span>
+                          );
+                        }
+                      },
+
+                      {
+                        fieldName: "service_type_id",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "service_type_id" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.servicetype === undefined
                               ? []
-                              : this.props.pakageList
-                        }}
-                        paging={{ page: 0, rowsPerPage: 10 }}
-                      />
-                    </div>
-                  </div>
+                              : this.props.servicetype.filter(
+                                  f =>
+                                    f.hims_d_service_type_id ===
+                                    row.service_type_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? display[0].service_type
+                                : ""}
+                            </span>
+                          );
+                        },
+                        others: {
+                          minWidth: 100,
+                          maxWidth: 500
+                        },
+
+                        disabled: true
+                      },
+                      {
+                        fieldName: "services_id",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "services_id" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.serviceslist === undefined
+                              ? []
+                              : this.props.serviceslist.filter(
+                                  f => f.hims_d_services_id === row.services_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? display[0].service_name
+                                : ""}
+                            </span>
+                          );
+                        },
+                        others: {
+                          minWidth: 200,
+                          maxWidth: 400
+                        },
+                        disabled: true
+                      },
+                      {
+                        fieldName: "insurance_yesno",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "insurance" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.insurance_yesno === "Y"
+                            ? "Covered"
+                            : "Not Covered";
+                        },
+                        disabled: true
+                      },
+                      {
+                        fieldName: "pre_approval",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "pre_approval" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.pre_approval === "Y"
+                                ? "Required"
+                                : "Not Required"}
+                            </span>
+                          );
+                        },
+                        disabled: true
+                      },
+                      {
+                        fieldName: "patient_payable",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "patient_payable" }}
+                          />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "company_payble",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "company_payble" }}
+                          />
+                        ),
+                        disabled: true
+                      }
+                    ]}
+                    keyId="list_type_id"
+                    dataSource={{
+                      data:
+                        this.props.pakageList === undefined
+                          ? []
+                          : this.props.pakageList
+                    }}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                  />
                 </div>
               </div>
-            )}
+            </div>
+          </div>
+        )}
 
         <OrderingServices
           open={this.state.isOpen}
@@ -1221,9 +1244,9 @@ class OrderedList extends PureComponent {
           open={this.state.isPackOpen}
           onClose={this.ClosePackage.bind(this)}
           vat_applicable={this.props.vat_applicable}
-          patient_id={Window.global["current_patient"]}
-          visit_id={Window.global["visit_id"]}
-          provider_id={Window.global["provider_id"]}
+          patient_id={current_patient} //Window.global["current_patient"]}
+          visit_id={visit_id} //Window.global["visit_id"]}
+          provider_id={provider_id} //Window.global["provider_id"]}
           addNew={true}
         />
 
@@ -1256,9 +1279,9 @@ class OrderedList extends PureComponent {
           open={this.state.isPackUtOpen}
           onClose={this.ClosePackageUtilize.bind(this)}
           package_detail={this.state.package_detail}
-          patient_id={Window.global["current_patient"]}
-          visit_id={Window.global["visit_id"]}
-          doctor_id={Window.global["provider_id"]}
+          patient_id={current_patient} //Window.global["current_patient"]}
+          visit_id={visit_id} //Window.global["visit_id"]}
+          doctor_id={provider_id} //Window.global["provider_id"]}
           inventory_location_id={this.state.inventory_location_id}
         />
       </div>
@@ -1291,8 +1314,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OrderedList)
+  connect(mapStateToProps, mapDispatchToProps)(OrderedList)
 );

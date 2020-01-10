@@ -1,0 +1,117 @@
+import React, { useState, useContext, memo } from "react";
+import { useHistory } from "react-router-dom";
+import { MainContext } from "algaeh-react-components/context";
+import { setItem, getItem } from "algaeh-react-components/storage";
+import { setCookie } from "../../../utils/algaehApiCall";
+function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
+  const { userMenu, userToken, userLanguage, selectedMenu } = useContext(
+    MainContext
+  );
+  const history = useHistory();
+  const [searchModule, setSearchModule] = useState("");
+  const [activeModule, setActiveModule] = useState("");
+  const [activeScreen, setActiveScreen] = useState("");
+
+  if (showMenu === false) {
+    return null;
+  }
+
+  function activateModule(module_id) {
+    setActiveModule(moduleId => {
+      if (moduleId === module_id) {
+        return "";
+      }
+      return module_id;
+    });
+  }
+  function redirectToScreen(item, display, others) {
+    const screenName = display.replace(/ /g, "");
+    setItem("userSelectedMenu", { ...item, ...others });
+    setCookie("ScreenName", screenName);
+    history.push(`/${screenName}`);
+  }
+  const moduleSelect = activeModule === "" ? openModule : activeModule;
+  const screenSelected = activeScreen === "" ? openScreen : activeScreen;
+  return (
+    <div className={`animated leftNavCntr`}>
+      <div className="hptl-phase1-sideMenuBar">
+        <div className="menuBar-title">
+          <i
+            onClick={onVisibityChange}
+            className="fas fa-chevron-circle-left sideBarClose"
+          />
+          <input
+            type="text"
+            autoComplete="off"
+            name="searchModules"
+            className="subMenuSearchFld"
+            placeholder="Search Modules"
+            // value={searchModule}
+            autoFocus={true}
+            // onChange={e => {}}
+          />
+        </div>
+        <div className="sideMenu-header">
+          <div className="menuBarLoader d-none">
+            <i className="fas fa-spinner fa-spin" />
+          </div>
+          {userMenu.map((item, index) => (
+            <div key={index} className="container-fluid">
+              <div
+                className="row clearfix side-menu-title"
+                onClick={() => {
+                  activateModule(item.module_name);
+                }}
+              >
+                <div className="col-2" style={{ marginTop: "2px" }}>
+                  <i className={item.icons} />
+                </div>
+                <div className="col-8 ">
+                  {userLanguage === "en"
+                    ? item.module_name
+                    : item.other_language}
+                </div>
+                <div className="col-2" style={{ marginTop: "2px" }}>
+                  {moduleSelect === item.module_name ? (
+                    <i className="fas fa-angle-up" />
+                  ) : (
+                    <i className="fas fa-angle-down" />
+                  )}
+                </div>
+              </div>
+              {moduleSelect === item.module_name ? (
+                <div className="row sub-menu-option">
+                  <ul className="tree-structure-menu">
+                    {item.ScreenList.map((screen, idx) => (
+                      <li
+                        key={idx}
+                        className={
+                          screenSelected === screen.screen_name ? "active" : ""
+                        }
+                        onClick={() => {
+                          const { screen_name, s_other_language } = screen;
+                          redirectToScreen(item, screen.page_to_redirect, {
+                            screen_name,
+                            s_other_language
+                          });
+                        }}
+                      >
+                        <i className="fas fa-arrow-circle-right fa-1x " />
+                        <span>
+                          {userLanguage === "en"
+                            ? screen.screen_name
+                            : screen.other_language}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+export default memo(MenuItems);

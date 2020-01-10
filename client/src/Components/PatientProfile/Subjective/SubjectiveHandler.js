@@ -165,6 +165,7 @@ export default function SubjectiveHandler() {
     },
 
     addChiefComplainToPatient: $this => {
+      const { current_patient, episode_id } = $this.props.location.state;
       let _screenName = getCookie("ScreenName").replace("/", "");
       if (_screenName === "Login") {
         return;
@@ -173,13 +174,13 @@ export default function SubjectiveHandler() {
       patChiefComp.push({
         comment: $this.state.chief_complaint,
         duration: $this.state.duration,
-        episode_id: Window.global["episode_id"],
+        episode_id: episode_id, // Window.global["episode_id"],
         interval: $this.state.interval,
         onset_date: $this.state.onset_date,
         pain: $this.state.pain,
         score: 0,
         severity: $this.state.severity,
-        patient_id: Window.global["current_patient"],
+        patient_id: current_patient, // Window.global["current_patient"],
         recordState: "insert",
         chronic: $this.state.chronic,
         complaint_inactive: "N",
@@ -201,19 +202,21 @@ export default function SubjectiveHandler() {
         $this.state.significant_signs !== null ||
         $this.state.other_signs !== null
       ) {
+        const { encounter_id } = $this.props.location.state;
         algaehApiCall({
           uri: "/doctorsWorkBench/updatePatientEncounter",
           method: "PUT",
           data: {
             other_signs: $this.state.other_signs,
             significant_signs: $this.state.significant_signs,
-            encounter_id: Window.global.encounter_id
+            encounter_id: encounter_id // Window.global.encounter_id
           }
         });
       }
     },
 
     updatePatientChiefComplaints: $this => {
+      const { current_patient, episode_id } = $this.props.location.state;
       let _screenName = getCookie("ScreenName").replace("/", "");
       if (_screenName === "Login") {
         return;
@@ -224,12 +227,12 @@ export default function SubjectiveHandler() {
           $this.state.hims_f_episode_chief_complaint_id,
         comment: $this.state.chief_complaint,
         duration: $this.state.duration,
-        episode_id: Window.global["episode_id"],
+        episode_id: episode_id, //Window.global["episode_id"],
         interval: $this.state.interval,
         onset_date: $this.state.onset_date,
         pain: $this.state.pain,
         severity: $this.state.severity,
-        patient_id: Window.global["current_patient"],
+        patient_id: current_patient, //Window.global["current_patient"],
         chronic: $this.state.chronic,
         complaint_type: $this.state.complaint_type,
         lmp_days: $this.state.lmp_days
@@ -254,13 +257,14 @@ export default function SubjectiveHandler() {
         $this.state.significant_signs !== null ||
         $this.state.other_signs !== null
       ) {
+        const { encounter_id } = $this.props.location.state;
         algaehApiCall({
           uri: "/doctorsWorkBench/updatePatientEncounter",
           method: "PUT",
           data: {
             other_signs: $this.state.other_signs,
             significant_signs: $this.state.significant_signs,
-            encounter_id: Window.global.encounter_id
+            encounter_id: encounter_id //Window.global.encounter_id
           }
         });
       }
@@ -273,11 +277,12 @@ export default function SubjectiveHandler() {
 }
 
 function getPatientChiefComplaints($this) {
+  const { current_patient, episode_id } = $this.props.location.state;
   algaehApiCall({
     uri: "/doctorsWorkBench/getPatientBasicChiefComplaints",
     data: {
-      patient_id: Window.global["current_patient"],
-      episode_id: Window.global["episode_id"]
+      patient_id: current_patient, //Window.global["current_patient"],
+      episode_id: episode_id //Window.global["episode_id"]
     },
     method: "GET",
     // cancelRequestId: "getPatientBasicChiefComplaints",
@@ -309,6 +314,7 @@ function getPatientChiefComplaints($this) {
   });
 }
 function insertFinalICDS($this, row) {
+  const { current_patient, episode_id, visit_id } = $this.props.location.state;
   const finalICDS = Enumerable.from($this.props.patient_diagnosis)
     .where(w => w.final_daignosis === "Y")
     .toArray();
@@ -323,9 +329,9 @@ function insertFinalICDS($this, row) {
   insertfinalICDS.push({
     daignosis_id: row.hims_d_icd_id,
     diagnosis_type: diagnosis_type,
-    patient_id: Window.global["current_patient"],
-    episode_id: Window.global["episode_id"],
-    visit_id: Window.global["visit_id"],
+    patient_id: current_patient, //Window.global["current_patient"],
+    episode_id: episode_id, //Window.global["episode_id"],
+    visit_id: visit_id, //Window.global["visit_id"],
     final_daignosis: "Y"
   });
 
@@ -390,12 +396,13 @@ function showconfirmDialog($this, row) {
   });
 }
 function getPatientDiagnosis($this) {
+  const { current_patient, episode_id, visit_id } = $this.props.location.state;
   $this.props.getPatientDiagnosis({
     uri: "/doctorsWorkBench/getPatientDiagnosis",
     cancelRequestId: "getPatientDiagnosis",
     data: {
-      patient_id: Window.global["current_patient"],
-      episode_id: Window.global["episode_id"]
+      patient_id: current_patient, // Window.global["current_patient"],
+      episode_id: episode_id //Window.global["episode_id"]
     },
     method: "GET",
     redux: {

@@ -18,15 +18,15 @@ import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 class SickLeave extends Component {
   constructor(props) {
     super(props);
-
+    const { episode_id, current_patient, visit_id } = this.props.location.state;
     this.state = {
       from_date: null,
       to_date: null,
       no_of_days: 0,
       remarks: "",
-      episode_id: Window.global["episode_id"],
-      patient_id: Window.global["current_patient"],
-      visit_id: Window.global["visit_id"],
+      episode_id: episode_id, //Window.global["episode_id"],
+      patient_id: current_patient, //Window.global["current_patient"],
+      visit_id: visit_id, // Window.global["visit_id"],
       disableEdit: false
     };
     this.getSickLeave();
@@ -136,6 +136,7 @@ class SickLeave extends Component {
       });
       return;
     }
+    const { episode_id, current_patient, visit_id } = this.props.location.state;
     algaehApiCall({
       uri: "/doctorsWorkBench/addSickLeave",
       data: this.state,
@@ -156,15 +157,15 @@ class SickLeave extends Component {
                 reportParams: [
                   {
                     name: "patient_id",
-                    value: Window.global["current_patient"]
+                    value: current_patient //Window.global["current_patient"]
                   },
                   {
                     name: "visit_id",
-                    value: Window.global["visit_id"]
+                    value: visit_id //Window.global["visit_id"]
                   },
                   {
                     name: "episode_id",
-                    value: Window.global["episode_id"]
+                    value: episode_id // Window.global["episode_id"]
                   }
                 ],
                 outputFileType: "PDF"
@@ -364,8 +365,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(SickLeave)
+  connect(mapStateToProps, mapDispatchToProps)(SickLeave)
 );

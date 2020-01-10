@@ -1,0 +1,31 @@
+.breadCrumpMenu{
+    float: left;
+    
+.showParentModule{
+    float: left;
+    border-right: 1px solid #000;
+    background-color: orange;
+    padding: 0 10px;
+}.childActiveModule{
+    float: left;
+    background-color: red;
+    padding: 0 10px;
+}
+    .dropDownList{
+        background: #000;
+        z-index: 99999;
+        position: fixed;
+        top: 52px;
+        width: 300px;
+        ul{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            li{
+                margin:0;
+                padding:0;
+                list-style: none;
+            }
+        }
+    }
+}

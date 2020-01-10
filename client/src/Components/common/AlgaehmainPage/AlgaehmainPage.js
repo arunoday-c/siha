@@ -1,5 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
+import { withRouter } from "react-router-dom";
+import { MainContext } from "algaeh-react-components/context";
 import "./AlgaehmainPage.scss";
+import Menu from "../Menu";
 import { AlagehFormGroup, AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import {
   swalMessage,
@@ -20,6 +23,7 @@ import sockets from "../../../sockets";
 class PersistentDrawer extends React.Component {
   constructor(props) {
     super(props);
+
     const Activated_Modueles =
       sessionStorage.getItem("ModuleDetails") !== null
         ? JSON.parse(
@@ -32,7 +36,7 @@ class PersistentDrawer extends React.Component {
     let Invento_active = false;
     let Lab_active = false;
     let Rad_active = false;
-    console.log("Activated_Modueles", Activated_Modueles);
+
     for (let i = 0; i < Activated_Modueles.length; i++) {
       const item = Activated_Modueles[i];
       switch (item.module_code) {
@@ -264,7 +268,8 @@ class PersistentDrawer extends React.Component {
                   title: "Password Changed Successfully",
                   type: "success"
                 });
-                window.location.href = window.location.origin + "/#";
+                this.props.history.push("/");
+                // window.location.href = window.location.origin + "/#";
               } else if (!res.data.success) {
                 swalMessage({
                   title: res.data.records.message,
@@ -451,7 +456,8 @@ class PersistentDrawer extends React.Component {
           title: message,
           type: "success"
         });
-        window.location.href = window.location.origin + "/#";
+        this.props.history.push("/");
+        // window.location.href = window.location.origin + "/#";
         //  window.location.reload();
       }
     });
@@ -582,212 +588,8 @@ class PersistentDrawer extends React.Component {
 
     return (
       <div className="">
-        <nav className="navbar fixed-top navbar-expand-lg navbar-dark mainTheme">
-          <div className="sideMenuBars" onClick={this.handleDrawerOpen}>
-            <i className="fas fa-bars fa-lg" />
-          </div>
-          <div className="navbar-brand appLogoCntr">
-            {this.state.Hims_active === true ? (
-              <p className="appLogoHIMSOnly" />
-            ) : (
-              <p className="appLogoHRMSOnly" />
-            )}
-          </div>
+        {/* <Menu /> */}
 
-          <h5 className="topNavbar-title mr-auto">
-            <i className="fas fa-chevron-right" /> {this.state.title}
-          </h5>
-          <div className="navTopBarRight">
-            <div className="loginProfileInfo">
-              <span>{getCookie("userName")}</span>
-              <span>
-                {getCookie("HospitalName") !== undefined
-                  ? getCookie("HospitalName")
-                  : ""}
-              </span>
-            </div>
-          </div>
-          <a
-            style={{
-              marginRight: 0
-            }}
-            className="dropdown navTopbar-dropdown"
-            disabled={this.state.openPanel}
-            onClick={this.handlePanel}
-          >
-            <i className="fas fa-bell fa-lg" />
-          </a>
-
-          <div className="dropdown navTopbar-dropdown">
-            <i className="fas fa-angle-down fa-lg" />
-            <div
-              className="dropdown-menu animated fadeIn faster"
-              aria-labelledby="dropdownMenuButton"
-            >
-              {/* <a className="dropdown-item">
-                <i className="fas fa-user" /> User Profile
-              </a>
-              <a className="dropdown-item">
-                <i className="fas fa-cog" /> Preference
-              </a>
-              <div className="dropdown-divider" /> */}
-              <a
-                className="dropdown-item"
-                onClick={this.handleClose.bind(this, "en")}
-              >
-                {/* <i className="fas fa-globe-asia" /> */}
-                {this.state.languageName === "English"
-                  ? this.renderCheck()
-                  : null}
-                &nbsp; English
-              </a>
-              <a
-                className="dropdown-item"
-                onClick={this.handleClose.bind(this, "ar")}
-              >
-                {/* <i className="fas fa-globe-asia" /> */}
-                {this.state.languageName === "عربي" ? this.renderCheck() : null}
-                &nbsp; عربي
-              </a>
-              <div className="dropdown-divider" />
-              <a
-                className="dropdown-item"
-                onClick={this.showPwdModal.bind(this)}
-              >
-                <i className="fas fa-key" /> Change Password
-              </a>
-              <a className="dropdown-item" onClick={this.logoutLink.bind(this)}>
-                <i className="fas fa-sign-out-alt" /> Logout
-              </a>
-            </div>
-          </div>
-        </nav>
-        <div
-          className="passwordCntr animated slideInDown faster"
-          style={{
-            display: this.state.pwdDisplay
-          }}
-        >
-          <div className="row">
-            <h4>Change Password</h4>
-            {/* <div className="col-12">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "User Name"
-                }}
-              />
-              <h6>Username</h6>
-            </div> */}
-            <AlagehFormGroup
-              div={{ className: "col-12 form-group" }}
-              label={{
-                forceLabel: "Current Password",
-                isImp: false
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "current_pwd",
-                value: this.state.current_pwd,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                },
-                others: {
-                  type: "password"
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-12 form-group" }}
-              label={{
-                forceLabel: "New Password",
-                isImp: false
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "pwd",
-                value: this.state.pwd,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                },
-                others: {
-                  type: "password"
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-12 form-group" }}
-              label={{
-                forceLabel: "Confirm New Password",
-                isImp: false
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "cf_pwd",
-                value: this.state.cf_pwd,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                },
-                others: {
-                  type: "password"
-                }
-              }}
-            />
-            <div className="col footerBtn">
-              <button
-                className="btn btn-primary"
-                onClick={this.changePassword.bind(this)}
-              >
-                Change Password
-              </button>
-              <button
-                className="btn btn-default"
-                onClick={this.closePwdModal.bind(this)}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-        {/* Side Bar Functionality */}
-        {this.state.sideopen === true ? (
-          <div
-            anchor={anchor}
-            className={"animated leftNavCntr " + this.state.class}
-          >
-            <div className="hptl-phase1-sideMenuBar">
-              <div className="menuBar-title">
-                {/* <div className="appLogoOnly" />*/}
-
-                <i
-                  onClick={this.handleDrawerClose}
-                  className="fas fa-chevron-circle-left sideBarClose"
-                />
-                <input
-                  type="text"
-                  autoComplete="off"
-                  name="searchModules"
-                  className="subMenuSearchFld"
-                  placeholder="Search Modules"
-                  value={this.state.searchModules}
-                  autoFocus={true}
-                  ref={c => (this.searchModules = c)}
-                  onChange={this.SearchModuleHandler.bind(this)}
-                />
-              </div>
-              <div
-                className="sideMenu-header"
-                ref={scrollLeftPanel =>
-                  (this.scrollLeftPanel = scrollLeftPanel)
-                }
-              >
-                <div className="menuBarLoader d-none">
-                  <i className="fas fa-spinner fa-spin" />
-                </div>
-                {this.createSideMenuItemList()}
-              </div>
-            </div>
-          </div>
-        ) : null}
         <main
           className={"mainPageArea container-fluid" + this.state.lang_className}
           id="hisapp"
@@ -806,4 +608,4 @@ class PersistentDrawer extends React.Component {
   }
 }
 
-export default PersistentDrawer;
+export default withRouter(PersistentDrawer);

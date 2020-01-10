@@ -2,9 +2,7 @@ import React, { Component } from "react";
 import "./physical_examination.scss";
 import PatientHistory from "../PatientHistory/PatientHistory";
 import Examination from "../Examination/Examination";
-import {
-  AlagehFormGroup
-} from "../../Wrapper/algaehWrapper";
+import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 // import ExaminationDiagram from "./ExaminationDiagram";
 
@@ -16,6 +14,7 @@ class PhysicalExamination extends Component {
       examination_notes: null
     };
     this.isclosed = false;
+
     this.getPatientEncounterDetails();
   }
 

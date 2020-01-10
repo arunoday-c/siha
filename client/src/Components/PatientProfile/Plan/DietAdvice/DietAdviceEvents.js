@@ -31,9 +31,10 @@ const addDiet = $this => {
       type: "warning"
     });
   } else {
+    const { current_patient, episode_id } = $this.props.location.state;
     let inputObj = {
-      patient_id: Window.global["current_patient"],
-      episode_id: Window.global["episode_id"],
+      patient_id: current_patient, //Window.global["current_patient"],
+      episode_id: episode_id, //Window.global["episode_id"],
       diet_id: $this.state.diet_id,
       till_date: $this.state.till_date,
       comments: null
@@ -63,9 +64,10 @@ const addDiet = $this => {
 };
 
 const getDietList = $this => {
+  const { current_patient, episode_id } = $this.props.location.state;
   let inputObj = {
-    patient_id: Window.global["current_patient"],
-    episode_id: Window.global["episode_id"]
+    patient_id: current_patient, // Window.global["current_patient"],
+    episode_id: episode_id //Window.global["episode_id"]
   };
   $this.props.getDietList({
     uri: "/doctorsWorkBench/getEpisodeDietAdvice",

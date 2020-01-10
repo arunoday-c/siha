@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-
+import { withRouter } from "react-router-dom";
 import {
   AlagehFormGroup,
   AlagehAutoComplete
@@ -172,4 +172,4 @@ class Referal extends PureComponent {
     );
   }
 }
-export default Referal;
+export default withRouter(Referal);

@@ -45,6 +45,7 @@ class OrderingServices extends PureComponent {
   constructor(props) {
     super(props);
     this.serviceSocket = sockets;
+    const { current_patient, visit_id } = props.location.state;
     this.state = {
       s_service_type: null,
       s_service: null,
@@ -52,8 +53,8 @@ class OrderingServices extends PureComponent {
       isFavOpen: false,
       isOpen: false,
 
-      patient_id: Window.global["current_patient"],
-      visit_id: Window.global["visit_id"],
+      patient_id: current_patient, //Window.global["current_patient"],
+      visit_id: visit_id, //Window.global["visit_id"],
       doctor_id: null,
       vat_applicable: this.props.vat_applicable,
       date_of_birth: this.props.date_of_birth,
@@ -199,17 +200,12 @@ class OrderingServices extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-
-
-    let saved = true
-    const orderservicesdata = _.filter(
-      nextProps.orderedList,
-      f => {
-        return f.trans_package_detail_id === null;
-      }
-    );
+    let saved = true;
+    const orderservicesdata = _.filter(nextProps.orderedList, f => {
+      return f.trans_package_detail_id === null;
+    });
     if (orderservicesdata.length > 0) {
-      saved = false
+      saved = false;
     }
     if (
       nextProps.existinginsurance !== undefined &&
@@ -218,14 +214,13 @@ class OrderingServices extends PureComponent {
       let output = nextProps.existinginsurance[0];
       output.insured = "Y";
       output.approval_amt = nextProps.approval_amt;
-      output.approval_limit_yesno = nextProps.approval_limit_yesno
-      output.orderservicesdata = orderservicesdata
-      output.preserviceInput = nextProps.preserviceInput
-      output.saved = saved
+      output.approval_limit_yesno = nextProps.approval_limit_yesno;
+      output.orderservicesdata = orderservicesdata;
+      output.preserviceInput = nextProps.preserviceInput;
+      output.saved = saved;
 
       this.setState({ ...output });
     } else {
-
       this.setState({
         insured: "N",
         approval_amt: nextProps.approval_amt,
@@ -238,6 +233,7 @@ class OrderingServices extends PureComponent {
   }
 
   onClose = e => {
+    const {current_patient,visit_id} = this.props.location.state;
     getFavouriteServices(this);
     this.setState(
       {
@@ -245,8 +241,8 @@ class OrderingServices extends PureComponent {
         s_service: null,
         selectedLang: "en",
 
-        patient_id: Window.global["current_patient"],
-        visit_id: Window.global["visit_id"],
+        patient_id: current_patient,//Window.global["current_patient"],
+        visit_id: visit_id,//Window.global["visit_id"],
         doctor_id: null,
         vat_applicable: this.props.vat_applicable,
 
@@ -286,7 +282,7 @@ class OrderingServices extends PureComponent {
   };
   render() {
     const insurance_id = this.state.insurance_provider_id;
-
+const {current_patient,visit_id,provider_id} = this.props.location.state;
     return (
       <div className="hptl-phase1-ordering-services-form">
         <AlgaehModalPopUp
@@ -460,10 +456,10 @@ class OrderingServices extends PureComponent {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                f =>
-                                  f.hims_d_service_type_id ===
-                                  row.service_type_id
-                              );
+                                  f =>
+                                    f.hims_d_service_type_id ===
+                                    row.service_type_id
+                                );
 
                           return (
                             <span>
@@ -480,10 +476,10 @@ class OrderingServices extends PureComponent {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                f =>
-                                  f.hims_d_service_type_id ===
-                                  row.service_type_id
-                              );
+                                  f =>
+                                    f.hims_d_service_type_id ===
+                                    row.service_type_id
+                                );
 
                           return (
                             <span>
@@ -507,8 +503,8 @@ class OrderingServices extends PureComponent {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                f => f.hims_d_services_id === row.services_id
-                              );
+                                  f => f.hims_d_services_id === row.services_id
+                                );
 
                           return (
                             <span>
@@ -525,8 +521,8 @@ class OrderingServices extends PureComponent {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                f => f.hims_d_services_id === row.services_id
-                              );
+                                  f => f.hims_d_services_id === row.services_id
+                                );
 
                           return (
                             <span>
@@ -767,10 +763,10 @@ class OrderingServices extends PureComponent {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                f =>
-                                  f.hims_d_service_type_id ===
-                                  row.service_type_id
-                              );
+                                  f =>
+                                    f.hims_d_service_type_id ===
+                                    row.service_type_id
+                                );
 
                           return (
                             <span>
@@ -799,8 +795,8 @@ class OrderingServices extends PureComponent {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                f => f.hims_d_services_id === row.services_id
-                              );
+                                  f => f.hims_d_services_id === row.services_id
+                                );
 
                           return (
                             <span>
@@ -906,7 +902,7 @@ class OrderingServices extends PureComponent {
               show={this.state.isOpen}
               onClose={openFavouriteOrder.bind(this, this)}
               from="ClinicalDesk"
-              doctor_id={Window.global["provider_id"]}
+              doctor_id={provider_id}//Window.global["provider_id"]}
             />
 
             <ViewFavouriteOrder
@@ -993,8 +989,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OrderingServices)
+  connect(mapStateToProps, mapDispatchToProps)(OrderingServices)
 );

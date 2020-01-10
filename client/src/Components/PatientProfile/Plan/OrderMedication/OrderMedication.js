@@ -51,13 +51,20 @@ class OrderMedication extends Component {
       storedState = Window.global["orderMedicationState"];
       removeGlobal("orderMedicationState");
     }
+    const {
+      current_patient,
+      encounter_id,
+      visit_id,
+      provider_id,
+      episode_id
+    } = props.location.state;
     this.state = {
-      patient_id: Window.global["current_patient"],
-      encounter_id: Window.global["encounter_id"],
-      visit_id: Window.global["visit_id"],
+      patient_id: current_patient, // Window.global["current_patient"],
+      encounter_id: encounter_id, // Window.global["encounter_id"],
+      visit_id: visit_id, // Window.global["visit_id"],
 
-      provider_id: Window.global["provider_id"],
-      episode_id: Window.global["episode_id"],
+      provider_id: provider_id, // Window.global["provider_id"],
+      episode_id: episode_id, //Window.global["episode_id"],
 
       vat_applicable: this.props.vat_applicable,
       instructions: "",

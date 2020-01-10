@@ -21,6 +21,12 @@ const texthandle = ($this, e) => {
 };
 
 const addFollowUp = $this => {
+  const {
+    current_patient,
+    provider_id,
+    episode_id,
+    sub_department_id
+  } = $this.props.location.state;
   if ($this.state.followup_days === 0) {
     swalMessage({
       title: "Please Enter Next visit After",
@@ -28,10 +34,10 @@ const addFollowUp = $this => {
     });
   } else {
     let inputObj = {
-      patient_id: Window.global["current_patient"],
-      doctor_id: Window.global["provider_id"],
-      episode_id: Window.global["episode_id"],
-      sub_department_id: Window.global["sub_department_id"],
+      patient_id: current_patient, //Window.global["current_patient"],
+      doctor_id: provider_id, // Window.global["provider_id"],
+      episode_id: episode_id, // Window.global["episode_id"],
+      sub_department_id: sub_department_id, // Window.global["sub_department_id"],
       reason: $this.state.followup_comments,
       followup_type: $this.state.followup_type,
       followup_days: $this.state.followup_days,

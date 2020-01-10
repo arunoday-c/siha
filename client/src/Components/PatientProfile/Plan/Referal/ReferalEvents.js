@@ -11,6 +11,7 @@ const texthandle = ($this, e) => {
 };
 
 const addReferal = $this => {
+  const { current_patient, episode_id } = $this.props.location.state;
   if (
     $this.state.referral_type === "I" &&
     $this.state.doctor_id === undefined
@@ -22,8 +23,8 @@ const addReferal = $this => {
     });
   } else {
     let inputObj = {
-      patient_id: Window.global["current_patient"],
-      episode_id: Window.global["episode_id"],
+      patient_id: current_patient, //Window.global["current_patient"],
+      episode_id: episode_id, //Window.global["episode_id"],
       referral_type: $this.state.referral_type,
       sub_department_id: $this.state.sub_department_id,
       doctor_id: $this.state.doctor_id,

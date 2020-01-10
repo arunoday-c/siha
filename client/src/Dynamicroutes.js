@@ -562,9 +562,7 @@ const PageToPlot = {
     )
   ),
   SalesInvoice: React.lazy(() =>
-    retry(() =>
-      import("./Components/Sales/SalesInvoice/SalesInvoice")
-    )
+    retry(() => import("./Components/Sales/SalesInvoice/SalesInvoice"))
   ),
   SalesQuotationList: React.lazy(() =>
     retry(() =>
@@ -572,9 +570,7 @@ const PageToPlot = {
     )
   ),
   SalesOrderList: React.lazy(() =>
-    retry(() =>
-      import("./Components/Sales/SalesOrderList/SalesOrderSwitch")
-    )
+    retry(() => import("./Components/Sales/SalesOrderList/SalesOrderSwitch"))
   ),
 
   Accounts,
