@@ -6,9 +6,9 @@ import SortableTree, {
 } from "react-sortable-tree";
 import {
   AlgaehConfirm,
-  AlgaehMessagePop,
-  Input,
-  Icon
+  AlgaehMessagePop
+  // Input,
+  // Icon
   // DatePicker
 } from "algaeh-react-components";
 import ReportLauncher from "../AccountReport";
@@ -16,8 +16,8 @@ import AddNewAccount from "../AddNewAccount/AddNewAccount";
 import {
   getAccounts,
   isPositive,
-  removeAccount,
-  renameAccount
+  removeAccount
+  // renameAccount
   // getChartData
 } from ".././FinanceAccountEvent";
 import "react-sortable-tree/style.css";

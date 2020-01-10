@@ -76,6 +76,31 @@ export default function Assets() {
       }
     });
   }
+
+  function editChild(input, stopLoad) {
+    renameAccount(input)
+      .then(() => {
+        loadAccount();
+        setEditorRecord({});
+        stopLoad();
+        setShowPopup(false);
+        AlgaehMessagePop({
+          type: "success",
+          display: "Renamed successfull"
+        });
+        setSearchQuery(input.child_name);
+      })
+      .catch(error => {
+        console.log("error", error);
+        stopLoad();
+        setShowPopup(false);
+        AlgaehMessagePop({
+          type: "error",
+          display: error
+        });
+      });
+  }
+
   function removeNode(rowInfo) {
     return new Promise((resolve, reject) => {
       try {
@@ -107,6 +132,7 @@ export default function Assets() {
       }
     });
   }
+
   function loadAccount() {
     getAccounts(assetCode, data => {
       if (Array.isArray(data)) {
@@ -335,10 +361,12 @@ export default function Assets() {
     <div className="container-fluid assetsModuleScreen">
       <AddNewAccount
         showPopup={showPopup}
-        selectedNode={selectedNode}
+        selectedNode={editorRecord.node ? editorRecord : selectedNode}
         accountCode={assetCode}
         onClose={editorRecord.node ? onEditClose : onClose}
         accountName={editorRecord.node ? editorRecord.node.title : ""}
+        propOnOK={editorRecord.node ? editChild : null}
+        okText={editorRecord.node ? "Change" : "Add"}
         accountType={
           editorRecord.node
             ? editorRecord.node.leafnode === "Y"

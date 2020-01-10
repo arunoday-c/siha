@@ -1,10 +1,11 @@
 import React from "react";
-import Assets from "./Assets";
-import Liabilities from "./Liabilities";
-import Income from "./Income";
-import Capital from "./Capital";
-import Expense from "./Expense";
+// import Assets from "./Assets";
+// import Liabilities from "./Liabilities";
+// import Income from "./Income";
+// import Capital from "./Capital";
+// import Expense from "./Expense";
 import JournalVoucher from "../JournalVoucher";
+import TreeComponent from "./TreeComponent";
 import ReactDom from "react-dom";
 import { AlgaehTabs, AlgaehLabel, AlgaehButton } from "algaeh-react-components";
 export default function FinanceAccounts(props) {
@@ -21,7 +22,7 @@ export default function FinanceAccounts(props) {
                 }}
               />
             ),
-            children: <Assets />
+            children: <TreeComponent assetCode={"1"} title="Assets Accounts" />
           },
           {
             title: (
@@ -31,7 +32,9 @@ export default function FinanceAccounts(props) {
                 }}
               />
             ),
-            children: <Liabilities />
+            children: (
+              <TreeComponent assetCode={"2"} title="Liability Accounts" />
+            )
           },
           {
             title: (
@@ -41,7 +44,7 @@ export default function FinanceAccounts(props) {
                 }}
               />
             ),
-            children: <Income />
+            children: <TreeComponent assetCode={"4"} title="Income Accounts" />
           },
           {
             title: (
@@ -51,7 +54,7 @@ export default function FinanceAccounts(props) {
                 }}
               />
             ),
-            children: <Capital />
+            children: <TreeComponent assetCode={"3"} title="Capital Accounts" />
           },
           {
             title: (
@@ -61,7 +64,7 @@ export default function FinanceAccounts(props) {
                 }}
               />
             ),
-            children: <Expense />
+            children: <TreeComponent assetCode={"5"} title="Expense Accounts" />
           }
         ]}
         component={
@@ -83,3 +86,58 @@ export default function FinanceAccounts(props) {
     </div>
   );
 }
+
+//dead code
+
+// previousContent = [
+//   {
+//     title: (
+//       <AlgaehLabel
+//         label={{
+//           forceLabel: "Assets"
+//         }}
+//       />
+//     ),
+//     children: <Assets />
+//   },
+//   {
+//     title: (
+//       <AlgaehLabel
+//         label={{
+//           forceLabel: "Liabilities"
+//         }}
+//       />
+//     ),
+//     children: <Liabilities />
+//   },
+//   {
+//     title: (
+//       <AlgaehLabel
+//         label={{
+//           forceLabel: "Income"
+//         }}
+//       />
+//     ),
+//     children: <Income />
+//   },
+//   {
+//     title: (
+//       <AlgaehLabel
+//         label={{
+//           forceLabel: "Capital"
+//         }}
+//       />
+//     ),
+//     children: <Capital />
+//   },
+//   {
+//     title: (
+//       <AlgaehLabel
+//         label={{
+//           fieldName: "Expense"
+//         }}
+//       />
+//     ),
+//     children: <Expense />
+//   },
+// ]
