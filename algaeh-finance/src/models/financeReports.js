@@ -670,13 +670,25 @@ function createHierarchyForTB(
 
         if (BALANCE != undefined) {
           if (trans_symbol == "Dr.") {
-            tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
-              decimal_places
-            );
+            if (BALANCE.deb_minus_cred > BALANCE.cred_minus_deb) {
+              tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
+                decimal_places
+              );
+            } else {
+              tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
+                decimal_places
+              );
+            }
           } else {
-            tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
-              decimal_places
-            );
+            if (BALANCE.cred_minus_deb > BALANCE.deb_minus_cred) {
+              tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
+                decimal_places
+              );
+            } else {
+              tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
+                decimal_places
+              );
+            }
           }
         }
 
@@ -709,15 +721,28 @@ function createHierarchyForTB(
 
           let tr_debit_amount = parseFloat(0).toFixed(decimal_places);
           let tr_credit_amount = parseFloat(0).toFixed(decimal_places);
+
           if (BALANCE != undefined) {
             if (trans_symbol == "Dr.") {
-              tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
-                decimal_places
-              );
+              if (BALANCE.deb_minus_cred > BALANCE.cred_minus_deb) {
+                tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
+                  decimal_places
+                );
+              } else {
+                tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
+                  decimal_places
+                );
+              }
             } else {
-              tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
-                decimal_places
-              );
+              if (BALANCE.cred_minus_deb > BALANCE.deb_minus_cred) {
+                tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
+                  decimal_places
+                );
+              } else {
+                tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
+                  decimal_places
+                );
+              }
             }
           }
 
@@ -745,13 +770,25 @@ function createHierarchyForTB(
         let tr_credit_amount = parseFloat(0).toFixed(decimal_places);
         if (BALANCE != undefined) {
           if (trans_symbol == "Dr.") {
-            tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
-              decimal_places
-            );
+            if (BALANCE.deb_minus_cred > BALANCE.cred_minus_deb) {
+              tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
+                decimal_places
+              );
+            } else {
+              tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
+                decimal_places
+              );
+            }
           } else {
-            tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
-              decimal_places
-            );
+            if (BALANCE.cred_minus_deb > BALANCE.deb_minus_cred) {
+              tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
+                decimal_places
+              );
+            } else {
+              tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
+                decimal_places
+              );
+            }
           }
         }
 
