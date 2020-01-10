@@ -22,6 +22,7 @@ import {
   renameAccount,
   getChartData
 } from ".././FinanceAccountEvent";
+import "react-sortable-tree/style.css";
 import "../alice.scss";
 function TreeComponent({ assetCode, title }) {
   const [symbol, setSymbol] = useState("");

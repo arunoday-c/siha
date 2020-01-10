@@ -1,9 +1,4 @@
 import React from "react";
-// import Assets from "./Assets";
-// import Liabilities from "./Liabilities";
-// import Income from "./Income";
-// import Capital from "./Capital";
-// import Expense from "./Expense";
 import JournalVoucher from "../JournalVoucher";
 import TreeComponent from "./TreeComponent";
 import ReactDom from "react-dom";
@@ -89,7 +84,7 @@ export default function FinanceAccounts(props) {
 
 //dead code
 
-// previousContent = [
+// const previousContent = [
 //   {
 //     title: (
 //       <AlgaehLabel
@@ -139,5 +134,5 @@ export default function FinanceAccounts(props) {
 //       />
 //     ),
 //     children: <Expense />
-//   },
-// ]
+//   }
+// ];
