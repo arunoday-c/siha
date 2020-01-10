@@ -9,7 +9,7 @@ import moment from "moment";
 
 export default function PaymentComponent({
   show = false,
-  paymentType,
+  payment_mode,
   ref_no,
   cheque_date,
   handleChange,
@@ -22,12 +22,12 @@ export default function PaymentComponent({
           <AlgaehAutoComplete
             div={{ className: "col-4" }}
             label={{
-              forceLabel: "Payment Type",
+              forceLabel: "Payment Mode",
               isImp: true
             }}
             selector={{
-              name: "paymentType",
-              value: paymentType,
+              name: "payment_mode",
+              value: payment_mode,
               dataSource: {
                 data: PAYMENT_METHODS,
                 valueField: "value",
@@ -37,7 +37,7 @@ export default function PaymentComponent({
               onClear: () => null
             }}
           />
-          {paymentType !== "CASH" ? (
+          {payment_mode !== "CASH" ? (
             <AlgaehFormGroup
               div={{
                 className: "col-4 algaeh-text-fld"
@@ -58,7 +58,7 @@ export default function PaymentComponent({
               }}
             />
           ) : null}
-          {paymentType === "CHEQUE" ? (
+          {payment_mode === "CHEQUE" ? (
             <AlgaehDateHandler
               div={{
                 className: "col-4 algaeh-date-fld"
