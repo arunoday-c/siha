@@ -25,7 +25,7 @@ algaehUtilities.prototype.encryption = function(data) {
 };
 algaehUtilities.prototype.decryption = function(data) {
   try {
-  //  var stringData = new cryptr(this.keys.SECRETKey).decrypt(data);
+    //  var stringData = new cryptr(this.keys.SECRETKey).decrypt(data);
     //return JSON.parse(stringData);
     return data;
   } catch (error) {
@@ -122,7 +122,6 @@ algaehUtilities.prototype.logger = function(reqTracker) {
         ).toLocaleString()}",
        "message":{${message}${msg.data}}}`;
       })
-
     ),
     transports: [transport]
   });
@@ -149,7 +148,12 @@ algaehUtilities.prototype.logger = function(reqTracker) {
   };
 };
 
-algaehUtilities.prototype.getCurrencyFormart = function(value, CurrencyDetail) {
+algaehUtilities.prototype.getCurrencyFormart = function(
+  value,
+  CurrencyDetail,
+  addSymbol
+) {
+  addSymbol = addSymbol || true;
   const settings = CurrencyDetail;
 
   const precesions =
@@ -195,6 +199,9 @@ algaehUtilities.prototype.getCurrencyFormart = function(value, CurrencyDetail) {
       : parseFloat(s).toFixed(precesions);
   let currency = result;
 
+  if (addSymbol === false) {
+    return currency;
+  }
   switch (settings.symbol_position) {
     case "BWS":
       currency = settings.currency_symbol + result;
