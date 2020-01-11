@@ -1,10 +1,9 @@
 import React from "react";
-import JournalVoucher from "../JournalVoucher";
+// import JournalVoucher from "../JournalVoucher";
 import TreeComponent from "./TreeComponent";
-import ReactDom from "react-dom";
-import { AlgaehTabs, AlgaehLabel, AlgaehButton } from "algaeh-react-components";
-export default function FinanceAccounts(props) {
-  const { back } = props;
+// import ReactDom from "react-dom";
+import { AlgaehTabs, AlgaehLabel } from "algaeh-react-components";
+export default function FinanceAccounts({ inDrawer = false }) {
   return (
     <div className="">
       <AlgaehTabs
@@ -17,7 +16,13 @@ export default function FinanceAccounts(props) {
                 }}
               />
             ),
-            children: <TreeComponent assetCode={"1"} title="Assets Accounts" />
+            children: (
+              <TreeComponent
+                assetCode={"1"}
+                title="Assets Accounts"
+                inDrawer={inDrawer}
+              />
+            )
           },
           {
             title: (
@@ -28,7 +33,11 @@ export default function FinanceAccounts(props) {
               />
             ),
             children: (
-              <TreeComponent assetCode={"2"} title="Liability Accounts" />
+              <TreeComponent
+                assetCode={"2"}
+                title="Liability Accounts"
+                inDrawer={inDrawer}
+              />
             )
           },
           {
@@ -39,7 +48,13 @@ export default function FinanceAccounts(props) {
                 }}
               />
             ),
-            children: <TreeComponent assetCode={"4"} title="Income Accounts" />
+            children: (
+              <TreeComponent
+                assetCode={"4"}
+                title="Income Accounts"
+                inDrawer={inDrawer}
+              />
+            )
           },
           {
             title: (
@@ -49,7 +64,13 @@ export default function FinanceAccounts(props) {
                 }}
               />
             ),
-            children: <TreeComponent assetCode={"3"} title="Capital Accounts" />
+            children: (
+              <TreeComponent
+                assetCode={"3"}
+                title="Capital Accounts"
+                inDrawer={inDrawer}
+              />
+            )
           },
           {
             title: (
@@ -59,24 +80,30 @@ export default function FinanceAccounts(props) {
                 }}
               />
             ),
-            children: <TreeComponent assetCode={"5"} title="Expense Accounts" />
+            children: (
+              <TreeComponent
+                assetCode={"5"}
+                title="Expense Accounts"
+                inDrawer={inDrawer}
+              />
+            )
           }
         ]}
-        component={
-          back !== undefined && back === "journalVoucher" ? (
-            <AlgaehButton
-              type="danger"
-              shape="circle"
-              icon="arrow-right"
-              onClick={() => {
-                ReactDom.render(
-                  <JournalVoucher />,
-                  document.getElementById("hisapp")
-                );
-              }}
-            />
-          ) : null
-        }
+        // component={
+        //   back !== undefined && back === "journalVoucher" ? (
+        //     <AlgaehButton
+        //       type="danger"
+        //       shape="circle"
+        //       icon="arrow-right"
+        //       onClick={() => {
+        //         ReactDom.render(
+        //           <JournalVoucher />,
+        //           document.getElementById("hisapp")
+        //         );
+        //       }}
+        //     />
+        //   ) : null
+        // }
       />
     </div>
   );

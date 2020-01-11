@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import ReactDom from "react-dom";
+import React, { useState, useEffect } from "react";
 import { Modal } from "antd";
 import CostCenter from "../costCenterComponent";
 import moment from "moment";
@@ -17,6 +16,8 @@ import {
 import Accounts from "../FinanceAccounts";
 import { getHeaders, addJurnorLedger } from "./JournalVoucher.events";
 import PaymentComponent from "./PaymentComponent";
+import AccountsDrawer from "./AccountDrawer";
+
 import { getCookie } from "../../utils/algaehApiCall";
 let records_av = {};
 let dataPayment = [
@@ -44,6 +45,7 @@ export default function JournalVoucher() {
     ref_no: "",
     cheque_date: undefined
   };
+  const [drawer, setDrawer] = useState(false);
   const [payment, setPayment] = useState(basePayment);
   const [loading, setLoading] = useState(false);
   const [clearLoading, setClearLoading] = useState(false);
@@ -64,6 +66,16 @@ export default function JournalVoucher() {
       payment_mode: "CA"
     }
   ]);
+
+  useEffect(() => {
+    if (!drawer) {
+      getHeaders({ voucher_type: voucherType })
+        .then(result => {
+          setAccounts(result);
+        })
+        .catch(e => console.log(e));
+    }
+  }, [voucherType, drawer]);
 
   const show = voucherType === "receipt" || voucherType === "payment";
 
@@ -185,6 +197,12 @@ export default function JournalVoucher() {
 
   return (
     <div className="JournalVoucherScreen">
+      <AccountsDrawer
+        show={drawer}
+        onClose={() => setDrawer(false)}
+        title="Accounts"
+        content={<Accounts inDrawer={true} />}
+      />
       <div
         className="row inner-top-search margin-bottom-15"
         style={{ paddingBottom: "10px" }}
@@ -240,10 +258,6 @@ export default function JournalVoucher() {
               // setVoucherNo(type);
               // }
               setPayment(basePayment);
-              getHeaders({ voucher_type: selected.value }).then(result => {
-                setAccounts(result);
-              });
-
               setVoucherType(selected.value);
               // setPrefix(selected.shortHand + "-");
             },
@@ -277,10 +291,7 @@ export default function JournalVoucher() {
                   type="primary"
                   icon="play-circle"
                   onClick={() => {
-                    ReactDom.render(
-                      <Accounts back="journalVoucher" />,
-                      document.getElementById("hisapp")
-                    );
+                    setDrawer(true);
                   }}
                 />
               </div>

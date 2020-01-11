@@ -24,7 +24,7 @@ import {
 } from ".././FinanceAccountEvent";
 import "react-sortable-tree/style.css";
 import "../alice.scss";
-function TreeComponent({ assetCode, title }) {
+function TreeComponent({ assetCode, title, inDrawer }) {
   const [symbol, setSymbol] = useState("");
   const [financeHeadId, setFinanceHeadId] = useState(undefined);
   const [amount, setAmount] = useState("");
@@ -376,7 +376,7 @@ function TreeComponent({ assetCode, title }) {
   }
 
   function AccountChart() {
-    if (isExpOrInc) {
+    if (isExpOrInc && !inDrawer) {
       return (
         <div className="col-4">
           <div className="portlet portlet-bordered margin-bottom-15">
@@ -471,7 +471,7 @@ function TreeComponent({ assetCode, title }) {
 
       <div className="row">
         <AccountChart />
-        <div className={isExpOrInc ? "col-8" : "col-12"}>
+        <div className={isExpOrInc && !inDrawer ? "col-8" : "col-12"}>
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
