@@ -120,34 +120,12 @@ export default {
     const _mysql = new algaehMysql();
     try {
       req.mySQl = _mysql;
-      //Patient
       _mysql
         .generateRunningNumber({
-          modules: ["PAT_REGS"], //["PAT_REGS", "PAT_VISIT", "PAT_BILL", "RECEIPT"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["PAT_REGS", "PAT_VISIT", "PAT_BILL", "RECEIPT"],
+          table_name: "hims_f_app_numgen"
         })
-        // .then(generatedNumbers => {
-        //   console.log("generatedNumbers", generatedNumbers);
-        //   req.connection = {
-        //     connection: _mysql.connection,
-        //     isTransactionConnection: _mysql.isTransactionConnection,
-        //     pool: _mysql.pool
-        //   };
-
-        //   //Patient
-        //   req.body.patient_code = generatedNumbers[0];
-        //   //Visit
-        //   req.body.visit_code = generatedNumbers[1];
-        //   //Bill
-        //   req.body.bill_number = generatedNumbers[2];
-        //   //Receipt
-        //   req.body.receipt_number = generatedNumbers[3];
-        //   next();
-        // })
 
         .then(generatedNumbers => {
           req.connection = {
@@ -155,66 +133,11 @@ export default {
             isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool
           };
-          req.body.patient_code = generatedNumbers[0];
-
-          //Visit
-          _mysql
-            .generateRunningNumber({
-              modules: ["PAT_VISIT"],
-              tableName: "hims_f_app_numgen",
-              identity: {
-                algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-                hospital_id: req.userIdentity.hospital_id
-              }
-            })
-            .then(generatedNumbers => {
-              req.body.visit_code = generatedNumbers[0];
-
-              //Bill
-              _mysql
-                .generateRunningNumber({
-                  modules: ["PAT_BILL"],
-                  tableName: "hims_f_app_numgen",
-                  identity: {
-                    algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-                    hospital_id: req.userIdentity.hospital_id
-                  }
-                })
-                .then(generatedNumbers => {
-                  req.body.bill_number = generatedNumbers[0];
-
-                  //Receipt
-                  _mysql
-                    .generateRunningNumber({
-                      modules: ["RECEIPT"],
-                      tableName: "hims_f_app_numgen",
-                      identity: {
-                        algaeh_d_app_user_id:
-                          req.userIdentity.algaeh_d_app_user_id,
-                        hospital_id: req.userIdentity.hospital_id
-                      }
-                    })
-                    .then(generatedNumbers => {
-                      req.body.receipt_number = generatedNumbers[0];
-                      next();
-                    })
-                    .catch(e => {
-                      _mysql.rollBackTransaction(() => {
-                        next(e);
-                      });
-                    });
-                })
-                .catch(e => {
-                  _mysql.rollBackTransaction(() => {
-                    next(e);
-                  });
-                });
-            })
-            .catch(e => {
-              _mysql.rollBackTransaction(() => {
-                next(e);
-              });
-            });
+          req.body.patient_code = generatedNumbers.PAT_REGS;
+          req.body.visit_code = generatedNumbers.PAT_VISIT;
+          req.body.bill_number = generatedNumbers.PAT_BILL;
+          req.body.receipt_number = generatedNumbers.RECEIPT;
+          next();
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {
@@ -230,44 +153,12 @@ export default {
   updateFrontDesk: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      const utilities = new algaehUtilities();
       req.mySQl = _mysql;
-      //Visit
-
-      // _mysql
-      //   .generateRunningNumber({
-      //     modules: ["PAT_VISIT", "PAT_BILL", "RECEIPT"],
-      //     tableName: "hims_f_app_numgen",
-      //     identity: {
-      //       algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-      //       hospital_id: req.userIdentity.hospital_id
-      //     },
-      //     others: { printQuery: true }
-      //   })
-      //   .then(generatedNumbers => {
-      //     console.log("generatedNumbers", generatedNumbers);
-      //     req.connection = {
-      //       connection: _mysql.connection,
-      //       isTransactionConnection: _mysql.isTransactionConnection,
-      //       pool: _mysql.pool
-      //     };
-
-      //     //Visit
-      //     req.body.visit_code = generatedNumbers[1];
-      //     //Bill
-      //     req.body.bill_number = generatedNumbers[0];
-      //     //Receipt
-      //     req.body.receipt_number = generatedNumbers[2];
-      //     next();
-      //   })
       _mysql
         .generateRunningNumber({
-          modules: ["PAT_VISIT"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["PAT_VISIT", "PAT_BILL", "RECEIPT"],
+          table_name: "hims_f_app_numgen"
         })
         .then(generatedNumbers => {
           req.connection = {
@@ -275,46 +166,10 @@ export default {
             isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool
           };
-          req.body.visit_code = generatedNumbers[0];
-
-          //Bill
-          _mysql
-            .generateRunningNumber({
-              modules: ["PAT_BILL"],
-              tableName: "hims_f_app_numgen",
-              identity: {
-                algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-                hospital_id: req.userIdentity.hospital_id
-              }
-            })
-            .then(generatedNumbers => {
-              req.body.bill_number = generatedNumbers[0];
-
-              //Receipt
-              _mysql
-                .generateRunningNumber({
-                  modules: ["RECEIPT"],
-                  tableName: "hims_f_app_numgen",
-                  identity: {
-                    algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-                    hospital_id: req.userIdentity.hospital_id
-                  }
-                })
-                .then(generatedNumbers => {
-                  req.body.receipt_number = generatedNumbers[0];
-                  next();
-                })
-                .catch(e => {
-                  _mysql.rollBackTransaction(() => {
-                    next(e);
-                  });
-                });
-            })
-            .catch(e => {
-              _mysql.rollBackTransaction(() => {
-                next(e);
-              });
-            });
+          req.body.visit_code = generatedNumbers.PAT_VISIT;
+          req.body.bill_number = generatedNumbers.PAT_BILL;
+          req.body.receipt_number = generatedNumbers.RECEIPT;
+          next();
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {

@@ -82,15 +82,12 @@ export default {
 
       _mysql
         .generateRunningNumber({
-          modules: ["OPT_INV_POS"],
-          tableName: "hims_f_inventory_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["OPT_INV_POS"],
+          table_name: "hims_f_app_numgen"
         })
         .then(generatedNumbers => {
-          pos_number = generatedNumbers[0];
+          pos_number = generatedNumbers.OPT_INV_POS;
 
           let year = moment().format("YYYY");
 

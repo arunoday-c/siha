@@ -98,14 +98,12 @@ export default {
               // console.log("userIdentity: ", req.userIdentity);
               _mysql
                 .generateRunningNumber({
-                  modules: ["EMPLOYEE_LOAN"],
-                  tableName: "hims_f_app_numgen",
-                  identity: {
-                    algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-                    hospital_id: req.userIdentity.hospital_id
-                  }
+
+                  user_id: req.userIdentity.algaeh_d_app_user_id,
+                  numgen_codes: ["EMPLOYEE_LOAN"],
+                  table_name: "hims_f_hrpayroll_numgen"
                 })
-                .then(numGenLeave => {
+                .then(generatedNumbers => {
                   _mysql
                     .executeQuery({
                       query:
@@ -114,7 +112,7 @@ export default {
                 installment_amount, pending_loan,created_date, created_by, updated_date, updated_by,hospital_id)\
                     VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                       values: [
-                        numGenLeave[0],
+                        generatedNumbers.EMPLOYEE_LOAN,
 
                         input.employee_id,
                         input.loan_id,
@@ -477,10 +475,10 @@ export default {
                         "YYYY-MM-DD"
                       )}', authorized_by=${
                         req.userIdentity.algaeh_d_app_user_id
-                      }\
+                        }\
                   where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=${
-                    input.hims_f_loan_application_id
-                  }`;
+                        input.hims_f_loan_application_id
+                        }`;
                     }
 
                     //---------------

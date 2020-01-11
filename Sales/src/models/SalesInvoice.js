@@ -196,15 +196,12 @@ export function addInvoiceEntry(req, res, next) {
 
         _mysql
             .generateRunningNumber({
-                modules: ["SALES_INVOICE"],
-                tableName: "hims_f_sales_numgen",
-                identity: {
-                    algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-                    hospital_id: req.userIdentity.hospital_id
-                }
+                user_id: req.userIdentity.algaeh_d_app_user_id,
+                numgen_codes: ["SALES_INVOICE"],
+                table_name: "hims_f_sales_numgen"
             })
             .then(generatedNumbers => {
-                invoice_number = generatedNumbers[0];
+                invoice_number = generatedNumbers.SALES_INVOICE;
 
                 _mysql
                     .executeQuery({

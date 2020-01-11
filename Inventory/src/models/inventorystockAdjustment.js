@@ -12,12 +12,9 @@ export default {
             //Bill
             _mysql
                 .generateRunningNumber({
-                    modules: ["INV_STK_ADJ"],
-                    tableName: "hims_f_inventory_numgen",
-                    identity: {
-                        algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-                        hospital_id: req.userIdentity.hospital_id
-                    }
+                    user_id: req.userIdentity.algaeh_d_app_user_id,
+                    numgen_codes: ["INV_STK_ADJ"],
+                    table_name: "hims_f_inventory_numgen"
                 })
                 .then(generatedNumbers => {
                     req.connection = {
@@ -25,7 +22,7 @@ export default {
                         isTransactionConnection: _mysql.isTransactionConnection,
                         pool: _mysql.pool
                     };
-                    req.body.adjustment_number = generatedNumbers[0];
+                    req.body.adjustment_number = generatedNumbers.INV_STK_ADJ;
                     next();
                 })
                 .catch(e => {

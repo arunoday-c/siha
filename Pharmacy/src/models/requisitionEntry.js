@@ -92,15 +92,12 @@ export default {
 
       _mysql
         .generateRunningNumber({
-          modules: ["REQ_NUM"],
-          tableName: "hims_f_pharmacy_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["REQ_NUM"],
+          table_name: "hims_f_pharmacy_numgen"
         })
         .then(generatedNumbers => {
-          material_requisition_number = generatedNumbers[0];
+          material_requisition_number = generatedNumbers.REQ_NUM;
 
           let year = moment().format("YYYY");
 

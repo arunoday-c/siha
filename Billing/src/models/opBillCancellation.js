@@ -15,15 +15,12 @@ export default {
 
       _mysql
         .generateRunningNumber({
-          modules: ["OP_CBIL"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["OP_CBIL"],
+          table_name: "hims_f_app_numgen"
         })
         .then(generatedNumbers => {
-          bill_cancel_number = generatedNumbers[0];
+          bill_cancel_number = generatedNumbers.OP_CBIL;
 
           _mysql
             .executeQuery({
@@ -575,7 +572,7 @@ export default {
         inputParam.billdetails,
         f =>
           f.service_type_id ==
-            appsettings.hims_d_service_type.service_type_id.Procedure &&
+          appsettings.hims_d_service_type.service_type_id.Procedure &&
           f.ordered_services_id != null
       );
       console.log("dental_Services: ", dental_Services.length);

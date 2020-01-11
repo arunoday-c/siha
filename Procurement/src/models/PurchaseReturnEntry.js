@@ -167,15 +167,12 @@ export default {
       utilities.logger().log("addPurchaseReturnEntry: ");
       _mysql
         .generateRunningNumber({
-          modules: ["PO_RETURN_NUM"],
-          tableName: "hims_f_procurement_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["PO_RETURN_NUM"],
+          table_name: "hims_f_procurement_numgen"
         })
         .then(generatedNumbers => {
-          purchase_return_number = generatedNumbers[0];
+          purchase_return_number = generatedNumbers.PO_RETURN_NUM;
 
           // let today = moment().format("YYYY-MM-DD");
 
