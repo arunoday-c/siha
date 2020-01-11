@@ -38,7 +38,7 @@ import { Dimmer, Loader } from "semantic-ui-react";
 class BasicSubjective extends Component {
   constructor(props) {
     super(props);
-    const { gender } = props.location.state;
+    const { gender } = props.location.state.content;
     this.state = {
       pageDisplay: "Orders",
       openMedication: false,
@@ -162,7 +162,7 @@ class BasicSubjective extends Component {
   }
 
   getPatientMedications() {
-    const { current_patient } = this.props.location.state;
+    const { current_patient } = this.props.location.state.content;
     this.setState(
       {
         loadingUnderMedication: true
@@ -196,7 +196,7 @@ class BasicSubjective extends Component {
   }
 
   getPatientEncounterDetails() {
-    const { encounter_id } = this.props.location.state;
+    const { encounter_id } = this.props.location.state.content;
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientEncounter",
       method: "GET",
@@ -212,10 +212,12 @@ class BasicSubjective extends Component {
               other_signs: data.other_signs
             },
             () => {
-              this.props.location.state[
+              this.props.location.state.content[
                 "significant_signs"
               ] = this.state.significant_signs;
-              this.props.location.state["other_signs"] = this.state.other_signs;
+              this.props.location.state.content[
+                "other_signs"
+              ] = this.state.other_signs;
             }
           );
 
@@ -320,7 +322,7 @@ class BasicSubjective extends Component {
       } else {
         SubjectiveHandler().updatePatientChiefComplaints(this);
       }
-      const { current_patient, episode_id } = this.props.location.state;
+      const { current_patient, episode_id } = this.props.location.state.content;
       this.setState(
         {
           openDiet: !this.state.openDiet
@@ -385,7 +387,7 @@ class BasicSubjective extends Component {
     this.setState({
       [name]: value
     });
-    this.props.location.state[name] = value;
+    this.props.location.state.content[name] = value;
     // if (name === "chief_complaint") {
 
     // setGlobal({

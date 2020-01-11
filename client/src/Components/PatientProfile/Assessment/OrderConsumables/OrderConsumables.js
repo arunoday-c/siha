@@ -32,7 +32,7 @@ import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 class OrderConsumables extends Component {
   constructor(props) {
     super(props);
-    const { current_patient, visit_id } = props.location.state;
+    const { current_patient, visit_id } = props.location.state.content;
     this.state = {
       s_service_type: null,
       s_service: null,
@@ -168,7 +168,7 @@ class OrderConsumables extends Component {
   }
 
   onClose = e => {
-    const { current_patient, visit_id } = this.props.location.state;
+    const { current_patient, visit_id } = this.props.location.state.content;
     this.setState(
       {
         s_service_type: null,

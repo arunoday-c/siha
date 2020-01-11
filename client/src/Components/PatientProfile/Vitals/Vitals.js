@@ -156,7 +156,7 @@ class Vitals extends Component {
               visit_id,
               current_patient,
               case_type
-            } = that.props.location.state;
+            } = that.props.location.state.content;
             const _isDepended = _elements[i].getAttribute("dependent");
             bodyArray.push({
               patient_id: current_patient, //Window.global["current_patient"],

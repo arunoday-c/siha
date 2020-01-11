@@ -11,7 +11,7 @@ const texthandle = ($this, e) => {
 };
 
 const addReferal = $this => {
-  const { current_patient, episode_id } = $this.props.location.state;
+  const { current_patient, episode_id } = $this.props.location.state.content;
   if (
     $this.state.referral_type === "I" &&
     $this.state.doctor_id === undefined

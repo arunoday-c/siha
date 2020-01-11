@@ -52,7 +52,7 @@ class OrderedList extends PureComponent {
       });
       return;
     }
-    const { visit_id } = this.props.location.state;
+    const { visit_id } = this.props.location.state.content;
     algaehApiCall({
       uri: "/patientRegistration/getVisitServiceAmount",
       module: "frontDesk",
@@ -107,7 +107,7 @@ class OrderedList extends PureComponent {
         isPackOpen: !this.state.isPackOpen
       },
       () => {
-        const { current_patient } = this.props.location.state;
+        const { current_patient } = this.props.location.state.content;
         this.props.getPakageList({
           uri: "/orderAndPreApproval/getPatientPackage",
           method: "GET",
@@ -130,7 +130,7 @@ class OrderedList extends PureComponent {
         isOpen: !this.state.isOpen
       },
       () => {
-        const { visit_id } = this.props.location.state;
+        const { visit_id } = this.props.location.state.content;
         this.props.getOrderList({
           uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
           method: "GET",
@@ -154,7 +154,7 @@ class OrderedList extends PureComponent {
       onSuccess: response => {
         if (response.data.success === true) {
           let Depat_data = response.data.records;
-          const { visit_id } = this.props.location.state;
+          const { visit_id } = this.props.location.state.content;
           algaehApiCall({
             uri: "/patientRegistration/getVisitServiceAmount",
             module: "frontDesk",
@@ -207,7 +207,7 @@ class OrderedList extends PureComponent {
   }
 
   CloseConsumableModel(e) {
-    const { visit_id } = this.props.location.state;
+    const { visit_id } = this.props.location.state.content;
     this.setState(
       {
         isConsOpen: !this.state.isConsOpen
@@ -262,7 +262,7 @@ class OrderedList extends PureComponent {
         isPackUtOpen: !this.state.isPackUtOpen
       },
       () => {
-        const { current_patient, visit_id } = this.props.location.state;
+        const { current_patient, visit_id } = this.props.location.state.content;
         this.props.getPakageList({
           uri: "/orderAndPreApproval/getPatientPackage",
           method: "GET",
@@ -399,7 +399,7 @@ class OrderedList extends PureComponent {
         mappingName: "serviceslist"
       }
     });
-    const { visit_id, current_patient } = this.props.location.state;
+    const { visit_id, current_patient } = this.props.location.state.content;
     this.props.getOrderList({
       uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
       method: "GET",
@@ -479,7 +479,10 @@ class OrderedList extends PureComponent {
             pre_approval: row.pre_approval
           },
           onSuccess: response => {
-            const { visit_id, current_patient } = this.props.location.state;
+            const {
+              visit_id,
+              current_patient
+            } = this.props.location.state.content;
             if (response.data.success === true) {
               this.props.getOrderList({
                 uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
@@ -541,7 +544,7 @@ class OrderedList extends PureComponent {
           },
           onSuccess: response => {
             if (response.data.success === true) {
-              const { visit_id } = this.props.location.state;
+              const { visit_id } = this.props.location.state.content;
               this.props.getConsumableOrderList({
                 uri: "/orderAndPreApproval/getVisitConsumable",
                 method: "GET",
@@ -590,7 +593,7 @@ class OrderedList extends PureComponent {
           },
           onSuccess: response => {
             if (response.data.success === true) {
-              const { current_patient } = this.props.location.state;
+              const { current_patient } = this.props.location.state.content;
               this.props.getPakageList({
                 uri: "/orderAndPreApproval/getPatientPackage",
                 method: "GET",
@@ -633,7 +636,7 @@ class OrderedList extends PureComponent {
       current_patient,
       visit_id,
       provider_id
-    } = this.props.location.state;
+    } = this.props.location.state.content;
     return (
       <div className="hptl-phase1-ordering-services-form">
         {this.state.openData === "Investigation" ? (

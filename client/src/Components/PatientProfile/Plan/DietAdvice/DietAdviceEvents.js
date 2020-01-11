@@ -31,7 +31,7 @@ const addDiet = $this => {
       type: "warning"
     });
   } else {
-    const { current_patient, episode_id } = $this.props.location.state;
+    const { current_patient, episode_id } = $this.props.location.state.content;
     let inputObj = {
       patient_id: current_patient, //Window.global["current_patient"],
       episode_id: episode_id, //Window.global["episode_id"],
@@ -64,7 +64,7 @@ const addDiet = $this => {
 };
 
 const getDietList = $this => {
-  const { current_patient, episode_id } = $this.props.location.state;
+  const { current_patient, episode_id } = $this.props.location.state.content;
   let inputObj = {
     patient_id: current_patient, // Window.global["current_patient"],
     episode_id: episode_id //Window.global["episode_id"]

@@ -379,16 +379,18 @@ class DoctorsWorkbench extends Component {
     history.push({
       pathname: "/PatientProfile",
       state: {
-        vitals_mandatory: data.vitals_mandatory,
-        "EHR-STD": "PatientProfile",
-        current_patient: data.patient_id,
-        episode_id: data.episode_id,
-        visit_id: data.visit_id,
-        encounter_id: data.encounter_id,
-        provider_id: data.provider_id,
-        chart_type: data.chart_type,
-        gender: data.gender,
-        sub_department_id: data.sub_department_id
+        content: {
+          vitals_mandatory: data.vitals_mandatory,
+          "EHR-STD": "PatientProfile",
+          current_patient: data.patient_id,
+          episode_id: data.episode_id,
+          visit_id: data.visit_id,
+          encounter_id: data.encounter_id,
+          provider_id: data.provider_id,
+          chart_type: data.chart_type,
+          gender: data.gender,
+          sub_department_id: data.sub_department_id
+        }
       }
     });
     // document.getElementById("ehr-router").click();

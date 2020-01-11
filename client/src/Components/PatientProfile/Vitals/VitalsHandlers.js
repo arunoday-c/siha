@@ -3,7 +3,7 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 import config from "../../../utils/config.json";
 
 const getVitalHistory = ($this, callBack) => {
-  const { current_patient, visit_id } = $this.props.location.state;
+  const { current_patient, visit_id } = $this.props.location.state.content;
   $this.props.getVitalHistory({
     uri: "/doctorsWorkBench/getPatientVitals",
     method: "GET",

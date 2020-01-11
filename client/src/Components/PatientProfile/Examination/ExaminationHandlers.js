@@ -31,7 +31,7 @@ const getAllDepartmentBased = options => {
 // };
 
 const getPatientPhysicalExamination = $this => {
-  const { current_patient, episode_id } = $this.props.location.state;
+  const { current_patient, episode_id } = $this.props.location.state.content;
   $this.props.getPatientPhysicalExamination({
     uri: "/doctorsWorkBench/getPatientPhysicalExamination",
     method: "GET",

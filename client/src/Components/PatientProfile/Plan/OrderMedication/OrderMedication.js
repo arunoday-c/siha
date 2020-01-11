@@ -57,7 +57,7 @@ class OrderMedication extends Component {
       visit_id,
       provider_id,
       episode_id
-    } = props.location.state;
+    } = props.location.state.content;
     this.state = {
       patient_id: current_patient, // Window.global["current_patient"],
       encounter_id: encounter_id, // Window.global["encounter_id"],

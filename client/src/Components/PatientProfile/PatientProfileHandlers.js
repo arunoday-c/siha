@@ -2,7 +2,7 @@ import Enumerable from "linq";
 import { swalMessage, algaehApiCall } from "../../utils/algaehApiCall";
 
 const getPatientProfile = $this => {
-  const { current_patient, episode_id } = $this.props.location.state;
+  const { current_patient, episode_id } = $this.props.location.state.content;
   $this.props.getPatientProfile({
     uri: "/doctorsWorkBench/getPatientProfile",
     method: "GET",
@@ -20,7 +20,7 @@ const getPatientProfile = $this => {
 };
 
 const getPatientVitals = $this => {
-  const { current_patient, episode_id } = $this.props.location.state;
+  const { current_patient, episode_id } = $this.props.location.state.content;
   $this.props.getPatientVitals({
     uri: "/doctorsWorkBench/getPatientVitals",
     method: "GET",
@@ -37,7 +37,7 @@ const getPatientVitals = $this => {
 };
 
 const getPatientAllergies = ($this, noFunctionCall) => {
-  const { current_patient } = $this.props.location.state;
+  const { current_patient } = $this.props.location.state.content;
   $this.props.getPatientAllergies({
     uri: "/doctorsWorkBench/getPatientAllergies",
     method: "GET",
@@ -81,7 +81,7 @@ const getPatientAllergies = ($this, noFunctionCall) => {
 };
 
 const getPatientDiet = $this => {
-  const { current_patient, episode_id } = $this.props.location.state;
+  const { current_patient, episode_id } = $this.props.location.state.content;
   $this.props.getPatientDiet({
     uri: "/doctorsWorkBench/getPatientDiet",
     method: "GET",
@@ -97,7 +97,7 @@ const getPatientDiet = $this => {
   });
 };
 const getPatientDiagnosis = ($this, isProcess) => {
-  const { current_patient, episode_id } = $this.props.location.state;
+  const { current_patient, episode_id } = $this.props.location.state.content;
   $this.props.getPatientDiagnosis({
     uri: "/doctorsWorkBench/getPatientDiagnosis",
     method: "GET",
@@ -128,7 +128,7 @@ const getPatientDiagnosis = ($this, isProcess) => {
 };
 
 const getPatientHistory = $this => {
-  const { current_patient } = $this.props.location.state;
+  const { current_patient } = $this.props.location.state.content;
   $this.props.getPatientHistory({
     uri: "/doctorsWorkBench/getPatientHistory",
     method: "GET",
@@ -144,7 +144,7 @@ const getPatientHistory = $this => {
 };
 
 const printPrescription = (that, e) => {
-  const { current_patient, visit_id } = that.props.location.state;
+  const { current_patient, visit_id } = that.props.location.state.content;
   const _patient = current_patient; //Window.global["current_patient"];
   const _visit = visit_id; //Window.global["visit_id"];
   algaehApiCall({

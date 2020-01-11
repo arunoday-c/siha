@@ -108,7 +108,7 @@ class Allergies extends Component {
       });
       return;
     }
-    const { current_patient } = this.props.location.state;
+    const { current_patient } = this.props.location.state.content;
     algaehApiCall({
       uri: "/doctorsWorkBench/addPatientNewAllergy",
       method: "POST",

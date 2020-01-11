@@ -15,7 +15,6 @@ const texthandle = ($this, ctrl, e) => {
   });
 };
 
-
 const serviceHandeler = ($this, e) => {
   $this.setState({
     s_service: e.hims_d_services_id,
@@ -27,8 +26,6 @@ const serviceHandeler = ($this, e) => {
 
 //Process and gets selectd service data with all calculation
 const ProcessService = ($this, favouriteOrder, e) => {
-
-
   let s_service = $this.state.s_service,
     s_service_type = $this.state.s_service_type;
 
@@ -51,12 +48,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
   }
 
   if (SelectedService === undefined && PreSelectedService === undefined) {
-
-
-    if (
-      $this.state.s_service_type !== null &&
-      $this.state.s_service !== null
-    ) {
+    if ($this.state.s_service_type !== null && $this.state.s_service !== null) {
       AlgaehLoader({ show: true });
       let preserviceInput = $this.state.preserviceInput || [];
       let serviceInput = [
@@ -73,8 +65,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
           secondary_insurance_provider_id:
             $this.state.secondary_insurance_provider_id,
           secondary_network_id: $this.state.secondary_network_id,
-          secondary_network_office_id:
-            $this.state.secondary_network_office_id,
+          secondary_network_office_id: $this.state.secondary_network_office_id,
           approval_amt: $this.state.approval_amt,
           approval_limit_yesno: $this.state.approval_limit_yesno,
           preapp_limit_amount: $this.state.preapp_limit_amount
@@ -135,9 +126,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
 
                           Service_data.billdetails[i].doctor_id =
                             Window.global["provider_id"];
-                          Service_data.billdetails[
-                            i
-                          ].insurance_provider_id =
+                          Service_data.billdetails[i].insurance_provider_id =
                             $this.state.insurance_provider_id;
                           Service_data.billdetails[i].insurance_sub_id =
                             $this.state.sub_insurance_provider_id;
@@ -194,8 +183,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
                                 copay_amount:
                                   response.data.records.copay_amount,
                                 sec_copay_amount:
-                                  response.data.records.sec_copay_amount,
-
+                                  response.data.records.sec_copay_amount
                               });
                               AlgaehLoader({ show: false });
                             }
@@ -206,7 +194,6 @@ const ProcessService = ($this, favouriteOrder, e) => {
                               title: error.message,
                               type: "error"
                             });
-
                           }
                         });
                       }
@@ -221,7 +208,6 @@ const ProcessService = ($this, favouriteOrder, e) => {
                   });
                 } else {
                   AlgaehLoader({ show: false });
-
                 }
               });
             } else {
@@ -275,8 +261,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
               }
 
               let approval_amt = data.approval_amt;
-              let preapp_limit_amount =
-                data.billdetails[0].preapp_limit_amount;
+              let preapp_limit_amount = data.billdetails[0].preapp_limit_amount;
 
               preserviceInput.push(serviceInput[0]);
               $this.setState({
@@ -300,17 +285,13 @@ const ProcessService = ($this, favouriteOrder, e) => {
                   if (response.data.success) {
                     AlgaehLoader({ show: false });
                     $this.setState({
-                      sub_total_amount:
-                        response.data.records.sub_total_amount,
-                      discount_amount:
-                        response.data.records.discount_amount,
+                      sub_total_amount: response.data.records.sub_total_amount,
+                      discount_amount: response.data.records.discount_amount,
                       net_total: response.data.records.net_total,
-                      patient_payable:
-                        response.data.records.patient_payable,
+                      patient_payable: response.data.records.patient_payable,
                       company_payble: response.data.records.company_payble,
                       copay_amount: response.data.records.copay_amount,
-                      sec_copay_amount:
-                        response.data.records.sec_copay_amount
+                      sec_copay_amount: response.data.records.sec_copay_amount
                     });
                   }
                 },
@@ -379,12 +360,10 @@ const ProcessService = ($this, favouriteOrder, e) => {
       type: "warning"
     });
   }
-
 };
 
 //if services got delete and if pre apprival limit exceed
 const deleteServices = ($this, row) => {
-
   let orderservicesdata = $this.state.orderservicesdata;
   let preserviceInput = $this.state.preserviceInput;
   let deleteserviceInput = $this.state.deleteserviceInput;
@@ -393,10 +372,10 @@ const deleteServices = ($this, row) => {
     row.service_type_id === 5
       ? "LAB"
       : row.service_type_id === 11
-        ? "RAD"
-        : row.service_type_id === 2
-          ? "PRO"
-          : null;
+      ? "RAD"
+      : row.service_type_id === 2
+      ? "PRO"
+      : null;
 
   const get_selected_row = _.find(
     preserviceInput,
@@ -408,14 +387,17 @@ const deleteServices = ($this, row) => {
 
   const _order_index = orderservicesdata.indexOf(row);
   if (row.hims_f_ordered_services_id > 0) {
-    deleteserviceInput.push({ hims_f_ordered_services_id: row.hims_f_ordered_services_id, service_type: service_type })
+    deleteserviceInput.push({
+      hims_f_ordered_services_id: row.hims_f_ordered_services_id,
+      service_type: service_type
+    });
   }
 
   orderservicesdata.splice(_order_index, 1);
 
   preserviceInput.splice(_index, 1);
-  let app_amt = parseFloat($this.state.approval_amt) - parseFloat(row["company_payble"]);
-
+  let app_amt =
+    parseFloat($this.state.approval_amt) - parseFloat(row["company_payble"]);
 
   if ($this.state.approval_limit_yesno === "Y") {
     if (app_amt < $this.state.preapp_limit_amount) {
@@ -492,7 +474,7 @@ const deleteServices = ($this, row) => {
               patient_payable: response.data.records.patient_payable,
               company_payble: response.data.records.company_payble,
               copay_amount: response.data.records.copay_amount,
-              sec_copay_amount: response.data.records.sec_copay_amount,
+              sec_copay_amount: response.data.records.sec_copay_amount
             });
           }
         },
@@ -503,7 +485,6 @@ const deleteServices = ($this, row) => {
           });
         }
       });
-
     }
   } else {
     if (orderservicesdata.length > 0) {
@@ -526,7 +507,7 @@ const deleteServices = ($this, row) => {
               patient_payable: response.data.records.patient_payable,
               company_payble: response.data.records.company_payble,
               copay_amount: response.data.records.copay_amount,
-              sec_copay_amount: response.data.records.sec_copay_amount,
+              sec_copay_amount: response.data.records.sec_copay_amount
             });
           }
         },
@@ -549,11 +530,10 @@ const deleteServices = ($this, row) => {
         deleteserviceInput: deleteserviceInput,
         orderservicesdata: orderservicesdata,
         preserviceInput: preserviceInput,
-        approval_amt: app_amt,
+        approval_amt: app_amt
         // saved: saved,
       });
     }
-
   }
 };
 //Save Order
@@ -572,7 +552,7 @@ const SaveOrdersServices = ($this, e) => {
     billdetails: $this.state.orderservicesdata,
     deleteserviceInput: $this.state.deleteserviceInput,
     date_of_birth: $this.props.date_of_birth,
-    gender: $this.props.gender,
+    gender: $this.props.gender
   };
   algaehApiCall({
     uri: "/orderAndPreApproval/insertOrderedServices",
@@ -645,7 +625,6 @@ const SaveOrdersServices = ($this, e) => {
       });
     }
   });
-
 };
 
 const calculateAmount = ($this, row, e) => {
@@ -776,7 +755,6 @@ const updateBillDetail = ($this, e) => {
   });
 };
 
-
 const EditGrid = ($this, cancelRow) => {
   let _orderservicesdata = $this.state.orderservicesdata;
 
@@ -859,13 +837,14 @@ const closeViewFavouriteOrder = ($this, e) => {
   }
 };
 const getFavouriteServices = $this => {
-  const {provider_id} = $this.props.location.state;
+  const { provider_id } = $this.props.location.state.content;
   algaehApiCall({
     uri: "/favouriteOrders/getFavouriteServices",
     module: "masterSettings",
     method: "GET",
-    data: { doctor_id: provider_id//Window.global["provider_id"] 
-  },
+    data: {
+      doctor_id: provider_id //Window.global["provider_id"]
+    },
     onSuccess: response => {
       if (response.data.success) {
         $this.setState({
@@ -949,7 +928,6 @@ const ProcessFromFavourite = ($this, from) => {
     }
 
     if (SelectedService !== undefined || PreSelectedService !== undefined) {
-
       swalMessage({
         title: "Selected Service already ordered.",
         type: "warning"
@@ -993,7 +971,6 @@ const ProcessFromFavourite = ($this, from) => {
       preapp_limit_amount: $this.state.preapp_limit_amount
     });
   }
-
 
   getFavouriteServices($this);
   AlgaehLoader({ show: true });
@@ -1046,11 +1023,7 @@ const ProcessFromFavourite = ($this, from) => {
                   if (response.data.success) {
                     let Service_data = response.data.records;
 
-                    for (
-                      let i = 0;
-                      i < Service_data.billdetails.length;
-                      i++
-                    ) {
+                    for (let i = 0; i < Service_data.billdetails.length; i++) {
                       Service_data.billdetails[i].visit_id =
                         $this.state.visit_id;
                       Service_data.billdetails[i].patient_id =
@@ -1072,9 +1045,7 @@ const ProcessFromFavourite = ($this, from) => {
                       // Service_data.billdetails[i].icd_code === Service_data.billdetails[0].icd_code;
                       // Approval Table
 
-                      Service_data.billdetails[
-                        i
-                      ].insurance_network_office_id =
+                      Service_data.billdetails[i].insurance_network_office_id =
                         $this.state.hims_d_insurance_network_office_id;
 
                       Service_data.billdetails[i].requested_quantity =
@@ -1115,8 +1086,7 @@ const ProcessFromFavourite = ($this, from) => {
                               response.data.records.patient_payable,
                             company_payble:
                               response.data.records.company_payble,
-                            copay_amount:
-                              response.data.records.copay_amount,
+                            copay_amount: response.data.records.copay_amount,
                             sec_copay_amount:
                               response.data.records.sec_copay_amount,
 
@@ -1131,7 +1101,6 @@ const ProcessFromFavourite = ($this, from) => {
                           title: error.message,
                           type: "error"
                         });
-
                       }
                     });
                   }
@@ -1142,14 +1111,12 @@ const ProcessFromFavourite = ($this, from) => {
                     title: error.message,
                     type: "error"
                   });
-
                 }
               });
             } else {
               AlgaehLoader({ show: false });
               $this.setState({
-                preserviceInput: [],
-
+                preserviceInput: []
               });
             }
           });
@@ -1257,15 +1224,12 @@ const ProcessFromFavourite = ($this, from) => {
       }
     },
     onFailure: error => {
-
       swalMessage({
         title: error.message,
         type: "error"
       });
-
     }
   });
-
 };
 export {
   serviceHandeler,
@@ -1282,6 +1246,5 @@ export {
   selectToProcess,
   ProcessFromFavourite,
   openViewFavouriteOrder,
-  closeViewFavouriteOrder,
-
+  closeViewFavouriteOrder
 };

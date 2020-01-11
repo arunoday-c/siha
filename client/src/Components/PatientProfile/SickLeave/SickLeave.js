@@ -18,7 +18,11 @@ import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 class SickLeave extends Component {
   constructor(props) {
     super(props);
-    const { episode_id, current_patient, visit_id } = this.props.location.state;
+    const {
+      episode_id,
+      current_patient,
+      visit_id
+    } = this.props.location.state.content;
     this.state = {
       from_date: null,
       to_date: null,
@@ -136,7 +140,11 @@ class SickLeave extends Component {
       });
       return;
     }
-    const { episode_id, current_patient, visit_id } = this.props.location.state;
+    const {
+      episode_id,
+      current_patient,
+      visit_id
+    } = this.props.location.state.content;
     algaehApiCall({
       uri: "/doctorsWorkBench/addSickLeave",
       data: this.state,

@@ -63,7 +63,7 @@ class PatientProfile extends Component {
     );
 
     allergyPopUp = props.open_allergy_popup;
-    const patientDetails = this.props.location.state;
+    const patientDetails = this.props.location.state.content;
     if (patientDetails === undefined) {
       this.props.history.push("/DoctorsWorkbench");
       return;
@@ -125,7 +125,11 @@ class PatientProfile extends Component {
   }
 
   printGeneralConsentForm() {
-    const { current_patient, visit_id, episode_id } = this.props.location.state;
+    const {
+      current_patient,
+      visit_id,
+      episode_id
+    } = this.props.location.state.content;
     algaehApiCall({
       uri: "/report",
       method: "GET",
@@ -170,7 +174,11 @@ class PatientProfile extends Component {
   }
 
   printMedicalConsentForm() {
-    const { current_patient, visit_id, episode_id } = this.props.location.state;
+    const {
+      current_patient,
+      visit_id,
+      episode_id
+    } = this.props.location.state.content;
     algaehApiCall({
       uri: "/report",
       method: "GET",
@@ -239,7 +247,7 @@ class PatientProfile extends Component {
       chief_complaint,
       significant_signs,
       vitals_mandatory
-    } = this.props.location.state;
+    } = this.props.location.state.content;
 
     var element = document.querySelectorAll("[algaehsoap]");
     for (var i = 0; i < element.length; i++) {
@@ -312,7 +320,7 @@ class PatientProfile extends Component {
       vitals_mandatory,
       current_patient,
       visit_id
-    } = this.props.location.state;
+    } = this.props.location.state.content;
     // let chief_complaint = Window.global["chief_complaint"];
     // let significant_signs = Window.global["significant_signs"];
     const _Vitals =
@@ -377,7 +385,7 @@ class PatientProfile extends Component {
       vitals_mandatory,
       current_patient,
       visit_id
-    } = this.props.location.state;
+    } = this.props.location.state.content;
     // let chief_complaint = Window.global["chief_complaint"];
     // let significant_signs = Window.global["significant_signs"];
     const _Vitals =
@@ -446,7 +454,7 @@ class PatientProfile extends Component {
       vitals_mandatory,
       current_patient,
       visit_id
-    } = this.props.location.state;
+    } = this.props.location.state.content;
     // let chief_complaint = Window.global["chief_complaint"];
     // let significant_signs = Window.global["significant_signs"];
     const _Vitals =
@@ -591,7 +599,7 @@ class PatientProfile extends Component {
       vitals_mandatory,
       current_patient,
       visit_id
-    } = this.props.location.state;
+    } = this.props.location.state.content;
     // let chief_complaint = Window.global["chief_complaint"];
     // let significant_signs = Window.global["significant_signs"];
     const _Vitals =

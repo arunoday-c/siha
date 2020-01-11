@@ -165,7 +165,10 @@ export default function SubjectiveHandler() {
     },
 
     addChiefComplainToPatient: $this => {
-      const { current_patient, episode_id } = $this.props.location.state;
+      const {
+        current_patient,
+        episode_id
+      } = $this.props.location.state.content;
       let _screenName = getCookie("ScreenName").replace("/", "");
       if (_screenName === "Login") {
         return;
@@ -202,7 +205,7 @@ export default function SubjectiveHandler() {
         $this.state.significant_signs !== null ||
         $this.state.other_signs !== null
       ) {
-        const { encounter_id } = $this.props.location.state;
+        const { encounter_id } = $this.props.location.state.content;
         algaehApiCall({
           uri: "/doctorsWorkBench/updatePatientEncounter",
           method: "PUT",
@@ -216,7 +219,10 @@ export default function SubjectiveHandler() {
     },
 
     updatePatientChiefComplaints: $this => {
-      const { current_patient, episode_id } = $this.props.location.state;
+      const {
+        current_patient,
+        episode_id
+      } = $this.props.location.state.content;
       let _screenName = getCookie("ScreenName").replace("/", "");
       if (_screenName === "Login") {
         return;
@@ -257,7 +263,7 @@ export default function SubjectiveHandler() {
         $this.state.significant_signs !== null ||
         $this.state.other_signs !== null
       ) {
-        const { encounter_id } = $this.props.location.state;
+        const { encounter_id } = $this.props.location.state.content;
         algaehApiCall({
           uri: "/doctorsWorkBench/updatePatientEncounter",
           method: "PUT",
@@ -277,7 +283,7 @@ export default function SubjectiveHandler() {
 }
 
 function getPatientChiefComplaints($this) {
-  const { current_patient, episode_id } = $this.props.location.state;
+  const { current_patient, episode_id } = $this.props.location.state.content;
   algaehApiCall({
     uri: "/doctorsWorkBench/getPatientBasicChiefComplaints",
     data: {
@@ -314,7 +320,11 @@ function getPatientChiefComplaints($this) {
   });
 }
 function insertFinalICDS($this, row) {
-  const { current_patient, episode_id, visit_id } = $this.props.location.state;
+  const {
+    current_patient,
+    episode_id,
+    visit_id
+  } = $this.props.location.state.content;
   const finalICDS = Enumerable.from($this.props.patient_diagnosis)
     .where(w => w.final_daignosis === "Y")
     .toArray();
@@ -396,7 +406,11 @@ function showconfirmDialog($this, row) {
   });
 }
 function getPatientDiagnosis($this) {
-  const { current_patient, episode_id, visit_id } = $this.props.location.state;
+  const {
+    current_patient,
+    episode_id,
+    visit_id
+  } = $this.props.location.state.content;
   $this.props.getPatientDiagnosis({
     uri: "/doctorsWorkBench/getPatientDiagnosis",
     cancelRequestId: "getPatientDiagnosis",

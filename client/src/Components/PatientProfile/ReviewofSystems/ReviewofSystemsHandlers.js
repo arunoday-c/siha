@@ -29,7 +29,7 @@ const getReviewOfSystemsDetails = ($this, type) => {
 };
 
 const getPatientROS = $this => {
-  const { current_patient, episode_id } = $this.props.location.state;
+  const { current_patient, episode_id } = $this.props.location.state.content;
   $this.props.getReviewOfSystems({
     uri: "/doctorsWorkBench/getPatientROS",
     method: "GET",

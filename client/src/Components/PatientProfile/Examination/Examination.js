@@ -101,7 +101,10 @@ class Examination extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
-        const { current_patient, episode_id } = this.props.location.state;
+        const {
+          current_patient,
+          episode_id
+        } = this.props.location.state.content;
         algaehApiCall({
           uri: "/doctorsWorkBench/updatePatientPhysicalExam",
           method: "PUT",
@@ -143,7 +146,7 @@ class Examination extends Component {
   }
 
   addExaminationToPatient() {
-    const { current_patient, episode_id } = this.props.location.state;
+    const { current_patient, episode_id } = this.props.location.state.content;
     algaehApiCall({
       uri: "/doctorsWorkBench/addPatientPhysicalExamination",
       method: "POST",

@@ -26,7 +26,7 @@ const addFollowUp = $this => {
     provider_id,
     episode_id,
     sub_department_id
-  } = $this.props.location.state;
+  } = $this.props.location.state.content;
   if ($this.state.followup_days === 0) {
     swalMessage({
       title: "Please Enter Next visit After",
