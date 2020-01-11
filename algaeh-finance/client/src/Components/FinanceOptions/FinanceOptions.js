@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import OptionsComponent from "./OptionsComponent";
 import { newAlgaehApi } from "../../hooks";
+import { AlgaehMessagePop } from "algaeh-react-components";
 
 export default function FinanceOptions(props) {
-  const [finOptions, setFinOptions] = useState(null);
+  const [finOptions, setFinOptions] = useState({ default_branch_id: "" });
   const [organization, setOrganization] = useState([]);
   const [costCenters, setCostCenters] = useState([]);
 
@@ -11,27 +12,40 @@ export default function FinanceOptions(props) {
     async function initData() {
       try {
         const results = await Promise.all([
+          newAlgaehApi({ uri: "/organization/getOrganization" }),
           newAlgaehApi({
             uri: "/finance_masters/getFinanceOption",
             module: "finance"
-          }),
-          newAlgaehApi({ uri: "/organization/getOrganization" }),
-          newAlgaehApi({
-            uri: "/finance_masters/getCostCenters",
-            module: "finance"
           })
         ]);
-        setFinOptions(results[0].data.result[0]);
-        setOrganization(results[1].data.records);
-        setCostCenters(results[2].data.result);
+        setOrganization(results[0].data.records);
+        setFinOptions(results[1].data.result[0]);
       } catch (e) {
-        console.log(e);
+        AlgaehMessagePop({
+          info: "error",
+          display: e.response.data.message
+        });
       }
     }
     initData();
   }, []);
 
-  function handleDropDown(valueObj, value, name) {
+  useEffect(() => {
+    newAlgaehApi({
+      uri: "/finance_masters/getCostCenters",
+      module: "finance",
+      data: { hospital_id: finOptions.default_branch_id }
+    })
+      .then(result => setCostCenters(result.data.result))
+      .catch(e =>
+        AlgaehMessagePop({
+          info: "error",
+          display: e.response.data.message
+        })
+      );
+  }, [finOptions.default_branch_id]);
+
+  function handleDropDown(_, value, name) {
     setFinOptions(state => {
       return { ...state, [name]: value };
     });
@@ -77,10 +91,10 @@ export default function FinanceOptions(props) {
   if (finOptions) {
     return (
       <OptionsComponent
+        costCenters={costCenters}
+        organization={organization}
         options={finOptions}
         handleChange={handleChange}
-        organization={organization}
-        costCenters={costCenters}
         handleDropDown={handleDropDown}
         handleSubmit={handleSubmit}
       />

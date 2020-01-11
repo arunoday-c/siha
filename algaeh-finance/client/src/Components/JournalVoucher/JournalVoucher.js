@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import ReactDom from "react-dom";
+import React, { useState, useEffect } from "react";
+import { Modal } from "antd";
 import CostCenter from "../costCenterComponent";
 import moment from "moment";
 import "./JournalVoucher.scss";
@@ -14,11 +14,10 @@ import {
   AlgaehButton
 } from "algaeh-react-components";
 import Accounts from "../FinanceAccounts";
-import {
-  getVoucherNumber,
-  getHeaders,
-  addJurnorLedger
-} from "./JournalVoucher.events";
+import { getHeaders, addJurnorLedger } from "./JournalVoucher.events";
+import PaymentComponent from "./PaymentComponent";
+import AccountsDrawer from "./AccountDrawer";
+
 import { getCookie } from "../../utils/algaehApiCall";
 let records_av = {};
 let dataPayment = [
@@ -36,13 +35,21 @@ let dataPayment = [
 ];
 export default function JournalVoucher() {
   const [voucherDate, setVoucherDate] = useState(undefined);
-  const [voucher_no, setVoucherNo] = useState("");
+  // const [voucher_no, setVoucherNo] = useState("");
   const [voucherType, setVoucherType] = useState(undefined);
   const [accounts, setAccounts] = useState([{}]);
   const [narration, setNarration] = useState("");
   // const [prefix, setPrefix] = useState("");
+  const basePayment = {
+    payment_mode: "",
+    ref_no: "",
+    cheque_date: undefined
+  };
+  const [drawer, setDrawer] = useState(false);
+  const [payment, setPayment] = useState(basePayment);
   const [loading, setLoading] = useState(false);
   const [clearLoading, setClearLoading] = useState(false);
+
   const [journerList, setJournerList] = useState([
     {
       child_id: undefined,
@@ -60,8 +67,142 @@ export default function JournalVoucher() {
     }
   ]);
 
+  useEffect(() => {
+    if (!drawer) {
+      getHeaders({ voucher_type: voucherType })
+        .then(result => {
+          setAccounts(result);
+        })
+        .catch(e => console.log(e));
+    }
+  }, [voucherType, drawer]);
+
+  const show = voucherType === "receipt" || voucherType === "payment";
+
+  function handlePaymentDrop(...args) {
+    const value = args[1];
+    setPayment(state => {
+      return { ...state, payment_mode: value };
+    });
+  }
+
+  const saveJournal = () => {
+    setLoading(true);
+    if (journerList.length === 0) {
+      setLoading(false);
+      AlgaehMessagePop({
+        type: "error",
+        display: "Empty data !"
+      });
+      return;
+    }
+    if (voucherDate === "") {
+      setLoading(false);
+      AlgaehMessagePop({
+        type: "error",
+        display: "Voucher Date can't blank"
+      });
+      return;
+    }
+    if (voucherType === "") {
+      setLoading(false);
+      AlgaehMessagePop({
+        type: "error",
+        display: "Voucher Type can't blank"
+      });
+      return;
+    }
+    let costcenter = {};
+    if (Object.keys(records_av).length === 0) {
+      setLoading(false);
+      AlgaehMessagePop({
+        type: "info",
+        display: "Please Branch and Cost Center is mandatory"
+      });
+      return;
+    } else {
+      if (
+        records_av["hospital_id"] === undefined ||
+        records_av["cost_center_id"] === undefined
+      ) {
+        setLoading(false);
+        AlgaehMessagePop({
+          type: "info",
+          display: "Branch and Cost Center is mandatory"
+        });
+        return;
+      } else {
+        costcenter["hospital_id"] = records_av["hospital_id"];
+        costcenter["cost_center_id"] = records_av["cost_center_id"];
+      }
+    }
+
+    if (payment.payment_mode === "CHEQUE") {
+      if (!payment.ref_no || !payment.cheque_date) {
+        AlgaehMessagePop({
+          type: "Error",
+          display: "Reference No and Cheque Date is mandatory"
+        });
+      }
+    }
+
+    addJurnorLedger({
+      transaction_date: voucherDate,
+      voucher_type: voucherType,
+      // voucher_no: `${voucher_no}`,
+      ...costcenter,
+      ...payment,
+      from_screen: getCookie("ScreenCode"),
+      hospital_id: getCookie("HospitalId"),
+      details: journerList,
+      narration: narration
+    })
+      .then(result => {
+        console.log(result, "voucher");
+        setLoading(false);
+        setClearLoading(true);
+        setJournerList([]);
+        setNarration("");
+        setPayment(basePayment);
+        setVoucherType("");
+        setAccounts([]);
+        // setVoucherNo(result.voucher_no);
+        dataPayment = dataPayment.map(m => {
+          delete m["seltype"];
+          return m;
+        });
+        AlgaehMessagePop({
+          type: "success",
+          display: "Successfully updated.."
+        });
+        const modal = Modal.success({
+          centered: true,
+          mask: true,
+          maskClosable: false,
+          okText: "Ok",
+          title: "Voucher No",
+          content: <h4>{result.voucher_no}</h4>,
+          onOk: () => modal.destroy()
+        });
+      })
+      .catch(error => {
+        setLoading(false);
+        setPayment(basePayment);
+        AlgaehMessagePop({
+          type: "error",
+          display: error
+        });
+      });
+  };
+
   return (
     <div className="JournalVoucherScreen">
+      <AccountsDrawer
+        show={drawer}
+        onClose={() => setDrawer(false)}
+        title="Accounts"
+        content={<Accounts inDrawer={true} />}
+      />
       <div
         className="row inner-top-search margin-bottom-15"
         style={{ paddingBottom: "10px" }}
@@ -86,22 +227,6 @@ export default function JournalVoucher() {
             }
           }}
         />{" "}
-        <AlgaehFormGroup
-          div={{
-            className: "col-2 algaeh-text-fld"
-          }}
-          label={{
-            forceLabel: "Voucher No.",
-            isImp: true
-          }}
-          textBox={{
-            type: "text",
-            className: "form-control",
-            value: `${voucher_no}`,
-            disabled: true
-            // autocomplete: false
-          }}
-        />
         <AlgaehAutoComplete
           div={{ className: "col-2" }}
           label={{
@@ -116,36 +241,39 @@ export default function JournalVoucher() {
               textField: "label"
             },
             onChange: selected => {
-              const type = selected["seltype"];
-              if (type === undefined) {
-                getVoucherNumber({ voucher_type: selected.value })
-                  .then(result => {
-                    setVoucherNo(result.voucher_no);
-                    selected["seltype"] = result.voucher_no;
-                  })
-                  .catch(error => {
-                    AlgaehMessagePop({
-                      type: "error",
-                      display: error
-                    });
-                  });
-              } else {
-                setVoucherNo(type);
-              }
-
-              getHeaders({ voucher_type: selected.value }).then(result => {
-                setAccounts(result);
-              });
-
+              // const type = selected["seltype"];
+              // if (type === undefined) {
+              //   getVoucherNumber({ voucher_type: selected.value })
+              //     .then(result => {
+              //       setVoucherNo(result.voucher_no);
+              //       selected["seltype"] = result.voucher_no;
+              //     })
+              //     .catch(error => {
+              //       AlgaehMessagePop({
+              //         type: "error",
+              //         display: error
+              //       });
+              //     });
+              // } else {
+              // setVoucherNo(type);
+              // }
+              setPayment(basePayment);
               setVoucherType(selected.value);
               // setPrefix(selected.shortHand + "-");
             },
             onClear: () => {
               setVoucherType("");
-              setVoucherNo("");
+              // setVoucherNo("");
               setAccounts([]);
+              setPayment(basePayment);
             }
           }}
+        />
+        <PaymentComponent
+          show={show}
+          {...payment}
+          handleDrop={handlePaymentDrop}
+          handleChange={setPayment}
         />
         <div className="col-6">
           <CostCenter result={records_av} noborder={false} />
@@ -163,10 +291,7 @@ export default function JournalVoucher() {
                   type="primary"
                   icon="play-circle"
                   onClick={() => {
-                    ReactDom.render(
-                      <Accounts back="journalVoucher" />,
-                      document.getElementById("hisapp")
-                    );
+                    setDrawer(true);
                   }}
                 />
               </div>
@@ -347,92 +472,7 @@ export default function JournalVoucher() {
             <AlgaehButton
               className="btn btn-primary"
               loading={loading}
-              onClick={() => {
-                setLoading(true);
-                if (journerList.length === 0) {
-                  setLoading(false);
-                  AlgaehMessagePop({
-                    type: "error",
-                    display: "Empty data !"
-                  });
-                  return;
-                }
-                if (voucherDate === "") {
-                  setLoading(false);
-                  AlgaehMessagePop({
-                    type: "error",
-                    display: "Voucher Date can't blank"
-                  });
-                  return;
-                }
-                if (voucherType === "") {
-                  setLoading(false);
-                  AlgaehMessagePop({
-                    type: "error",
-                    display: "Voucher Type can't blank"
-                  });
-                  return;
-                }
-                let costcenter = {};
-                if (Object.keys(records_av).length === 0) {
-                  setLoading(false);
-                  AlgaehMessagePop({
-                    type: "info",
-                    display: "Please Branch and Cost Center is mandatory"
-                  });
-                  return;
-                } else {
-                  if (
-                    records_av["hospital_id"] === undefined ||
-                    records_av["cost_center_id"] === undefined
-                  ) {
-                    setLoading(false);
-                    AlgaehMessagePop({
-                      type: "info",
-                      display: "Branch and Cost Center is mandatory"
-                    });
-                    return;
-                  } else {
-                    costcenter["hospital_id"] = records_av["hospital_id"];
-                    costcenter["cost_center_id"] = records_av["cost_center_id"];
-                  }
-                }
-
-                addJurnorLedger({
-                  transaction_date: voucherDate,
-                  voucher_type: voucherType,
-                  voucher_no: `${voucher_no}`,
-                  ...costcenter,
-                  from_screen: getCookie("ScreenCode"),
-                  hospital_id: getCookie("HospitalId"),
-                  details: journerList,
-                  narration: narration
-                })
-                  .then(() => {
-                    setLoading(false);
-                    setClearLoading(true);
-                    setJournerList([]);
-                    setNarration("");
-                    setVoucherType("");
-                    setAccounts([]);
-                    setVoucherNo("");
-                    dataPayment = dataPayment.map(m => {
-                      delete m["seltype"];
-                      return m;
-                    });
-                    AlgaehMessagePop({
-                      type: "success",
-                      display: "Successfully updated.."
-                    });
-                  })
-                  .catch(error => {
-                    setLoading(false);
-                    AlgaehMessagePop({
-                      type: "error",
-                      display: error
-                    });
-                  });
-              }}
+              onClick={saveJournal}
             >
               Save
             </AlgaehButton>
@@ -446,21 +486,7 @@ export default function JournalVoucher() {
                 setNarration("");
                 setVoucherType("");
                 setAccounts([]);
-                setVoucherNo("");
-                // getVoucherNumber()
-                //   .then(result => {
-                //     setLoading(false);
-                //     setClearLoading(false);
-                //     setVoucherNo(result.voucher_no);
-                //   })
-                //   .catch(error => {
-                //     setLoading(false);
-                //     setClearLoading(false);
-                //     AlgaehMessagePop({
-                //       type: "error",
-                //       display: error
-                //     });
-                //   });
+                setPayment(basePayment);
               }}
             >
               Clear

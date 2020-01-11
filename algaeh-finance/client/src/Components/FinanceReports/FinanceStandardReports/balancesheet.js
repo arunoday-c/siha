@@ -91,8 +91,7 @@ import { PlotUI } from "./plotui";
 //   }
 // }
 
-export default function BalanceSheet(props) {
-  const { style, data, result, footer } = props;
+export default function BalanceSheet({ style, data, result, footer, layout }) {
   const createPrintObject = useRef(undefined);
   if (result.length === 0) return null;
   if (Object.keys(data).length === 0) {
@@ -112,25 +111,29 @@ export default function BalanceSheet(props) {
             <div>Client Name Here</div>
             <div>Client Address Here</div>
             <hr></hr>
-            <h3>Balance Sheet</h3>
+            {result[0] === "income" ? (
+              <h3>Profit and Loss</h3>
+            ) : (
+              <h3>Balance Sheet</h3>
+            )}
             <p>
               As on: <b>Date Here</b>
             </p>
           </div>
           <div className="reportBodyArea">
             <Row gutter={[8, 8]}>
-              <Col span={24}>
+              <Col span={layout.col}>
                 <div className="reportTableStyle">
                   <ul className="treeListUL">
                     {PlotUI(data[result[0]], style, [0])}
                   </ul>
                 </div>
               </Col>
-              <Col span={24}>
+              <Col span={layout.col}>
                 <div className="reportTableStyle">
                   <ul className="treeListUL">
                     {PlotUI(data[result[1]], style, [0])}
-                  </ul>{" "}
+                  </ul>
                 </div>
               </Col>
             </Row>

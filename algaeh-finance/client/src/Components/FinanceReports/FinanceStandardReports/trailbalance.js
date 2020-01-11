@@ -20,7 +20,7 @@ export default function TrailBalaceReport(props) {
           <div>Client Name Here</div>
           <div>Client Address Here</div>
           <hr></hr>
-          <h3>Balance Sheet</h3>
+          <h3>Trail Balance</h3>
           <p>
             As on: <b>Date Here</b>
           </p>

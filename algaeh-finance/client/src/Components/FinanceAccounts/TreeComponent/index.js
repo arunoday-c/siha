@@ -1,33 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import SortableTree, {
   getNodeAtPath,
   addNodeUnderParent,
   removeNodeAtPath
 } from "react-sortable-tree";
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
-import ReportLauncher from "../AccountReport";
 import {
   AlgaehConfirm,
   AlgaehMessagePop,
-  // Input,
-  // Icon
-  // DatePicker
+  Input,
+  Icon,
+  DatePicker
 } from "algaeh-react-components";
+import ReportLauncher from "../AccountReport";
+import Charts from "../Charts";
+import moment from "moment";
 import {
   getAccounts,
-  isPositive,
   removeAccount,
-  // renameAccount
-  // getChartData
+  isPositive,
+  renameAccount,
+  getChartData
 } from ".././FinanceAccountEvent";
 import "react-sortable-tree/style.css";
 import "../alice.scss";
-// import moment from "moment";
-// import Charts from "../Charts";
-export default function Capital() {
+function TreeComponent({ assetCode, title, inDrawer }) {
   const [symbol, setSymbol] = useState("");
   const [financeHeadId, setFinanceHeadId] = useState(undefined);
-  const [capitalAmount, setCapitalAmount] = useState("");
+  const [amount, setAmount] = useState("");
   const [treeData, setTreeData] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [selectedNode, setSelectedNode] = useState({});
@@ -37,48 +37,21 @@ export default function Capital() {
   const [isAccountHead, setIsAccountHead] = useState(false);
   const [reportVisible, setReportVisible] = useState(false);
   const [editorRecord, setEditorRecord] = useState({});
-  // const [period, setPeriod] = useState("4");
-  // const [accountChart, setAccountChart] = useState([]);
-  // const [year, setYear] = useState(moment());
-  const accountCode = "3";
-  function loadAccount() {
-    getAccounts(accountCode, data => {
-      if (Array.isArray(data)) {
-        if (data.length > 0) {
-          setFinanceHeadId(data[0].finance_account_head_id);
-          setTreeData(data[0].children);
-          setCapitalAmount(data[0]["subtitle"]);
-          setSymbol(data[0]["trans_symbol"]);
-          // loadChartData(data[0].finance_account_head_id);
-        } else {
-          setTreeData([]);
-        }
-      } else {
-        setTreeData([]);
-      }
-    });
-  }
-  // function loadChartData(finheadId) {
-  //   getChartData({
-  //     finance_account_head_id:
-  //       finheadId === undefined ? financeHeadId : finheadId,
-  //     period: period,
-  //     year: moment(year).format("YYYY")
-  //   })
-  //     .then(result => {
-  //       setAccountChart(result);
-  //     })
-  //     .catch(error => {
-  //       AlgaehMessagePop({ type: "error", display: error });
-  //     });
-  // }
-  useEffect(loadAccount, []);
+  const [period, setPeriod] = useState("4");
+  const [accountChart, setAccountChart] = useState([]);
+  const [year, setYear] = useState(moment());
+
+  const isExpOrInc = assetCode === "3" || assetCode === "5";
 
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
       try {
         const { treeData } = options;
+        // let NEW_NODE = { title: addedNode.account_name };
         let { path } = rowInfo;
+        if (path === undefined) {
+          path = [0];
+        }
         let parentNode = getNodeAtPath({
           treeData: treeData,
           path: path,
@@ -92,6 +65,7 @@ export default function Capital() {
         if (parentKey === -1) {
           parentKey = null;
         }
+
         let newTree = addNodeUnderParent({
           treeData: treeData,
           newNode: addedNode,
@@ -104,6 +78,30 @@ export default function Capital() {
         reject(e);
       }
     });
+  }
+
+  function editChild(input, stopLoad) {
+    renameAccount(input)
+      .then(() => {
+        loadAccount();
+        setEditorRecord({});
+        stopLoad();
+        setShowPopup(false);
+        AlgaehMessagePop({
+          type: "success",
+          display: "Renamed successfull"
+        });
+        setSearchQuery(input.child_name);
+      })
+      .catch(error => {
+        console.log("error", error);
+        stopLoad();
+        setShowPopup(false);
+        AlgaehMessagePop({
+          type: "error",
+          display: error
+        });
+      });
   }
 
   function removeNode(rowInfo) {
@@ -138,7 +136,55 @@ export default function Capital() {
     });
   }
 
-  function generateNodeProps(rowInfo) {
+  function loadAccount() {
+    getAccounts(assetCode, data => {
+      if (Array.isArray(data)) {
+        if (data.length > 0) {
+          const firstData = data[0];
+          setFinanceHeadId(firstData.finance_account_head_id);
+          setTreeData(firstData.children);
+          setAmount(firstData["subtitle"]);
+          setSymbol(firstData["trans_symbol"]);
+          if (isExpOrInc) {
+            loadChartData(firstData.finance_account_head_id);
+          }
+        } else {
+          setTreeData([]);
+        }
+      } else {
+        setTreeData([]);
+      }
+    });
+  }
+
+  function onClose(e) {
+    setShowPopup(false);
+    if (isAccountHead) {
+      loadAccount();
+      setIsAccountHead(false);
+    } else {
+      if (e !== undefined) {
+        addNode(selectedNode, { treeData }, e).then(newTree => {
+          setTreeData(newTree.treeData);
+          setIsAccountHead(false);
+        });
+      }
+    }
+  }
+
+  function onEditClose() {
+    setShowPopup(false);
+    setEditorRecord({});
+  }
+
+  const searchMethod = ({ node, searchQuery }) => {
+    return (
+      searchQuery &&
+      node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1
+    );
+  };
+
+  const generateNodeProps = rowInfo => {
     const { node } = rowInfo;
     return {
       buttons: [
@@ -167,7 +213,9 @@ export default function Capital() {
                   setEditorRecord({});
                 } else {
                   setEditorRecord(rowInfo);
-                  setShowPopup(true);
+                  if (!isExpOrInc) {
+                    setShowPopup(true);
+                  }
                 }
               }}
             >
@@ -218,7 +266,7 @@ export default function Capital() {
                 cancelText="No"
               >
                 <i className="fas fa-trash"></i>
-              </AlgaehConfirm>{" "}
+              </AlgaehConfirm>
             </li>
           </ul>
         </div>
@@ -230,55 +278,57 @@ export default function Capital() {
       title: (
         <>
           <span>
-            {
-              // JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
-              //   <Input
-              //     suffix={
-              //       <Icon
-              //         type="save"
-              //         onClick={e => {
-              //           const editedValue =
-              //             e.currentTarget.offsetParent.previousElementSibling
-              //               .value;
+            {isExpOrInc ? (
+              JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
+                <Input
+                  suffix={
+                    <Icon
+                      type="save"
+                      onClick={e => {
+                        const editedValue =
+                          e.currentTarget.offsetParent.previousElementSibling
+                            .value;
 
-              //           const rowNode = rowInfo.node;
-              //           let input = {
-              //             leaf_node: rowNode.leafnode
-              //           };
-              //           if (rowNode.leafnode === "Y") {
-              //             input["child_name"] = editedValue;
-              //             input["finance_account_child_id"] =
-              //               rowNode.finance_account_child_id;
-              //           } else {
-              //             input["account_name"] = editedValue;
-              //             input["finance_account_head_id"] =
-              //               rowNode.finance_account_head_id;
-              //           }
-              //           renameAccount(input)
-              //             .then(() => {
-              //               node["title"] = editedValue;
-              //               setEditorRecord({});
-              //               AlgaehMessagePop({
-              //                 type: "success",
-              //                 display: "Renamed successfull"
-              //               });
-              //             })
-              //             .catch(error => {
-              //               console.log("error", error);
-              //               AlgaehMessagePop({
-              //                 type: "error",
-              //                 display: error
-              //               });
-              //             });
-              //         }}
-              //       />
-              //     }
-              //     defaultValue={node.title}
-              //   />
-              // ) : (
+                        const rowNode = rowInfo.node;
+                        let input = {
+                          leaf_node: rowNode.leafnode
+                        };
+                        if (rowNode.leafnode === "Y") {
+                          input["child_name"] = editedValue;
+                          input["finance_account_child_id"] =
+                            rowNode.finance_account_child_id;
+                        } else {
+                          input["account_name"] = editedValue;
+                          input["finance_account_head_id"] =
+                            rowNode.finance_account_head_id;
+                        }
+                        renameAccount(input)
+                          .then(() => {
+                            node["title"] = editedValue;
+                            setEditorRecord({});
+                            AlgaehMessagePop({
+                              type: "success",
+                              display: "Renamed successfull"
+                            });
+                          })
+                          .catch(error => {
+                            console.log("error", error);
+                            AlgaehMessagePop({
+                              type: "error",
+                              display: error
+                            });
+                          });
+                      }}
+                    />
+                  }
+                  defaultValue={node.title}
+                />
+              ) : (
+                node.title
+              )
+            ) : (
               node.title
-              //)
-            }
+            )}
             {node.leafnode === "Y" ? null : (
               <>/{node.children === undefined ? 0 : node.children.length}</>
             )}
@@ -293,7 +343,7 @@ export default function Capital() {
             }
           >
             {node.subtitle === undefined ? "0.00" : node.subtitle}
-          </span>{" "}
+          </span>
           <small>
             {node.trans_symbol === undefined ? symbol : node.trans_symbol}
           </small>
@@ -306,36 +356,97 @@ export default function Capital() {
           ? ""
           : "accGroup"
     };
-  }
+  };
 
-  function onClose(e) {
-    setShowPopup(false);
-    if (isAccountHead) {
-      loadAccount();
-      setIsAccountHead(false);
-    } else {
-      if (e !== undefined) {
-        addNode(selectedNode, { treeData }, e).then(newTree => {
-          setTreeData(newTree.treeData);
-          setIsAccountHead(false);
+  function loadChartData(finheadId) {
+    if (isExpOrInc) {
+      getChartData({
+        finance_account_head_id:
+          finheadId === undefined ? financeHeadId : finheadId,
+        period: period,
+        year: moment(year).format("YYYY")
+      })
+        .then(result => {
+          setAccountChart(result);
+        })
+        .catch(error => {
+          AlgaehMessagePop({ type: "error", display: error });
         });
-      }
     }
   }
 
-  function onEditClose() {
-    setShowPopup(false);
-    setEditorRecord({});
+  function AccountChart() {
+    if (isExpOrInc && !inDrawer) {
+      return (
+        <div className="col-4">
+          <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">{`${title}`}</h3>
+                <div className="actions">
+                  <select
+                    value={period}
+                    onChange={e => {
+                      setPeriod(e.target.value);
+                    }}
+                  >
+                    <option value="1">Jan - Mar</option>
+                    <option value="2">Apr - Jun</option>
+                    <option value="3">Jul - Sep</option>
+                    <option value="4">Oct - Dec</option>
+                    <option value="5">By Year</option>
+                  </select>
+                  <DatePicker
+                    mode="year"
+                    size="small"
+                    value={year}
+                    format="YYYY"
+                    onPanelChange={selectedDate => {
+                      setYear(selectedDate);
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="portlet-body">
+                <Charts
+                  data={accountChart}
+                  xAxis={"month_name"}
+                  yAxisBar={"amount"}
+                  yAxisLine={"growth_percent"}
+                />
+              </div>
+            </div>
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">{`${title}`}</h3>
+                </div>
+                <div className="actions"></div>
+              </div>
+              <div className="portlet-body">
+                <Charts data={[]} xAxis={""} yAxisBar={""} yAxisLine={""} />
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      return null;
+    }
   }
 
+  useEffect(loadAccount, [assetCode]);
+
   return (
-    <div className="container-fluid capitalModuleScreen">
+    <div className="container-fluid assetsModuleScreen">
       <AddNewAccount
         showPopup={showPopup}
-        selectedNode={selectedNode}
-        accountCode={accountCode}
+        selectedNode={editorRecord.node ? editorRecord : selectedNode}
+        accountCode={assetCode}
         onClose={editorRecord.node ? onEditClose : onClose}
         accountName={editorRecord.node ? editorRecord.node.title : ""}
+        propOnOK={editorRecord.node ? editChild : null}
+        okText={editorRecord.node ? "Change" : "Add"}
         accountType={
           editorRecord.node
             ? editorRecord.node.leafnode === "Y"
@@ -349,7 +460,7 @@ export default function Capital() {
         title="Ledger Report"
         visible={reportVisible}
         selectedNode={selectedNode}
-        parentId="3"
+        parentId="1"
         onCancel={() => {
           setReportVisible(false);
         }}
@@ -357,80 +468,29 @@ export default function Capital() {
           setReportVisible(false);
         }}
       />
+
       <div className="row">
-        {/* <div className="col-4">
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">Capital accounts</h3>
-              </div>
-              <div className="actions">
-                <select
-                  value={period}
-                  onChange={e => {
-                    setPeriod(e.target.value);
-                  }}
-                >
-                  <option value="1">Jan - Mar</option>
-                  <option value="2">Apr - Jun</option>
-                  <option value="3">Jul - Sep</option>
-                  <option value="4">Oct - Dec</option>
-                  <option value="5">By Year</option>
-                </select>
-                <DatePicker
-                  mode="year"
-                  size="small"
-                  value={year}
-                  format="YYYY"
-                  onPanelChange={selectedDate => {
-                    setYear(selectedDate);
-                  }}
-                />
-              </div>
-            </div>
-            <div className="portlet-body">
-              <Charts
-                data={accountChart}
-                xAxis={"month_name"}
-                yAxisBar={"amount"}
-                yAxisLine={"growth_percent"}
-              />
-            </div>
-          </div>
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">Capital accounts</h3>
-              </div>
-              <div className="actions"></div>
-            </div>
-            <div className="portlet-body">
-              <Charts
-                data={[]}
-                xAxis={"month_name"}
-                yAxisBar={"amount"}
-                yAxisLine={"growth_percent"}
-              />
-            </div>
-          </div>
-        </div> */}
-        <div className="col-12">
+        <AccountChart />
+        <div className={isExpOrInc && !inDrawer ? "col-8" : "col-12"}>
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">
-                  Capital Accounts: {capitalAmount}
+                  {`${title} : ${amount}`}
                   {symbol}
                 </h3>
               </div>
               <div className="actions">
+                <button className="btn btn-default btn-circle active">
+                  <i className="fas fa-print" />
+                </button>
                 <button
                   className="btn btn-primary btn-circle active"
                   onClick={() => {
                     setSelectedNode({
                       node: {
                         finance_account_head_id: financeHeadId,
-                        parent_acc_id: "3"
+                        parent_acc_id: "1"
                       }
                     });
                     setShowPopup(true);
@@ -459,8 +519,7 @@ export default function Capital() {
                     setSearchFocusIndex(values);
                   }}
                 >
-                  {" "}
-                  &lt;{" "}
+                  &lt;
                 </button>
                 <button
                   onClick={() => {
@@ -471,12 +530,11 @@ export default function Capital() {
                     setSearchFocusIndex(values);
                   }}
                 >
-                  {" "}
-                  &gt;{" "}
+                  &gt;
                 </button>
                 <label>
-                  {searchFoundCount > 0 ? searchFocusIndex + 1 : 0} /{" "}
-                  {searchFoundCount || 0}{" "}
+                  {searchFoundCount > 0 ? searchFocusIndex + 1 : 0} /
+                  {searchFoundCount || 0}
                 </label>
               </div>
             </div>
@@ -494,14 +552,7 @@ export default function Capital() {
                         return rowInfo.node.canDrag === true ? true : false;
                       }}
                       generateNodeProps={generateNodeProps}
-                      searchMethod={({ node, searchQuery }) => {
-                        return (
-                          searchQuery &&
-                          node.title
-                            .toLowerCase()
-                            .indexOf(searchQuery.toLowerCase()) > -1
-                        );
-                      }}
+                      searchMethod={searchMethod}
                       searchQuery={searchQuery}
                       searchFocusOffset={searchFocusIndex}
                       searchFinishCallback={matches => {
@@ -523,3 +574,5 @@ export default function Capital() {
     </div>
   );
 }
+
+export default memo(TreeComponent);

@@ -2,7 +2,8 @@ import React, { useEffect, useState, memo } from "react";
 import "./costcenter.scss";
 import { AlgaehAutoComplete } from "algaeh-react-components";
 import { algaehApiCall } from "../../utils/algaehApiCall";
-export default memo(function CostCenter({
+
+function CostCenter({
   div,
   result,
   noborder,
@@ -133,4 +134,6 @@ export default memo(function CostCenter({
       </div>
     </div>
   );
-});
+}
+
+export default memo(CostCenter);

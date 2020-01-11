@@ -1,14 +1,9 @@
 import React from "react";
-import Assets from "./Assets";
-import Liabilities from "./Liabilities";
-import Income from "./Income";
-import Capital from "./Capital";
-import Expense from "./Expense";
-import JournalVoucher from "../JournalVoucher";
-import ReactDom from "react-dom";
-import { AlgaehTabs, AlgaehLabel, AlgaehButton } from "algaeh-react-components";
-export default function FinanceAccounts(props) {
-  const { back } = props;
+// import JournalVoucher from "../JournalVoucher";
+import TreeComponent from "./TreeComponent";
+// import ReactDom from "react-dom";
+import { AlgaehTabs, AlgaehLabel } from "algaeh-react-components";
+export default function FinanceAccounts({ inDrawer = false }) {
   return (
     <div className="">
       <AlgaehTabs
@@ -21,7 +16,13 @@ export default function FinanceAccounts(props) {
                 }}
               />
             ),
-            children: <Assets />
+            children: (
+              <TreeComponent
+                assetCode={"1"}
+                title="Assets Accounts"
+                inDrawer={inDrawer}
+              />
+            )
           },
           {
             title: (
@@ -31,7 +32,13 @@ export default function FinanceAccounts(props) {
                 }}
               />
             ),
-            children: <Liabilities />
+            children: (
+              <TreeComponent
+                assetCode={"2"}
+                title="Liability Accounts"
+                inDrawer={inDrawer}
+              />
+            )
           },
           {
             title: (
@@ -41,7 +48,13 @@ export default function FinanceAccounts(props) {
                 }}
               />
             ),
-            children: <Income />
+            children: (
+              <TreeComponent
+                assetCode={"4"}
+                title="Income Accounts"
+                inDrawer={inDrawer}
+              />
+            )
           },
           {
             title: (
@@ -51,7 +64,13 @@ export default function FinanceAccounts(props) {
                 }}
               />
             ),
-            children: <Capital />
+            children: (
+              <TreeComponent
+                assetCode={"3"}
+                title="Capital Accounts"
+                inDrawer={inDrawer}
+              />
+            )
           },
           {
             title: (
@@ -61,25 +80,86 @@ export default function FinanceAccounts(props) {
                 }}
               />
             ),
-            children: <Expense />
+            children: (
+              <TreeComponent
+                assetCode={"5"}
+                title="Expense Accounts"
+                inDrawer={inDrawer}
+              />
+            )
           }
         ]}
-        component={
-          back !== undefined && back === "journalVoucher" ? (
-            <AlgaehButton
-              type="danger"
-              shape="circle"
-              icon="arrow-right"
-              onClick={() => {
-                ReactDom.render(
-                  <JournalVoucher />,
-                  document.getElementById("hisapp")
-                );
-              }}
-            />
-          ) : null
-        }
+        // component={
+        //   back !== undefined && back === "journalVoucher" ? (
+        //     <AlgaehButton
+        //       type="danger"
+        //       shape="circle"
+        //       icon="arrow-right"
+        //       onClick={() => {
+        //         ReactDom.render(
+        //           <JournalVoucher />,
+        //           document.getElementById("hisapp")
+        //         );
+        //       }}
+        //     />
+        //   ) : null
+        // }
       />
     </div>
   );
 }
+
+//dead code
+
+// const previousContent = [
+//   {
+//     title: (
+//       <AlgaehLabel
+//         label={{
+//           forceLabel: "Assets"
+//         }}
+//       />
+//     ),
+//     children: <Assets />
+//   },
+//   {
+//     title: (
+//       <AlgaehLabel
+//         label={{
+//           forceLabel: "Liabilities"
+//         }}
+//       />
+//     ),
+//     children: <Liabilities />
+//   },
+//   {
+//     title: (
+//       <AlgaehLabel
+//         label={{
+//           forceLabel: "Income"
+//         }}
+//       />
+//     ),
+//     children: <Income />
+//   },
+//   {
+//     title: (
+//       <AlgaehLabel
+//         label={{
+//           forceLabel: "Capital"
+//         }}
+//       />
+//     ),
+//     children: <Capital />
+//   },
+//   {
+//     title: (
+//       <AlgaehLabel
+//         label={{
+//           fieldName: "Expense"
+//         }}
+//       />
+//     ),
+//     children: <Expense />
+//   }
+// ];
