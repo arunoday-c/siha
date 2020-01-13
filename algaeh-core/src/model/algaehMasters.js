@@ -352,7 +352,7 @@ let getRoleBaseActiveModulesOLD = (req, res, next) => {
             .executeQuery({
               query:
                 "select algaeh_d_module_id, module_name,module_code, icons,other_language  from algaeh_d_app_module\
-              where  record_status=md5('A') " +
+              where  record_status='A'" +
                 superUser +
                 " order by display_order "
             })
@@ -404,7 +404,7 @@ let getRoleBaseActiveModulesOLD = (req, res, next) => {
             " select algaeh_m_module_role_privilage_mapping_id, module_id,module_code,module_name, icons,module_code,other_language,role_id, view_privilege\
           from algaeh_m_module_role_privilage_mapping MRP\
           inner join algaeh_d_app_module M on MRP.module_id=M.algaeh_d_module_id\
-          where MRP.record_status='A' and M.record_status=md5('A') and MRP.role_id=?  order by display_order ",
+          where MRP.record_status='A' and M.record_status='A' and MRP.role_id=?  order by display_order ",
           values: [req.userIdentity.role_id]
         })
         .then(result => {
@@ -706,7 +706,7 @@ let getRoleBaseInActiveComponents_OLD = (req, res, next) => {
               on CRM.component_id=C.algaeh_d_app_component_id\
               inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
               inner join algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
-              where  CRM.record_status='A' and C.record_status='A' and  M.record_status= md5('A') and\
+              where  CRM.record_status='A' and C.record_status='A' and  M.record_status= 'A' and\
               S.record_status='A'  and CRM.role_id=?;\
               SELECT   component_role_map_id, screen_element_code,screen_element_name,component_code,\
           screen_code, module_code from algaeh_m_component_role_privilage_mapping CRM   \
@@ -717,7 +717,7 @@ let getRoleBaseInActiveComponents_OLD = (req, res, next) => {
               inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
               inner join  algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
           where SERM.record_status='A' and SE.record_status='A' and  C.record_status='A'\
-          and  S.record_status='A' and M.record_status=md5('A') and CRM.role_id=?",
+          and  S.record_status='A' and M.record_status='A' and CRM.role_id=?",
         values: [role_id, role_id]
       })
       .then(result => {
@@ -784,7 +784,7 @@ let getRoleBaseInActiveComponents = (req, res, next) => {
               on CRM.component_id=C.algaeh_d_app_component_id\
               inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
               inner join algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
-              where  CRM.record_status='A' and C.record_status='A' and  M.record_status= md5('A') and\
+              where  CRM.record_status='A' and C.record_status='A' and  M.record_status= 'A' and\
               S.record_status='A'  and CRM.role_id=?;\
               SELECT   component_role_map_id, screen_element_code,screen_element_name,component_code,\
           screen_code, module_code from algaeh_m_component_role_privilage_mapping CRM   \
@@ -795,7 +795,7 @@ let getRoleBaseInActiveComponents = (req, res, next) => {
               inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
               inner join  algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
           where SERM.record_status='A' and SE.record_status='A' and  C.record_status='A'\
-          and  S.record_status='A' and M.record_status=md5('A') and CRM.role_id=?",
+          and  S.record_status='A' and M.record_status='A' and CRM.role_id=?",
         values: [role_id, role_id]
       })
       .then(result => {
@@ -855,7 +855,7 @@ let addAlgaehModule = (req, res, next) => {
           query:
             "INSERT INTO `algaeh_d_app_module` (module_code,display_order, module_name, licence_key, access_by, icons, \
               module_plan, other_language,  created_date, created_by, updated_date, updated_by, record_status)\
-          VALUE(?,?,?,?,?,?,?, ?,?,?,?,md5(?))",
+          VALUE(?,?,?,?,?,?,?, ?,?,?,?,?)",
           values: [
             input.module_code,
             input.display_order,
@@ -908,7 +908,7 @@ let getAlgaehModules = (req, res, next) => {
         .executeQuery({
           query:
             "select algaeh_d_module_id, module_name,module_code,display_order, icons,other_language, module_plan  from algaeh_d_app_module\
-          where  record_status=md5('A') " +
+          where  record_status='A' " +
             superUser +
             " order by algaeh_d_module_id desc"
         })
@@ -1044,7 +1044,7 @@ let getAlgaehScreens = (req, res, next) => {
           query:
             "select algaeh_app_screens_id, screen_code, screen_name, page_to_redirect, module_name,module_code, S.other_language\
             from algaeh_d_app_screens S inner join algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
-            where  S.record_status='A' and M.record_status=md5('A') " +
+            where  S.record_status='A' and M.record_status='A' " +
             module_id +
             "  order by algaeh_app_screens_id desc "
         })
