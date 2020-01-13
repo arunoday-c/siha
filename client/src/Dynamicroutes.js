@@ -36,12 +36,14 @@ const Transactions = () => <FinanceFragment path="Transactions" />;
 const JournalVoucher = () => <FinanceFragment path="JournalVoucher" />;
 const FinanceReports = () => <FinanceFragment path="FinanceReports" />;
 const FinanceOptions = () => <FinanceFragment path="FinanceOptions" />;
+const CostCenter = () => <FinanceFragment path="CostCenter" />;
+
 const JournalAuthorization = () => (
   <FinanceFragment path="JournalAuthorization" />
 );
 const PageToPlot = {
-  Dashboard: HrDashboard,
   //Dashboard: DynamicDashboard,
+  // Dashboard: DynamicDashboard,
   // 7: React.lazy(() =>
   //   retry(() => import("./Components/Dashboard/frontdesk-dashboard"))
   // ),
@@ -578,7 +580,8 @@ const PageToPlot = {
   JournalVoucher,
   FinanceReports,
   FinanceOptions,
-  JournalAuthorization
+  JournalAuthorization,
+  CostCenter
 };
 
 const DirectRoutes = React.memo(props => {
