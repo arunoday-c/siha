@@ -34,7 +34,7 @@ let dataPayment = [
   { value: "debit_note", label: "Debit Note" }
 ];
 export default function JournalVoucher() {
-  const [voucherDate, setVoucherDate] = useState(undefined);
+  const [voucherDate, setVoucherDate] = useState(moment());
   // const [voucher_no, setVoucherNo] = useState("");
   const [voucherType, setVoucherType] = useState(undefined);
   const [accounts, setAccounts] = useState([{}]);
@@ -49,7 +49,6 @@ export default function JournalVoucher() {
   const [payment, setPayment] = useState(basePayment);
   const [loading, setLoading] = useState(false);
   const [clearLoading, setClearLoading] = useState(false);
-
   const [journerList, setJournerList] = useState([
     {
       child_id: undefined,
@@ -88,14 +87,6 @@ export default function JournalVoucher() {
 
   const saveJournal = () => {
     setLoading(true);
-    if (journerList.length === 0) {
-      setLoading(false);
-      AlgaehMessagePop({
-        type: "error",
-        display: "Empty data !"
-      });
-      return;
-    }
     if (voucherDate === "") {
       setLoading(false);
       AlgaehMessagePop({
@@ -104,7 +95,7 @@ export default function JournalVoucher() {
       });
       return;
     }
-    if (voucherType === "") {
+    if (!voucherType) {
       setLoading(false);
       AlgaehMessagePop({
         type: "error",
@@ -112,12 +103,42 @@ export default function JournalVoucher() {
       });
       return;
     }
+
+    if (payment.payment_mode) {
+      if (payment.payment_mode === "CHEQUE") {
+        if (!payment.ref_no || !payment.cheque_date) {
+          AlgaehMessagePop({
+            type: "error",
+            display: "Reference No and Cheque Date is mandatory"
+          });
+          setLoading(false);
+          return;
+        }
+      } else {
+        if (payment.payment_mode !== "CASH" && !payment.ref_no) {
+          AlgaehMessagePop({
+            type: "error",
+            display: "Reference Number is mandatory"
+          });
+          setLoading(false);
+          return;
+        }
+      }
+    } else {
+      AlgaehMessagePop({
+        type: "error",
+        display: "Please Select Any one of the payment mode"
+      });
+      setLoading(false);
+      return;
+    }
+
     let costcenter = {};
     if (Object.keys(records_av).length === 0) {
       setLoading(false);
       AlgaehMessagePop({
-        type: "info",
-        display: "Please Branch and Cost Center is mandatory"
+        type: "error",
+        display: "Branch and Cost Center is mandatory"
       });
       return;
     } else {
@@ -137,13 +158,28 @@ export default function JournalVoucher() {
       }
     }
 
-    if (payment.payment_mode === "CHEQUE") {
-      if (!payment.ref_no || !payment.cheque_date) {
+    if (journerList.length >= 2) {
+      debugger;
+      const check =
+        journerList[0].amount &&
+        journerList[0].sourceName &&
+        journerList[1].amount &&
+        journerList[1].sourceName;
+      if (!check) {
         AlgaehMessagePop({
-          type: "Error",
-          display: "Reference No and Cheque Date is mandatory"
+          type: "info",
+          display: "Please select an Account and enter proper amount"
         });
+        setLoading(false);
+        return;
       }
+    } else {
+      AlgaehMessagePop({
+        type: "info",
+        display: "Atlease two entries must be present"
+      });
+      setLoading(false);
+      return;
     }
 
     addJurnorLedger({
@@ -497,4 +533,3 @@ export default function JournalVoucher() {
     </div>
   );
 }
-
