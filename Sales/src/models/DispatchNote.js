@@ -235,15 +235,12 @@ export function addDispatchNote(req, res, next) {
 
             _mysql
                 .generateRunningNumber({
-                    modules: ["SALES_DISPATCH"],
-                    tableName: "hims_f_sales_numgen",
-                    identity: {
-                        algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-                        hospital_id: req.userIdentity.hospital_id
-                    }
+                    user_id: req.userIdentity.algaeh_d_app_user_id,
+                    numgen_codes: ["SALES_DISPATCH"],
+                    table_name: "hims_f_sales_numgen"
                 })
                 .then(generatedNumbers => {
-                    dispatch_note_number = generatedNumbers[0];
+                    dispatch_note_number = generatedNumbers.SALES_DISPATCH;
 
                     let year = moment().format("YYYY");
 

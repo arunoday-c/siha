@@ -35,7 +35,7 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-          printQuery: query => {},
+          printQuery: query => { },
           bulkInsertOrUpdate: true
         })
         .then(result => {
@@ -1628,14 +1628,11 @@ export default {
 
     _mysql
       .generateRunningNumber({
-        modules: ["EMPLOYEE_LOAN"],
-        tableName: "hims_f_app_numgen",
-        identity: {
-          algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-          hospital_id: req.userIdentity.hospital_id
-        }
+        user_id: req.userIdentity.algaeh_d_app_user_id,
+        numgen_codes: ["EMPLOYEE_LOAN"],
+        table_name: "hims_f_hrpayroll_numgen"
       })
-      .then(numGenLeave => {
+      .then(generatedNumbers => {
         _mysql
           .executeQuery({
             query:
@@ -1643,7 +1640,7 @@ export default {
                 loan_id, loan_authorized, pending_tenure, installment_amount, pending_loan, start_year, start_month, hospital_id)\
           VALUE(?,?,?,?,?,?,?,?,?,?,?)",
             values: [
-              numGenLeave[0],
+              generatedNumbers.EMPLOYEE_LOAN,
               input.loan_application_date,
               input.employee_id,
               input.loan_id,

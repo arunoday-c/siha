@@ -127,15 +127,12 @@ export function addSalesReturn(req, res, next) {
 
         _mysql
             .generateRunningNumber({
-                modules: ["SALES_RETURN"],
-                tableName: "hims_f_sales_numgen",
-                identity: {
-                    algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-                    hospital_id: req.userIdentity.hospital_id
-                }
+                user_id: req.userIdentity.algaeh_d_app_user_id,
+                numgen_codes: ["SALES_RETURN"],
+                table_name: "hims_f_sales_numgen"
             })
             .then(generatedNumbers => {
-                sales_return_number = generatedNumbers[0];
+                sales_return_number = generatedNumbers.SALES_RETURN;
 
                 _mysql
                     .executeQuery({

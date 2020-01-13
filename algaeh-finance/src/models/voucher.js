@@ -399,185 +399,229 @@ export default {
     let input = req.body;
     const algaeh_d_app_user_id = req.userIdentity.algaeh_d_app_user_id;
 
-    generateVoucherNo(_mysql, input)
-      .then(numgen => {
-        let transaction_date = "";
+    let voucher_type = "";
 
-        if (
-          moment(input.transaction_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
-        ) {
-          transaction_date = input.transaction_date;
-        } else {
-          transaction_date = new Date();
-        }
+    switch (input.voucher_type) {
+      case "journal":
+        voucher_type = "JOURNAL";
+        break;
+      case "contra":
+        voucher_type = "CONTRA";
+        break;
+      case "receipt":
+        voucher_type = "RECEIPT";
+        break;
+      case "payment":
+        voucher_type = "PAYMENT";
+        break;
+      case "sales":
+        voucher_type = "SALES";
+        break;
+      case "purchase":
+        voucher_type = "PURCHASE";
+        break;
+      case "credit_note":
+        voucher_type = "CREDIT_NOTE";
+        break;
+      case "debit_note":
+        voucher_type = "DEBIT_NOTE";
+        break;
+    }
 
-        let credit_amount = 0;
-        let debit_amount = 0;
-        input.details.forEach(item => {
-          if (item.payment_type == "CR") {
-            credit_amount = parseFloat(credit_amount) + parseFloat(item.amount);
-            item["credit_amount"] = item.amount;
-            item["debit_amount"] = 0;
-          } else if (item.payment_type == "DR") {
-            debit_amount = parseFloat(debit_amount) + parseFloat(item.amount);
-            item["credit_amount"] = 0;
-            item["debit_amount"] = item.amount;
+    if (voucher_type == "") {
+      req.records = {
+        invalid_input: true,
+        message: "Please select voucher type"
+      };
+    } else {
+      _mysql
+        .generateRunningNumber({
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: [voucher_type],
+          table_name: "finance_numgen"
+        })
+        .then(numgen => {
+          let transaction_date = "";
+
+          if (
+            moment(input.transaction_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
+          ) {
+            transaction_date = input.transaction_date;
+          } else {
+            transaction_date = new Date();
           }
-        });
 
-        if (credit_amount == debit_amount) {
-          _mysql
-            .executeQuery({
-              query: "SELECT cost_center_type  FROM finance_options limit 1; "
-            })
-            .then(resul => {
-              if (
-                resul.length == 1 &&
-                (resul[0]["cost_center_type"] == "P" ||
-                  resul[0]["cost_center_type"] == "SD")
-              ) {
-                let project_cost_center = null;
-                let subDept_cost_center = null;
-                if (resul[0]["cost_center_type"] == "P") {
-                  project_cost_center = input.cost_center_id;
-                } else if (resul[0]["cost_center_type"] == "SD") {
-                  subDept_cost_center = input.cost_center_id;
-                }
+          let credit_amount = 0;
+          let debit_amount = 0;
+          input.details.forEach(item => {
+            if (item.payment_type == "CR") {
+              credit_amount =
+                parseFloat(credit_amount) + parseFloat(item.amount);
+              item["credit_amount"] = item.amount;
+              item["debit_amount"] = 0;
+            } else if (item.payment_type == "DR") {
+              debit_amount = parseFloat(debit_amount) + parseFloat(item.amount);
+              item["credit_amount"] = 0;
+              item["debit_amount"] = item.amount;
+            }
+          });
 
-                const month = moment(transaction_date, "YYYY-MM-DD").format(
-                  "M"
-                );
-                const year = moment(transaction_date, "YYYY-MM-DD").format(
-                  "YYYY"
-                );
-
-                let cheque_date = null;
-                let ref_no = null;
-                let payment_mode = "N";
-                switch (input.payment_mode) {
-                  case "CASH":
-                  case "CHEQUE":
-                  case "RTGS":
-                  case "NEFT":
-                  case "IMPS":
-                    payment_mode = input.payment_mode;
-                }
-
+          if (credit_amount == debit_amount) {
+            _mysql
+              .executeQuery({
+                query: "SELECT cost_center_type  FROM finance_options limit 1; "
+              })
+              .then(resul => {
                 if (
-                  input.cheque_date != null &&
-                  input.cheque_date != undefined
+                  resul.length == 1 &&
+                  (resul[0]["cost_center_type"] == "P" ||
+                    resul[0]["cost_center_type"] == "SD")
                 ) {
-                  cheque_date = input.cheque_date;
-                }
-                if (input.ref_no != null && input.ref_no != undefined) {
-                  ref_no = input.ref_no;
-                }
-                _mysql
-                  .executeQueryWithTransaction({
-                    query:
-                      "INSERT INTO `finance_voucher_header` (payment_mode,ref_no,cheque_date,amount, payment_date, month, year,\
+                  let project_cost_center = null;
+                  let subDept_cost_center = null;
+                  if (resul[0]["cost_center_type"] == "P") {
+                    project_cost_center = input.cost_center_id;
+                  } else if (resul[0]["cost_center_type"] == "SD") {
+                    subDept_cost_center = input.cost_center_id;
+                  }
+
+                  const month = moment(transaction_date, "YYYY-MM-DD").format(
+                    "M"
+                  );
+                  const year = moment(transaction_date, "YYYY-MM-DD").format(
+                    "YYYY"
+                  );
+
+                  let cheque_date = null;
+                  let ref_no = null;
+                  let payment_mode = "N";
+                  switch (input.payment_mode) {
+                    case "CASH":
+                    case "CHEQUE":
+                    case "RTGS":
+                    case "NEFT":
+                    case "IMPS":
+                      payment_mode = input.payment_mode;
+                  }
+
+                  if (
+                    input.cheque_date != null &&
+                    input.cheque_date != undefined
+                  ) {
+                    cheque_date = input.cheque_date;
+                  }
+                  if (input.ref_no != null && input.ref_no != undefined) {
+                    ref_no = input.ref_no;
+                  }
+                  _mysql
+                    .executeQueryWithTransaction({
+                      query:
+                        "INSERT INTO `finance_voucher_header` (payment_mode,ref_no,cheque_date,amount, payment_date, month, year,\
                        narration, voucher_no, voucher_type,from_screen,posted_from)\
                        VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
-                    values: [
-                      payment_mode,
-                      ref_no,
-                      cheque_date,
-                      credit_amount,
-                      transaction_date,
-                      month,
-                      year,
-                      input.narration,
-                      numgen.voucher_no,
-                      input.voucher_type,
-                      input.from_screen,
-                      "V"
-                    ],
-                    printQuery: true
-                  })
-                  .then(result => {
-                    // const IncludeValues = ["amount", "payment_mode"];
-                    const insertColumns = [
-                      "head_id",
-                      "child_id",
-                      "debit_amount",
-                      "credit_amount",
-                      "payment_type",
-                      "hospital_id",
-                      "project_id",
-                      "sub_department_id"
-                    ];
-                    _mysql
-                      .executeQueryWithTransaction({
-                        query:
-                          "insert into finance_voucher_details (??) values ?;",
-                        values: input.details,
-                        includeValues: insertColumns,
-                        bulkInsertOrUpdate: true,
-                        printQuery: true,
-                        extraValues: {
-                          payment_date: transaction_date,
-                          month: month,
-                          year: year,
-                          voucher_header_id: result.insertId,
-                          entered_by: algaeh_d_app_user_id,
-                          hospital_id: input.hospital_id,
-                          project_id: project_cost_center,
-                          sub_department_id: subDept_cost_center
-                        }
-                      })
-                      .then(result2 => {
-                        _mysql.commitTransaction(() => {
-                          _mysql.releaseConnection();
-                          req.records = numgen;
-                          next();
+                      values: [
+                        payment_mode,
+                        ref_no,
+                        cheque_date,
+                        credit_amount,
+                        transaction_date,
+                        month,
+                        year,
+                        input.narration,
+                        numgen[voucher_type],
+
+                        input.voucher_type,
+                        input.from_screen,
+                        "V"
+                      ],
+                      printQuery: true
+                    })
+                    .then(result => {
+                      // const IncludeValues = ["amount", "payment_mode"];
+                      const insertColumns = [
+                        "head_id",
+                        "child_id",
+                        "debit_amount",
+                        "credit_amount",
+                        "payment_type",
+                        "hospital_id",
+                        "project_id",
+                        "sub_department_id"
+                      ];
+                      _mysql
+                        .executeQueryWithTransaction({
+                          query:
+                            "insert into finance_voucher_details (??) values ?;",
+                          values: input.details,
+                          includeValues: insertColumns,
+                          bulkInsertOrUpdate: true,
+                          printQuery: true,
+                          extraValues: {
+                            payment_date: transaction_date,
+                            month: month,
+                            year: year,
+                            voucher_header_id: result.insertId,
+                            entered_by: algaeh_d_app_user_id,
+                            hospital_id: input.hospital_id,
+                            project_id: project_cost_center,
+                            sub_department_id: subDept_cost_center
+                          }
+                        })
+                        .then(result2 => {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = {
+                              voucher_no: numgen[voucher_type]
+                            };
+                            next();
+                          });
+                        })
+                        .catch(error => {
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
                         });
-                      })
-                      .catch(error => {
-                        _mysql.rollBackTransaction(() => {
-                          next(error);
-                        });
-                      });
-                  })
-                  .catch(e => {
-                    _mysql.releaseConnection();
-                    next(e);
-                  });
-              } else {
+                    })
+                    .catch(e => {
+                      _mysql.releaseConnection();
+                      next(e);
+                    });
+                } else {
+                  _mysql.releaseConnection();
+                  req.records = {
+                    invalid_input: true,
+                    message: "Please Define cost center type"
+                  };
+                  next();
+                }
+              })
+              .catch(e => {
                 _mysql.releaseConnection();
-                req.records = {
-                  invalid_input: true,
-                  message: "Please Define cost center type"
-                };
-                next();
-              }
-            })
-            .catch(e => {
-              _mysql.releaseConnection();
-              next(e);
-            });
-        } else {
-          req.records = {
-            invalid_input: true,
-            message: "Credit and Debit Amount are not equal"
-          };
-          next();
-        }
-      })
-      .catch(e => {
-        _mysql.rollBackTransaction(() => {
-          next(e);
+                next(e);
+              });
+          } else {
+            req.records = {
+              invalid_input: true,
+              message: "Credit and Debit Amount are not equal"
+            };
+            next();
+          }
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
         });
-      });
+    }
   },
 
   //created by irfan:
-  getVoucherNo: (req, res, next) => {
+  getVoucherNoBKP_JAN_10: (req, res, next) => {
     const _mysql = new algaehMysql();
     const input = req.query;
     const current_year = moment().format("YY");
 
     let voucher_type = "";
-
     switch (input.voucher_type) {
       case "journal":
         voucher_type = "JOURNAL";
@@ -1385,6 +1429,29 @@ export default {
         _mysql.releaseConnection();
         next(e);
       });
+  },
+
+  //created by irfan:
+  getVoucherNo: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    //ss
+    _mysql
+      .generateRunningNumber({
+        user_id: req.userIdentity.algaeh_d_app_user_id,
+        numgen_codes: ["NUM001", "NUM002", "NUM003", "NUM004", "NUM0005"],
+        table_name: "hims_f_pharmacy_numgen"
+      })
+      .then(result => {
+        _mysql.commitTransaction(() => {
+          req.records = result;
+          next();
+        });
+      })
+      .catch(e => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
   }
 };
 
@@ -1416,7 +1483,7 @@ function getFinanceAuthFields(auth_level) {
 }
 
 //created by irfan:
-function generateVoucherNo(_mysql, input, algaeh_d_app_user_id) {
+function generateVoucherNo(options) {
   return new Promise((resolve, reject) => {
     // const input = req.query;
     const current_year = moment().format("YY");
@@ -1577,4 +1644,145 @@ function generateVoucherNo(_mysql, input, algaeh_d_app_user_id) {
         });
     }
   });
+}
+//created by irfan:
+function numgen(options) {
+  return new Promise((resolve, reject) => {
+    let { _mysql, user_id, numgen_codes, table_name } = options;
+
+    const current_year = moment().format("YY");
+
+    let count = Array.isArray(numgen_codes) ? numgen_codes.length : 1;
+    let outputObj = {};
+    let updateQuery = "";
+    _mysql
+      .executeQueryWithTransaction({
+        query: ` select numgen_code,prefix,intermediate_series,postfix,\
+      length,increment_by,numgen_seperator,current_num,\
+      intermediate_series_req,preceding_zeros_req,reset_slno_on_year_change\
+      from ${table_name} where record_status='A' and numgen_code in (?) FOR UPDATE;`,
+        values: [numgen_codes],
+        printQuery: false
+      })
+      .then(result => {
+        if (result.length == count) {
+          for (let i = 0; i < count; i++) {
+            let str = "";
+            let new_number = "";
+            let complete_number = "";
+
+            let {
+              prefix,
+              intermediate_series,
+              postfix,
+              length,
+              increment_by,
+              numgen_seperator,
+              current_num,
+              preceding_zeros_req,
+              numgen_code,
+              intermediate_series_req,
+              reset_slno_on_year_change
+            } = result[i];
+
+            //if intermediate_series  required in this case year
+            if (intermediate_series_req == "Y") {
+              //in case of intermediate_series  required and year changed
+              if (current_year > intermediate_series) {
+                intermediate_series = current_year;
+                str = ", intermediate_series =" + current_year;
+                //reset postfix to 1 and start fresh series
+                if (reset_slno_on_year_change == "Y") {
+                  postfix = 1;
+                }
+
+                current_num =
+                  prefix + numgen_seperator + current_year + numgen_seperator;
+
+                //if runnuning number needs zeros to its left
+                if (preceding_zeros_req == "Y") {
+                  current_num = padString(
+                    current_num,
+                    String(postfix),
+                    parseInt(length) - parseInt(current_num.length),
+                    "0"
+                  );
+                } else {
+                  current_num += postfix;
+                }
+              }
+
+              new_number = parseInt(postfix) + parseInt(increment_by);
+
+              complete_number =
+                prefix + numgen_seperator + current_year + numgen_seperator;
+              //if runnuning number needs zeros to its left
+              if (preceding_zeros_req == "Y") {
+                complete_number = padString(
+                  complete_number,
+                  String(new_number),
+                  parseInt(length) - parseInt(complete_number.length),
+                  "0"
+                );
+              } else {
+                complete_number += new_number;
+              }
+            } else {
+              //if intermediate_series not required in this case year
+              new_number = parseInt(postfix) + parseInt(increment_by);
+              //if runnuning number needs zeros to its left
+              if (preceding_zeros_req == "Y") {
+                complete_number = prefix + numgen_seperator;
+
+                complete_number = padString(
+                  complete_number,
+                  String(new_number),
+                  parseInt(length) - parseInt(complete_number.length),
+                  "0"
+                );
+              } else {
+                complete_number = prefix + numgen_seperator + new_number;
+              }
+            }
+
+            updateQuery += _mysql.mysqlQueryFormat(
+              `update ${table_name} set pervious_num=current_num,current_num=?,\
+              postfix=?,updated_by=?,updated_date=? ${str} where numgen_code=?;`,
+              [complete_number, new_number, user_id, new Date(), numgen_code]
+            );
+            outputObj[numgen_code] = current_num;
+          }
+
+          _mysql
+            .executeQueryWithTransaction({
+              query: updateQuery,
+              printQuery: true
+            })
+            .then(finalResult => {
+              resolve(outputObj);
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                reject(e);
+              });
+            });
+        } else {
+          _mysql.rollBackTransaction(() => {
+            reject({
+              message: "Number Generation series not Found"
+            });
+          });
+        }
+      })
+      .catch(e => {
+        _mysql.rollBackTransaction(() => {
+          reject(e);
+        });
+      });
+  });
+}
+//created by irfan:
+function padString(targetString, new_number, length, paddCharacter) {
+  targetString = targetString + new_number.padStart(length, paddCharacter);
+  return targetString;
 }
