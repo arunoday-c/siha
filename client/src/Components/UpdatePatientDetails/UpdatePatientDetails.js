@@ -399,8 +399,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(UpdatePatientDetails)
+  connect(mapStateToProps, mapDispatchToProps)(UpdatePatientDetails)
 );

@@ -394,10 +394,9 @@ class RegistrationPatient extends Component {
                   delete patientdata.cities;
                   delete patientdata.doctors;
 
-                  patientdata.ScreenCode = getCookie("ScreenCode")
+                  patientdata.ScreenCode = getCookie("ScreenCode");
 
                   if ($this.state.hims_d_patient_id === null) {
-
                     algaehApiCall({
                       uri: "/frontDesk/add",
                       module: "frontDesk",
@@ -783,8 +782,8 @@ class RegistrationPatient extends Component {
                 <h6>
                   {this.state.registration_date
                     ? moment(this.state.registration_date).format(
-                      Options.dateFormat
-                    )
+                        Options.dateFormat
+                      )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -802,6 +801,14 @@ class RegistrationPatient extends Component {
                 events: {
                   onClick: () => {
                     generateIdCard(this, this);
+                  }
+                }
+              },
+              {
+                label: "Print Receipt",
+                events: {
+                  onClick: () => {
+                    generateReceipt(this, this);
                   }
                 }
               }
@@ -1084,8 +1091,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(RegistrationPatient)
+  connect(mapStateToProps, mapDispatchToProps)(RegistrationPatient)
 );
