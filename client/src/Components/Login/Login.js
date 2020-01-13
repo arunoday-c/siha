@@ -120,7 +120,8 @@ function Login(props) {
                       "appRole",
                       records.app_d_app_roles_id
                     );
-                    history.push("/Dashboard");
+                    history.push(`/${records.page_to_redirect}`);
+                    // history.push("/Dashboard");
                   })
                   .catch(error => {
                     setLoginLoad(false);
@@ -283,7 +284,9 @@ function Login(props) {
                                         "appRole",
                                         records.app_d_app_roles_id
                                       );
-                                      history.push("/Dashboard");
+                                      history.push(
+                                        `/${records.page_to_redirect}`
+                                      ); //("/Dashboard");
                                     })
                                     .catch(error => {
                                       setLoginLoad(false);
@@ -307,109 +310,144 @@ function Login(props) {
                         className="row"
                         autoComplete="none"
                       >
-                        <AlagehFormGroup
-                          div={{ className: "col-12 form-group" }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "username",
-                            value: login.username,
-                            events: {
-                              onChange: e => {
-                                setLogin({
-                                  ...login,
-                                  username: e.target.value
-                                });
-                              }
-                            },
-                            others: {
-                              tabIndex: "1",
-                              placeholder: "Enter Username",
-                              ref: c => {
-                                userRef = c;
-                              }
-                            }
-                          }}
-                        />
-                        <br />
-                        <AlagehFormGroup
-                          div={{ className: "col-12 form-group" }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "password",
-                            value: login.password,
-                            events: {
-                              onChange: e => {
-                                setLogin({
-                                  ...login,
-                                  password: e.target.value
-                                });
-                              }
-                            },
-                            others: {
-                              type: "password",
-                              tabIndex: "2",
-                              placeholder: "Enter Password",
-                              ref: c => {
-                                passwordRef = c;
-                              }
-                            }
-                          }}
-                        />
-                        <br />
-                        <AlagehAutoComplete
-                          div={{ className: "col-12 form-group" }}
-                          selector={{
-                            name: "item_id",
-                            className: "select-fld",
-                            value: login.item_id,
-                            autoComplete: "off",
-                            dataSource: {
-                              textField: "hospital_name",
-                              valueField: "hims_d_hospital_id",
-                              data: login.hospitalList
-                            },
-                            placeholder: "Select a Branch",
-                            others: {
-                              tabIndex: "3"
-                            },
-                            onChange: selector => {
-                              setCookie(
-                                "HospitalName",
-                                selector.selected.hospital_name
-                              );
-                              setCookie("HospitalId", selector.value);
-                              setCookie(
-                                "algaeh_api_auth_id",
-                                selector.selected.algaeh_api_auth_id
-                              );
-
-                              setLogin({ ...login, item_id: selector.value });
-                            },
-                            onClear: () => {
-                              setLogin({ ...login, item_id: "" });
-                            }
-                          }}
-                        />
-                        <div className="col-12 form-group">
-                          <div className="checkbox">
-                            <label>
-                              <input type="checkbox" value="remember-me" />{" "}
-                              Remember me
-                            </label>
+                        <div className="col-12 usernameSec">
+                          <div className="row">
+                            <AlagehFormGroup
+                              div={{ className: "col-12 form-group" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "username",
+                                value: login.username,
+                                events: {
+                                  onChange: e => {
+                                    setLogin({
+                                      ...login,
+                                      username: e.target.value
+                                    });
+                                  }
+                                },
+                                others: {
+                                  tabIndex: "1",
+                                  placeholder: "Enter Username",
+                                  ref: c => {
+                                    userRef = c;
+                                  }
+                                }
+                              }}
+                            />
+                            <br />
+                            <div
+                              className="col-12 form-group"
+                              style={{ textAlign: "right" }}
+                            >
+                              <button
+                                className="btn btn-lg btn-block btn-secondary sign-btn"
+                                type="submit"
+                                tabIndex="2"
+                              >
+                                Next
+                              </button>
+                            </div>{" "}
                           </div>
-                          <button
-                            className="btn btn-lg btn-secondary btn-block sign-btn"
-                            type="submit"
-                            tabIndex="4"
-                          >
-                            Login
-                          </button>
-                          <p className="frgtPass">
-                            FORGOT PASSWORD? |{" "}
-                            <a href="mailto:we@algaeh.com?Subject=Hello%20New%20Password%20Requesting">
-                              CONTACT ADMINISTRATOR
-                            </a>
-                          </p>
+                        </div>
+
+                        <div className="col-12 passwordSec">
+                          <div className="row">
+                            <div className="col userAfterLogin">
+                              {" "}
+                              <h1>Welcome,</h1>
+                              <h6>Aboobacker Sidhiqe</h6>
+                            </div>
+                            <AlagehFormGroup
+                              div={{ className: "col-12 form-group" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "password",
+                                value: login.password,
+                                events: {
+                                  onChange: e => {
+                                    setLogin({
+                                      ...login,
+                                      password: e.target.value
+                                    });
+                                  }
+                                },
+                                others: {
+                                  type: "password",
+                                  tabIndex: "2",
+                                  placeholder: "Enter Password",
+                                  ref: c => {
+                                    passwordRef = c;
+                                  }
+                                }
+                              }}
+                            />
+                            <br />
+                            {/* <AlagehAutoComplete
+                              div={{ className: "col-12 form-group" }}
+                              selector={{
+                                name: "item_id",
+                                className: "select-fld",
+                                value: login.item_id,
+                                autoComplete: "off",
+                                dataSource: {
+                                  textField: "hospital_name",
+                                  valueField: "hims_d_hospital_id",
+                                  data: login.hospitalList
+                                },
+                                placeholder: "Select a Branch",
+                                others: {
+                                  tabIndex: "3"
+                                },
+                                onChange: selector => {
+                                  setCookie(
+                                    "HospitalName",
+                                    selector.selected.hospital_name
+                                  );
+                                  setCookie("HospitalId", selector.value);
+                                  setCookie(
+                                    "algaeh_api_auth_id",
+                                    selector.selected.algaeh_api_auth_id
+                                  );
+
+                                  setLogin({
+                                    ...login,
+                                    item_id: selector.value
+                                  });
+                                },
+                                onClear: () => {
+                                  setLogin({ ...login, item_id: "" });
+                                }
+                              }}
+                            /> */}
+                            <div className="col-12 form-group">
+                              <div className="checkbox">
+                                <label>
+                                  <span>
+                                    {" "}
+                                    <input
+                                      type="checkbox"
+                                      value="remember-me"
+                                    />
+                                  </span>
+                                  <b> Remember me</b>
+                                </label>
+                              </div>
+                              <button
+                                className="btn btn-lg btn-secondary btn-block sign-btn"
+                                type="submit"
+                                tabIndex="4"
+                              >
+                                Login
+                              </button>
+                              <p className="frgtPass">
+                                FORGOT PASSWORD? |{" "}
+                                <a href="mailto:we@algaeh.com?Subject=Hello%20New%20Password%20Requesting">
+                                  CONTACT ADMINISTRATOR
+                                </a>
+                              </p>
+                            </div>
+                          </div>
                         </div>
                       </form>
                     </div>

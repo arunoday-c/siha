@@ -1,4 +1,5 @@
 @import "../../styles/algaehCssVariables.scss";
+$borderRadius: 10px;
 .login {
   font-family: "Roboto", sans-serif;
   min-width: 100%;
@@ -21,7 +22,7 @@
     padding: 0.3em 1em;
     font-size: 1.3em;
     font-weight: 400;
-    border-radius: 50px;
+    border-radius: $borderRadius;
     line-height: 0;
     background: rgba($color-black, 0.2) !important;
     border: 1px solid $color-white;
@@ -52,7 +53,7 @@
       padding: 0.3em 1em !important;
       font-size: 1.3em !important;
       font-weight: 400 !important;
-      border-radius: 50px !important;
+      border-radius: $borderRadius !important;
       line-height: 0 !important;
       background: rgba($color-black, 0.2) !important;
       border: 1px solid $color-white !important;
@@ -114,7 +115,7 @@
   .ui.fluid.dropdown {
     .menu {
       background-color: white;
-      border-radius: 20px;
+      border-radius: $borderRadius;
       border: none;
       .item {
         padding: 18px !important;
@@ -127,12 +128,12 @@
     }
   }
   .btn-secondary {
-    min-height: 50px !important;
-    max-height: 50px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
     padding: 0.3em 1em;
     font-size: 1.3em !important;
     font-weight: 400;
-    border-radius: 50px;
+    border-radius: $borderRadius;
     line-height: 0;
     color: $color-white;
     background-color: $secondary-color;
@@ -163,11 +164,49 @@
   .checkbox {
     font-weight: normal;
     margin-bottom: 10px;
-    padding-left: 20px;
     color: $color-white;
+    label {
+      font-weight: bold !important;
+      text-transform: none;
+      border: 1px solid $color-white;
+      padding: 0 5px 0 0;
+      border-radius: $borderRadius;
+      background: rgba($color-black, 0.2) !important;
+      cursor: pointer;
+
+      span {
+        padding: 7px;
+        border-right: 1px solid $color-white;
+        border-radius: $borderRadius;
+        background: rgba($color-black, 0.2) !important;
+        margin-right: 10px;
+        float: left;
+      }
+      b {
+        float: left;
+        line-height: 31px;
+        margin-right: 10px;
+      }
+      &:hover {
+        background: rgba($color-black, 0.8) !important;
+      }
+    }
   }
   .txt-fld {
     background: none !important;
+  }
+  .userAfterLogin {
+    text-align: center;
+    text-shadow: 0 1px 3px rgba($color-black, 0.8);
+    h1 {
+      font-weight: lighter;
+      color: $color-white !important;
+      margin-bottom: 5px;
+    }
+    h6 {
+      font-weight: bolder;
+      color: $color-white !important;
+    }
   }
 }
 .bg {
