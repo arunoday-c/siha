@@ -39,25 +39,30 @@ export function PlotUI(node, style, indexIds, nonZero) {
             : null
         }
       >
-        {" "}
-        <span>
-          <img src={ChildIcon} alt="" />
-        </span>
-        <span>{node !== undefined ? node["label"] : null}</span>
-        <span>
-          {node !== undefined
-            ? parseFloat(node["tr_credit_amount"]) === 0
-              ? ""
-              : node["tr_credit_amount"]
-            : null}
-        </span>
-        <span>
-          {node !== undefined
-            ? parseFloat(node["tr_debit_amount"]) === 0
-              ? ""
-              : node["tr_debit_amount"]
-            : null}
-        </span>
+        <div>
+          <span>
+            <img src={ChildIcon} alt="" />
+          </span>
+          <span>{node !== undefined ? node["label"] : null}</span>
+          <span>
+            {node !== undefined ? (
+              parseFloat(node["tr_credit_amount"]) === 0 ? (
+                <b></b>
+              ) : (
+                node["tr_credit_amount"]
+              )
+            ) : null}
+          </span>
+          <span>
+            {node !== undefined ? (
+              parseFloat(node["tr_debit_amount"]) === 0 ? (
+                <b></b>
+              ) : (
+                node["tr_debit_amount"]
+              )
+            ) : null}
+          </span>
+        </div>
       </li>
     );
   } else {
