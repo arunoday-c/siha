@@ -26,12 +26,22 @@ export default memo(function({ selectedMenu, userLanguage }) {
   }
   return (
     <div className="breadCrumpMenu">
-      <span className="showParentModule" onClick={onShow}>
-        {userLanguage === "en" ? module_name : other_language}
-      </span>
-      <span className="childActiveModule">
-        {userLanguage === "en" ? screen_name : s_other_language}
-      </span>
+      {" "}
+      <ul class="appMenuNavigation">
+        <li>
+          <span> {userLanguage === "en" ? module_name : other_language}</span>
+        </li>
+        <li onClick={onShow} onBlur={onShow}>
+          <span> {userLanguage === "en" ? screen_name : s_other_language}</span>
+          <i
+            className="fas fa-sort-down"
+            style={{
+              fontSize: "1.3rem",
+              marginTop: "5px"
+            }}
+          ></i>
+        </li>
+      </ul>
       {show === true ? (
         <div className="dropDownList">
           <ul>
