@@ -117,7 +117,7 @@ let authUser = (req, res, next) => {
      inner join hims_m_user_employee UEM on  RU.user_id=UEM.user_id\
      inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id\
      inner join  algaeh_d_app_password P on U.algaeh_d_app_user_id=P.userid\
-     left join algaeh_d_app_screens S on  RU.land_screen_id=S.algaeh_app_screens_id \
+     left join algaeh_d_app_screens S on  R.default_land_screen_id=S.algaeh_app_screens_id \
      WHERE P.password=md5(?) AND U.username=? AND U.record_status='A'   AND U.user_status='A' \
      AND P.record_status='A' AND G.record_status='A' AND R.record_status='A' and UEM.record_status='A' and E.employee_status <>'I'and UEM.hospital_id=?;\
      SELECT ORG.business_registration_number,ORG.tax_number,ORG.other_lang,ORG.other_lang_short,hims_d_hospital_id, hospital_code, local_vat_applicable, default_nationality, default_country, \
