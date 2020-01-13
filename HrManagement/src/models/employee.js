@@ -98,6 +98,7 @@ export default {
           req.query.show_all_status === "true"
             ? ""
             : "and E.employee_status='A' ";
+        const specificEmployee =  req.query.hims_d_employee_id !== undefined ?" and hims_d_employee_id ='"+req.query.hims_d_employee_id +"'":"";
 
         _mysql
           .executeQuery({
@@ -108,7 +109,7 @@ export default {
                 inner join hims_d_department D on SD.department_id = D.hims_d_department_id \
                 inner join hims_d_religion R on E.religion_id = R.hims_d_religion_id \
                 left join hims_d_designation DE on E.employee_designation_id = DE.hims_d_designation_id left join hims_d_nationality N on N.hims_d_nationality_id = E.nationality WHERE \
-                E.record_status = 'A'  " +
+                E.record_status = 'A'  " + specificEmployee +" "+
               show_active +
               _strAppend,
             // values: [req.userIdentity.hospital_id],
