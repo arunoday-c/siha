@@ -22,7 +22,7 @@ import {
   renameAccount,
   getChartData
 } from ".././FinanceAccountEvent";
-import "react-sortable-tree/style.css";
+
 import "../alice.scss";
 function TreeComponent({ assetCode, title, inDrawer }) {
   const [symbol, setSymbol] = useState("");
@@ -490,7 +490,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                     setSelectedNode({
                       node: {
                         finance_account_head_id: financeHeadId,
-                        parent_acc_id: "1"
+                        parent_acc_id: assetCode
                       }
                     });
                     setShowPopup(true);

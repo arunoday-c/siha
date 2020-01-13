@@ -1,13 +1,22 @@
 import React from "react";
-// import JournalVoucher from "../JournalVoucher";
 import TreeComponent from "./TreeComponent";
-// import ReactDom from "react-dom";
+// import AllAccounts from "./AllAccounts";
 import { AlgaehTabs, AlgaehLabel } from "algaeh-react-components";
 export default function FinanceAccounts({ inDrawer = false }) {
   return (
     <div className="">
       <AlgaehTabs
         content={[
+          // {
+          //   title: (
+          //     <AlgaehLabel
+          //       label={{
+          //         fieldName: "All Accounts"
+          //       }}
+          //     />
+          //   ),
+          //   children: <AllAccounts title="All Account Heads" inDrawer={true} />
+          // },
           {
             title: (
               <AlgaehLabel

@@ -78,12 +78,12 @@ export default function AddNewAccount({
           setAccountName("");
           setAccountType("G");
           setOpeningBalance(0);
-          onClose();
           setLoadingAddtoList(false);
           AlgaehMessagePop({
             type: "error",
             display: errorMessage
           });
+          onClose();
         },
         result => {
           // setAccountCode("");
@@ -98,6 +98,7 @@ export default function AddNewAccount({
           } = result;
           onClose({
             title: account_name,
+            subtitle: opening_balance ? `${opening_balance}.00` : `0.00`,
             leafnode: account_type === "G" ? "N" : "Y",
             head_created_from: "U",
             finance_account_head_id: finance_account_head_id,
