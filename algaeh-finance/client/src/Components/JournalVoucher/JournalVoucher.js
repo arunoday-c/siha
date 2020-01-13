@@ -13,7 +13,7 @@ import {
   AlgaehFormGroupGrid,
   AlgaehButton
 } from "algaeh-react-components";
-import Accounts from "../FinanceAccounts";
+import { AllAccounts } from "../FinanceAccounts";
 import { getHeaders, addJurnorLedger } from "./JournalVoucher.events";
 import PaymentComponent from "./PaymentComponent";
 import AccountsDrawer from "./AccountDrawer";
@@ -201,7 +201,7 @@ export default function JournalVoucher() {
         show={drawer}
         onClose={() => setDrawer(false)}
         title="Accounts"
-        content={<Accounts inDrawer={true} />}
+        content={<AllAccounts title="Account Heads" inDrawer={true} />}
       />
       <div
         className="row inner-top-search margin-bottom-15"
@@ -497,3 +497,4 @@ export default function JournalVoucher() {
     </div>
   );
 }
+
