@@ -615,6 +615,47 @@ export function cancelSalesServiceOrder(req, res, next) {
     }
 }
 
+export function ValidateContract(req, res, next) {
+    const _mysql = new algaehMysql();
+    try {
+        console.log("ValidateContract: ")
+        _mysql
+            .executeQuery({
+                query: "select max(start_date) as start_date, max(end_date) as end_date \
+                from hims_f_contract_management where customer_id=?;",
+                values: [req.query.customer_id],
+                printQuery: true
+            })
+            .then(result => {
+                const today = new Date();
+                const start_date = new Date(result[0].start_date);
+                const end_date = new Date(result[0].end_date);
+
+                // console.log("start_date", start_date)
+                // console.log("end_date", end_date)
+
+                _mysql.releaseConnection();
+                if (today > start_date && today < end_date) {
+                    req.records = result;
+                    next();
+                } else {
+                    req.records = {
+                        invalid_input: true,
+                        message: "Please provide valid absent id"
+                    };
+                    next();
+                }
+            })
+            .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+            });
+    } catch (e) {
+        _mysql.releaseConnection();
+        next(e);
+    }
+};
+
 
 function updateSalesQuotation(options) {
     return new Promise((resolve, reject) => {

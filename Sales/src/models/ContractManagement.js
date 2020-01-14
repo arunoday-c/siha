@@ -4,9 +4,18 @@ export function getContractManagement(req, res, next) {
     const _mysql = new algaehMysql();
     try {
         console.log("getContractManagement: ")
+        let strQuery = ""
+        if (req.query.HRMNGMT_Active) {
+            strQuery = "SELECT CM.* , E.full_name as employee_name from hims_f_contract_management CM \
+            inner join  hims_d_employee E on  CM.incharge_employee_id = E.hims_d_employee_id \
+            where CM.contract_number =? "
+        } else {
+            strQuery = "SELECT * from hims_f_contract_management CM where contract_number =? "
+        }
+
         _mysql
             .executeQuery({
-                query: "SELECT * from hims_f_contract_management where contract_number =? ",
+                query: strQuery,
                 values: [req.query.contract_number],
                 printQuery: true
             })
@@ -69,8 +78,9 @@ export function addContractManagement(req, res, next) {
                         query:
                             "INSERT INTO hims_f_contract_management (contract_number, contract_date, customer_id, \
                                 start_date, end_date, contract_code, quotation_ref_numb, terms_conditions, \
+                                incharge_employee_id, notification_days1, notification_days2, \
                                 created_date, created_by, updated_date, updated_by, hospital_id)\
-                          values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                          values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         values: [
                             contract_number,
                             new Date(),
@@ -80,6 +90,9 @@ export function addContractManagement(req, res, next) {
                             input.contract_code,
                             input.quotation_ref_numb,
                             input.terms_conditions,
+                            input.incharge_employee_id,
+                            input.notification_days1,
+                            input.notification_days2,
                             new Date(),
                             req.userIdentity.algaeh_d_app_user_id,
                             new Date(),
@@ -89,7 +102,7 @@ export function addContractManagement(req, res, next) {
                         printQuery: true
                     })
                     .then(headerResult => {
-                        console.log("headerResult", headerResult);
+                        // console.log("headerResult", headerResult);
                         let IncludeValues = [];
                         IncludeValues = [
                             "services_id",

@@ -38,7 +38,10 @@ function AllAccounts({ title, inDrawer }) {
   const [editorRecord, setEditorRecord] = useState({});
   const [assetCode, setAssetCode] = useState(null);
 
-  const isExpOrInc = assetCode === "3" || assetCode === "5" || false;
+  function isExpOrInc(code) {
+    const check = code == "3" || code == "5" || false;
+    return check;
+  }
 
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
@@ -154,7 +157,6 @@ function AllAccounts({ title, inDrawer }) {
   }
 
   function onClose(e) {
-    console.log(e, "new node");
     setShowPopup(false);
     if (isAccountHead) {
       loadAccount();
@@ -194,10 +196,8 @@ function AllAccounts({ title, inDrawer }) {
                 "NodeAddButton " + (node.leafnode === "Y" ? "disabled" : "")
               }
               onClick={() => {
-                const [code] = rowInfo.node.account_code.split(".");
-                console.log(code);
+                console.log(rowInfo, "selected node");
                 setSelectedNode(rowInfo);
-                setAssetCode(code);
                 setShowPopup(true);
               }}
             >
@@ -213,8 +213,9 @@ function AllAccounts({ title, inDrawer }) {
                 if (Object.keys(editorRecord).length > 0) {
                   setEditorRecord({});
                 } else {
+                  setAssetCode(rowInfo.parentNode.root_id);
                   setEditorRecord(rowInfo);
-                  if (!isExpOrInc) {
+                  if (!isExpOrInc(rowInfo.parentNode.root_id)) {
                     setShowPopup(true);
                   }
                 }
@@ -279,7 +280,7 @@ function AllAccounts({ title, inDrawer }) {
       title: (
         <>
           <span>
-            {isExpOrInc ? (
+            {isExpOrInc(assetCode) ? (
               JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
                 <Input
                   suffix={
