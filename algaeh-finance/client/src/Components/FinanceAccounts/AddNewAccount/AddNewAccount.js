@@ -47,19 +47,21 @@ export default function AddNewAccount({
 
     if (accountName) {
       setAccountName(accountName);
-      setLoadingAddtoList(true);
-      getOpeningBalance(selectedNode.node.finance_account_child_id)
-        .then(res => {
-          setLoadingAddtoList(false);
-          setOpeningBalance(res.opening_bal);
-        })
-        .catch(e => {
-          setLoadingAddtoList(false);
-          AlgaehMessagePop({
-            type: "error",
-            display: e.message
+      if (accountType !== "G") {
+        setLoadingAddtoList(true);
+        getOpeningBalance(selectedNode.node.finance_account_child_id)
+          .then(res => {
+            setLoadingAddtoList(false);
+            setOpeningBalance(res.opening_bal);
+          })
+          .catch(e => {
+            setLoadingAddtoList(false);
+            AlgaehMessagePop({
+              type: "error",
+              display: e.message
+            });
           });
-        });
+      }
       setEnableOP(false);
     }
     if (accountType) {
