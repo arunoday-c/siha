@@ -195,7 +195,7 @@ class DNItemList extends Component {
                     })}
                   </ul>
                 </div>
-                <div className="col-lg-8">
+                <div className="col-lg-8" style={{ marginBottom: 50 }}>
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="row">
                       <div className="col-5">
