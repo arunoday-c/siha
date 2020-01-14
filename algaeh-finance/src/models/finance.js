@@ -2042,6 +2042,53 @@ export default {
           next(e);
         });
     }
+  },
+
+  //created by irfan: to
+  getOpeningBalance: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+    const decimal_places = req.userIdentity.decimal_places;
+    _mysql
+      .executeQuery({
+        query: `select finance_account_head_id,finance_account_child_id,is_opening_bal,
+        ROUND(coalesce(debit_amount ,0),${decimal_places}) as debit_amount,  ROUND(coalesce(credit_amount,0),${decimal_places}) as credit_amount,
+      root_id from finance_account_child C inner join 
+      finance_account_head H on H.finance_account_head_id=C.head_id and C.finance_account_child_id=?
+      left join finance_voucher_details VD  on C.finance_account_child_id=VD.child_id 
+      and is_opening_bal='Y' limit 1;`,
+        values: [req.query.child_id],
+        printQuery: false
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+
+        if (result.length > 0) {
+          if (result[0]["root_id"] == 1) {
+            req.records = { opening_bal: result[0]["debit_amount"] };
+            next();
+          } else if (result[0]["root_id"] == 2 || result[0]["root_id"] == 3) {
+            req.records = { opening_bal: result[0]["credit_amount"] };
+            next();
+          } else {
+            req.records = {
+              invalid_input: true,
+              message: "cant edit opening balance for this ledger"
+            };
+            next();
+          }
+        } else {
+          req.records = {
+            invalid_input: true,
+            message: "this ledger is not found"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };
 //created by :IRFAN to build tree hierarchy

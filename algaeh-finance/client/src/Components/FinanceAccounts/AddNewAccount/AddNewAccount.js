@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { AlgaehModal, Spin, AlgaehMessagePop } from "algaeh-react-components";
+import { AlgaehModal, AlgaehMessagePop } from "algaeh-react-components";
+import { Checkbox, Spin } from "antd";
 import "./addnewaccount.scss";
 import { AlgaehFormGroup, AlgaehDropDown } from "../../../Wrappers";
 // import ButtonType from "../../../Wrappers/algaehButton";
 import { AccountType } from "../../../utils/GlobalVariables";
 import { AddNewAccountDetails } from "./AddNewAccEvent";
+import { newAlgaehApi } from "../../../hooks";
 // import { swalMessage } from "../../../utils/algaehApiCall";
 
 export default function AddNewAccount({
@@ -23,19 +25,47 @@ export default function AddNewAccount({
   const [account_name, setAccountName] = useState("");
   const [account_type, setAccountType] = useState("G");
   const [opening_balance, setOpeningBalance] = useState(0);
+  const [enableOP, setEnableOP] = useState(true);
   // const [opening_balance_date, setOpeningBalanceDate] = useState("");
 
   useEffect(() => {
+    async function getOpeningBalance(child_id) {
+      try {
+        const response = await newAlgaehApi({
+          uri: "/finance/getOpeningBalance",
+          method: "GET",
+          data: {
+            child_id
+          },
+          module: "finance"
+        });
+        return response.data.result;
+      } catch (error) {
+        throw Error(error.message);
+      }
+    }
+
     if (accountName) {
       setAccountName(accountName);
+      setLoadingAddtoList(true);
+      getOpeningBalance(selectedNode.node.finance_account_child_id)
+        .then(res => {
+          setLoadingAddtoList(false);
+          setOpeningBalance(res.opening_bal);
+        })
+        .catch(e => {
+          setLoadingAddtoList(false);
+          AlgaehMessagePop({
+            type: "error",
+            display: e.message
+          });
+        });
+      setEnableOP(false);
     }
     if (accountType) {
       setAccountType(accountType);
     }
-    if (openingBal) {
-      setOpeningBalance(openingBal);
-    }
-  }, [accountName, accountType, openingBal]);
+  }, [accountName, accountType, openingBal, selectedNode]);
 
   function onCancel() {
     setLoadingAddtoList(false);
@@ -49,15 +79,15 @@ export default function AddNewAccount({
   function onOK() {
     setLoadingAddtoList(true);
     if (accountName && propOnOK) {
-      propOnOK(
-        {
-          child_name: account_name,
-          finance_account_child_id: selectedNode.node.finance_account_child_id,
-          leaf_node: account_type === "G" ? "N" : "Y",
-          opening_bal: opening_balance
-        },
-        () => setLoadingAddtoList(false)
-      );
+      const input = {
+        child_name: account_name,
+        finance_account_child_id: selectedNode.node.finance_account_child_id,
+        leaf_node: account_type === "G" ? "N" : "Y"
+      };
+      if (enableOP) {
+        input.opening_balance = opening_balance;
+      }
+      propOnOK(input, () => setLoadingAddtoList(false));
     } else {
       const {
         finance_account_head_id,
@@ -131,73 +161,89 @@ export default function AddNewAccount({
       onOk={onOK}
     >
       <Spin tip="Please wait submitting data.." spinning={lodingAddtoList}>
-        <div className="row">
-          <AlgaehDropDown
-            div={{
-              className: "col form-group"
-            }}
-            label={{
-              forceLabel: "Select Default Currency",
-              isImp: true
-            }}
-            selector={{
-              className: "form-control",
-              value: account_type,
-              name: "account_type",
-              disabled: accountName,
-              onChange: e => {
-                setAccountType(e.target.value);
-              }
-            }}
-            dataSource={{
-              textField: "name",
-              valueField: "value",
-              data: AccountType
-            }}
-          />
+        <div>
+          <div className="row">
+            <AlgaehDropDown
+              div={{
+                className: "col form-group"
+              }}
+              label={{
+                forceLabel: "Select Default Currency",
+                isImp: true
+              }}
+              selector={{
+                className: "form-control",
+                value: account_type,
+                name: "account_type",
+                disabled: accountName,
+                onChange: e => {
+                  setAccountType(e.target.value);
+                }
+              }}
+              dataSource={{
+                textField: "name",
+                valueField: "value",
+                data: AccountType
+              }}
+            />
 
-          <AlgaehFormGroup
-            div={{
-              className: "col form-group"
-            }}
-            label={{
-              forceLabel: "Account Name",
-              isImp: true
-            }}
-            textBox={{
-              type: "text",
-              value: account_name,
-              className: "form-control",
-              id: "name",
-              onChange: e => {
-                setAccountName(e.target.value);
-              },
-              placeholder: " Enter Account Name",
-              autocomplete: false
-            }}
-          />
+            <AlgaehFormGroup
+              div={{
+                className: "col form-group"
+              }}
+              label={{
+                forceLabel: "Account Name",
+                isImp: true
+              }}
+              textBox={{
+                type: "text",
+                value: account_name,
+                className: "form-control",
+                id: "name",
+                onChange: e => {
+                  setAccountName(e.target.value);
+                },
+                placeholder: " Enter Account Name",
+                autoComplete: false
+              }}
+            />
+          </div>
           {account_type === "C" ? (
             accountCode !== "4" && accountCode !== "5" ? (
-              <AlgaehFormGroup
-                div={{
-                  className: "form-group algaeh-text-fld col-xs-4 col-md-3"
-                }}
-                label={{
-                  forceLabel: "Opening Balance",
-                  isImp: true
-                }}
-                textBox={{
-                  type: "number",
-                  value: opening_balance,
-                  className: "form-control",
-                  id: "name",
-                  onChange: e => {
-                    setOpeningBalance(e.target.value);
-                  },
-                  placeholder: " Enter Opening Balance",
-                  autocomplete: false
-                }}
-              />
+              <div className="row">
+                {accountName ? (
+                  <div className="col">
+                    <Checkbox
+                      style={{ margin: 16 }}
+                      checked={enableOP}
+                      onChange={() => setEnableOP(state => !state)}
+                    >
+                      Edit Balance
+                    </Checkbox>
+                  </div>
+                ) : null}
+                <AlgaehFormGroup
+                  div={{
+                    className: "form-group algaeh-text-fld col"
+                  }}
+                  label={{
+                    forceLabel: "Opening Balance",
+                    isImp: true
+                  }}
+                  textBox={{
+                    type: "number",
+                    value: opening_balance,
+                    className: "form-control",
+                    id: "name",
+                    onChange: e => {
+                      setOpeningBalance(e.target.value);
+                    },
+                    placeholder: " Enter Opening Balance",
+                    autoComplete: false,
+                    disabled: !enableOP && accountName
+                  }}
+                />
+              </div>
             ) : null
           ) : null}
         </div>
