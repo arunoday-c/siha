@@ -3401,7 +3401,7 @@ export default {
       (product_type='HIMS_ERP' or product_type='HRMS_ERP' or product_type='FINANCE_ERP');\
       SELECT cost_center_type  FROM finance_options limit 1; ",
           values: [req.userIdentity.hospital_id],
-          printQuery: false
+          printQuery: true
         })
         .then(appResult => {
           if (appResult[0].length > 0) {
