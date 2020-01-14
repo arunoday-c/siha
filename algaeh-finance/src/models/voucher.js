@@ -583,28 +583,33 @@ export default {
                         });
                     })
                     .catch(e => {
-                      _mysql.releaseConnection();
-                      next(e);
+                      _mysql.rollBackTransaction(() => {
+                        next(e);
+                      });
                     });
                 } else {
-                  _mysql.releaseConnection();
-                  req.records = {
-                    invalid_input: true,
-                    message: "Please Define cost center type"
-                  };
-                  next();
+                  _mysql.rollBackTransaction(() => {
+                    req.records = {
+                      invalid_input: true,
+                      message: "Please Define cost center type"
+                    };
+                    next();
+                  });
                 }
               })
               .catch(e => {
-                _mysql.releaseConnection();
-                next(e);
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
               });
           } else {
-            req.records = {
-              invalid_input: true,
-              message: "Credit and Debit Amount are not equal"
-            };
-            next();
+            _mysql.rollBackTransaction(() => {
+              req.records = {
+                invalid_input: true,
+                message: "Credit and Debit Amount are not equal"
+              };
+              next();
+            });
           }
         })
         .catch(e => {
@@ -1413,8 +1418,7 @@ export default {
 
     _mysql
       .executeQuery({
-        query:
-          `select finance_voucher_id,ROUND( debit_amount,${decimal_places}) as debit_amount,
+        query: `select finance_voucher_id,ROUND( debit_amount,${decimal_places}) as debit_amount,
           ROUND( credit_amount,${decimal_places}) as credit_amount,
           concat(H.account_name,'->',C.child_name) as ledger\
           from finance_voucher_details VD \
@@ -1440,7 +1444,6 @@ export default {
     //ss
     _mysql
       .generateRunningNumber({
-        
         user_id: req.userIdentity.algaeh_d_app_user_id,
         numgen_codes: ["OP_CRD", "OP_CBIL"],
         table_name: "hims_f_app_numgen"
