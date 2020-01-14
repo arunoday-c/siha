@@ -249,24 +249,6 @@ class Roles extends Component {
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory form-group" }}
             label={{
-              forceLabel: "Select User Group",
-              isImp: true
-            }}
-            selector={{
-              name: "app_group_id",
-              className: "select-fld",
-              value: this.state.app_group_id,
-              dataSource: {
-                textField: "app_group_name",
-                valueField: "algaeh_d_app_group_id",
-                data: this.state.groups
-              },
-              onChange: this.dropDownHandle.bind(this)
-            }}
-          />{" "}
-          <AlagehAutoComplete
-            div={{ className: "col-2 mandatory form-group" }}
-            label={{
               forceLabel: "Role Type",
               isImp: true
             }}
@@ -283,8 +265,26 @@ class Roles extends Component {
               onChange: this.dropDownHandle.bind(this)
             }}
           />
-          <AlagehFormGroup
+          <AlagehAutoComplete
             div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Select User Group",
+              isImp: true
+            }}
+            selector={{
+              name: "app_group_id",
+              className: "select-fld",
+              value: this.state.app_group_id,
+              dataSource: {
+                textField: "app_group_name",
+                valueField: "algaeh_d_app_group_id",
+                data: this.state.groups
+              },
+              onChange: this.dropDownHandle.bind(this)
+            }}
+          />{" "}
+          <AlagehFormGroup
+            div={{ className: "col-1 mandatory form-group" }}
             label={{
               forceLabel: "Role Code",
               isImp: true
@@ -317,7 +317,7 @@ class Roles extends Component {
               }
             }}
           />
-          <AlagehFormGroup
+          {/* <AlagehFormGroup
             div={{ className: "col-2 mandatory form-group" }}
             label={{
               forceLabel: "Role Description",
@@ -331,7 +331,7 @@ class Roles extends Component {
                 onChange: this.changeTexts.bind(this)
               }
             }}
-          />
+          /> */}
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory form-group" }}
             label={{
@@ -413,18 +413,6 @@ class Roles extends Component {
                     datavalidate="data-validate='shiftDiv'"
                     columns={[
                       {
-                        fieldName: "app_group_name",
-
-                        label: (
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Group Name"
-                            }}
-                          />
-                        ),
-                        disabled: true
-                      },
-                      {
                         fieldName: "role_type",
 
                         label: (
@@ -473,6 +461,18 @@ class Roles extends Component {
                         }
                       },
                       {
+                        fieldName: "app_group_name",
+
+                        label: (
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Group Name"
+                            }}
+                          />
+                        ),
+                        disabled: true
+                      },
+                      {
                         fieldName: "role_code",
 
                         label: (
@@ -517,41 +517,41 @@ class Roles extends Component {
                           );
                         }
                       },
-                      {
-                        fieldName: "role_discreption",
+                      // {
+                      //   fieldName: "role_discreption",
 
-                        label: (
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Role Description"
-                            }}
-                          />
-                        ),
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{
+                      //         forceLabel: "Role Description"
+                      //       }}
+                      //     />
+                      //   ),
 
-                        editorTemplate: row => {
-                          return (
-                            <AlagehFormGroup
-                              div={{ className: "col-2 mandatory form-group" }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "role_discreption",
-                                value: row.role_discreption,
-                                events: {
-                                  onChange: this.changeGridEditors.bind(
-                                    this,
-                                    row
-                                  )
-                                },
-                                others: {
-                                  errormessage:
-                                    "Description Name- cannot be blank",
-                                  required: true
-                                }
-                              }}
-                            />
-                          );
-                        }
-                      },
+                      //   editorTemplate: row => {
+                      //     return (
+                      //       <AlagehFormGroup
+                      //         div={{ className: "col-2 mandatory form-group" }}
+                      //         textBox={{
+                      //           className: "txt-fld",
+                      //           name: "role_discreption",
+                      //           value: row.role_discreption,
+                      //           events: {
+                      //             onChange: this.changeGridEditors.bind(
+                      //               this,
+                      //               row
+                      //             )
+                      //           },
+                      //           others: {
+                      //             errormessage:
+                      //               "Description Name- cannot be blank",
+                      //             required: true
+                      //           }
+                      //         }}
+                      //       />
+                      //     );
+                      //   }
+                      // },
                       {
                         fieldName: "loan_authorize_privilege",
 
