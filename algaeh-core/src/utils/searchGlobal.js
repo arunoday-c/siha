@@ -887,6 +887,16 @@ let algaehSearchConfig = (searchName, req) => {
           hospitalId,
         orderBy: "hims_f_sales_return_header_id desc"
 
+      },
+      {
+        searchName: "ContractMang",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS contract_number, contract_date, start_date, end_date, \
+          contract_code, quotation_ref_numb, C.customer_name from  hims_f_contract_management CM \
+          inner join hims_d_customer C on CM.customer_id = C.hims_d_customer_id where hospital_id=" +
+          hospitalId,
+        orderBy: "hims_f_contract_management_id desc"
+
       }
 
     ]

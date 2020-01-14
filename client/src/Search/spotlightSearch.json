@@ -962,6 +962,36 @@
         "fieldName": "project_desc",
         "label": "Project Desc"
       }
+    ],
+    "ContractMang": [
+      {
+        "fieldName": "contract_number",
+        "label": "Contract Number"
+      },
+      {
+        "fieldName": "contract_date",
+        "label": "Contract Date"
+      },
+      {
+        "fieldName": "customer_name",
+        "label": "Customer Name"
+      },
+      {
+        "fieldName": "start_date",
+        "label": "Start Date"
+      },
+      {
+        "fieldName": "end_date",
+        "label": "End Date"
+      },
+      {
+        "fieldName": "contract_code",
+        "label": "Contract Code"
+      },
+      {
+        "fieldName": "quotation_ref_numb",
+        "label": "Quotation Ref. Num."
+      }
     ]
   }
 }
