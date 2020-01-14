@@ -32,12 +32,11 @@ import {
   addToTermCondition,
   deleteComment,
   getCtrlCode
-} from "./ContractManagementEvents"
+} from "./ContractManagementEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
 
 class ContractManagement extends Component {
-
   constructor(props) {
     super(props);
 
@@ -54,7 +53,6 @@ class ContractManagement extends Component {
       quotation_ref_numb: null,
       saveEnable: true,
 
-
       service_name: "",
       services_id: null,
       service_frequency: null,
@@ -70,8 +68,6 @@ class ContractManagement extends Component {
   }
 
   componentDidMount() {
-
-
     this.props.getCustomerMaster({
       uri: "/customer/getCustomerMaster",
       module: "masterSettings",
@@ -92,12 +88,10 @@ class ContractManagement extends Component {
         mappingName: "terms_conditions"
       }
     });
-
   }
   render() {
     return (
       <div>
-
         <BreadCrumb
           title={
             <AlgaehLabel
@@ -152,8 +146,8 @@ class ContractManagement extends Component {
                 <h6>
                   {this.state.contract_date
                     ? moment(this.state.contract_date).format(
-                      Options.dateFormat
-                    )
+                        Options.dateFormat
+                      )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -162,17 +156,17 @@ class ContractManagement extends Component {
           printArea={
             this.state.contract_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Contract Report",
-                    events: {
-                      onClick: () => {
-                        generateContractReport(this.state);
+                  menuitems: [
+                    {
+                      label: "Contract Report",
+                      events: {
+                        onClick: () => {
+                          generateContractReport(this.state);
+                        }
                       }
                     }
-                  }
-                ]
-              }
+                  ]
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -261,8 +255,6 @@ class ContractManagement extends Component {
                 value={this.state.start_date}
               />
 
-
-
               <AlgaehDateHandler
                 div={{ className: "col mandatory" }}
                 label={{ forceLabel: "End Date", isImp: true }}
@@ -278,7 +270,6 @@ class ContractManagement extends Component {
                 disabled={this.state.dataExists}
                 value={this.state.end_date}
               />
-
             </div>
           </div>
         </div>
@@ -291,16 +282,14 @@ class ContractManagement extends Component {
                 </div>
               </div>
               <div className="portlet-body">
-
                 <div className="row" data-validate="ServiceDiv">
                   <AlgaehAutoSearch
-                    div={{ className: "col-5 form-group mandatory" }}
+                    div={{ className: "col-4 form-group mandatory" }}
                     label={{ forceLabel: "Service Name" }}
                     title="Search Service"
                     id="item_id_search"
                     template={({ service_name, service_type }) => {
                       return (
-
                         <section className="resultSecStyles">
                           <div className="row">
                             <div className="col">
@@ -310,7 +299,7 @@ class ContractManagement extends Component {
                               <p className="searchMoreDetails">
                                 <span>
                                   Service Type:
-                                    <b>{_.startCase(_.toLower(service_type))}</b>
+                                  <b>{_.startCase(_.toLower(service_type))}</b>
                                 </span>
                               </p>
                             </div>
@@ -342,7 +331,7 @@ class ContractManagement extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-3 form-group mandatory" }}
+                    div={{ className: "col form-group mandatory" }}
                     label={{ forceLabel: "Frequency", isImp: true }}
                     selector={{
                       sort: "off",
@@ -368,7 +357,7 @@ class ContractManagement extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-3 form-group mandatory" }}
+                    div={{ className: "col form-group mandatory" }}
                     label={{
                       forceLabel: "Service Price",
                       isImp: false
@@ -386,7 +375,7 @@ class ContractManagement extends Component {
                       }
                     }}
                   />
-                  <div className="col-1 subFooter-btn">
+                  <div className="col">
                     <button
                       className="btn btn-primary"
                       onClick={AddSerices.bind(this, this)}
@@ -396,7 +385,6 @@ class ContractManagement extends Component {
                     >
                       Add Service
                     </button>
-
                   </div>
 
                   <div className="col-12">
@@ -406,9 +394,7 @@ class ContractManagement extends Component {
                         {
                           fieldName: "actions",
                           label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Action" }}
-                            />
+                            <AlgaehLabel label={{ forceLabel: "Action" }} />
                           ),
                           displayTemplate: row => {
                             return (
@@ -421,12 +407,13 @@ class ContractManagement extends Component {
                               >
                                 <i
                                   style={{
-                                    pointerEvents:
-                                      this.state.dataExists ? "none" : "",
-                                    opacity:
-                                      this.state.dataExists ? "0.1" : ""
+                                    pointerEvents: this.state.dataExists
+                                      ? "none"
+                                      : "",
+                                    opacity: this.state.dataExists ? "0.1" : ""
                                   }}
-                                  className="fas fa-trash-alt" />
+                                  className="fas fa-trash-alt"
+                                />
                               </span>
                             );
                           }
@@ -447,9 +434,7 @@ class ContractManagement extends Component {
                         {
                           fieldName: "service_frequency",
                           label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Frequency" }}
-                            />
+                            <AlgaehLabel label={{ forceLabel: "Frequency" }} />
                           ),
                           displayTemplate: row => {
                             let display = GlobalVariables.SERVICE_FREQUENCY.filter(
@@ -464,7 +449,7 @@ class ContractManagement extends Component {
                               </span>
                             );
                           },
-                          disabled: true,
+                          disabled: true
                         },
                         {
                           fieldName: "service_price",
@@ -484,7 +469,6 @@ class ContractManagement extends Component {
                         data: this.state.contract_services
                       }}
                       paging={{ page: 0, rowsPerPage: 10 }}
-
                     />
                   </div>
                 </div>
@@ -495,7 +479,9 @@ class ContractManagement extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Contract Terms & Conditions</h3>
+                  <h3 className="caption-subject">
+                    Contract Terms & Conditions
+                  </h3>
                 </div>
               </div>
               <div className="portlet-body">
@@ -557,24 +543,24 @@ class ContractManagement extends Component {
                     <ol>
                       {this.state.comment_list.length > 0
                         ? this.state.comment_list.map((row, index) => {
-                          return (
-                            <React.Fragment key={index}>
-                              <li key={index}>
-                                <span>{row}</span>
-                                {this.state.dataExists ? null : (
-                                  <i
-                                    className="fas fa-times"
-                                    onClick={deleteComment.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )}
-                                  ></i>
-                                )}
-                              </li>
-                            </React.Fragment>
-                          );
-                        })
+                            return (
+                              <React.Fragment key={index}>
+                                <li key={index}>
+                                  <span>{row}</span>
+                                  {this.state.dataExists ? null : (
+                                    <i
+                                      className="fas fa-times"
+                                      onClick={deleteComment.bind(
+                                        this,
+                                        this,
+                                        row
+                                      )}
+                                    ></i>
+                                  )}
+                                </li>
+                              </React.Fragment>
+                            );
+                          })
                         : null}
                     </ol>
                   </div>
@@ -606,7 +592,9 @@ class ContractManagement extends Component {
                 disabled={this.state.ClearDisable}
                 onClick={ClearData.bind(this, this)}
               >
-                <AlgaehLabel label={{ forceLabel: "Clear", returnText: true }} />
+                <AlgaehLabel
+                  label={{ forceLabel: "Clear", returnText: true }}
+                />
               </button>
             </div>
           </div>
@@ -616,12 +604,10 @@ class ContractManagement extends Component {
   }
 }
 
-
 function mapStateToProps(state) {
   return {
     customer_data: state.customer_data,
     terms_conditions: state.terms_conditions
-
   };
 }
 
