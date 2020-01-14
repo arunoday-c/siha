@@ -4,6 +4,8 @@
     overflow-x: hidden;
     overflow-y: auto;
     border-radius: 5px;
+    width: calc(56% - 110px);
+    float: left;
 
     /* reset our lists to remove bullet points and padding */
     .mainmenu,
@@ -18,8 +20,8 @@
     }
     /* make ALL links (main and submenu) have padding and background color */
     .mainmenu {
-      min-height: 49vh;
-      max-height: 48vh;
+      min-height: 46vh;
+      max-height: 46vh;
       li {
         display: block;
         text-decoration: none;
@@ -68,6 +70,23 @@
     /* this is the initial state of all submenus.
       we set it to max-height: 0, and hide the overflowed content.
     */
+    &:first-child {
+      margin-right: 10px;
+    }
+    &:last-child {
+      margin-left: 10px;
+      background: #edfffd;
+    }
+  }
+  .actionLeftRight {
+    width: 100px;
+    float: left;
+    text-align: center;
+    padding-top: 18vh;
+    button {
+      width: calc(100% - 20px);
+      margin: 10px;
+    }
   }
   #AlgaehElementsGrid_Cntr {
     .ReactTable {

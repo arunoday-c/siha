@@ -83,7 +83,7 @@ class ScreenAssignment extends Component {
           />
         </div>
         <div className="row">
-          <div className="col-12">
+          <div className="col-6">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -92,9 +92,70 @@ class ScreenAssignment extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-7">
+                  <div className="col-12">
                     <div className="moduleList list-group-check">
-                      <ul className="mainmenu" style={{ minHeight: "59vh" }}>
+                      <ul className="mainmenu">
+                        {this.state.modules.map((data, index) => {
+                          return (
+                            <li key={data.module_id}>
+                              <input
+                                type="checkbox"
+                                onChange={this.changeModules.bind(this, data)}
+                                name="modules"
+                                checked={
+                                  data.checked === undefined
+                                    ? false
+                                    : data.checked
+                                }
+                                value={data.module_id}
+                              />
+                              <a>{data.module_name}</a>
+
+                              <ul className="submenu">
+                                {data.ScreenList.map((sub_menu, index) => {
+                                  return (
+                                    <li key={sub_menu.screen_id}>
+                                      <input
+                                        type="checkbox"
+                                        onChange={this.changeScreen.bind(
+                                          this,
+                                          data
+                                        )}
+                                        checked={
+                                          sub_menu.checked === undefined
+                                            ? false
+                                            : sub_menu.checked
+                                        }
+                                        value={sub_menu.screen_id}
+                                      />
+                                      <a>{sub_menu.screen_name}</a>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                    <div className="actionLeftRight">
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={this.assignScreens.bind(this)}
+                      >
+                        <AlgaehLabel label={{ forceLabel: ">>" }} />
+                      </button>{" "}
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={this.assignScreens.bind(this)}
+                      >
+                        <AlgaehLabel label={{ forceLabel: "<<" }} />
+                      </button>
+                    </div>
+                    <div className="moduleList list-group-check">
+                      <ul className="mainmenu">
                         {this.state.modules.map((data, index) => {
                           return (
                             <li key={data.module_id}>
@@ -139,8 +200,43 @@ class ScreenAssignment extends Component {
                       </ul>
                     </div>
                   </div>
+                  <div className="col-12">
+                    <div className="row margin-top-15">
+                      {" "}
+                      <AlagehAutoComplete
+                        div={{ className: "col-6 mandatory form-group" }}
+                        label={{
+                          forceLabel: "Assign Landing Screen",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "app_group_id",
+                          className: "select-fld",
+                          value: this.state.app_group_id,
+                          dataSource: {
+                            textField: "app_group_name",
+                            valueField: "algaeh_d_app_group_id",
+                            data: this.state.groups
+                          },
+                          onChange: this.dropDownEvent.bind(this),
+                          others: {}
+                        }}
+                      />
+                      <div className="col">
+                        {" "}
+                        <button
+                          type="button"
+                          className="btn btn-default"
+                          onClick={this.clearState.bind(this)}
+                          style={{ marginTop: 19 }}
+                        >
+                          <AlgaehLabel label={{ forceLabel: "Save" }} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
 
-                  <div className="col-5"></div>
+                  {/* <div className="col-5"></div> */}
                 </div>
               </div>
             </div>
@@ -150,13 +246,6 @@ class ScreenAssignment extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={this.assignScreens.bind(this)}
-              >
-                <AlgaehLabel label={{ forceLabel: "Assign" }} />
-              </button>
               <button
                 type="button"
                 className="btn btn-default"
