@@ -31,14 +31,26 @@ import {
   ClearData,
   addToTermCondition,
   deleteComment,
-  getCtrlCode
+  getCtrlCode,
+  employeeSearch
 } from "./ContractManagementEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 class ContractManagement extends Component {
   constructor(props) {
     super(props);
+
+    let Activated_Modueles = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+    );
+
+    const HRMNGMT_Active = Activated_Modueles.filter(f => {
+      return f.module_code === "HRMNGMT";
+    });
+
+    this.HRMNGMT_Active = HRMNGMT_Active.length > 0 ? true : false;
 
     this.state = {
       hims_f_contract_management_id: null,
@@ -63,7 +75,15 @@ class ContractManagement extends Component {
       selected_terms_conditions: "",
       comment_list: [],
 
-      dataExists: false
+      dataExists: false,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
+
+      employee_name: null,
+      incharge_employee_id: null,
+      notification_days1: null,
+      notification_days2: null
     };
   }
 
@@ -90,6 +110,7 @@ class ContractManagement extends Component {
     });
   }
   render() {
+    const class_finder = this.state.dataExists === true ? " disableFinder" : "";
     return (
       <div>
         <BreadCrumb
@@ -146,8 +167,8 @@ class ContractManagement extends Component {
                 <h6>
                   {this.state.contract_date
                     ? moment(this.state.contract_date).format(
-                        Options.dateFormat
-                      )
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -156,17 +177,17 @@ class ContractManagement extends Component {
           printArea={
             this.state.contract_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Contract Report",
-                      events: {
-                        onClick: () => {
-                          generateContractReport(this.state);
-                        }
+                menuitems: [
+                  {
+                    label: "Contract Report",
+                    events: {
+                      onClick: () => {
+                        generateContractReport(this.state);
                       }
                     }
-                  ]
-                }
+                  }
+                ]
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -270,6 +291,72 @@ class ContractManagement extends Component {
                 disabled={this.state.dataExists}
                 value={this.state.end_date}
               />
+
+              {this.HRMNGMT_Active ? (
+                <div className="row">
+                  <div
+                    className={"col globalSearchCntr form-group mandatory" + class_finder}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Incharge Employee", isImp: true }}
+                    />
+                    <h6 onClick={employeeSearch.bind(this, this)}>
+                      {this.state.employee_name
+                        ? this.state.employee_name
+                        : "Search Employee"}
+                      <i className="fas fa-search fa-lg" />
+                    </h6>
+                  </div>
+
+                  <AlagehFormGroup
+                    div={{ className: "col form-group" }}
+                    label={{
+                      forceLabel: "Notification 1"
+                    }}
+                    textBox={{
+                      number: {
+                        allowNegative: false,
+                        thousandSeparator: ","
+                      },
+                      className: "txt-fld",
+                      name: "notification_days1",
+                      value: this.state.notification_days1,
+                      dontAllowKeys: ["-", "e", "."],
+                      events: {
+                        onChange: texthandle.bind(this, this)
+                      },
+                      others: {
+                        disabled: this.state.dataExists
+                      }
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col form-group" }}
+                    label={{
+                      forceLabel: "Notification 2"
+                    }}
+                    textBox={{
+                      number: {
+                        allowNegative: false,
+                        thousandSeparator: ","
+                      },
+                      className: "txt-fld",
+                      name: "notification_days2",
+                      value: this.state.notification_days2,
+                      dontAllowKeys: ["-", "e", "."],
+                      events: {
+                        onChange: texthandle.bind(this, this)
+                      },
+                      others: {
+                        disabled: this.state.dataExists
+                      }
+                    }}
+                  />
+                </div>
+              ) : (
+                  null
+                )}
             </div>
           </div>
         </div>
@@ -543,24 +630,24 @@ class ContractManagement extends Component {
                     <ol>
                       {this.state.comment_list.length > 0
                         ? this.state.comment_list.map((row, index) => {
-                            return (
-                              <React.Fragment key={index}>
-                                <li key={index}>
-                                  <span>{row}</span>
-                                  {this.state.dataExists ? null : (
-                                    <i
-                                      className="fas fa-times"
-                                      onClick={deleteComment.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )}
-                                    ></i>
-                                  )}
-                                </li>
-                              </React.Fragment>
-                            );
-                          })
+                          return (
+                            <React.Fragment key={index}>
+                              <li key={index}>
+                                <span>{row}</span>
+                                {this.state.dataExists ? null : (
+                                  <i
+                                    className="fas fa-times"
+                                    onClick={deleteComment.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )}
+                                  ></i>
+                                )}
+                              </li>
+                            </React.Fragment>
+                          );
+                        })
                         : null}
                     </ol>
                   </div>
