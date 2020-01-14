@@ -4,7 +4,14 @@ import purchaseReturnModels from "../models/PurchaseReturnEntry";
 import pharmacyComModels from "algaeh-pharmacy/src/models/commonFunction";
 import inventoryComModels from "algaeh-inventory/src/models/commonFunction";
 
-const { getReceiptEntryItems, addPurchaseReturnEntry, cancelPurchaseOrderEntry, getPurchaseReturnEntry, postPurchaseOrderEntry } = purchaseReturnModels;
+const {
+  getReceiptEntryItems,
+  addPurchaseReturnEntry,
+  cancelPurchaseOrderEntry,
+  getPurchaseReturnEntry,
+  postPurchaseOrderEntry,
+  generateAccountingEntry
+} = purchaseReturnModels;
 
 const { updateIntoItemLocation } = pharmacyComModels;
 const { updateIntoInvItemLocation } = inventoryComModels;
@@ -42,6 +49,7 @@ export default () => {
 
   api.put("/postPurchaseOrderEntry",
     postPurchaseOrderEntry,
+    generateAccountingEntry,
     (req, res, next) => {
       if (req.body.po_return_from == "PHR") {
         updateIntoItemLocation(req, res, next);
