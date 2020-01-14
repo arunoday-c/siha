@@ -172,6 +172,7 @@ export function getSalesOrderItem(req, res, next) {
                                             qtyhand: s.qtyhand,
                                             qtypo: s.qtypo,
                                             cost_uom: s.cost_uom,
+                                            average_cost: s.avgcost,
                                             unit_cost: s.avgcost,
                                             last_purchase_cost: s.last_purchase_cost,
                                             item_type: s.item_type,
@@ -336,7 +337,8 @@ export function addDispatchNote(req, res, next) {
                                             "net_extended_cost",
                                             "tax_percentage",
                                             "tax_amount",
-                                            "total_amount"
+                                            "total_amount",
+                                            "average_cost"
                                         ];
 
                                         _mysql

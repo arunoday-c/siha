@@ -5,7 +5,9 @@ import {
 } from "../../../utils/GlobalFunctions";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import _ from "lodash";
-import Enumerable from "linq";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
+
 
 const texthandle = ($this, ctrl, e) => {
     e = ctrl || e;
@@ -64,22 +66,23 @@ const ClearData = ($this, e) => {
         start_date: null,
         end_date: null,
         contract_services: [],
-
         quotation_ref_numb: null,
         saveEnable: true,
-
 
         service_name: "",
         services_id: null,
         service_frequency: null,
         service_price: 0,
         addItemButton: true,
-
         hims_f_terms_condition_id: null,
         selected_terms_conditions: "",
         comment_list: [],
+        dataExists: false,
 
-        dataExists: false
+        employee_name: null,
+        incharge_employee_id: null,
+        notification_days1: null,
+        notification_days2: null
     };
 
     $this.setState(IOputs);
@@ -90,6 +93,15 @@ const SaveContract = $this => {
         querySelector: "data-validate='HeaderDiv'",
         alertTypeIcon: "warning",
         onSuccess: () => {
+            if ($this.HRMNGMT_Active) {
+                if ($this.state.incharge_employee_id === null) {
+                    swalMessage({
+                        type: "warning",
+                        title: "Please select Incharge Employee"
+                    });
+                    return
+                }
+            }
 
             AlgaehLoader({ show: true });
             $this.state.terms_conditions = $this.state.comment_list.join("<br/>");
@@ -139,7 +151,7 @@ const getCtrlCode = ($this, docNumber, row) => {
         uri: "/ContractManagement/getContractManagement",
         module: "sales",
         method: "GET",
-        data: { contract_number: docNumber },
+        data: { contract_number: docNumber, HRMNGMT_Active: $this.state.HRMNGMT_Active },
         onSuccess: response => {
             if (response.data.success) {
                 let data = response.data.records;
@@ -319,6 +331,26 @@ const deleteComment = ($this, row) => {
     });
 };
 
+const employeeSearch = $this => {
+    AlgaehSearch({
+        searchGrid: {
+            columns: spotlightSearch.Employee_details.employee
+        },
+        searchName: "employee_branch_wise",
+        uri: "/gloabelSearch/get",
+        inputs: "hospital_id = " + $this.state.hospital_id,
+        onContainsChange: (text, serchBy, callBack) => {
+            callBack(text);
+        },
+        onRowSelect: row => {
+            $this.setState({
+                employee_name: row.full_name,
+                incharge_employee_id: row.hims_d_employee_id
+            });
+        }
+    });
+};
+
 export {
     texthandle,
     datehandle,
@@ -331,5 +363,6 @@ export {
     deleteContarctServices,
     AddSerices,
     addToTermCondition,
-    deleteComment
+    deleteComment,
+    employeeSearch
 };

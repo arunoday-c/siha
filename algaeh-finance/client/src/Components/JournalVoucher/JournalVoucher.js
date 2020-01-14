@@ -159,7 +159,6 @@ export default function JournalVoucher() {
     }
 
     if (journerList.length >= 2) {
-      debugger;
       const check =
         journerList[0].amount &&
         journerList[0].sourceName &&

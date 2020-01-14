@@ -161,6 +161,7 @@ function getAccountHeadsForReport(
       }
 
       let str = "";
+      let qrystr = "";
 
       if (
         option != undefined &&
@@ -168,6 +169,7 @@ function getAccountHeadsForReport(
         finance_account_head_id == 3
       ) {
         str = " and  VD.child_id <> 1 ";
+        qrystr = " and  finance_account_child_id <> 1 ";
       }
       _mysql
         .executeQuery({
@@ -175,7 +177,7 @@ function getAccountHeadsForReport(
           H.created_from as created_status ,sort_order,parent_acc_id,root_id,
           finance_account_child_id,child_name,head_id,C.created_from as child_created_from
           from finance_account_head H left join 
-          finance_account_child C on C.head_id=H.finance_account_head_id
+          finance_account_child C on C.head_id=H.finance_account_head_id ${qrystr}
            where (root_id=? or finance_account_head_id=?) order by account_level,sort_order;           
            select C.head_id,finance_account_child_id as child_id,child_name
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,

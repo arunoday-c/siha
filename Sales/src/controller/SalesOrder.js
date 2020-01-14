@@ -6,7 +6,8 @@ import {
     getSalesQuotationForOrder,
     getSalesOrderList,
     updateSalesOrderEntry,
-    cancelSalesServiceOrder
+    cancelSalesServiceOrder,
+    ValidateContract
 } from "../models/SalesOrder";
 
 export default function SalesOrder() {
@@ -52,5 +53,20 @@ export default function SalesOrder() {
             records: req.records
         });
     });
+
+    api.get("/ValidateContract", ValidateContract, (req, res, next) => {
+        if (req.records.invalid_input == true) {
+            res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+                success: false,
+                result: req.records
+            });
+        } else {
+            res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+                success: true,
+                result: req.records
+            });
+        }
+    });
+
     return api;
 }

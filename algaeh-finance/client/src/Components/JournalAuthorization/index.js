@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useState, useReducer } from "react";
 import {
   AlgaehDataGrid,
   AlgaehMessagePop,
@@ -26,6 +26,11 @@ export default memo(function(props) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("P");
   const [dates, setDates] = useState(undefined);
+  const paymentTemplates = [
+    { key: "payment_mode", title: "Payment Mode" },
+    { key: "ref_no", title: "Reference No" },
+    { key: "cheque_date", title: "Cheque Date" }
+  ];
   // useEffect(() => {
   //   LoadVouchersToAuthorize()
   //     .then(result => {
@@ -38,6 +43,7 @@ export default memo(function(props) {
   //       });
   //     });
   // }, []);
+
   return (
     <div className="row">
       <AlgaehModal
@@ -354,6 +360,7 @@ export default memo(function(props) {
                       },
                       { key: "voucher_type", title: "Vouher Type" },
                       { key: "payment_date", title: "Payment Date" },
+                      ...paymentTemplates,
                       { key: "amount", title: "Amount" },
                       { key: "narration", title: "Narration" },
                       { key: "entered_by", title: "Enterd By", filtered: true }
@@ -363,7 +370,7 @@ export default memo(function(props) {
                     dataSource={{ data: data }}
                   ></AlgaehDataGrid>
                 </div>
-              </div>{" "}
+              </div>
             </div>
           </div>
         </div>
