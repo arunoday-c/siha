@@ -1857,7 +1857,7 @@ export default {
     const _mysql = new algaehMysql();
     //. const utilities = new algaehUtilities();
     let input = req.body;
-
+  
     if (input.leaf_node == "Y") {
       _mysql
         .executeQuery({
@@ -1880,28 +1880,28 @@ export default {
           //if update if opening balance exist
           if (result[1].length > 0) {
             const data = result[1][0];
-
+  
             if (data.root_id == 1) {
-              if (data.debit_amount != input.opening_bal) {
-                voucherStr = `update finance_voucher_details set debit_amount=${input.opening_bal} where finance_voucher_id=${data.finance_voucher_id};`;
+              if (data.debit_amount != input.opening_balance) {
+                voucherStr = `update finance_voucher_details set debit_amount=${input.opening_balance} where finance_voucher_id=${data.finance_voucher_id};`;
               }
             } else if (data.root_id == 2 || data.root_id == 3) {
-              if (data.credit_amount != input.opening_bal) {
-                voucherStr = `update finance_voucher_details set credit_amount=${input.opening_bal} where finance_voucher_id=${data.finance_voucher_id};`;
+              if (data.credit_amount != input.opening_balance) {
+                voucherStr = `update finance_voucher_details set credit_amount=${input.opening_balance} where finance_voucher_id=${data.finance_voucher_id};`;
               }
             }
           }
           //inserting new opening balance
           else {
             let insert_data = result[0][0];
-
+  
             let debit_amount = 0;
             let credit_amount = 0;
             let payment_type = "CR";
-            if (insert_data["root_id"] == 1 && input.opening_bal > 0) {
-              debit_amount = input.opening_bal;
+            if (insert_data["root_id"] == 1 && input.opening_balance > 0) {
+              debit_amount = input.opening_balance;
               payment_type = "DR";
-
+  
               voucherStr = _mysql.mysqlQueryFormat(
                 "INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,\
                       payment_type,hospital_id,year,month,is_opening_bal,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -1922,9 +1922,9 @@ export default {
               );
             } else if (
               (insert_data["root_id"] == 2 || insert_data["root_id"] == 3) &&
-              input.opening_bal > 0
+              input.opening_balance > 0
             ) {
-              credit_amount = input.opening_bal;
+              credit_amount = input.opening_balance;
               voucherStr = _mysql.mysqlQueryFormat(
                 "INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,\
                     payment_type,hospital_id,year,month,is_opening_bal,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -1945,7 +1945,7 @@ export default {
               );
             }
           }
-
+  
           if (result[0][0]["created_from"] == "U") {
             _mysql
               .executeQuery({
@@ -2043,7 +2043,6 @@ export default {
         });
     }
   },
-
   //created by irfan: to
   getOpeningBalance: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -2131,7 +2130,9 @@ function createHierarchy(
         });
 
         let amount = 0;
+        let root_id=null;
         if (BALANCE != undefined) {
+          root_id=BALANCE.root_id;
           if (trans_symbol == "Dr.") {
             amount = parseFloat(BALANCE.deb_minus_cred).toFixed(decimal_places);
           } else {
@@ -2157,6 +2158,7 @@ function createHierarchy(
           head_id: item["head_id"],
           disabled: false,
           leafnode: "Y",
+          root_id:root_id,
           created_status: item["child_created_from"]
         });
 
@@ -2435,7 +2437,7 @@ function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
           from finance_account_head H left join 
           finance_account_child C on C.head_id=H.finance_account_head_id
            where (root_id=? or finance_account_head_id=?) order by account_level,sort_order;           
-           select C.head_id,finance_account_child_id as child_id,child_name
+           select C.head_id,finance_account_child_id as child_id,child_name,root_id
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
           ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount, 
           ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
