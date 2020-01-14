@@ -1437,9 +1437,10 @@ export default {
     //ss
     _mysql
       .generateRunningNumber({
+        
         user_id: req.userIdentity.algaeh_d_app_user_id,
-        numgen_codes: ["NUM001", "NUM002", "NUM003", "NUM004", "NUM0005"],
-        table_name: "hims_f_pharmacy_numgen"
+        numgen_codes: ["OP_CRD", "OP_CBIL"],
+        table_name: "hims_f_app_numgen"
       })
       .then(result => {
         _mysql.commitTransaction(() => {
