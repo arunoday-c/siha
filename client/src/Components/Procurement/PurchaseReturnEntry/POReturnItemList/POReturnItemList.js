@@ -182,8 +182,8 @@ class POReturnItemList extends Component {
                                     }}
                                   />
                                 ) : (
-                                  parseFloat(row.return_qty)
-                                );
+                                    parseFloat(row.return_qty)
+                                  );
                               }
                             },
                             {
@@ -309,7 +309,7 @@ class POReturnItemList extends Component {
                           }}
                           isEditable={
                             this.state.purchase_return_number !== null &&
-                            this.state.purchase_return_number !== ""
+                              this.state.purchase_return_number !== ""
                               ? false
                               : true
                           }
@@ -324,8 +324,8 @@ class POReturnItemList extends Component {
                               this,
                               context
                             ),
-                            onEdit: row => {},
-                            onDone: row => {}
+                            onEdit: row => { },
+                            onDone: row => { }
                           }}
                         />
                       </div>
@@ -334,23 +334,6 @@ class POReturnItemList extends Component {
                 </div>
                 <div className="col-lg-12">
                   <div className="row" style={{ textAlign: "right" }}>
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Return Sub Total"
-                        }}
-                      />
-                      <h6>{getAmountFormart(this.state.sub_total)}</h6>
-                    </div>
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Receipt Net Total"
-                        }}
-                      />
-                      <h6>{getAmountFormart(this.state.receipt_net_total)}</h6>
-                    </div>
-
                     <div className="col">
                       <AlgaehLabel
                         label={{
@@ -365,10 +348,36 @@ class POReturnItemList extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
+                          forceLabel: "Return Sub Total"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.sub_total)}</h6>
+                    </div>
+
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Discount Amount"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.discount_amount)}</h6>
+                    </div>
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
                           forceLabel: "Return Net Total"
                         }}
                       />
                       <h6>{getAmountFormart(this.state.net_total)}</h6>
+                    </div>
+
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Tax Amount"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.tax_amount)}</h6>
                     </div>
 
                     <div className="col">
