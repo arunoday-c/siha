@@ -1342,6 +1342,7 @@ export default {
     const _mysql = new algaehMysql();
 
     const input = req.query;
+    const decimal_places = req.userIdentity.decimal_places;
     if (input.auth_level > 0 && input.auth_level <= 2) {
       let strQry = "";
 
@@ -1381,7 +1382,7 @@ export default {
 
       _mysql
         .executeQuery({
-          query: `select distinct finance_voucher_header_id,voucher_type,amount,H.payment_date,\
+          query: `select distinct finance_voucher_header_id,voucher_type, ROUND(amount,${decimal_places}) as amount,H.payment_date,\
           narration,voucher_no,payment_mode, ref_no, H.cheque_date,   VD.auth_status ,U.username as entered_by from finance_voucher_header H\
           inner join finance_voucher_details VD on H.finance_voucher_header_id=VD.voucher_header_id\
           left join algaeh_d_app_user U on VD.entered_by=U.algaeh_d_app_user_id
@@ -1407,17 +1408,19 @@ export default {
   //created by irfan:
   getVouchersDetailsToAuthorize: (req, res, next) => {
     const _mysql = new algaehMysql();
-
+    const decimal_places = req.userIdentity.decimal_places;
     const input = req.query;
 
     _mysql
       .executeQuery({
         query:
-          "select finance_voucher_id, debit_amount,credit_amount,concat(H.account_name,'->',C.child_name) as ledger\
+          `select finance_voucher_id,ROUND( debit_amount,${decimal_places}) as debit_amount,
+          ROUND( credit_amount,${decimal_places}) as credit_amount,
+          concat(H.account_name,'->',C.child_name) as ledger\
           from finance_voucher_details VD \
           left join finance_account_head H on VD.head_id=H.finance_account_head_id\
           left join finance_account_child C on VD.child_id=C.finance_account_child_id\
-          where VD.voucher_header_id=?; ",
+          where VD.voucher_header_id=?; `,
         values: [input.finance_voucher_header_id]
       })
       .then(result => {
