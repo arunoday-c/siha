@@ -336,7 +336,7 @@ function Login(props) {
                               }}
                             />
                             <br />
-                            <div
+                            {/* <div
                               className="col-12 form-group"
                               style={{ textAlign: "right" }}
                             >
@@ -347,17 +347,17 @@ function Login(props) {
                               >
                                 Next
                               </button>
-                            </div>{" "}
+                            </div>{" "} */}
                           </div>
                         </div>
 
                         <div className="col-12 passwordSec">
                           <div className="row">
-                            <div className="col userAfterLogin">
+                            {/* <div className="col userAfterLogin">
                               {" "}
                               <h1>Welcome,</h1>
                               <h6>Aboobacker Sidhiqe</h6>
-                            </div>
+                            </div> */}
                             <AlagehFormGroup
                               div={{ className: "col-12 form-group" }}
                               textBox={{
@@ -383,7 +383,7 @@ function Login(props) {
                               }}
                             />
                             <br />
-                            {/* <AlagehAutoComplete
+                            <AlagehAutoComplete
                               div={{ className: "col-12 form-group" }}
                               selector={{
                                 name: "item_id",
@@ -419,7 +419,7 @@ function Login(props) {
                                   setLogin({ ...login, item_id: "" });
                                 }
                               }}
-                            /> */}
+                            />
                             <div className="col-12 form-group">
                               <div className="checkbox">
                                 <label>
