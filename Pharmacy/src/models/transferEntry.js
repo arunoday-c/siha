@@ -372,7 +372,7 @@ export default {
         let input = JSON.parse(buffer);
         req.body = input
         let transfer_number = "";
-        console.log("input", input)
+        // console.log("input", input)
 
 
         // const utilities = new algaehUtilities();
@@ -380,7 +380,7 @@ export default {
 
         _mysql
           .generateRunningNumber({
-            user_id: req.STK_ADJ.algaeh_d_app_user_id,
+            user_id: req.userIdentity.algaeh_d_app_user_id,
             numgen_codes: ["TRAN_NUM"],
             table_name: "hims_f_pharmacy_numgen"
           })
