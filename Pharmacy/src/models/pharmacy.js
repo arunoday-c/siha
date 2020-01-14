@@ -146,7 +146,7 @@ export default {
             result[0]["product_type"] == "HIMS_ERP" ||
             result[0]["product_type"] == "FINANCE_ERP"
           ) {
-            const head_id = 20;
+            const head_id = 55;
 
             _mysql
               .executeQueryWithTransaction({
