@@ -139,7 +139,7 @@ const StockEnquiry = React.lazy(() =>
 const ItemSetup = React.lazy(() =>
   retry(() => import("./Components/ItemSetup/ItemSetup"))
 );
-const Appointment = React.lazy(() =>
+const FrontDesk = React.lazy(() =>
   retry(() => import("./Components/FrontDesk/FrontDesk"))
 );
 const ResultEntryList = React.lazy(() =>
@@ -719,7 +719,16 @@ const appRoutes = [
     isExactPath: true,
     component: (
       <LoadComponent>
-        <PatientRegistration />
+        <PatientRegistration/>
+      </LoadComponent>
+    )
+  },
+  {
+    path: "/Appointment",
+    isExactPath: true,
+    component: (
+      <LoadComponent>
+        <FrontDesk screen="Appointment" />
       </LoadComponent>
     )
   },
