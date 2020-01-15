@@ -4,6 +4,7 @@ import LoginUsers from "./LoginUsers/LoginUsers";
 import Roles from "./Roles/Roles";
 import Groups from "./Groups/Groups";
 import ScreenAssignment from "./ScreenAssignment/ScreenAssignment";
+import AuditLog from "./AuditLog/AuditLog";
 import ComponentElementAssignment from "./ComponentElementAssignment/ComponentElementAssignment";
 // import ApiConfig from "./APIConfig";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
@@ -80,6 +81,19 @@ class AdminSetup extends Component {
                   <AlgaehLabel
                     label={{
                       fieldName: "screen_assignment"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"AuditLog"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Audit Log"
                     }}
                   />
                 }
@@ -188,6 +202,8 @@ class AdminSetup extends Component {
             <Roles />
           ) : this.state.pageDisplay === "ScreenAssignment" ? (
             <ScreenAssignment />
+          ) : this.state.pageDisplay === "AuditLog" ? (
+            <AuditLog />
           ) : this.state.pageDisplay === "ComponentElementAssignment" ? (
             <ComponentElementAssignment />
           ) : //  this.state.pageDisplay === "apiconfig" ? (

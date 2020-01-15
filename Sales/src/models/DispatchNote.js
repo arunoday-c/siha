@@ -8,7 +8,7 @@ export function getDispatchNote(req, res, next) {
     const _mysql = new algaehMysql();
     try {
 
-        console.log("req.query.dispatch_note_number", req.query.dispatch_note_number)
+        // console.log("req.query.dispatch_note_number", req.query.dispatch_note_number)
         _mysql
             .executeQuery({
                 query: `SELECT * from  hims_f_sales_dispatch_note_header \
@@ -112,7 +112,7 @@ export function getSalesOrderItem(req, res, next) {
                     _mysql
                         .executeQuery({
                             query:
-                                "select D.*, D.quantity as ordered_quantity ,LOC.*,IM.*, PU.uom_description \
+                                "select D.*, IM.hims_d_inventory_item_master_id, D.quantity as ordered_quantity ,LOC.*,IM.*, PU.uom_description \
                                 from hims_f_sales_order_items D \
                             left join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id \
                             inner join `hims_d_inventory_item_master` IM  on IM.hims_d_inventory_item_master_id=D.item_id \
@@ -124,23 +124,24 @@ export function getSalesOrderItem(req, res, next) {
                         })
                         .then(inventory_stock_detail => {
                             _mysql.releaseConnection();
-
+                            // console.log("inventory_stock_detail", inventory_stock_detail)
                             var item_grp = _(inventory_stock_detail)
-                                .groupBy("item_id")
-                                .map((row, item_id) => item_id)
+                                .groupBy("hims_d_inventory_item_master_id")
+                                .map((row, hims_d_inventory_item_master_id) => hims_d_inventory_item_master_id)
                                 .value();
 
                             let outputArray = [];
+                            // console.log("item_grp", item_grp)
 
                             for (let i = 0; i < item_grp.length; i++) {
                                 let item = new LINQ(inventory_stock_detail)
-                                    .Where(w => w.item_id == item_grp[i])
+                                    .Where(w => w.hims_d_inventory_item_master_id == item_grp[i])
                                     .Select(s => {
                                         return {
                                             sales_order_items_id: s.hims_f_sales_order_items_id,
                                             item_category_id: s.category_id,
                                             item_group_id: s.group_id,
-                                            item_id: s.item_id,
+                                            item_id: s.hims_d_inventory_item_master_id,
                                             uom_id: s.uom_id,
                                             quantity_outstanding: parseFloat(s.quantity_outstanding),
                                             item_description: s.item_description,
@@ -158,19 +159,20 @@ export function getSalesOrderItem(req, res, next) {
 
                                 let batches = new LINQ(inventory_stock_detail)
                                     .Where(
-                                        w => w.item_id == item_grp[i] &&
+                                        w => w.hims_d_inventory_item_master_id == item_grp[i] &&
                                             w.qtyhand > 0 &&
                                             w.inventory_location_id == inputParam.location_id
                                     )
                                     .Select(s => {
                                         return {
-                                            item_id: s.item_id,
+                                            item_id: s.hims_d_inventory_item_master_id,
                                             batchno: s.batchno,
                                             expiry_date: s.expirydt,
                                             barcode: s.barcode,
                                             qtyhand: s.qtyhand,
                                             qtypo: s.qtypo,
                                             cost_uom: s.cost_uom,
+                                            average_cost: s.avgcost,
                                             unit_cost: s.avgcost,
                                             last_purchase_cost: s.last_purchase_cost,
                                             item_type: s.item_type,
@@ -230,25 +232,32 @@ export function addDispatchNote(req, res, next) {
             req.body = input
             let dispatch_note_number = "";
 
-            console.log("addDispatchNote: ");
+            // console.log("addDispatchNote: ");
 
             _mysql
                 .generateRunningNumber({
-                    modules: ["SALES_DISPATCH"],
-                    tableName: "hims_f_sales_numgen",
-                    identity: {
-                        algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-                        hospital_id: req.userIdentity.hospital_id
-                    }
+                    user_id: req.userIdentity.algaeh_d_app_user_id,
+                    numgen_codes: ["SALES_DISPATCH"],
+                    table_name: "hims_f_sales_numgen"
                 })
                 .then(generatedNumbers => {
-                    dispatch_note_number = generatedNumbers[0];
+                    dispatch_note_number = generatedNumbers.SALES_DISPATCH;
 
                     let year = moment().format("YYYY");
 
                     let month = moment().format("MM");
 
                     let period = month;
+
+                    let strQuery = mysql.format(
+                        "UPDATE hims_f_sales_order SET invoice_generated='Y', invoice_gen_date=?, invoice_gen_by=? \
+                        where  hims_f_sales_order_id = ?;",
+                        [
+                            new Date(),
+                            req.userIdentity.algaeh_d_app_user_id,
+                            input.sales_order_id
+                        ]
+                    );
 
                     _mysql
                         .executeQuery({
@@ -257,7 +266,7 @@ export function addDispatchNote(req, res, next) {
                                     sales_order_id, location_id, customer_id, project_id, \
                                     sub_total, discount_amount, net_total, total_tax, net_payable, narration, \
                                     created_by, created_date, updated_by, updated_date, hospital_id ) \
-                                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);" + strQuery,
                             values: [
                                 dispatch_note_number,
                                 new Date(),
@@ -280,11 +289,12 @@ export function addDispatchNote(req, res, next) {
                             printQuery: true
                         })
                         .then(headerResult => {
-                            req.body.transaction_id = headerResult.insertId;
+                            let dispatch_note_header_id = headerResult[0].insertId;
+                            req.body.transaction_id = headerResult[0].insertId;
                             req.body.year = year;
                             req.body.period = period;
-                            console.log("headerResult: ", headerResult.insertId);
-                            console.log("length: ", input.stock_detail.length);
+                            // console.log("headerResult: ", headerResult[0].insertId);
+                            // console.log("length: ", input.stock_detail.length);
 
                             for (let i = 0; i < input.stock_detail.length; i++) {
                                 _mysql
@@ -301,7 +311,7 @@ export function addDispatchNote(req, res, next) {
                                             input.stock_detail[i]["dispatched_quantity"],
                                             input.stock_detail[i]["quantity_outstanding"],
                                             input.stock_detail[i]["delivered_to_date"],
-                                            headerResult.insertId
+                                            dispatch_note_header_id
                                         ],
                                         printQuery: true
                                     })
@@ -327,7 +337,8 @@ export function addDispatchNote(req, res, next) {
                                             "net_extended_cost",
                                             "tax_percentage",
                                             "tax_amount",
-                                            "total_amount"
+                                            "total_amount",
+                                            "average_cost"
                                         ];
 
                                         _mysql
@@ -351,12 +362,11 @@ export function addDispatchNote(req, res, next) {
                                                             _mysql.isTransactionConnection,
                                                         pool: _mysql.pool
                                                     };
-                                                    req.flag = 1;
+                                                    // req.flag = 1;
 
                                                     req.records = {
                                                         dispatch_note_number: dispatch_note_number,
-                                                        hims_f_sales_dispatch_note_header_id:
-                                                            headerResult.insertId,
+                                                        hims_f_sales_dispatch_note_header_id: dispatch_note_header_id,
                                                         year: year,
                                                         period: period
                                                     };
@@ -412,7 +422,7 @@ export function updateinvSalesOrderOnceDispatch(req, res, next) {
         }
 
         let strQuery = ""
-        console.log("inputParam.sales_quotation_id", inputParam.sales_quotation_id)
+        // console.log("inputParam.sales_quotation_id", inputParam.sales_quotation_id)
         if (inputParam.sales_quotation_id !== null && complete === "Y") {
             strQuery = mysql.format(
                 "UPDATE hims_f_sales_quotation set qotation_status='C' where hims_f_sales_quotation_id = ?;",

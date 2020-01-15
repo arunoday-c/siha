@@ -14,12 +14,9 @@ export default {
       //Bill
       _mysql
         .generateRunningNumber({
-          modules: ["PAT_BILL"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["PAT_BILL", "RECEIPT"],
+          table_name: "hims_f_app_numgen"
         })
         .then(generatedNumbers => {
           req.connection = {
@@ -27,27 +24,9 @@ export default {
             isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool
           };
-          req.body.bill_number = generatedNumbers[0];
-
-          //Receipt
-          _mysql
-            .generateRunningNumber({
-              modules: ["RECEIPT"],
-              tableName: "hims_f_app_numgen",
-              identity: {
-                algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-                hospital_id: req.userIdentity.hospital_id
-              }
-            })
-            .then(generatedNumbers => {
-              req.body.receipt_number = generatedNumbers[0];
-              next();
-            })
-            .catch(e => {
-              _mysql.rollBackTransaction(() => {
-                next(e);
-              });
-            });
+          req.body.bill_number = generatedNumbers.PAT_BILL;
+          req.body.receipt_number = generatedNumbers.RECEIPT;
+          next();
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {

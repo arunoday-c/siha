@@ -181,35 +181,16 @@ export default {
                   _mysql
                     .executeQuery({
                       query:
-                        "INSERT INTO `finance_head_m_child` (head_id,child_id,created_from)  VALUE(?,?,?)",
-                      values: [29, result.insertId, "S"],
+                        "INSERT INTO `hims_d_bank_card` (card_name,head_id,child_id)  VALUE(?,?,?)",
+                      values: [req.body.card_name, 29, result.insertId],
                       printQuery: true
                     })
                     .then(detail => {
-                      _mysql
-                        .executeQuery({
-                          query:
-                            "INSERT INTO `hims_d_bank_card` (card_name,head_id,child_id,head_account)  VALUE(?,?,?,?)",
-                          values: [
-                            req.body.card_name,
-                            29,
-                            result.insertId,
-                            "1.1.1.1"
-                          ],
-                          printQuery: true
-                        })
-                        .then(detail => {
-                          _mysql.commitTransaction(() => {
-                            _mysql.releaseConnection();
-                            req.records = detail;
-                            next();
-                          });
-                        })
-                        .catch(e => {
-                          _mysql.rollBackTransaction(() => {
-                            next(e);
-                          });
-                        });
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = detail;
+                        next();
+                      });
                     })
                     .catch(e => {
                       _mysql.rollBackTransaction(() => {

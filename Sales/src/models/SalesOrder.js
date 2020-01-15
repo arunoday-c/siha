@@ -8,14 +8,16 @@ export function getSalesOrder(req, res, next) {
 
         let strQuery = ""
         if (req.query.HRMNGMT_Active) {
-            strQuery = "SELECT SQ.*, C.customer_name, E.full_name as employee_name from hims_f_sales_order SQ \
-                        inner join  hims_d_customer C on  SQ.customer_id = C.hims_d_customer_id \
-                        inner join  hims_d_employee E on  SQ.sales_person_id = E.hims_d_employee_id \
-                        where SQ.sales_order_number =? "
+            strQuery = "SELECT SO.*, C.customer_name, E.full_name as employee_name, SQ.sales_quotation_number from hims_f_sales_order SO \
+                        left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id \
+                        inner join  hims_d_customer C on  SO.customer_id = C.hims_d_customer_id \
+                        inner join  hims_d_employee E on  SO.sales_person_id = E.hims_d_employee_id \
+                        where SO.sales_order_number =? "
         } else {
-            strQuery = "SELECT SQ.*, C.customer_name from hims_f_sales_order SQ \
-                        inner join  hims_d_customer C on  SQ.customer_id = C.hims_d_customer_id \
-                        where SQ.sales_order_number =? "
+            strQuery = "SELECT SO.*, C.customer_name from hims_f_sales_order SO , SQ.sales_quotation_number from hims_f_sales_order SO \
+                        left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id \
+                        inner join  hims_d_customer C on  SO.customer_id = C.hims_d_customer_id \
+                        where SO.sales_order_number =? "
         }
         _mysql
             .executeQuery({
@@ -84,15 +86,12 @@ export function addSalesOrder(req, res, next) {
 
         _mysql
             .generateRunningNumber({
-                modules: ["SALES_ORDER"],
-                tableName: "hims_f_sales_numgen",
-                identity: {
-                    algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-                    hospital_id: req.userIdentity.hospital_id
-                }
+                user_id: req.userIdentity.algaeh_d_app_user_id,
+                numgen_codes: ["SALES_ORDER"],
+                table_name: "hims_f_sales_numgen"
             })
             .then(generatedNumbers => {
-                sales_order_number = generatedNumbers[0];
+                sales_order_number = generatedNumbers.SALES_ORDER;
 
                 _mysql
                     .executeQuery({
@@ -166,7 +165,8 @@ export function addSalesOrder(req, res, next) {
                                         updateSalesQuotation({
                                             input: input,
                                             _mysql: _mysql,
-                                            next: next
+                                            next: next,
+                                            req: req
                                         })
                                             .then(update_sales_quotation => {
                                                 _mysql.commitTransaction(() => {
@@ -231,7 +231,8 @@ export function addSalesOrder(req, res, next) {
                                         updateSalesQuotation({
                                             input: input,
                                             _mysql: _mysql,
-                                            next: next
+                                            next: next,
+                                            req: req
                                         })
                                             .then(update_sales_quotation => {
                                                 _mysql.commitTransaction(() => {
@@ -490,7 +491,7 @@ export function updateSalesOrderEntry(req, res, next) {
                             qry += mysql.format(
                                 "UPDATE hims_f_sales_order_services SET `quantity`=?, extended_cost = ?, \
                                 discount_percentage=?, discount_amount= ?, net_extended_cost= ?, tax_amount= ?,\
-                                total_amount=?, quantity_outstanding=? where `hims_f_sales_order_services_id`=?;",
+                                total_amount=? where `hims_f_sales_order_services_id`=?;",
                                 [
                                     details[i].quantity,
                                     details[i].extended_cost,
@@ -499,7 +500,6 @@ export function updateSalesOrderEntry(req, res, next) {
                                     details[i].net_extended_cost,
                                     details[i].tax_amount,
                                     details[i].total_amount,
-                                    details[i].quantity_outstanding,
                                     details[i].hims_f_sales_order_services_id
                                 ]
                             );
@@ -615,12 +615,54 @@ export function cancelSalesServiceOrder(req, res, next) {
     }
 }
 
+export function ValidateContract(req, res, next) {
+    const _mysql = new algaehMysql();
+    try {
+        console.log("ValidateContract: ")
+        _mysql
+            .executeQuery({
+                query: "select max(start_date) as start_date, max(end_date) as end_date \
+                from hims_f_contract_management where customer_id=?;",
+                values: [req.query.customer_id],
+                printQuery: true
+            })
+            .then(result => {
+                const today = new Date();
+                const start_date = new Date(result[0].start_date);
+                const end_date = new Date(result[0].end_date);
+
+                // console.log("start_date", start_date)
+                // console.log("end_date", end_date)
+
+                _mysql.releaseConnection();
+                if (today > start_date && today < end_date) {
+                    req.records = result;
+                    next();
+                } else {
+                    req.records = {
+                        invalid_input: true,
+                        message: "Please provide valid absent id"
+                    };
+                    next();
+                }
+            })
+            .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+            });
+    } catch (e) {
+        _mysql.releaseConnection();
+        next(e);
+    }
+};
+
 
 function updateSalesQuotation(options) {
     return new Promise((resolve, reject) => {
         try {
             let input = options.input;
             let _mysql = options._mysql;
+            let req = options.req
 
             _mysql
                 .executeQuery({
@@ -634,27 +676,45 @@ function updateSalesQuotation(options) {
                     if (input.sales_order_mode === "I") {
                         if (result[0].quote_services_status !== "G") {
                             strQuery = mysql.format(
-                                "update hims_f_sales_quotation set qotation_status='O', quote_items_status='O' \
-                                where hims_f_sales_quotation_id=?",
-                                [input.sales_quotation_id]
+                                "update hims_f_sales_quotation set qotation_status='O', quote_items_status='O', \
+                                updated_date=?, updated_by=? where hims_f_sales_quotation_id=?",
+                                [
+                                    new Date(),
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                    input.sales_quotation_id
+                                ]
                             );
                         } else if (result[0].quote_services_status === "G") {
                             strQuery = mysql.format(
-                                "update hims_f_sales_quotation set quote_items_status='O' where hims_f_sales_quotation_id=?",
-                                [input.sales_quotation_id]
+                                "update hims_f_sales_quotation set quote_items_status='O', updated_date=?, updated_by=? \
+                                where hims_f_sales_quotation_id=?",
+                                [
+                                    new Date(),
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                    input.sales_quotation_id
+                                ]
                             );
                         }
                     } else if (input.sales_order_mode === "S") {
                         if (result[0].quote_items_status !== "G") {
                             strQuery = mysql.format(
-                                "update hims_f_sales_quotation set qotation_status='O', quote_services_status='O' \
-                                where hims_f_sales_quotation_id=?",
-                                [input.sales_quotation_id]
+                                "update hims_f_sales_quotation set qotation_status='O', quote_services_status='O', \
+                                updated_date=?, updated_by=? where hims_f_sales_quotation_id=?",
+                                [
+                                    new Date(),
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                    input.sales_quotation_id
+                                ]
                             );
                         } else if (result[0].quote_items_status === "G") {
                             strQuery = mysql.format(
-                                "update hims_f_sales_quotation set quote_services_status='O' where hims_f_sales_quotation_id=?",
-                                [input.sales_quotation_id]
+                                "update hims_f_sales_quotation set quote_services_status='O', updated_date=?, updated_by=? \
+                                where hims_f_sales_quotation_id=?",
+                                [
+                                    new Date(),
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                    input.sales_quotation_id
+                                ]
                             );
                         }
                     }

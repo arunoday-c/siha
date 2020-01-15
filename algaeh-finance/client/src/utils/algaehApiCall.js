@@ -530,7 +530,8 @@ export function valueReviver(key, value) {
 
   return value;
 }
-export function getLocalIP(callback) {
+
+function getLocalIP(callback) {
   const identity = window.localStorage.getItem("identity");
   if (identity === null) {
     const generator = new IDGenerator();
@@ -540,57 +541,67 @@ export function getLocalIP(callback) {
   } else {
     callback(AlgaehOpenContainer(identity));
   }
-
-  // if (window.myIP !== undefined && window.myIP !== "") {
-  //   callback(window.myIP);
-  //   return;
-  // }
-  // return new Promise((resolve, reject) => {
-  //   window.RTCPeerConnection =
-  //     /*window.RTCPeerConnection ||*/ window.webkitRTCPeerConnection ||
-  //     window.mozRTCPeerConnection;
-  //
-  //   if (!window.RTCPeerConnection) {
-  //     reject("Your browser does not support this API");
-  //   }
-  //
-  //   let pc = new RTCPeerConnection({ iceServers: [] }),
-  //     noop = function(myIP) {
-  //       if (myIP !== undefined) {
-  //         window.myIP = myIP;
-  //         resolve(myIP);
-  //       }
-  //     };
-  //   pc.createDataChannel(""); //create a bogus data channel
-  //   pc.createOffer(pc.setLocalDescription.bind(pc), noop); // create offer and set local description
-  //   pc.onicecandidate = function(ice) {
-  //     if (ice && ice.candidate && ice.candidate.candidate) {
-  //       let myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(
-  //         ice.candidate.candidate
-  //       );
-  //       if (myIP === null) {
-  //         const generator = new IDGenerator();
-  //         const _IdGen = generator.generate();
-  //         window.myIP = _IdGen;
-  //         callback(_IdGen);
-  //       } else {
-  //         pc.onicecandidate = noop(myIP[1]);
-  //       }
-  //     }
-  //   };
-  // })
-  //   .then(myIP => {
-  //     callback(myIP);
-  //   })
-  //   .catch(e => {
-  //     const generator = new IDGenerator();
-  //     const _IdGen = generator.generate();
-  //     window.myIP = _IdGen;
-  //     callback(_IdGen);
-  //   });
 }
 
-function IDGenerator() {
+// if (window.myIP !== undefined && window.myIP !== "") {
+//   callback(window.myIP);
+//   return;
+// }
+// return new Promise((resolve, reject) => {
+//   window.RTCPeerConnection =
+//     /*window.RTCPeerConnection ||*/ window.webkitRTCPeerConnection ||
+//     window.mozRTCPeerConnection;
+//
+//   if (!window.RTCPeerConnection) {
+//     reject("Your browser does not support this API");
+//   }
+//
+//   let pc = new RTCPeerConnection({ iceServers: [] }),
+//     noop = function(myIP) {
+//       if (myIP !== undefined) {
+//         window.myIP = myIP;
+//         resolve(myIP);
+//       }
+//     };
+//   pc.createDataChannel(""); //create a bogus data channel
+//   pc.createOffer(pc.setLocalDescription.bind(pc), noop); // create offer and set local description
+//   pc.onicecandidate = function(ice) {
+//     if (ice && ice.candidate && ice.candidate.candidate) {
+//       let myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(
+//         ice.candidate.candidate
+//       );
+//       if (myIP === null) {
+//         const generator = new IDGenerator();
+//         const _IdGen = generator.generate();
+//         window.myIP = _IdGen;
+//         callback(_IdGen);
+//       } else {
+//         pc.onicecandidate = noop(myIP[1]);
+//       }
+//     }
+//   };
+// })
+//   .then(myIP => {
+//     callback(myIP);
+//   })
+//   .catch(e => {
+//     const generator = new IDGenerator();
+//     const _IdGen = generator.generate();
+//     window.myIP = _IdGen;
+//     callback(_IdGen);
+//   });
+
+export function getIdentity() {
+  const identity = window.localStorage.getItem("identity");
+  if (identity) {
+    const result = AlgaehOpenContainer(identity);
+    return result;
+  } else {
+    return "";
+  }
+}
+
+export function IDGenerator() {
   this.length = 9;
   this.timestamp = +new Date();
 

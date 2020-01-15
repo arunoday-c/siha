@@ -6323,14 +6323,11 @@ function saveF(_mysql, req, next, input, msg) {
 
   _mysql
     .generateRunningNumber({
-      modules: ["EMPLOYEE_LEAVE"],
-      tableName: "hims_f_app_numgen",
-      identity: {
-        algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-        hospital_id: req.userIdentity.hospital_id
-      }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["EMPLOYEE_LEAVE"],
+          table_name: "hims_f_hrpayroll_numgen"
     })
-    .then(numGenLeave => {
+    .then(generatedNumbers => {
       _mysql
         .executeQuery({
           query:
@@ -6350,7 +6347,7 @@ function saveF(_mysql, req, next, input, msg) {
             weekoff_days,holidays,leave_from,absent_id,is_projected_leave,is_across_year_leave,from_year_applied_days,to_year_applied_days, created_date, created_by, updated_date, updated_by)\
             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
-                numGenLeave[0],
+                generatedNumbers.EMPLOYEE_LEAVE,
                 input.employee_id,
                 hospital_id,
                 new Date(),
@@ -7591,6 +7588,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
 }
 
 function validateLeaveApplictn(inputs, my_sql, req) {
+
   return new Promise((resolve, reject) => {
     try {
       const utilities = new algaehUtilities();
@@ -7619,7 +7617,7 @@ function validateLeaveApplictn(inputs, my_sql, req) {
           input["at_st_date"] = authResult[0]["at_st_date"];
 
           if (attendance_starts == "PM" && at_end_date > 0) {
-            const temp_year = moment().format("YYYY");
+            const temp_year = moment(input.from_date, "YYYY-MM-DD").format("YYYY");
             const cur_year_max_date = parseInt(temp_year + "12" + at_end_date);
             const from_date_month_n_date = parseInt(
               moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD")
@@ -8314,7 +8312,7 @@ function calculateNoLeaveDays(inputs, _mysql) {
 
               ],
 
-              printQuery: false
+              printQuery: true
             })
             .then(result => {
               allLeaves = result[0];

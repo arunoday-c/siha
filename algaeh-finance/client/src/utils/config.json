@@ -96,6 +96,12 @@
       "url": "",
       "path": "/reports",
       "name": "Reports"
+    },
+    "sales": {
+      "port": 3021,
+      "url": "",
+      "path": "/sales",
+      "name": "Sales"
     }
   },
   "apiAuth": {

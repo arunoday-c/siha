@@ -83,21 +83,29 @@ export default {
           .then(liability => {
             getAccountHeadsForReport(decimal_places, 3, option)
               .then(capital => {
-                const newCapital = capital.children[0].children.find(f => {
-                  return f.finance_account_child_id == 52;
-                });
+                // const newCapital = capital.children[0].children.find(f => {
+                //   return f.finance_account_child_id == 52;
+                // });
+
+                const newCapital = capital;
                 getAccountHeadsForReport(decimal_places, 4, option)
                   .then(income => {
                     getAccountHeadsForReport(decimal_places, 5, option)
                       .then(expense => {
                         const total_debit_amount = parseFloat(
-                          parseFloat(asset.subtitle) +
-                            parseFloat(expense.subtitle)
+                          parseFloat(asset.tr_debit_amount) +
+                            parseFloat(newCapital.tr_debit_amount) +
+                            parseFloat(income.tr_debit_amount) +
+                            parseFloat(liability.tr_debit_amount) +
+                            parseFloat(expense.tr_debit_amount)
                         ).toFixed(decimal_places);
+
                         const total_credit_amount = parseFloat(
-                          parseFloat(newCapital.subtitle) +
-                            parseFloat(income.subtitle) +
-                            parseFloat(liability.subtitle)
+                          parseFloat(asset.tr_credit_amount) +
+                            parseFloat(newCapital.tr_credit_amount) +
+                            parseFloat(income.tr_credit_amount) +
+                            parseFloat(liability.tr_credit_amount) +
+                            parseFloat(expense.tr_credit_amount)
                         ).toFixed(decimal_places);
 
                         newCapital.children = [{ ...newCapital }];
@@ -152,13 +160,24 @@ function getAccountHeadsForReport(
         trans_symbol = "Dr.";
       }
 
+      let str = "";
+      let qrystr = "";
+
+      if (
+        option != undefined &&
+        option.tialBalance == "Y" &&
+        finance_account_head_id == 3
+      ) {
+        str = " and  VD.child_id <> 1 ";
+        qrystr = " and  finance_account_child_id <> 1 ";
+      }
       _mysql
         .executeQuery({
           query: `select finance_account_head_id,account_code,account_name,account_parent,account_level,
           H.created_from as created_status ,sort_order,parent_acc_id,root_id,
           finance_account_child_id,child_name,head_id,C.created_from as child_created_from
           from finance_account_head H left join 
-          finance_account_child C on C.head_id=H.finance_account_head_id
+          finance_account_child C on C.head_id=H.finance_account_head_id ${qrystr}
            where (root_id=? or finance_account_head_id=?) order by account_level,sort_order;           
            select C.head_id,finance_account_child_id as child_id,child_name
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
@@ -166,7 +185,7 @@ function getAccountHeadsForReport(
           ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
           ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
           from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
-          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'
+          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'  ${str}
           where (H.root_id=? or H.finance_account_head_id=?)
           group by C.finance_account_child_id;
           select max(account_level) as account_level from finance_account_head 
@@ -175,8 +194,8 @@ function getAccountHeadsForReport(
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
           ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount
           from finance_account_head H              
-          left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'
-          where (H.root_id=? or H.finance_account_head_id=?)
+          left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'  ${str}
+          where (H.root_id=? or H.finance_account_head_id=?) 
           group by H.finance_account_head_id  order by account_level;  `,
 
           values: [
@@ -189,7 +208,7 @@ function getAccountHeadsForReport(
             finance_account_head_id,
             finance_account_head_id
           ],
-          printQuery: false
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -199,8 +218,6 @@ function getAccountHeadsForReport(
           if (option != undefined && option.tialBalance == "Y") {
             calcAmount(result[3], result[2], decimal_places)
               .then(head_data => {
-                console.log("trial bal");
-
                 const outputArray = createHierarchyForTB(
                   result[0],
                   child_data,
@@ -650,37 +667,38 @@ function createHierarchyForTB(
           );
         });
 
-        let tr_debit_amount = 0;
-        let tr_credit_amount = 0;
-        let amount = 0;
+        let tr_debit_amount = parseFloat(0).toFixed(decimal_places);
+        let tr_credit_amount = parseFloat(0).toFixed(decimal_places);
+
         if (BALANCE != undefined) {
           if (trans_symbol == "Dr.") {
-            amount = parseFloat(BALANCE.deb_minus_cred).toFixed(decimal_places);
+            if (BALANCE.deb_minus_cred > BALANCE.cred_minus_deb) {
+              tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
+                decimal_places
+              );
+            } else {
+              tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
+                decimal_places
+              );
+            }
           } else {
-            amount = parseFloat(BALANCE.cred_minus_deb).toFixed(decimal_places);
+            if (BALANCE.cred_minus_deb > BALANCE.deb_minus_cred) {
+              tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
+                decimal_places
+              );
+            } else {
+              tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
+                decimal_places
+              );
+            }
           }
-
-          tr_debit_amount = parseFloat(BALANCE.debit_amount).toFixed(
-            decimal_places
-          );
-          tr_credit_amount = parseFloat(BALANCE.credit_amount).toFixed(
-            decimal_places
-          );
-
-          // if (trans_symbol == "Dr.") {
-          //   amount = BALANCE.deb_minus_cred;
-          // } else {
-          //   amount = BALANCE.cred_minus_deb;
-          // }
-        } else {
-          amount = default_total;
         }
 
         //END---calulating Amount
         child.push({
           finance_account_child_id: item["finance_account_child_id"],
           trans_symbol: trans_symbol,
-          subtitle: amount,
+
           title: item.child_name,
           label: item.child_name,
           head_id: item["head_id"],
@@ -703,24 +721,31 @@ function createHierarchyForTB(
             return item.finance_account_head_id == f.finance_account_head_id;
           });
 
-          let amount = 0;
-          let tr_debit_amount = 0;
-          let tr_credit_amount = 0;
+          let tr_debit_amount = parseFloat(0).toFixed(decimal_places);
+          let tr_credit_amount = parseFloat(0).toFixed(decimal_places);
+
           if (BALANCE != undefined) {
             if (trans_symbol == "Dr.") {
-              amount = BALANCE.deb_minus_cred;
+              if (BALANCE.deb_minus_cred > BALANCE.cred_minus_deb) {
+                tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
+                  decimal_places
+                );
+              } else {
+                tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
+                  decimal_places
+                );
+              }
             } else {
-              amount = BALANCE.cred_minus_deb;
+              if (BALANCE.cred_minus_deb > BALANCE.deb_minus_cred) {
+                tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
+                  decimal_places
+                );
+              } else {
+                tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
+                  decimal_places
+                );
+              }
             }
-
-            tr_debit_amount = parseFloat(BALANCE.total_debit_amount).toFixed(
-              decimal_places
-            );
-            tr_credit_amount = parseFloat(BALANCE.total_credit_amount).toFixed(
-              decimal_places
-            );
-          } else {
-            amount = default_total;
           }
 
           //END---calulating Amount
@@ -728,39 +753,45 @@ function createHierarchyForTB(
           target.push({
             ...item,
             trans_symbol: trans_symbol,
-            subtitle: amount,
             title: item.account_name,
             label: item.account_name,
-
             tr_debit_amount: tr_debit_amount,
             tr_credit_amount: tr_credit_amount,
             leafnode: "N"
           });
         }
-      } //HEAD ACCOUNT
+      }
+      //HEAD ACCOUNT
       else {
         //ST---calulating Amount
         const BALANCE = head_data.find(f => {
           return item.finance_account_head_id == f.finance_account_head_id;
         });
 
-        let amount = 0;
-        let tr_debit_amount = 0;
-        let tr_credit_amount = 0;
+        let tr_debit_amount = parseFloat(0).toFixed(decimal_places);
+        let tr_credit_amount = parseFloat(0).toFixed(decimal_places);
         if (BALANCE != undefined) {
           if (trans_symbol == "Dr.") {
-            amount = BALANCE.deb_minus_cred;
+            if (BALANCE.deb_minus_cred > BALANCE.cred_minus_deb) {
+              tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
+                decimal_places
+              );
+            } else {
+              tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
+                decimal_places
+              );
+            }
           } else {
-            amount = BALANCE.cred_minus_deb;
+            if (BALANCE.cred_minus_deb > BALANCE.deb_minus_cred) {
+              tr_credit_amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
+                decimal_places
+              );
+            } else {
+              tr_debit_amount = parseFloat(BALANCE.deb_minus_cred).toFixed(
+                decimal_places
+              );
+            }
           }
-          tr_debit_amount = parseFloat(BALANCE.total_debit_amount).toFixed(
-            decimal_places
-          );
-          tr_credit_amount = parseFloat(BALANCE.total_credit_amount).toFixed(
-            decimal_places
-          );
-        } else {
-          amount = default_total;
         }
 
         //END---calulating Amount
@@ -768,7 +799,7 @@ function createHierarchyForTB(
         target.push({
           ...item,
           trans_symbol: trans_symbol,
-          subtitle: amount,
+
           title: item.account_name,
           label: item.account_name,
           tr_debit_amount: tr_debit_amount,

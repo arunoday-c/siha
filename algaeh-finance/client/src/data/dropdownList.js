@@ -242,3 +242,67 @@ export const paymentMode = [
   { name: "Card", value: "paymentMode" },
   { name: "Cheque", value: "paymentMode" }
 ];
+
+export const MONTHS = [
+  { name: "January", value: 1 },
+  { name: "February", value: 2 },
+  { name: "March", value: 3 },
+  { name: "April", value: 4 },
+  { name: "May", value: 5 },
+  { name: "June", value: 6 },
+  { name: "July", value: 7 },
+  { name: "August", value: 8 },
+  { name: "September", value: 9 },
+  { name: "October", value: 10 },
+  { name: "November", value: 11 },
+  { name: "December", value: 12 }
+];
+
+export const AUTH_LEVELS = [
+  {
+    name: "Level 1",
+    value: 1
+  },
+  {
+    name: "Level 2",
+    value: 2
+  },
+  {
+    name: "None",
+    value: "N"
+  }
+];
+
+export const BINARY_CHOICES = [
+  {
+    name: "Yes",
+    value: "Y"
+  },
+  {
+    name: "No",
+    value: "N"
+  }
+];
+
+export const PAYMENT_METHODS = [
+  {
+    name: "Cash",
+    value: "CASH"
+  },
+  {
+    name: "Cheque",
+    value: "CHEQUE"
+  },
+  {
+    name: "RTGS",
+    value: "RTGS"
+  },
+  {
+    name: "NEFT",
+    value: "NEFT"
+  },
+  {
+    name: "IMPS",
+    value: "IMPS"
+  }
+];

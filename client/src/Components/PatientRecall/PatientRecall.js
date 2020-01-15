@@ -129,7 +129,7 @@ class PatientRecall extends Component {
     return (
       <div className="patient_recall">
         <div className="row inner-top-search">
-          <AlagehAutoComplete
+          {/* <AlagehAutoComplete
             div={{ className: "col" }}
             label={{
               forceLabel: "Department"
@@ -173,7 +173,7 @@ class PatientRecall extends Component {
                 });
               }
             }}
-          />
+          /> */}
 
           <AlgaehDateHandler
             div={{ className: "col" }}
@@ -307,6 +307,7 @@ class PatientRecall extends Component {
                     data: this.state.patients
                   }}
                   isEditable={false}
+                  filter={true}
                   paging={{ page: 0, rowsPerPage: 20 }}
                   events={{
                     onDelete: row => {},

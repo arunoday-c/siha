@@ -89,14 +89,11 @@ export default {
 
       _mysql
         .generateRunningNumber({
-          modules: ["INV_NUM"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["INV_NUM"],
+          table_name: "hims_f_app_numgen"
         })
-        .then(invoce_no => {
+        .then(generatedNumbers => {
           _mysql
             .executeQuery({
               query:
@@ -107,7 +104,7 @@ export default {
             card_holder_age, card_holder_gender, card_class, created_date, created_by, updated_date, updated_by,hospital_id) \
           VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
-                invoce_no[0],
+                generatedNumbers.INV_NUM,
                 new Date(input.invoice_date),
                 input.patient_id,
                 input.visit_id,
@@ -221,7 +218,7 @@ export default {
                           _mysql.commitTransaction(() => {
                             _mysql.releaseConnection();
                             req.records = {
-                              invoice_number: invoce_no[0],
+                              invoice_number: generatedNumbers.INV_NUM,
                               hims_f_invoice_header_id: headerResult.insertId
                             };
                             next();

@@ -479,13 +479,13 @@ let getRoleBaseActiveModules = (req, res, next) => {
   s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
   s.other_language as s_other_language,'' as algaeh_d_app_component_id,'' as component_code,
   '' as component_name,'' as comp_view_previlage,'' as ele_view_previlage,'' as ele_extra_props,
-  '' as ele_props_type,'' as screen_element_code,'' as screen_element_name,'' as screen_id
+  '' as ele_props_type,'' as screen_element_code,'' as screen_element_name,algaeh_app_screens_id as screen_id
   from algaeh_d_app_module as m inner join algaeh_d_app_screens as s
   on s.module_id = m.algaeh_d_module_id  ${
-    role_type === "SU"
-      ? ""
-      : "where m.access_by <> 'SU' and m.record_status='A'"
-  }`;
+        role_type === "SU"
+          ? ""
+          : "where m.access_by <> 'SU' and m.record_status='A'"
+        }`;
     } else {
       strQuery = `select m.algaeh_d_module_id,m.module_code,m.module_name,m.icons,m.display_order,m.other_language,
   s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
@@ -521,7 +521,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
 
         const records = _.chain(result)
           .groupBy(g => g.algaeh_d_module_id)
-          .map(function(detail, key) {
+          .map(function (detail, key) {
             const first = _.head(detail);
             return {
               module_id: key,
@@ -1687,7 +1687,7 @@ let assignScreens = (req, res, next) => {
                     " INSERT IGNORE INTO `algaeh_m_screen_role_privilage_mapping` (module_role_map_id, screen_id, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?); ",
                     [
                       input.update_screens[i][
-                        "algaeh_m_module_role_privilage_mapping_id"
+                      "algaeh_m_module_role_privilage_mapping_id"
                       ],
                       input.update_screens[i]["insert_screens"][k],
                       req.userIdentity.algaeh_d_app_user_id,

@@ -1,4 +1,4 @@
-import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
+import { swalMessage, algaehApiCall, getCookie } from "../../../utils/algaehApiCall";
 import moment from "moment";
 
 import AlgaehSearch from "../../Wrapper/globalSearch";
@@ -28,8 +28,8 @@ const textEventhandle = ($this, e) => {
     e.value === ""
       ? null
       : e.value || e.target.value === ""
-      ? null
-      : e.target.value;
+        ? null
+        : e.target.value;
 
   $this.setState({
     [name]: value
@@ -204,17 +204,17 @@ const DeliverySearch = ($this, e) => {
                   parseFloat(data.dn_entry_detail[i].quantity_outstanding) === 0
                     ? 0
                     : Math.abs(
-                        data.dn_entry_detail[i].dn_quantity -
-                          data.dn_entry_detail[i].quantity_outstanding
-                      );
+                      data.dn_entry_detail[i].dn_quantity -
+                      data.dn_entry_detail[i].quantity_outstanding
+                    );
 
                 data.dn_entry_detail[i].recieved_quantity =
                   parseFloat(data.dn_entry_detail[i].quantity_outstanding) === 0
                     ? data.dn_entry_detail[i].dn_quantity
                     : Math.abs(
-                        data.dn_entry_detail[i].quantity_recieved_todate -
-                          data.dn_entry_detail[i].quantity_outstanding
-                      );
+                      data.dn_entry_detail[i].quantity_recieved_todate -
+                      data.dn_entry_detail[i].quantity_outstanding
+                    );
 
                 data.dn_entry_detail[i].dn_header_id =
                   data.hims_f_procurement_dn_header_id;
@@ -439,7 +439,7 @@ const getData = $this => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "receiptitemcategory"
       },
-      afterSuccess: data => {}
+      afterSuccess: data => { }
     });
 
     $this.props.getItemGroup({
@@ -512,78 +512,17 @@ const generateReceiptEntryReport = data => {
 };
 
 const PostReceiptEntry = $this => {
-  $this.state.posted = "Y";
-  $this.state.transaction_type = "REC";
-  $this.state.transaction_id = $this.state.hims_f_procurement_grn_header_id;
-  $this.state.transaction_date = $this.state.grn_date;
 
-  if ($this.state.grn_for === "PHR") {
-    $this.state.pharmacy_stock_detail = $this.state.receipt_entry_detail;
+  AlgaehLoader({ show: true });
+  let Inputobj = $this.state
 
-    for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
-      $this.state.pharmacy_stock_detail[i].location_id =
-        $this.state.pharmcy_location_id;
-      $this.state.pharmacy_stock_detail[i].location_type =
-        $this.state.location_type;
-
-      $this.state.pharmacy_stock_detail[i].quantity =
-        $this.state.pharmacy_stock_detail[i].recieved_quantity;
-
-      $this.state.pharmacy_stock_detail[i].uom_id =
-        $this.state.pharmacy_stock_detail[i].pharmacy_uom_id;
-
-      $this.state.pharmacy_stock_detail[i].sales_uom =
-        $this.state.pharmacy_stock_detail[i].pharmacy_uom_id;
-      $this.state.pharmacy_stock_detail[i].item_id =
-        $this.state.pharmacy_stock_detail[i].phar_item_id;
-      $this.state.pharmacy_stock_detail[i].item_code_id =
-        $this.state.pharmacy_stock_detail[i].phar_item_id;
-      $this.state.pharmacy_stock_detail[i].grn_number = $this.state.grn_number;
-      $this.state.pharmacy_stock_detail[i].item_category_id =
-        $this.state.pharmacy_stock_detail[i].phar_item_category;
-      $this.state.pharmacy_stock_detail[i].item_group_id =
-        $this.state.pharmacy_stock_detail[i].phar_item_group;
-
-      $this.state.pharmacy_stock_detail[i].net_total =
-        $this.state.pharmacy_stock_detail[i].net_extended_cost;
-      $this.state.pharmacy_stock_detail[i].operation = "+";
-    }
-  } else if ($this.state.grn_for === "INV") {
-    $this.state.inventory_stock_detail = $this.state.receipt_entry_detail;
-
-    for (let i = 0; i < $this.state.inventory_stock_detail.length; i++) {
-      $this.state.inventory_stock_detail[i].location_id =
-        $this.state.inventory_location_id;
-      $this.state.inventory_stock_detail[i].location_type =
-        $this.state.location_type;
-
-      $this.state.inventory_stock_detail[i].quantity =
-        $this.state.inventory_stock_detail[i].recieved_quantity;
-
-      $this.state.inventory_stock_detail[i].uom_id =
-        $this.state.inventory_stock_detail[i].inventory_uom_id;
-      $this.state.inventory_stock_detail[i].sales_uom =
-        $this.state.inventory_stock_detail[i].inventory_uom_id;
-      $this.state.inventory_stock_detail[i].item_id =
-        $this.state.inventory_stock_detail[i].inv_item_id;
-      $this.state.inventory_stock_detail[i].item_code_id =
-        $this.state.inventory_stock_detail[i].inv_item_id;
-      $this.state.inventory_stock_detail[i].grn_number = $this.state.grn_number;
-      $this.state.inventory_stock_detail[i].item_category_id =
-        $this.state.inventory_stock_detail[i].inv_item_category_id;
-      $this.state.inventory_stock_detail[i].item_group_id =
-        $this.state.inventory_stock_detail[i].inv_item_group_id;
-
-      $this.state.inventory_stock_detail[i].net_total =
-        $this.state.inventory_stock_detail[i].net_extended_cost;
-      $this.state.inventory_stock_detail[i].operation = "+";
-    }
-  }
+  Inputobj.posted = "Y";
+  Inputobj.ScreenCode = getCookie("ScreenCode")
 
   algaehApiCall({
-    uri: "/ReceiptEntry/updateReceiptEntry",
+    uri: "/ReceiptEntry/postReceiptEntry",
     module: "procurement",
-    data: $this.state,
+    data: Inputobj,
     method: "PUT",
     onSuccess: response => {
       if (response.data.success === true) {
@@ -595,26 +534,12 @@ const PostReceiptEntry = $this => {
           type: "success"
         });
       }
-    },
-    onFailure: error => {
       AlgaehLoader({ show: false });
-      swalMessage({
-        title: error.message,
-        type: "error"
-      });
     }
   });
 };
 
 const PurchaseOrderSearch = ($this, e) => {
-  // let Inputs = "";
-  //
-  // if ($this.state.grn_for === "PHR") {
-  //   Inputs = "pharmcy_location_id = " + $this.state.pharmcy_location_id;
-  // } else {
-  //   Inputs = "inventory_location_id = " + $this.state.inventory_location_id;
-  // }
-  // inputs: Inputs,
   AlgaehSearch({
     searchGrid: {
       columns: spotlightSearch.Purchase.POEntry

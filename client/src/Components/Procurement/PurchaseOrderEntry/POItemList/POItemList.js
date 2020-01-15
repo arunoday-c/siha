@@ -608,7 +608,7 @@ class POItemList extends Component {
                                 />
                               ),
                               displayTemplate: row => {
-                                return row.authorize_quantity !== "" || row.authorize_quantity !== null
+                                return row.authorize_quantity !== ""
                                   ? parseFloat(row.authorize_quantity)
                                   : 0;
                               },

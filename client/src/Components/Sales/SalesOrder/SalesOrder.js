@@ -21,8 +21,7 @@ import {
   ClearData,
   SaveSalesOrderEnrty,
   getCtrlCode,
-  generatePOReceipt,
-  generatePOReceiptNoPrice,
+  generateSalesOrderReport,
   getSalesOptions,
   employeeSearch,
   dateValidate,
@@ -93,7 +92,7 @@ class SalesOrder extends Component {
       grid_edit: false,
       cancelDisable: false
     };
-    getSalesOptions(this, this)
+    getSalesOptions(this, this);
   }
 
   componentDidMount() {
@@ -165,15 +164,10 @@ class SalesOrder extends Component {
   }
 
   render() {
-    const class_finder =
-      this.state.dataExists === true
-        ? " disableFinder"
-        : "";
+    const class_finder = this.state.dataExists === true ? " disableFinder" : "";
 
     const class_emp_finder =
-      this.state.selectedData === true
-        ? " disableFinder"
-        : "";
+      this.state.selectedData === true ? " disableFinder" : "";
     return (
       <div>
         <BreadCrumb
@@ -227,7 +221,9 @@ class SalesOrder extends Component {
                 />
                 <h6>
                   {this.state.sales_order_date
-                    ? moment(this.state.sales_order_date).format(Options.dateFormat)
+                    ? moment(this.state.sales_order_date).format(
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -243,41 +239,45 @@ class SalesOrder extends Component {
                     {this.state.cancelled === "Y" ? (
                       <span className="badge badge-danger">Cancelled</span>
                     ) : this.state.authorize1 === "Y" &&
-                      this.state.authorize2 === "Y" && this.state.is_completed === "N" ? (
-                          <span className="badge badge-success">Authorized</span>
+                      this.state.authorize2 === "Y" &&
+                      this.state.is_completed === "N" ? (
+                          <span className="badge badge-success">
+                            Authorized / Dispatch Pending
+                      </span>
                         ) : this.state.authorize1 === "Y" &&
                           this.state.authorize2 === "N" ? (
-                            <span className="badge badge-danger">Authorized 2 Pending</span>
+                            <span className="badge badge-danger">
+                              Authorized 2 Pending
+                      </span>
                           ) : this.state.authorize1 === "N" &&
                             this.state.authorize2 === "N" ? (
                               <span className="badge badge-danger">Pending</span>
-                            ) : this.state.is_completed === "Y" ? (
-                              <span className="badge badge-success">Invoice Generated</span>
-                            ) : (
-                                "-------"
-                              )}
+                            ) : this.state.is_completed === "Y" &&
+                              this.state.invoice_generated === "N" ? (
+                                <span className="badge badge-danger">
+                                  Invoice Generation Pending
+                      </span>
+                              ) : this.state.invoice_generated === "Y" ? (
+                                <span className="badge badge-success">
+                                  Invoice Generated
+                      </span>
+                              ) : (
+                                  "-------"
+                                )}
                   </h6>
                 </div>
               ) : null}
             </div>
           }
           printArea={
-            this.state.hims_f_procurement_po_header_id !== null
+            this.state.sales_order_number !== null
               ? {
                 menuitems: [
                   {
-                    label: "Receipt for Internal",
+                    label: "Sales Order Report",
                     events: {
                       onClick: () => {
-                        generatePOReceipt(this.state);
-                      }
-                    }
-                  },
-                  {
-                    label: "Receipt for Vendor",
-                    events: {
-                      onClick: () => {
-                        generatePOReceiptNoPrice(this.state);
+                        generateSalesOrderReport(this.state);
                       }
                     }
                   }
@@ -296,7 +296,7 @@ class SalesOrder extends Component {
             {/* Patient code */}
             <div className="col-lg-12">
               <div className="row">
-                {this.state.services_required === "Y" ?
+                {this.state.services_required === "Y" ? (
                   <div className="col ">
                     <label>Order Mode</label>
                     <div className="customRadio">
@@ -309,6 +309,7 @@ class SalesOrder extends Component {
                             this.state.sales_order_mode === "I" ? true : false
                           }
                           onChange={texthandle.bind(this, this)}
+                          disabled={this.state.dataExitst}
                         />
                         <span>Item</span>
                       </label>
@@ -321,19 +322,22 @@ class SalesOrder extends Component {
                             this.state.sales_order_mode === "S" ? true : false
                           }
                           onChange={texthandle.bind(this, this)}
+                          disabled={this.state.dataExitst}
                         />
                         <span>Service</span>
                       </label>
                     </div>
-                  </div> : null}
-
+                  </div>
+                ) : null}
 
                 <div className={"col-2 globalSearchCntr" + class_finder}>
-                  <AlgaehLabel label={{ forceLabel: "Search Order No." }} />
+                  <AlgaehLabel
+                    label={{ forceLabel: "Search by Quotation No." }}
+                  />
                   <h6 onClick={SalesQuotationSearch.bind(this, this)}>
                     {this.state.sales_quotation_number
                       ? this.state.sales_quotation_number
-                      : "Quatation No."}
+                      : "Quotation No."}
                     <i className="fas fa-search fa-lg"></i>
                   </h6>
                 </div>
@@ -388,7 +392,12 @@ class SalesOrder extends Component {
                 />
 
                 {this.HRMNGMT_Active ? (
-                  <div className={"col globalSearchCntr form-group mandatory" + class_emp_finder}>
+                  <div
+                    className={
+                      "col globalSearchCntr form-group mandatory" +
+                      class_emp_finder
+                    }
+                  >
                     <AlgaehLabel
                       label={{ forceLabel: "Sales Person", isImp: true }}
                     />
@@ -419,10 +428,8 @@ class SalesOrder extends Component {
                       }}
                     />
                   )}
-
               </div>
               <div className="row">
-
                 <AlgaehDateHandler
                   div={{ className: "col mandatory" }}
                   label={{ forceLabel: "Delivery Date", isImp: true }}
@@ -594,7 +601,7 @@ class SalesOrder extends Component {
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Net Payable"
+                    forceLabel: "Net Total"
                   }}
                 />
                 <h6>{getAmountFormart(this.state.net_payable)}</h6>
@@ -651,19 +658,19 @@ class SalesOrder extends Component {
               </button>
 
               {this.props.order_auth === true ? (
-
                 <div>
-                  {this.state.sales_order_mode === "S" ? <button
-                    type="button"
-                    className="btn btn-default"
-                    disabled={this.state.cancelDisable}
-                    onClick={CancelSalesServiceOrder.bind(this, this)}
-                  >
-                    <AlgaehLabel
-                      label={{ forceLabel: "Cancel", returnText: true }}
-                    />
-                  </button> : null}
-
+                  {this.state.sales_order_mode === "S" ? (
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      disabled={this.state.cancelDisable}
+                      onClick={CancelSalesServiceOrder.bind(this, this)}
+                    >
+                      <AlgaehLabel
+                        label={{ forceLabel: "Cancel", returnText: true }}
+                      />
+                    </button>
+                  ) : null}
 
                   <button
                     type="button"

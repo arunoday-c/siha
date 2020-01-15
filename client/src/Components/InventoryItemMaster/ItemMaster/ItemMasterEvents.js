@@ -119,7 +119,6 @@ const InsertUpdateItems = $this => {
             AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
           ).hims_d_hospital_id;
 
-          $this.state.standard_fee = parseFloat($this.state.standard_fee);
 
           algaehApiCall({
             uri: "/inventory/addItemMaster",

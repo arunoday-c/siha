@@ -880,8 +880,7 @@
       },
       {
         "fieldName": "sales_quotation_number",
-        "label": "sales Quotation Number",
-        "required": "N"
+        "label": "Sales Quotation Number"
       },
       {
         "fieldName": "sales_order_mode",
@@ -890,8 +889,7 @@
       },
       {
         "fieldName": "customer_name",
-        "label": "Customer Name",
-        "required": "N"
+        "label": "Customer Name"
       },
       {
         "fieldName": "delivery_date",
@@ -912,9 +910,87 @@
         "label": "Sales Order"
       },
       {
+        "fieldName": "customer_name",
+        "label": "Customer Name"
+      },
+      {
         "fieldName": "location",
         "label": "Location",
         "required": "N"
+      }
+    ],
+    "SalesInvoice": [
+      {
+        "fieldName": "invoice_number",
+        "label": "Invoice Number"
+      },
+      {
+        "fieldName": "invoice_date",
+        "label": "Invoice Date"
+      },
+      {
+        "fieldName": "sales_invoice_mode",
+        "label": "Invoice Mode"
+      },
+      {
+        "fieldName": "sales_order_number",
+        "label": "Sales Order Number"
+      },
+      {
+        "fieldName": "customer_name",
+        "label": "Customer Name"
+      }
+    ],
+    "InvSalesReturn": [
+      {
+        "fieldName": "sales_return_number",
+        "label": "Return Number"
+      },
+      {
+        "fieldName": "return_date",
+        "label": "Return Date"
+      },
+      {
+        "fieldName": "invoice_number",
+        "label": "Sales Order Number"
+      },
+      {
+        "fieldName": "customer_name",
+        "label": "Customer Name"
+      },
+      {
+        "fieldName": "project_desc",
+        "label": "Project Desc"
+      }
+    ],
+    "ContractMang": [
+      {
+        "fieldName": "contract_number",
+        "label": "Contract Number"
+      },
+      {
+        "fieldName": "contract_date",
+        "label": "Contract Date"
+      },
+      {
+        "fieldName": "customer_name",
+        "label": "Customer Name"
+      },
+      {
+        "fieldName": "start_date",
+        "label": "Start Date"
+      },
+      {
+        "fieldName": "end_date",
+        "label": "End Date"
+      },
+      {
+        "fieldName": "contract_code",
+        "label": "Contract Code"
+      },
+      {
+        "fieldName": "quotation_ref_numb",
+        "label": "Quotation Ref. Num."
       }
     ]
   }

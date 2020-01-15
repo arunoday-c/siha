@@ -4,7 +4,9 @@ import JournalVoucher from "./Components/JournalVoucher";
 import FinanceReports from "./Components/FinanceReports";
 import Mapping from "./Components/Mapping";
 import FinanceOptions from "./Components/FinanceOptions";
+import CostCenter from "./Components/CostCenterPage";
 import JournalAuthorization from "./Components/JournalAuthorization";
+import "react-sortable-tree/style.css";
 const Pages = {
   Accounts,
   Transactions,
@@ -12,6 +14,7 @@ const Pages = {
   FinanceReports,
   Mapping,
   FinanceOptions,
+  CostCenter,
   JournalAuthorization
 };
 

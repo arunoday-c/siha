@@ -25,6 +25,7 @@ const ForkTsCheckerWebpackPlugin = require("react-dev-utils/ForkTsCheckerWebpack
 const typescriptFormatter = require("react-dev-utils/typescriptFormatter");
 const AssetsPlugin = require("assets-webpack-plugin");
 const eslint = require("eslint");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const postcssNormalize = require("postcss-normalize");
 
@@ -541,6 +542,7 @@ module.exports = function(webpackEnv) {
           componentName: "FinanceComponent"
         }
       }),
+      new CleanWebpackPlugin(),
       // Inlines the webpack runtime script. This script is too small to warrant
       // a network request.
       isEnvProduction &&

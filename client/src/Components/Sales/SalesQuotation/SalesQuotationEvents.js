@@ -1,7 +1,10 @@
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import { AlgaehOpenContainer, AlgaehValidation } from "../../../utils/GlobalFunctions";
+import {
+  AlgaehOpenContainer,
+  AlgaehValidation
+} from "../../../utils/GlobalFunctions";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import Enumerable from "linq";
@@ -23,7 +26,6 @@ const changeTexts = ($this, ctrl, e) => {
       });
       break;
   }
-
 };
 
 const ClearData = ($this, e) => {
@@ -48,7 +50,6 @@ const ClearData = ($this, e) => {
     tax_percentage: null,
     delivery_date: null,
     no_of_days_followup: 0,
-
 
     sales_quotation_items: [],
     sales_quotation_services: [],
@@ -80,30 +81,30 @@ const ClearData = ($this, e) => {
     qotation_status: "G"
   };
 
-  $this.setState(IOputs)
+  $this.setState(IOputs);
 };
 
 const SaveSalesQuotation = $this => {
 
-  debugger
   if ($this.state.hims_f_sales_quotation_id !== null) {
-
     if ($this.state.comments === null || $this.state.comments === "") {
       swalMessage({
         type: "warning",
         title: "To update comments is mandatory"
       });
-      return
+      return;
     }
     AlgaehLoader({ show: true });
-    let inputObj = { hims_f_sales_quotation_id: $this.state.hims_f_sales_quotation_id, comments: $this.state.comments }
+    let inputObj = {
+      hims_f_sales_quotation_id: $this.state.hims_f_sales_quotation_id,
+      comments: $this.state.comments
+    };
     algaehApiCall({
       uri: "/SalesQuotation/updateSalesQuotation",
       module: "sales",
       method: "PUT",
       data: inputObj,
       onSuccess: response => {
-
         if (response.data.success) {
           swalMessage({
             type: "success",
@@ -124,13 +125,13 @@ const SaveSalesQuotation = $this => {
       querySelector: "data-validate='HeaderDiv'",
       alertTypeIcon: "warning",
       onSuccess: () => {
-        debugger
+
         if ($this.HRMNGMT_Active && $this.state.sales_person_id === null) {
           swalMessage({
             type: "warning",
             title: "Please select Sales Person"
           });
-          return
+          return;
         }
 
         let qty_exists = Enumerable.from($this.state.sales_quotation_items).any(
@@ -141,7 +142,7 @@ const SaveSalesQuotation = $this => {
             title: "Please enter Quantity In Item list.",
             type: "warning"
           });
-          return
+          return;
         }
         qty_exists = Enumerable.from($this.state.sales_quotation_services).any(
           w => parseFloat(w.quantity) === 0 || w.quantity === ""
@@ -152,12 +153,14 @@ const SaveSalesQuotation = $this => {
             title: "Please enter Quantity In Service list.",
             type: "warning"
           });
-          return
+          return;
         }
 
-        $this.state.terms_conditions = $this.state.comment_list.join("<br/>")
-        $this.state.quote_items_status = $this.state.sales_quotation_items.length > 0 ? "G" : "N"
-        $this.state.quote_services_status = $this.state.sales_quotation_services.length > 0 ? "G" : "N"
+        $this.state.terms_conditions = $this.state.comment_list.join("<br/>");
+        $this.state.quote_items_status =
+          $this.state.sales_quotation_items.length > 0 ? "G" : "N";
+        $this.state.quote_services_status =
+          $this.state.sales_quotation_services.length > 0 ? "G" : "N";
 
         AlgaehLoader({ show: true });
         algaehApiCall({
@@ -166,10 +169,10 @@ const SaveSalesQuotation = $this => {
           method: "POST",
           data: $this.state,
           onSuccess: response => {
-
             if (response.data.success) {
               $this.setState({
-                sales_quotation_number: response.data.records.sales_quotation_number,
+                sales_quotation_number:
+                  response.data.records.sales_quotation_number,
                 hims_f_sales_quotation_id:
                   response.data.records.hims_f_sales_quotation_id,
                 saveEnable: true,
@@ -217,19 +220,19 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
-
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/SalesQuotation/getSalesQuotation",
     module: "sales",
     method: "GET",
-    data: { sales_quotation_number: docNumber, HRMNGMT_Active: $this.HRMNGMT_Active },
+    data: {
+      sales_quotation_number: docNumber,
+      HRMNGMT_Active: $this.HRMNGMT_Active
+    },
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;
-
-        debugger
         // data.sales_quotation_items = data.qutation_detail[0]
         // data.sales_quotation_services = data.qutation_detail[1]
         // if (data.sales_quotation_mode === "I") {
@@ -240,7 +243,7 @@ const getCtrlCode = ($this, docNumber) => {
         data.comment_list =
           data.terms_conditions !== null
             ? data.terms_conditions.split("<br/>")
-            : []
+            : [];
         data.saveEnable = true;
         data.dataExists = true;
 
@@ -257,7 +260,6 @@ const getCtrlCode = ($this, docNumber) => {
       });
     }
   });
-
 };
 
 const dateValidate = ($this, value, event) => {
@@ -274,20 +276,22 @@ const dateValidate = ($this, value, event) => {
   }
 };
 
-const getSalesOptions = ($this) => {
+const getSalesOptions = $this => {
   algaehApiCall({
     uri: "/SalesSettings/getSalesOptions",
     method: "GET",
     module: "sales",
     onSuccess: res => {
       if (res.data.success) {
-        $this.setState({ services_required: res.data.records[0].services_required });
+        $this.setState({
+          services_required: res.data.records[0].services_required
+        });
       }
     }
   });
-}
+};
 
-const employeeSearch = ($this) => {
+const employeeSearch = $this => {
   AlgaehSearch({
     searchGrid: {
       columns: spotlightSearch.Employee_details.employee
@@ -299,23 +303,24 @@ const employeeSearch = ($this) => {
       callBack(text);
     },
     onRowSelect: row => {
-      $this.setState(
-        {
-          employee_name: row.full_name,
-          sales_person_id: row.hims_d_employee_id
-        }
-      );
+      $this.setState({
+        employee_name: row.full_name,
+        sales_person_id: row.hims_d_employee_id
+      });
     }
   });
-}
+};
 
-const addToTermCondition = ($this) => {
-  if ($this.state.hims_f_terms_condition_id === null && $this.state.selected_terms_conditions === "") {
+const addToTermCondition = $this => {
+  if (
+    $this.state.hims_f_terms_condition_id === null &&
+    $this.state.selected_terms_conditions === ""
+  ) {
     swalMessage({
       title: "Select or Enter T&C.",
       type: "warning"
     });
-    return
+    return;
   }
   let comment_list = $this.state.comment_list;
   comment_list.push($this.state.selected_terms_conditions);
@@ -324,8 +329,8 @@ const addToTermCondition = ($this) => {
     hims_f_terms_condition_id: null,
     selected_terms_conditions: "",
     comment_list: comment_list
-  })
-}
+  });
+};
 
 const deleteComment = ($this, row) => {
   let comment_list = $this.state.comment_list;
@@ -337,6 +342,46 @@ const deleteComment = ($this, row) => {
   });
 };
 
+const generateSalesQuotation = ($this, data) => {
+  console.log("data:", data);
+  debugger
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "salesQuotationReport",
+        reportParams: [
+          {
+            name: "hims_f_sales_quotation_id",
+            value: data.hims_f_sales_quotation_id
+          },
+          {
+            name: "HRMNGMT_Active",
+            value: $this.HRMNGMT_Active
+          }
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = "Sales Quotation Report";
+    }
+  });
+};
 export {
   changeTexts,
   ClearData,
@@ -348,5 +393,6 @@ export {
   getSalesOptions,
   employeeSearch,
   addToTermCondition,
-  deleteComment
+  deleteComment,
+  generateSalesQuotation
 };

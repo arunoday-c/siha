@@ -85,7 +85,7 @@ class PatientPackages extends Component {
         <div className="hptl-phase1-speciman-collection-form">
           <div className="row">
             <div className="col-lg-12">
-              <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet portlet-bordered margin-top-15">
                 <div className="portlet-title">
                   <div className="caption">
                     <h3 className="caption-subject">List of Packages</h3>
@@ -279,8 +279,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PatientPackages)
+  connect(mapStateToProps, mapDispatchToProps)(PatientPackages)
 );

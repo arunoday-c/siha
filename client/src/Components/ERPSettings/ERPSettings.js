@@ -249,7 +249,7 @@ export default class ERPSettings extends Component {
             <div className="portlet portlet-bordered marginBottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">PO Settings</h3>
+                  <h3 className="caption-subject">Procurement Settings</h3>
                 </div>
               </div>
               <div className="portlet-body">
@@ -257,7 +257,7 @@ export default class ERPSettings extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col form-group" }}
                     label={{
-                      forceLabel: "PO Auth level",
+                      forceLabel: "Purchase Order Auth level",
                       isImp: false
                     }}
                     selector={{

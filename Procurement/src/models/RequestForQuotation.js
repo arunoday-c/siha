@@ -79,15 +79,12 @@ export default {
             utilities.logger().log("addDeliveryNoteEntry: ");
             _mysql
                 .generateRunningNumber({
-                    modules: ["REQ_QUT_NUM"],
-                    tableName: "hims_f_app_numgen",
-                    identity: {
-                        algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-                        hospital_id: req.userIdentity.hospital_id
-                    }
+                    user_id: req.userIdentity.algaeh_d_app_user_id,
+                    numgen_codes: ["REQ_QUT_NUM"],
+                    table_name: "hims_f_procurement_numgen"
                 })
                 .then(generatedNumbers => {
-                    quotation_number = generatedNumbers[0];
+                    quotation_number = generatedNumbers.REQ_QUT_NUM;
 
                     // let today = moment().format("YYYY-MM-DD");
 

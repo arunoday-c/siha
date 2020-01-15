@@ -229,7 +229,7 @@ class ReceiptItemList extends Component {
 
                     <div className="col-lg-5" style={{ textAlign: "right" }}>
                       <div className="row">
-                        <div className="col-lg-4">
+                        <div className="col-lg-3">
                           <AlgaehLabel
                             label={{
                               forceLabel: "Sub Total"
@@ -237,7 +237,7 @@ class ReceiptItemList extends Component {
                           />
                           <h6>{getAmountFormart(this.state.sub_total)}</h6>
                         </div>
-                        <div className="col-lg-4">
+                        <div className="col-lg-3">
                           <AlgaehLabel
                             label={{
                               forceLabel: "Discount Amount"
@@ -248,7 +248,16 @@ class ReceiptItemList extends Component {
                           </h6>
                         </div>
 
-                        <div className="col-lg-4">
+                        <div className="col-lg-3">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Tax"
+                            }}
+                          />
+                          <h6>{getAmountFormart(this.state.total_tax)}</h6>
+                        </div>
+
+                        <div className="col-lg-3">
                           <AlgaehLabel
                             label={{
                               forceLabel: "Net Payable"

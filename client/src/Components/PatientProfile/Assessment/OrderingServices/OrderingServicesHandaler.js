@@ -439,6 +439,27 @@ const deleteServices = ($this, row) => {
               data: { billdetails: data.billdetails },
               onSuccess: response => {
                 if (response.data.success) {
+
+                  for (let i = 0; i < data.billdetails.length; i++) {
+                    data.billdetails[i].visit_id = $this.state.visit_id;
+                    data.billdetails[i].patient_id = $this.state.patient_id;
+
+                    data.billdetails[i].doctor_id = Window.global["provider_id"];
+                    data.billdetails[i].insurance_provider_id = $this.state.insurance_provider_id;
+                    data.billdetails[i].insurance_sub_id = $this.state.sub_insurance_provider_id;
+                    data.billdetails[i].network_id = $this.state.network_id;
+                    data.billdetails[i].policy_number = $this.state.policy_number;
+
+                    data.billdetails[i].sec_company = $this.state.sec_insured;
+                    // Service_data.billdetails[i].icd_code === Service_data.billdetails[0].icd_code;
+                    // Approval Table
+
+                    data.billdetails[i].insurance_network_office_id = $this.state.hims_d_insurance_network_office_id;
+
+                    data.billdetails[i].requested_quantity = data.billdetails[i].quantity;
+                    data.billdetails[i].test_type = $this.state.test_type;
+                  }
+
                   $this.setState({
                     orderservicesdata: data.billdetails,
                     approval_amt: app_amt,
@@ -559,6 +580,7 @@ const deleteServices = ($this, row) => {
 //Save Order
 const SaveOrdersServices = ($this, e) => {
   AlgaehLoader({ show: true });
+
 
   let inputObj = {
     visit_id: $this.state.visit_id,
@@ -1211,6 +1233,7 @@ const ProcessFromFavourite = ($this, from) => {
             );
             // preserviceInput.push(serviceInput[c]);
           }
+
 
           $this.setState({
             orderservicesdata: existingservices,

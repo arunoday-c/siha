@@ -292,15 +292,12 @@ export default {
 
       _mysql
         .generateRunningNumber({
-          modules: ["EMPLOYEE_PAYMENT"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["EMPLOYEE_PAYMENT"],
+          table_name: "hims_f_hrpayroll_numgen"
         })
         .then(generatedNumbers => {
-          payment_application_code = generatedNumbers[0];
+          payment_application_code = generatedNumbers.EMPLOYEE_PAYMENT;
           _mysql
             .executeQuery({
               query:
@@ -310,7 +307,7 @@ export default {
             payment_mode,cheque_number,bank_id,created_date,created_by,updated_date,updated_by,hospital_id)\
           VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
-                generatedNumbers[0],
+                payment_application_code,
                 inputParam.employee_id,
                 inputParam.employee_advance_id,
                 inputParam.employee_loan_id,

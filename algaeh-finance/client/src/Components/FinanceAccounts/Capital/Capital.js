@@ -9,15 +9,15 @@ import ReportLauncher from "../AccountReport";
 import {
   AlgaehConfirm,
   AlgaehMessagePop,
-  Input,
-  Icon
+  // Input,
+  // Icon
   // DatePicker
 } from "algaeh-react-components";
 import {
   getAccounts,
   isPositive,
   removeAccount,
-  renameAccount
+  // renameAccount
   // getChartData
 } from ".././FinanceAccountEvent";
 import "react-sortable-tree/style.css";
@@ -138,26 +138,212 @@ export default function Capital() {
     });
   }
 
+  function generateNodeProps(rowInfo) {
+    const { node } = rowInfo;
+    return {
+      buttons: [
+        <div className="box">
+          <ul className="NodeActionButton">
+            <li
+              label="Add"
+              className={
+                "NodeAddButton " + (node.leafnode === "Y" ? "disabled" : "")
+              }
+              onClick={() => {
+                setShowPopup(true);
+                setSelectedNode(rowInfo);
+              }}
+            >
+              <i className="fas fa-plus"></i>
+            </li>
+            <li
+              label="edit"
+              className={
+                "NodeEditButton " +
+                (node.created_status === "S" ? "disabled" : "")
+              }
+              onClick={() => {
+                if (Object.keys(editorRecord).length > 0) {
+                  setEditorRecord({});
+                } else {
+                  setEditorRecord(rowInfo);
+                  setShowPopup(true);
+                }
+              }}
+            >
+              {JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
+                <i className="fas fa-times" />
+              ) : (
+                <i className="fas fa-pen" />
+              )}
+            </li>
+            <li
+              label="print"
+              className={"NodePrintButton "}
+              onClick={() => {
+                setReportVisible(true);
+                setSelectedNode(rowInfo);
+              }}
+            >
+              <i className="fas fa-print"></i>
+            </li>
+            <li
+              className={
+                "NodeDeleteButton " +
+                (node.created_status === "S" ? "disabled" : "")
+              }
+              label="Delete"
+            >
+              <AlgaehConfirm
+                title="Are you sure want to delete ?"
+                placement="topLeft"
+                onConfirm={e => {
+                  removeNode(rowInfo)
+                    .then(newTree => {
+                      setTreeData(newTree);
+                      AlgaehMessagePop({
+                        type: "success",
+                        display: "Account deleted successfully"
+                      });
+                    })
+                    .catch(error => {
+                      AlgaehMessagePop({
+                        type: "error",
+                        display: error
+                      });
+                    });
+                }}
+                okButtonProps={{ label: "Delete" }}
+                okText="Yes, delete it!"
+                cancelText="No"
+              >
+                <i className="fas fa-trash"></i>
+              </AlgaehConfirm>{" "}
+            </li>
+          </ul>
+        </div>
+      ],
+      style: {
+        height: "50px",
+        minWidth: "150px"
+      },
+      title: (
+        <>
+          <span>
+            {
+              // JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
+              //   <Input
+              //     suffix={
+              //       <Icon
+              //         type="save"
+              //         onClick={e => {
+              //           const editedValue =
+              //             e.currentTarget.offsetParent.previousElementSibling
+              //               .value;
+
+              //           const rowNode = rowInfo.node;
+              //           let input = {
+              //             leaf_node: rowNode.leafnode
+              //           };
+              //           if (rowNode.leafnode === "Y") {
+              //             input["child_name"] = editedValue;
+              //             input["finance_account_child_id"] =
+              //               rowNode.finance_account_child_id;
+              //           } else {
+              //             input["account_name"] = editedValue;
+              //             input["finance_account_head_id"] =
+              //               rowNode.finance_account_head_id;
+              //           }
+              //           renameAccount(input)
+              //             .then(() => {
+              //               node["title"] = editedValue;
+              //               setEditorRecord({});
+              //               AlgaehMessagePop({
+              //                 type: "success",
+              //                 display: "Renamed successfull"
+              //               });
+              //             })
+              //             .catch(error => {
+              //               console.log("error", error);
+              //               AlgaehMessagePop({
+              //                 type: "error",
+              //                 display: error
+              //               });
+              //             });
+              //         }}
+              //       />
+              //     }
+              //     defaultValue={node.title}
+              //   />
+              // ) : (
+              node.title
+              //)
+            }
+            {node.leafnode === "Y" ? null : (
+              <>/{node.children === undefined ? 0 : node.children.length}</>
+            )}
+          </span>
+        </>
+      ),
+      subtitle: (
+        <div style={{ fontSize: "medium", marginTop: "7px" }}>
+          <span
+            className={
+              node.subtitle !== undefined ? isPositive(node.subtitle) : ""
+            }
+          >
+            {node.subtitle === undefined ? "0.00" : node.subtitle}
+          </span>{" "}
+          <small>
+            {node.trans_symbol === undefined ? symbol : node.trans_symbol}
+          </small>
+        </div>
+      ),
+      className:
+        node.created_status === "S"
+          ? "systemGen"
+          : node.leafnode === "Y"
+          ? ""
+          : "accGroup"
+    };
+  }
+
+  function onClose(e) {
+    setShowPopup(false);
+    if (isAccountHead) {
+      loadAccount();
+      setIsAccountHead(false);
+    } else {
+      if (e !== undefined) {
+        addNode(selectedNode, { treeData }, e).then(newTree => {
+          setTreeData(newTree.treeData);
+          setIsAccountHead(false);
+        });
+      }
+    }
+  }
+
+  function onEditClose() {
+    setShowPopup(false);
+    setEditorRecord({});
+  }
+
   return (
     <div className="container-fluid capitalModuleScreen">
       <AddNewAccount
         showPopup={showPopup}
         selectedNode={selectedNode}
         accountCode={accountCode}
-        onClose={e => {
-          setShowPopup(false);
-          if (isAccountHead) {
-            loadAccount();
-            setIsAccountHead(false);
-          } else {
-            if (e !== undefined) {
-              addNode(selectedNode, { treeData }, e).then(newTree => {
-                setTreeData(newTree.treeData);
-                setIsAccountHead(false);
-              });
-            }
-          }
-        }}
+        onClose={editorRecord.node ? onEditClose : onClose}
+        accountName={editorRecord.node ? editorRecord.node.title : ""}
+        accountType={
+          editorRecord.node
+            ? editorRecord.node.leafnode === "Y"
+              ? "C"
+              : "G"
+            : ""
+        }
+        openingBal={editorRecord.node ? editorRecord.node.subtitle : ""}
       />
       <ReportLauncher
         title="Ledger Report"
@@ -307,193 +493,7 @@ export default function Capital() {
                       canDrag={rowInfo => {
                         return rowInfo.node.canDrag === true ? true : false;
                       }}
-                      generateNodeProps={rowInfo => {
-                        const { node } = rowInfo;
-                        return {
-                          buttons: [
-                            <div className="box">
-                              <ul className="NodeActionButton">
-                                <li
-                                  label="Add"
-                                  className={
-                                    "NodeAddButton " +
-                                    (node.leafnode === "Y" ? "disabled" : "")
-                                  }
-                                  onClick={() => {
-                                    setShowPopup(true);
-                                    setSelectedNode(rowInfo);
-                                  }}
-                                >
-                                  <i className="fas fa-plus"></i>
-                                </li>
-                                <li
-                                  label="edit"
-                                  className={
-                                    "NodeEditButton " +
-                                    (node.created_status === "S"
-                                      ? "disabled"
-                                      : "")
-                                  }
-                                  onClick={() => {
-                                    if (Object.keys(editorRecord).length > 0) {
-                                      setEditorRecord({});
-                                    } else {
-                                      setEditorRecord(rowInfo);
-                                    }
-                                  }}
-                                >
-                                  {JSON.stringify(editorRecord) ===
-                                  JSON.stringify(rowInfo) ? (
-                                    <i className="fas fa-times" />
-                                  ) : (
-                                    <i className="fas fa-pen" />
-                                  )}
-                                </li>
-                                <li
-                                  label="print"
-                                  className={"NodePrintButton "}
-                                  onClick={() => {
-                                    setReportVisible(true);
-                                    setSelectedNode(rowInfo);
-                                  }}
-                                >
-                                  <i className="fas fa-print"></i>
-                                </li>
-                                <li
-                                  className={
-                                    "NodeDeleteButton " +
-                                    (node.created_status === "S"
-                                      ? "disabled"
-                                      : "")
-                                  }
-                                  label="Delete"
-                                >
-                                  <AlgaehConfirm
-                                    title="Are you sure want to delete ?"
-                                    placement="topLeft"
-                                    onConfirm={e => {
-                                      removeNode(rowInfo)
-                                        .then(newTree => {
-                                          setTreeData(newTree);
-                                          AlgaehMessagePop({
-                                            type: "success",
-                                            display:
-                                              "Account deleted successfully"
-                                          });
-                                        })
-                                        .catch(error => {
-                                          AlgaehMessagePop({
-                                            type: "error",
-                                            display: error
-                                          });
-                                        });
-                                    }}
-                                    okButtonProps={{ label: "Delete" }}
-                                    okText="Yes, delete it!"
-                                    cancelText="No"
-                                  >
-                                    <i className="fas fa-trash"></i>
-                                  </AlgaehConfirm>{" "}
-                                </li>
-                              </ul>
-                            </div>
-                          ],
-                          style: {
-                            height: "50px",
-                            minWidth: "150px"
-                          },
-                          title: (
-                            <>
-                              <span>
-                                {JSON.stringify(editorRecord) ===
-                                JSON.stringify(rowInfo) ? (
-                                  <Input
-                                    suffix={
-                                      <Icon
-                                        type="save"
-                                        onClick={e => {
-                                          const editedValue =
-                                            e.currentTarget.offsetParent
-                                              .previousElementSibling.value;
-
-                                          const rowNode = rowInfo.node;
-                                          let input = {
-                                            leaf_node: rowNode.leafnode
-                                          };
-                                          if (rowNode.leafnode === "Y") {
-                                            input["child_name"] = editedValue;
-                                            input["finance_account_child_id"] =
-                                              rowNode.finance_account_child_id;
-                                          } else {
-                                            input["account_name"] = editedValue;
-                                            input["finance_account_head_id"] =
-                                              rowNode.finance_account_head_id;
-                                          }
-                                          renameAccount(input)
-                                            .then(() => {
-                                              node["title"] = editedValue;
-                                              setEditorRecord({});
-                                              AlgaehMessagePop({
-                                                type: "success",
-                                                display: "Renamed successfull"
-                                              });
-                                            })
-                                            .catch(error => {
-                                              console.log("error", error);
-                                              AlgaehMessagePop({
-                                                type: "error",
-                                                display: error
-                                              });
-                                            });
-                                        }}
-                                      />
-                                    }
-                                    defaultValue={node.title}
-                                  />
-                                ) : (
-                                  node.title
-                                )}{" "}
-                                {node.leafnode === "Y" ? null : (
-                                  <>
-                                    /
-                                    {node.children === undefined
-                                      ? 0
-                                      : node.children.length}
-                                  </>
-                                )}
-                              </span>
-                            </>
-                          ),
-                          subtitle: (
-                            <div
-                              style={{ fontSize: "medium", marginTop: "7px" }}
-                            >
-                              <span
-                                className={
-                                  node.subtitle !== undefined
-                                    ? isPositive(node.subtitle)
-                                    : ""
-                                }
-                              >
-                                {node.subtitle === undefined
-                                  ? "0.00"
-                                  : node.subtitle}
-                              </span>{" "}
-                              <small>
-                                {node.trans_symbol === undefined
-                                  ? symbol
-                                  : node.trans_symbol}
-                              </small>
-                            </div>
-                          ),
-                          className:
-                            node.created_status === "S"
-                              ? "systemGen"
-                              : node.leafnode === "Y"
-                              ? ""
-                              : "accGroup"
-                        };
-                      }}
+                      generateNodeProps={generateNodeProps}
                       searchMethod={({ node, searchQuery }) => {
                         return (
                           searchQuery &&

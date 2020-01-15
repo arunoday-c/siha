@@ -132,7 +132,7 @@ export default {
   },
 
   //created by irfan:
-  getAccountHeads: (req, res, next) => {
+  getAccountHeads_JAN_9_2020: (req, res, next) => {
     const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
     let input = req.query;
@@ -217,6 +217,72 @@ export default {
         })
         .catch(e => {
           _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please provide Valid Input"
+      };
+      next();
+    }
+  },
+  //created by irfan:
+  getAccountHeads: (req, res, next) => {
+    const utilities = new algaehUtilities();
+    const _mysql = new algaehMysql();
+    let input = req.query;
+    const decimal_places = req.userIdentity.decimal_places;
+
+    if (
+      input.finance_account_head_id > 0 &&
+      input.finance_account_head_id < 6
+    ) {
+      getAccountHeadsFunc(decimal_places, input.finance_account_head_id)
+        .then(result => {
+          req.records = [result];
+          next();
+        })
+        .catch(e => {
+          next(e);
+        });
+    } else if (input.getAll == "Y") {
+      getAccountHeadsFunc(decimal_places, 1)
+        .then(asset => {
+          getAccountHeadsFunc(decimal_places, 2)
+            .then(liability => {
+              getAccountHeadsFunc(decimal_places, 3)
+                .then(capital => {
+                  getAccountHeadsFunc(decimal_places, 4)
+                    .then(income => {
+                      getAccountHeadsFunc(decimal_places, 5)
+                        .then(expense => {
+                          req.records = [
+                            asset,
+                            liability,
+                            capital,
+                            income,
+                            expense
+                          ];
+                          next();
+                        })
+                        .catch(e => {
+                          next(e);
+                        });
+                    })
+                    .catch(e => {
+                      next(e);
+                    });
+                })
+                .catch(e => {
+                  next(e);
+                });
+            })
+            .catch(e => {
+              next(e);
+            });
+        })
+        .catch(e => {
           next(e);
         });
     } else {
@@ -418,59 +484,82 @@ export default {
 
     if (input.leaf_node == "Y") {
       _mysql
-        .executeQueryWithTransaction({
+        .executeQuery({
           query:
-            "INSERT INTO `finance_account_child` (child_name,head_id,created_from\
-            ,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?)",
-          values: [
-            input.account_name,
-            input.finance_account_head_id,
-            "U",
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id
-          ],
-          printQuery: false
+            "select   root_id from finance_account_head where finance_account_head_id=?; ",
+          values: [input.finance_account_head_id]
         })
         .then(result => {
-          if (result.insertId > 0) {
-            if (input.opening_bal > 0) {
-              let debit_amount = 0;
-              let credit_amount = input.opening_bal;
-              let payment_type = "CR";
+          const root_id = result[0]["root_id"];
+          _mysql
+            .executeQueryWithTransaction({
+              query:
+                "INSERT INTO `finance_account_child` (child_name,head_id,created_from\
+            ,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?)",
+              values: [
+                input.account_name,
+                input.finance_account_head_id,
+                "U",
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id
+              ],
+              printQuery: false
+            })
+            .then(result => {
+              if (result.insertId > 0) {
+                if (input.opening_bal > 0) {
+                  let debit_amount = 0;
+                  let credit_amount = input.opening_bal;
+                  let payment_type = "CR";
 
-              if (input.chart_of_account == 1 || input.chart_of_account == 5) {
-                payment_type = "DR";
-                credit_amount = 0;
-                debit_amount = input.opening_bal;
-              }
+                  if (root_id == 1 || root_id == 5) {
+                    payment_type = "DR";
+                    credit_amount = 0;
+                    debit_amount = input.opening_bal;
+                  }
 
-              const month = moment().format("M");
-              const year = moment().format("YYYY");
+                  const month = moment().format("M");
+                  const year = moment().format("YYYY");
 
-              _mysql
-                .executeQuery({
-                  query:
-                    "insert into finance_voucher_details ( payment_date,month,year,head_id,child_id,debit_amount,\
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "insert into finance_voucher_details ( payment_date,month,year,head_id,child_id,debit_amount,\
                         payment_type,credit_amount,entered_by,entered_date,auth_status,is_opening_bal)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?);",
-                  values: [
-                    new Date(),
-                    month,
-                    year,
-                    input.finance_account_head_id,
-                    result.insertId,
-                    debit_amount,
-                    payment_type,
-                    credit_amount,
-                    req.userIdentity.algaeh_d_app_user_id,
-                    new Date(),
-                    "A",
-                    "Y"
-                  ],
-                  printQuery: false
-                })
-                .then(subdetail => {
+                      values: [
+                        new Date(),
+                        month,
+                        year,
+                        input.finance_account_head_id,
+                        result.insertId,
+                        debit_amount,
+                        payment_type,
+                        credit_amount,
+                        req.userIdentity.algaeh_d_app_user_id,
+                        new Date(),
+                        "A",
+                        "Y"
+                      ],
+                      printQuery: false
+                    })
+                    .then(subdetail => {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = {
+                          head_id: input.finance_account_head_id,
+                          child_id: result.insertId
+                        };
+                        next();
+                      });
+                    })
+                    .catch(e => {
+                      _mysql.rollBackTransaction(() => {
+                        next(e);
+                      });
+                    });
+                } else {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
                     req.records = {
@@ -479,36 +568,26 @@ export default {
                     };
                     next();
                   });
-                })
-                .catch(e => {
-                  _mysql.rollBackTransaction(() => {
-                    next(e);
-                  });
-                });
-            } else {
-              _mysql.commitTransaction(() => {
-                _mysql.releaseConnection();
+                }
+              } else {
                 req.records = {
-                  head_id: input.finance_account_head_id,
-                  child_id: result.insertId
+                  invalid_input: true,
+                  message: "Please provide valid input"
                 };
-                next();
+                _mysql.rollBackTransaction(() => {
+                  next();
+                });
+              }
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
               });
-            }
-          } else {
-            req.records = {
-              invalid_input: true,
-              message: "Please provide valid input"
-            };
-            _mysql.rollBackTransaction(() => {
-              next();
+            })
+            .catch(error => {
+              _mysql.releaseConnection();
+              next(error);
             });
-          }
-        })
-        .catch(e => {
-          _mysql.rollBackTransaction(() => {
-            next(e);
-          });
         });
     } else {
       _mysql
@@ -717,7 +796,7 @@ export default {
       });
   },
   //created by irfan: to
-  postDayEndData: (req, res, next) => {
+  postDayEndData_BKP_14_JAN_2020: (req, res, next) => {
     const _mysql = new algaehMysql();
     // const utilities = new algaehUtilities();
     let input = req.body;
@@ -732,7 +811,7 @@ export default {
           "insert into finance_voucher_header (voucher_type,voucher_no,day_end_header_id,amount,\
             payment_date,narration,from_screen,posted_from)\
             select voucher_type,document_number,finance_day_end_header_id,amount,transaction_date,\
-            narration,from_screen,'D' from finance_day_end_header where finance_day_end_header_id=? ",
+            narration,from_screen,'D' from finance_day_end_header where finance_day_end_header_id in(?) ",
         values: [input.finance_day_end_header_ids],
         printQuery: false
       })
@@ -797,8 +876,8 @@ export default {
                   payment_date: new Date(),
                   head_account_code: 3.1,
                   root_id: 3,
-                  head_id: 61,
-                  child_id: 51,
+                  head_id: 3,
+                  child_id: 1,
                   debit_amount: 0,
                   credit_amount: balance,
                   payment_type: "CR",
@@ -813,8 +892,8 @@ export default {
                   payment_date: new Date(),
                   head_account_code: 3.1,
                   root_id: 3,
-                  head_id: 61,
-                  child_id: 51,
+                  head_id: 3,
+                  child_id: 1,
                   debit_amount: Math.abs(balance),
                   credit_amount: 0,
                   payment_type: "DR",
@@ -906,7 +985,7 @@ export default {
   },
 
   //created by irfan: to
-  postDayEndDataNEW: (req, res, next) => {
+  postDayEndData: (req, res, next) => {
     const _mysql = new algaehMysql();
     // const utilities = new algaehUtilities();
     let input = req.body;
@@ -914,26 +993,23 @@ export default {
     // select distinct  finance_day_end_sub_detail_id,day_end_header_id,payment_date,head_account_code,
     // head_id,child_id,debit_amount,payment_type,credit_amount,narration,year,month,hospital_id
     // from finance_day_end_sub_detail where day_end_header_id in (?);
-    const head_ids = [0];
-    const child_ids = [0];
-    let total_credit_amount = 0;
+
     _mysql
       .executeQuery({
         query: `  WITH cte_  AS (
-            SELECT finance_day_end_sub_detail_id, day_end_header_id, payment_date, head_account_code,voucher_no,
+            SELECT finance_day_end_sub_detail_id, day_end_header_id, payment_date,
             case when sum(debit_amount)= sum(credit_amount)then 'true' else 'false'  end as is_equal,transaction_type FROM finance_day_end_header H inner join
             finance_day_end_sub_detail SD on H.finance_day_end_header_id=day_end_header_id
             where SD.is_deleted='N' and day_end_header_id in (?)
             group by day_end_header_id)
-            select D.finance_day_end_sub_detail_id,D.day_end_header_id,D.payment_date,D.head_account_code,voucher_no,
-            head_id,child_id,CH.child_name,debit_amount,payment_type,credit_amount,narration,year,month,hospital_id,AH.root_id,D.project_id,D.sub_department_id
+            select D.finance_day_end_sub_detail_id,D.day_end_header_id,D.payment_date,
+            head_id,child_id,debit_amount,payment_type,credit_amount,year,month,hospital_id,AH.root_id,D.project_id,D.sub_department_id
             from finance_day_end_sub_detail D inner join  cte_ C on D.day_end_header_id=C.day_end_header_id   
             left join finance_account_head AH  on D.head_id=AH.finance_account_head_id
-            left join finance_account_child CH  on D.child_id=CH.finance_account_child_id
             where  D.day_end_header_id in (SELECT day_end_header_id
             FROM cte_ where is_equal='true');`,
         values: [input.finance_day_end_header_ids],
-        printQuery: false
+        printQuery: true
       })
       .then(result => {
         // _mysql.releaseConnection();
@@ -944,15 +1020,17 @@ export default {
           //   return m.finance_day_end_sub_detail_id;
           // });
           const updateFinanceDayEndSubDetailIds = [];
+          const validDayEndHeaderIds = [];
           let total_income = 0;
           let total_expense = 0;
           let balance = 0;
+
           result.forEach(m => {
             updateFinanceDayEndSubDetailIds.push(
               m.finance_day_end_sub_detail_id
             );
+            validDayEndHeaderIds.push(m.day_end_header_id);
 
-            //ST  CALCUALTE RETAINED EARNINGS && CHECK FOR CLOSING BALANCE
             if (m.root_id == 4) {
               if (m.payment_type == "CR") {
                 total_income =
@@ -968,125 +1046,69 @@ export default {
               } else if (m.payment_type == "CR") {
                 total_expense =
                   parseFloat(total_expense) - parseFloat(m.credit_amount);
-
-                head_ids.push(m.head_id);
-                child_ids.push(m.child_id);
               }
-            } else if (m.root_id == 1 && m.payment_type == "CR") {
-              head_ids.push(m.head_id);
-              child_ids.push(m.child_id);
             }
-            //END  CALCUALTE RETAINED EARNINGS && CHECK FOR CLOSING BALANCE
           });
 
-          let day_end_header_group = _.chain(result)
-            .groupBy(g => g.day_end_header_id)
-            .value();
+          balance = parseFloat(total_income) - parseFloat(total_expense);
+
+          if (balance > 0) {
+            result.push({
+              payment_date: new Date(),
+              head_account_code: 3.1,
+              root_id: 3,
+              head_id: 3,
+              child_id: 1,
+              debit_amount: 0,
+              credit_amount: balance,
+              payment_type: "CR",
+
+              hospital_id: result[0]["hospital_id"],
+              year: moment().format("YYYY"),
+              month: moment().format("M"),
+              voucher_no: null
+            });
+          } else if (balance < 0) {
+            result.push({
+              payment_date: new Date(),
+              head_account_code: 3.1,
+              root_id: 3,
+              head_id: 3,
+              child_id: 1,
+              debit_amount: Math.abs(balance),
+              credit_amount: 0,
+              payment_type: "DR",
+
+              hospital_id: result[0]["hospital_id"],
+              year: moment().format("YYYY"),
+              month: moment().format("M"),
+              voucher_no: null
+            });
+          }
 
           _mysql
             .executeQueryWithTransaction({
-              query: ` select head_id,	child_id,(coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)) as deb_minus_cred,
-              C.child_name from finance_voucher_details VD inner join finance_account_child C on
-              VD.child_id=C.finance_account_child_id where head_id in (?) and child_id in(?) group by head_id,child_id for update ;`,
-              values: [head_ids, child_ids],
-              printQuery: false
+              query:
+                "insert into finance_voucher_header (voucher_type,voucher_no,day_end_header_id,amount,\
+                      payment_date,narration,from_screen,posted_from)\
+                      select voucher_type,document_number,finance_day_end_header_id,amount,transaction_date,\
+                      narration,from_screen,'D' from finance_day_end_header where finance_day_end_header_id in(?) ",
+              values: [validDayEndHeaderIds],
+              printQuery: true
             })
-            .then(ClosingBal => {
-              //ST- CHECK FOR CLOSING BALANCE BEFORE CREDITING ASSET AND EXPENCE
-
-              for (let item in day_end_header_group) {
-                let temp_item = day_end_header_group[item].filter(f => {
-                  return (
-                    (f.root_id == 1 || f.root_id == 5) && f.payment_type == "CR"
-                  );
-                });
-
-                temp_item.forEach(t => {
-                  let bal = ClosingBal.find((bal, index) => {
-                    return (
-                      t.head_id == bal.head_id && t.child_id == bal.child_id
-                    );
-                  });
-
-                  if (bal != undefined) {
-                    const temp_balance =
-                      parseFloat(bal.deb_minus_cred) -
-                      parseFloat(t.credit_amount);
-
-                    if (temp_balance > 0) {
-                      bal.deb_minus_cred = temp_balance;
-                    } else {
-                      _mysql.rollBackTransaction(() => {
-                        req.records = {
-                          invalid_input: true,
-                          message: ` ${t.child_name}   Does not Match Balance`
-                        };
-                        next();
-                      });
-                    }
-                  } else {
-                    _mysql.rollBackTransaction(() => {
-                      req.records = {
-                        invalid_input: true,
-                        message: ` ${t.child_name}  Does not Match Balance`
-                      };
-                      next();
-                    });
-                  }
-                });
-              }
-
-              //END- CHECK FOR CLOSING BALANCE BEFORE CREDITING ASSET AND EXPENCE
-              balance = parseFloat(total_income) - parseFloat(total_expense);
-
-              if (balance > 0) {
-                result.push({
-                  payment_date: new Date(),
-                  head_account_code: 3.1,
-                  root_id: 3,
-                  head_id: 61,
-                  child_id: 51,
-                  debit_amount: 0,
-                  credit_amount: balance,
-                  payment_type: "CR",
-                  narration: "profit & loss tally",
-                  hospital_id: result[0]["hospital_id"],
-                  year: moment().format("YYYY"),
-                  month: moment().format("M"),
-                  voucher_no: null
-                });
-              } else if (balance < 0) {
-                result.push({
-                  payment_date: new Date(),
-                  head_account_code: 3.1,
-                  root_id: 3,
-                  head_id: 61,
-                  child_id: 51,
-                  debit_amount: Math.abs(balance),
-                  credit_amount: 0,
-                  payment_type: "DR",
-                  narration: "profit & loss tally",
-                  hospital_id: result[0]["hospital_id"],
-                  year: moment().format("YYYY"),
-                  month: moment().format("M"),
-                  voucher_no: null
-                });
-              }
-
+            .then(headRes => {
               const insertColumns = [
                 "payment_date",
-                "day_end_header_id",
-                "head_account_code",
                 "head_id",
                 "child_id",
                 "debit_amount",
                 "credit_amount",
                 "payment_type",
-                "narration",
+
                 "hospital_id",
                 "year",
                 "month",
-                "voucher_no",
+
                 "project_id",
                 "sub_department_id"
               ];
@@ -1096,6 +1118,10 @@ export default {
                   values: result,
                   includeValues: insertColumns,
                   bulkInsertOrUpdate: true,
+                  extraValues: {
+                    voucher_header_id: headRes.insertId,
+                    auth_status: "A"
+                  },
                   printQuery: false
                 })
                 .then(result2 => {
@@ -1103,7 +1129,7 @@ export default {
                     .executeQueryWithTransaction({
                       query:
                         "update finance_day_end_sub_detail set posted='Y' ,posted_date=now(),\
-                  posted_by=? where   finance_day_end_sub_detail_id in (?) ",
+                   posted_by=? where   finance_day_end_sub_detail_id in (?) ",
                       values: [
                         req.userIdentity.algaeh_d_app_user_id,
                         updateFinanceDayEndSubDetailIds
@@ -1130,8 +1156,9 @@ export default {
                 });
             })
             .catch(e => {
-              _mysql.releaseConnection();
-              next(e);
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
             });
         } else {
           _mysql.releaseConnection();
@@ -1144,10 +1171,12 @@ export default {
         }
       })
       .catch(e => {
-        _mysql.releaseConnection();
-        next(e);
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
       });
   },
+
   //created by irfan: before removing child maping
   removeAccountHead_BKP_24_dec: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -1783,24 +1812,117 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select created_from from finance_account_child where finance_account_child_id=?;",
-          values: [input.finance_account_child_id],
-          printQuery: false
+            "select finance_account_child_id,C.created_from,H.root_id,C.head_id from finance_account_child C inner join finance_account_head H \
+            on C.head_id=H.finance_account_head_id where finance_account_child_id=?;\
+            select finance_voucher_id,debit_amount,credit_amount,payment_type,head_id,H.root_id\
+            from finance_voucher_details VD inner join finance_account_head H\
+            on VD.head_id=H.finance_account_head_id  where VD.auth_status='A'\
+            and VD.is_opening_bal='Y' and VD.child_id=?;\
+            select default_branch_id FROM finance_options limit 1;",
+          values: [
+            input.finance_account_child_id,
+            input.finance_account_child_id
+          ],
+          printQuery: true
         })
         .then(result => {
-          if (result[0]["created_from"] == "U") {
+          let voucherStr = "";
+          //if update if opening balance exist
+          if (result[1].length > 0) {
+            const data = result[1][0];
+
+            if (data.root_id == 1) {
+              if (data.debit_amount != input.opening_balance) {
+                voucherStr = `update finance_voucher_details set debit_amount=${input.opening_balance} where finance_voucher_id=${data.finance_voucher_id};`;
+              }
+            } else if (data.root_id == 2 || data.root_id == 3) {
+              if (data.credit_amount != input.opening_balance) {
+                voucherStr = `update finance_voucher_details set credit_amount=${input.opening_balance} where finance_voucher_id=${data.finance_voucher_id};`;
+              }
+            }
+          }
+          //inserting new opening balance
+          else {
+            let insert_data = result[0][0];
+
+            let debit_amount = 0;
+            let credit_amount = 0;
+            let payment_type = "CR";
+            if (insert_data["root_id"] == 1 && input.opening_balance > 0) {
+              debit_amount = input.opening_balance;
+              payment_type = "DR";
+
+              voucherStr = _mysql.mysqlQueryFormat(
+                "INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,\
+                      payment_type,hospital_id,year,month,is_opening_bal,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
+                [
+                  new Date(),
+                  insert_data.head_id,
+                  insert_data.finance_account_child_id,
+                  debit_amount,
+                  credit_amount,
+                  payment_type,
+                  result[2][0]["default_branch_id"],
+                  moment().format("YYYYY"),
+                  moment().format("M"),
+                  "Y",
+                  req.userIdentity.algaeh_d_app_user_id,
+                  "A"
+                ]
+              );
+            } else if (
+              (insert_data["root_id"] == 2 || insert_data["root_id"] == 3) &&
+              input.opening_balance > 0
+            ) {
+              credit_amount = input.opening_balance;
+              voucherStr = _mysql.mysqlQueryFormat(
+                "INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,\
+                    payment_type,hospital_id,year,month,is_opening_bal,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
+                [
+                  new Date(),
+                  insert_data.head_id,
+                  insert_data.finance_account_child_id,
+                  debit_amount,
+                  credit_amount,
+                  payment_type,
+                  result[2][0]["default_branch_id"],
+                  moment().format("YYYYY"),
+                  moment().format("M"),
+                  "Y",
+                  req.userIdentity.algaeh_d_app_user_id,
+                  "A"
+                ]
+              );
+            }
+          }
+
+          if (result[0][0]["created_from"] == "U") {
             _mysql
               .executeQuery({
-                query:
-                  "update finance_account_child set child_name=?,updated_by=?,updated_date=? where\
-                  finance_account_child_id=? and created_from='U';",
+                query: `update finance_account_child set  child_name=?,updated_by=?,updated_date=? where\
+                  finance_account_child_id=? and created_from='U'; ${voucherStr};`,
                 values: [
                   input.child_name,
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
                   input.finance_account_child_id
                 ],
-                printQuery: false
+                printQuery: true
+              })
+              .then(result2 => {
+                _mysql.releaseConnection();
+                req.records = result2;
+                next();
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
+          } else if (result[0][0]["created_from"] == "S" && voucherStr != "") {
+            _mysql
+              .executeQuery({
+                query: voucherStr,
+                printQuery: true
               })
               .then(result2 => {
                 _mysql.releaseConnection();
@@ -1830,7 +1952,7 @@ export default {
           query:
             "select created_from from finance_account_head where finance_account_head_id=?;",
           values: [input.finance_account_head_id],
-          printQuery: false
+          printQuery: true
         })
         .then(result => {
           if (result[0]["created_from"] == "U") {
@@ -1870,6 +1992,52 @@ export default {
           next(e);
         });
     }
+  },
+  //created by irfan: to
+  getOpeningBalance: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+    const decimal_places = req.userIdentity.decimal_places;
+    _mysql
+      .executeQuery({
+        query: `select finance_account_head_id,finance_account_child_id,is_opening_bal,
+        ROUND(coalesce(debit_amount ,0),${decimal_places}) as debit_amount,  ROUND(coalesce(credit_amount,0),${decimal_places}) as credit_amount,
+      root_id from finance_account_child C inner join 
+      finance_account_head H on H.finance_account_head_id=C.head_id and C.finance_account_child_id=?
+      left join finance_voucher_details VD  on C.finance_account_child_id=VD.child_id 
+      and is_opening_bal='Y' limit 1;`,
+        values: [req.query.child_id],
+        printQuery: false
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+
+        if (result.length > 0) {
+          if (result[0]["root_id"] == 1) {
+            req.records = { opening_bal: result[0]["debit_amount"] };
+            next();
+          } else if (result[0]["root_id"] == 2 || result[0]["root_id"] == 3) {
+            req.records = { opening_bal: result[0]["credit_amount"] };
+            next();
+          } else {
+            req.records = {
+              invalid_input: true,
+              message: "cant edit opening balance for this ledger"
+            };
+            next();
+          }
+        } else {
+          req.records = {
+            invalid_input: true,
+            message: "this ledger is not found"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };
 //created by :IRFAN to build tree hierarchy
@@ -1912,7 +2080,9 @@ function createHierarchy(
         });
 
         let amount = 0;
+        let root_id = null;
         if (BALANCE != undefined) {
+          root_id = BALANCE.root_id;
           if (trans_symbol == "Dr.") {
             amount = parseFloat(BALANCE.deb_minus_cred).toFixed(decimal_places);
           } else {
@@ -1938,6 +2108,7 @@ function createHierarchy(
           head_id: item["head_id"],
           disabled: false,
           leafnode: "Y",
+          root_id: root_id,
           created_status: item["child_created_from"]
         });
 
@@ -2193,4 +2364,92 @@ function createHierarchyForDropdown(arry) {
   } catch (e) {
     console.log("MY-ERORR:", e);
   }
+}
+
+//created by irfan:
+function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
+  const utilities = new algaehUtilities();
+  const _mysql = new algaehMysql();
+
+  return new Promise((resolve, reject) => {
+    if (finance_account_head_id > 0 && finance_account_head_id < 6) {
+      const default_total = parseFloat(0).toFixed(decimal_places);
+      let trans_symbol = "Cr.";
+      if (finance_account_head_id == 1 || finance_account_head_id == 5) {
+        trans_symbol = "Dr.";
+      }
+
+      _mysql
+        .executeQuery({
+          query: `select finance_account_head_id,account_code,account_name,account_parent,account_level,
+          H.created_from as created_status ,sort_order,parent_acc_id,root_id,
+          finance_account_child_id,child_name,head_id,C.created_from as child_created_from
+          from finance_account_head H left join 
+          finance_account_child C on C.head_id=H.finance_account_head_id
+           where (root_id=? or finance_account_head_id=?) order by account_level,sort_order;           
+           select C.head_id,finance_account_child_id as child_id,child_name,root_id
+          ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
+          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount, 
+          ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
+          ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
+          from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
+          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'  
+          where (H.root_id=? or H.finance_account_head_id=?)
+          group by C.finance_account_child_id;
+          select max(account_level) as account_level from finance_account_head 
+          where (root_id=? or finance_account_head_id=?);
+          select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
+          ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
+          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount
+          from finance_account_head H              
+          left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A' 
+          where (H.root_id=? or H.finance_account_head_id=?) 
+          group by H.finance_account_head_id  order by account_level;  `,
+
+          values: [
+            finance_account_head_id,
+            finance_account_head_id,
+            finance_account_head_id,
+            finance_account_head_id,
+            finance_account_head_id,
+            finance_account_head_id,
+            finance_account_head_id,
+            finance_account_head_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          const child_data = result[1];
+
+          calcAmount(result[3], result[2], decimal_places)
+            .then(head_data => {
+              const outputArray = createHierarchy(
+                result[0],
+                child_data,
+                head_data,
+                trans_symbol,
+                default_total,
+                decimal_places
+              );
+
+              resolve(outputArray[0]);
+            })
+            .catch(e => {
+              console.log("m4:", e);
+              next(e);
+            });
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          reject(e);
+        });
+    } else {
+      reject({
+        invalid_input: true,
+        message: "Please provide Valid Input"
+      });
+    }
+  });
 }
