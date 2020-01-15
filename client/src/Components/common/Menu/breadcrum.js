@@ -12,11 +12,13 @@ export default memo(function({ selectedMenu, userLanguage }) {
     ScreenList
   } = selectedMenu;
   const [show, setShow] = useState(false);
+  const [pos, setPos] = useState(0);
   const history = useHistory();
-  function onShow() {
+  function onShow(e) {
     setShow(value => {
       return !value;
     });
+    setPos(e.target.offsetLeft + 15);
   }
   function onClickScreen(item, display, others) {
     const screenName = display.replace(/ /g, "");
@@ -43,7 +45,7 @@ export default memo(function({ selectedMenu, userLanguage }) {
         </li>
       </ul>
       {show === true ? (
-        <div className="dropDownList">
+        <div className="dropDownList" style={{ left: `${pos}px` }}>
           <ul>
             {ScreenList.map((item, idx) => {
               if (screen_name === item.screen_name) return null;
