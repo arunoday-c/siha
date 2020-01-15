@@ -41,7 +41,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
   const [accountChart, setAccountChart] = useState([]);
   const [year, setYear] = useState(moment());
 
-  const isExpOrInc = assetCode === "3" || assetCode === "5";
+  const isExpOrInc = assetCode === 4 || assetCode === 5;
 
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
@@ -209,11 +209,12 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                 (node.created_status === "S" ? "disabled" : "")
               }
               onClick={() => {
+                console.log(node, "edited");
                 if (Object.keys(editorRecord).length > 0) {
                   setEditorRecord({});
                 } else {
                   setEditorRecord(rowInfo);
-                  if (!isExpOrInc) {
+                  if (!isExpOrInc && node.leafnode === "Y") {
                     setShowPopup(true);
                   }
                 }
@@ -278,7 +279,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
       title: (
         <>
           <span>
-            {isExpOrInc ? (
+            {isExpOrInc || node.leafnode !== "Y" ? (
               JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
                 <Input
                   suffix={
@@ -308,7 +309,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                             setEditorRecord({});
                             AlgaehMessagePop({
                               type: "success",
-                              display: "Renamed successfull"
+                              display: "Renamed successfully"
                             });
                           })
                           .catch(error => {
@@ -439,23 +440,25 @@ function TreeComponent({ assetCode, title, inDrawer }) {
 
   return (
     <div className="container-fluid assetsModuleScreen">
-      <AddNewAccount
-        showPopup={showPopup}
-        selectedNode={editorRecord.node ? editorRecord : selectedNode}
-        accountCode={assetCode}
-        onClose={editorRecord.node ? onEditClose : onClose}
-        accountName={editorRecord.node ? editorRecord.node.title : ""}
-        propOnOK={editorRecord.node ? editChild : null}
-        okText={editorRecord.node ? "Change" : "Add"}
-        accountType={
-          editorRecord.node
-            ? editorRecord.node.leafnode === "Y"
-              ? "C"
-              : "G"
-            : ""
-        }
-        openingBal={editorRecord.node ? editorRecord.node.subtitle : ""}
-      />
+      {showPopup ? (
+        <AddNewAccount
+          showPopup={showPopup}
+          selectedNode={editorRecord.node ? editorRecord : selectedNode}
+          accountCode={assetCode}
+          onClose={editorRecord.node ? onEditClose : onClose}
+          accountName={editorRecord.node ? editorRecord.node.title : ""}
+          propOnOK={editorRecord.node ? editChild : null}
+          okText={editorRecord.node ? "Change" : "Add"}
+          accountType={
+            editorRecord.node
+              ? editorRecord.node.leafnode === "Y"
+                ? "C"
+                : "G"
+              : ""
+          }
+          openingBal={editorRecord.node ? editorRecord.node.subtitle : ""}
+        />
+      ) : null}
       <ReportLauncher
         title="Ledger Report"
         visible={reportVisible}

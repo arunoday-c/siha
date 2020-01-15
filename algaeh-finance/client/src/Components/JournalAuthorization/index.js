@@ -1,4 +1,4 @@
-import React, { memo, useState, useReducer } from "react";
+import React, { memo, useState } from "react";
 import {
   AlgaehDataGrid,
   AlgaehMessagePop,
@@ -44,51 +44,70 @@ export default memo(function(props) {
   //     });
   // }, []);
 
-  return (
-    <div className="row">
-      <AlgaehModal
-        title={`Reason -${voucherNo}`}
-        visible={rejectVisible}
-        destroyOnClose={true}
-        okText="Save"
-        onOk={() => {
-          if (rejectText === "") {
-            AlgaehMessagePop({
-              type: "info",
-              display: "With out reason you con't save"
-            });
-            return;
+  /**
+   * To load the journal Authorization data
+   */
+  const loadData = () => {
+    setLoading(true);
+    if (level === undefined) {
+      setLoading(false);
+      AlgaehMessagePop({
+        type: "info",
+        display: "Please select Level"
+      });
+      return;
+    }
+    let others = { auth_status: status };
+    if (dates !== undefined && dates.length > 0) {
+      others["from_date"] = dates[0];
+      others["to_date"] = dates[1];
+    }
+
+    LoadVouchersToAuthorize({ auth_level: level, ...others })
+      .then(result => {
+        setLoading(false);
+        setData(result);
+      })
+      .catch(error => {
+        setLoading(false);
+        AlgaehMessagePop({
+          type: "error",
+          display: error
+        });
+      });
+  };
+
+  /**
+   * Grid Action buttons
+   * @param {*} text
+   * @param {*} record
+   */
+  const actions = (text, record) => {
+    function approve(e) {
+      if (level === undefined) {
+        AlgaehMessagePop({
+          type: "info",
+          display: "Level can not be blank"
+        });
+        return;
+      }
+      ApproveReject({
+        voucher_header_id: record.finance_voucher_header_id,
+        auth_status: "A",
+        auth_level: level
+      })
+        .then(result => {
+          let others = { auth_status: status };
+          if (dates !== undefined && dates.length > 0) {
+            others["from_date"] = dates[0];
+            others["to_date"] = dates[1];
           }
-          ApproveReject({
-            voucher_header_id: finance_voucher_header_id,
-            auth_status: "R",
+          LoadVouchersToAuthorize({
             auth_level: level,
-            rejected_reason: rejectText
+            ...others
           })
             .then(result => {
-              let others = { auth_status: status };
-              if (dates !== undefined && dates.length > 0) {
-                others["from_date"] = dates[0];
-                others["to_date"] = dates[1];
-              }
-              LoadVouchersToAuthorize({ auth_level: level, ...others })
-                .then(result => {
-                  setData(result);
-                  setRejectVisible(false);
-                  finance_voucher_header_id = "";
-                  rejectText = "";
-                })
-                .catch(error => {
-                  AlgaehMessagePop({
-                    type: "error",
-                    display: error
-                  });
-                });
-
-              AlgaehMessagePop({
-                type: "success",
-                display: "Successfully approved"
-              });
+              setData(result);
             })
             .catch(error => {
               AlgaehMessagePop({
@@ -96,7 +115,141 @@ export default memo(function(props) {
                 display: error
               });
             });
-        }}
+
+          AlgaehMessagePop({
+            type: "success",
+            display: "Successfully approved"
+          });
+        })
+        .catch(error => {
+          AlgaehMessagePop({
+            type: "error",
+            display: error
+          });
+        });
+    }
+
+    function reject(e) {
+      if (level === undefined) {
+        AlgaehMessagePop({
+          type: "info",
+          display: "Level can not be blank"
+        });
+        return;
+      }
+      finance_voucher_header_id = record.finance_voucher_header_id;
+      setVoucherNo(record.voucher_no);
+      setRejectVisible(true);
+    }
+
+    return (
+      <>
+        {record.auth_status === "P" ? (
+          <>
+            <AlgaehButton
+              type="primary"
+              icon="like"
+              onClick={approve}
+            ></AlgaehButton>
+            <AlgaehButton
+              type="danger"
+              icon="dislike"
+              onClick={reject}
+            ></AlgaehButton>
+          </>
+        ) : (
+          <span>---</span>
+        )}
+      </>
+    );
+  };
+
+  function modalOnOk() {
+    if (rejectText === "") {
+      AlgaehMessagePop({
+        type: "info",
+        display: "With out reason you con't save"
+      });
+      return;
+    }
+    ApproveReject({
+      voucher_header_id: finance_voucher_header_id,
+      auth_status: "R",
+      auth_level: level,
+      rejected_reason: rejectText
+    })
+      .then(result => {
+        let others = { auth_status: status };
+        if (dates !== undefined && dates.length > 0) {
+          others["from_date"] = dates[0];
+          others["to_date"] = dates[1];
+        }
+        LoadVouchersToAuthorize({ auth_level: level, ...others })
+          .then(result => {
+            setData(result);
+            setRejectVisible(false);
+            finance_voucher_header_id = "";
+            rejectText = "";
+          })
+          .catch(error => {
+            AlgaehMessagePop({
+              type: "error",
+              display: error
+            });
+          });
+
+        AlgaehMessagePop({
+          type: "success",
+          display: "Successfully approved"
+        });
+      })
+      .catch(error => {
+        AlgaehMessagePop({
+          type: "error",
+          display: error
+        });
+      });
+  }
+
+  /**
+   * return Vocuvher number component on the grid
+   * @param {string} text
+   * @param {object} record
+   */
+
+  const voucherCol = (text, record) => (
+    <AlgaehButton
+      style={{ border: "none" }}
+      icon="search"
+      onClick={() => {
+        LoadVoucherDetails({
+          finance_voucher_header_id: record["finance_voucher_header_id"]
+        })
+          .then(result => {
+            setVoucherNo(text);
+            setRowDetails(result);
+            setVisibale(true);
+          })
+          .catch(error => {
+            AlgaehMessagePop({
+              type: "error",
+              display: error
+            });
+          });
+      }}
+    >
+      {text}
+    </AlgaehButton>
+  );
+
+  return (
+    <div className="row">
+      <AlgaehModal
+        title={`Reason -${voucherNo}`}
+        visible={rejectVisible}
+        destroyOnClose={true}
+        okText="Save"
+        onOk={modalOnOk}
         onCancel={() => {
           finance_voucher_header_id = "";
           rejectText = "";
@@ -199,35 +352,7 @@ export default memo(function(props) {
             <AlgaehButton
               type="primary"
               loading={loading}
-              onClick={() => {
-                setLoading(true);
-                if (level === undefined) {
-                  setLoading(false);
-                  AlgaehMessagePop({
-                    type: "info",
-                    display: "Please select Level"
-                  });
-                  return;
-                }
-                let others = { auth_status: status };
-                if (dates !== undefined && dates.length > 0) {
-                  others["from_date"] = dates[0];
-                  others["to_date"] = dates[1];
-                }
-
-                LoadVouchersToAuthorize({ auth_level: level, ...others })
-                  .then(result => {
-                    setLoading(false);
-                    setData(result);
-                  })
-                  .catch(error => {
-                    setLoading(false);
-                    AlgaehMessagePop({
-                      type: "error",
-                      display: error
-                    });
-                  });
-              }}
+              onClick={loadData}
               style={{ marginTop: 15 }}
             >
               Load
@@ -244,86 +369,7 @@ export default memo(function(props) {
                       {
                         key: "id",
                         title: "Actions",
-                        displayTemplate: (text, record) => (
-                          <>
-                            {record.auth_status === "P" ? (
-                              <>
-                                <AlgaehButton
-                                  type="primary"
-                                  icon="like"
-                                  onClick={e => {
-                                    if (level === undefined) {
-                                      AlgaehMessagePop({
-                                        type: "info",
-                                        display: "Level can not be blank"
-                                      });
-                                      return;
-                                    }
-                                    ApproveReject({
-                                      voucher_header_id:
-                                        record.finance_voucher_header_id,
-                                      auth_status: "A",
-                                      auth_level: level
-                                    })
-                                      .then(result => {
-                                        let others = { auth_status: status };
-                                        if (
-                                          dates !== undefined &&
-                                          dates.length > 0
-                                        ) {
-                                          others["from_date"] = dates[0];
-                                          others["to_date"] = dates[1];
-                                        }
-                                        LoadVouchersToAuthorize({
-                                          auth_level: level,
-                                          ...others
-                                        })
-                                          .then(result => {
-                                            setData(result);
-                                          })
-                                          .catch(error => {
-                                            AlgaehMessagePop({
-                                              type: "error",
-                                              display: error
-                                            });
-                                          });
-
-                                        AlgaehMessagePop({
-                                          type: "success",
-                                          display: "Successfully approved"
-                                        });
-                                      })
-                                      .catch(error => {
-                                        AlgaehMessagePop({
-                                          type: "error",
-                                          display: error
-                                        });
-                                      });
-                                  }}
-                                ></AlgaehButton>
-                                <AlgaehButton
-                                  type="danger"
-                                  icon="dislike"
-                                  onClick={e => {
-                                    if (level === undefined) {
-                                      AlgaehMessagePop({
-                                        type: "info",
-                                        display: "Level can not be blank"
-                                      });
-                                      return;
-                                    }
-                                    finance_voucher_header_id =
-                                      record.finance_voucher_header_id;
-                                    setVoucherNo(record.voucher_no);
-                                    setRejectVisible(true);
-                                  }}
-                                ></AlgaehButton>
-                              </>
-                            ) : (
-                              <span>---</span>
-                            )}
-                          </>
-                        ),
+                        displayTemplate: actions,
                         others: {
                           width: 100
                         }
@@ -332,31 +378,7 @@ export default memo(function(props) {
                         key: "voucher_no",
                         title: "Vouher Number",
                         sortable: true,
-                        displayTemplate: (text, record) => (
-                          <AlgaehButton
-                            style={{ border: "none" }}
-                            icon="search"
-                            onClick={() => {
-                              LoadVoucherDetails({
-                                finance_voucher_header_id:
-                                  record["finance_voucher_header_id"]
-                              })
-                                .then(result => {
-                                  setVoucherNo(text);
-                                  setRowDetails(result);
-                                  setVisibale(true);
-                                })
-                                .catch(error => {
-                                  AlgaehMessagePop({
-                                    type: "error",
-                                    display: error
-                                  });
-                                });
-                            }}
-                          >
-                            {text}
-                          </AlgaehButton>
-                        )
+                        displayTemplate: voucherCol
                       },
                       { key: "voucher_type", title: "Vouher Type" },
                       { key: "payment_date", title: "Payment Date" },
