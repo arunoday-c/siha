@@ -1,6 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 export default {
-  addCustomerMaster: (req, res, next) => {
+  addCustomerMasterBAKP_JAN_2020: (req, res, next) => {
     let inputParam = req.body;
     const _mysql = new algaehMysql();
     try {
@@ -49,6 +49,164 @@ export default {
           _mysql.releaseConnection();
           req.records = result;
           next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  //modified by:irfan to add vendor
+  addCustomerMaster: (req, res, next) => {
+    let inputParam = req.body;
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+        })
+        .then(result => {
+          if (
+            result[0]["product_type"] == "HIMS_ERP" ||
+            result[0]["product_type"] == "FINANCE_ERP"
+          ) {
+            const head_id = 60;
+
+            _mysql
+              .executeQueryWithTransaction({
+                query:
+                  "INSERT INTO `finance_account_child` (child_name,head_id,created_from\
+                      ,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?)",
+                values: [
+                  inputParam.customer_name,
+                  head_id,
+                  "U",
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id
+                ],
+                printQuery: false
+              })
+              .then(childRes => {
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO `hims_d_customer` (customer_code,customer_name,bank_name,business_registration_no,email_id_1,email_id_2,website,\
+              contact_number,payment_terms,payment_mode,postal_code,address, country_id, state_id, city_id,\
+              purchase_inch_name, purchase_inch_number,purchase_inch_emailid, project_inch_name, \
+              project_inch_number, project_inch_emailid, finance_inch_name, finance_inch_number, finance_inch_emailid, \
+              created_date, created_by, updated_date, updated_by,head_id,child_id)\
+                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      inputParam.customer_code,
+                      inputParam.customer_name,
+                      inputParam.bank_name,
+                      inputParam.business_registration_no,
+                      inputParam.email_id_1,
+                      inputParam.email_id_2,
+                      inputParam.website,
+                      inputParam.contact_number,
+                      inputParam.payment_terms,
+                      inputParam.payment_mode,
+                      inputParam.postal_code,
+                      inputParam.address,
+                      inputParam.country_id,
+                      inputParam.state_id,
+                      inputParam.city_id,
+                      inputParam.purchase_inch_name,
+                      inputParam.purchase_inch_number,
+                      inputParam.purchase_inch_emailid,
+                      inputParam.project_inch_name,
+                      inputParam.project_inch_number,
+                      inputParam.project_inch_emailid,
+                      inputParam.finance_inch_name,
+                      inputParam.finance_inch_number,
+                      inputParam.finance_inch_emailid,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      head_id,
+                      childRes.insertId
+                    ],
+                    printQuery: true
+                  })
+                  .then(Custresult => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = Custresult;
+                      next();
+                    });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO `hims_d_customer` (customer_code,customer_name,bank_name,business_registration_no,email_id_1,email_id_2,website,\
+          contact_number,payment_terms,payment_mode,postal_code,address, country_id, state_id, city_id,\
+          purchase_inch_name, purchase_inch_number,purchase_inch_emailid, project_inch_name, \
+          project_inch_number, project_inch_emailid, finance_inch_name, finance_inch_number, finance_inch_emailid, \
+          created_date, created_by, updated_date, updated_by)\
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                values: [
+                  inputParam.customer_code,
+                  inputParam.customer_name,
+                  inputParam.bank_name,
+                  inputParam.business_registration_no,
+                  inputParam.email_id_1,
+                  inputParam.email_id_2,
+                  inputParam.website,
+                  inputParam.contact_number,
+                  inputParam.payment_terms,
+                  inputParam.payment_mode,
+                  inputParam.postal_code,
+                  inputParam.address,
+                  inputParam.country_id,
+                  inputParam.state_id,
+                  inputParam.city_id,
+                  inputParam.purchase_inch_name,
+                  inputParam.purchase_inch_number,
+                  inputParam.purchase_inch_emailid,
+                  inputParam.project_inch_name,
+                  inputParam.project_inch_number,
+                  inputParam.project_inch_emailid,
+                  inputParam.finance_inch_name,
+                  inputParam.finance_inch_number,
+                  inputParam.finance_inch_emailid,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id
+                ],
+                printQuery: true
+              })
+              .then(result => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              })
+              .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          }
         })
         .catch(error => {
           _mysql.releaseConnection();
