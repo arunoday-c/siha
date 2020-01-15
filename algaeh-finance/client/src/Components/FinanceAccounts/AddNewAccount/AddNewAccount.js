@@ -47,7 +47,9 @@ export default function AddNewAccount({
 
     if (accountName) {
       setAccountName(accountName);
-      if (accountType !== "G") {
+
+      // eslint-disable-next-line eqeqeq
+      if (accountType !== "G" && !(accountCode == 4 || accountCode == 5)) {
         setLoadingAddtoList(true);
         getOpeningBalance(selectedNode.node.finance_account_child_id)
           .then(res => {
@@ -67,7 +69,7 @@ export default function AddNewAccount({
     if (accountType) {
       setAccountType(accountType);
     }
-  }, [accountName, accountType, openingBal, selectedNode]);
+  }, [accountName, accountType, openingBal, selectedNode, accountCode]);
 
   function onCancel() {
     setLoadingAddtoList(false);
