@@ -12,7 +12,6 @@ import {
   Icon
   // DatePicker
 } from "algaeh-react-components";
-import ReportLauncher from "../AccountReport";
 import {
   // getAccounts,
   removeAccount,
@@ -26,7 +25,6 @@ import "../alice.scss";
 function AllAccounts({ title, inDrawer }) {
   const [symbol, setSymbol] = useState("");
   const [financeHeadId, setFinanceHeadId] = useState(undefined);
-  const [amount, setAmount] = useState("");
   const [treeData, setTreeData] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [selectedNode, setSelectedNode] = useState({});
@@ -34,11 +32,11 @@ function AllAccounts({ title, inDrawer }) {
   const [searchFocusIndex, setSearchFocusIndex] = useState(0);
   const [searchFoundCount, setSearchFoundCount] = useState(undefined);
   const [isAccountHead, setIsAccountHead] = useState(false);
-  // const [reportVisible, setReportVisible] = useState(false);
   const [editorRecord, setEditorRecord] = useState({});
   const [assetCode, setAssetCode] = useState(null);
 
   function isExpOrInc(code) {
+    //eslint-disable-next-line
     const check = code == "3" || code == "5" || false;
     return check;
   }
@@ -227,16 +225,7 @@ function AllAccounts({ title, inDrawer }) {
                 <i className="fas fa-pen" />
               )}
             </li>
-            {/* <li
-              label="print"
-              className={"NodePrintButton "}
-              onClick={() => {
-                setReportVisible(true);
-                setSelectedNode(rowInfo);
-              }}
-            >
-              <i className="fas fa-print"></i>
-            </li> */}
+
             <li
               className={
                 "NodeDeleteButton " +

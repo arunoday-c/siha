@@ -17,6 +17,14 @@ startServer () {
   echo "$2 started"
 }
 
+# installMysql() {
+#   echo "installing"
+#   cd $1
+#   npm i algaeh-mysql@latest
+#   cd ..
+#   echo "done"
+# }
+
 startServer "./algaeh-core" "core"
 startServer "./DocumentManagement" "document_server" 
 startServer "./HrManagement" "hr_server" 
@@ -31,10 +39,27 @@ startServer "./Billing" "billing_server"
 startServer "./MRD" "mrd_server" 
 startServer "./Procurement" "procurement_server"
 startServer "./AlgaehReporting" "report_server"
-startServer "./Sockets" "sockets"
+# startServer "./Sockets" "sockets"
 startServer "./client" "client"
 startServer "./algaeh-finance" "finance"  
 startServer "./Sales" "sales"  
+
+# installMysql "./algaeh-core" "core"
+# installMysql "./DocumentManagement" "document_server" 
+# installMysql "./HrManagement" "hr_server" 
+# installMysql "./FrontDesk" "front_desk_server" 
+# installMysql "./MasterSettings" "master_settings_server" 
+# installMysql "./Inventory" "inventory_server" 
+# installMysql "./Pharmacy" "pharmacy_server" 
+# installMysql "./Insurance" "insurance_server" 
+# installMysql "./Radiology" "radiology_server" 
+# installMysql "./Laboratory" "lab_server" 
+# installMysql "./Billing" "billing_server" 
+# installMysql "./MRD" "mrd_server" 
+# installMysql "./Procurement" "procurement_server"
+# installMysql "./AlgaehReporting" "report_server"
+# installMysql "./algaeh-finance" "finance"  
+# installMysql "./Sales" "sales"  
 #add additional servers here if you want
 
 echo "HINT: use the command 'tmux ls' to view the running servers,
