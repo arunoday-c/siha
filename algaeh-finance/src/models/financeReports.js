@@ -73,7 +73,7 @@ export default {
       });
   },
   //created by irfan:
-  getTrialBalance: (req, res, next) => {
+  getTrialBalanceBAKP_16_JAN_2020: (req, res, next) => {
     const decimal_places = req.userIdentity.decimal_places;
     let option = { tialBalance: "Y" };
 
@@ -140,14 +140,87 @@ export default {
       .catch(e => {
         next(e);
       });
+  },
+  //created by irfan:
+  getTrialBalance: (req, res, next) => {
+    const decimal_places = req.userIdentity.decimal_places;
+    let option = {
+      tialBalance: "Y",
+      total_debit_amount: 0,
+      total_credit_amount: 0
+    };
+
+    getAccountHeadsForTrialBalance(decimal_places, 1, option)
+      .then(asset => {
+        console.log("ASSET:", asset);
+        getAccountHeadsForTrialBalance(decimal_places, 2, option)
+          .then(liability => {
+            getAccountHeadsForTrialBalance(decimal_places, 3, option)
+              .then(capital => {
+                // const newCapital = capital.children[0].children.find(f => {
+                //   return f.finance_account_child_id == 52;
+                // });
+
+                // const newCapital = capital;
+                getAccountHeadsForTrialBalance(decimal_places, 4, option)
+                  .then(income => {
+                    getAccountHeadsForTrialBalance(decimal_places, 5, option)
+                      .then(expense => {
+                        const total_debit_amount = parseFloat(
+                          parseFloat(asset.total_debit_amount) +
+                            parseFloat(capital.total_debit_amount) +
+                            parseFloat(income.total_debit_amount) +
+                            parseFloat(liability.total_debit_amount) +
+                            parseFloat(expense.total_debit_amount)
+                        ).toFixed(decimal_places);
+
+                        const total_credit_amount = parseFloat(
+                          parseFloat(asset.total_credit_amount) +
+                            parseFloat(capital.total_credit_amount) +
+                            parseFloat(income.total_credit_amount) +
+                            parseFloat(liability.total_credit_amount) +
+                            parseFloat(expense.total_credit_amount)
+                        ).toFixed(decimal_places);
+
+                        // newCapital.children = [{ ...newCapital }];
+
+                        req.records = {
+                          asset: asset.roots[0],
+                          liability: liability.roots[0],
+                          capital: capital.roots[0],
+                          income: income.roots[0],
+                          expense: expense.roots[0],
+                          total_debit_amount: total_debit_amount,
+                          total_credit_amount: total_credit_amount
+                        };
+                        next();
+                      })
+                      .catch(e => {
+                        next(e);
+                      });
+                  })
+                  .catch(e => {
+                    next(e);
+                  });
+              })
+              .catch(e => {
+                next(e);
+              });
+          })
+          .catch(e => {
+            next(e);
+          });
+      })
+      .catch(e => {
+        next(e);
+      });
   }
 };
 
-//created by irfan:
-function getAccountHeadsForReport(
+//created by irfan: TRIAL BALANCE
+function getAccountHeadsForTrialBalance(
   decimal_places,
-  finance_account_head_id,
-  option
+  finance_account_head_id
 ) {
   const utilities = new algaehUtilities();
   const _mysql = new algaehMysql();
@@ -163,11 +236,7 @@ function getAccountHeadsForReport(
       let str = "";
       let qrystr = "";
 
-      if (
-        option != undefined &&
-        option.tialBalance == "Y" &&
-        finance_account_head_id == 3
-      ) {
+      if (finance_account_head_id == 3) {
         str = " and  VD.child_id <> 1 ";
         qrystr = " and  finance_account_child_id <> 1 ";
       }
@@ -178,6 +247,95 @@ function getAccountHeadsForReport(
           finance_account_child_id,child_name,head_id,C.created_from as child_created_from
           from finance_account_head H left join 
           finance_account_child C on C.head_id=H.finance_account_head_id ${qrystr}
+           where root_id=?  order by account_level,sort_order;   
+         
+           select *, ROUND(if((cred_minus_deb-deb_minus_cred)>0 ,cred_minus_deb,0.0000),${decimal_places}) as credit_side ,
+          ROUND(if ((deb_minus_cred-cred_minus_deb)>0 ,deb_minus_cred,0.0000),${decimal_places}) as debit_side from 
+          (select C.head_id,finance_account_child_id as child_id,child_name,account_level,
+          ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
+          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount,
+          ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
+          ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
+          from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id
+          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'
+          where H.root_id=? 
+          group by C.finance_account_child_id) AS A;
+
+
+          select max(account_level) as account_level from finance_account_head 
+          where root_id=?;
+          select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level          
+          from finance_account_head
+          where root_id=? order by account_level;  `,
+
+          values: [
+            finance_account_head_id,
+            finance_account_head_id,
+            finance_account_head_id,
+            finance_account_head_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          const child_data = result[1];
+
+          calcAmountForTrialBalance(
+            result[3],
+            result[2],
+            decimal_places,
+            result[1]
+          )
+            .then(head_data => {
+              console.log("head_data:", head_data);
+              const outputArray = createHierarchyForTB(
+                result[0],
+                child_data,
+                head_data,
+                trans_symbol,
+                default_total,
+                decimal_places
+              );
+              resolve(outputArray);
+            })
+            .catch(e => {
+              console.log("m4:", e);
+              next(e);
+            });
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          reject(e);
+        });
+    } else {
+      reject({
+        invalid_input: true,
+        message: "Please provide Valid Input"
+      });
+    }
+  });
+}
+//created by irfan: ALL REPORTS
+function getAccountHeadsForReport(decimal_places, finance_account_head_id) {
+  const utilities = new algaehUtilities();
+  const _mysql = new algaehMysql();
+
+  return new Promise((resolve, reject) => {
+    if (finance_account_head_id > 0 && finance_account_head_id < 6) {
+      const default_total = parseFloat(0).toFixed(decimal_places);
+      let trans_symbol = "Cr.";
+      if (finance_account_head_id == 1 || finance_account_head_id == 5) {
+        trans_symbol = "Dr.";
+      }
+
+      _mysql
+        .executeQuery({
+          query: `select finance_account_head_id,account_code,account_name,account_parent,account_level,
+          H.created_from as created_status ,sort_order,parent_acc_id,root_id,
+          finance_account_child_id,child_name,head_id,C.created_from as child_created_from
+          from finance_account_head H left join 
+          finance_account_child C on C.head_id=H.finance_account_head_id 
            where (root_id=? or finance_account_head_id=?) order by account_level,sort_order;           
            select C.head_id,finance_account_child_id as child_id,child_name
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
@@ -185,7 +343,7 @@ function getAccountHeadsForReport(
           ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
           ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
           from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
-          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'  ${str}
+          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'  
           where (H.root_id=? or H.finance_account_head_id=?)
           group by C.finance_account_child_id;
           select max(account_level) as account_level from finance_account_head 
@@ -194,7 +352,7 @@ function getAccountHeadsForReport(
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
           ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount
           from finance_account_head H              
-          left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'  ${str}
+          left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'  
           where (H.root_id=? or H.finance_account_head_id=?) 
           group by H.finance_account_head_id  order by account_level;  `,
 
@@ -209,147 +367,6 @@ function getAccountHeadsForReport(
             finance_account_head_id
           ],
           printQuery: true
-        })
-        .then(result => {
-          _mysql.releaseConnection();
-
-          const child_data = result[1];
-
-          if (option != undefined && option.tialBalance == "Y") {
-            calcAmount(result[3], result[2], decimal_places)
-              .then(head_data => {
-                const outputArray = createHierarchyForTB(
-                  result[0],
-                  child_data,
-                  head_data,
-                  trans_symbol,
-                  default_total,
-                  decimal_places
-                );
-
-                resolve(outputArray[0]);
-              })
-              .catch(e => {
-                console.log("m4:", e);
-                next(e);
-              });
-          } else {
-            calcAmount(result[3], result[2], decimal_places)
-              .then(head_data => {
-                const outputArray = createHierarchy(
-                  result[0],
-                  child_data,
-                  head_data,
-                  trans_symbol,
-                  default_total,
-                  decimal_places
-                );
-
-                resolve(outputArray[0]);
-              })
-              .catch(e => {
-                console.log("m4:", e);
-                next(e);
-              });
-          }
-        })
-        .catch(e => {
-          _mysql.releaseConnection();
-          reject(e);
-        });
-    } else {
-      reject({
-        invalid_input: true,
-        message: "Please provide Valid Input"
-      });
-    }
-  });
-}
-//created by irfan:
-function getAccountHeadsForReport_BKP_24_dec(
-  decimal_places,
-  finance_account_head_id
-) {
-  const utilities = new algaehUtilities();
-  const _mysql = new algaehMysql();
-
-  return new Promise((resolve, reject) => {
-    if (finance_account_head_id > 0 && finance_account_head_id < 6) {
-      const default_total = parseFloat(0).toFixed(decimal_places);
-      let trans_symbol = "Cr.";
-      if (finance_account_head_id == 1 || finance_account_head_id == 5) {
-        trans_symbol = "Dr.";
-      }
-
-      _mysql
-        .executeQuery({
-          query: `with recursive cte (finance_account_head_id,account_code, account_name, parent_acc_id,
-              finance_account_child_id,child_name,child_created_from,account_level,sort_order,head_id,created_status) as (              
-              select finance_account_head_id,H.account_code,account_name,parent_acc_id,
-              C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
-              ,account_level,H.sort_order,CM.head_id,H.created_from as created_status
-              FROM finance_account_head H left join 
-              finance_head_m_child CM on H.finance_account_head_id=CM.head_id
-              left join finance_account_child C on CM.child_id=C.finance_account_child_id
-              where finance_account_head_id =?             
-              union                  
-              select   H.finance_account_head_id,H.account_code,H.account_name,H.parent_acc_id,
-              C.finance_account_child_id,C.child_name,CM.created_from as child_created_from
-              ,H.account_level,H.sort_order,CM.head_id,H.created_from as created_status
-              FROM finance_account_head H left join 
-              finance_head_m_child CM on H.finance_account_head_id=CM.head_id
-              left join finance_account_child C on CM.child_id=C.finance_account_child_id
-              inner join 
-              cte
-              on H.parent_acc_id = cte.finance_account_head_id       
-              
-              )
-              select * from cte order by account_level,sort_order;              
-              select head_account_code,head_id,	child_id,coalesce(sum(debit_amount) ,0.0000) as debit_amount,
-              coalesce(sum(credit_amount) ,0.0000) as credit_amount, 
-              (coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) )as cred_minus_deb,
-              (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)) as deb_minus_cred
-              from finance_voucher_details where head_id 
-              in ( with recursive cte  as (          
-                select  finance_account_head_id
-                from finance_account_head where finance_account_head_id =?
-                union                  
-                select H.finance_account_head_id
-                from finance_account_head  H inner join cte
-                on H.parent_acc_id = cte.finance_account_head_id    
-                )select * from cte)
-              group by head_id,child_id; 
-                  
-              with recursive cte  as (select finance_account_head_id,account_level
-                FROM finance_account_head where finance_account_head_id =?
-                union
-                select H.finance_account_head_id,H.account_level FROM finance_account_head H
-                inner join cte on H.parent_acc_id = cte.finance_account_head_id       
-                )
-                select max(account_level) as account_level from cte ;
-  
-                select finance_account_head_id,account_code,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level,
-                coalesce(sum(debit_amount),0.0000)as debit_amount,coalesce(sum(credit_amount),0.000)as credit_amount
-                from finance_account_head  H left join finance_voucher_details VD on H.finance_account_head_id=VD.head_id        
-                where finance_account_head_id  
-                in ( with recursive cte  as (          
-                select  finance_account_head_id
-                from finance_account_head where finance_account_head_id =?
-                union                  
-                select H.finance_account_head_id
-                from finance_account_head  H inner join cte
-                on H.parent_acc_id = cte.finance_account_head_id    
-                )select * from cte)
-                group by finance_account_head_id order by account_level;   `,
-
-          printQuery: false,
-
-          values: [
-            finance_account_head_id,
-            finance_account_head_id,
-            finance_account_head_id,
-            finance_account_head_id
-          ]
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -458,6 +475,104 @@ function calcAmount(account_heads, levels, decimal_places) {
       for (let i = 0; i < len; i++) {
         final_res.push(...levels_group[i]);
       }
+      resolve(final_res);
+    });
+  } catch (e) {
+    console.log("am55:", e);
+    reject(e);
+  }
+}
+//created by :IRFAN to calculate the amount of account heads
+function calcAmountForTrialBalance(
+  account_heads,
+  levels,
+  decimal_places,
+  child_data
+) {
+  try {
+    return new Promise((resolve, reject) => {
+      const max_account_level = parseInt(levels[0]["account_level"]);
+
+      // let levels_group = _.chain(account_heads)
+      //   .groupBy(g => g.account_level)
+      //   .value();
+
+      // console.log("levels_group,", levels_group);
+
+      for (let i = 0; i < account_heads.length; i++) {
+        const total_debit_side = _.chain(child_data)
+          .filter(f => f.head_id == account_heads[i].finance_account_head_id)
+          .sumBy(s => parseFloat(s.debit_side))
+          .value()
+          .toFixed(decimal_places);
+
+        const total_credit_side = _.chain(child_data)
+          .filter(f => f.head_id == account_heads[i].finance_account_head_id)
+          .sumBy(s => parseFloat(s.credit_side))
+          .value()
+          .toFixed(decimal_places);
+
+        account_heads[i]["total_debit_side"] = total_debit_side;
+        account_heads[i]["total_credit_side"] = total_credit_side;
+      }
+
+      let levels_group = _.chain(account_heads)
+        .groupBy(g => g.account_level)
+        .value();
+
+      for (let i = max_account_level - 1; i >= 0; i--) {
+        for (let k = 0; k < levels_group[i].length; k++) {
+          // if (i == 2) {
+          //   console.log("immediate_childs:", levels_group[i + 1]);
+          // }
+
+          levels_group[i].map(item => {
+            let immediate_childs = levels_group[i + 1].filter(child => {
+              if (item.finance_account_head_id == child.parent_acc_id) {
+                return item;
+              }
+            });
+
+            const total_credit_side = _.chain(immediate_childs)
+              .sumBy(s => parseFloat(s.total_credit_side))
+              .value()
+              .toFixed(decimal_places);
+
+            const total_debit_side = _.chain(immediate_childs)
+              .sumBy(s => parseFloat(s.total_debit_side))
+              .value()
+              .toFixed(decimal_places);
+
+            if (total_debit_side > 50000) {
+              console.log("total_debit_side:", total_debit_side);
+              console.log("immediate_childs:", immediate_childs);
+            }
+
+            // item["total_debit_side"] = parseFloat(
+            //   parseFloat(item["total_debit_side"]) +
+            //     parseFloat(total_debit_side)
+            // ).toFixed(decimal_places);
+
+            // item["total_credit_side"] = parseFloat(
+            //   parseFloat(item["total_credit_side"]) +
+            //     parseFloat(total_credit_side)
+            // ).toFixed(decimal_places);
+            item["total_debit_side"] = total_debit_side;
+
+            item["total_credit_side"] = total_credit_side;
+
+            return item;
+          });
+        }
+      }
+      const final_res = [];
+
+      let len = Object.keys(levels_group).length;
+
+      for (let i = 0; i < len; i++) {
+        final_res.push(...levels_group[i]);
+      }
+
       resolve(final_res);
     });
   } catch (e) {
@@ -628,7 +743,7 @@ function createHierarchy(
 }
 
 //created by :IRFAN to build tree hierarchy TRIAL BALANCE
-function createHierarchyForTB(
+function createHierarchyForTB_BAKUP_JAN_16_2020(
   arry,
   child_data,
   head_data,
@@ -831,6 +946,183 @@ function createHierarchyForTB(
     }
 
     return roots;
+  } catch (e) {
+    console.log("MY-ERORR:", e);
+  }
+}
+//created by :IRFAN to build tree hierarchy TRIAL BALANCE
+function createHierarchyForTB(
+  arry,
+  child_data,
+  head_data,
+  trans_symbol,
+  default_total,
+  decimal_places
+) {
+  try {
+    let total_debit_amount = parseFloat(0).toFixed(decimal_places);
+    let total_credit_amount = parseFloat(0).toFixed(decimal_places);
+    const utilities = new algaehUtilities();
+    let roots = [],
+      children = {};
+
+    // find the top level nodes and hash the children based on parent_acc_id
+    for (let i = 0, len = arry.length; i < len; ++i) {
+      let item = arry[i],
+        p = item.parent_acc_id,
+        //seprating roots to roots array childerens to childeren array
+        //if it has no parent_acc_id then its root
+        //if children already exist uses existing children else create new children
+        target = !p ? roots : children[p] || (children[p] = []);
+
+      //CHILD ACCOUNT
+      if (
+        item.finance_account_child_id > 0 &&
+        item.finance_account_head_id == item.head_id
+      ) {
+        let child =
+          children[item.finance_account_head_id] ||
+          (children[item.finance_account_head_id] = []);
+
+        //ST---calulating Amount
+        const BALANCE = child_data.find(f => {
+          return (
+            item.finance_account_head_id == f.head_id &&
+            item.finance_account_child_id == f.child_id
+          );
+        });
+
+        let tr_debit_amount = parseFloat(0).toFixed(decimal_places);
+        let tr_credit_amount = parseFloat(0).toFixed(decimal_places);
+
+        if (BALANCE != undefined) {
+          total_debit_amount = (
+            parseFloat(total_debit_amount) + parseFloat(BALANCE.debit_side)
+          ).toFixed(decimal_places);
+
+          total_credit_amount = (
+            parseFloat(total_credit_amount) + parseFloat(BALANCE.credit_side)
+          ).toFixed(decimal_places);
+
+          tr_debit_amount = parseFloat(BALANCE.debit_side).toFixed(
+            decimal_places
+          );
+
+          tr_credit_amount = parseFloat(BALANCE.credit_side).toFixed(
+            decimal_places
+          );
+        }
+
+        //END---calulating Amount
+        child.push({
+          finance_account_child_id: item["finance_account_child_id"],
+          trans_symbol: trans_symbol,
+
+          title: item.child_name,
+          label: item.child_name,
+          head_id: item["head_id"],
+          tr_debit_amount: tr_debit_amount,
+          tr_credit_amount: tr_credit_amount,
+
+          leafnode: "Y",
+          created_status: item["child_created_from"]
+        });
+
+        //if children array doesnt contain this non-leaf node then push
+        const data = target.find(val => {
+          return val.finance_account_head_id == item.finance_account_head_id;
+        });
+
+        //HEAD ACCOUNT IN SIDE CHILD
+        if (!data) {
+          //ST---calulating Amount
+          const BALANCE = head_data.find(f => {
+            return item.finance_account_head_id == f.finance_account_head_id;
+          });
+
+          let tr_debit_amount = parseFloat(0).toFixed(decimal_places);
+          let tr_credit_amount = parseFloat(0).toFixed(decimal_places);
+
+          if (BALANCE != undefined) {
+            tr_debit_amount = parseFloat(BALANCE.total_debit_side).toFixed(
+              decimal_places
+            );
+
+            tr_credit_amount = parseFloat(BALANCE.total_credit_side).toFixed(
+              decimal_places
+            );
+          }
+
+          console.log("tr_credit_amount:", tr_credit_amount);
+          console.log("tr_debit_amount:", tr_debit_amount);
+
+          //END---calulating Amount
+
+          target.push({
+            ...item,
+            trans_symbol: trans_symbol,
+            title: item.account_name,
+            label: item.account_name,
+            tr_debit_amount: tr_debit_amount,
+            tr_credit_amount: tr_credit_amount,
+            leafnode: "N"
+          });
+        }
+      }
+
+      //HEAD ACCOUNT
+      else {
+        //ST---calulating Amount
+        const BALANCE = head_data.find(f => {
+          return item.finance_account_head_id == f.finance_account_head_id;
+        });
+
+        let tr_debit_amount = parseFloat(0).toFixed(decimal_places);
+        let tr_credit_amount = parseFloat(0).toFixed(decimal_places);
+        if (BALANCE != undefined) {
+          tr_debit_amount = parseFloat(BALANCE.total_debit_side).toFixed(
+            decimal_places
+          );
+
+          tr_credit_amount = parseFloat(BALANCE.total_credit_side).toFixed(
+            decimal_places
+          );
+        }
+
+        //END---calulating Amount
+
+        target.push({
+          ...item,
+          trans_symbol: trans_symbol,
+
+          title: item.account_name,
+          label: item.account_name,
+          tr_debit_amount: tr_debit_amount,
+          tr_credit_amount: tr_credit_amount,
+          leafnode: "N"
+        });
+      }
+    }
+
+    // function to recursively build the tree
+    let findChildren = function(parent) {
+      if (children[parent.finance_account_head_id]) {
+        const tempchilds = children[parent.finance_account_head_id];
+
+        parent.children = tempchilds;
+
+        for (let i = 0, len = parent.children.length; i < len; ++i) {
+          findChildren(parent.children[i]);
+        }
+      }
+    };
+
+    // enumerate through to handle the case where there are multiple roots
+    for (let i = 0, len = roots.length; i < len; ++i) {
+      findChildren(roots[i]);
+    }
+
+    return { roots, total_debit_amount, total_credit_amount };
   } catch (e) {
     console.log("MY-ERORR:", e);
   }
