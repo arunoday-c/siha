@@ -121,13 +121,20 @@ const numberchangeTexts = ($this, context, e) => {
       type: "warning"
     });
   } else {
+    debugger
     let extended_price = 0;
     if (parseFloat(value) > 0 && parseFloat($this.state.unit_price) > 0) {
-      extended_price = parseFloat(value) * parseFloat($this.state.unit_price);
+      extended_price = (parseFloat(value) * parseFloat($this.state.unit_price)).toFixed(
+        $this.state.decimal_place
+      );
     }
-    let unit_cost = extended_price / parseFloat(value);
+    let unit_cost = (extended_price / parseFloat(value)).toFixed(
+      $this.state.decimal_place
+    );
     let tax_amount =
-      (extended_price * parseFloat($this.state.tax_percentage)) / 100;
+      ((extended_price * parseFloat($this.state.tax_percentage)) / 100).toFixed(
+        $this.state.decimal_place
+      );
     let total_amount = tax_amount + extended_price;
     $this.setState({
       [name]: value,

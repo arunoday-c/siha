@@ -23,7 +23,7 @@
                         <th>Item Code</th>
                         <th>Item Name</th>
                         <th>UOM</th>
-                        <th>Transferred Quantity</th>
+                        <th>Transferred Qty</th>
                         {{!-- <th>Unit Price</th>
                         <th>Total Cost</th> --}}
                         <th>To Location</th>
@@ -43,12 +43,12 @@
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{item_code}}</th>
-                        <td>{{item_description}}</th>
+                        <td class="txtFld">{{item_description}}</th>
                         <td>{{uom_description}}</td>
-                        <td>{{quantity_transferred}}</td>
+                        <td class="numberFld">{{quantity_transferred}}</td>
                         {{!-- <td>{{unit_cost}}</td>
                         <td>{{net_extended_cost}}</td> --}}
-                        <td>{{location_description}}</td>
+                        <td class="">{{location_description}}</td>
                     </tr>
                     {{/each }}{{/each }}
                     {{else}}

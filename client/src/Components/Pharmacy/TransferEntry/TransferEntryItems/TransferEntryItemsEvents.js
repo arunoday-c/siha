@@ -522,7 +522,8 @@ const itemchangeText = ($this, context, e, ctrl) => {
               stocking_uom: e.stocking_uom,
               conversion_factor: sales_conversion_factor.conversion_factor,
               sales_qtyhand: sales_qtyhand,
-              sales_price: e.sale_price
+              sales_price: e.sale_price,
+              unit_cost: e.avgcost
             });
 
             if (context !== undefined) {
@@ -550,7 +551,8 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 stocking_uom: e.stocking_uom,
                 conversion_factor: sales_conversion_factor.conversion_factor,
                 sales_qtyhand: sales_qtyhand,
-                sales_price: e.sale_price
+                sales_price: e.sale_price,
+                unit_cost: e.avgcost
               });
             }
           } else {

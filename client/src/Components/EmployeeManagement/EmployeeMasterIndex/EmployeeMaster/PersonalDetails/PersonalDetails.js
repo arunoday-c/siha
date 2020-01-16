@@ -31,7 +31,7 @@ class PersonalDetails extends Component {
     super(props);
     this.initCall();
     const _activeModel = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("AlgaehOrbitaryData"))
+      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
     );
     this.state = {
       samechecked: "N",
@@ -756,8 +756,8 @@ class PersonalDetails extends Component {
                               ? false
                               : this.state.employee_code === null ||
                                 this.state.employee_code === ""
-                              ? false
-                              : true
+                                ? false
+                                : true
                           }
                           textAltMessage="Employee Image"
                           serviceParameters={{

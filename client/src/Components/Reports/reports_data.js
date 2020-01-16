@@ -4127,108 +4127,108 @@ const Inventory_Reports = [
           }
         ]
       },
-      {
-        subitem: "Inventory Store Report",
-        reportName: "inventoryStoreReport",
-        requireIframe: true,
-        reportParameters: [
-          {
-            className: "col-2 form-group mandatory",
-            type: "dropdown",
-            name: "hospital_id",
-            initialLoad: true,
-            isImp: true,
-            label: "branch",
-            link: {
-              uri: "/organization/getOrganizationByUser"
-            },
-            events: {
-              onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/inventory/getInventoryLocation",
-                  module: "inventory",
-                  method: "GET",
-                  data: { hospital_id: currentEvent.value },
+      // {
+      //   subitem: "Inventory Store Report",
+      //   reportName: "inventoryStoreReport",
+      //   requireIframe: true,
+      //   reportParameters: [
+      //     {
+      //       className: "col-2 form-group mandatory",
+      //       type: "dropdown",
+      //       name: "hospital_id",
+      //       initialLoad: true,
+      //       isImp: true,
+      //       label: "branch",
+      //       link: {
+      //         uri: "/organization/getOrganizationByUser"
+      //       },
+      //       events: {
+      //         onChange: (reportState, currentEvent) => {
+      //           //provider_id_list CONTROL NAME AND APPEND BY _LIST
+      //           algaehApiCall({
+      //             uri: "/inventory/getInventoryLocation",
+      //             module: "inventory",
+      //             method: "GET",
+      //             data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
-                    reportState.setState({
-                      location_id_list: result.data.records
-                    });
-                  }
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  location_id_list: []
-                });
-              }
-            },
-            value: hospital_id,
-            dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
-            }
-          },
+      //             onSuccess: result => {
+      //               reportState.setState({
+      //                 location_id_list: result.data.records
+      //               });
+      //             }
+      //           });
+      //         },
+      //         onClear: (reportState, currentName) => {
+      //           reportState.setState({
+      //             [currentName]: undefined,
+      //             location_id_list: []
+      //           });
+      //         }
+      //       },
+      //       value: hospital_id,
+      //       dataSource: {
+      //         textField: "hospital_name",
+      //         valueField: "hims_d_hospital_id",
+      //         data: undefined
+      //       }
+      //     },
 
-          {
-            className: "col-2 form-group mandatory",
-            type: "dropdown",
-            name: "location_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Location",
-            dataSource: {
-              textField: "location_description",
-              valueField: "hims_d_inventory_location_id",
-              data: []
-            }
-          },
+      //     {
+      //       className: "col-2 form-group mandatory",
+      //       type: "dropdown",
+      //       name: "location_id",
+      //       initialLoad: true,
+      //       isImp: true,
+      //       label: "Location",
+      //       dataSource: {
+      //         textField: "location_description",
+      //         valueField: "hims_d_inventory_location_id",
+      //         data: []
+      //       }
+      //     },
 
-          {
-            className: "col-2 mandatory  form-group",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
+      //     {
+      //       className: "col-2 mandatory  form-group",
+      //       type: "date",
+      //       name: "from_date",
+      //       isImp: true,
+      //       others: {
+      //         maxDate: new Date(),
+      //         minDate: null
+      //       }
+      //     },
 
-          {
-            className: "col-2 mandatory  form-group",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
+      //     {
+      //       className: "col-2 mandatory  form-group",
+      //       type: "date",
+      //       name: "to_date",
+      //       isImp: true,
+      //       others: {
+      //         maxDate: new Date(),
+      //         minDate: null
+      //       }
+      //     },
 
-          {
-            className: "col-2 form-group",
-            type: "dropdown",
-            name: "item_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Item",
+      //     {
+      //       className: "col-2 form-group",
+      //       type: "dropdown",
+      //       name: "item_id",
+      //       initialLoad: true,
+      //       isImp: false,
+      //       label: "Item",
 
-            link: {
-              uri: "/inventory/getItemMaster",
-              module: "inventory"
-            },
-            dataSource: {
-              textField: "item_description",
-              valueField: "hims_d_item_master_id",
-              data: undefined
-            }
-          }
-        ]
-      },
+      //       link: {
+      //         uri: "/inventory/getItemMaster",
+      //         module: "inventory"
+      //       },
+      //       dataSource: {
+      //         textField: "item_description",
+      //         valueField: "hims_d_item_master_id",
+      //         data: undefined
+      //       }
+      //     }
+      //   ]
+      // },
       {
         subitem: "Purchase Report",
         reportName: "inventoryPurchaseReport",
@@ -4387,6 +4387,110 @@ const Inventory_Reports = [
               textField: "location_description",
               valueField: "hims_d_inventory_location_id",
               data: []
+            }
+          }
+        ]
+      },
+      {
+        subitem: "Inventory Aging",
+        reportName: "InventoryAgingReport",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-2 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser"
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/inventory/getInventoryLocation",
+                  module: "inventory",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      location_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: []
+                });
+              }
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+
+          {
+            className: "col-2 form-group mandatory",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Location",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_inventory_location_id",
+              data: []
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
+            }
+          },
+
+          {
+            className: "col-2 mandatory  form-group",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "item_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Item",
+
+            link: {
+              uri: "/inventory/getItemMaster",
+              module: "inventory"
+            },
+            dataSource: {
+              textField: "item_description",
+              valueField: "hims_d_inventory_item_master_id",
+              data: undefined
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined
+                });
+              }
             }
           }
         ]

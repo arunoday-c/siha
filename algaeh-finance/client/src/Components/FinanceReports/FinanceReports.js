@@ -4,6 +4,8 @@ import { AlgaehMessagePop } from "algaeh-react-components";
 import { Spin, Button, Tooltip } from "antd";
 import Balance from "./FinanceStandardReports/balancesheet";
 import TrailBalance from "./FinanceStandardReports/trailbalance";
+import ArAging from "./FinanceStandardReports/arAgingReport";
+import ApAging from "./FinanceStandardReports/apAgingReport";
 import CostCenter from "../costCenterComponent";
 import { getBalanceSheet } from "./FinanceReportEvents";
 import { newAlgaehApi } from "../../hooks";
@@ -156,6 +158,30 @@ export default function FinanceReports() {
               }}
             >
               Trail Balance
+            </li>{" "}
+            <li
+              className={selectedClass("AR")}
+              onClick={() => {
+                if (checkExists()) {
+                  //loadReport({ url: "getArAging", reportName: "AR" });
+                  //  setLoading(true);
+                  setSelected("AR");
+                }
+              }}
+            >
+              AR Aging
+            </li>
+            <li
+              className={selectedClass("AP")}
+              onClick={() => {
+                if (checkExists()) {
+                  // loadReport({ url: "getApAging", reportName: "AP" });
+                  // setLoading(true);
+                  setSelected("AP");
+                }
+              }}
+            >
+              AP Aging
             </li>
           </ul>
         </div>
@@ -180,6 +206,10 @@ export default function FinanceReports() {
               />
             ) : selected === "TB" ? (
               <TrailBalance layout={layout} data={trailBanlance} />
+            ) : selected === "AR" ? (
+              <ArAging layout={layout} />
+            ) : selected === "AP" ? (
+              <ApAging layout={layout} />
             ) : null}
           </Spin>
         </div>
@@ -193,56 +223,6 @@ export default function FinanceReports() {
                   onClick={() => layoutDispatch({ type: "switchCol" })}
                 />
               </Tooltip>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
             </li>
           </ul>
         </div>

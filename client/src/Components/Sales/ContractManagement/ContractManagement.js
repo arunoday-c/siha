@@ -167,8 +167,8 @@ class ContractManagement extends Component {
                 <h6>
                   {this.state.contract_date
                     ? moment(this.state.contract_date).format(
-                      Options.dateFormat
-                    )
+                        Options.dateFormat
+                      )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -177,17 +177,17 @@ class ContractManagement extends Component {
           printArea={
             this.state.contract_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Contract Report",
-                    events: {
-                      onClick: () => {
-                        generateContractReport(this.state);
+                  menuitems: [
+                    {
+                      label: "Contract Report",
+                      events: {
+                        onClick: () => {
+                          generateContractReport(this.state);
+                        }
                       }
                     }
-                  }
-                ]
-              }
+                  ]
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -293,9 +293,12 @@ class ContractManagement extends Component {
               />
 
               {this.HRMNGMT_Active ? (
-                <div className="row">
+                <>
                   <div
-                    className={"col globalSearchCntr form-group mandatory" + class_finder}
+                    className={
+                      "col-3 globalSearchCntr form-group mandatory" +
+                      class_finder
+                    }
                   >
                     <AlgaehLabel
                       label={{ forceLabel: "Incharge Employee", isImp: true }}
@@ -309,9 +312,9 @@ class ContractManagement extends Component {
                   </div>
 
                   <AlagehFormGroup
-                    div={{ className: "col form-group" }}
+                    div={{ className: "col-2 form-group" }}
                     label={{
-                      forceLabel: "Notification 1"
+                      forceLabel: "Notify 1st before (Days)"
                     }}
                     textBox={{
                       number: {
@@ -326,15 +329,16 @@ class ContractManagement extends Component {
                         onChange: texthandle.bind(this, this)
                       },
                       others: {
-                        disabled: this.state.dataExists
+                        disabled: this.state.dataExists,
+                        placeholder: "30"
                       }
                     }}
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col form-group" }}
+                    div={{ className: "col-2 form-group" }}
                     label={{
-                      forceLabel: "Notification 2"
+                      forceLabel: "Notify 2nd before (Days)"
                     }}
                     textBox={{
                       number: {
@@ -349,20 +353,22 @@ class ContractManagement extends Component {
                         onChange: texthandle.bind(this, this)
                       },
                       others: {
-                        disabled: this.state.dataExists
+                        disabled: this.state.dataExists,
+                        placeholder: "60"
                       }
                     }}
                   />
-                </div>
-              ) : (
-                  null
-                )}
+                </>
+              ) : null}
             </div>
           </div>
         </div>
         <div className="row">
           <div className="col-8">
-            <div className="portlet portlet-bordered margin-bottom-15">
+            <div
+              className="portlet portlet-bordered "
+              style={{ marginBottom: 60 }}
+            >
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Contract Items</h3>
@@ -630,24 +636,24 @@ class ContractManagement extends Component {
                     <ol>
                       {this.state.comment_list.length > 0
                         ? this.state.comment_list.map((row, index) => {
-                          return (
-                            <React.Fragment key={index}>
-                              <li key={index}>
-                                <span>{row}</span>
-                                {this.state.dataExists ? null : (
-                                  <i
-                                    className="fas fa-times"
-                                    onClick={deleteComment.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )}
-                                  ></i>
-                                )}
-                              </li>
-                            </React.Fragment>
-                          );
-                        })
+                            return (
+                              <React.Fragment key={index}>
+                                <li key={index}>
+                                  <span>{row}</span>
+                                  {this.state.dataExists ? null : (
+                                    <i
+                                      className="fas fa-times"
+                                      onClick={deleteComment.bind(
+                                        this,
+                                        this,
+                                        row
+                                      )}
+                                    ></i>
+                                  )}
+                                </li>
+                              </React.Fragment>
+                            );
+                          })
                         : null}
                     </ol>
                   </div>

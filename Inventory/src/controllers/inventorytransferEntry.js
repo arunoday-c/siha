@@ -10,7 +10,8 @@ const {
   addtransferEntry,
   updatetransferEntry,
   getrequisitionEntryTransfer,
-  getAckTransferList
+  getAckTransferList,
+  generateAccountingEntry
 } = invTransModels;
 const { updateinvreqEntryOnceTranfer } = invReqModels;
 
@@ -47,6 +48,7 @@ export default () => {
   api.put(
     "/updatetransferEntry",
     updatetransferEntry,
+    generateAccountingEntry,
     updateIntoInvItemLocation,
     updateIntoInvItemLocation,
     (req, res, next) => {
