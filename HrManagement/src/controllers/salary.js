@@ -69,6 +69,7 @@ export default () => {
       } else {
         result = req.records;
       }
+
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: req.flag == 1 ? false : true,
         result: result
