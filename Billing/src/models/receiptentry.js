@@ -75,12 +75,9 @@ export default {
       utilities.logger().log("inputParam pay_type: ", inputParam.pay_type);
       _mysql
         .generateRunningNumber({
-          modules: [Module_Name],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: [Module_Name],
+          table_name: "hims_f_app_numgen"
         })
         .then(generatedNumbers => {
           console.log(
@@ -92,11 +89,10 @@ export default {
             isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool
           };
-          utilities.logger().log("generatedNumbers: ", generatedNumbers[0]);
 
-          req.query.receipt_number = generatedNumbers[0];
-          req.body.receipt_number = generatedNumbers[0];
-          inputParam.receipt_number = generatedNumbers[0];
+          req.query.receipt_number = generatedNumbers[Module_Name];
+          req.body.receipt_number = generatedNumbers[Module_Name];
+          inputParam.receipt_number = generatedNumbers[Module_Name];
           _mysql
             .executeQuery({
               query:

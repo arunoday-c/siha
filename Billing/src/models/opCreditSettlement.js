@@ -24,15 +24,12 @@ export default {
 
       _mysql
         .generateRunningNumber({
-          modules: ["OP_CRD"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["OP_CRD"],
+          table_name: "hims_f_app_numgen"
         })
         .then(generatedNumbers => {
-          credit_number = generatedNumbers[0];
+          credit_number = generatedNumbers.OP_CRD;
 
           _mysql
             .executeQuery({

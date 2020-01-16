@@ -157,15 +157,12 @@ export default {
 
     _mysql
       .generateRunningNumber({
-        modules: ["LEAVE_ENCASH"],
-        tableName: "hims_f_app_numgen",
-        identity: {
-          algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-          hospital_id: req.userIdentity.hospital_id
-        }
+        user_id: req.userIdentity.algaeh_d_app_user_id,
+        numgen_codes: ["LEAVE_ENCASH"],
+        table_name: "hims_f_hrpayroll_numgen"
       })
       .then(generatedNumbers => {
-        encashment_number = generatedNumbers[0];
+        encashment_number = generatedNumbers.LEAVE_ENCASH;
         let encashDetail = inputParam.encashDetail;
         let strQuery = "";
 
@@ -186,7 +183,7 @@ export default {
           VALUE(?,?,?,?,?,?,?,?,?); " +
               strQuery,
             values: [
-              generatedNumbers[0],
+              encashment_number,
               inputParam.employee_id,
               inputParam.encashment_date,
               inputParam.year,
@@ -251,24 +248,12 @@ export default {
 
     _mysql
       .generateRunningNumber({
-        modules: ["LEAVE_ENCASH"],
-        tableName: "hims_f_app_numgen",
-        identity: {
-          algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-          hospital_id: req.userIdentity.hospital_id
-        }
+        user_id: req.userIdentity.algaeh_d_app_user_id,
+        numgen_codes: ["LEAVE_ENCASH"],
+        table_name: "hims_f_hrpayroll_numgen"
       })
       .then(generatedNumbers => {
-        encashment_number = generatedNumbers[0];
-        let strQuery = "";
-
-        // let close_balance =
-        //   parseFloat(inputParam.close_balance) -
-        //   parseFloat(inputParam.leave_days);
-        // strQuery += _mysql.mysqlQueryFormat(
-        //   "UPDATE hims_f_employee_monthly_leave set close_balance=? where  hims_f_employee_monthly_leave_id=?;",
-        //   [close_balance, inputParam.hims_f_employee_monthly_leave_id]
-        // );
+        encashment_number = generatedNumbers.LEAVE_ENCASH;
 
         _mysql
           .executeQuery({
@@ -278,7 +263,7 @@ export default {
                 hospital_id)\
           VALUE(?,?,?,?,?,?,?,?,?,?,?,?); ",
             values: [
-              generatedNumbers[0],
+              encashment_number,
               inputParam.employee_id,
               new Date(),
               inputParam.year,

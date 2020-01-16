@@ -1,6 +1,6 @@
-import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
+import { swalMessage, algaehApiCall, getCookie } from "../../../utils/algaehApiCall";
 import moment from "moment";
-import Enumerable from "linq";
+// import Enumerable from "linq";
 
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
@@ -123,7 +123,7 @@ const datehandle = ($this, ctrl, e) => {
 
 const ReceiptSearch = ($this, e) => {
   let Inputs =
-    "grn_for = '" + $this.state.po_return_from + "' and return_done = 'N'";
+    "grn_for = '" + $this.state.po_return_from + "' and return_done = 'N' and posted = 'Y'";
 
   if (
     $this.state.po_return_from === "PHR" &&
@@ -368,7 +368,7 @@ const getData = ($this, po_return_from) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "poitemcategory"
       },
-      afterSuccess: data => {}
+      afterSuccess: data => { }
     });
 
     $this.props.getItemGroup({
@@ -541,6 +541,8 @@ const PostPOReturnEntry = $this => {
     InputObj.po_return_entry_detail = InputObj.inventory_stock_detail;
   }
 
+  InputObj.ScreenCode = getCookie("ScreenCode")
+  debugger
   algaehApiCall({
     uri: "/PurchaseReturnEntry/postPurchaseOrderEntry",
     module: "procurement",

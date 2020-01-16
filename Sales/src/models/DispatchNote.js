@@ -172,6 +172,7 @@ export function getSalesOrderItem(req, res, next) {
                                             qtyhand: s.qtyhand,
                                             qtypo: s.qtypo,
                                             cost_uom: s.cost_uom,
+                                            average_cost: s.avgcost,
                                             unit_cost: s.avgcost,
                                             last_purchase_cost: s.last_purchase_cost,
                                             item_type: s.item_type,
@@ -235,15 +236,12 @@ export function addDispatchNote(req, res, next) {
 
             _mysql
                 .generateRunningNumber({
-                    modules: ["SALES_DISPATCH"],
-                    tableName: "hims_f_sales_numgen",
-                    identity: {
-                        algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-                        hospital_id: req.userIdentity.hospital_id
-                    }
+                    user_id: req.userIdentity.algaeh_d_app_user_id,
+                    numgen_codes: ["SALES_DISPATCH"],
+                    table_name: "hims_f_sales_numgen"
                 })
                 .then(generatedNumbers => {
-                    dispatch_note_number = generatedNumbers[0];
+                    dispatch_note_number = generatedNumbers.SALES_DISPATCH;
 
                     let year = moment().format("YYYY");
 
@@ -339,7 +337,8 @@ export function addDispatchNote(req, res, next) {
                                             "net_extended_cost",
                                             "tax_percentage",
                                             "tax_amount",
-                                            "total_amount"
+                                            "total_amount",
+                                            "average_cost"
                                         ];
 
                                         _mysql

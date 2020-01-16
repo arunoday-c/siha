@@ -35,7 +35,7 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-          printQuery: query => {},
+          printQuery: query => { },
           bulkInsertOrUpdate: true
         })
         .then(result => {
@@ -98,6 +98,7 @@ export default {
           req.query.show_all_status === "true"
             ? ""
             : "and E.employee_status='A' ";
+        const specificEmployee =  req.query.hims_d_employee_id !== undefined ?" and hims_d_employee_id ='"+req.query.hims_d_employee_id +"'":"";
 
         _mysql
           .executeQuery({
@@ -108,7 +109,7 @@ export default {
                 inner join hims_d_department D on SD.department_id = D.hims_d_department_id \
                 inner join hims_d_religion R on E.religion_id = R.hims_d_religion_id \
                 left join hims_d_designation DE on E.employee_designation_id = DE.hims_d_designation_id left join hims_d_nationality N on N.hims_d_nationality_id = E.nationality WHERE \
-                E.record_status = 'A'  " +
+                E.record_status = 'A'  " + specificEmployee +" "+
               show_active +
               _strAppend,
             // values: [req.userIdentity.hospital_id],
@@ -1627,14 +1628,11 @@ export default {
 
     _mysql
       .generateRunningNumber({
-        modules: ["EMPLOYEE_LOAN"],
-        tableName: "hims_f_app_numgen",
-        identity: {
-          algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-          hospital_id: req.userIdentity.hospital_id
-        }
+        user_id: req.userIdentity.algaeh_d_app_user_id,
+        numgen_codes: ["EMPLOYEE_LOAN"],
+        table_name: "hims_f_hrpayroll_numgen"
       })
-      .then(numGenLeave => {
+      .then(generatedNumbers => {
         _mysql
           .executeQuery({
             query:
@@ -1642,7 +1640,7 @@ export default {
                 loan_id, loan_authorized, pending_tenure, installment_amount, pending_loan, start_year, start_month, hospital_id)\
           VALUE(?,?,?,?,?,?,?,?,?,?,?)",
             values: [
-              numGenLeave[0],
+              generatedNumbers.EMPLOYEE_LOAN,
               input.loan_application_date,
               input.employee_id,
               input.loan_id,

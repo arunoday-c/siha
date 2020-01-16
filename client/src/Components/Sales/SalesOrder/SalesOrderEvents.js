@@ -77,13 +77,40 @@ const texthandle = ($this, ctrl, e) => {
 };
 
 const customerTexthandle = ($this, e) => {
+
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
 
-    $this.setState({
-        [name]: value,
-        payment_terms: e.selected.payment_terms
+    debugger
+    AlgaehLoader({ show: true });
+    algaehApiCall({
+        uri: "/SalesOrder/ValidateContract",
+        module: "sales",
+        method: "GET",
+        data: { customer_id: value },
+        onSuccess: response => {
+            debugger
+            if (response.data.success) {
+                $this.setState({
+                    [name]: value,
+                    payment_terms: e.selected.payment_terms
+                });
+            } else {
+                $this.setState({
+                    [name]: null,
+                    payment_terms: null
+                });
+                swalMessage({
+                    title: "Selected Customer contract expired. Please contact customer for renewal.",
+                    type: "warning"
+                });
+            }
+            AlgaehLoader({ show: false });
+        }
     });
+
+
+
 };
 
 const datehandle = ($this, ctrl, e) => {

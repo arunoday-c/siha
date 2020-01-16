@@ -123,15 +123,12 @@ export default {
 
       _mysql
         .generateRunningNumber({
-          modules: ["POS_NUM"],
-          tableName: "hims_f_pharmacy_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["POS_NUM"],
+          table_name: "hims_f_pharmacy_numgen"
         })
         .then(generatedNumbers => {
-          pos_number = generatedNumbers[0];
+          pos_number = generatedNumbers.POS_NUM;
 
           let year = moment().format("YYYY");
 

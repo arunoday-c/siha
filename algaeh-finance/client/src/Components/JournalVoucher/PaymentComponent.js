@@ -37,7 +37,7 @@ export default function PaymentComponent({
               onClear: () => null
             }}
           />
-          {payment_mode !== "CASH" ? (
+          {payment_mode && payment_mode !== "CASH" ? (
             <AlgaehFormGroup
               div={{
                 className: "col-4 algaeh-text-fld"

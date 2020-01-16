@@ -173,27 +173,24 @@ where E.hims_d_employee_id=? ",
     try {
       _mysql
         .generateRunningNumber({
-          modules: ["FINAL_SETTLEMENT"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["FINAL_SETTLEMENT"],
+          table_name: "hims_f_hrpayroll_numgen"
         })
-        .then(newNumber => {
-          if (newNumber.length === 0) {
-            _mysql.rollBackTransaction(() => {
-              next(
-                utlities
-                  .httpStatus()
-                  .generateError(
-                    utlities.httpStatus().forbidden,
-                    "Please add options for final settlement"
-                  )
-              );
-              return;
-            });
-          }
+        .then(generatedNumbers => {
+          // if (newNumber.length === 0) {
+          //   _mysql.rollBackTransaction(() => {
+          //     next(
+          //       utlities
+          //         .httpStatus()
+          //         .generateError(
+          //           utlities.httpStatus().forbidden,
+          //           "Please add options for final settlement"
+          //         )
+          //     );
+          //     return;
+          //   });
+          // }
 
           _mysql
             .executeQuery({
@@ -205,7 +202,7 @@ where E.hims_d_employee_id=? ",
               `updated_by`,`posted`,`posted_date`,`posted_by`,`cancelled`,`cancelled_by`,`cancelled_date`,hospital_id) values(?,?,?,?,\
                 ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
-                newNumber[0],
+                generatedNumbers.FINAL_SETTLEMENT,
                 _input.employee_id,
                 new Date(),
                 "SET",

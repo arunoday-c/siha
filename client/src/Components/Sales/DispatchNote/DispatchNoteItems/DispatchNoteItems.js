@@ -155,12 +155,11 @@ class DispatchNoteItems extends Component {
                             {this.state.batch_detail_view === false ? (
                                 <div className="col-8" style={{ paddingLeft: 0 }}>
                                     <div className="portlet portlet-bordered margin-bottom-15">
-                                        {" "}
                                         <div className="portlet-title">
                                             <div className="caption">
                                                 <h3 className="caption-subject">
                                                     Enter Qty for selected items
-                        </h3>
+                                                </h3>
                                             </div>
                                         </div>
                                         <div
@@ -177,25 +176,6 @@ class DispatchNoteItems extends Component {
                                                                 label={{ forceLabel: "Item Name" }}
                                                             />
                                                         ),
-                                                        // displayTemplate: row => {
-                                                        //     let display =
-                                                        //         this.props.itemlist === undefined
-                                                        //             ? []
-                                                        //             : this.props.itemlist.filter(
-                                                        //                 f =>
-                                                        //                     f.hims_d_item_master_id ===
-                                                        //                     row.item_id
-                                                        //             );
-
-                                                        //     return (
-                                                        //         <span>
-                                                        //             {display !== undefined &&
-                                                        //                 display.length !== 0
-                                                        //                 ? display[0].item_description
-                                                        //                 : ""}
-                                                        //         </span>
-                                                        //     );
-                                                        // },
                                                         others: {
                                                             minWidth: 150
                                                         }
@@ -385,20 +365,6 @@ class DispatchNoteItems extends Component {
                                                 byForceEvents={true}
                                                 datavalidate="id='TRANS_details'"
                                                 paging={{ page: 0, rowsPerPage: 10 }}
-                                                events={
-                                                    {
-                                                        // onDelete: deleteTransEntryDetail.bind(
-                                                        //     this,
-                                                        //     this,
-                                                        //     context
-                                                        // ),
-                                                        // onDone: updateTransEntryDetail.bind(
-                                                        //     this,
-                                                        //     this,
-                                                        //     context
-                                                        // )
-                                                    }
-                                                }
                                                 onRowSelect={row => {
                                                     getItemLocationStock(this, row);
                                                 }}

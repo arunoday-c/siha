@@ -1,7 +1,7 @@
 #DNGrid {
   .ReactTable {
     max-width: 96vw !important;
-    max-height: 27.5vh !important;
+    max-height: 55vh !important;
   }
 
   @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
@@ -11,7 +11,7 @@
   }
 }
 
-.disableFinder{
-	opacity: 0.4;
-	pointer-events: none;
-  }
+.disableFinder {
+  opacity: 0.4;
+  pointer-events: none;
+}

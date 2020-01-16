@@ -103,15 +103,12 @@ export default {
       utilities.logger().log("addReceiptEntry: ");
       _mysql
         .generateRunningNumber({
-          modules: ["RE_NUM"],
-          tableName: "hims_f_procurement_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["RE_NUM"],
+          table_name: "hims_f_procurement_numgen"
         })
         .then(generatedNumbers => {
-          grn_number = generatedNumbers[0];
+          grn_number = generatedNumbers.RE_NUM;
 
           let year = moment().format("YYYY");
 
@@ -417,6 +414,221 @@ export default {
     } catch (e) {
       _mysql.releaseConnection();
       next(e);
+    }
+  },
+
+  postReceiptEntry: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      req.mySQl = _mysql;
+      let inputParam = { ...req.body };
+
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "UPDATE `hims_f_procurement_grn_header` SET `posted`=?, `posted_date`=?, `posted_by`=? \
+          WHERE `hims_f_procurement_grn_header_id`=?",
+          values: [
+            inputParam.posted,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            inputParam.hims_f_procurement_grn_header_id
+          ],
+          printQuery: true
+        })
+        .then(headerResult => {
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection: _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
+          next();
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  generateAccountingEntry: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      let inputParam = { ...req.body };
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+        })
+        .then(result => {
+          // console.log("result", result)
+          if (
+            result[0]["product_type"] == "HIMS_ERP" ||
+            result[0]["product_type"] == "FINANCE_ERP"
+          ) {
+            let strQuery = ""
+            if (inputParam.grn_for === "PHR") {
+              strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, GH.net_payable, \
+                GH.detail_discount, GH.total_tax, IC.head_id, IC.child_id, V.head_id as v_head_id, \
+                V.child_id as v_child_id,  sum(DB.net_extended_cost) as net_extended_cost, sum(DB.total_amount) as total_amount \
+                from hims_f_procurement_grn_header GH \
+                inner join hims_f_procurement_grn_detail GD on GH.hims_f_procurement_grn_header_id = GD.grn_header_id \
+                inner join hims_f_procurement_dn_detail DD on DD.hims_f_procurement_dn_header_id = GD.dn_header_id \
+                inner join hims_f_procurement_dn_batches DB on DD.hims_f_procurement_dn_detail_id = DB.hims_f_procurement_dn_detail_id \
+                inner join hims_d_item_category IC on IC.hims_d_item_category_id = DB.phar_item_category\
+                inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id\
+                where hims_f_procurement_grn_header_id=? group by DB.phar_item_category;"
+            }
+            else {
+              strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, GH.net_payable, \
+                GH.detail_discount, GH.total_tax, IC.head_id, IC.child_id, V.head_id as v_head_id, \
+                V.child_id as v_child_id,  sum(DB.net_extended_cost) as net_extended_cost, sum(DB.total_amount) as total_amount \
+                from hims_f_procurement_grn_header GH \
+                inner join hims_f_procurement_grn_detail GD on GH.hims_f_procurement_grn_header_id = GD.grn_header_id \
+                inner join hims_f_procurement_dn_detail DD on DD.hims_f_procurement_dn_header_id = GD.dn_header_id \
+                inner join hims_f_procurement_dn_batches DB on DD.hims_f_procurement_dn_detail_id = DB.hims_f_procurement_dn_detail_id \
+                inner join hims_d_inventory_tem_category IC on IC.hims_d_inventory_tem_category_id = DB.inv_item_category_id\
+                inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id\
+                where hims_f_procurement_grn_header_id=? group by DB.inv_item_category_id;"
+            }
+            _mysql
+              .executeQuery({
+                query: strQuery,
+                values: [inputParam.hims_f_procurement_grn_header_id],
+                printQuery: true
+              })
+              .then(headerResult => {
+
+                _mysql
+                  .executeQuery({
+                    query: "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
+                        document_number, from_screen, transaction_type, narration, hospital_id) \
+                        VALUES (?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      new Date(),
+                      headerResult[0].net_payable,
+                      "journal",
+                      headerResult[0].hims_f_procurement_grn_header_id,
+                      headerResult[0].grn_number,
+                      inputParam.ScreenCode,
+                      "BILL",
+                      headerResult[0].inovice_number,
+                      req.userIdentity.hospital_id
+                    ],
+                    printQuery: true
+                  })
+                  .then(day_end_header => {
+                    let insertSubDetail = []
+                    const month = moment().format("M");
+                    const year = moment().format("YYYY");
+                    const IncludeValuess = [
+                      "payment_date",
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "payment_type",
+                      "credit_amount"
+                    ];
+
+                    insertSubDetail.push({
+                      payment_date: new Date(),
+                      head_id: headerResult[0].v_head_id,
+                      child_id: headerResult[0].v_child_id,
+                      debit_amount: 0,
+                      payment_type: "CR",
+                      credit_amount: headerResult[0].net_payable,
+                    });
+
+                    if (parseFloat(headerResult[0].total_tax) > 0) {
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: "46",
+                        child_id: "38",
+                        debit_amount: headerResult[0].total_tax,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                      });
+                    }
+
+                    for (let i = 0; i < headerResult.length; i++) {
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: headerResult[i].head_id,
+                        child_id: headerResult[i].child_id,
+                        debit_amount: headerResult[i].net_extended_cost,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                      });
+                    }
+
+
+                    // console.log("insertSubDetail", insertSubDetail)
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                        values: insertSubDetail,
+                        includeValues: IncludeValuess,
+                        bulkInsertOrUpdate: true,
+                        extraValues: {
+                          day_end_header_id: day_end_header.insertId,
+                          year: year,
+                          month: month,
+                          entered_date: new Date(),
+                          entered_by: req.userIdentity.algaeh_d_app_user_id,
+                          hospital_id: req.userIdentity.hospital_id
+                        },
+                        printQuery: false
+                      })
+                      .then(subResult => {
+                        _mysql.commitTransaction(() => {
+                          _mysql.releaseConnection();
+                          req.records = subResult;
+                          next();
+                        });
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            });
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(error);
+      });
     }
   }
 };
