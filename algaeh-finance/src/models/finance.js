@@ -716,13 +716,19 @@ export default {
     const _mysql = new algaehMysql();
     // const utilities = new algaehUtilities();
 
+    const input = req.query;
+    let str = "";
+
+    if (input.accounts != undefined && input.accounts.length > 0) {
+      str = ` where account in (${input.accounts})`;
+    }
+
     _mysql
       .executeQuery({
-        query:
-          "select account,child_id,M.head_id,H.account_name,C.child_name from \
+        query: `select account,child_id,M.head_id,H.account_name,C.child_name from \
           finance_accounts_maping M left join finance_account_head H\
           on M.head_id=H.finance_account_head_id left join finance_account_child C \
-          on M.child_id=C.finance_account_child_id ;",
+          on M.child_id=C.finance_account_child_id  ${str};`,
 
         printQuery: false
       })
