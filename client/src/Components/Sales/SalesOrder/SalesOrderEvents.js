@@ -1,6 +1,9 @@
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
-import { AlgaehOpenContainer, AlgaehValidation } from "../../../utils/GlobalFunctions";
+import {
+    AlgaehOpenContainer,
+    AlgaehValidation
+} from "../../../utils/GlobalFunctions";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
@@ -71,19 +74,44 @@ const texthandle = ($this, ctrl, e) => {
             });
             break;
     }
-
 };
 
 const customerTexthandle = ($this, e) => {
+
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
 
-    $this.setState({
-        [name]: value,
-        payment_terms: e.selected.payment_terms
+    debugger
+    AlgaehLoader({ show: true });
+    algaehApiCall({
+        uri: "/SalesOrder/ValidateContract",
+        module: "sales",
+        method: "GET",
+        data: { customer_id: value },
+        onSuccess: response => {
+            debugger
+            if (response.data.success) {
+                $this.setState({
+                    [name]: value,
+                    payment_terms: e.selected.payment_terms
+                });
+            } else {
+                $this.setState({
+                    [name]: null,
+                    payment_terms: null
+                });
+                swalMessage({
+                    title: "Selected Customer contract expired. Please contact customer for renewal.",
+                    type: "warning"
+                });
+            }
+            AlgaehLoader({ show: false });
+        }
     });
-};
 
+
+
+};
 
 const datehandle = ($this, ctrl, e) => {
     $this.setState({
@@ -92,8 +120,14 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const SalesQuotationSearch = ($this, e) => {
-    let inputObj = " date(quote_validity) >= date('" + moment(new Date()).format("YYYY-MM-DD") + "') and "
-    inputObj = $this.state.sales_order_mode === "I" ? " quote_items_status='G'" : " quote_services_status='G'"
+    let inputObj =
+        " date(quote_validity) >= date('" +
+        moment(new Date()).format("YYYY-MM-DD") +
+        "') and ";
+    inputObj =
+        $this.state.sales_order_mode === "I"
+            ? " quote_items_status='G'"
+            : " quote_services_status='G'";
     AlgaehSearch({
         searchGrid: {
             columns: spotlightSearch.Sales.SalesQuotation
@@ -123,28 +157,30 @@ const SalesQuotationSearch = ($this, e) => {
                             AlgaehLoader({ show: false });
                             if ($this.state.sales_order_mode === "I") {
                                 swalMessage({
-                                    title: "Selcted Quotation Has no Item Details, Select proper Quotation",
+                                    title:
+                                        "Selcted Quotation Has no Item Details, Select proper Quotation",
                                     type: "warning"
                                 });
                             } else {
                                 swalMessage({
-                                    title: "Selcted Quotation Has no Service Details, Select proper Quotation",
+                                    title:
+                                        "Selcted Quotation Has no Service Details, Select proper Quotation",
                                     type: "warning"
                                 });
                             }
-                            return
+                            return;
                         }
 
                         data.sales_quotation_id = data.hims_f_sales_quotation_id;
 
                         if ($this.state.sales_order_mode === "I") {
-                            data.sales_order_items = data.qutation_detail
+                            data.sales_order_items = data.qutation_detail;
                         } else {
-                            data.sales_order_services = data.qutation_detail
+                            data.sales_order_services = data.qutation_detail;
                         }
                         data.saveEnable = false;
                         data.selectedData = true;
-                        data.grid_edit = false
+                        data.grid_edit = false;
                         data.tax_percentage = data.vat_percentage;
 
                         data.sub_total = _.sumBy(data.qutation_detail, s =>
@@ -236,7 +272,7 @@ const ClearData = ($this, e) => {
         // services_required: "N"
     };
 
-    $this.setState(IOputs)
+    $this.setState(IOputs);
 };
 
 const SaveSalesOrderEnrty = $this => {
@@ -249,7 +285,7 @@ const SaveSalesOrderEnrty = $this => {
                     type: "warning",
                     title: "Please select Sales Person"
                 });
-                return
+                return;
             }
             let order_detail =
                 $this.state.sales_order_mode === "I"
@@ -263,7 +299,7 @@ const SaveSalesOrderEnrty = $this => {
                     title: "Please enter Quantity in the List.",
                     type: "warning"
                 });
-                return
+                return;
             }
             AlgaehLoader({ show: true });
             algaehApiCall({
@@ -272,7 +308,6 @@ const SaveSalesOrderEnrty = $this => {
                 method: "POST",
                 data: $this.state,
                 onSuccess: response => {
-
                     if (response.data.success) {
                         $this.setState({
                             sales_order_number: response.data.records.sales_order_number,
@@ -313,13 +348,16 @@ const getCtrlCode = ($this, docNumber) => {
         uri: "/SalesOrder/getSalesOrder",
         module: "sales",
         method: "GET",
-        data: { sales_order_number: docNumber, HRMNGMT_Active: $this.HRMNGMT_Active },
+        data: {
+            sales_order_number: docNumber,
+            HRMNGMT_Active: $this.HRMNGMT_Active
+        },
         onSuccess: response => {
             if (response.data.success) {
                 let data = response.data.records;
 
-                data.grid_edit = true
-                debugger
+                data.grid_edit = true;
+
                 if (
                     $this.props.sales_order_number !== undefined &&
                     $this.props.sales_order_number.length !== 0
@@ -327,28 +365,26 @@ const getCtrlCode = ($this, docNumber) => {
                     data.authBtnEnable = data.cancelled === "Y" ? true : false;
                     data.ItemDisable = true;
                     data.ClearDisable = true;
-                    data.cancelDisable = data.cancelled === "Y" ? true : false
+                    data.cancelDisable = data.cancelled === "Y" ? true : false;
 
                     for (let i = 0; i < data.order_detail.length; i++) {
-                        data.order_detail[i].quantity_outstanding = data.order_detail[i].quantity
+                        data.order_detail[i].quantity_outstanding =
+                            data.order_detail[i].quantity;
                     }
                     if (data.authorize1 === "N" || data.authorize2 === "N") {
-                        data.grid_edit = false
+                        data.grid_edit = false;
                     }
-
                 }
                 if (data.sales_order_mode === "I") {
-                    data.sales_order_items = data.order_detail
+                    data.sales_order_items = data.order_detail;
                 } else {
-                    data.sales_order_services = data.order_detail
+                    data.sales_order_services = data.order_detail;
                 }
                 data.saveEnable = true;
                 data.dataExists = true;
 
                 data.addedItem = true;
                 data.selectedData = true;
-
-
 
                 $this.setState(data);
             }
@@ -362,10 +398,9 @@ const getCtrlCode = ($this, docNumber) => {
             });
         }
     });
-
 };
 
-const generatePOReceipt = data => {
+const generateSalesOrderReport = data => {
     console.log("data:", data);
     algaehApiCall({
         uri: "/report",
@@ -378,13 +413,13 @@ const generatePOReceipt = data => {
         data: {
             report: {
                 reportName:
-                    data.po_from === "PHR"
-                        ? "poPharmacyProcurement"
-                        : "poInventoryProcurement",
+                    data.sales_order_mode === "S"
+                        ? "SalesOrderReportService"
+                        : "SalesOrderReportItem",
                 reportParams: [
                     {
-                        name: "purchase_number",
-                        value: data.purchase_number
+                        name: "sales_order_number",
+                        value: data.sales_order_number
                     }
                 ],
                 outputFileType: "PDF"
@@ -399,7 +434,7 @@ const generatePOReceipt = data => {
             myWindow.document.write(
                 "<iframe src= '" + url + "' width='100%' height='100%' />"
             );
-            myWindow.document.title = "Purchase Order Receipt";
+            myWindow.document.title = "Sales Order";
         }
     });
 };
@@ -416,14 +451,11 @@ const generatePOReceiptNoPrice = data => {
         others: { responseType: "blob" },
         data: {
             report: {
-                reportName:
-                    data.po_from === "PHR"
-                        ? "poPharmacyProcurementNoPrice"
-                        : "poInventoryProcurementNoPrice",
+                reportName: "SalesOrderReport",
                 reportParams: [
                     {
-                        name: "purchase_number",
-                        value: data.purchase_number
+                        name: "hims_f_sales_order_number",
+                        value: data.hims_f_sales_order_number
                     }
                 ],
                 outputFileType: "PDF"
@@ -438,13 +470,12 @@ const generatePOReceiptNoPrice = data => {
             myWindow.document.write(
                 "<iframe src= '" + url + "' width='100%' height='100%' />"
             );
-            myWindow.document.title = "Purchase Order Receipt";
+            myWindow.document.title = "Sales Order Report";
         }
     });
 };
 
-
-const getSalesOptions = ($this) => {
+const getSalesOptions = $this => {
     algaehApiCall({
         uri: "/SalesSettings/getSalesOptions",
         method: "GET",
@@ -458,10 +489,9 @@ const getSalesOptions = ($this) => {
             }
         }
     });
-}
+};
 
-
-const employeeSearch = ($this) => {
+const employeeSearch = $this => {
     AlgaehSearch({
         searchGrid: {
             columns: spotlightSearch.Employee_details.employee
@@ -473,16 +503,13 @@ const employeeSearch = ($this) => {
             callBack(text);
         },
         onRowSelect: row => {
-            $this.setState(
-                {
-                    employee_name: row.full_name,
-                    sales_person_id: row.hims_d_employee_id
-                }
-            );
+            $this.setState({
+                employee_name: row.full_name,
+                sales_person_id: row.hims_d_employee_id
+            });
         }
     });
-}
-
+};
 
 const dateValidate = ($this, value, event) => {
     let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
@@ -499,7 +526,7 @@ const dateValidate = ($this, value, event) => {
 };
 
 const AuthorizeOrderEntry = ($this, authorize) => {
-    debugger
+
     let order_detail =
         $this.state.sales_order_mode === "I"
             ? $this.state.sales_order_items
@@ -518,7 +545,7 @@ const AuthorizeOrderEntry = ($this, authorize) => {
             title: "Please enter Quantity.",
             type: "warning"
         });
-        return
+        return;
     }
     AlgaehLoader({ show: true });
 
@@ -568,10 +595,9 @@ const AuthorizeOrderEntry = ($this, authorize) => {
             });
         }
     });
+};
 
-}
-
-const CancelSalesServiceOrder = ($this) => {
+const CancelSalesServiceOrder = $this => {
     algaehApiCall({
         uri: "/SalesOrder/cancelSalesServiceOrder",
         module: "sales",
@@ -585,7 +611,7 @@ const CancelSalesServiceOrder = ($this) => {
                 });
                 $this.setState({
                     cancelDisable: true
-                })
+                });
             }
             AlgaehLoader({ show: false });
         },
@@ -597,9 +623,8 @@ const CancelSalesServiceOrder = ($this) => {
             });
         }
     });
-}
+};
 export {
-
     texthandle,
     datehandle,
     SalesQuotationSearch,
@@ -607,8 +632,7 @@ export {
     ClearData,
     SaveSalesOrderEnrty,
     getCtrlCode,
-    generatePOReceipt,
-    generatePOReceiptNoPrice,
+    generateSalesOrderReport,
     getSalesOptions,
     employeeSearch,
     dateValidate,

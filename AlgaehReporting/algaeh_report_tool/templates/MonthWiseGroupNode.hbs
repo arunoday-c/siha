@@ -7,15 +7,22 @@
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
-                        <th width="40px">Sl No.</th>
-                        <th>Sub Account Name</th>
+                        <th width="100px">Month Here</th>
+                        <th>Particulars</th>
                         <th width="80px">Debit Amt</th>
                         <th width="80px">Credit Amt</th>
-                        <th width="80px">Balance Amt.</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{#hasElement months}}
+                    {{#each details}}
+                    <tr>
+                        <td class="">{{transaction_month}}</td>
+                        <td class="">{{child_name}}</td>
+                        <td class="numberFld ">{{debit_amount}}</td>
+                        <td class="numberFld ">{{credit_amount}}</td>
+                    </tr>
+                       {{/each }}
+                    {{!-- {{#hasElement months}}
                     {{#each months}}
                     <tr>
                         <td colspan="4" class="tableSubHdg txtFld">{{month_name}}</td>
@@ -37,11 +44,25 @@
                     {{/each }}
                     {{/each }}
                     {{/each }}
-                    {{!-- {{else}}
-                    <tr>
-                        <td class="noResultTextReport">No Records Found</td>
-                    </tr> --}}
-                    {{/hasElement }}
+                  
+                    {{/hasElement }} --}}
+
+
+                    <tr class="numberFld ">
+                        <td class="numberFld" colspan="2"></td>
+                        <td class="numberFld">{{total_debit}}</td>
+                        <td class="numberFld">{{total_credit}}</td>
+                    </tr>
+                    <tr class="numberFld ">
+                        <td class="numberFld" colspan="2">Closing Balance</td>
+                        <td class="numberFld"></td>
+                        <td class="numberFld">CL amount</td>
+                    </tr>
+                    <tr class="numberFld numberFldTotalBottom">
+                        <td class="numberFld" colspan="2"></td>
+                        <td class="numberFld">{{total_debit}}</td>
+                        <td class="numberFld">{{total_credit}}</td>
+                    </tr>
                 </tbody>
             </table>
 
@@ -51,34 +72,7 @@
 
 
 
-        <table class="tableTotal">
-            <tr>
-                <td>
-                    Grand Total Debit
-                </td>
-                <td>
-                    {{final_debit_amount}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Grand Total Credit
-                </td>
-                <td>
-                    {{final_credit_amount}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Grand Closing Balance
-                </td>
-                <td>
-                    {{final_balance}}
-                </td>
-            </tr>
-
-            </tr>
-        </table>
+   
     </div>
 
 </body>

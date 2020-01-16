@@ -230,7 +230,7 @@ export default function ScreenAssignmentEvents() {
       let newModule = _.map(main_modules, f => {
         let _sList = f.ScreenList;
         let _checked = { checked: f.checked ? true : false };
-        if (f.module_id === val) {
+        if (parseInt(f.module_id) === val) {
           _sList = _screens;
           _checked = { checked: _status ? true : false };
         }

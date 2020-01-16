@@ -1,10 +1,10 @@
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import _ from "lodash";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 const texthandle = ($this, ctrl, e) => {
     e = ctrl || e;
@@ -23,9 +23,7 @@ const texthandle = ($this, ctrl, e) => {
             });
             break;
     }
-
 };
-
 
 const SalesOrderSearch = ($this, e) => {
     AlgaehSearch({
@@ -34,7 +32,8 @@ const SalesOrderSearch = ($this, e) => {
         },
         searchName: "SalesOrder",
         uri: "/gloabelSearch/get",
-        inputs: " sales_order_mode = 'I' and is_completed='N' and authorize1='Y' and authorize2='Y'",
+        inputs:
+            " sales_order_mode = 'I' and is_completed='N' and authorize1='Y' and authorize2='Y'",
 
         onContainsChange: (text, serchBy, callBack) => {
             callBack(text);
@@ -45,15 +44,18 @@ const SalesOrderSearch = ($this, e) => {
                 uri: "/DispatchNote/getSalesOrderItem",
                 module: "sales",
                 method: "GET",
-                data: { sales_order_number: row.sales_order_number, location_id: $this.state.location_id },
+                data: {
+                    sales_order_number: row.sales_order_number,
+                    location_id: $this.state.location_id
+                },
                 onSuccess: response => {
-
                     if (response.data.success) {
+                        debugger
                         let data = response.data.records;
 
                         data.sales_order_id = data.hims_f_sales_order_id;
                         data.saveEnable = true;
-                        data.selectedData = true
+                        data.selectedData = true;
                         data.sub_total = 0;
                         data.discount_amount = 0;
                         data.net_total = 0;
@@ -78,31 +80,75 @@ const SalesOrderSearch = ($this, e) => {
 };
 
 const ClearData = ($this, e) => {
-    $this.setState($this.baseState)
+    $this.setState({
+        hims_f_dispatch_note_id: null,
+        dispatch_note_number: null,
+        sales_order_id: null,
+        sales_order_number: null,
+        dispatch_note_date: new Date(),
+        customer_id: null,
+        sub_total: null,
+        discount_amount: null,
+        net_total: null,
+        total_tax: null,
+        net_payable: null,
+        narration: null,
+        project_id: null,
+        customer_po_no: null,
+        tax_percentage: null,
+        location_id: null,
+        location_type: null,
+
+        stock_detail: [],
+        decimal_place: JSON.parse(
+            AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+        ).decimal_places,
+        saveEnable: true,
+        dataExists: false,
+        hospital_id: JSON.parse(
+            AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+        ).hims_d_hospital_id,
+        ReqData: true,
+        customer_name: null,
+        hospital_name: null,
+        project_name: null,
+        selectedData: false,
+        cannotEdit: false,
+
+        item_details: [],
+        batch_detail_view: false,
+        dispatched_quantity: 0,
+        inventory_stock_detail: []
+    });
 };
 
 const SaveDispatchNote = $this => {
-    let InputObj = $this.state
+    let InputObj = $this.state;
     AlgaehLoader({ show: true });
     InputObj.transaction_type = "SDN";
-    InputObj.transaction_date = moment(InputObj.dispatch_note_date, "YYYY-MM-DD").format("YYYY-MM-DD");
+    InputObj.transaction_date = moment(
+        InputObj.dispatch_note_date,
+        "YYYY-MM-DD"
+    ).format("YYYY-MM-DD");
 
     for (let i = 0; i < InputObj.inventory_stock_detail.length; i++) {
-        InputObj.inventory_stock_detail[i].location_id =
-            InputObj.location_id;
-        InputObj.inventory_stock_detail[i].location_type =
-            InputObj.location_type;
+        InputObj.inventory_stock_detail[i].location_id = InputObj.location_id;
+        InputObj.inventory_stock_detail[i].location_type = InputObj.location_type;
         InputObj.inventory_stock_detail[i].operation = "-";
 
         InputObj.inventory_stock_detail[i].quantity =
             InputObj.inventory_stock_detail[i].dispatch_quantity;
 
-        InputObj.inventory_stock_detail[i].net_total = InputObj.inventory_stock_detail[i].total_amount;
+        InputObj.inventory_stock_detail[i].net_total =
+            InputObj.inventory_stock_detail[i].total_amount;
 
-        InputObj.inventory_stock_detail[i].expiry_date =
-            moment(InputObj.inventory_stock_detail[i].expiry_date, "YYYY-MM-DD").format("YYYY-MM-DD");
+        InputObj.inventory_stock_detail[i].expiry_date = InputObj.inventory_stock_detail[i].expiry_date !== null ? moment(
+            InputObj.inventory_stock_detail[i].expiry_date,
+            "YYYY-MM-DD"
+        ).format("YYYY-MM-DD") : null;
     }
 
+    debugger
     delete InputObj.item_details;
 
     for (let j = 0; j < InputObj.stock_detail.length; j++) {
@@ -118,7 +164,6 @@ const SaveDispatchNote = $this => {
     });
 
     InputObj.stock_detail = stock_detail;
-
 
     const settings = { header: undefined, footer: undefined };
 
@@ -160,7 +205,6 @@ const SaveDispatchNote = $this => {
 };
 
 const getCtrlCode = ($this, docNumber, row) => {
-
     $this.setState($this.baseState, () => {
         algaehApiCall({
             uri: "/DispatchNote/getDispatchNote",
@@ -180,7 +224,6 @@ const getCtrlCode = ($this, docNumber, row) => {
                                 data.stock_detail[i].inventory_stock_detail
                             );
                         }
-
                     }
                     data.inventory_stock_detail = inventory_stock_detail;
 
@@ -189,7 +232,6 @@ const getCtrlCode = ($this, docNumber, row) => {
 
                     data.cannotEdit = true;
                     data.dataExitst = true;
-
 
                     data.sales_order_number = row.sales_order_number;
                     data.customer_name = row.customer_name;
@@ -209,36 +251,9 @@ const getCtrlCode = ($this, docNumber, row) => {
             }
         });
     });
-    // AlgaehLoader({ show: true });
-    // algaehApiCall({
-    //     uri: "/DispatchNote/getDispatchNote",
-    //     module: "sales",
-    //     method: "GET",
-    //     data: { dispatch_note_number: docNumber },
-    //     onSuccess: response => {
-    //         if (response.data.success) {
-    //             let data = response.data.records;
-    //             data.saveEnable = true;
-    //             data.dataExists = true;
-    //             data.cannotEdit = true;
-    //             data.addedItem = true;
-    //             $this.setState(data);
-    //         }
-    //         AlgaehLoader({ show: false });
-    //     },
-    //     onFailure: error => {
-    //         AlgaehLoader({ show: false });
-    //         swalMessage({
-    //             title: error.message,
-    //             type: "error"
-    //         });
-    //     }
-    // });
-
 };
 
-const generatePOReceipt = data => {
-    console.log("data:", data);
+const generateDispatchReport = data => {
     algaehApiCall({
         uri: "/report",
         method: "GET",
@@ -249,14 +264,11 @@ const generatePOReceipt = data => {
         others: { responseType: "blob" },
         data: {
             report: {
-                reportName:
-                    data.po_from === "PHR"
-                        ? "poPharmacyProcurement"
-                        : "poInventoryProcurement",
+                reportName: "dispatchNoteReport",
                 reportParams: [
                     {
-                        name: "purchase_number",
-                        value: data.purchase_number
+                        name: "dispatch_note_number",
+                        value: data.dispatch_note_number
                     }
                 ],
                 outputFileType: "PDF"
@@ -271,46 +283,7 @@ const generatePOReceipt = data => {
             myWindow.document.write(
                 "<iframe src= '" + url + "' width='100%' height='100%' />"
             );
-            myWindow.document.title = "Purchase Order Receipt";
-        }
-    });
-};
-
-const generatePOReceiptNoPrice = data => {
-    console.log("data:", data);
-    algaehApiCall({
-        uri: "/report",
-        method: "GET",
-        module: "reports",
-        headers: {
-            Accept: "blob"
-        },
-        others: { responseType: "blob" },
-        data: {
-            report: {
-                reportName:
-                    data.po_from === "PHR"
-                        ? "poPharmacyProcurementNoPrice"
-                        : "poInventoryProcurementNoPrice",
-                reportParams: [
-                    {
-                        name: "purchase_number",
-                        value: data.purchase_number
-                    }
-                ],
-                outputFileType: "PDF"
-            }
-        },
-        onSuccess: res => {
-            const url = URL.createObjectURL(res.data);
-            let myWindow = window.open(
-                "{{ product.metafields.google.custom_label_0 }}",
-                "_blank"
-            );
-            myWindow.document.write(
-                "<iframe src= '" + url + "' width='100%' height='100%' />"
-            );
-            myWindow.document.title = "Purchase Order Receipt";
+            myWindow.document.title = "Dispatch Note Report";
         }
     });
 };
@@ -321,6 +294,5 @@ export {
     ClearData,
     SaveDispatchNote,
     getCtrlCode,
-    generatePOReceipt,
-    generatePOReceiptNoPrice
+    generateDispatchReport
 };

@@ -12,6 +12,8 @@ const onchhangeNumber = ($this, context, row, e) => {
     row.extended_price = value === "" || value === undefined ? 0
       :
       (parseFloat(row.quantity) * parseFloat(value)).toFixed($this.state.decimal_places)
+    row.discount_amount = row.discount_percentage === "" || row.discount_percentage === undefined
+      ? 0 : ((parseFloat(row.extended_price) * parseFloat(row.discount_percentage)) / 100).toFixed($this.state.decimal_places);
   } else {
     if (row.unit_price === 0 || row.unit_price === null) {
       swalMessage({
@@ -62,6 +64,10 @@ const onchhangeNumber = ($this, context, row, e) => {
       value === "" || value === undefined
         ? 0
         : ((parseFloat(row.net_extended_cost) * parseFloat(value)) / 100).toFixed($this.state.decimal_places);
+  } else {
+    row.tax_amount = row.tax_percentage === "" || row.tax_percentage === undefined
+      ? 0
+      : ((parseFloat(row.net_extended_cost) * parseFloat(row.tax_percentage)) / 100).toFixed($this.state.decimal_places);
   }
 
   row.total_amount = parseFloat(row.net_extended_cost) + parseFloat(row.tax_amount)

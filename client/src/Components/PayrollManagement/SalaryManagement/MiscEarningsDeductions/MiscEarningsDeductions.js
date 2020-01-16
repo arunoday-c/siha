@@ -64,8 +64,14 @@ export default class MiscEarningsDeductions extends Component {
   changeGridEditors(row, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
+    let employee_miscellaneous = this.state.employee_miscellaneous
+    let _index = employee_miscellaneous.indexOf(row)
     row[name] = value;
-    row.update();
+
+    employee_miscellaneous[_index] = row
+    this.setState({
+      employee_miscellaneous: employee_miscellaneous
+    })
   }
 
   getHospitals() {

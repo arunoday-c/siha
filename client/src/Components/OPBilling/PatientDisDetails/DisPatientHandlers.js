@@ -26,7 +26,7 @@ const PatientSearch = ($this, context, e) => {
 
 const selectVisit = ($this, context, e) => {
   //   let $this = this;
-
+  AlgaehLoader({ show: true });
   let mode_of_pay = "Self";
   let applydiscount = false;
 
@@ -69,7 +69,7 @@ const selectVisit = ($this, context, e) => {
         },
         onSuccess: response => {
           if (response.data.success) {
-            AlgaehLoader({ show: false });
+            // AlgaehLoader({ show: false });
 
             let data = response.data.records;
 

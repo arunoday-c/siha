@@ -189,15 +189,12 @@ export default {
 
       _mysql
         .generateRunningNumber({
-          modules: ["INV_TRN_NUM"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["INV_TRN_NUM"],
+          table_name: "hims_f_inventory_numgen"
         })
         .then(generatedNumbers => {
-          transfer_number = generatedNumbers[0];
+          transfer_number = generatedNumbers.INV_TRN_NUM;
 
           let year = moment().format("YYYY");
 
@@ -334,15 +331,13 @@ export default {
 
         _mysql
           .generateRunningNumber({
-            modules: ["INV_TRN_NUM"],
-            tableName: "hims_f_app_numgen",
-            identity: {
-              algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-              hospital_id: req.userIdentity.hospital_id
-            }
+            user_id: req.userIdentity.algaeh_d_app_user_id,
+            numgen_codes: ["INV_TRN_NUM"],
+            table_name: "hims_f_inventory_numgen"
+
           })
           .then(generatedNumbers => {
-            transfer_number = generatedNumbers[0];
+            transfer_number = generatedNumbers.INV_TRN_NUM;
 
             let year = moment().format("YYYY");
 

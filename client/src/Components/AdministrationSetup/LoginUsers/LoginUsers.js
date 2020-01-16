@@ -23,13 +23,50 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import Enumerable from "linq";
 import swal from "sweetalert2";
 import _ from "lodash";
-
+import { MainContext } from "algaeh-react-components/context";
 class LoginUsers extends Component {
   constructor(props) {
     super(props);
-    let Activated_Modueles = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    );
+    // let Activated_Modueles = JSON.parse(
+    //   AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+    // );
+
+    // let Activated_Modueles = this.context;
+
+    // const HIMS_Active = _.filter(Activated_Modueles, f => {
+    //   return f.module_code === "FTDSK";
+    // });
+    // const HRMS_Active = _.filter(Activated_Modueles, f => {
+    //   return f.module_code === "PAYROLL";
+    // });
+
+    // const USER_TYPE =
+    //   HIMS_Active.length > 0 && HRMS_Active.length > 0
+    //     ? HIMS_HR_USER_TYPE
+    //     : HIMS_Active.length > 0
+    //     ? HIMS_USER_TYPE
+    //     : HRMS_Active.length > 0
+    //     ? HR_USER_TYPE
+    //     : [];
+
+    this.state = {
+      algaeh_d_app_user_id: null,
+      login_users: [],
+      PR_USER_TYPE: [], //USER_TYPE,
+      apiConfig: false,
+      selectedUSer: {},
+      roles_grid: [],
+      branch_detail: []
+    };
+    this.getGroups();
+    this.getLoginUsers();
+    this.getOrganization();
+    this.getBranchDetail();
+  }
+  componentDidMount() {
+    // console.log("Activated_Modueles", this.context);
+    let Activated_Modueles = this.context.userMenu;
+
     const HIMS_Active = _.filter(Activated_Modueles, f => {
       return f.module_code === "FTDSK";
     });
@@ -41,36 +78,20 @@ class LoginUsers extends Component {
       HIMS_Active.length > 0 && HRMS_Active.length > 0
         ? HIMS_HR_USER_TYPE
         : HIMS_Active.length > 0
-          ? HIMS_USER_TYPE
-          : HRMS_Active.length > 0
-            ? HR_USER_TYPE
-            : [];
-
-    this.state = {
-      algaeh_d_app_user_id: null,
-      login_users: [],
-      PR_USER_TYPE: USER_TYPE,
-      apiConfig: false,
-      selectedUSer: {},
-      roles_grid: [],
-      branch_detail: []
-    };
-    this.getGroups();
-    this.getLoginUsers();
-    this.getOrganization();
-    this.getBranchDetail()
+        ? HIMS_USER_TYPE
+        : HRMS_Active.length > 0
+        ? HR_USER_TYPE
+        : [];
   }
-
   searchSelect(data) {
-
-    let branch_detail = this.state.branch_detail
+    let branch_detail = this.state.branch_detail;
     let selecte_branch = _.find(
       branch_detail,
       f => f.hims_d_hospital_id === data.hospital_id
     );
-    const _index = branch_detail.indexOf(selecte_branch)
-    selecte_branch.checked = true
-    branch_detail[_index] = selecte_branch
+    const _index = branch_detail.indexOf(selecte_branch);
+    selecte_branch.checked = true;
+    branch_detail[_index] = selecte_branch;
 
     this.setState({
       employee_id: data.hims_d_employee_id,
@@ -98,7 +119,7 @@ class LoginUsers extends Component {
       full_name: "",
       branch_detail: []
     });
-    this.getBranchDetail()
+    this.getBranchDetail();
   }
 
   changeGridEditors(row, e) {
@@ -139,12 +160,12 @@ class LoginUsers extends Component {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          const data = response.data.records.map((item) => {
+          const data = response.data.records.map(item => {
             return {
               checked: false,
               ...item
             };
-          })
+          });
           this.setState({
             branch_detail: data
           });
@@ -169,11 +190,11 @@ class LoginUsers extends Component {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          debugger
+          debugger;
           let login_users = Enumerable.from(response.data.records)
             .groupBy("$.hims_d_employee_id", null, (k, g) => {
               let firstRecordSet = Enumerable.from(g).firstOrDefault();
-              debugger
+              debugger;
               return {
                 algaeh_d_app_user_id: firstRecordSet.algaeh_d_app_user_id,
                 full_name: firstRecordSet.full_name,
@@ -187,7 +208,8 @@ class LoginUsers extends Component {
                 role_id: firstRecordSet.role_id,
                 user_status: firstRecordSet.user_status,
                 hospital_id: firstRecordSet.hospital_id,
-                algaeh_m_role_user_mappings_id: firstRecordSet.algaeh_m_role_user_mappings_id
+                algaeh_m_role_user_mappings_id:
+                  firstRecordSet.algaeh_m_role_user_mappings_id
               };
             })
             .toArray();
@@ -268,19 +290,16 @@ class LoginUsers extends Component {
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
-
-        debugger
-
+        debugger;
       }
     });
-
   }
 
   addLoginUser() {
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
-        debugger
+        debugger;
         if (this.state.algaeh_d_app_user_id === null) {
           const branch_data = _.filter(this.state.branch_detail, f => {
             return f.checked === true;
@@ -310,7 +329,7 @@ class LoginUsers extends Component {
 
                 this.getLoginUsers();
                 this.resetSaveState();
-                this.getBranchDetail()
+                this.getBranchDetail();
               } else if (!response.data.success) {
                 swalMessage({
                   title: response.data.records.message,
@@ -318,11 +337,15 @@ class LoginUsers extends Component {
                 });
               }
             },
-            onError: error => { }
+            onError: error => {}
           });
         } else {
           const branch_data = _.filter(this.state.branch_detail, f => {
-            return f.checked === true && (f.hims_m_user_employee_id === null || f.hims_m_user_employee_id === undefined);
+            return (
+              f.checked === true &&
+              (f.hims_m_user_employee_id === null ||
+                f.hims_m_user_employee_id === undefined)
+            );
           });
 
           const delete_branch_data = _.filter(this.state.branch_detail, f => {
@@ -337,7 +360,8 @@ class LoginUsers extends Component {
               role_id: this.state.role_id,
               user_type: this.state.user_type,
               algaeh_d_app_user_id: this.state.algaeh_d_app_user_id,
-              algaeh_m_role_user_mappings_id: this.state.algaeh_m_role_user_mappings_id,
+              algaeh_m_role_user_mappings_id: this.state
+                .algaeh_m_role_user_mappings_id,
               user_status: this.state.user_status,
               branch_data: branch_data,
               delete_branch_data: delete_branch_data
@@ -415,35 +439,36 @@ class LoginUsers extends Component {
   }
 
   selectBranch(data, e) {
-    let branch_detail = this.state.branch_detail
+    let branch_detail = this.state.branch_detail;
     let selecte_branch = _.find(
       branch_detail,
       f => f.hims_d_hospital_id === data.hims_d_hospital_id
     );
-    const _index = branch_detail.indexOf(selecte_branch)
-    selecte_branch.checked = e.target.checked
-    branch_detail[_index] = selecte_branch
+    const _index = branch_detail.indexOf(selecte_branch);
+    selecte_branch.checked = e.target.checked;
+    branch_detail[_index] = selecte_branch;
     this.setState({ branch_detail: branch_detail });
   }
 
   EditLoginUser(row) {
-    let branch_detail = this.state.branch_detail
-    branch_detail = branch_detail.map((item) => {
+    let branch_detail = this.state.branch_detail;
+    branch_detail = branch_detail.map(item => {
       return {
         hims_m_user_employee_id: null,
         ...item
       };
-    })
+    });
     for (let i = 0; i < row.branch_data.length; i++) {
-      debugger
+      debugger;
       let selecte_branch = _.find(
         branch_detail,
         f => f.hims_d_hospital_id === row.branch_data[i].hospital_id
       );
-      const _index = branch_detail.indexOf(selecte_branch)
-      selecte_branch.checked = true
-      selecte_branch.hims_m_user_employee_id = row.branch_data[i].hims_m_user_employee_id
-      branch_detail[_index] = selecte_branch
+      const _index = branch_detail.indexOf(selecte_branch);
+      selecte_branch.checked = true;
+      selecte_branch.hims_m_user_employee_id =
+        row.branch_data[i].hims_m_user_employee_id;
+      branch_detail[_index] = selecte_branch;
     }
     this.getRoles(row.app_group_id);
     this.setState({
@@ -460,7 +485,7 @@ class LoginUsers extends Component {
       algaeh_m_role_user_mappings_id: row.algaeh_m_role_user_mappings_id,
       branch_detail: branch_detail
       // branch_data: branch_data
-    })
+    });
   }
 
   render() {
@@ -509,7 +534,10 @@ class LoginUsers extends Component {
                         data: this.state.hospitals
                       },
                       others: {
-                        disabled: this.state.algaeh_d_app_user_id === null ? false : true
+                        disabled:
+                          this.state.algaeh_d_app_user_id === null
+                            ? false
+                            : true
                       },
                       onChange: this.dropDownHandler.bind(this)
                     }}
@@ -544,7 +572,8 @@ class LoginUsers extends Component {
                       hospital_id: this.state.hospital_id
                     }}
                     others={{
-                      disabled: this.state.algaeh_d_app_user_id === null ? false : true
+                      disabled:
+                        this.state.algaeh_d_app_user_id === null ? false : true
                     }}
                     onClick={this.searchSelect.bind(this)}
                   />
@@ -621,7 +650,7 @@ class LoginUsers extends Component {
                     }}
                   />
 
-                  {this.state.algaeh_d_app_user_id !== null ?
+                  {this.state.algaeh_d_app_user_id !== null ? (
                     <AlagehAutoComplete
                       div={{ className: "col-6 form-group" }}
                       label={{
@@ -639,7 +668,8 @@ class LoginUsers extends Component {
                         },
                         onChange: this.dropDownHandler.bind(this)
                       }}
-                    /> : null}
+                    />
+                  ) : null}
 
                   <div className="col-12">
                     <label> Branch List</label>
@@ -666,7 +696,6 @@ class LoginUsers extends Component {
                         );
                       })}
                     </ul>
-
                   </div>
                   <div className="col-12 form-group">
                     <button
@@ -686,16 +715,19 @@ class LoginUsers extends Component {
                       type="button"
                       className="btn btn-primary"
                     >
-                      {this.state.algaeh_d_app_user_id === null ? <AlgaehLabel
-                        label={{
-                          fieldName: "add_to_list"
-                        }}
-                      /> : <AlgaehLabel
+                      {this.state.algaeh_d_app_user_id === null ? (
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "add_to_list"
+                          }}
+                        />
+                      ) : (
+                        <AlgaehLabel
                           label={{
                             forceLabel: "Update"
                           }}
-                        />}
-
+                        />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -723,7 +755,9 @@ class LoginUsers extends Component {
                         {
                           fieldName: "action",
 
-                          label: <AlgaehLabel label={{ forceLabel: "action" }} />,
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "action" }} />
+                          ),
                           displayTemplate: row => {
                             return (
                               <span>
@@ -819,8 +853,8 @@ class LoginUsers extends Component {
                             return row.user_status === "A"
                               ? "Active"
                               : row.user_status === "I"
-                                ? "Inactive"
-                                : "----------";
+                              ? "Inactive"
+                              : "----------";
                           }
                         }
                       ]}
@@ -850,5 +884,5 @@ class LoginUsers extends Component {
     );
   }
 }
-
+LoginUsers.contextType = MainContext;
 export default LoginUsers;

@@ -11,6 +11,18 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-weight: bold;
+  }
+  input[type="text"]:disabled,
+  input[type="number"]:disabled,
+  input[type="tel"]:disabled,
+  input[type="email"]:disabled,
+  input[type="time"]:disabled,
+  input[type="password"]:disabled,
+  input[type="type"]:disabled {
+    background: #fffdfa;
+    border: 1px dashed #d3d3d3;
+    color: #c3c1c1;
+    font-weight: normal;
   }
 }
-

@@ -75,39 +75,39 @@ export default {
               if (
                 _employee.endOfServiceYears >= 0 &&
                 _employee.endOfServiceYears <=
-                  _optionsDetals.from_service_range1
+                _optionsDetals.from_service_range1
               ) {
                 _eligibleDays =
                   _employee.endOfServiceYears * _optionsDetals.eligible_days1;
               } else if (
                 _employee.endOfServiceYears >=
-                  _optionsDetals.from_service_range1 &&
+                _optionsDetals.from_service_range1 &&
                 _employee.endOfServiceYears <=
-                  _optionsDetals.from_service_range2
+                _optionsDetals.from_service_range2
               ) {
                 _eligibleDays =
                   _employee.endOfServiceYears * _optionsDetals.eligible_days2;
               } else if (
                 _employee.endOfServiceYears >=
-                  _optionsDetals.from_service_range2 &&
+                _optionsDetals.from_service_range2 &&
                 _employee.endOfServiceYears <=
-                  _optionsDetals.from_service_range3
+                _optionsDetals.from_service_range3
               ) {
                 _eligibleDays =
                   _employee.endOfServiceYears * _optionsDetals.eligible_days3;
               } else if (
                 _employee.endOfServiceYears >=
-                  _optionsDetals.from_service_range3 &&
+                _optionsDetals.from_service_range3 &&
                 _employee.endOfServiceYears <=
-                  _optionsDetals.from_service_range4
+                _optionsDetals.from_service_range4
               ) {
                 _eligibleDays =
                   _employee.endOfServiceYears * _optionsDetals.eligible_days4;
               } else if (
                 _employee.endOfServiceYears >=
-                  _optionsDetals.from_service_range4 &&
+                _optionsDetals.from_service_range4 &&
                 _employee.endOfServiceYears <=
-                  _optionsDetals.from_service_range5
+                _optionsDetals.from_service_range5
               ) {
                 _eligibleDays =
                   _employee.endOfServiceYears * _optionsDetals.eligible_days5;
@@ -286,27 +286,24 @@ export default {
         } else {
           _mysql
             .generateRunningNumber({
-              modules: ["END_OF_SERVICE_NO"],
-              tableName: "hims_f_app_numgen",
-              identity: {
-                algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-                hospital_id: req.userIdentity.hospital_id
-              }
+              user_id: req.userIdentity.algaeh_d_app_user_id,
+              numgen_codes: ["END_OF_SERVICE_NO"],
+              table_name: "hims_f_hrpayroll_numgen"
             })
-            .then(result => {
-              if (result.length == 0) {
-                _mysql.rollBackTransaction(() => {
-                  next(
-                    utilities
-                      .httpStatus()
-                      .generateError(
-                        utilities.httpStatus().noContent,
-                        "Please add number generation for end of service"
-                      )
-                  );
-                });
-                return;
-              }
+            .then(generatedNumbers => {
+              // if (result.length == 0) {
+              //   _mysql.rollBackTransaction(() => {
+              //     next(
+              //       utilities
+              //         .httpStatus()
+              //         .generateError(
+              //           utilities.httpStatus().noContent,
+              //           "Please add number generation for end of service"
+              //         )
+              //     );
+              //   });
+              //   return;
+              // }
 
               _mysql
                 .executeQuery({
@@ -317,7 +314,7 @@ export default {
             `calculated_gratutity_amount`,`payable_amount`, `gratuity_status`, `remarks`,\
             `created_by`,`created_date`,`updated_by`,`updated_date`,hospital_id) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                   values: [
-                    result[0],
+                    generatedNumbers.END_OF_SERVICE_NO,
                     _input.employee_id,
                     new Date(),
                     _input.exit_type,
@@ -346,7 +343,7 @@ export default {
                     } else {
                       req.records = {
                         ...insertResult,
-                        end_of_service_number: result[0]
+                        end_of_service_number: generatedNumbers.END_OF_SERVICE_NO
                       };
                       next();
                     }

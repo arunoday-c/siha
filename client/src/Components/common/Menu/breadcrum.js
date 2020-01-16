@@ -12,11 +12,13 @@ export default memo(function({ selectedMenu, userLanguage }) {
     ScreenList
   } = selectedMenu;
   const [show, setShow] = useState(false);
+  const [pos, setPos] = useState(0);
   const history = useHistory();
-  function onShow() {
+  function onShow(e) {
     setShow(value => {
       return !value;
     });
+    setPos(e.target.offsetLeft + 15);
   }
   function onClickScreen(item, display, others) {
     const screenName = display.replace(/ /g, "");
@@ -26,14 +28,24 @@ export default memo(function({ selectedMenu, userLanguage }) {
   }
   return (
     <div className="breadCrumpMenu">
-      <span className="showParentModule" onClick={onShow}>
-        {userLanguage === "en" ? module_name : other_language}
-      </span>
-      <span className="childActiveModule">
-        {userLanguage === "en" ? screen_name : s_other_language}
-      </span>
+      {" "}
+      <ul class="appMenuNavigation">
+        <li>
+          <span> {userLanguage === "en" ? module_name : other_language}</span>
+        </li>
+        <li onClick={onShow} onBlur={onShow}>
+          <span> {userLanguage === "en" ? screen_name : s_other_language}</span>
+          <i
+            className="fas fa-sort-down"
+            style={{
+              fontSize: "1.3rem",
+              marginTop: "5px"
+            }}
+          ></i>
+        </li>
+      </ul>
       {show === true ? (
-        <div className="dropDownList">
+        <div className="dropDownList" style={{ left: `${pos}px` }}>
           <ul>
             {ScreenList.map((item, idx) => {
               if (screen_name === item.screen_name) return null;

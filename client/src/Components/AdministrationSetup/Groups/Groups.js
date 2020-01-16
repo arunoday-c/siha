@@ -186,7 +186,7 @@ class Groups extends Component {
       <div className="groups">
         <div className="row inner-top-search">
           <AlagehFormGroup
-            div={{ className: "col-2  mandatory form-group" }}
+            div={{ className: "col-1  mandatory form-group" }}
             label={{
               forceLabel: "Group Code",
               isImp: true
@@ -219,7 +219,7 @@ class Groups extends Component {
               }
             }}
           />
-          <AlagehFormGroup
+          {/* <AlagehFormGroup
             div={{ className: "col-3  mandatory form-group" }}
             label={{
               forceLabel: "User Group Description",
@@ -233,7 +233,7 @@ class Groups extends Component {
                 onChange: this.changeTexts.bind(this)
               }
             }}
-          />
+          /> */}
           <AlagehAutoComplete
             div={{ className: "col-2  mandatory form-group" }}
             label={{
@@ -326,40 +326,40 @@ class Groups extends Component {
                           );
                         }
                       },
-                      {
-                        fieldName: "app_group_desc",
+                      // {
+                      //   fieldName: "app_group_desc",
 
-                        label: (
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Group Description"
-                            }}
-                          />
-                        ),
-                        editorTemplate: row => {
-                          return (
-                            <AlagehFormGroup
-                              div={{ className: "col" }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "app_group_desc",
-                                value: row.app_group_desc,
-                                events: {
-                                  onChange: this.changeGridEditors.bind(
-                                    this,
-                                    row
-                                  )
-                                },
-                                others: {
-                                  errormessage:
-                                    "Group Description- cannot be blank",
-                                  required: true
-                                }
-                              }}
-                            />
-                          );
-                        }
-                      },
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{
+                      //         forceLabel: "Group Description"
+                      //       }}
+                      //     />
+                      //   ),
+                      //   editorTemplate: row => {
+                      //     return (
+                      //       <AlagehFormGroup
+                      //         div={{ className: "col" }}
+                      //         textBox={{
+                      //           className: "txt-fld",
+                      //           name: "app_group_desc",
+                      //           value: row.app_group_desc,
+                      //           events: {
+                      //             onChange: this.changeGridEditors.bind(
+                      //               this,
+                      //               row
+                      //             )
+                      //           },
+                      //           others: {
+                      //             errormessage:
+                      //               "Group Description- cannot be blank",
+                      //             required: true
+                      //           }
+                      //         }}
+                      //       />
+                      //     );
+                      //   }
+                      // },
                       {
                         fieldName: "group_type",
                         label: (

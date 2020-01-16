@@ -75,7 +75,6 @@
           border-left: 1px solid #ebebeb;
           padding-right: 10px;
           b {
-            border-bottom: 1px solid #888888;
             width: 100%;
             display: inline-block;
           }
@@ -83,12 +82,11 @@
         span:last-child {
           color: black;
           float: right;
-          width: 130px;
+          width: 136px;
           text-align: right;
           border-left: 1px solid #ebebeb;
           padding-right: 10px;
           b {
-            border-bottom: 1px solid #888888;
             width: 100%;
             display: inline-block;
           }
@@ -189,13 +187,42 @@
     }
   }
 }
-
+.reportPreviewToolRight {
+  border-left: 1px solid #d3d3d3;
+  min-height: 82vh !important;
+  background: #f9f9f9;
+  max-width: 50px !important;
+  padding: 0;
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    li {
+      margin: 0;
+      padding: 2px 5px;
+      list-style: none;
+      span {
+        background: #b4b4b4;
+        height: 40px;
+        width: 40px;
+        display: block;
+        cursor: pointer;
+        border-radius: 10%;
+        text-align: center;
+        line-height: 40px;
+        font-size: 1rem;
+      }
+    }
+  }
+}
 .printing {
   margin: 10mm;
 }
 .footerTotalArea {
   border-top: 1px solid #d3d3d3;
   text-align: right;
+  background: #f1f1f1;
+  font-weight: bold;
   td {
     vertical-align: top;
     padding: 0 15px;

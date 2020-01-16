@@ -1,6 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
+import moment from "moment";
 
 export default {
   getPurchaseReturnEntry: (req, res, next) => {
@@ -80,7 +81,8 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT *, sub_total as receipt_net_total, net_payable as receipt_net_payable, net_payable as return_total \
+            "SELECT *, sub_total as receipt_net_total, net_payable as receipt_net_payable, net_payable as return_total, \
+            total_tax as tax_amount \
             FROM hims_f_procurement_grn_header where hims_f_procurement_grn_header_id=?",
           values: [req.query.grn_header_id],
           printQuery: true
@@ -167,15 +169,12 @@ export default {
       utilities.logger().log("addPurchaseReturnEntry: ");
       _mysql
         .generateRunningNumber({
-          modules: ["PO_RETURN_NUM"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["PO_RETURN_NUM"],
+          table_name: "hims_f_procurement_numgen"
         })
         .then(generatedNumbers => {
-          purchase_return_number = generatedNumbers[0];
+          purchase_return_number = generatedNumbers.PO_RETURN_NUM;
 
           // let today = moment().format("YYYY-MM-DD");
 
@@ -343,8 +342,7 @@ export default {
           values: [
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            inputParam.hims_f_procurement_return_po_header_id,
-            inputParam.grn_header_id
+            inputParam.hims_f_procurement_return_po_header_id
           ],
           printQuery: true
         })
@@ -368,7 +366,7 @@ export default {
             );
           }
           _mysql
-            .executeQueryWithTransaction({
+            .executeQuery({
               query: StrQuery,
               printQuery: true
             })
@@ -391,6 +389,178 @@ export default {
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
+      });
+    }
+  },
+  generateAccountingEntry: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      let inputParam = { ...req.body };
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+        })
+        .then(result => {
+          // console.log("result", result)
+          if (
+            result[0]["product_type"] == "HIMS_ERP" ||
+            result[0]["product_type"] == "FINANCE_ERP"
+          ) {
+            let strQuery = ""
+            if (inputParam.po_return_from === "PHR") {
+              strQuery = "select RH.hims_f_procurement_return_po_header_id, RH.purchase_return_number, GH.grn_number, RH.return_total, \
+              RH.discount_amount, RH.tax_amount, IC.head_id, IC.child_id, V.head_id as v_head_id, \
+              V.child_id as v_child_id,  sum(RD.net_extended_cost) as net_extended_cost, sum(RD.total_amount) as total_amount \
+              from hims_f_procurement_po_return_header RH \
+              inner join hims_f_procurement_po_return_detail RD on RH.hims_f_procurement_return_po_header_id = RD.po_return_header_id \
+              inner join hims_f_procurement_grn_header GH on GH.hims_f_procurement_grn_header_id = RH.grn_header_id \
+              inner join hims_d_item_category IC on IC.hims_d_item_category_id = RD.phar_item_category \
+              inner join hims_d_vendor V on V.hims_d_vendor_id = RH.vendor_id \
+              where hims_f_procurement_return_po_header_id=? group by RD.phar_item_category;"
+            }
+            else {
+              strQuery = "select RH.hims_f_procurement_return_po_header_id, RH.purchase_return_number, GH.grn_number, RH.return_total, \
+              RH.discount_amount, RH.tax_amount, IC.head_id, IC.child_id, V.head_id as v_head_id, \
+              V.child_id as v_child_id,  sum(RD.net_extended_cost) as net_extended_cost, sum(RD.total_amount) as total_amount \
+              from hims_f_procurement_po_return_header RH \
+              inner join hims_f_procurement_po_return_detail RD on RH.hims_f_procurement_return_po_header_id = RD.po_return_header_id \
+              inner join hims_f_procurement_grn_header GH on GH.hims_f_procurement_grn_header_id = RH.grn_header_id \
+              inner join hims_d_inventory_tem_category IC on IC.hims_d_inventory_tem_category_id = RD.inv_item_category_id\
+              inner join hims_d_vendor V on V.hims_d_vendor_id = RH.vendor_id\
+              where hims_f_procurement_return_po_header_id=? group by RD.inv_item_category_id;"
+            }
+            _mysql
+              .executeQuery({
+                query: strQuery,
+                values: [inputParam.hims_f_procurement_return_po_header_id],
+                printQuery: true
+              })
+              .then(headerResult => {
+
+                _mysql
+                  .executeQuery({
+                    query: "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
+                        document_number, from_screen, transaction_type, narration, hospital_id) \
+                        VALUES (?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      new Date(),
+                      headerResult[0].return_total,
+                      "journal",
+                      headerResult[0].hims_f_procurement_return_po_header_id,
+                      headerResult[0].purchase_return_number,
+                      inputParam.ScreenCode,
+                      "BILL",
+                      headerResult[0].grn_number,
+                      req.userIdentity.hospital_id
+                    ],
+                    printQuery: true
+                  })
+                  .then(day_end_header => {
+                    let insertSubDetail = []
+                    const month = moment().format("M");
+                    const year = moment().format("YYYY");
+                    const IncludeValuess = [
+                      "payment_date",
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "payment_type",
+                      "credit_amount"
+                    ];
+
+                    insertSubDetail.push({
+                      payment_date: new Date(),
+                      head_id: headerResult[0].v_head_id,
+                      child_id: headerResult[0].v_child_id,
+                      debit_amount: headerResult[0].return_total,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                    });
+
+                    if (parseFloat(headerResult[0].tax_amount) > 0) {
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: "46",
+                        child_id: "38",
+                        debit_amount: 0,
+                        payment_type: "CR",
+                        credit_amount: headerResult[0].tax_amount,
+                      });
+                    }
+
+                    for (let i = 0; i < headerResult.length; i++) {
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: headerResult[i].head_id,
+                        child_id: headerResult[i].child_id,
+                        debit_amount: 0,
+                        payment_type: "CR",
+                        credit_amount: headerResult[i].net_extended_cost,
+                      });
+                    }
+
+
+                    // console.log("insertSubDetail", insertSubDetail)
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                        values: insertSubDetail,
+                        includeValues: IncludeValuess,
+                        bulkInsertOrUpdate: true,
+                        extraValues: {
+                          day_end_header_id: day_end_header.insertId,
+                          year: year,
+                          month: month,
+                          entered_date: new Date(),
+                          entered_by: req.userIdentity.algaeh_d_app_user_id,
+                          hospital_id: req.userIdentity.hospital_id
+                        },
+                        printQuery: false
+                      })
+                      .then(subResult => {
+                        // _mysql.commitTransaction(() => {
+                        //   _mysql.releaseConnection();
+                        // req.records = subResult;
+                        next();
+                        // });
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            });
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(error);
       });
     }
   }

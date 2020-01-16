@@ -69,7 +69,38 @@ hbs.registerHelper("if", function(value1, value2, options) {
   if (value1 == value2) return options.fn(this);
   else return options.inverse(this);
 });
+hbs.registerHelper("ifCond", function(v1, operator, v2, options) {
+  switch (operator) {
+    case "==":
+      return v1 == v2 ? options.fn(this) : options.inverse(this);
+    case "===":
+      return v1 === v2 ? options.fn(this) : options.inverse(this);
+    case "!=":
+      return v1 != v2 ? options.fn(this) : options.inverse(this);
+    case "!==":
+      return v1 !== v2 ? options.fn(this) : options.inverse(this);
+    case "<":
+      return v1 < v2 ? options.fn(this) : options.inverse(this);
+    case "<=":
+      return v1 <= v2 ? options.fn(this) : options.inverse(this);
+    case ">":
+      return v1 > v2 ? options.fn(this) : options.inverse(this);
+    case ">=":
+      return v1 >= v2 ? options.fn(this) : options.inverse(this);
+    case "&&":
+      return v1 && v2 ? options.fn(this) : options.inverse(this);
+    case "||":
+      return v1 || v2 ? options.fn(this) : options.inverse(this);
+    default:
+      return options.inverse(this);
+  }
+});
 
+// hbs.registerHelper("ifgtreql", function (value1, value2) {
+//   console.log("value1: ", value1)
+//   console.log("value2: ", value2)
+//   if (value1 > value2) { return true; } else { return false; }
+// });
 hbs.registerHelper("dateTime", function(value, type) {
   type = type || "date";
 
@@ -542,10 +573,11 @@ export default {
                       utilitites: () => {
                         return new utilitites();
                       },
-                      currencyFormat: (currency, formater) => {
+                      currencyFormat: (currency, formater, addSymbol) => {
                         return new utilitites().getCurrencyFormart(
                           currency,
-                          formater
+                          formater,
+                          addSymbol
                         );
                       }
                     })

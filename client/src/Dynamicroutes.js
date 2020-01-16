@@ -36,30 +36,37 @@ const Transactions = () => <FinanceFragment path="Transactions" />;
 const JournalVoucher = () => <FinanceFragment path="JournalVoucher" />;
 const FinanceReports = () => <FinanceFragment path="FinanceReports" />;
 const FinanceOptions = () => <FinanceFragment path="FinanceOptions" />;
+const CostCenter = () => <FinanceFragment path="CostCenter" />;
 const JournalAuthorization = () => (
   <FinanceFragment path="JournalAuthorization" />
 );
 const PageToPlot = {
-  Dashboard: HrDashboard,
-  //Dashboard: DynamicDashboard,
-  // 7: React.lazy(() =>
-  //   retry(() => import("./Components/Dashboard/frontdesk-dashboard"))
-  // ),
-  // 8: React.lazy(() =>
-  //   retry(() => import("./Components/Dashboard/doctor-dashboard"))
-  // ),
-  // 11: React.lazy(() =>
-  //   retry(() => import("./Components/Dashboard/lab-dashboard"))
-  // ),
-  // 12: React.lazy(() =>
-  //   retry(() => import("./Components/Dashboard/hr-dashboard"))
-  // ),
-  // 13: React.lazy(() =>
-  //   retry(() => import("./Components/Dashboard/pharmacy-dashboard"))
-  // ),
-  // 14: React.lazy(() =>
-  //   retry(() => import("./Components/Dashboard/inventory-dashboard"))
-  // ),
+  // Dashboard: HrDashboard,
+  Dashboard: DynamicDashboard,
+  1: React.lazy(() =>
+    retry(() => import("./Components/Dashboard/Dashboard"))
+  ),
+  6: React.lazy(() =>
+    retry(() => import("./Components/Dashboard/Dashboard"))
+  ),
+  7: React.lazy(() =>
+    retry(() => import("./Components/Dashboard/frontdesk-dashboard"))
+  ),
+  8: React.lazy(() =>
+    retry(() => import("./Components/Dashboard/doctor-dashboard"))
+  ),
+  11: React.lazy(() =>
+    retry(() => import("./Components/Dashboard/lab-dashboard"))
+  ),
+  12: React.lazy(() =>
+    retry(() => import("./Components/Dashboard/hr-dashboard"))
+  ),
+  13: React.lazy(() =>
+    retry(() => import("./Components/Dashboard/pharmacy-dashboard"))
+  ),
+  14: React.lazy(() =>
+    retry(() => import("./Components/Dashboard/inventory-dashboard"))
+  ),
   FrontDesk: React.lazy(() =>
     retry(() => import("./Components/RegistrationPatient/RegistrationPatient"))
   ),
@@ -572,13 +579,17 @@ const PageToPlot = {
   SalesOrderList: React.lazy(() =>
     retry(() => import("./Components/Sales/SalesOrderList/SalesOrderSwitch"))
   ),
+  SalesReturnEntry: React.lazy(() =>
+    retry(() => import("./Components/Sales/SalesReturnEntry/SalesReturnEntry"))
+  ),
 
   Accounts,
   Transactions,
   JournalVoucher,
   FinanceReports,
   FinanceOptions,
-  JournalAuthorization
+  JournalAuthorization,
+  CostCenter
 };
 
 const DirectRoutes = React.memo(props => {

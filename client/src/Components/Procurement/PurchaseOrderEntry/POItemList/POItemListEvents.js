@@ -718,7 +718,7 @@ const onchangegridcol = ($this, row, e) => {
     } else {
       row[name] = value;
       row["quantity_outstanding"] = value;
-      row["rejected_quantity"] = value;
+      row["rejected_quantity"] = row.total_quantity;
       row.update();
     }
   }

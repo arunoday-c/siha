@@ -76,15 +76,12 @@ export function addSalesQuotation(req, res, next) {
 
     _mysql
       .generateRunningNumber({
-        modules: ["SALES_QUOTE"],
-        tableName: "hims_f_sales_numgen",
-        identity: {
-          algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-          hospital_id: req.userIdentity.hospital_id
-        }
+        user_id: req.userIdentity.algaeh_d_app_user_id,
+        numgen_codes: ["SALES_QUOTE"],
+        table_name: "hims_f_sales_numgen"
       })
       .then(generatedNumbers => {
-        sales_quotation_number = generatedNumbers[0];
+        sales_quotation_number = generatedNumbers.SALES_QUOTE;
 
         _mysql
           .executeQuery({

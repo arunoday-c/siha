@@ -1,4 +1,6 @@
 import React, { useRef } from "react";
+import { Row, Col } from "antd";
+
 // import { Button } from "algaeh-react-components";
 import ReactToPrint from "react-to-print";
 import { PlotUI } from "./plotui";
@@ -89,8 +91,7 @@ import { PlotUI } from "./plotui";
 //   }
 // }
 
-export default function BalanceSheet(props) {
-  const { style, data, result, footer } = props;
+export default function BalanceSheet({ style, data, result, footer, layout }) {
   const createPrintObject = useRef(undefined);
   if (result.length === 0) return null;
   if (Object.keys(data).length === 0) {
@@ -107,41 +108,47 @@ export default function BalanceSheet(props) {
         />
         <div ref={createPrintObject}>
           <div className="financeReportHeader">
-            <div>Company logo</div>
-
-            <div>Address</div>
-            <h3>Report Name</h3>
-            {/* <p>
-              Applied Filters -{" "}
-              <span>
-                Date: <b>11-04-2019</b>
-              </span>
-              <span>
-                Date: <b>11-04-2019</b>
-              </span>
-              <span>
-                Date: <b>11-04-2019</b>
-              </span>
-            </p> */}
+            <div>Client Name Here</div>
+            <div>Client Address Here</div>
+            <hr></hr>
+            {result[0] === "income" ? (
+              <h3>Profit and Loss</h3>
+            ) : (
+              <h3>Balance Sheet</h3>
+            )}
+            <p>
+              As on: <b>Date Here</b>
+            </p>
           </div>
-          <div className="reportTableStyle">
-            <ul className="treeListUL">
-              {PlotUI(data[result[0]], style, [0])}
-            </ul>
-            <ul className="treeListUL">
-              {PlotUI(data[result[1]], style, [0])}
-            </ul>{" "}
+          <div className="reportBodyArea">
+            <Row gutter={[8, 8]}>
+              <Col span={layout.col}>
+                <div className="reportTableStyle">
+                  <ul className="treeListUL">
+                    {PlotUI(data[result[0]], style, [0])}
+                  </ul>
+                </div>
+              </Col>
+              <Col span={layout.col}>
+                <div className="reportTableStyle">
+                  <ul className="treeListUL">
+                    {PlotUI(data[result[1]], style, [0])}
+                  </ul>
+                </div>
+              </Col>
+            </Row>
           </div>
-
-          <table style={{ width: "100%" }}>
-            <tbody>
-              <tr className="footerTotalArea">
-                <td style={{ width: "100%" }} valign="top">
-                  <b> {typeof footer === "function" ? footer(data) : null}</b>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="reportTotalArea">
+            <table style={{ width: "100%" }}>
+              <tbody>
+                <tr className="footerTotalArea">
+                  <td style={{ width: "100%" }} valign="top">
+                    <b> {typeof footer === "function" ? footer(data) : null}</b>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </>
     );

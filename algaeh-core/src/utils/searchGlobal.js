@@ -862,7 +862,43 @@ let algaehSearchConfig = (searchName, req) => {
           inner join hims_d_project P on P.hims_d_project_id = H.project_id \
           inner join hims_d_hospital B on B.hims_d_hospital_id = H.hospital_id",
         orderBy: "hims_f_dispatch_note_header_id desc"
+      },
+      {
+        searchName: "SalesInvoice",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS  IH.*,  CASE IH.sales_invoice_mode WHEN 'I' then 'Items' else 'Services' \
+          end as sales_invoice_mode, C.customer_name, SO.sales_order_number from hims_f_sales_invoice_header IH \
+          inner join hims_d_customer C on IH.customer_id = C.hims_d_customer_id \
+          inner join  hims_f_sales_order SO on IH.sales_order_id = SO.hims_f_sales_order_id  \
+          where IH.hospital_id=" +
+          hospitalId,
+        orderBy: "hims_f_sales_invoice_header_id desc"
+
+      },
+      {
+        searchName: "InvSalesReturn",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS  IH.*,  C.customer_name, P.project_desc, \
+          SO.invoice_number from hims_f_sales_return_header IH \
+          inner join hims_d_customer C on IH.customer_id = C.hims_d_customer_id \
+          inner join  hims_f_sales_invoice_header SO on IH.sales_invoice_header_id = SO.hims_f_sales_invoice_header_id  \
+          inner join hims_d_project P on P.hims_d_project_id = IH.project_id \
+          where IH.hospital_id=" +
+          hospitalId,
+        orderBy: "hims_f_sales_return_header_id desc"
+
+      },
+      {
+        searchName: "ContractMang",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS contract_number, contract_date, start_date, end_date, \
+          contract_code, quotation_ref_numb, C.customer_name from  hims_f_contract_management CM \
+          inner join hims_d_customer C on CM.customer_id = C.hims_d_customer_id where hospital_id=" +
+          hospitalId,
+        orderBy: "hims_f_contract_management_id desc"
+
       }
+
     ]
 
 

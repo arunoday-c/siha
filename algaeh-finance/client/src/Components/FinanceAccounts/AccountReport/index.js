@@ -8,7 +8,7 @@ import {
   AlgaehMessagePop
 } from "algaeh-react-components";
 import moment from "moment";
-import CostCenter from "../../costcenter";
+import CostCenter from "../../costCenterComponent";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 let resultdata = {};
 export default memo(function Modal(props) {
@@ -133,13 +133,9 @@ export default memo(function Modal(props) {
 
         let reportName = "";
         if (leafnode === "N") {
-          reportName = checkedType
-            ? "ledgerMonthReportGroupNode"
-            : "ledgerDateReportGroupNode";
+          reportName = checkedType ? "MonthWiseGroupNode" : "DateWiseGroupNode";
         } else {
-          reportName = checkedType
-            ? "ledgerMonthReportLeafNode"
-            : "ledgerDateReportLeafNode";
+          reportName = checkedType ? "MonthWiseLeafNode" : "DateWiseLeafNode";
         }
         let outcomeDataHospital = {};
         let outcomeDataCostCenter = {};

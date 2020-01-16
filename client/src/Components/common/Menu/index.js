@@ -78,7 +78,6 @@ function NavBars(props) {
           <p className="appLogoHIMSOnly" />
         </div>
         <h5 className="topNavbar-title mr-auto">
-          <i className="fas fa-chevron-right" />
           <BreadCrum selectedMenu={selectedMenu} userLanguage={userLanguage} />
         </h5>
         <div className="navTopBarRight">

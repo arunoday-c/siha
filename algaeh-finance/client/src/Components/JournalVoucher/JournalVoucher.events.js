@@ -54,7 +54,7 @@ export function addJurnorLedger(input) {
         module: "finance",
         onSuccess: response => {
           if (response.data.success === true) {
-            resolve();
+            resolve(response.data.result);
           } else {
             reject(response.data.message);
           }
