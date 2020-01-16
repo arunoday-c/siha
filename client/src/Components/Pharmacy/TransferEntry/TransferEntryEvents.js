@@ -3,7 +3,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import TransferIOputs from "../../../Models/TransferEntry";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage, getCookie } from "../../../utils/algaehApiCall";
 import _ from "lodash";
 import moment from "moment"
 
@@ -212,6 +212,8 @@ const AcknowledgeTransferEntry = $this => {
     InputObj.pharmacy_stock_detail[i].expiry_date =
       InputObj.pharmacy_stock_detail[i].expiry_date === null ? null : moment(InputObj.pharmacy_stock_detail[i].expiry_date, "YYYY-MM-DD").format("YYYY-MM-DD");
   }
+
+  InputObj.ScreenCode = getCookie("ScreenCode")
 
   algaehApiCall({
     uri: "/transferEntry/updatetransferEntry",

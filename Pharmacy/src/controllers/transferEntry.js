@@ -11,7 +11,8 @@ const {
   addtransferEntry,
   updatetransferEntry,
   getrequisitionEntryTransfer,
-  getAckTransferList
+  getAckTransferList,
+  generateAccountingEntry
 } = transferModels;
 
 export default () => {
@@ -47,6 +48,7 @@ export default () => {
   api.put(
     "/updatetransferEntry",
     updatetransferEntry,
+    generateAccountingEntry,
     updateIntoItemLocation,
     updateIntoItemLocation,
     (req, res, next) => {
