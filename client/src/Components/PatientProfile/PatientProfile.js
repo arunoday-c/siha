@@ -59,7 +59,7 @@ class PatientProfile extends Component {
     this.selected_module = getCookie("module_id");
     debugger
     this.active_modules = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("AlgaehOrbitaryData"))
+      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
     );
 
     allergyPopUp = props.open_allergy_popup;

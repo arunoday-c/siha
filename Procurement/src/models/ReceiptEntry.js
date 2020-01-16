@@ -475,28 +475,44 @@ export default {
           ) {
             let strQuery = ""
             if (inputParam.grn_for === "PHR") {
-              strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, GH.net_payable, \
-                GH.detail_discount, GH.total_tax, IC.head_id, IC.child_id, V.head_id as v_head_id, \
-                V.child_id as v_child_id,  sum(DB.net_extended_cost) as net_extended_cost, sum(DB.total_amount) as total_amount \
+              // strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, GH.net_payable, \
+              //   GH.detail_discount, GH.total_tax, PL.head_id, PL.child_id, V.head_id as v_head_id, \
+              //   V.child_id as v_child_id,  sum(DB.net_extended_cost) as net_extended_cost, sum(DB.total_amount) as total_amount \
+              //   from hims_f_procurement_grn_header GH \
+              //   inner join hims_f_procurement_grn_detail GD on GH.hims_f_procurement_grn_header_id = GD.grn_header_id \
+              //   inner join hims_f_procurement_dn_detail DD on DD.hims_f_procurement_dn_header_id = GD.dn_header_id \
+              //   inner join hims_f_procurement_dn_batches DB on DD.hims_f_procurement_dn_detail_id = DB.hims_f_procurement_dn_detail_id \
+              //   inner join hims_d_pharmacy_location PL on PL.hims_d_pharmacy_location_id = GH.pharmcy_location_id\
+              //   inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id\
+              //   where hims_f_procurement_grn_header_id=? group by DB.pharmcy_location_id;"
+
+              strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, \
+                GH.net_total, GH.total_tax, \
+                GH.net_payable, PL.head_id, PL.child_id, V.head_id as v_head_id, V.child_id as v_child_id \
                 from hims_f_procurement_grn_header GH \
-                inner join hims_f_procurement_grn_detail GD on GH.hims_f_procurement_grn_header_id = GD.grn_header_id \
-                inner join hims_f_procurement_dn_detail DD on DD.hims_f_procurement_dn_header_id = GD.dn_header_id \
-                inner join hims_f_procurement_dn_batches DB on DD.hims_f_procurement_dn_detail_id = DB.hims_f_procurement_dn_detail_id \
-                inner join hims_d_item_category IC on IC.hims_d_item_category_id = DB.phar_item_category\
+                inner join hims_d_pharmacy_location PL on PL.hims_d_pharmacy_location_id = GH.pharmcy_location_id\
                 inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id\
-                where hims_f_procurement_grn_header_id=? group by DB.phar_item_category;"
+                where hims_f_procurement_grn_header_id=?;"
             }
             else {
-              strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, GH.net_payable, \
-                GH.detail_discount, GH.total_tax, IC.head_id, IC.child_id, V.head_id as v_head_id, \
-                V.child_id as v_child_id,  sum(DB.net_extended_cost) as net_extended_cost, sum(DB.total_amount) as total_amount \
+              // strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, GH.net_payable, \
+              //   GH.detail_discount, GH.total_tax, IL.head_id, IL.child_id, V.head_id as v_head_id, \
+              //   V.child_id as v_child_id,  sum(DB.net_extended_cost) as net_extended_cost, sum(DB.total_amount) as total_amount \
+              //   from hims_f_procurement_grn_header GH \
+              //   inner join hims_f_procurement_grn_detail GD on GH.hims_f_procurement_grn_header_id = GD.grn_header_id \
+              //   inner join hims_f_procurement_dn_detail DD on DD.hims_f_procurement_dn_header_id = GD.dn_header_id \
+              //   inner join hims_f_procurement_dn_batches DB on DD.hims_f_procurement_dn_detail_id = DB.hims_f_procurement_dn_detail_id \
+              //   inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = DB.inventory_location_id\
+              //   inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id\
+              //   where hims_f_procurement_grn_header_id=? group by DB.inventory_location_id;"
+
+              strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, \
+                GH.net_total, GH.total_tax, \
+                GH.net_payable, PL.head_id, PL.child_id, V.head_id as v_head_id, V.child_id as v_child_id \
                 from hims_f_procurement_grn_header GH \
-                inner join hims_f_procurement_grn_detail GD on GH.hims_f_procurement_grn_header_id = GD.grn_header_id \
-                inner join hims_f_procurement_dn_detail DD on DD.hims_f_procurement_dn_header_id = GD.dn_header_id \
-                inner join hims_f_procurement_dn_batches DB on DD.hims_f_procurement_dn_detail_id = DB.hims_f_procurement_dn_detail_id \
-                inner join hims_d_inventory_tem_category IC on IC.hims_d_inventory_tem_category_id = DB.inv_item_category_id\
+                inner join hims_d_inventory_location PL on PL.hims_d_inventory_location_id = GH.inventory_location_id \
                 inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id\
-                where hims_f_procurement_grn_header_id=? group by DB.inv_item_category_id;"
+                where hims_f_procurement_grn_header_id=?;"
             }
             _mysql
               .executeQuery({
@@ -537,6 +553,7 @@ export default {
                       "credit_amount"
                     ];
 
+                    //Vendor Entry
                     insertSubDetail.push({
                       payment_date: new Date(),
                       head_id: headerResult[0].v_head_id,
@@ -546,6 +563,7 @@ export default {
                       credit_amount: headerResult[0].net_payable,
                     });
 
+                    //Tax Entry
                     if (parseFloat(headerResult[0].total_tax) > 0) {
                       insertSubDetail.push({
                         payment_date: new Date(),
@@ -557,16 +575,14 @@ export default {
                       });
                     }
 
-                    for (let i = 0; i < headerResult.length; i++) {
-                      insertSubDetail.push({
-                        payment_date: new Date(),
-                        head_id: headerResult[i].head_id,
-                        child_id: headerResult[i].child_id,
-                        debit_amount: headerResult[i].net_extended_cost,
-                        payment_type: "DR",
-                        credit_amount: 0,
-                      });
-                    }
+                    insertSubDetail.push({
+                      payment_date: new Date(),
+                      head_id: headerResult[0].head_id,
+                      child_id: headerResult[0].child_id,
+                      debit_amount: headerResult[0].net_total,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                    });
 
 
                     // console.log("insertSubDetail", insertSubDetail)
