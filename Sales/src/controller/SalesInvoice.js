@@ -5,7 +5,9 @@ import {
     getDispatchItemDetails,
     getSalesOrderServiceInvoice,
     addInvoiceEntry,
-    getInvoiceEntry
+    getInvoiceEntry,
+    postSalesInvoice,
+    generateAccountingEntry
 } from "../models/SalesInvoice";
 
 export default function SalesOrder() {
@@ -54,5 +56,25 @@ export default function SalesOrder() {
             });
         });
 
+
+    api.put(
+        "/postSalesInvoice",
+        postSalesInvoice,
+        generateAccountingEntry,
+        (req, res, next) => {
+            res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+                success: true,
+                records: req.records
+            });
+        });
+    api.put(
+        "/generateAccountingEntry",
+        generateAccountingEntry,
+        (req, res, next) => {
+            res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+                success: true,
+                records: req.records
+            });
+        });
     return api;
 }

@@ -831,6 +831,8 @@ export default {
   generateAccountingEntry: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
+    const utilities = new algaehUtilities();
+
     try {
       let inputParam = { ...req.body };
       _mysql
