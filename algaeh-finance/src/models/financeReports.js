@@ -152,7 +152,6 @@ export default {
 
     getAccountHeadsForTrialBalance(decimal_places, 1, option)
       .then(asset => {
-        console.log("ASSET:", asset);
         getAccountHeadsForTrialBalance(decimal_places, 2, option)
           .then(liability => {
             getAccountHeadsForTrialBalance(decimal_places, 3, option)
@@ -160,7 +159,6 @@ export default {
                 // const newCapital = capital.children[0].children.find(f => {
                 //   return f.finance_account_child_id == 52;
                 // });
-
                 // const newCapital = capital;
                 getAccountHeadsForTrialBalance(decimal_places, 4, option)
                   .then(income => {
@@ -173,7 +171,6 @@ export default {
                             parseFloat(liability.total_debit_amount) +
                             parseFloat(expense.total_debit_amount)
                         ).toFixed(decimal_places);
-
                         const total_credit_amount = parseFloat(
                           parseFloat(asset.total_credit_amount) +
                             parseFloat(capital.total_credit_amount) +
@@ -181,9 +178,7 @@ export default {
                             parseFloat(liability.total_credit_amount) +
                             parseFloat(expense.total_credit_amount)
                         ).toFixed(decimal_places);
-
                         // newCapital.children = [{ ...newCapital }];
-
                         req.records = {
                           asset: asset.roots[0],
                           liability: liability.roots[0],
@@ -288,7 +283,6 @@ function getAccountHeadsForTrialBalance(
             result[1]
           )
             .then(head_data => {
-              console.log("head_data:", head_data);
               const outputArray = createHierarchyForTB(
                 result[0],
                 child_data,
@@ -428,45 +422,44 @@ function calcAmount(account_heads, levels, decimal_places) {
       });
 
       for (let i = max_account_level - 1; i >= 0; i--) {
-        for (let k = 0; k < levels_group[i].length; k++) {
-          levels_group[i].map(item => {
-            let immediate_childs = levels_group[i + 1].filter(child => {
-              if (item.finance_account_head_id == child.parent_acc_id) {
-                return item;
-              }
-            });
-
-            const total_debit_amount = _.chain(immediate_childs)
-              .sumBy(s => parseFloat(s.total_debit_amount))
-              .value()
-              .toFixed(decimal_places);
-
-            const total_credit_amount = _.chain(immediate_childs)
-              .sumBy(s => parseFloat(s.total_credit_amount))
-              .value()
-              .toFixed(decimal_places);
-
-            item["total_debit_amount"] = parseFloat(
-              parseFloat(item["debit_amount"]) + parseFloat(total_debit_amount)
-            ).toFixed(decimal_places);
-
-            item["total_credit_amount"] = parseFloat(
-              parseFloat(item["credit_amount"]) +
-                parseFloat(total_credit_amount)
-            ).toFixed(decimal_places);
-
-            item["cred_minus_deb"] = parseFloat(
-              parseFloat(item["total_credit_amount"]) -
-                parseFloat(item["total_debit_amount"])
-            ).toFixed(decimal_places);
-            item["deb_minus_cred"] = parseFloat(
-              parseFloat(item["total_debit_amount"]) -
-                parseFloat(item["total_credit_amount"])
-            ).toFixed(decimal_places);
-
-            return item;
+        // for (let k = 0; k < levels_group[i].length; k++) {
+        levels_group[i].map(item => {
+          let immediate_childs = levels_group[i + 1].filter(child => {
+            if (item.finance_account_head_id == child.parent_acc_id) {
+              return item;
+            }
           });
-        }
+
+          const total_debit_amount = _.chain(immediate_childs)
+            .sumBy(s => parseFloat(s.total_debit_amount))
+            .value()
+            .toFixed(decimal_places);
+
+          const total_credit_amount = _.chain(immediate_childs)
+            .sumBy(s => parseFloat(s.total_credit_amount))
+            .value()
+            .toFixed(decimal_places);
+
+          item["total_debit_amount"] = parseFloat(
+            parseFloat(item["debit_amount"]) + parseFloat(total_debit_amount)
+          ).toFixed(decimal_places);
+
+          item["total_credit_amount"] = parseFloat(
+            parseFloat(item["credit_amount"]) + parseFloat(total_credit_amount)
+          ).toFixed(decimal_places);
+
+          item["cred_minus_deb"] = parseFloat(
+            parseFloat(item["total_credit_amount"]) -
+              parseFloat(item["total_debit_amount"])
+          ).toFixed(decimal_places);
+          item["deb_minus_cred"] = parseFloat(
+            parseFloat(item["total_debit_amount"]) -
+              parseFloat(item["total_credit_amount"])
+          ).toFixed(decimal_places);
+
+          return item;
+        });
+        // }
       }
       const final_res = [];
 
@@ -490,6 +483,7 @@ function calcAmountForTrialBalance(
   child_data
 ) {
   try {
+    const utilities = new algaehUtilities();
     return new Promise((resolve, reject) => {
       const max_account_level = parseInt(levels[0]["account_level"]);
 
@@ -520,51 +514,45 @@ function calcAmountForTrialBalance(
         .groupBy(g => g.account_level)
         .value();
 
+      let tempArray = [];
       for (let i = max_account_level - 1; i >= 0; i--) {
-        for (let k = 0; k < levels_group[i].length; k++) {
-          // if (i == 2) {
-          //   console.log("immediate_childs:", levels_group[i + 1]);
-          // }
+        // for (let k = 0; k < levels_group[i].length; k++) {
 
-          levels_group[i].map(item => {
-            let immediate_childs = levels_group[i + 1].filter(child => {
-              if (item.finance_account_head_id == child.parent_acc_id) {
-                return item;
-              }
-            });
-
-            const total_credit_side = _.chain(immediate_childs)
-              .sumBy(s => parseFloat(s.total_credit_side))
-              .value()
-              .toFixed(decimal_places);
-
-            const total_debit_side = _.chain(immediate_childs)
-              .sumBy(s => parseFloat(s.total_debit_side))
-              .value()
-              .toFixed(decimal_places);
-
-            if (total_debit_side > 50000) {
-              console.log("total_debit_side:", total_debit_side);
-              console.log("immediate_childs:", immediate_childs);
+        levels_group[i].map(item => {
+          let immediate_childs = levels_group[i + 1].filter(child => {
+            if (item.finance_account_head_id == child.parent_acc_id) {
+              return child;
             }
-
-            // item["total_debit_side"] = parseFloat(
-            //   parseFloat(item["total_debit_side"]) +
-            //     parseFloat(total_debit_side)
-            // ).toFixed(decimal_places);
-
-            // item["total_credit_side"] = parseFloat(
-            //   parseFloat(item["total_credit_side"]) +
-            //     parseFloat(total_credit_side)
-            // ).toFixed(decimal_places);
-            item["total_debit_side"] = total_debit_side;
-
-            item["total_credit_side"] = total_credit_side;
-
-            return item;
           });
-        }
+
+          const total_credit_side = _.chain(immediate_childs)
+            .sumBy(s => parseFloat(s.total_credit_side))
+            .value()
+            .toFixed(decimal_places);
+
+          const total_debit_side = _.chain(immediate_childs)
+            .sumBy(s => parseFloat(s.total_debit_side))
+            .value()
+            .toFixed(decimal_places);
+
+          item["total_debit_side"] = (
+            parseFloat(item["total_debit_side"]) + parseFloat(total_debit_side)
+          ).toFixed(decimal_places);
+
+          item["total_credit_side"] = (
+            parseFloat(item["total_credit_side"]) +
+            parseFloat(total_credit_side)
+          ).toFixed(decimal_places);
+
+          // item["total_debit_side"] = total_debit_side;
+
+          // item["total_credit_side"] = total_credit_side;
+
+          return item;
+        });
+        // }
       }
+
       const final_res = [];
 
       let len = Object.keys(levels_group).length;
@@ -962,7 +950,7 @@ function createHierarchyForTB(
   try {
     let total_debit_amount = parseFloat(0).toFixed(decimal_places);
     let total_credit_amount = parseFloat(0).toFixed(decimal_places);
-    const utilities = new algaehUtilities();
+
     let roots = [],
       children = {};
 
@@ -1052,9 +1040,6 @@ function createHierarchyForTB(
               decimal_places
             );
           }
-
-          console.log("tr_credit_amount:", tr_credit_amount);
-          console.log("tr_debit_amount:", tr_debit_amount);
 
           //END---calulating Amount
 

@@ -2233,7 +2233,7 @@ function calcAmount(account_heads, levels, decimal_places) {
       });
 
       for (let i = max_account_level - 1; i >= 0; i--) {
-        for (let k = 0; k < levels_group[i].length; k++) {
+        // for (let k = 0; k < levels_group[i].length; k++) {
           levels_group[i].map(item => {
             let immediate_childs = levels_group[i + 1].filter(child => {
               if (item.finance_account_head_id == child.parent_acc_id) {
@@ -2271,7 +2271,7 @@ function calcAmount(account_heads, levels, decimal_places) {
 
             return item;
           });
-        }
+        // }
       }
       const final_res = [];
 
