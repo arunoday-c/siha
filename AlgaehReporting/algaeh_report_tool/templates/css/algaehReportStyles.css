@@ -493,3 +493,14 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.contractMgmnt td:first-child {
+  text-align: left;
+  vertical-align: top;
+  font-size: 0.8rem;
+}
+.contractMgmnt td:last-child {
+  text-align: right;
+  vertical-align: top;
+  font-size: 0.9rem;
+}
