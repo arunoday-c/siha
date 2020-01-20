@@ -475,7 +475,7 @@ class PersonalDetails extends Component {
                       </h5>
                       <div className="row paddin-bottom-5">
                         <AlagehFormGroup
-                          div={{ className: "col-12" }}
+                          div={{ className: "col-12 form-group" }}
                           label={{
                             fieldName: "address"
                           }}
@@ -492,7 +492,7 @@ class PersonalDetails extends Component {
                           }}
                         />
                         <AlagehAutoComplete
-                          div={{ className: "col-4" }}
+                          div={{ className: "col-4 form-group" }}
                           label={{
                             fieldName: "country_id",
                             isImp: false
@@ -522,7 +522,7 @@ class PersonalDetails extends Component {
                         />
 
                         <AlagehAutoComplete
-                          div={{ className: "col-4" }}
+                          div={{ className: "col-4 form-group" }}
                           label={{
                             fieldName: "state_id",
                             isImp: false
@@ -552,7 +552,7 @@ class PersonalDetails extends Component {
                           }}
                         />
                         <AlagehAutoComplete
-                          div={{ className: "col-4" }}
+                          div={{ className: "col-4 form-group" }}
                           label={{
                             fieldName: "city_id",
                             isImp: false
@@ -589,7 +589,7 @@ class PersonalDetails extends Component {
                       </h5>
                       <div className="row paddin-bottom-5">
                         <div
-                          className="col-4 customCheckbox"
+                          className="col-4 customCheckbox form-group"
                           style={{ marginTop: 23, border: "none" }}
                         >
                           <label className="checkbox inline">
@@ -610,7 +610,7 @@ class PersonalDetails extends Component {
                           </label>
                         </div>
                         <AlagehFormGroup
-                          div={{ className: "col-8" }}
+                          div={{ className: "col-8 form-group" }}
                           label={{
                             fieldName: "address"
                           }}
@@ -630,7 +630,7 @@ class PersonalDetails extends Component {
                           }}
                         />
                         <AlagehAutoComplete
-                          div={{ className: "col-4" }}
+                          div={{ className: "col-4 form-group" }}
                           label={{
                             fieldName: "country_id",
                             isImp: false
@@ -663,7 +663,7 @@ class PersonalDetails extends Component {
                         />
 
                         <AlagehAutoComplete
-                          div={{ className: "col-4" }}
+                          div={{ className: "col-4 form-group" }}
                           label={{
                             fieldName: "state_id",
                             isImp: false
@@ -698,7 +698,7 @@ class PersonalDetails extends Component {
                           }}
                         />
                         <AlagehAutoComplete
-                          div={{ className: "col-4" }}
+                          div={{ className: "col-4 form-group" }}
                           label={{
                             fieldName: "city_id",
                             isImp: false
@@ -756,8 +756,8 @@ class PersonalDetails extends Component {
                               ? false
                               : this.state.employee_code === null ||
                                 this.state.employee_code === ""
-                                ? false
-                                : true
+                              ? false
+                              : true
                           }
                           textAltMessage="Employee Image"
                           serviceParameters={{
@@ -801,7 +801,7 @@ class PersonalDetails extends Component {
                         </div>
 
                         <AlagehFormGroup
-                          div={{ className: "col-12" }}
+                          div={{ className: "col-12 mandatory" }}
                           label={{
                             fieldName: "license_number",
                             isImp: this.state.isdoctor === "Y" ? true : false
@@ -869,8 +869,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PersonalDetails)
+  connect(mapStateToProps, mapDispatchToProps)(PersonalDetails)
 );

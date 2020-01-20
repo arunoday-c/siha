@@ -96,7 +96,7 @@ class CommissionSetup extends Component {
                 </h6>
                 <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col " }}
+                    div={{ className: "col mandatory form-group" }}
                     label={{
                       fieldName: "service_type_id",
                       isImp: true
@@ -121,7 +121,7 @@ class CommissionSetup extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col" }}
+                    div={{ className: "col form-group" }}
                     label={{
                       fieldName: "op_cash_comission_percent"
                     }}
@@ -137,7 +137,7 @@ class CommissionSetup extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col" }}
+                    div={{ className: "col form-group" }}
                     label={{
                       fieldName: "op_credit_comission_percent"
                     }}
@@ -154,7 +154,7 @@ class CommissionSetup extends Component {
                 </div>
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col" }}
+                    div={{ className: "col form-group" }}
                     label={{
                       fieldName: "ip_cash_commission_percent"
                     }}
@@ -169,7 +169,7 @@ class CommissionSetup extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col" }}
+                    div={{ className: "col form-group" }}
                     label={{
                       fieldName: "ip_credit_commission_percent"
                     }}
@@ -184,18 +184,20 @@ class CommissionSetup extends Component {
                     }}
                   />
 
-                  <div className="col actions" style={{ paddingTop: "4%" }}>
-                    <a
-                      className="btn btn-primary btn-circle active"
+                  <div className="col">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      style={{ marginTop: 19 }}
                       onClick={AddSeviceTypeComm.bind(this, this)}
                     >
-                      <i className="fas fa-plus" />
-                    </a>
+                      Add
+                    </button>
                   </div>
                 </div>
 
                 <div className="row" style={{ marginTop: "10px" }}>
-                  <div className="col-lg-12" id="serviceCommissionGrid_Cntr">
+                  <div className="col-12" id="serviceCommissionGrid_Cntr">
                     <AlgaehDataGrid
                       // id="serv_commission"
                       columns={[
@@ -321,7 +323,7 @@ class CommissionSetup extends Component {
                 </h6>
                 <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col " }}
+                    div={{ className: "col mandatory form-group" }}
                     label={{
                       fieldName: "service_type_id",
                       isImp: true
@@ -346,7 +348,7 @@ class CommissionSetup extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-5 " }}
+                    div={{ className: "col-5 mandatory form-group" }}
                     label={{
                       forceLabel: "Select Service Type",
                       isImp: true
@@ -370,7 +372,7 @@ class CommissionSetup extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col" }}
+                    div={{ className: "col form-group" }}
                     label={{
                       fieldName: "op_cash_comission_percent"
                     }}
@@ -387,7 +389,7 @@ class CommissionSetup extends Component {
                 </div>
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col" }}
+                    div={{ className: "col form-group" }}
                     label={{
                       fieldName: "op_credit_comission_percent"
                     }}
@@ -402,7 +404,7 @@ class CommissionSetup extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col" }}
+                    div={{ className: "col form-group" }}
                     label={{
                       fieldName: "ip_cash_commission_percent"
                     }}
@@ -417,7 +419,7 @@ class CommissionSetup extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col" }}
+                    div={{ className: "col form-group" }}
                     label={{
                       fieldName: "ip_credit_commission_percent"
                     }}
@@ -432,22 +434,20 @@ class CommissionSetup extends Component {
                     }}
                   />
 
-                  <div className="col actions" style={{ paddingTop: "4%" }}>
-                    <a
-                      // href="javascript"
-                      className="btn btn-primary btn-circle active"
+                  <div className="col">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      style={{ marginTop: 19 }}
                       onClick={AddServiceComm.bind(this, this)}
                     >
-                      <i className="fas fa-plus" />
-                    </a>
+                      Add
+                    </button>
                   </div>
                 </div>
 
                 <div className="row" style={{ marginTop: "10px" }}>
-                  <div
-                    className="col-lg-12"
-                    id="serviceTypeCommissionGrid_Cntr"
-                  >
+                  <div className="col-12" id="serviceTypeCommissionGrid_Cntr">
                     <AlgaehDataGrid
                       // id="service_commission"
                       columns={[
@@ -618,8 +618,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(CommissionSetup)
+  connect(mapStateToProps, mapDispatchToProps)(CommissionSetup)
 );

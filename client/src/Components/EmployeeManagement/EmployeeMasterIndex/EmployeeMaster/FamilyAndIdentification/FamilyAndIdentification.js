@@ -74,7 +74,7 @@ class FamilyAndIdentification extends Component {
               </h5>
               <div className="row paddin-bottom-5">
                 <AlagehAutoComplete
-                  div={{ className: "col-2" }}
+                  div={{ className: "col-2 mandatory" }}
                   label={{
                     forceLabel: "Id Type",
                     isImp: true
@@ -100,7 +100,7 @@ class FamilyAndIdentification extends Component {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col-2" }}
+                  div={{ className: "col-2 mandatory" }}
                   label={{
                     forceLabel: "Id Number",
                     isImp: true
@@ -121,7 +121,7 @@ class FamilyAndIdentification extends Component {
                   }}
                 />
                 <AlgaehDateHandler
-                  div={{ className: "col-3" }}
+                  div={{ className: "col-3 mandatory" }}
                   label={{
                     forceLabel: "Issue Date",
                     isImp: true
@@ -140,7 +140,7 @@ class FamilyAndIdentification extends Component {
                   value={this.state.issue_date}
                 />
                 <AlgaehDateHandler
-                  div={{ className: "col-3" }}
+                  div={{ className: "col-3 mandatory" }}
                   label={{
                     forceLabel: "Expiry Date",
                     isImp: true
@@ -161,7 +161,7 @@ class FamilyAndIdentification extends Component {
                 <div className="col">
                   <button
                     type="button"
-                    className="btn btn-primary"
+                    className="btn btn-default"
                     style={{ marginTop: 19 }}
                     onClick={AddEmpId.bind(this, this)}
                   >
@@ -311,7 +311,7 @@ class FamilyAndIdentification extends Component {
               </h5>
               <div className="row paddin-bottom-5">
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Dependent Type",
                     isImp: true
@@ -334,7 +334,7 @@ class FamilyAndIdentification extends Component {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Dependent Name",
                     isImp: true
@@ -350,7 +350,7 @@ class FamilyAndIdentification extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-2" }}
+                  div={{ className: "col-2 mandatory" }}
                   label={{
                     forceLabel: "Id Type",
                     isImp: true
@@ -373,7 +373,7 @@ class FamilyAndIdentification extends Component {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Id Number",
                     isImp: true
@@ -391,7 +391,7 @@ class FamilyAndIdentification extends Component {
                 <div className="col">
                   <button
                     type="button"
-                    className="btn btn-primary"
+                    className="btn btn-default"
                     style={{ marginTop: 19 }}
                     onClick={addDependentType.bind(this, this)}
                   >
