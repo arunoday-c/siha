@@ -649,7 +649,7 @@ class PatientProfile extends Component {
   }
   render() {
     const module_plan = _.find(this.active_modules, f => {
-      return f.module_id === this.selected_module;
+      return parseInt(f.module_id) === parseInt(this.selected_module);
     });
 
     const _pat_profile =
