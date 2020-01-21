@@ -252,7 +252,7 @@ function getAccountHeadsForTrialBalance(
           ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
           ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
           from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id
-          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'
+          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A' ${str}
           where H.root_id=? 
           group by C.finance_account_child_id) AS A;
 
