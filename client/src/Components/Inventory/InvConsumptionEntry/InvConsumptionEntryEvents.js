@@ -1,6 +1,6 @@
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import ConsumptionIOputs from "../../../Models/InventoryConsumption";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage, getCookie } from "../../../utils/algaehApiCall";
 
 export default function ConsumptionItemsEvents() {
   return {
@@ -41,6 +41,8 @@ export default function ConsumptionItemsEvents() {
     },
 
     SaveConsumptionEntry: $this => {
+      AlgaehLoader({ show: true });
+      $this.state.ScreenCode = getCookie("ScreenCode")
       algaehApiCall({
         uri: "/inventoryconsumption/addInventoryConsumption",
         module: "inventory",
@@ -62,12 +64,7 @@ export default function ConsumptionItemsEvents() {
               type: "success"
             });
           }
-        },
-        onFailure: err => {
-          swalMessage({
-            title: err.message,
-            type: "error"
-          });
+          AlgaehLoader({ show: false });
         }
       });
     },

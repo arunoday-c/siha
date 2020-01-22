@@ -426,7 +426,7 @@ export function generateAccountingEntry(req, res, next) {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
-        let inputParam = { ...req.body };
+        let inputParam = req.body;
         const decimal_places = req.userIdentity.decimal_places;
         const utilities = new algaehUtilities();
 
@@ -449,11 +449,15 @@ export function generateAccountingEntry(req, res, next) {
                     org_data[0]["product_type"] == "HIMS_ERP" ||
                     org_data[0]["product_type"] == "FINANCE_ERP"
                 ) {
-                    _mysql
-                        .executeQuery({
-                            query: "select GH.hims_f_sales_invoice_header_id, GH.invoice_number, GH.net_total, GH.total_tax, \
+                    console.log("inputParam.sales_invoice_mode ", inputParam.sales_invoice_mode)
+                    let strQuery = "";
+                    let sales_done = ""
+                    if (inputParam.sales_invoice_mode === "I") {
+                        strQuery = mysql.format(
+                            "select GH.hims_f_sales_invoice_header_id, GH.invoice_number, GH.net_total, GH.total_tax, \
                             GH.net_payable, IL.head_id as inv_head_id, IL.child_id as inv_child_id, C.head_id as customer_head_id, C.child_id as customer_child_id,\
-                            DB.dispatch_quantity , DB.net_extended_cost, ITM.waited_avg_cost, S.head_id as income_head_id, S.child_id as income_child_id, C.customer_name\
+                            DB.dispatch_quantity , DB.net_extended_cost, ITM.waited_avg_cost, S.head_id as income_head_id, \
+                            S.child_id as income_child_id, C.customer_name, IU.conversion_factor\
                             from hims_f_sales_invoice_header GH \
                             inner join hims_f_sales_invoice_detail GD on GH.hims_f_sales_invoice_header_id = GD.sales_invoice_header_id \
                             inner join hims_f_sales_dispatch_note_detail DD on DD.dispatch_note_header_id = GD.dispatch_note_header_id \
@@ -462,8 +466,28 @@ export function generateAccountingEntry(req, res, next) {
                             inner join hims_d_customer C on C.hims_d_customer_id = GH.customer_id\
                             inner join hims_d_inventory_item_master ITM on ITM.hims_d_inventory_item_master_id = DB.item_id\
                             inner join hims_d_services S on S.hims_d_services_id = ITM.service_id\
+                            inner join hims_m_inventory_item_uom IU on IU.item_master_id = DB.item_id and IU.uom_id = DB.uom_id\
                             where hims_f_sales_invoice_header_id=?;",
-                            values: [inputParam.hims_f_sales_invoice_header_id],
+                            [inputParam.hims_f_sales_invoice_header_id]
+                        );
+                        sales_done = "Item"
+                    } else {
+                        strQuery = mysql.format(
+                            "select GH.hims_f_sales_invoice_header_id, GH.invoice_number, GH.net_total, GH.total_tax, \
+                            GH.net_payable, GS.net_extended_cost, C.head_id as customer_head_id, C.child_id as customer_child_id, \
+                            S.head_id as income_head_id, S.child_id as income_child_id, C.customer_name\
+                            from hims_f_sales_invoice_header GH \
+                            inner join hims_f_sales_invoice_services GS on GH.hims_f_sales_invoice_header_id = GS.sales_invoice_header_id \
+                            inner join hims_d_customer C on C.hims_d_customer_id = GH.customer_id\
+                            inner join hims_d_services S on S.hims_d_services_id = GS.services_id\
+                            where hims_f_sales_invoice_header_id=?;",
+                            [inputParam.hims_f_sales_invoice_header_id]
+                        );
+                        sales_done = "Service"
+                    }
+                    _mysql
+                        .executeQuery({
+                            query: strQuery,
                             printQuery: true
                         })
                         .then(headerResult => {
@@ -472,7 +496,7 @@ export function generateAccountingEntry(req, res, next) {
                                 .executeQuery({
                                     query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
                                         voucher_type, document_id, document_number, from_screen, \
-                                        transaction_type, narration, hospital_id) VALUES (?,?,?,?,?,?,?,?,?)",
+                                        narration, hospital_id) VALUES (?,?,?,?,?,?,?,?)",
                                     values: [
                                         new Date(),
                                         headerResult[0].net_payable,
@@ -480,8 +504,7 @@ export function generateAccountingEntry(req, res, next) {
                                         headerResult[0].hims_f_sales_invoice_header_id,
                                         headerResult[0].invoice_number,
                                         inputParam.ScreenCode,
-                                        "BILL",
-                                        "Sales done for  " + headerResult[0].customer_name,
+                                        sales_done + " Sales done for  " + headerResult[0].customer_name,
                                         req.userIdentity.hospital_id
                                     ],
                                     printQuery: true
@@ -527,7 +550,9 @@ export function generateAccountingEntry(req, res, next) {
                                         //Income Entry
                                         let waited_avg_cost =
                                             utilities.decimalPoints(
-                                                parseFloat(headerResult[i].dispatch_quantity) * parseFloat(headerResult[i].waited_avg_cost),
+                                                (parseFloat(headerResult[i].dispatch_quantity) *
+                                                    parseFloat(headerResult[i].conversion_factor) *
+                                                    parseFloat(headerResult[i].waited_avg_cost)),
                                                 decimal_places
                                             )
 
@@ -540,25 +565,27 @@ export function generateAccountingEntry(req, res, next) {
                                             credit_amount: headerResult[i].net_extended_cost
                                         });
 
-                                        //COGS Entry
-                                        insertSubDetail.push({
-                                            payment_date: new Date(),
-                                            head_id: cogs_acc_data.head_id,
-                                            child_id: cogs_acc_data.child_id,
-                                            debit_amount: waited_avg_cost,
-                                            payment_type: "DR",
-                                            credit_amount: 0
-                                        });
+                                        if (inputParam.sales_invoice_mode === "I") {
+                                            //COGS Entry
+                                            insertSubDetail.push({
+                                                payment_date: new Date(),
+                                                head_id: cogs_acc_data.head_id,
+                                                child_id: cogs_acc_data.child_id,
+                                                debit_amount: waited_avg_cost,
+                                                payment_type: "DR",
+                                                credit_amount: 0
+                                            });
 
-                                        //Location Wise
-                                        insertSubDetail.push({
-                                            payment_date: new Date(),
-                                            head_id: headerResult[i].inv_head_id,
-                                            child_id: headerResult[i].inv_child_id,
-                                            debit_amount: 0,
-                                            payment_type: "CR",
-                                            credit_amount: waited_avg_cost
-                                        });
+                                            //Location Wise
+                                            insertSubDetail.push({
+                                                payment_date: new Date(),
+                                                head_id: headerResult[i].inv_head_id,
+                                                child_id: headerResult[i].inv_child_id,
+                                                debit_amount: 0,
+                                                payment_type: "CR",
+                                                credit_amount: waited_avg_cost
+                                            });
+                                        }
                                     }
 
                                     // console.log("insertSubDetail", insertSubDetail)
@@ -619,7 +646,7 @@ export function generateAccountingEntry(req, res, next) {
 
     } catch (e) {
         _mysql.rollBackTransaction(() => {
-            next(error);
+            next(e);
         });
     }
 };

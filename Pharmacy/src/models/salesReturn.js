@@ -107,6 +107,14 @@ export default {
           let month = moment().format("MM");
 
           let period = month;
+          let criedt_qry = ""
+          if (parseFloat(input.credit_amount) > 0) {
+            criedt_qry = mysql.format(
+              "UPDATE `hims_f_pharmacy_pos_header` SET balance_credit = balance_credit - ? \
+              WHERE hims_f_pharmacy_pos_header_id=?;",
+              [parseFloat(input.credit_amount), input.from_pos_id]
+            )
+          }
           _mysql
             .executeQuery({
               query:
@@ -119,7 +127,7 @@ export default {
               secondary_card_number, secondary_effective_start_date, secondary_effective_end_date, secondary_insurance_provider_id,\
               secondary_network_id, secondary_network_type, secondary_sub_insurance_provider_id, secondary_network_office_id, \
               posted,reciept_id,created_date,created_by,updated_date,updated_by,hospital_id) \
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?); "+ criedt_qry,
               values: [
                 sales_return_number,
                 today,
@@ -181,7 +189,11 @@ export default {
               ],
               printQuery: true
             })
-            .then(headerResult => {
+            .then(finalResult => {
+              let headerResult = finalResult[0]
+              req.body.hims_f_pharmcy_sales_return_header_id = headerResult.insertId;
+              req.body.sales_return_number = sales_return_number;
+
               req.body.transaction_id = headerResult.insertId;
               req.body.year = year;
               req.body.period = period;
@@ -457,6 +469,228 @@ export default {
             next(e);
           });
         });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  generateAccountingEntry: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      let inputParam = req.body;
+      const decimal_places = req.userIdentity.decimal_places;
+      const utilities = new algaehUtilities();
+      const _all_service_id = _.map(inputParam.pharmacy_stock_detail, o => {
+        return o.service_id;
+      });
+
+      const _all_item_id = _.map(inputParam.pharmacy_stock_detail, o => {
+        return o.item_id;
+      });
+
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
+            SELECT * FROM finance_accounts_maping; \
+            SELECT hims_d_services_id, head_id, child_id FROM hims_d_services where hims_d_services_id in (?); \
+            SELECT hims_d_item_master_id, waited_avg_cost FROM hims_d_item_master where hims_d_item_master_id in (?); \
+            SELECT head_id, child_id FROM hims_d_pharmacy_location where hims_d_pharmacy_location_id=?;",
+          values: [_all_service_id, _all_item_id, inputParam.location_id],
+          printQuery: true
+        })
+        .then(result => {
+          const org_data = result[0];
+
+          const output_tax_acc = result[1].find(f => f.account === "OUTPUT_TAX")
+          const cogs_acc_data = result[1].find(f => f.account === "PHAR_COGS")
+          const cash_in_acc = result[1].find(f => f.account === "CIH_PH")
+          const sales_discount_acc = result[1].find(f => f.account === "SALES_DISCOUNT")
+          const pos_criedt_settl_acc = result[1].find(f => f.account === "PHAR_REC")
+
+          const income_acc = result[2];
+          const item_waited_avg_cost = result[3];
+          const location_acc = result[4];
+
+          if (
+            org_data[0]["product_type"] == "HIMS_ERP" ||
+            org_data[0]["product_type"] == "FINANCE_ERP"
+          ) {
+
+            _mysql
+              .executeQuery({
+                query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
+                          voucher_type, document_id, document_number, from_screen, \
+                          narration, hospital_id) VALUES (?,?,?,?,?,?,?,?)",
+                values: [
+                  new Date(),
+                  inputParam.net_amount,
+                  "credit_note",
+                  inputParam.hims_f_pharmcy_sales_return_header_id,
+                  inputParam.sales_return_number,
+                  inputParam.ScreenCode,
+                  "Pharmacy Sales for " + inputParam.net_amount,
+                  req.userIdentity.hospital_id
+                ],
+                printQuery: true
+              })
+              .then(day_end_header => {
+                let insertSubDetail = []
+                const month = moment().format("M");
+                const year = moment().format("YYYY");
+                const IncludeValuess = [
+                  "payment_date",
+                  "head_id",
+                  "child_id",
+                  "debit_amount",
+                  "payment_type",
+                  "credit_amount"
+                ];
+
+                // Sheet Level Discount
+                if (parseFloat(inputParam.sheet_discount_amount) > 0) {
+                  insertSubDetail.push({
+                    payment_date: new Date(),
+                    head_id: sales_discount_acc.head_id,
+                    child_id: sales_discount_acc.child_id,
+                    debit_amount: 0,
+                    payment_type: "CR",
+                    credit_amount: inputParam.sheet_discount_amount
+                  });
+                }
+
+                // Credit Amount To be done
+                if (parseFloat(inputParam.credit_amount) > 0) {
+                  insertSubDetail.push({
+                    payment_date: new Date(),
+                    head_id: pos_criedt_settl_acc.head_id,
+                    child_id: pos_criedt_settl_acc.child_id,
+                    debit_amount: 0,
+                    payment_type: "CR",
+                    credit_amount: inputParam.credit_amount
+                  });
+                }
+
+                //OUT PUT Tax Entry
+                if (parseFloat(inputParam.patient_tax) > 0 || parseFloat(inputParam.company_tax) > 0) {
+                  insertSubDetail.push({
+                    payment_date: new Date(),
+                    head_id: output_tax_acc.head_id,
+                    child_id: output_tax_acc.child_id,
+                    debit_amount: parseFloat(inputParam.patient_tax) + parseFloat(inputParam.company_tax),
+                    payment_type: "DR",
+                    credit_amount: 0
+                  });
+                }
+
+
+                for (let i = 0; i < inputParam.receiptdetails.length; i++) {
+                  if (inputParam.receiptdetails[i].pay_type === "CA") {
+                    //POS Cash in Hand
+                    insertSubDetail.push({
+                      payment_date: new Date(),
+                      head_id: cash_in_acc.head_id,
+                      child_id: cash_in_acc.child_id,
+                      debit_amount: 0,
+                      payment_type: "CR",
+                      credit_amount: inputParam.receiptdetails[i].amount
+                    });
+                  }
+                }
+                for (let i = 0; i < inputParam.pharmacy_stock_detail.length; i++) {
+
+                  const income_head_id = income_acc.find(f =>
+                    parseInt(f.hims_d_services_id) === parseInt(inputParam.pharmacy_stock_detail[i].service_id))
+                  const income_child_id = income_acc.find(f =>
+                    parseInt(f.hims_d_services_id) === parseInt(inputParam.pharmacy_stock_detail[i].service_id))
+
+                  const item_avg_cost = item_waited_avg_cost.find(f =>
+                    parseInt(f.hims_d_item_master_id) === parseInt(inputParam.pharmacy_stock_detail[i].item_id))
+
+                  //Income Entry
+                  insertSubDetail.push({
+                    payment_date: new Date(),
+                    head_id: income_head_id.head_id,
+                    child_id: income_child_id.child_id,
+                    debit_amount: inputParam.pharmacy_stock_detail[i].net_extended_cost,
+                    payment_type: "DR",
+                    credit_amount: 0
+                  });
+
+                  const waited_avg_cost =
+                    utilities.decimalPoints(
+                      (parseFloat(inputParam.pharmacy_stock_detail[i].quantity) *
+                        parseFloat(inputParam.pharmacy_stock_detail[i].conversion_factor) *
+                        parseFloat(item_avg_cost.waited_avg_cost)),
+                      decimal_places
+                    )
+
+                  //COGS Entry
+                  insertSubDetail.push({
+                    payment_date: new Date(),
+                    head_id: cogs_acc_data.head_id,
+                    child_id: cogs_acc_data.child_id,
+                    debit_amount: 0,
+                    payment_type: "CR",
+                    credit_amount: waited_avg_cost
+                  });
+
+                  //Location Wise
+                  insertSubDetail.push({
+                    payment_date: new Date(),
+                    head_id: location_acc[0].head_id,
+                    child_id: location_acc[0].child_id,
+                    debit_amount: waited_avg_cost,
+                    payment_type: "DR",
+                    credit_amount: 0
+                  });
+                }
+
+                console.log("insertSubDetail", insertSubDetail)
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                    values: insertSubDetail,
+                    includeValues: IncludeValuess,
+                    bulkInsertOrUpdate: true,
+                    extraValues: {
+                      day_end_header_id: day_end_header.insertId,
+                      year: year,
+                      month: month,
+                      entered_date: new Date(),
+                      entered_by: req.userIdentity.algaeh_d_app_user_id,
+                      hospital_id: req.userIdentity.hospital_id
+                    },
+                    printQuery: false
+                  })
+                  .then(subResult => {
+                    next();
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            next();
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);

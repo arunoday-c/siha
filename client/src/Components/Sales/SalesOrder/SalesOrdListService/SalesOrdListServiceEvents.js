@@ -268,11 +268,13 @@ const calculateAmount = ($this, context, row, _index) => {
     let sales_order_services = $this.state.sales_order_services;
 
     let quantity = row.quantity === "" ? 0 : parseFloat(row.quantity)
+    let discount_percentage = row.discount_percentage === undefined ? 0 : parseFloat(row.discount_percentage)
+
     row.extended_cost = (parseFloat(row.unit_cost) * quantity).toFixed(
         $this.state.decimal_place
     )
 
-    row.discount_amount = ((parseFloat(row.extended_cost) * parseFloat(row.discount_percentage)) / 100).toFixed(
+    row.discount_amount = ((parseFloat(row.extended_cost) * discount_percentage) / 100).toFixed(
         $this.state.decimal_place
     );
     row.net_extended_cost = (parseFloat(row.extended_cost) - parseFloat(row.discount_amount)).toFixed(

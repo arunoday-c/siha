@@ -892,8 +892,8 @@ export default {
                 _mysql
                   .executeQuery({
                     query: "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
-                        document_number, from_screen, transaction_type, narration, hospital_id) \
-                        VALUES (?,?,?,?,?,?,?,?,?)",
+                        document_number, from_screen, narration, hospital_id) \
+                        VALUES (?,?,?,?,?,?,?,?)",
                     values: [
                       new Date(),
                       transfered_cost,
@@ -901,7 +901,6 @@ export default {
                       headerResult[0].hims_f_inventory_transfer_header_id,
                       headerResult[0].transfer_number,
                       inputParam.ScreenCode,
-                      "BILL",
                       "Transfer Done",
                       req.userIdentity.hospital_id
                     ],
@@ -1008,7 +1007,7 @@ export default {
 
     } catch (e) {
       _mysql.rollBackTransaction(() => {
-        next(error);
+        next(e);
       });
     }
   }

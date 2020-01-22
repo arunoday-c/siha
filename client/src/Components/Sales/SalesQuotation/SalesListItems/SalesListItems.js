@@ -428,8 +428,8 @@ class SalesListItems extends Component {
                                                                         },
                                                                         others: {
                                                                             onFocus: e => {
-                                                                                e.target.oldvalue =
-                                                                                    e.target.value;
+                                                                                e.target.value =
+                                                                                    e.target.value === undefined ? 0 : e.target.value;
                                                                             }
                                                                         }
                                                                     }}

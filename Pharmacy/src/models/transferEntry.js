@@ -881,7 +881,7 @@ export default {
               .then(headerResult => {
 
                 const decimal_places = req.userIdentity.decimal_places;
-                console.log("headerResult", headerResult)
+                // console.log("headerResult", headerResult)
                 let transfered_cost = _.sumBy(headerResult, s =>
                   parseFloat(s.transfered_cost)
                 );
@@ -904,15 +904,15 @@ export default {
                   decimal_places
                 )
 
-                console.log("transfered_cost", transfered_cost)
-                console.log("ack_cost", ack_cost)
-                console.log("non_reviced_transfer_cost", non_reviced_transfer_cost)
+                // console.log("transfered_cost", transfered_cost)
+                // console.log("ack_cost", ack_cost)
+                // console.log("non_reviced_transfer_cost", non_reviced_transfer_cost)
 
                 _mysql
                   .executeQuery({
                     query: "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
-                        document_number, from_screen, transaction_type, narration, hospital_id) \
-                        VALUES (?,?,?,?,?,?,?,?,?)",
+                        document_number, from_screen, narration, hospital_id) \
+                        VALUES (?,?,?,?,?,?,?,?)",
                     values: [
                       new Date(),
                       transfered_cost,
@@ -920,7 +920,6 @@ export default {
                       headerResult[0].hims_f_pharmacy_transfer_header_id,
                       headerResult[0].transfer_number,
                       inputParam.ScreenCode,
-                      "BILL",
                       "Transfer Done",
                       req.userIdentity.hospital_id
                     ],
@@ -1026,7 +1025,7 @@ export default {
 
     } catch (e) {
       _mysql.rollBackTransaction(() => {
-        next(error);
+        next(e);
       });
     }
   }

@@ -529,8 +529,8 @@ export default {
                 _mysql
                   .executeQuery({
                     query: "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
-                        document_number, from_screen, transaction_type, narration, hospital_id) \
-                        VALUES (?,?,?,?,?,?,?,?,?)",
+                        document_number, from_screen, narration, hospital_id) \
+                        VALUES (?,?,?,?,?,?,?,?)",
                     values: [
                       new Date(),
                       headerResult[0].net_payable,
@@ -538,7 +538,6 @@ export default {
                       headerResult[0].hims_f_procurement_grn_header_id,
                       headerResult[0].grn_number,
                       inputParam.ScreenCode,
-                      "BILL",
                       headerResult[0].inovice_number,
                       req.userIdentity.hospital_id
                     ],
@@ -647,7 +646,7 @@ export default {
 
     } catch (e) {
       _mysql.rollBackTransaction(() => {
-        next(error);
+        next(e);
       });
     }
   }

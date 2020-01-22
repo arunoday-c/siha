@@ -1,6 +1,6 @@
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import ConsumptionIOputs from "../../../Models/ConsumptionEntry";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage, getCookie } from "../../../utils/algaehApiCall";
 
 export default function ConsumptionItemsEvents() {
   return {
@@ -40,6 +40,9 @@ export default function ConsumptionItemsEvents() {
     },
 
     SaveConsumptionEntry: $this => {
+      AlgaehLoader({ show: true });
+      $this.state.ScreenCode = getCookie("ScreenCode")
+
       algaehApiCall({
         uri: "/consumptionEntry/addconsumptionEntry",
         module: "pharmacy",
@@ -61,6 +64,7 @@ export default function ConsumptionItemsEvents() {
               type: "success"
             });
           }
+          AlgaehLoader({ show: false });
         },
         onFailure: err => {
           swalMessage({
