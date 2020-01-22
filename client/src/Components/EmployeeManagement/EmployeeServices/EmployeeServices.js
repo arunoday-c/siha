@@ -8,7 +8,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import LeaveEncashmentProcess from ".././LeaveEncashmentProcess/LeaveEncashmentProcess";
 import ApplyLeaveEncashment from "./ApplyLeaveEncashment/ApplyLeaveEncashment";
 import OpeningBalance from "./OpeningBalance/OpeningBalance";
-
+import IssueCertificate from "./IssueCertificate/IssueCertificate";
 export default class SelfService extends Component {
   constructor(props) {
     super(props);
@@ -147,6 +147,19 @@ export default class SelfService extends Component {
                     }}
                   />
                 }
+              </li>{" "}
+              <li
+                algaehtabs={"IssueCertificate"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Issue Certificate"
+                    }}
+                  />
+                }
               </li>
               {/* <li
                 algaehtabs={"LeaveEncashmentProcess"}
@@ -188,6 +201,8 @@ export default class SelfService extends Component {
             <ApplyLeaveEncashment from_screen="ES" />
           ) : this.state.pageDisplay === "OpeningBalance" ? (
             <OpeningBalance />
+          ) : this.state.pageDisplay === "IssueCertificate" ? (
+            <IssueCertificate />
           ) : null}
         </div>
       </div>
