@@ -504,3 +504,11 @@ body {
   vertical-align: top;
   font-size: 0.9rem;
 }
+.termsCnd {
+  margin: 0;
+  padding: 0;
+}
+.termsCnd li {
+  margin: 0 0 0 15px;
+  padding: 0;
+}
