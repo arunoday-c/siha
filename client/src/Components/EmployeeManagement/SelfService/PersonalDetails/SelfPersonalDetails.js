@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Doughnut } from "react-chartjs-2";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
@@ -16,17 +17,35 @@ import {
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import swal from "sweetalert2";
 import moment from "moment";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  getYearswithMinMax
+} from "../../../../utils/GlobalFunctions";
+
+const PieData = {
+  labels: ["Earnings", "Deductions"],
+  datasets: [
+    {
+      data: [24, 76],
+      backgroundColor: ["#34b8bc", "#DCAC66"],
+      hoverBackgroundColor: ["#34b8bc", "#DCAC66"]
+    }
+  ]
+};
 
 class SelfPersonalDetails extends Component {
   constructor(props) {
     super(props);
+    this.currentYear = new Date().getFullYear();
+    this.yearList = getYearswithMinMax(this.currentYear - 10, this.currentYear);
     this.state = {
       editContainer: false,
       idTypes: [],
       employee_expc: [],
       employee_edu: [],
-      family_details: []
+      family_details: [],
+      month: moment().format("M"),
+      year: this.currentYear
     };
 
     this.getFamilyDetails();
@@ -118,6 +137,50 @@ class SelfPersonalDetails extends Component {
       default:
         break;
     }
+  }
+
+  generateSalarySlipESS() {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob"
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "salarySlipESS",
+          reportParams: [
+            {
+              name: "employee_id",
+              value: this.state.hims_d_employee_id
+            },
+            {
+              name: "year",
+              value: this.state.year
+            },
+            {
+              name: "month",
+              value: this.state.month
+            }
+          ],
+          outputFileType: "PDF"
+        }
+      },
+      onSuccess: res => {
+        const url = URL.createObjectURL(res.data);
+        let myWindow = window.open(
+          "{{ product.metafields.google.custom_label_0 }}",
+          "_blank"
+        );
+
+        myWindow.document.write(
+          "<iframe src= '" + url + "' width='100%' height='100%' />"
+        );
+        myWindow.document.title = "Salary Slip";
+      }
+    });
   }
 
   changeGridDate(row, selDate, name) {
@@ -785,7 +848,7 @@ class SelfPersonalDetails extends Component {
                 </div>
                 <div className="actions">
                   <a
-                    className="btn btn-other btn-circle active"
+                    className="btn btn-other btn-circle"
                     onClick={this.showEditCntr.bind(
                       this,
                       "basicDetails",
@@ -1134,7 +1197,7 @@ class SelfPersonalDetails extends Component {
                 </div>
                 <div className="actions">
                   <a
-                    className="btn btn-other btn-circle active"
+                    className="btn btn-other btn-circle"
                     onClick={this.showEditCntr.bind(
                       this,
                       "familyDetails",
@@ -1446,7 +1509,7 @@ class SelfPersonalDetails extends Component {
                 </div>
                 <div className="actions">
                   <a
-                    className="btn btn-other btn-circle active"
+                    className="btn btn-other btn-circle"
                     onClick={this.showEditCntr.bind(
                       this,
                       "IdDetails",
@@ -1757,7 +1820,7 @@ class SelfPersonalDetails extends Component {
                       "addWorkExp",
                       empDetails
                     )}
-                    className="btn btn-other btn-circle active"
+                    className="btn btn-other btn-circle"
                   >
                     <i
                       className={
@@ -2116,7 +2179,7 @@ class SelfPersonalDetails extends Component {
                 <div className="actions">
                   <a
                     onClick={this.showEditCntr.bind(this, "addEdu", empDetails)}
-                    className="btn btn-other btn-circle active"
+                    className="btn btn-other btn-circle"
                   >
                     <i
                       className={
@@ -2411,6 +2474,91 @@ class SelfPersonalDetails extends Component {
           </div>
 
           <div className="col-5">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              {/* <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Payroll Information</h3>
+                </div>
+              </div> */}
+              <div className="portlet-body">
+                <div className="row">
+                  <AlagehAutoComplete
+                    div={{ className: "col-3" }}
+                    label={{
+                      forceLabel: "Month",
+                      isImp: false
+                    }}
+                    selector={{
+                      name: "month",
+                      className: "select-fld",
+                      value: this.state.month,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.MONTHS
+                      },
+                      onChange: this.dropDownHandle.bind(this)
+                    }}
+                  />{" "}
+                  <AlagehAutoComplete
+                    div={{ className: "col-2 paddingLeft" }}
+                    label={{
+                      forceLabel: "Year",
+                      isImp: false
+                    }}
+                    selector={{
+                      name: "year",
+                      className: "select-fld",
+                      value: this.state.year,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: this.yearList
+                      },
+                      onChange: this.dropDownHandle.bind(this)
+                    }}
+                  />
+                  <div className="col paddingLeft">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      style={{ marginTop: 19 }}
+                      onClick={this.generateSalarySlipESS.bind(this)}
+                    >
+                      Print Payslip
+                    </button>
+                  </div>
+                </div>
+                <hr></hr>
+                <div className="row">
+                  <div className="col-8">
+                    <Doughnut
+                      data={PieData}
+                      height={160}
+                      //options={AdmissionsReadmissionDataOptions}
+                    />
+                  </div>{" "}
+                  <div className="col-4 salaryBreakup">
+                    <div className="row">
+                      <div className="col-12">
+                        <p>Earnings</p>
+                        <h4>0.00</h4>
+                      </div>
+                      <div className="col-12">
+                        {" "}
+                        <p>Deductions</p>
+                        <h4>0.00</h4>
+                      </div>
+                      <div className="col-12">
+                        {" "}
+                        <p>Total Net Salary</p>
+                        <h3>0.00</h3>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             {/* <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -2423,7 +2571,7 @@ class SelfPersonalDetails extends Component {
                       "addAttach",
                       empDetails
                     )}
-                    className="btn btn-other btn-circle active"
+                    className="btn btn-other btn-circle"
                   >
                     <i
                       className={
@@ -2558,6 +2706,71 @@ class SelfPersonalDetails extends Component {
                 </div>
               </div>
             </div> */}
+
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Download Forms</h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  {" "}
+                  <div className="col-12">
+                    <AlgaehDataGrid
+                      id="employeeFormTemplate"
+                      columns={[
+                        {
+                          fieldName: "formName",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Form Template" }}
+                            />
+                          ),
+                          others: {
+                            style: {
+                              textAlign: "left"
+                            }
+                          }
+                        },
+                        {
+                          fieldName: "url",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Download" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <a href={row.url} download target="_blank">
+                                Download
+                              </a>
+                            );
+                          },
+                          others: {
+                            maxWidth: 100
+                          }
+                        }
+                      ]}
+                      keyId=""
+                      dataSource={{
+                        data: [
+                          {
+                            formName: "Business Trip Request Form",
+                            url: "https://google.com"
+                          },
+                          {
+                            formName: "Certificate of Employee",
+                            url: "https://google.com"
+                          }
+                        ]
+                      }}
+                      isEditable={false}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{}}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
