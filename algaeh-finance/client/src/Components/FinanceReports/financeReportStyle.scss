@@ -252,9 +252,31 @@
     color: #000 !important;
     background: #c1fff9 !important;
   }
-  td {
-    vertical-align: top;
-    border: 1px solid #d3d3d3;
+
+  tr {
+    &:nth-child(odd) {
+      background: #f9f9f9;
+    }
+
+    td {
+      vertical-align: top;
+      border: 1px solid #d3d3d3;
+
+      div.expand {
+        span {
+          &:nth-child(3) {
+            b {
+              display: none !important;
+            }
+          }
+          &:nth-child(4) {
+            b {
+              display: none !important;
+            }
+          }
+        }
+      }
+    }
   }
 }
 
