@@ -16,6 +16,7 @@ import {
     getCtrlCode,
     SalesOrderSearch,
     texthandle,
+    PostSalesInvoice,
     generateSalesInvoiceReport
 } from "./SalesInvoiceEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -351,19 +352,19 @@ class SalesInvoice extends Component {
                                         label={{ forceLabel: "Clear", returnText: true }}
                                     />
                                 </button>
-                                {/*<button
-                  type="button"
-                  className="btn btn-other"
-                  disabled={this.state.postEnable}
-                  onClick={PostSalesInvoice.bind(this, this)}
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Post",
-                      returnText: true
-                    }}
-                  />
-                </button>*/}
+                                <button
+                                    type="button"
+                                    className="btn btn-other"
+                                    disabled={this.state.postEnable}
+                                    onClick={PostSalesInvoice.bind(this, this)}
+                                >
+                                    <AlgaehLabel
+                                        label={{
+                                            forceLabel: "Post",
+                                            returnText: true
+                                        }}
+                                    />
+                                </button>
                             </div>
                         </div>
                     </div>

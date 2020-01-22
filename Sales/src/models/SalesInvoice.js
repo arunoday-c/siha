@@ -1,6 +1,8 @@
 import algaehMysql from "algaeh-mysql";
 import mysql from "mysql";
 import _ from "lodash";
+import moment from "moment";
+import algaehUtilities from "algaeh-utilities/utilities";
 
 export function getInvoiceEntry(req, res, next) {
     const _mysql = new algaehMysql();
@@ -83,7 +85,7 @@ export function getDispatchForInvoice(req, res, next) {
                     inner join hims_d_customer C on SQ.customer_id = C.hims_d_customer_id \
                     inner join hims_d_hospital H  on SQ.hospital_id = H.hims_d_hospital_id \
                     inner join hims_d_project P  on SQ.project_id = P.hims_d_project_id \
-                    where SQ.sales_order_id=?",
+                    where SQ.sales_order_id =? ",
                 values: [req.query.sales_order_id],
                 printQuery: true
             })
@@ -207,14 +209,15 @@ export function addInvoiceEntry(req, res, next) {
                     .executeQuery({
                         query:
                             "INSERT INTO hims_f_sales_invoice_header (invoice_number, invoice_date, sales_invoice_mode, \
-                                sales_order_id, customer_id, payment_terms, project_id, sub_total, discount_amount, \
-                                net_total, total_tax, net_payable, is_posted,created_date, created_by, hospital_id)\
+                                sales_order_id, location_id, customer_id, payment_terms, project_id, sub_total, discount_amount, \
+                                net_total, total_tax, net_payable,created_date, created_by, hospital_id)\
                           values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         values: [
                             invoice_number,
                             new Date(),
                             input.sales_invoice_mode,
                             input.sales_order_id,
+                            input.location_id,
                             input.customer_id,
                             input.payment_terms,
                             input.project_id,
@@ -223,7 +226,6 @@ export function addInvoiceEntry(req, res, next) {
                             input.net_total,
                             input.total_tax,
                             input.net_payable,
-                            "Y",
                             new Date(),
                             req.userIdentity.algaeh_d_app_user_id,
                             input.hospital_id
@@ -380,6 +382,247 @@ export function addInvoiceEntry(req, res, next) {
     }
 };
 
+export function postSalesInvoice(req, res, next) {
+    const _mysql = new algaehMysql();
+
+    try {
+        req.mySQl = _mysql;
+        let inputParam = { ...req.body };
+
+        _mysql
+            .executeQueryWithTransaction({
+                query:
+                    "UPDATE `hims_f_sales_invoice_header` SET `is_posted`=?, `posted_date`=?, `posted_by`=? \
+          WHERE `hims_f_sales_invoice_header_id`=?",
+                values: [
+                    inputParam.posted,
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    inputParam.hims_f_sales_invoice_header_id
+                ],
+                printQuery: true
+            })
+            .then(headerResult => {
+                req.connection = {
+                    connection: _mysql.connection,
+                    isTransactionConnection: _mysql.isTransactionConnection,
+                    pool: _mysql.pool
+                };
+                next();
+            })
+            .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                    next(e);
+                });
+            });
+    } catch (e) {
+        _mysql.rollBackTransaction(() => {
+            next(e);
+        });
+    }
+};
+
+export function generateAccountingEntry(req, res, next) {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+        let inputParam = { ...req.body };
+        const decimal_places = req.userIdentity.decimal_places;
+        const utilities = new algaehUtilities();
+
+        _mysql
+            .executeQuery({
+                query:
+                    "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
+                    select account,head_id, child_id from finance_accounts_maping where account in ('INVNT_COGS', 'OUTPUT_TAX');"
+            })
+            .then(result => {
+
+                // const input_tax_acc = result[1].find(f => f.account === "INPUT_TAX")
+                const output_tax_acc = result[1].find(f => f.account === "OUTPUT_TAX")
+                const cogs_acc_data = result[1].find(f => f.account === "INVNT_COGS")
+
+                const org_data = result[0]
+
+
+                if (
+                    org_data[0]["product_type"] == "HIMS_ERP" ||
+                    org_data[0]["product_type"] == "FINANCE_ERP"
+                ) {
+                    _mysql
+                        .executeQuery({
+                            query: "select GH.hims_f_sales_invoice_header_id, GH.invoice_number, GH.net_total, GH.total_tax, \
+                            GH.net_payable, IL.head_id as inv_head_id, IL.child_id as inv_child_id, C.head_id as customer_head_id, C.child_id as customer_child_id,\
+                            DB.dispatch_quantity , DB.net_extended_cost, ITM.waited_avg_cost, S.head_id as income_head_id, S.child_id as income_child_id, C.customer_name\
+                            from hims_f_sales_invoice_header GH \
+                            inner join hims_f_sales_invoice_detail GD on GH.hims_f_sales_invoice_header_id = GD.sales_invoice_header_id \
+                            inner join hims_f_sales_dispatch_note_detail DD on DD.dispatch_note_header_id = GD.dispatch_note_header_id \
+                            inner join hims_f_sales_dispatch_note_batches DB on DD.hims_f_sales_dispatch_note_detail_id = DB.sales_dispatch_note_detail_id \
+                            inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = GH.location_id\
+                            inner join hims_d_customer C on C.hims_d_customer_id = GH.customer_id\
+                            inner join hims_d_inventory_item_master ITM on ITM.hims_d_inventory_item_master_id = DB.item_id\
+                            inner join hims_d_services S on S.hims_d_services_id = ITM.service_id\
+                            where hims_f_sales_invoice_header_id=?;",
+                            values: [inputParam.hims_f_sales_invoice_header_id],
+                            printQuery: true
+                        })
+                        .then(headerResult => {
+
+                            _mysql
+                                .executeQuery({
+                                    query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
+                                        voucher_type, document_id, document_number, from_screen, \
+                                        transaction_type, narration, hospital_id) VALUES (?,?,?,?,?,?,?,?,?)",
+                                    values: [
+                                        new Date(),
+                                        headerResult[0].net_payable,
+                                        "journal",
+                                        headerResult[0].hims_f_sales_invoice_header_id,
+                                        headerResult[0].invoice_number,
+                                        inputParam.ScreenCode,
+                                        "BILL",
+                                        "Sales done for  " + headerResult[0].customer_name,
+                                        req.userIdentity.hospital_id
+                                    ],
+                                    printQuery: true
+                                })
+                                .then(day_end_header => {
+                                    let insertSubDetail = []
+                                    const month = moment().format("M");
+                                    const year = moment().format("YYYY");
+                                    const IncludeValuess = [
+                                        "payment_date",
+                                        "head_id",
+                                        "child_id",
+                                        "debit_amount",
+                                        "payment_type",
+                                        "credit_amount"
+                                    ];
+
+                                    //Customer Entry
+                                    insertSubDetail.push({
+                                        payment_date: new Date(),
+                                        head_id: headerResult[0].customer_head_id,
+                                        child_id: headerResult[0].customer_child_id,
+                                        debit_amount: headerResult[0].net_payable,
+                                        payment_type: "DR",
+                                        credit_amount: 0
+                                    });
+
+                                    //OUT PUT Tax Entry
+                                    if (parseFloat(headerResult[0].total_tax) > 0) {
+                                        insertSubDetail.push({
+                                            payment_date: new Date(),
+                                            head_id: output_tax_acc.head_id,
+                                            child_id: output_tax_acc.child_id,
+                                            debit_amount: 0,
+                                            payment_type: "CR",
+                                            credit_amount: headerResult[0].total_tax,
+                                        });
+                                    }
+
+
+
+                                    for (let i = 0; i < headerResult.length; i++) {
+                                        //Income Entry
+                                        let waited_avg_cost =
+                                            utilities.decimalPoints(
+                                                parseFloat(headerResult[i].dispatch_quantity) * parseFloat(headerResult[i].waited_avg_cost),
+                                                decimal_places
+                                            )
+
+                                        insertSubDetail.push({
+                                            payment_date: new Date(),
+                                            head_id: headerResult[i].income_head_id,
+                                            child_id: headerResult[i].income_child_id,
+                                            debit_amount: 0,
+                                            payment_type: "CR",
+                                            credit_amount: headerResult[i].net_extended_cost
+                                        });
+
+                                        //COGS Entry
+                                        insertSubDetail.push({
+                                            payment_date: new Date(),
+                                            head_id: cogs_acc_data.head_id,
+                                            child_id: cogs_acc_data.child_id,
+                                            debit_amount: waited_avg_cost,
+                                            payment_type: "DR",
+                                            credit_amount: 0
+                                        });
+
+                                        //Location Wise
+                                        insertSubDetail.push({
+                                            payment_date: new Date(),
+                                            head_id: headerResult[i].inv_head_id,
+                                            child_id: headerResult[i].inv_child_id,
+                                            debit_amount: 0,
+                                            payment_type: "CR",
+                                            credit_amount: waited_avg_cost
+                                        });
+                                    }
+
+                                    // console.log("insertSubDetail", insertSubDetail)
+                                    _mysql
+                                        .executeQuery({
+                                            query:
+                                                "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                                            values: insertSubDetail,
+                                            includeValues: IncludeValuess,
+                                            bulkInsertOrUpdate: true,
+                                            extraValues: {
+                                                day_end_header_id: day_end_header.insertId,
+                                                year: year,
+                                                month: month,
+                                                entered_date: new Date(),
+                                                entered_by: req.userIdentity.algaeh_d_app_user_id,
+                                                hospital_id: req.userIdentity.hospital_id
+                                            },
+                                            printQuery: false
+                                        })
+                                        .then(subResult => {
+                                            _mysql.commitTransaction(() => {
+                                                _mysql.releaseConnection();
+                                                req.records = subResult;
+                                                next();
+                                            });
+                                        })
+                                        .catch(error => {
+                                            _mysql.rollBackTransaction(() => {
+                                                next(error);
+                                            });
+                                        });
+                                })
+                                .catch(error => {
+                                    _mysql.rollBackTransaction(() => {
+                                        next(error);
+                                    });
+                                });
+                        })
+                        .catch(error => {
+                            _mysql.rollBackTransaction(() => {
+                                next(error);
+                            });
+                        });
+                } else {
+                    _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = org_data;
+                        next();
+                    });
+                }
+            })
+            .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                    next(error);
+                });
+            });
+
+    } catch (e) {
+        _mysql.rollBackTransaction(() => {
+            next(error);
+        });
+    }
+};
 
 function updateSalesOrder(options) {
     return new Promise((resolve, reject) => {

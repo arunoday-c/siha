@@ -41,14 +41,10 @@ const JournalAuthorization = () => (
   <FinanceFragment path="JournalAuthorization" />
 );
 const PageToPlot = {
-  // Dashboard: HrDashboard,
-  Dashboard: DynamicDashboard,
-  1: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/Dashboard"))
-  ),
-  6: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/Dashboard"))
-  ),
+  Dashboard: CommonDashboard,
+  //Dashboard: DynamicDashboard,
+  1: React.lazy(() => retry(() => import("./Components/Dashboard/Dashboard"))),
+  6: React.lazy(() => retry(() => import("./Components/Dashboard/Dashboard"))),
   7: React.lazy(() =>
     retry(() => import("./Components/Dashboard/frontdesk-dashboard"))
   ),

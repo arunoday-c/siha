@@ -400,13 +400,17 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
+            select head_id, child_id from finance_accounts_maping where account in ('INPUT_TAX');"
         })
         .then(result => {
           // console.log("result", result)
+          const input_tax_acc = result[1][0]
+          const org_data = result[0]
+
           if (
-            result[0]["product_type"] == "HIMS_ERP" ||
-            result[0]["product_type"] == "FINANCE_ERP"
+            org_data[0]["product_type"] == "HIMS_ERP" ||
+            org_data[0]["product_type"] == "FINANCE_ERP"
           ) {
             let strQuery = ""
             if (inputParam.po_return_from === "PHR") {
@@ -492,8 +496,8 @@ export default {
                     if (parseFloat(headerResult[0].tax_amount) > 0) {
                       insertSubDetail.push({
                         payment_date: new Date(),
-                        head_id: "46",
-                        child_id: "38",
+                        head_id: input_tax_acc.head_id,
+                        child_id: input_tax_acc.child_id,
                         debit_amount: 0,
                         payment_type: "CR",
                         credit_amount: headerResult[0].tax_amount,
@@ -509,10 +513,6 @@ export default {
                       payment_type: "CR",
                       credit_amount: headerResult[0].net_total,
                     });
-                    // for (let i = 0; i < headerResult.length; i++) {
-
-                    // }
-
 
                     // console.log("insertSubDetail", insertSubDetail)
                     _mysql
@@ -557,11 +557,11 @@ export default {
                 });
               });
           } else {
-            _mysql.commitTransaction(() => {
-              _mysql.releaseConnection();
-              req.records = result;
-              next();
-            });
+            // _mysql.commitTransaction(() => {
+            // _mysql.releaseConnection();
+            // req.records = result;
+            next();
+            // });
           }
         })
         .catch(error => {

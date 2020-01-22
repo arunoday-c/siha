@@ -6,7 +6,7 @@
     "@craco/craco": "^5.4.0",
     "@toast-ui/react-image-editor": "^1.0.0",
     "agentkeepalive": "^4.0.0",
-    "algaeh-react-components": "^1.1.0",
+    "algaeh-react-components": "^1.2.0",
     "axios": "^0.18.0",
     "axios-cancel": "^0.2.2",
     "chart.js": "^2.7.2",
@@ -17,8 +17,9 @@
     "js2xmlparser": "^3.0.0",
     "jsbarcode": "^3.9.0",
     "linq": "^3.1.0",
+    "localforage": "^1.7.3",
     "lodash": "^4.17.11",
-    "moment": "^2.22.1",
+    "moment": "^2.24.0",
     "node-sass": "4.12.0",
     "react": "^16.9.0",
     "react-chartjs-2": "^2.7.2",
@@ -31,7 +32,7 @@
     "react-quill": "^1.3.1",
     "react-redux": "^5.0.7",
     "react-router": "^4.2.0",
-    "react-router-dom": "^4.2.2",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "3.0.1",
     "react-table": "6.10.3",
     "react-table-hoc-fixed-columns": "1.0.7",
@@ -54,7 +55,7 @@
     "eject": "react-scripts eject",
     "dev": "npm start",
     "start-server": "cross-env PORT=1414 REACT_APP_CDN=development npm run start-js",
-    "postinstall": "npm i --no-save --no-optional fabric@^3.3.2"
+    "postinstall": "npm i --no-save --no-optional fabric@^3.3.2 && npm install --registry http://49.206.18.38:4873 algaeh-react-components@latest"
   },
   "browserslist": {
     "production": [

@@ -128,14 +128,14 @@ const numberchangeTexts = ($this, context, e) => {
         $this.state.decimal_place
       );
     }
-    let unit_cost = (extended_price / parseFloat(value)).toFixed(
+    let unit_cost = (parseFloat(extended_price) / parseFloat(value)).toFixed(
       $this.state.decimal_place
     );
     let tax_amount =
-      ((extended_price * parseFloat($this.state.tax_percentage)) / 100).toFixed(
+      ((parseFloat(extended_price) * parseFloat($this.state.tax_percentage)) / 100).toFixed(
         $this.state.decimal_place
       );
-    let total_amount = tax_amount + extended_price;
+    let total_amount = parseFloat(tax_amount) + parseFloat(extended_price);
     $this.setState({
       [name]: value,
       extended_price: extended_price,

@@ -1,5 +1,4 @@
-import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
-import moment from "moment";
+import { swalMessage, algaehApiCall, getCookie } from "../../../utils/algaehApiCall";
 
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
@@ -165,79 +164,17 @@ const generateSalesInvoiceReport = data => {
     });
 };
 
-const PostInvoiceEntry = $this => {
-    $this.state.posted = "Y";
-    $this.state.transaction_type = "REC";
-    $this.state.transaction_id = $this.state.hims_f_procurement_grn_header_id;
-    $this.state.transaction_date = $this.state.grn_date;
+const PostSalesInvoice = $this => {
+    AlgaehLoader({ show: true });
+    let Inputobj = $this.state
 
-    if ($this.state.grn_for === "PHR") {
-        $this.state.pharmacy_stock_detail = $this.state.receipt_entry_detail;
-
-        for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
-            $this.state.pharmacy_stock_detail[i].location_id =
-                $this.state.pharmcy_location_id;
-            $this.state.pharmacy_stock_detail[i].location_type =
-                $this.state.location_type;
-
-            $this.state.pharmacy_stock_detail[i].quantity =
-                $this.state.pharmacy_stock_detail[i].recieved_quantity;
-
-            $this.state.pharmacy_stock_detail[i].uom_id =
-                $this.state.pharmacy_stock_detail[i].pharmacy_uom_id;
-
-            $this.state.pharmacy_stock_detail[i].sales_uom =
-                $this.state.pharmacy_stock_detail[i].pharmacy_uom_id;
-            $this.state.pharmacy_stock_detail[i].item_id =
-                $this.state.pharmacy_stock_detail[i].phar_item_id;
-            $this.state.pharmacy_stock_detail[i].item_code_id =
-                $this.state.pharmacy_stock_detail[i].phar_item_id;
-            $this.state.pharmacy_stock_detail[i].grn_number = $this.state.grn_number;
-            $this.state.pharmacy_stock_detail[i].item_category_id =
-                $this.state.pharmacy_stock_detail[i].phar_item_category;
-            $this.state.pharmacy_stock_detail[i].item_group_id =
-                $this.state.pharmacy_stock_detail[i].phar_item_group;
-
-            $this.state.pharmacy_stock_detail[i].net_total =
-                $this.state.pharmacy_stock_detail[i].net_extended_cost;
-            $this.state.pharmacy_stock_detail[i].operation = "+";
-        }
-    } else if ($this.state.grn_for === "INV") {
-        $this.state.inventory_stock_detail = $this.state.receipt_entry_detail;
-
-        for (let i = 0; i < $this.state.inventory_stock_detail.length; i++) {
-            $this.state.inventory_stock_detail[i].location_id =
-                $this.state.inventory_location_id;
-            $this.state.inventory_stock_detail[i].location_type =
-                $this.state.location_type;
-
-            $this.state.inventory_stock_detail[i].quantity =
-                $this.state.inventory_stock_detail[i].recieved_quantity;
-
-            $this.state.inventory_stock_detail[i].uom_id =
-                $this.state.inventory_stock_detail[i].inventory_uom_id;
-            $this.state.inventory_stock_detail[i].sales_uom =
-                $this.state.inventory_stock_detail[i].inventory_uom_id;
-            $this.state.inventory_stock_detail[i].item_id =
-                $this.state.inventory_stock_detail[i].inv_item_id;
-            $this.state.inventory_stock_detail[i].item_code_id =
-                $this.state.inventory_stock_detail[i].inv_item_id;
-            $this.state.inventory_stock_detail[i].grn_number = $this.state.grn_number;
-            $this.state.inventory_stock_detail[i].item_category_id =
-                $this.state.inventory_stock_detail[i].inv_item_category_id;
-            $this.state.inventory_stock_detail[i].item_group_id =
-                $this.state.inventory_stock_detail[i].inv_item_group_id;
-
-            $this.state.inventory_stock_detail[i].net_total =
-                $this.state.inventory_stock_detail[i].net_extended_cost;
-            $this.state.inventory_stock_detail[i].operation = "+";
-        }
-    }
+    Inputobj.posted = "Y";
+    Inputobj.ScreenCode = getCookie("ScreenCode")
 
     algaehApiCall({
-        uri: "/ReceiptEntry/updateReceiptEntry",
-        module: "procurement",
-        data: $this.state,
+        uri: "/SalesInvoice/postSalesInvoice",
+        module: "sales",
+        data: Inputobj,
         method: "PUT",
         onSuccess: response => {
             if (response.data.success === true) {
@@ -248,14 +185,7 @@ const PostInvoiceEntry = $this => {
                     title: "Posted successfully . .",
                     type: "success"
                 });
-            }
-        },
-        onFailure: error => {
-            AlgaehLoader({ show: false });
-            swalMessage({
-                title: error.message,
-                type: "error"
-            });
+            } AlgaehLoader({ show: false });
         }
     });
 };
@@ -279,6 +209,7 @@ const SalesOrderSearch = ($this, e) => {
         onRowSelect: row => {
             AlgaehLoader({ show: true });
             if ($this.state.sales_invoice_mode === "I") {
+                debugger
                 algaehApiCall({
                     uri: "/SalesInvoice/getDispatchForInvoice",
                     module: "sales",
@@ -362,7 +293,7 @@ export {
     ClearData,
     SaveInvoiceEnrty,
     getCtrlCode,
-    PostInvoiceEntry,
+    PostSalesInvoice,
     generateSalesInvoiceReport,
     SalesOrderSearch
 };

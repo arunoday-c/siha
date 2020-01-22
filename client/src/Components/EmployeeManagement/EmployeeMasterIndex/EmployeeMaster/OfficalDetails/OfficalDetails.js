@@ -192,7 +192,7 @@ class OfficalDetails extends Component {
               </h5>
               <div className="row paddin-bottom-5">
                 <AlagehAutoComplete
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col mandatory form-group" }}
                   label={{
                     forceLabel: "Assign Division/Branch",
                     isImp: true
@@ -221,7 +221,7 @@ class OfficalDetails extends Component {
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col mandatory form-group" }}
                   label={{
                     forceLabel: "Appointemt Type",
                     isImp: true
@@ -250,7 +250,7 @@ class OfficalDetails extends Component {
                   }}
                 />{" "}
                 <AlagehAutoComplete
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col mandatory form-group" }}
                   label={{
                     forceLabel: "Employee Type",
                     isImp: true
@@ -279,7 +279,7 @@ class OfficalDetails extends Component {
                   }}
                 />{" "}
                 <AlgaehDateHandler
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col mandatory form-group" }}
                   label={{
                     fieldName: "date_of_joining",
                     isImp: true
@@ -702,7 +702,7 @@ class OfficalDetails extends Component {
                 </h5>
                 <div className="row paddin-bottom-5">
                   <AlagehAutoComplete
-                    div={{ className: "col mandatory" }}
+                    div={{ className: "col mandatory form-group" }}
                     label={{
                       forceLabel: "Select Employee Bank",
                       isImp: true
@@ -729,7 +729,7 @@ class OfficalDetails extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-6 mandatory" }}
+                    div={{ className: "col-6 mandatory form-group" }}
                     label={{
                       forceLabel: "SWIFT Code",
                       isImp: true
@@ -746,7 +746,7 @@ class OfficalDetails extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-12 mandatory" }}
+                    div={{ className: "col-12 mandatory form-group" }}
                     label={{
                       forceLabel: "Account No.",
                       isImp: true
@@ -770,7 +770,7 @@ class OfficalDetails extends Component {
                 </h5>
                 <div className="row paddin-bottom-5">
                   <AlagehAutoComplete
-                    div={{ className: "col mandatory" }}
+                    div={{ className: "col mandatory form-group" }}
                     label={{
                       forceLabel: "Select Employeer Bank",
                       isImp: true
@@ -797,7 +797,7 @@ class OfficalDetails extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col mandatory" }}
+                    div={{ className: "col mandatory form-group" }}
                     label={{
                       forceLabel: "Mode of Payment",
                       isImp: true
