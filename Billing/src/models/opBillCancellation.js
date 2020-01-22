@@ -22,6 +22,15 @@ export default {
         .then(generatedNumbers => {
           bill_cancel_number = generatedNumbers.OP_CBIL;
 
+          let criedt_qry = ""
+          if (parseFloat(input.credit_amount) > 0) {
+            criedt_qry = mysql.format(
+              "UPDATE `hims_f_billing_header` SET balance_credit = balance_credit - ? \
+              WHERE hims_f_billing_header_id=?;",
+              [parseFloat(input.credit_amount), input.from_bill_id]
+            )
+          }
+
           _mysql
             .executeQuery({
               query:
@@ -171,7 +180,7 @@ export default {
             "SELECT *, bh.receipt_header_id as cal_receipt_header_id FROM hims_f_bill_cancel_header bh \
           inner join hims_f_patient as PAT on bh.patient_id = PAT.hims_d_patient_id\
           inner join hims_f_patient_visit as vst on bh.visit_id = vst.hims_f_patient_visit_id\
-          inner join hims_f_billing_header as bill on BH.from_bill_id = bill.hims_f_billing_header_id \
+          inner join hims_f_billing_header as bill on bh.from_bill_id = bill.hims_f_billing_header_id \
           where bh.record_status='A' AND bh.bill_cancel_number='" +
             req.query.bill_cancel_number +
             "'",
@@ -184,6 +193,7 @@ export default {
             isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool
           };
+          console.log("Test")
           if (headerResult.length != 0) {
             _mysql
               .executeQuery({

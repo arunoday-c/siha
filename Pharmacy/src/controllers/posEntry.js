@@ -16,7 +16,8 @@ const {
   getPrescriptionPOS,
   cancelPosEntry,
   insertPreApprovalOutsideCustomer,
-  updatePOSDetailForPreApproval
+  updatePOSDetailForPreApproval,
+  generateAccountingEntry
 } = posEntryModels;
 
 const { updateIntoItemLocation } = comModels;
@@ -107,6 +108,7 @@ export default () => {
         next();
       }
     },
+    generateAccountingEntry,
     updateIntoItemLocation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -136,6 +138,7 @@ export default () => {
     addReceiptEntry,
     updatePosEntry,
     addCashHandover,
+    generateAccountingEntry,
     (req, res, next) => {
       if (
         req.records.internal_error != undefined &&

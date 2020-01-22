@@ -345,7 +345,8 @@ export function generateAccountingEntry(req, res, next) {
                         .executeQuery({
                             query: "select GH.hims_f_sales_return_header_id, GH.sales_return_number, IH.invoice_number, GH.net_total, GH.tax_amount, \
                             GH.return_total, IL.head_id as inv_head_id, IL.child_id as inv_child_id, C.head_id as customer_head_id, C.child_id as customer_child_id,\
-                            GD.return_qty , GD.net_extended_cost, ITM.waited_avg_cost, S.head_id as income_head_id, S.child_id as income_child_id, C.customer_name\
+                            GD.return_qty , GD.net_extended_cost, ITM.waited_avg_cost, S.head_id as income_head_id, \
+                            S.child_id as income_child_id, C.customer_name, IU.conversion_factor\
                             from hims_f_sales_return_header GH \
                             inner join hims_f_sales_return_detail GD on GH.hims_f_sales_return_header_id = GD.sales_return_header_id \
                             inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = GH.location_id\
@@ -353,6 +354,7 @@ export function generateAccountingEntry(req, res, next) {
                             inner join hims_d_inventory_item_master ITM on ITM.hims_d_inventory_item_master_id = GD.item_id\
                             inner join hims_d_services S on S.hims_d_services_id = ITM.service_id\
                             inner join hims_f_sales_invoice_header IH on IH.hims_f_sales_invoice_header_id = GH.sales_invoice_header_id\
+                            inner join hims_m_inventory_item_uom IU on IU.item_master_id = GD.item_id and IU.uom_id = GD.uom_id\
                             where hims_f_sales_return_header_id=?;",
                             values: [inputParam.hims_f_sales_return_header_id],
                             printQuery: true
@@ -363,15 +365,14 @@ export function generateAccountingEntry(req, res, next) {
                                 .executeQuery({
                                     query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
                                         voucher_type, document_id, document_number, from_screen, \
-                                        transaction_type, narration, hospital_id) VALUES (?,?,?,?,?,?,?,?,?)",
+                                        narration, hospital_id) VALUES (?,?,?,?,?,?,?,?)",
                                     values: [
                                         new Date(),
                                         headerResult[0].net_payable,
-                                        "journal",
+                                        "credit_note",
                                         headerResult[0].hims_f_sales_return_header_id,
                                         headerResult[0].invoice_number,
                                         inputParam.ScreenCode,
-                                        "BILL",
                                         "Return done for  " + headerResult[0].invoice_number + " " + headerResult[0].customer_name,
                                         req.userIdentity.hospital_id
                                     ],
@@ -418,7 +419,9 @@ export function generateAccountingEntry(req, res, next) {
                                         //Income Entry
                                         let waited_avg_cost =
                                             utilities.decimalPoints(
-                                                parseFloat(headerResult[i].return_qty) * parseFloat(headerResult[i].waited_avg_cost),
+                                                (parseFloat(headerResult[i].return_qty) *
+                                                    parseFloat(headerResult[i].conversion_factor) *
+                                                    parseFloat(headerResult[i].waited_avg_cost)),
                                                 decimal_places
                                             )
 
@@ -502,7 +505,7 @@ export function generateAccountingEntry(req, res, next) {
 
     } catch (e) {
         _mysql.rollBackTransaction(() => {
-            next(error);
+            next(e);
         });
     }
 }

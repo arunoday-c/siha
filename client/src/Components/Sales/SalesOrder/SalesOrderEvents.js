@@ -385,6 +385,7 @@ const getCtrlCode = ($this, docNumber) => {
                 }
                 data.saveEnable = true;
                 data.dataExists = true;
+                data.dataExitst = true;
 
                 data.addedItem = true;
                 data.selectedData = true;

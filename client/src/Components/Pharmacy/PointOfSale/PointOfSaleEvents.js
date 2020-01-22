@@ -659,10 +659,13 @@ const PostPosEntry = $this => {
           } else {
             posdata = $this.state;
           }
+
+          posdata.ScreenCode = getCookie("ScreenCode")
           const _patInsuranceFrontImg = $this.state.patInsuranceFrontImg;
           const _patInsuranceBackImg = $this.state.patInsuranceBackImg;
           delete posdata.patInsuranceFrontImg;
           delete posdata.patInsuranceBackImg;
+          debugger
           algaehApiCall({
             uri: callUri,
             data: posdata,

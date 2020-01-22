@@ -628,8 +628,8 @@ const AddItems = ($this, context) => {
               data.billdetails[0].qtyhand = $this.state.qtyhand;
               data.billdetails[0].barcode = $this.state.barcode;
               data.billdetails[0].service_id = data.billdetails[0].services_id;
-              data.billdetails[0].discount_amount =
-                data.billdetails[0].discount_amout;
+              data.billdetails[0].discount_amount = data.billdetails[0].discount_amout;
+              data.billdetails[0].conversion_factor = $this.state.conversion_factor;
 
               data.billdetails[0].batches = [
                 {
