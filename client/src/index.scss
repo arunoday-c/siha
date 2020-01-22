@@ -704,24 +704,39 @@ ul.ul-legend {
   border: 0;
 }
 /* Btn Circle */
-.actions .btn.btn-circle {
-  width: 28px;
-  height: 28px;
-  padding: 3px 7px;
-  text-align: center;
-}
-.actions .btn.btn-circle i {
-  line-height: 22px;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
-}
 
-/* Btn Green */
-.actions .btn.btn-green.active,
-.actions .btn.btn-green:hover {
-  color: #fff;
-  box-shadow: none;
-  background: lighten($primary-color, 10%);
-  border-color: #01968c;
+.actions {
+  .btn-circle {
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    padding: 3px 7px;
+    text-align: center;
+    border-color: darken($primary-color, 10%);
+    i {
+      color: darken($primary-color, 10%);
+      line-height: 23px;
+      text-shadow: none;
+    }
+    &:hover {
+      color: #fff;
+      box-shadow: none;
+      background: $primary-color;
+      border-color: darken($primary-color, 10%);
+      i {
+        color: #fff;
+      }
+    }
+  }
+  .btn-green {
+    cursor: pointer;
+    .active {
+      color: #fff;
+      box-shadow: none;
+      background: lighten($primary-color, 10%);
+      border-color: #01968c;
+    }
+  }
 }
 .customRadio {
   border-bottom: 1px solid #eee;
