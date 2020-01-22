@@ -2710,7 +2710,7 @@ class SelfPersonalDetails extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Download Forms</h3>
+                  <h3 className="caption-subject">Request / Download Forms</h3>
                 </div>
               </div>
               <div className="portlet-body">
@@ -2758,7 +2758,7 @@ class SelfPersonalDetails extends Component {
                             url: "https://google.com"
                           },
                           {
-                            formName: "Certificate of Employee",
+                            formName: "Salary Certificate of Employee",
                             url: "https://google.com"
                           }
                         ]

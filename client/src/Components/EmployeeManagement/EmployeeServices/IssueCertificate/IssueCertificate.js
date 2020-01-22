@@ -208,7 +208,7 @@ class IssueCertificate extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Certificate Formats</h3>
+                  <h3 className="caption-subject">Issue Certificate Direct</h3>
                 </div>
               </div>
               <div className="portlet-body">
@@ -297,17 +297,99 @@ class IssueCertificate extends Component {
               </div>
             </div>
           </div>
-          <div className="col-8">
+          <div className="col-9">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Preview Certificate</h3>
+                  <h3 className="caption-subject">
+                    Issue Certificate on request
+                  </h3>
                 </div>
               </div>
               <div className="portlet-body">
                 <div className="row">
                   <div className="col-12" style={{ minHeight: "55vh" }}>
-                    Preview Comes Here
+                    <AlgaehDataGrid
+                      id="employeeFormTemplate"
+                      columns={[
+                        {
+                          fieldName: "employee_id",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Emp. ID" }} />
+                          ),
+                          others: {
+                            maxWidth: 150
+                          }
+                        },
+                        {
+                          fieldName: "employee_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Employee Name" }}
+                            />
+                          ),
+                          others: {
+                            style: {
+                              textAlign: "left"
+                            }
+                          }
+                        },
+                        {
+                          fieldName: "requestDate",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Requested Date" }}
+                            />
+                          ),
+                          others: {
+                            maxWidth: 150
+                          }
+                        },
+                        {
+                          fieldName: "requestedFor",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Requested For" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "url",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Print / Issue" }}
+                            />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <div>
+                                {" "}
+                                <button className="">Issue</button>/
+                                <button className="">Print</button>
+                              </div>
+                            );
+                          },
+                          others: {
+                            maxWidth: 150
+                          }
+                        }
+                      ]}
+                      keyId=""
+                      dataSource={{
+                        data: [
+                          {
+                            employee_id: "10045",
+                            employee_name: "Aboobacker Sidhiqe",
+                            requestDate: "07-01-2020",
+                            requestedFor: "Salary Certificate",
+                            url: "https://google.com"
+                          }
+                        ]
+                      }}
+                      isEditable={false}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{}}
+                    />
                   </div>
                 </div>
               </div>
