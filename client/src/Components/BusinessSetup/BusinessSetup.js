@@ -30,7 +30,7 @@ class BusinessSetup extends Component {
       return f.module_code === "FTDSK";
     });
     this.state = {
-      pageDisplay: "BranchMaster",
+      pageDisplay: "DeptMaster",
       HIMS_Active: HIMS_Active.length > 0 ? true : false
     };
   }
@@ -54,27 +54,27 @@ class BusinessSetup extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"BranchMaster"}
+                algaehtabs={"DeptMaster"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Branch"
+                      fieldName: "departments"
                     }}
                   />
                 }
               </li>
               <li
-                algaehtabs={"DeptMaster"}
-                className={"nav-item tab-button"}
+                algaehtabs={"BranchMaster"}
+                className={"nav-item tab-button "}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "departments"
+                      forceLabel: "Branch"
                     }}
                   />
                 }
