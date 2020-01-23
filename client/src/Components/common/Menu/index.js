@@ -64,6 +64,7 @@ function NavBars(props) {
       uri: "/apiAuth/logout",
       method: "GET",
       onSuccess: () => {
+        debugger;
         history.push("/");
       }
     });

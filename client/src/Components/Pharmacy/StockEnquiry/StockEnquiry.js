@@ -24,7 +24,7 @@ import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
 import BatchWiseStock from "./BatchWiseStock";
-import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
 class StockEnquiry extends Component {
   constructor(props) {
@@ -346,7 +346,7 @@ class StockEnquiry extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {getAmountFormart(row.avgcost, {
+                          {GetAmountFormart(row.avgcost, {
                             appendSymbol: false
                           })}
                         </span>
@@ -363,7 +363,7 @@ class StockEnquiry extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {getAmountFormart(row.sale_price, {
+                          {GetAmountFormart(row.sale_price, {
                             appendSymbol: false
                           })}
                         </span>

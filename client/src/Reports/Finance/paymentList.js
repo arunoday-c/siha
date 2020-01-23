@@ -1,5 +1,5 @@
 import { financeHeader } from "./financeHeader";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 // import _ from "lodash";
 import "../report-style.scss";
 export function printReport(result) {
@@ -33,15 +33,15 @@ export function printReport(result) {
       list =>
         `
     <tr>
-    <td>${getAmountFormart(list.project_cost)} </td>  
-    <td>${getAmountFormart(list.project_cost)} </td>  
-    <td>${getAmountFormart(list.project_cost)} </td>  
-    <td>${getAmountFormart(list.project_cost)} </td>  
-    <td>${getAmountFormart(list.project_cost)} </td>  
-    <td>${getAmountFormart(list.project_cost)} </td>  
-    <td>${getAmountFormart(list.project_cost)} </td>  
-    <td>${getAmountFormart(list.project_cost)} </td>  
-    <td>${getAmountFormart(list.project_cost)} </td>  
+    <td>${GetAmountFormart(list.project_cost)} </td>  
+    <td>${GetAmountFormart(list.project_cost)} </td>  
+    <td>${GetAmountFormart(list.project_cost)} </td>  
+    <td>${GetAmountFormart(list.project_cost)} </td>  
+    <td>${GetAmountFormart(list.project_cost)} </td>  
+    <td>${GetAmountFormart(list.project_cost)} </td>  
+    <td>${GetAmountFormart(list.project_cost)} </td>  
+    <td>${GetAmountFormart(list.project_cost)} </td>  
+    <td>${GetAmountFormart(list.project_cost)} </td>  
 </tr>
     `
     )

@@ -1,5 +1,5 @@
 import { incomeHeader } from "./incomeHeader";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 import _ from "lodash";
 import "../report-style.scss";
 import moment from "moment";
@@ -96,13 +96,13 @@ export function printReport(result) {
       } </td>  
       
       <td  style="text-align:right">${
-        list.pay_type === "CA" ? getAmountFormart(list.amount) : 0
+        list.pay_type === "CA" ? GetAmountFormart(list.amount) : 0
       } </td>  
       <td  style="text-align:right">${
-        list.pay_type === "CD" ? getAmountFormart(list.amount) : 0
+        list.pay_type === "CD" ? GetAmountFormart(list.amount) : 0
       } </td>  
       <td  style="text-align:right">${
-        list.pay_type === "CH" ? getAmountFormart(list.amount) : 0
+        list.pay_type === "CH" ? GetAmountFormart(list.amount) : 0
       } </td>  
     </tr>
     `
@@ -119,7 +119,7 @@ export function printReport(result) {
      amount =>
        `<div class="col" style="text-align:right"><label>${
          amount.key
-       }</label><h6>${getAmountFormart(amount.amount)}</h6></div>`
+       }</label><h6>${GetAmountFormart(amount.amount)}</h6></div>`
    )
    .join("")}
 

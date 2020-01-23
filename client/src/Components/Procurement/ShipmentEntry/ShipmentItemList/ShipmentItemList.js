@@ -23,7 +23,7 @@ import {
   changeDateFormat,
   GridAssignData
 } from "./ShipmentItemListEvent";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class ShipmentItemList extends Component {
   constructor(props) {
@@ -509,7 +509,7 @@ class ShipmentItemList extends Component {
                               forceLabel: "Sub Total"
                             }}
                           />
-                          <h6>{getAmountFormart(this.state.sub_total)}</h6>
+                          <h6>{GetAmountFormart(this.state.sub_total)}</h6>
                         </div>
                         <div className="col-lg-4">
                           <AlgaehLabel
@@ -518,7 +518,7 @@ class ShipmentItemList extends Component {
                             }}
                           />
                           <h6>
-                            {getAmountFormart(this.state.detail_discount)}
+                            {GetAmountFormart(this.state.detail_discount)}
                           </h6>
                         </div>
 
@@ -528,7 +528,7 @@ class ShipmentItemList extends Component {
                               forceLabel: "Net Payable"
                             }}
                           />
-                          <h6>{getAmountFormart(this.state.net_payable)}</h6>
+                          <h6>{GetAmountFormart(this.state.net_payable)}</h6>
                         </div>
                       </div>
                     </div>

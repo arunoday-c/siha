@@ -6,7 +6,7 @@ import authmiddleware from "../middleware/authmiddleware";
 import account from "../model/account";
 import cryptography from "../utils/cryptography";
 import moment from "moment";
-const { apiAuth, authUser, apiAuthentication } = account;
+const { apiAuth, authUser, apiAuthentication, userCheck } = account;
 const { releaseConnection } = utils;
 const {
   generateAccessToken,
@@ -327,6 +327,12 @@ export default ({ config, db }) => {
     res.status(httpStatus.ok).json({
       message: "Permission to access api is successfully removed",
       success: true
+    });
+  });
+  api.post("/userCheck", userCheck, (req, res) => {
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: req.records
     });
   });
   return api;

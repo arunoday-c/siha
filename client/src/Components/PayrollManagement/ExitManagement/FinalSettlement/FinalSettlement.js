@@ -12,7 +12,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import {
   AlgaehValidation,
-  getAmountFormart
+  GetAmountFormart
 } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 
@@ -721,8 +721,8 @@ class FinalSettlement extends Component {
                         <h6>
                           {" "}
                           {FsData.total_salary
-                            ? getAmountFormart(this.state.total_earnings)
-                            : getAmountFormart(0)}
+                            ? GetAmountFormart(this.state.total_earnings)
+                            : GetAmountFormart(0)}
                         </h6>
                       </div>
                     </div>
@@ -881,8 +881,8 @@ class FinalSettlement extends Component {
                         <h6>
                           {" "}
                           {FsData.total_salary
-                            ? getAmountFormart(this.state.total_deductions)
-                            : getAmountFormart(0)}
+                            ? GetAmountFormart(this.state.total_deductions)
+                            : GetAmountFormart(0)}
                         </h6>
                       </div>
                     </div>
@@ -953,8 +953,8 @@ class FinalSettlement extends Component {
                         <h6>
                           {" "}
                           {FsData.total_loan_amount
-                            ? getAmountFormart(FsData.total_loan_amount)
-                            : getAmountFormart(0)}
+                            ? GetAmountFormart(FsData.total_loan_amount)
+                            : GetAmountFormart(0)}
                         </h6>
                       </div>
                     </div>
@@ -973,8 +973,8 @@ class FinalSettlement extends Component {
                     <h6>
                       {" "}
                       {FsData.total_salary
-                        ? getAmountFormart(FsData.total_salary)
-                        : getAmountFormart(0)}
+                        ? GetAmountFormart(FsData.total_salary)
+                        : GetAmountFormart(0)}
                     </h6>
                   </div>
 
@@ -983,8 +983,8 @@ class FinalSettlement extends Component {
                     <h6>
                       {" "}
                       {FsData.gratuity_amount
-                        ? getAmountFormart(FsData.gratuity_amount)
-                        : getAmountFormart(0)}
+                        ? GetAmountFormart(FsData.gratuity_amount)
+                        : GetAmountFormart(0)}
                     </h6>
                   </div>
 
@@ -993,8 +993,8 @@ class FinalSettlement extends Component {
                     <h6>
                       {" "}
                       {FsData.total_leave_encash_amount
-                        ? getAmountFormart(FsData.total_leave_encash_amount)
-                        : getAmountFormart(0)}
+                        ? GetAmountFormart(FsData.total_leave_encash_amount)
+                        : GetAmountFormart(0)}
                     </h6>
                   </div>
                 </div>
@@ -1011,9 +1011,9 @@ class FinalSettlement extends Component {
                       <div className="col-12">
                         <label className="style_Label ">Net Earnings</label>
                         <h6>
-                          {getAmountFormart(this.state.net_earnings)
-                            ? getAmountFormart(this.state.net_earnings)
-                            : getAmountFormart(0)}
+                          {GetAmountFormart(this.state.net_earnings)
+                            ? GetAmountFormart(this.state.net_earnings)
+                            : GetAmountFormart(0)}
                         </h6>
                       </div>
 
@@ -1021,18 +1021,18 @@ class FinalSettlement extends Component {
                         <label className="style_Label ">Net Deduction</label>
                         <h6>
                           {" "}
-                          {getAmountFormart(this.state.net_deductions)
-                            ? getAmountFormart(this.state.net_deductions)
-                            : getAmountFormart(0)}
+                          {GetAmountFormart(this.state.net_deductions)
+                            ? GetAmountFormart(this.state.net_deductions)
+                            : GetAmountFormart(0)}
                         </h6>
                       </div>
                       <div className="col-12">
                         <label className="style_Label ">Net Amount</label>
                         <h6 style={{ fontSize: "2em" }}>
                           {" "}
-                          {getAmountFormart(this.state.net_amount)
-                            ? getAmountFormart(this.state.net_amount)
-                            : getAmountFormart(0)}
+                          {GetAmountFormart(this.state.net_amount)
+                            ? GetAmountFormart(this.state.net_amount)
+                            : GetAmountFormart(0)}
                         </h6>
                       </div>
                     </div>

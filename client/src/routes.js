@@ -510,6 +510,9 @@ const QuotationCompare = React.lazy(() =>
     import("./Components/Procurement/QuotationCompare/QuotationCompare")
   )
 );
+const DefaultLandingPage = React.lazy(() =>
+  retry(() => import("./Components/Dashboard/defaultlandingPage"))
+);
 function LoadComponent({ children }) {
   return (
     <Suspense
@@ -531,6 +534,15 @@ const appRoutes = [
     path: "/",
     isExactPath: true,
     component: <Login />
+  },
+  {
+    path: "/NoDashboard",
+    isExactPath: true,
+    component: (
+      <LoadComponent>
+        <DefaultLandingPage />
+      </LoadComponent>
+    )
   },
   // {
   //   path: "/CommonDashboard",
@@ -719,7 +731,7 @@ const appRoutes = [
     isExactPath: true,
     component: (
       <LoadComponent>
-        <PatientRegistration/>
+        <PatientRegistration />
       </LoadComponent>
     )
   },

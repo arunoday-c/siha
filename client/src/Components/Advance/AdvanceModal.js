@@ -32,7 +32,7 @@ import {
 
 import AdvRefunIOputs from "../../Models/AdvanceRefund";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 import {
   algaehApiCall,
   swalMessage,
@@ -362,10 +362,10 @@ class AddAdvanceModal extends PureComponent {
                         />
                         <h6>
                           {this.props.inputsparameters.collect_advance
-                            ? getAmountFormart(
+                            ? GetAmountFormart(
                               this.props.inputsparameters.collect_advance
                             )
-                            : getAmountFormart("0")}
+                            : GetAmountFormart("0")}
                         </h6>
                       </div>
                     ) : null}
@@ -642,10 +642,10 @@ class AddAdvanceModal extends PureComponent {
                       />
                       <h6>
                         {this.props.inputsparameters.advance_amount
-                          ? getAmountFormart(
+                          ? GetAmountFormart(
                             this.props.inputsparameters.advance_amount
                           )
-                          : getAmountFormart("0")}
+                          : GetAmountFormart("0")}
                       </h6>
                     </div>
 
@@ -655,7 +655,7 @@ class AddAdvanceModal extends PureComponent {
                           fieldName: "total_amount"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.total_amount)}</h6>
+                      <h6>{GetAmountFormart(this.state.total_amount)}</h6>
                     </div>
                     <div className="col-lg-3">
                       <AlgaehLabel

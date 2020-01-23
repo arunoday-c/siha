@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 // import GlobalVariables from "../../../../../utils/GlobalVariables";
-import { getAmountFormart } from "../../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../../utils/GlobalFunctions";
 
 import "./PayRollDetails.scss";
 
@@ -143,7 +143,7 @@ class PayRollDetails extends Component {
                       forceLabel: "Gross Salary"
                     }}
                   />
-                  <h6>{getAmountFormart(this.state.gross_salary)}</h6>
+                  <h6>{GetAmountFormart(this.state.gross_salary)}</h6>
                 </div>
                 <div className="col">
                   <AlgaehLabel
@@ -151,7 +151,7 @@ class PayRollDetails extends Component {
                       forceLabel: "Total Earning"
                     }}
                   />
-                  <h6>{getAmountFormart(this.state.total_earnings)}</h6>
+                  <h6>{GetAmountFormart(this.state.total_earnings)}</h6>
                 </div>
                 <div className="col">
                   <AlgaehLabel
@@ -159,7 +159,7 @@ class PayRollDetails extends Component {
                       forceLabel: "Total Deduction"
                     }}
                   />
-                  <h6>{getAmountFormart(this.state.total_deductions)}</h6>
+                  <h6>{GetAmountFormart(this.state.total_deductions)}</h6>
                 </div>
                 <div className="col">
                   <AlgaehLabel
@@ -167,7 +167,7 @@ class PayRollDetails extends Component {
                       forceLabel: "Total Emp. Contribution"
                     }}
                   />
-                  <h6>{getAmountFormart(this.state.total_contributions)}</h6>
+                  <h6>{GetAmountFormart(this.state.total_contributions)}</h6>
                 </div>
                 <div className="col">
                   <AlgaehLabel
@@ -175,7 +175,7 @@ class PayRollDetails extends Component {
                       forceLabel: "Net Salary"
                     }}
                   />
-                  <h6>{getAmountFormart(this.state.net_salary)}</h6>
+                  <h6>{GetAmountFormart(this.state.net_salary)}</h6>
                 </div>
                 <div
                   className="col"
@@ -190,7 +190,7 @@ class PayRollDetails extends Component {
                     }}
                   />
                   <h6 style={{ fontWeight: "bold" }}>
-                    {getAmountFormart(this.state.cost_to_company)}
+                    {GetAmountFormart(this.state.cost_to_company)}
                   </h6>
                 </div>
               </div>

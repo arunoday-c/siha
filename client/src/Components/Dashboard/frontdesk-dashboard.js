@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 // import { getCookie } from "../../utils/algaehApiCall.js";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 
 // const AdmissionsReadmissionData = {
 //   datasets: [
@@ -443,9 +443,7 @@ class Dashboard extends Component {
                 <hr />
                 <div className="stats">
                   <b onClick={this.showDetailHandler.bind(this)}>
-                    {this.state.showDetails === "d-block"
-                      ? "Hide"
-                      : "Show"}
+                    {this.state.showDetails === "d-block" ? "Hide" : "Show"}
                   </b>
                 </div>
               </div>
@@ -486,15 +484,15 @@ class Dashboard extends Component {
                   <div className="numbers">
                     <p>Total Cash Received</p>
 
-                    {getAmountFormart("10378.00")}
+                    {GetAmountFormart("10378.00")}
                   </div>
                 </div>
               </div>
               <div className="footer">
                 <hr />
                 <div className="stats">
-                  By Cash <span>{getAmountFormart("3540.33")} </span> | By Card{" "}
-                  <span>{getAmountFormart("6837.67")} </span>
+                  By Cash <span>{GetAmountFormart("3540.33")} </span> | By Card{" "}
+                  <span>{GetAmountFormart("6837.67")} </span>
                 </div>
               </div>
             </div>
@@ -662,8 +660,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Dashboard)
+  connect(mapStateToProps, mapDispatchToProps)(Dashboard)
 );

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./SalaryProcessing.scss";
 
 import { AlgaehLabel, AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import { EmployeeFilter } from "../../../common/EmployeeFilter";
 import {
   SalaryProcess,
@@ -222,7 +222,7 @@ class NewSalaryProcessing extends Component {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {getAmountFormart(row.advance_due)}
+                                      {GetAmountFormart(row.advance_due)}
                                     </span>
                                   );
                                 }
@@ -240,7 +240,7 @@ class NewSalaryProcessing extends Component {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {getAmountFormart(row.loan_due_amount)}
+                                      {GetAmountFormart(row.loan_due_amount)}
                                     </span>
                                   );
                                 }
@@ -258,7 +258,7 @@ class NewSalaryProcessing extends Component {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {getAmountFormart(
+                                      {GetAmountFormart(
                                         row.loan_payable_amount
                                       )}
                                     </span>
@@ -277,7 +277,7 @@ class NewSalaryProcessing extends Component {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {getAmountFormart(row.net_salary)}
+                                      {GetAmountFormart(row.net_salary)}
                                     </span>
                                   );
                                 }

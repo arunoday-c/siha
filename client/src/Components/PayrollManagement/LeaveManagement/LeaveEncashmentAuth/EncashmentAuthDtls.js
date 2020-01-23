@@ -5,7 +5,7 @@ import { AuthorizeLEaveEncash } from "./LeaveEncashmentAuthEvents.js";
 
 import { AlgaehLabel, AlgaehModalPopUp } from "../../../Wrapper/algaehWrapper";
 import {
-  getAmountFormart,
+  GetAmountFormart,
   AlgaehOpenContainer
 } from "../../../../utils/GlobalFunctions";
 
@@ -99,7 +99,7 @@ export default class EncashmentAuthDtls extends Component {
                     forceLabel: "Encashment Amount"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.total_amount)}</h6>
+                <h6>{GetAmountFormart(this.state.total_amount)}</h6>
               </div>
             </div>
           </div>

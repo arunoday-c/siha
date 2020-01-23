@@ -15,18 +15,18 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+// import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 import _ from "lodash";
-
+import { MainContext } from "algaeh-react-components/context";
 class BankMaster extends Component {
   constructor(props) {
     super(props);
-    let Activated_Modueles = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    );
-    const HIMS_Active = _.filter(Activated_Modueles, f => {
-      return f.module_code === "FTDSK";
-    });
+    // let Activated_Modueles = JSON.parse(
+    //   AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+    // );
+    // const HIMS_Active = _.filter(Activated_Modueles, f => {
+    //   return f.module_code === "FTDSK";
+    // });
 
     this.state = {
       bank_name: null,
@@ -37,14 +37,30 @@ class BankMaster extends Component {
       contact_number: null,
       card_name: "",
       card_list: [],
-      HIMS_Active: HIMS_Active.length > 0 ? true : false
+      HIMS_Active: false //HIMS_Active.length > 0 ? true : false
     };
     if (this.props.banks === undefined || this.props.banks.length === 0) {
       this.getBankMaster();
     }
-    if (HIMS_Active.length > 0) {
+    // if (HIMS_Active.length > 0) {
+    //   this.getCardkMaster();
+    // }
+  }
+  static contextType = MainContext;
+
+  componentDidMount() {
+    const userToken = this.context.userToken;
+    const active =
+      userToken.product_type === "HIMS_ERP" ||
+      userToken.product_type === "HIMS_CLINICAL"
+        ? true
+        : false;
+    if (active === true) {
       this.getCardkMaster();
     }
+    this.setState({
+      HIMS_Active: active
+    });
   }
 
   texthandle(e) {
@@ -104,7 +120,7 @@ class BankMaster extends Component {
 
     AlgaehValidation({
       alertTypeIcon: "warning",
-      querySelector:"id='bankMaster'",
+      querySelector: "id='bankMaster'",
       onSuccess: () => {
         algaehApiCall({
           uri: "/bankmaster/addBank",
@@ -266,7 +282,10 @@ class BankMaster extends Component {
     return (
       <div className="row BankMasterScreen" style={{ paddingTop: 15 }}>
         <div className={col_setup}>
-          <div id="bankMaster" className="portlet portlet-bordered margin-bottom-15">
+          <div
+            id="bankMaster"
+            className="portlet portlet-bordered margin-bottom-15"
+          >
             <div className="portlet-body">
               <div className="row">
                 <AlagehFormGroup

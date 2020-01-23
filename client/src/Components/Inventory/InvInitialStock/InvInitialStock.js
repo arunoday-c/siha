@@ -36,7 +36,7 @@ import "./InvInitialStock.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
-import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 
@@ -743,7 +743,7 @@ class InvInitialStock extends Component {
                       displayTemplate: row => {
                         return (
                           <span>
-                            {getAmountFormart(row.unit_cost, {
+                            {GetAmountFormart(row.unit_cost, {
                               appendSymbol: false
                             })}
                           </span>
@@ -759,7 +759,7 @@ class InvInitialStock extends Component {
                       displayTemplate: row => {
                         return (
                           <span>
-                            {getAmountFormart(row.sales_price, {
+                            {GetAmountFormart(row.sales_price, {
                               appendSymbol: false
                             })}
                           </span>
@@ -775,7 +775,7 @@ class InvInitialStock extends Component {
                       displayTemplate: row => {
                         return (
                           <span>
-                            {getAmountFormart(row.extended_cost, {
+                            {GetAmountFormart(row.extended_cost, {
                               appendSymbol: false
                             })}
                           </span>

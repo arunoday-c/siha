@@ -12,7 +12,7 @@ import {
 } from "../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../actions/algaehActions";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 
 class DisplayOPBilling extends PureComponent {
   constructor(props) {
@@ -221,7 +221,7 @@ class DisplayOPBilling extends PureComponent {
                       fieldName: "unit_cost"
                     }}
                   />
-                  <h6>{getAmountFormart(this.state.unit_cost)}</h6>
+                  <h6>{GetAmountFormart(this.state.unit_cost)}</h6>
                 </div>
 
                 <div className="col-lg-2">
@@ -230,7 +230,7 @@ class DisplayOPBilling extends PureComponent {
                       fieldName: "gross_amount"
                     }}
                   />
-                  <h6>{getAmountFormart(this.state.gross_amount)}</h6>
+                  <h6>{GetAmountFormart(this.state.gross_amount)}</h6>
                 </div>
 
                 <div className="col-lg-2">
@@ -252,7 +252,7 @@ class DisplayOPBilling extends PureComponent {
                       fieldName: "discount_amout"
                     }}
                   />
-                  <h6>{getAmountFormart(this.state.discount_amout)}</h6>
+                  <h6>{GetAmountFormart(this.state.discount_amout)}</h6>
                 </div>
 
                 <div className="col-lg-2">
@@ -261,7 +261,7 @@ class DisplayOPBilling extends PureComponent {
                       fieldName: "net_amout"
                     }}
                   />
-                  <h6>{getAmountFormart(this.state.net_amout)}</h6>
+                  <h6>{GetAmountFormart(this.state.net_amout)}</h6>
                 </div>
               </div>
               <hr />
@@ -300,7 +300,7 @@ class DisplayOPBilling extends PureComponent {
                             fieldName: "copay_amount"
                           }}
                         />
-                        <h6>{getAmountFormart(this.state.copay_amount)}</h6>
+                        <h6>{GetAmountFormart(this.state.copay_amount)}</h6>
                       </div>
 
                       {this.state.deductable_amount === 0 ? null : (
@@ -326,7 +326,7 @@ class DisplayOPBilling extends PureComponent {
                                 }}
                               />
                               <h6>
-                                {getAmountFormart(this.state.deductable_amount)}
+                                {GetAmountFormart(this.state.deductable_amount)}
                               </h6>
                             </div>
                           </div>
@@ -359,7 +359,7 @@ class DisplayOPBilling extends PureComponent {
                             fieldName: "gross_amount"
                           }}
                         />
-                        <h6>{getAmountFormart(this.state.patient_resp)}</h6>
+                        <h6>{GetAmountFormart(this.state.patient_resp)}</h6>
                       </div>
 
                       <div className="col-5">
@@ -368,7 +368,7 @@ class DisplayOPBilling extends PureComponent {
                             fieldName: "tax_lbl"
                           }}
                         />
-                        <h6>{getAmountFormart(this.state.patient_tax)}</h6>
+                        <h6>{GetAmountFormart(this.state.patient_tax)}</h6>
                       </div>
 
                       <div className="col-12">
@@ -377,7 +377,7 @@ class DisplayOPBilling extends PureComponent {
                             fieldName: "payable_lbl"
                           }}
                         />
-                        <h6>{getAmountFormart(this.state.patient_payable)}</h6>
+                        <h6>{GetAmountFormart(this.state.patient_payable)}</h6>
                       </div>
                     </div>
                   </div>
@@ -400,7 +400,7 @@ class DisplayOPBilling extends PureComponent {
                             fieldName: "gross_amount"
                           }}
                         />
-                        <h6>{getAmountFormart(this.state.comapany_resp)}</h6>
+                        <h6>{GetAmountFormart(this.state.comapany_resp)}</h6>
                       </div>
 
                       <div className="col-5">
@@ -409,7 +409,7 @@ class DisplayOPBilling extends PureComponent {
                             fieldName: "tax_lbl"
                           }}
                         />
-                        <h6>{getAmountFormart(this.state.company_tax)}</h6>
+                        <h6>{GetAmountFormart(this.state.company_tax)}</h6>
                       </div>
 
                       <div className="col-12">
@@ -418,7 +418,7 @@ class DisplayOPBilling extends PureComponent {
                             fieldName: "payable_lbl"
                           }}
                         />
-                        <h6>{getAmountFormart(this.state.company_payble)}</h6>
+                        <h6>{GetAmountFormart(this.state.company_payble)}</h6>
                       </div>
                     </div>
                   </div>
@@ -469,8 +469,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(DisplayOPBilling)
+  connect(mapStateToProps, mapDispatchToProps)(DisplayOPBilling)
 );

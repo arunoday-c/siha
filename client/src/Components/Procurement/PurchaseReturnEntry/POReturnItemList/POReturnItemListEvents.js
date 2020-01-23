@@ -1,7 +1,7 @@
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
 
 let texthandlerInterval = null;
@@ -78,13 +78,13 @@ const discounthandle = ($this, context, ctrl, e) => {
         (extended_cost * parseFloat($this.state.tax_percentage)) / 100;
       total_amount = tax_amount + extended_cost;
 
-      sub_discount_amount = getAmountFormart(sub_discount_amount, {
+      sub_discount_amount = GetAmountFormart(sub_discount_amount, {
         appendSymbol: false
       });
-      extended_cost = getAmountFormart(extended_cost, { appendSymbol: false });
-      unit_cost = getAmountFormart(unit_cost, { appendSymbol: false });
-      tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
-      total_amount = getAmountFormart(total_amount, { appendSymbol: false });
+      extended_cost = GetAmountFormart(extended_cost, { appendSymbol: false });
+      unit_cost = GetAmountFormart(unit_cost, { appendSymbol: false });
+      tax_amount = GetAmountFormart(tax_amount, { appendSymbol: false });
+      total_amount = GetAmountFormart(total_amount, { appendSymbol: false });
 
       $this.setState({
         sub_discount_percentage: sub_discount_percentage,
@@ -668,16 +668,16 @@ const onchhangegriddiscount = ($this, context, row, e) => {
 
 
   tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
-  tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
+  tax_amount = GetAmountFormart(tax_amount, { appendSymbol: false });
 
-  row["extended_cost"] = getAmountFormart(extended_cost, {
+  row["extended_cost"] = GetAmountFormart(extended_cost, {
     appendSymbol: false
   });
   row["tax_amount"] = (extended_cost * parseFloat(row.tax_percentage)) / 100;
   row["total_amount"] = parseFloat(tax_amount) + parseFloat(extended_cost);
 
 
-  row["net_extended_cost"] = getAmountFormart(extended_cost, {
+  row["net_extended_cost"] = GetAmountFormart(extended_cost, {
     appendSymbol: false
   });
   _stock_detail[_index] = row;

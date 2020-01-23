@@ -30,7 +30,7 @@ import ReciptForm from "../ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 
 class AddOPBillingForm extends Component {
@@ -606,7 +606,7 @@ class AddOPBillingForm extends Component {
                           displayTemplate: row => {
                             return (
                               <span>
-                                {getAmountFormart(row.unit_cost, {
+                                {GetAmountFormart(row.unit_cost, {
                                   appendSymbol: false
                                 })}
                               </span>
@@ -735,7 +735,7 @@ class AddOPBillingForm extends Component {
                           displayTemplate: row => {
                             return (
                               <span>
-                                {getAmountFormart(row.net_amout, {
+                                {GetAmountFormart(row.net_amout, {
                                   appendSymbol: false
                                 })}
                               </span>
@@ -776,7 +776,7 @@ class AddOPBillingForm extends Component {
                             fieldName: "sub_total_amount"
                           }}
                         />
-                        <h6>{getAmountFormart(this.state.sub_total_amount)}</h6>
+                        <h6>{GetAmountFormart(this.state.sub_total_amount)}</h6>
                       </div>
                       <div className="col-lg-4">
                         <AlgaehLabel
@@ -784,7 +784,7 @@ class AddOPBillingForm extends Component {
                             fieldName: "discount_amount"
                           }}
                         />
-                        <h6>{getAmountFormart(this.state.discount_amount)}</h6>
+                        <h6>{GetAmountFormart(this.state.discount_amount)}</h6>
                       </div>
 
                       <div className="col-lg-4">
@@ -793,7 +793,7 @@ class AddOPBillingForm extends Component {
                             fieldName: "net_total"
                           }}
                         />
-                        <h6>{getAmountFormart(this.state.net_total)}</h6>
+                        <h6>{GetAmountFormart(this.state.net_total)}</h6>
                       </div>
                     </div>
                   </div>
@@ -816,7 +816,7 @@ class AddOPBillingForm extends Component {
                               fieldName: "copay_amount"
                             }}
                           />
-                          <h6>{getAmountFormart(this.state.copay_amount)}</h6>
+                          <h6>{GetAmountFormart(this.state.copay_amount)}</h6>
                         </div>
                         {this.state.deductable_amount === 0 ? null : (
                           <div className="col-lg-6">
@@ -826,7 +826,7 @@ class AddOPBillingForm extends Component {
                               }}
                             />
                             <h6>
-                              {getAmountFormart(this.state.deductable_amount)}
+                              {GetAmountFormart(this.state.deductable_amount)}
                             </h6>
                           </div>
                         )}
@@ -866,7 +866,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {getAmountFormart(this.state.patient_res)}
+                                {GetAmountFormart(this.state.patient_res)}
                               </h6>
                             </div>
 
@@ -877,7 +877,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {getAmountFormart(this.state.patient_tax)}
+                                {GetAmountFormart(this.state.patient_tax)}
                               </h6>
                             </div>
 
@@ -888,7 +888,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {getAmountFormart(this.state.patient_payable_h)}
+                                {GetAmountFormart(this.state.patient_payable_h)}
                               </h6>
                             </div>
                           </div>
@@ -909,7 +909,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {getAmountFormart(this.state.company_res)}
+                                {GetAmountFormart(this.state.company_res)}
                               </h6>
                             </div>
 
@@ -920,7 +920,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {getAmountFormart(this.state.company_tax)}
+                                {GetAmountFormart(this.state.company_tax)}
                               </h6>
                             </div>
 
@@ -931,7 +931,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {getAmountFormart(this.state.company_payble)}
+                                {GetAmountFormart(this.state.company_payble)}
                               </h6>
                             </div>
                           </div>
@@ -1092,7 +1092,7 @@ class AddOPBillingForm extends Component {
                               fieldName: "advance_amount"
                             }}
                           />
-                          <h6>{getAmountFormart(this.state.advance_amount)}</h6>
+                          <h6>{GetAmountFormart(this.state.advance_amount)}</h6>
                         </div>
 
                         <div className="col">
@@ -1101,7 +1101,7 @@ class AddOPBillingForm extends Component {
                               fieldName: "net_amount"
                             }}
                           />
-                          <h6>{getAmountFormart(this.state.net_amount)}</h6>
+                          <h6>{GetAmountFormart(this.state.net_amount)}</h6>
                         </div>
 
                         <AlagehFormGroup
@@ -1143,7 +1143,7 @@ class AddOPBillingForm extends Component {
                             }}
                           />
                           <h4>
-                            {getAmountFormart(this.state.receiveable_amount)}
+                            {GetAmountFormart(this.state.receiveable_amount)}
                           </h4>
                         </div>
                         <div className="col highlightGrey">
@@ -1153,7 +1153,7 @@ class AddOPBillingForm extends Component {
                             }}
                           />
 
-                          <h6>{getAmountFormart(this.state.balance_credit)}</h6>
+                          <h6>{GetAmountFormart(this.state.balance_credit)}</h6>
                         </div>
                       </div>
                       <ReciptForm BillingIOputs={this.props.BillingIOputs} />

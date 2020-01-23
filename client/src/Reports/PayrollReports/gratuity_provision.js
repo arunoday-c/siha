@@ -2,7 +2,7 @@
 import { payrollHeader } from "./payrollHeader";
 import "../report-style.scss";
 import _ from "lodash";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 
 export function printReport(data) {
   let gratuity_amount = _.sumBy(data, s => parseFloat(s.gratuity_amount));
@@ -35,7 +35,7 @@ export function printReport(data) {
      <td class="left"   style="width:250px">${list.full_name}</td>
      <td class="center" >${list.sub_department_name}</td>
      
-     <td class="right" >${getAmountFormart(list.gratuity_amount, {
+     <td class="right" >${GetAmountFormart(list.gratuity_amount, {
        appendSymbol: false
      })} </td>
    
@@ -56,7 +56,7 @@ export function printReport(data) {
    <div class="col-2">
     <label> Total Gratuity Amount</label>
 
-      <h6>${getAmountFormart(gratuity_amount)} </h6>
+      <h6>${GetAmountFormart(gratuity_amount)} </h6>
       </div>
    
     </div>

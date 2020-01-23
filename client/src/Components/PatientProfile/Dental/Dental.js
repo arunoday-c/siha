@@ -6,7 +6,7 @@ import "./Dental.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   AlgaehValidation,
-  getAmountFormart
+  GetAmountFormart
 } from "../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import {
@@ -2334,7 +2334,7 @@ class Dental extends Component {
                     fieldName: "unit_cost"
                   }}
                 />
-                <h6>{getAmountFormart(billDetails.unit_cost)}</h6>
+                <h6>{GetAmountFormart(billDetails.unit_cost)}</h6>
               </div>
 
               <div className="col-lg-2">
@@ -2343,7 +2343,7 @@ class Dental extends Component {
                     fieldName: "gross_amount"
                   }}
                 />
-                <h6>{getAmountFormart(billDetails.gross_amount)}</h6>
+                <h6>{GetAmountFormart(billDetails.gross_amount)}</h6>
               </div>
 
               <div className="col-lg-2">
@@ -2381,7 +2381,7 @@ class Dental extends Component {
                     fieldName: "discount_amout"
                   }}
                 />
-                <h6>{getAmountFormart(billDetails.discount_amout)}</h6>
+                <h6>{GetAmountFormart(billDetails.discount_amout)}</h6>
               </div>
 
               <div className="col-lg-2">
@@ -2390,7 +2390,7 @@ class Dental extends Component {
                     fieldName: "net_amout"
                   }}
                 />
-                <h6>{getAmountFormart(billDetails.net_amout)}</h6>
+                <h6>{GetAmountFormart(billDetails.net_amout)}</h6>
               </div>
             </div>
             <hr />
@@ -2428,7 +2428,7 @@ class Dental extends Component {
                           fieldName: "copay_amount"
                         }}
                       />
-                      <h6>{getAmountFormart(billDetails.copay_amount)}</h6>
+                      <h6>{GetAmountFormart(billDetails.copay_amount)}</h6>
                     </div>
 
                     <div className="col-6">
@@ -2450,7 +2450,7 @@ class Dental extends Component {
                           fieldName: "deductable_amount"
                         }}
                       />
-                      <h6>{getAmountFormart(billDetails.deductable_amount)}</h6>
+                      <h6>{GetAmountFormart(billDetails.deductable_amount)}</h6>
                     </div>
                   </div>
                 </div>
@@ -2481,7 +2481,7 @@ class Dental extends Component {
                           fieldName: "gross_amount"
                         }}
                       />
-                      <h6>{getAmountFormart(billDetails.patient_resp)}</h6>
+                      <h6>{GetAmountFormart(billDetails.patient_resp)}</h6>
                     </div>
 
                     <div className="col-5">
@@ -2490,7 +2490,7 @@ class Dental extends Component {
                           fieldName: "tax_lbl"
                         }}
                       />
-                      <h6>{getAmountFormart(billDetails.patient_tax)}</h6>
+                      <h6>{GetAmountFormart(billDetails.patient_tax)}</h6>
                     </div>
 
                     <div className="col-12">
@@ -2499,7 +2499,7 @@ class Dental extends Component {
                           fieldName: "payable_lbl"
                         }}
                       />
-                      <h6>{getAmountFormart(billDetails.patient_payable)}</h6>
+                      <h6>{GetAmountFormart(billDetails.patient_payable)}</h6>
                     </div>
                   </div>
                 </div>
@@ -2524,7 +2524,7 @@ class Dental extends Component {
                           fieldName: "gross_amount"
                         }}
                       />
-                      <h6>{getAmountFormart(billDetails.comapany_resp)}</h6>
+                      <h6>{GetAmountFormart(billDetails.comapany_resp)}</h6>
                     </div>
 
                     <div className="col-5">
@@ -2533,7 +2533,7 @@ class Dental extends Component {
                           fieldName: "tax_lbl"
                         }}
                       />
-                      <h6>{getAmountFormart(billDetails.company_tax)}</h6>
+                      <h6>{GetAmountFormart(billDetails.company_tax)}</h6>
                     </div>
 
                     <div className="col-12">
@@ -2542,7 +2542,7 @@ class Dental extends Component {
                           fieldName: "payable_lbl"
                         }}
                       />
-                      <h6>{getAmountFormart(billDetails.company_payble)}</h6>
+                      <h6>{GetAmountFormart(billDetails.company_payble)}</h6>
                     </div>
                   </div>
                 </div>

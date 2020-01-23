@@ -1,5 +1,5 @@
 import { PatReportHeader } from "./PatReportHeader";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 import _ from "lodash";
 import "../report-style.scss";
 import moment from "moment";
@@ -35,7 +35,7 @@ export function printReport(result) {
     <td>${list.patient_code}</td>
     <td>${list.full_name}</td>    
     <td>${moment(list.created_date).format("DD-MM-YYYY")} </td>
-    <td>${getAmountFormart(list.advance_amount)} </td>   
+    <td>${GetAmountFormart(list.advance_amount)} </td>   
    
 </tr>
     `
@@ -51,8 +51,8 @@ export function printReport(result) {
         <label>Total Outstanding</label>
         <h6>${
           total_outstanding
-            ? getAmountFormart(total_outstanding)
-            : getAmountFormart("0")
+            ? GetAmountFormart(total_outstanding)
+            : GetAmountFormart("0")
         } </h6>
       </div>      
     </div>

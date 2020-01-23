@@ -27,7 +27,7 @@ import ReciptForm from "../ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import PackageList from "../PackageList/PackageList";
 import _ from "lodash";

@@ -19,7 +19,7 @@ import {
 } from "../../../../utils/GlobalFunctions";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
-import { getAmountFormart, getYears } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart, getYears } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import Options from "../../../../Options.json";
 
@@ -501,7 +501,7 @@ class ApplyLeaveEncashment extends Component {
                         forceLabel: "Encash Amount"
                       }}
                     />
-                    <h6>{getAmountFormart(this.state.total_amount)}</h6>
+                    <h6>{GetAmountFormart(this.state.total_amount)}</h6>
                   </div>
 
                   <div className="col-12" style={{ textAlign: "right" }}>
@@ -619,7 +619,7 @@ class ApplyLeaveEncashment extends Component {
                           ),
                           displayTemplate: row => {
                             return (
-                              <span>{getAmountFormart(row.leave_amount)}</span>
+                              <span>{GetAmountFormart(row.leave_amount)}</span>
                             );
                           }
                         }

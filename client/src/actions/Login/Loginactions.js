@@ -2,13 +2,19 @@
 
 "use strict";
 import axios from "axios";
-import { setToken, getLocalIP } from "../../utils/algaehApiCall";
+import {
+  setToken,
+  getLocalIP,
+  collectIP,
+  algaehApiCall
+} from "../../utils/algaehApiCall";
 import config from "../../utils/config.json";
 import {
   successfulMessage,
-  AlgaehCloseContainer
+  // AlgaehCloseContainer,
+  encrypter
 } from "../../utils/GlobalFunctions";
-
+import { setItem } from "algaeh-react-components/storage";
 export function getTokenDetals(options) {
   var auth_url = "/api/v1/apiAuth";
   var username = config.apiAuth.user;
@@ -16,13 +22,14 @@ export function getTokenDetals(options) {
   var basicAuth = "Basic " + btoa(username + ":" + password);
   // that.setState({ loading: true });
   options.loading(true);
-  new Promise((resolve, reject) => {
-    getLocalIP(myIP => {
-      if (myIP !== undefined) {
-        resolve(myIP);
-      }
-    });
-  }).then(myIP => {
+  // new Promise((resolve, reject) => {
+  //   getLocalIP(myIP => {
+  //     if (myIP !== undefined) {
+  //       resolve(myIP);
+  //     }
+  //   });
+  // })
+  collectIP().then(myIP => {
     const _myRoute = config.routersAndPorts.default;
     const isProxy = window.location.port === "";
     const _localaddress =
@@ -43,20 +50,21 @@ export function getTokenDetals(options) {
       }
     })
       .then(response => {
-        setToken(response.data.token, response.data.days);
-
-        sessionStorage.setItem(
-          "ModuleDetails",
-          AlgaehCloseContainer(JSON.stringify(response.data.activemoduleList))
-        );
-        options.setHospitals(response.data.hospitalList);
+        // setItem("token", response.data.token);
+        // setToken(response.data.token, response.data.days);
+        options.loading(false);
+        // sessionStorage.setItem(
+        //   "ModuleDetails",
+        //   AlgaehCloseContainer(JSON.stringify(response.data.activemoduleList))
+        // );
+        // options.setHospitals(response.data.hospitalList);
         // that.setState({
         //   hospitalList: response.data.hospitalList,
         //   loading: false
         // });
       })
       .catch(err => {
-        options.loading(false);
+        options.loading(true);
         console.error("Error : ", err.message);
         successfulMessage({
           message:
@@ -67,5 +75,58 @@ export function getTokenDetals(options) {
           icon: "error"
         });
       });
+  });
+}
+
+export function checkUser({ userId }) {
+  return new Promise((resolve, reject) => {
+    collectIP().then(ip => {
+      algaehApiCall({
+        uri: "/apiAuth/userCheck",
+        data: { userId: userId },
+        notoken: true,
+        onSuccess: response => {
+          resolve(response.data.records);
+        },
+        onCatch: error => {
+          reject(error);
+        }
+      });
+    });
+  });
+}
+
+export function OnSubmitUser({ item_id, username, password }) {
+  return new Promise((resolve, reject) => {
+    try {
+      collectIP().then(identity => {
+        const dataSent = encrypter(
+          JSON.stringify({
+            username: username,
+            password: password,
+            item_id: item_id,
+            identity: identity
+          })
+        );
+        algaehApiCall({
+          uri: "/apiAuth/authUser",
+          data: { post: dataSent },
+          notoken: true,
+          onSuccess: response => {
+            const { success, records, message } = response.data;
+            if (success === true) {
+              resolve(records);
+            } else {
+              reject(message);
+            }
+          },
+          onCatch: error => {
+            reject(error);
+          }
+        });
+      });
+    } catch (e) {
+      reject(e);
+    }
   });
 }

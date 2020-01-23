@@ -26,7 +26,7 @@ import "./../../../../styles/site.scss";
 import "./ApprovalDetails.scss";
 import MyContext from "../../../../utils/MyContext.js";
 import Options from "../../../../Options.json";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class PatientDetails extends Component {
   constructor(props) {
@@ -189,7 +189,7 @@ class PatientDetails extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {getAmountFormart(row.gross_amt, {
+                              {GetAmountFormart(row.gross_amt, {
                                 appendSymbol: false
                               })}
                             </span>
@@ -198,7 +198,7 @@ class PatientDetails extends Component {
                         editorTemplate: row => {
                           return (
                             <span>
-                              {getAmountFormart(row.gross_amt, {
+                              {GetAmountFormart(row.gross_amt, {
                                 appendSymbol: false
                               })}
                             </span>
@@ -214,7 +214,7 @@ class PatientDetails extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {getAmountFormart(row.net_amount, {
+                              {GetAmountFormart(row.net_amount, {
                                 appendSymbol: false
                               })}
                             </span>
@@ -223,7 +223,7 @@ class PatientDetails extends Component {
                         editorTemplate: row => {
                           return (
                             <span>
-                              {getAmountFormart(row.net_amount, {
+                              {GetAmountFormart(row.net_amount, {
                                 appendSymbol: false
                               })}
                             </span>

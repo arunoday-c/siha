@@ -1,5 +1,5 @@
 import Enumerable from "linq";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 import { incomeHeader } from "./incomeHeader";
 import "../report-style.scss";
 export function printReport(data) {
@@ -38,7 +38,7 @@ export function printReport(data) {
     <tr>
     <td>${list.service_type_code}</td>
     <td>${list.service_type} </td>
-    <td style="text-align:right">${getAmountFormart(list.total_amount)} </td>
+    <td style="text-align:right">${GetAmountFormart(list.total_amount)} </td>
     `
     )
     .join("")} 
@@ -47,7 +47,7 @@ export function printReport(data) {
         <tr style="background: #f2f2f2;">
         <td colspan="1"></td>
         <td><b> Total Amount</b></td>
-        <td style="text-align:right"><b>${getAmountFormart(AllTotal)}</b></td>
+        <td style="text-align:right"><b>${GetAmountFormart(AllTotal)}</b></td>
     </tr>
      </tbody>
     </table>

@@ -53,7 +53,7 @@ import { SetBulkState } from "../../utils/GlobalFunctions";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
 import UpdatePatientPopup from "../UpdatePatientDetails/UpdatePatientPopup";
 import _ from "lodash";
-
+import { MainContext } from "algaeh-react-components/context";
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
   BillingIOputs.inputParam()
@@ -69,13 +69,16 @@ class RegistrationPatient extends Component {
       visittypeselect: true,
       clearEnable: false,
       isPackUtOpen: false,
-      UpdatepatientDetail: false
+      UpdatepatientDetail: false,
+      employee_id_required: "N",
+      hsopital_id: ""
     };
-    this.employee_id_required = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    ).requied_emp_id;
-  }
 
+    // JSON.parse(
+    //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    // ).requied_emp_id;
+  }
+  static contextType = MainContext;
   UNSAFE_componentWillMount() {
     let IOputs = emptyObject;
     this.setState(IOputs);
@@ -83,6 +86,12 @@ class RegistrationPatient extends Component {
   }
 
   componentDidMount() {
+    const userToken = this.context.userToken;
+    // this.employee_id_required = userToken.requied_emp_id;
+    this.setState({
+      employee_id_required: userToken.requied_emp_id,
+      hsopital_id: userToken.hims_d_hospital_id
+    });
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
 
@@ -765,7 +774,7 @@ class RegistrationPatient extends Component {
             jsonFile: {
               fileName: "spotlightSearch",
               fieldName:
-                this.employee_id_required === "N"
+                this.state.employee_id_required === "N"
                   ? "frontDesk.patients"
                   : "frontDesk.emp_id_patients"
             },

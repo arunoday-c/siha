@@ -4,7 +4,7 @@ import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import "./EOSGratuity.scss";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 // import { parse } from "url";
 
@@ -418,7 +418,7 @@ class EOSGratuity extends Component {
                             <label className="style_Label ">
                               {data.short_desc}
                             </label>
-                            <h6>{getAmountFormart(data.amount)}</h6>
+                            <h6>{GetAmountFormart(data.amount)}</h6>
                           </div>
                         ))}
                       </div>
@@ -429,7 +429,7 @@ class EOSGratuity extends Component {
                         <div className="col-12">
                           <label className="style_Label ">Total</label>
                           <h6>
-                            {getAmountFormart(EosData.totalEarningComponents)}
+                            {GetAmountFormart(EosData.totalEarningComponents)}
                           </h6>
                         </div>
                       </div>
@@ -469,8 +469,8 @@ class EOSGratuity extends Component {
                     </label>
                     <h6>
                       {this.state.previous_gratuity_amount
-                        ? getAmountFormart(this.state.previous_gratuity_amount)
-                        : getAmountFormart(0)}
+                        ? GetAmountFormart(this.state.previous_gratuity_amount)
+                        : GetAmountFormart(0)}
                     </h6>
                   </div>
 
@@ -495,10 +495,10 @@ class EOSGratuity extends Component {
                     <label className="style_Label ">Computed Amount</label>
                     <h6 style={{ fontSize: "2em" }}>
                       {this.state.calculated_gratutity_amount
-                        ? getAmountFormart(
+                        ? GetAmountFormart(
                             this.state.calculated_gratutity_amount
                           )
-                        : getAmountFormart(0)}
+                        : GetAmountFormart(0)}
                     </h6>
                   </div>
                   <AlagehFormGroup

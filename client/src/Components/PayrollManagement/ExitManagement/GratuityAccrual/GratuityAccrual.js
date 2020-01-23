@@ -7,7 +7,7 @@ import {
   AlgaehLabel,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
-import { getYears, getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { getYears, GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import moment from "moment";
 import {
@@ -168,7 +168,7 @@ export default class GratuityAccrual extends Component {
                       forceLabel: "Total Gratuity Amount"
                     }}
                   />
-                  <h6>{getAmountFormart(this.state.total_gratuity_amount)}</h6>
+                  <h6>{GetAmountFormart(this.state.total_gratuity_amount)}</h6>
                 </div>
               </div>
             </div>

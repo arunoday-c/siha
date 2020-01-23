@@ -4,7 +4,7 @@ import "../report-style.scss";
 import _ from "lodash";
 // import moment from "moment";
 import {
-  getAmountFormart,
+  GetAmountFormart,
   AlgaehOpenContainer
 } from "../../utils/GlobalFunctions";
 
@@ -179,7 +179,7 @@ export function printReport(result) {
   //     } </td>
 
   //     <td class="right" style="width:150px">${list.leave_days} </td>
-  //     <td class="right" style="width:150px">${getAmountFormart(
+  //     <td class="right" style="width:150px">${GetAmountFormart(
   //       list.leave_salary,
   //       {
   //         appendSymbol: false
@@ -281,11 +281,11 @@ export function printReport(result) {
             list.employee_earning.length > 0
               ? assignEarningData(list.employee_earning, earnings).map(
                   data =>
-                    `  <td class="right">${getAmountFormart(data.amount, {
+                    `  <td class="right">${GetAmountFormart(data.amount, {
                       appendSymbol: false
                     })}</td>`
                 )
-              : `  <td class="right">${getAmountFormart("0", {
+              : `  <td class="right">${GetAmountFormart("0", {
                   appendSymbol: false
                 })}</td>`
           }
@@ -294,7 +294,7 @@ export function printReport(result) {
             .join("")
         : ""
     }
-      <td class="right" style="width:135px">${getAmountFormart(
+      <td class="right" style="width:135px">${GetAmountFormart(
         list.total_earnings,
         {
           appendSymbol: false
@@ -311,11 +311,11 @@ export function printReport(result) {
               list.employee_deduction.length > 0
                 ? assignDeductData(list.employee_deduction, deduct).map(
                     data =>
-                      `  <td class="right" >${getAmountFormart(data.amount, {
+                      `  <td class="right" >${GetAmountFormart(data.amount, {
                         appendSymbol: false
                       })}</td>`
                   )
-                : `  <td class="right">${getAmountFormart("0", {
+                : `  <td class="right">${GetAmountFormart("0", {
                     appendSymbol: false
                   })}</td>`
             }
@@ -324,14 +324,14 @@ export function printReport(result) {
               .join("")
           : ""
       }    
-      <td class="right" style="width:135px">${getAmountFormart(
+      <td class="right" style="width:135px">${GetAmountFormart(
         list.total_deductions,
         {
           appendSymbol: false
         }
       )}</td>
 
-      <td class="right">${getAmountFormart(list.net_salary, {
+      <td class="right">${GetAmountFormart(list.net_salary, {
         appendSymbol: false
       })} </td>
       
@@ -345,11 +345,11 @@ export function printReport(result) {
               list.employee_contributions.length > 0
                 ? assignContriData(list.employee_contributions, contrib).map(
                     data =>
-                      `  <td class="right" >${getAmountFormart(data.amount, {
+                      `  <td class="right" >${GetAmountFormart(data.amount, {
                         appendSymbol: false
                       })}</td>`
                   )
-                : `  <td class="right">${getAmountFormart("0", {
+                : `  <td class="right">${GetAmountFormart("0", {
                     appendSymbol: false
                   })}</td>`
             }
@@ -362,7 +362,7 @@ export function printReport(result) {
   
       ${assignEmployEmployer(list).map(
         final_amount =>
-          `  <td class="right" style="width:200px">${getAmountFormart(
+          `  <td class="right" style="width:200px">${GetAmountFormart(
             final_amount,
             {
               appendSymbol: false
@@ -370,20 +370,20 @@ export function printReport(result) {
           )}</td>`
       )}
 
-      <td class="right" style="width:150px">${getAmountFormart(
+      <td class="right" style="width:150px">${GetAmountFormart(
         list.leave_salary,
         {
           appendSymbol: false
         }
       )} </td>
       
-      <td class="right" style="width:150px">${getAmountFormart(
+      <td class="right" style="width:150px">${GetAmountFormart(
         list.airfare_amount,
         {
           appendSymbol: false
         }
       )} </td>
-      <td class="right" style="width:150px">${getAmountFormart(
+      <td class="right" style="width:150px">${GetAmountFormart(
         list.gratuity_amount,
         {
           appendSymbol: false
@@ -415,7 +415,7 @@ export function printReport(result) {
                             `
                       ${earningSumup(earnings).map(
                         data =>
-                          `  <td class="highlightBorder">${getAmountFormart(
+                          `  <td class="highlightBorder">${GetAmountFormart(
                             data
                           )}</td>`
                       )}
@@ -425,7 +425,7 @@ export function printReport(result) {
                     : ""
                 }
                 
-                <td style="width:135px" class="highlightBorder">${getAmountFormart(
+                <td style="width:135px" class="highlightBorder">${GetAmountFormart(
                   result.total_earnings
                 )}</td>
                 
@@ -437,7 +437,7 @@ export function printReport(result) {
                             `
                       ${decuctSumup(deduct).map(
                         data =>
-                          `  <td class="highlightBorder">${getAmountFormart(
+                          `  <td class="highlightBorder">${GetAmountFormart(
                             data
                           )}</td>`
                       )}
@@ -447,10 +447,10 @@ export function printReport(result) {
                     : ""
                 }
                 
-                <td style="width:135px" class="highlightBorder">${getAmountFormart(
+                <td style="width:135px" class="highlightBorder">${GetAmountFormart(
                   result.total_deductions
                 )}</td>
-                <td class="highlightBorder">${getAmountFormart(
+                <td class="highlightBorder">${GetAmountFormart(
                   result.total_net_salary
                 )}</td>
                 ${
@@ -461,7 +461,7 @@ export function printReport(result) {
                             `
                       ${contributeSumup(contribute).map(
                         data =>
-                          `  <td class="highlightBorder">${getAmountFormart(
+                          `  <td class="highlightBorder">${GetAmountFormart(
                             data
                           )}</td>`
                       )}
@@ -471,16 +471,16 @@ export function printReport(result) {
                     : ""
                 }
                 
-                <td style="width:200px" class="highlightBorder">${getAmountFormart(
+                <td style="width:200px" class="highlightBorder">${GetAmountFormart(
                   employee_employeer
                 )}</td>      
-                <td style="width:150px" class="highlightBorder">${getAmountFormart(
+                <td style="width:150px" class="highlightBorder">${GetAmountFormart(
                   result.sum_leave_salary
                 )}</td>
-                <td style="width:150px" class="highlightBorder">${getAmountFormart(
+                <td style="width:150px" class="highlightBorder">${GetAmountFormart(
                   result.sum_airfare_amount
                 )}</td>
-                <td style="width:150px" class="highlightBorder">${getAmountFormart(
+                <td style="width:150px" class="highlightBorder">${GetAmountFormart(
                   result.sum_gratuity
                 )}</td>
                 

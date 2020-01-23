@@ -41,7 +41,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 
 import ItemBatchs from "../ItemBatchs/ItemBatchs";
 import DisplayInsuranceDetails from "../DisplayInsuranceDetails/DisplayInsuranceDetails";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import InsuranceForm from "../InsuranceDetails/InsuranceForm";
 import PreApprovalStatus from "./PreApprovalStatus/PreApprovalStatus";
@@ -355,7 +355,7 @@ class PosListItems extends Component {
                               />
                               <h6>
                                 {this.state.unit_cost
-                                  ? getAmountFormart(this.state.unit_cost)
+                                  ? GetAmountFormart(this.state.unit_cost)
                                   : "-----------"}
                               </h6>
                             </div>
@@ -715,7 +715,7 @@ class PosListItems extends Component {
                                     displayTemplate: row => {
                                       return (
                                         <span>
-                                          {getAmountFormart(row.unit_cost, {
+                                          {GetAmountFormart(row.unit_cost, {
                                             appendSymbol: false
                                           })}
                                         </span>
@@ -737,7 +737,7 @@ class PosListItems extends Component {
                                     displayTemplate: row => {
                                       return (
                                         <span>
-                                          {getAmountFormart(row.extended_cost, {
+                                          {GetAmountFormart(row.extended_cost, {
                                             appendSymbol: false
                                           })}
                                         </span>
@@ -849,7 +849,7 @@ class PosListItems extends Component {
                                     displayTemplate: row => {
                                       return (
                                         <span>
-                                          {getAmountFormart(
+                                          {GetAmountFormart(
                                             row.net_extended_cost,
                                             {
                                               appendSymbol: false
@@ -900,7 +900,7 @@ class PosListItems extends Component {
                                 forceLabel: "Sub Total"
                               }}
                             />
-                            <h6>{getAmountFormart(this.state.sub_total)}</h6>
+                            <h6>{GetAmountFormart(this.state.sub_total)}</h6>
                           </div>
                           <div className="col-lg-4">
                             <AlgaehLabel
@@ -909,7 +909,7 @@ class PosListItems extends Component {
                               }}
                             />
                             <h6>
-                              {getAmountFormart(this.state.discount_amount)}
+                              {GetAmountFormart(this.state.discount_amount)}
                             </h6>
                           </div>
 
@@ -919,7 +919,7 @@ class PosListItems extends Component {
                                 forceLabel: "Net Total"
                               }}
                             />
-                            <h6>{getAmountFormart(this.state.net_total)}</h6>
+                            <h6>{GetAmountFormart(this.state.net_total)}</h6>
                           </div>
                         </div>
                       </div>
@@ -941,7 +941,7 @@ class PosListItems extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(this.state.copay_amount)}
+                                    {GetAmountFormart(this.state.copay_amount)}
                                   </h6>
                                 </div>
                               </div>
@@ -956,7 +956,7 @@ class PosListItems extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(
+                                    {GetAmountFormart(
                                       this.state.patient_responsibility
                                     )}
                                   </h6>
@@ -969,7 +969,7 @@ class PosListItems extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(this.state.patient_tax)}
+                                    {GetAmountFormart(this.state.patient_tax)}
                                   </h6>
                                 </div>
 
@@ -980,7 +980,7 @@ class PosListItems extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(
+                                    {GetAmountFormart(
                                       this.state.patient_payable_h
                                     )}
                                   </h6>
@@ -997,7 +997,7 @@ class PosListItems extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(
+                                    {GetAmountFormart(
                                       this.state.company_responsibility
                                     )}
                                   </h6>
@@ -1010,7 +1010,7 @@ class PosListItems extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(this.state.company_tax)}
+                                    {GetAmountFormart(this.state.company_tax)}
                                   </h6>
                                 </div>
 
@@ -1021,7 +1021,7 @@ class PosListItems extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(
+                                    {GetAmountFormart(
                                       this.state.company_payable
                                     )}
                                   </h6>
@@ -1149,7 +1149,7 @@ class PosListItems extends Component {
                                 }}
                               />
                               <h6>
-                                {getAmountFormart(this.state.advance_amount)}
+                                {GetAmountFormart(this.state.advance_amount)}
                               </h6>
                             </div>
 
@@ -1159,7 +1159,7 @@ class PosListItems extends Component {
                                   forceLabel: "Net Amount"
                                 }}
                               />
-                              <h6>{getAmountFormart(this.state.net_amount)}</h6>
+                              <h6>{GetAmountFormart(this.state.net_amount)}</h6>
                             </div>
 
                             <AlagehFormGroup
@@ -1203,7 +1203,7 @@ class PosListItems extends Component {
                                 }}
                               />
                               <h4>
-                                {getAmountFormart(
+                                {GetAmountFormart(
                                   this.state.receiveable_amount
                                 )}
                               </h4>
@@ -1217,7 +1217,7 @@ class PosListItems extends Component {
                               />
 
                               <h6>
-                                {getAmountFormart(this.state.balance_credit)}
+                                {GetAmountFormart(this.state.balance_credit)}
                               </h6>
                             </div>
                           </div>

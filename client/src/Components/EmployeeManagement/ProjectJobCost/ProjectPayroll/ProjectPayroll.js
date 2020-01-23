@@ -13,7 +13,7 @@ import {
 import {
   getYears,
   AlgaehOpenContainer,
-  getAmountFormart
+  GetAmountFormart
 } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -465,7 +465,7 @@ class ProjectPayroll extends Component {
                       }}
                     />
 
-                    <h6>{getAmountFormart(this.state.total_cost)}</h6>
+                    <h6>{GetAmountFormart(this.state.total_cost)}</h6>
                   </div>
                 </div>
               </div>

@@ -9,7 +9,7 @@ import {
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import {
   AlgaehValidation,
-  getAmountFormart
+  GetAmountFormart
 } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
@@ -385,7 +385,7 @@ class EmployeeGroups extends Component {
                         ),
                         displayTemplate: row => {
                           return (
-                            <span> {getAmountFormart(row.airfare_amount)}</span>
+                            <span> {GetAmountFormart(row.airfare_amount)}</span>
                           );
                         },
                         editorTemplate: row => {

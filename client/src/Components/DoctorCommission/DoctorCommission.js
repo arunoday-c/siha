@@ -29,7 +29,7 @@ import GlobalVariables from "../../utils/GlobalVariables.json";
 import moment from "moment";
 import Options from "../../Options.json";
 
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 
 class DoctorCommission extends Component {
   constructor(props) {
@@ -510,7 +510,7 @@ class DoctorCommission extends Component {
                     forceLabel: "OP Commision"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.op_commision)}</h6>
+                <h6>{GetAmountFormart(this.state.op_commision)}</h6>
               </div>
               <div className="col">
                 <AlgaehLabel
@@ -518,7 +518,7 @@ class DoctorCommission extends Component {
                     forceLabel: "OP Credit Comission"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.op_credit_comission)}</h6>
+                <h6>{GetAmountFormart(this.state.op_credit_comission)}</h6>
               </div>
 
               <div className="col">
@@ -527,7 +527,7 @@ class DoctorCommission extends Component {
                     forceLabel: "Gross Comission"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.gross_comission)}</h6>
+                <h6>{GetAmountFormart(this.state.gross_comission)}</h6>
 
                 {/* adjust_amount */}
               </div>
@@ -558,7 +558,7 @@ class DoctorCommission extends Component {
                     forceLabel: "Comission Payable"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.comission_payable)}</h6>
+                <h6>{GetAmountFormart(this.state.comission_payable)}</h6>
               </div>
             </div>
 

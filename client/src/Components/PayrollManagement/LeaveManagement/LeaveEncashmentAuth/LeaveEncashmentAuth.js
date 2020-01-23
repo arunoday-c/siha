@@ -29,7 +29,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import {
   getYears,
   AlgaehOpenContainer,
-  getAmountFormart
+  GetAmountFormart
 } from "../../../../utils/GlobalFunctions";
 import EncashmentAuthDtls from "./EncashmentAuthDtls";
 
@@ -472,7 +472,7 @@ class LeaveEncashmentAuth extends Component {
                         ),
                         displayTemplate: row => {
                           return (
-                            <span>{getAmountFormart(row.total_amount)}</span>
+                            <span>{GetAmountFormart(row.total_amount)}</span>
                           );
                         }
                       }

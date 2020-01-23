@@ -28,7 +28,7 @@ import {
   EditGrid,
   CancelGrid
 } from "./POItemListEvents";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class POItemList extends Component {
   constructor(props) {
@@ -536,7 +536,7 @@ class POItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.unit_price, {
+                                    {GetAmountFormart(row.unit_price, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -545,7 +545,7 @@ class POItemList extends Component {
                               editorTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.unit_price, {
+                                    {GetAmountFormart(row.unit_price, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -584,7 +584,7 @@ class POItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.extended_price, {
+                                    {GetAmountFormart(row.extended_price, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -593,7 +593,7 @@ class POItemList extends Component {
                               editorTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.extended_price, {
+                                    {GetAmountFormart(row.extended_price, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -698,7 +698,7 @@ class POItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.sub_discount_amount, {
+                                    {GetAmountFormart(row.sub_discount_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -743,7 +743,7 @@ class POItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.net_extended_cost, {
+                                    {GetAmountFormart(row.net_extended_cost, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -752,7 +752,7 @@ class POItemList extends Component {
                               editorTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.net_extended_cost, {
+                                    {GetAmountFormart(row.net_extended_cost, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -770,7 +770,7 @@ class POItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.unit_cost, {
+                                    {GetAmountFormart(row.unit_cost, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -779,7 +779,7 @@ class POItemList extends Component {
                               editorTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.unit_cost, {
+                                    {GetAmountFormart(row.unit_cost, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -842,7 +842,7 @@ class POItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.tax_amount, {
+                                    {GetAmountFormart(row.tax_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -851,7 +851,7 @@ class POItemList extends Component {
                               editorTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.tax_amount, {
+                                    {GetAmountFormart(row.tax_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -869,7 +869,7 @@ class POItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.total_amount, {
+                                    {GetAmountFormart(row.total_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -878,7 +878,7 @@ class POItemList extends Component {
                               editorTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.total_amount, {
+                                    {GetAmountFormart(row.total_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -924,7 +924,7 @@ class POItemList extends Component {
                                 forceLabel: "Sub Total"
                               }}
                             />
-                            <h6>{getAmountFormart(this.state.sub_total)}</h6>
+                            <h6>{GetAmountFormart(this.state.sub_total)}</h6>
                           </div>
                           <div className="col-lg-4">
                             <AlgaehLabel
@@ -933,7 +933,7 @@ class POItemList extends Component {
                               }}
                             />
                             <h6>
-                              {getAmountFormart(this.state.detail_discount)}
+                              {GetAmountFormart(this.state.detail_discount)}
                             </h6>
                           </div>
 
@@ -943,7 +943,7 @@ class POItemList extends Component {
                                 forceLabel: "Net Payable"
                               }}
                             />
-                            <h6>{getAmountFormart(this.state.net_payable)}</h6>
+                            <h6>{GetAmountFormart(this.state.net_payable)}</h6>
                           </div>
                         </div>
                       </div>

@@ -13,53 +13,53 @@ import {
 import DirectRoutes from "../../../Dynamicroutes";
 import { Notifications } from "../Notifications";
 import {
-  AlgaehCloseContainer,
-  AlgaehOpenContainer
+  AlgaehCloseContainer
+  // AlgaehOpenContainer
 } from "../../../utils/GlobalFunctions";
 import Enumarable from "linq";
 import swal from "sweetalert2";
 import sockets from "../../../sockets";
-
+import { MainContext } from "algaeh-react-components/context";
 class PersistentDrawer extends React.Component {
   constructor(props) {
     super(props);
 
-    const Activated_Modueles =
-      sessionStorage.getItem("ModuleDetails") !== null
-        ? JSON.parse(
-            AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-          )
-        : [];
-    let Hims_active = false;
-    let Hrms_active = false;
-    let Pharma_active = false;
-    let Invento_active = false;
-    let Lab_active = false;
-    let Rad_active = false;
+    // const Activated_Modueles =
+    //   sessionStorage.getItem("ModuleDetails") !== null
+    //     ? JSON.parse(
+    //         AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+    //       )
+    //     : [];
+    // let Hims_active = false;
+    // let Hrms_active = false;
+    // let Pharma_active = false;
+    // let Invento_active = false;
+    // let Lab_active = false;
+    // let Rad_active = false;
 
-    for (let i = 0; i < Activated_Modueles.length; i++) {
-      const item = Activated_Modueles[i];
-      switch (item.module_code) {
-        case "FTDSK":
-          Hims_active = true;
-          break;
-        case "PAYROLL":
-          Hrms_active = true;
-          break;
-        case "PHCY":
-          Pharma_active = true;
-          break;
-        case "INVTRY":
-          Invento_active = true;
-          break;
-        case "LAB":
-          Lab_active = true;
-          break;
-        case "RAD":
-          Rad_active = true;
-          break;
-      }
-    }
+    // for (let i = 0; i < Activated_Modueles.length; i++) {
+    //   const item = Activated_Modueles[i];
+    //   switch (item.module_code) {
+    //     case "FTDSK":
+    //       Hims_active = true;
+    //       break;
+    //     case "PAYROLL":
+    //       Hrms_active = true;
+    //       break;
+    //     case "PHCY":
+    //       Pharma_active = true;
+    //       break;
+    //     case "INVTRY":
+    //       Invento_active = true;
+    //       break;
+    //     case "LAB":
+    //       Lab_active = true;
+    //       break;
+    //     case "RAD":
+    //       Rad_active = true;
+    //       break;
+    //   }
+    // }
     this.state = {
       sideopen: false,
       class: "",
@@ -88,113 +88,119 @@ class PersistentDrawer extends React.Component {
       menuList: [],
       scrollPosition: 0,
       lang_className: " english_component",
-      Hims_active: Hims_active,
-      Hrms_active: Hrms_active,
-      Pharma_active: Pharma_active,
-      Invento_active: Invento_active,
-      Lab_active: Lab_active,
-      Rad_active: Rad_active
+      Hims_active: false,//Hims_active,
+      Hrms_active:false,// Hrms_active,
+      Pharma_active:false,// Pharma_active,
+      Invento_active:false,// Invento_active,
+      Lab_active:false,// Lab_active,
+      Rad_active:false// Rad_active
     };
-    const _userName = getCookie("userName");
-    // const _keyResources = getCookie("keyResources");
-    if (_userName === null || _userName === "") {
-      window.location.hash = "";
-    }
-    // if (_keyResources === null || _keyResources === "") {
+    // const _userName = getCookie("userName");
+    // if (_userName === null || _userName === "") {
     //   window.location.hash = "";
     // }
+   
 
-    algaehApiCall({
-      uri: "/algaehMasters/getRoleBaseActiveModules",
-      method: "GET",
-      onSuccess: dataResponse => {
-        if (dataResponse.data.success) {
-          const _module = Enumarable.from(dataResponse.data.records)
-            .select(s => {
-              return {
-                module_id: s.module_id,
-                module_code: s.module_code,
-                module_plan: s.module_plan
-              };
-            })
-            .toArray();
-          sessionStorage.removeItem("AlgaehOrbitaryData");
-          sessionStorage.setItem(
-            "AlgaehOrbitaryData",
-            AlgaehCloseContainer(JSON.stringify(_module))
-          );
-          algaehApiCall({
-            uri: "/algaehMasters/getRoleBaseInActiveComponents",
-            method: "GET",
-            onSuccess: internalComponents => {
-              if (internalComponents.data.success) {
-                sessionStorage.removeItem("AlgaehScreener");
-                sessionStorage.setItem(
-                  "AlgaehScreener",
-                  AlgaehCloseContainer(
-                    JSON.stringify(internalComponents.data.records)
-                  )
-                );
-              }
-            }
-          });
+    // algaehApiCall({
+    //   uri: "/algaehMasters/getRoleBaseActiveModules",
+    //   method: "GET",
+    //   onSuccess: dataResponse => {
+    //     if (dataResponse.data.success) {
+    //       const _module = Enumarable.from(dataResponse.data.records)
+    //         .select(s => {
+    //           return {
+    //             module_id: s.module_id,
+    //             module_code: s.module_code,
+    //             module_plan: s.module_plan
+    //           };
+    //         })
+    //         .toArray();
+    //       sessionStorage.removeItem("AlgaehOrbitaryData");
+    //       sessionStorage.setItem(
+    //         "AlgaehOrbitaryData",
+    //         AlgaehCloseContainer(JSON.stringify(_module))
+    //       );
+    //       algaehApiCall({
+    //         uri: "/algaehMasters/getRoleBaseInActiveComponents",
+    //         method: "GET",
+    //         onSuccess: internalComponents => {
+    //           if (internalComponents.data.success) {
+    //             sessionStorage.removeItem("AlgaehScreener");
+    //             sessionStorage.setItem(
+    //               "AlgaehScreener",
+    //               AlgaehCloseContainer(
+    //                 JSON.stringify(internalComponents.data.records)
+    //               )
+    //             );
+    //           }
+    //         }
+    //       });
 
-          const HRActive = Enumarable.from(dataResponse.data.records)
-            .where(w => w.module_code === "PAYROLL")
-            .toArray();
+    //       const HRActive = Enumarable.from(dataResponse.data.records)
+    //         .where(w => w.module_code === "PAYROLL")
+    //         .toArray();
 
-          if (HRActive.length > 0) {
-            algaehApiCall({
-              uri: "/payrollOptions/getHrmsOptions",
-              method: "GET",
-              module: "hrManagement",
-              onSuccess: res => {
-                if (res.data.success) {
-                  sessionStorage.removeItem("hrOptions");
-                  sessionStorage.setItem(
-                    "hrOptions",
-                    AlgaehCloseContainer(JSON.stringify(res.data.result[0]))
-                  );
-                }
-              },
-              onFailure: err => {
-                swalMessage({
-                  title: err.message,
-                  type: "error"
-                });
-              }
-            });
-          }
+    //       if (HRActive.length > 0) {
+    //         algaehApiCall({
+    //           uri: "/payrollOptions/getHrmsOptions",
+    //           method: "GET",
+    //           module: "hrManagement",
+    //           onSuccess: res => {
+    //             if (res.data.success) {
+    //               sessionStorage.removeItem("hrOptions");
+    //               sessionStorage.setItem(
+    //                 "hrOptions",
+    //                 AlgaehCloseContainer(JSON.stringify(res.data.result[0]))
+    //               );
+    //             }
+    //           },
+    //           onFailure: err => {
+    //             swalMessage({
+    //               title: err.message,
+    //               type: "error"
+    //             });
+    //           }
+    //         });
+    //       }
 
-          this.setState(
-            {
-              menuList: dataResponse.data.records
-            },
-            () => {
-              if (sockets.connected) {
-                sockets.emit(
-                  "user_logged",
-                  getCookie("userName"),
-                  this.state.menuList.map(module =>
-                    module.module_code.toLowerCase()
-                  ),
-                  getCookie("keyResources")
-                );
-              }
-            }
-          );
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          text: error.message,
-          type: "error"
-        });
-      }
-    });
+    //       this.setState(
+    //         {
+    //           menuList: dataResponse.data.records
+    //         },
+    //         () => {
+    //           if (sockets.connected) {
+    //             sockets.emit(
+    //               "user_logged",
+    //               getCookie("userName"),
+    //               this.state.menuList.map(module =>
+    //                 module.module_code.toLowerCase()
+    //               ),
+    //               getCookie("keyResources")
+    //             );
+    //           }
+    //         }
+    //       );
+    //     }
+    //   },
+    //   onFailure: error => {
+    //     swalMessage({
+    //       text: error.message,
+    //       type: "error"
+    //     });
+    //   }
+    // });
   }
-
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    // const Hims_active =
+    //   userToken.product_type === "HIMS_ERP" ||
+    //   userToken.product_type === "HIMS_CLINICAL"
+    //     ? true
+    //     : false;
+    // // const 
+
+
     let prevLang = getCookie("Language");
     if (prevLang !== "en") {
       this.setState({

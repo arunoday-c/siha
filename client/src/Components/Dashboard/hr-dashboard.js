@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 import DashBoardEvents from "./DashBoardEvents";
 import {
   AlagehFormGroup,
@@ -222,7 +222,7 @@ class Dashboard extends Component {
                 <div className="col-12">
                   <div className="text">
                     <p>Labour Cost</p>
-                    {getAmountFormart(this.state.total_company_salary)}
+                    {GetAmountFormart(this.state.total_company_salary)}
                   </div>
                 </div>
               </div>

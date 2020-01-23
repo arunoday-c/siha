@@ -23,7 +23,7 @@ import "./ItemMomentEnquiry.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
 class ItemMomentEnquiry extends Component {
   constructor(props) {

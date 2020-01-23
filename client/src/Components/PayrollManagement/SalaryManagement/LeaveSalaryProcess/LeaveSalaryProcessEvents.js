@@ -7,7 +7,7 @@ import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import Options from "../../../../Options.json";
 import {
-  getAmountFormart,
+  GetAmountFormart,
   AlgaehOpenContainer
 } from "../../../../utils/GlobalFunctions";
 import LeaveSalaryProcessIOputs from "../../../../Models/LeaveSalaryProcess";
@@ -163,10 +163,10 @@ const LeaveSalProcess = $this => {
               salaryObj[0].hims_f_salary_id;
           }
 
-          let leave_amount = getAmountFormart(
+          let leave_amount = GetAmountFormart(
             response.data.result[1][0].leave_amount
           );
-          let airfare_amount = getAmountFormart(
+          let airfare_amount = GetAmountFormart(
             response.data.result[1][0].airfare_amount
           );
 
@@ -180,7 +180,7 @@ const LeaveSalProcess = $this => {
             parseFloat(s.net_amount)
           );
 
-          salary_amount = getAmountFormart(salary_amount);
+          salary_amount = GetAmountFormart(salary_amount);
           x = salary_amount.split(" ");
           salary_amount = x[1];
 
@@ -191,7 +191,7 @@ const LeaveSalProcess = $this => {
             parseFloat(leave_amount) +
             parseFloat(airfare_amount);
 
-          total_amount = getAmountFormart(total_amount);
+          total_amount = GetAmountFormart(total_amount);
           x = total_amount.split(" ");
           total_amount = x[1];
 
@@ -203,15 +203,15 @@ const LeaveSalProcess = $this => {
             total_amount: total_amount,
             SaveBtn: false,
             ProcessBtn: true,
-            dis_salary_amount: getAmountFormart(salary_amount),
+            dis_salary_amount: GetAmountFormart(salary_amount),
             airfare_months: response.data.result[1][0].airfare_months,
-            dis_leave_amount: getAmountFormart(
+            dis_leave_amount: GetAmountFormart(
               response.data.result[1][0].leave_amount
             ),
-            dis_airfare_amount: getAmountFormart(
+            dis_airfare_amount: GetAmountFormart(
               response.data.result[1][0].airfare_amount
             ),
-            dis_total_amount: getAmountFormart(total_amount)
+            dis_total_amount: GetAmountFormart(total_amount)
           });
           swalMessage({
             title: "Processed succesfully..",

@@ -20,7 +20,7 @@ import {
   AlagehFormGroup
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import LeaveEncashmentProcessIOputs from "../../../Models/LeaveEncashmentProcess";
 import Options from "../../../Options.json";
 import { getYears } from "../../../utils/GlobalFunctions";
@@ -336,7 +336,7 @@ class LeaveEncashmentProcess extends Component {
                         ),
                         displayTemplate: row => {
                           return (
-                            <span>{getAmountFormart(row.leave_amount)}</span>
+                            <span>{GetAmountFormart(row.leave_amount)}</span>
                           );
                         }
                       }

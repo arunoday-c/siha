@@ -1,6 +1,6 @@
 import { payrollHeader } from "./payrollHeader";
 import moment from "moment";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 
 export function printReport(data) {
   return `
@@ -34,10 +34,10 @@ export function printReport(data) {
     <td>${list.employee_name}</td>
     <td>${list.sub_department_name} </td>
     <td>${moment(list.loan_application_date).format("DD-MM-YYYY")} </td>
-    <td>${getAmountFormart(list.loan_amount)} </td>
-    <td>${getAmountFormart(list.approved_amount)} </td>
-    <td>${getAmountFormart(list.installment_amount)} </td>
-    <td>${getAmountFormart(list.pending_loan)} </td>
+    <td>${GetAmountFormart(list.loan_amount)} </td>
+    <td>${GetAmountFormart(list.approved_amount)} </td>
+    <td>${GetAmountFormart(list.installment_amount)} </td>
+    <td>${GetAmountFormart(list.pending_loan)} </td>
   
 </tr>
     `

@@ -8,7 +8,7 @@ import {
 } from "../../utils/algaehApiCall.js";
 import extend from "extend";
 import moment from "moment";
-import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
+// import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import _ from "lodash";
 import Enumerable from "linq";
 
@@ -214,9 +214,10 @@ const getHospitalDetails = $this => {
     uri: "/organization/getOrganization",
     method: "GET",
     data: {
-      hims_d_hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id
+      hims_d_hospital_id: $this.state.hims_d_hospital_id
+      // JSON.parse(
+      //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      // ).hims_d_hospital_id
     },
     redux: {
       type: "HOSPITAL_DETAILS_GET_DATA",
@@ -425,9 +426,10 @@ const getCtrlCode = ($this, patcode, row) => {
       if (response.data.success) {
         let data = response.data.records;
 
-        let hospital_id = JSON.parse(
-          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        ).hims_d_hospital_id;
+        let hospital_id = $this.state.hims_d_hospital_id;
+        // JSON.parse(
+        //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+        // ).hims_d_hospital_id;
         // let hospitaldetails = Enumerable.from($this.props.hospitaldetails)
         //   .where(w => w.hims_d_hospital_id === hospital_id)
         //   .firstOrDefault();
@@ -442,7 +444,7 @@ const getCtrlCode = ($this, patcode, row) => {
         if (
           hospitaldetails.local_vat_applicable === "N" &&
           hospitaldetails.default_nationality ===
-          data.patientRegistration.nationality_id
+            data.patientRegistration.nationality_id
         ) {
           data.patientRegistration.vat_applicable = "N";
         }

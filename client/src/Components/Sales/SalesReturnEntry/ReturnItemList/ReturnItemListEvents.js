@@ -1,7 +1,7 @@
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
 
 const deleteSalesReturnDetail = ($this, context, row) => {
@@ -110,16 +110,16 @@ const onchhangegriddiscount = ($this, context, row, e) => {
 
 
   tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
-  tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
+  tax_amount = GetAmountFormart(tax_amount, { appendSymbol: false });
 
-  row["extended_cost"] = getAmountFormart(extended_cost, {
+  row["extended_cost"] = GetAmountFormart(extended_cost, {
     appendSymbol: false
   });
   row["tax_amount"] = (extended_cost * parseFloat(row.tax_percentage)) / 100;
   row["total_amount"] = parseFloat(tax_amount) + parseFloat(extended_cost);
 
 
-  row["net_extended_cost"] = getAmountFormart(extended_cost, {
+  row["net_extended_cost"] = GetAmountFormart(extended_cost, {
     appendSymbol: false
   });
   sales_return_detail[_index] = row;

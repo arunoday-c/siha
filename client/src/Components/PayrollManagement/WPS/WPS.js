@@ -6,7 +6,7 @@ import {
   AlagehFormGroup,
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
-import { getYears, getAmountFormart } from "../../../utils/GlobalFunctions";
+import { getYears, GetAmountFormart } from "../../../utils/GlobalFunctions";
 import { MONTHS } from "../../../utils/GlobalVariables.json";
 import moment from "moment";
 import WPSEvents from "./WPSEvent";
@@ -291,7 +291,7 @@ export default class WPS extends Component {
                           displayTemplate: row => {
                             return (
                               <span>
-                                {getAmountFormart(row.net_salary, {
+                                {GetAmountFormart(row.net_salary, {
                                   appendSymbol: false
                                 })}
                               </span>
@@ -309,7 +309,7 @@ export default class WPS extends Component {
                           displayTemplate: row => {
                             return (
                               <span>
-                                {getAmountFormart(row.basic_salary, {
+                                {GetAmountFormart(row.basic_salary, {
                                   appendSymbol: false
                                 })}
                               </span>
@@ -337,7 +337,7 @@ export default class WPS extends Component {
                           displayTemplate: row => {
                             return (
                               <span>
-                                {getAmountFormart(row.extra_income, {
+                                {GetAmountFormart(row.extra_income, {
                                   appendSymbol: false
                                 })}
                               </span>
@@ -353,7 +353,7 @@ export default class WPS extends Component {
                           displayTemplate: row => {
                             return (
                               <span>
-                                {getAmountFormart(row.total_deductions, {
+                                {GetAmountFormart(row.total_deductions, {
                                   appendSymbol: false
                                 })}
                               </span>
@@ -373,7 +373,7 @@ export default class WPS extends Component {
                           displayTemplate: row => {
                             return (
                               <span>
-                                {getAmountFormart(
+                                {GetAmountFormart(
                                   row.social_security_deductions,
                                   {
                                     appendSymbol: false
@@ -444,7 +444,7 @@ export default class WPS extends Component {
                       forceLabel: "Total Net Salary"
                     }}
                   />
-                  <h6>{getAmountFormart(this.state.total_net_salary)}</h6>
+                  <h6>{GetAmountFormart(this.state.total_net_salary)}</h6>
                 </div>
               </div>
             </div>

@@ -23,7 +23,7 @@ import {
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   AlgaehOpenContainer,
-  getAmountFormart
+  GetAmountFormart
 } from "../../../utils/GlobalFunctions";
 import DispatchNoteItems from "./DispatchNoteItems/DispatchNoteItems";
 
@@ -332,7 +332,7 @@ class DispatchNote extends Component {
                     forceLabel: "Sub Total"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.sub_total)}</h6>
+                <h6>{GetAmountFormart(this.state.sub_total)}</h6>
               </div>
               <div className="col">
                 <AlgaehLabel
@@ -340,7 +340,7 @@ class DispatchNote extends Component {
                     forceLabel: "Discount Amount"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.discount_amount)}</h6>
+                <h6>{GetAmountFormart(this.state.discount_amount)}</h6>
               </div>
               <div className="col">
                 <AlgaehLabel
@@ -348,7 +348,7 @@ class DispatchNote extends Component {
                     forceLabel: "Net Total"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.net_total)}</h6>
+                <h6>{GetAmountFormart(this.state.net_total)}</h6>
               </div>
               <div className="col">
                 <AlgaehLabel
@@ -356,7 +356,7 @@ class DispatchNote extends Component {
                     forceLabel: "Total Tax"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.total_tax)}</h6>
+                <h6>{GetAmountFormart(this.state.total_tax)}</h6>
               </div>
               <div className="col">
                 <AlgaehLabel
@@ -364,7 +364,7 @@ class DispatchNote extends Component {
                     forceLabel: "Net Total"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.net_payable)}</h6>
+                <h6>{GetAmountFormart(this.state.net_payable)}</h6>
               </div>
               <AlagehFormGroup
                 div={{ className: "col-5 textAreaLeft" }}

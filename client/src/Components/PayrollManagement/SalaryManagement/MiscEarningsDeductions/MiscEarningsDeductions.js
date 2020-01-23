@@ -15,7 +15,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import {
   getYears,
-  getAmountFormart,
+  GetAmountFormart,
   AlgaehOpenContainer
 } from "../../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
@@ -789,7 +789,7 @@ export default class MiscEarningsDeductions extends Component {
                                     }}
                                   />
                                 ) : (
-                                  getAmountFormart(row.amount)
+                                  GetAmountFormart(row.amount)
                                 );
                             }
                           }

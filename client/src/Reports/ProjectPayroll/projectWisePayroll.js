@@ -1,5 +1,5 @@
 import { projectPayrol } from "./ProjectPayrollHeader";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 import _ from "lodash";
 import "../report-style.scss";
 export function printReport(result) {
@@ -33,7 +33,7 @@ export function printReport(result) {
     <td class="left">${_.startCase(_.toLower(list.full_name))}</td>
     <td class="center">${list.designation} </td>
     <td class="right">${list.complete_hours} </td>
-    <td class="right">${getAmountFormart(list.project_cost)} </td>  
+    <td class="right">${GetAmountFormart(list.project_cost)} </td>  
 </tr>
     `
     )
@@ -55,7 +55,7 @@ export function printReport(result) {
     <div class="col-2">
     <label>Project Total Cost</label>
 
-      <h6>${getAmountFormart(result.total_cost)} </h6>
+      <h6>${GetAmountFormart(result.total_cost)} </h6>
     </div>
   </div>
 

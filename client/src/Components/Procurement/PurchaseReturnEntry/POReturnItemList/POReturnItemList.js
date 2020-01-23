@@ -17,7 +17,7 @@ import {
   deletePOReturnDetail,
   onchangegridcol
 } from "./POReturnItemListEvents";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class POReturnItemList extends Component {
   constructor(props) {
@@ -196,7 +196,7 @@ class POReturnItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.unit_cost, {
+                                    {GetAmountFormart(row.unit_cost, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -213,7 +213,7 @@ class POReturnItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.extended_cost, {
+                                    {GetAmountFormart(row.extended_cost, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -241,7 +241,7 @@ class POReturnItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.discount_amount, {
+                                    {GetAmountFormart(row.discount_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -258,7 +258,7 @@ class POReturnItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.net_extended_cost, {
+                                    {GetAmountFormart(row.net_extended_cost, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -275,7 +275,7 @@ class POReturnItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.tax_amount, {
+                                    {GetAmountFormart(row.tax_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -292,7 +292,7 @@ class POReturnItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.total_amount, {
+                                    {GetAmountFormart(row.total_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -341,7 +341,7 @@ class POReturnItemList extends Component {
                         }}
                       />
                       <h6>
-                        {getAmountFormart(this.state.receipt_net_payable)}
+                        {GetAmountFormart(this.state.receipt_net_payable)}
                       </h6>
                     </div>
 
@@ -351,7 +351,7 @@ class POReturnItemList extends Component {
                           forceLabel: "Return Sub Total"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.sub_total)}</h6>
+                      <h6>{GetAmountFormart(this.state.sub_total)}</h6>
                     </div>
 
                     <div className="col">
@@ -360,7 +360,7 @@ class POReturnItemList extends Component {
                           forceLabel: "Discount Amount"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.discount_amount)}</h6>
+                      <h6>{GetAmountFormart(this.state.discount_amount)}</h6>
                     </div>
                     <div className="col">
                       <AlgaehLabel
@@ -368,7 +368,7 @@ class POReturnItemList extends Component {
                           forceLabel: "Return Net Total"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.net_total)}</h6>
+                      <h6>{GetAmountFormart(this.state.net_total)}</h6>
                     </div>
 
                     <div className="col">
@@ -377,7 +377,7 @@ class POReturnItemList extends Component {
                           forceLabel: "Tax Amount"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.tax_amount)}</h6>
+                      <h6>{GetAmountFormart(this.state.tax_amount)}</h6>
                     </div>
 
                     <div className="col">
@@ -386,7 +386,7 @@ class POReturnItemList extends Component {
                           forceLabel: "Return Total"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.return_total)}</h6>
+                      <h6>{GetAmountFormart(this.state.return_total)}</h6>
                     </div>
                   </div>
                 </div>

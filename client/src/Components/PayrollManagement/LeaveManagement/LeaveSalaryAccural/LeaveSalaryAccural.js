@@ -7,7 +7,7 @@ import {
   AlgaehLabel,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
-import { getYears, getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { getYears, GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import moment from "moment";
 import {
@@ -217,7 +217,7 @@ export default class LeaveSalaryAccural extends Component {
                       forceLabel: "Leave Salary"
                     }}
                   />
-                  <h6>{getAmountFormart(this.state.leave_salary)}</h6>
+                  <h6>{GetAmountFormart(this.state.leave_salary)}</h6>
                 </div>
                 <div className="col-3">
                   <AlgaehLabel
@@ -225,7 +225,7 @@ export default class LeaveSalaryAccural extends Component {
                       forceLabel: "Airfare Amount"
                     }}
                   />
-                  <h6>{getAmountFormart(this.state.airfair_amount)}</h6>
+                  <h6>{GetAmountFormart(this.state.airfair_amount)}</h6>
                 </div>
               </div>
             </div>

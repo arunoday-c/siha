@@ -12,7 +12,7 @@ import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import moment from "moment";
 import {
   AlgaehValidation,
-  getAmountFormart
+  GetAmountFormart
 } from "../../../../../utils/GlobalFunctions";
 import Socket from "../../../../../sockets";
 
@@ -402,7 +402,7 @@ class LoanModal extends Component {
                       <AlgaehLabel label={{ forceLabel: "Loan Amount" }} />
                     ),
                     displayTemplate: row => {
-                      return <span>{getAmountFormart(row.loan_amount)}</span>;
+                      return <span>{GetAmountFormart(row.loan_amount)}</span>;
                     },
                     others: { filterable: false }
                     //disabled: true
@@ -423,7 +423,7 @@ class LoanModal extends Component {
                     ),
                     displayTemplate: row => {
                       return (
-                        <span>{getAmountFormart(row.installment_amount)}</span>
+                        <span>{GetAmountFormart(row.installment_amount)}</span>
                       );
                     },
                     others: { filterable: false }

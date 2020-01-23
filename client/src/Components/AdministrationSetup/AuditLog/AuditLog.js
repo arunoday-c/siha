@@ -18,25 +18,28 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import moment from "moment";
 import {
-  AlgaehValidation,
-  AlgaehOpenContainer
+  AlgaehValidation
+  // AlgaehOpenContainer
 } from "../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import swal from "sweetalert2";
 import AlgaehSearch from "../../Wrapper/globalSearch";
-
+import { MainContext } from "algaeh-react-components/context";
 export default class AuditLog extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: "",
+      // hospital_id: JSON.parse(
+      //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      // ).hims_d_hospital_id,
       hospitalList: []
     };
   }
-
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({ hospital_id: userToken.hims_d_hospital_id });
     algaehApiCall({
       uri: "/organization/getOrganization",
       method: "GET",

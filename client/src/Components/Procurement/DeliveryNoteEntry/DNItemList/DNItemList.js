@@ -31,7 +31,7 @@ import {
   numberEventHandaler,
   dateValidate
 } from "./DNItemListEvents";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import extend from "extend";
 
 class DNItemList extends Component {
@@ -755,7 +755,7 @@ class DNItemList extends Component {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {getAmountFormart(row.sales_price, {
+                                      {GetAmountFormart(row.sales_price, {
                                         appendSymbol: false
                                       })}
                                     </span>
@@ -866,7 +866,7 @@ class DNItemList extends Component {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {getAmountFormart(row.discount_amount, {
+                                      {GetAmountFormart(row.discount_amount, {
                                         appendSymbol: false
                                       })}
                                     </span>
@@ -884,7 +884,7 @@ class DNItemList extends Component {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {getAmountFormart(row.net_extended_cost, {
+                                      {GetAmountFormart(row.net_extended_cost, {
                                         appendSymbol: false
                                       })}
                                     </span>
@@ -902,7 +902,7 @@ class DNItemList extends Component {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {getAmountFormart(row.unit_cost, {
+                                      {GetAmountFormart(row.unit_cost, {
                                         appendSymbol: false
                                       })}
                                     </span>
@@ -922,7 +922,7 @@ class DNItemList extends Component {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {getAmountFormart(row.tax_amount, {
+                                      {GetAmountFormart(row.tax_amount, {
                                         appendSymbol: false
                                       })}
                                     </span>
@@ -941,7 +941,7 @@ class DNItemList extends Component {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {getAmountFormart(row.total_amount, {
+                                      {GetAmountFormart(row.total_amount, {
                                         appendSymbol: false
                                       })}
                                     </span>
@@ -980,7 +980,7 @@ class DNItemList extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(this.state.sub_total)}
+                                    {GetAmountFormart(this.state.sub_total)}
                                   </h6>
                                 </div>
 
@@ -990,7 +990,7 @@ class DNItemList extends Component {
                                       forceLabel: "Tax"
                                     }}
                                   />
-                                  <h6>{getAmountFormart(this.state.total_tax)}</h6>
+                                  <h6>{GetAmountFormart(this.state.total_tax)}</h6>
                                 </div>
                                 <div className="col-3">
                                   <AlgaehLabel
@@ -999,7 +999,7 @@ class DNItemList extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(
+                                    {GetAmountFormart(
                                       this.state.detail_discount
                                     )}
                                   </h6>
@@ -1012,7 +1012,7 @@ class DNItemList extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(this.state.net_payable)}
+                                    {GetAmountFormart(this.state.net_payable)}
                                   </h6>
                                 </div>
                               </div>

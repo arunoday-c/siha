@@ -16,7 +16,7 @@ import {
 import NewPackageEvent from "./NewPackageEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
-import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
 import GlobalVariables from "../../../utils/GlobalVariables";
 
@@ -287,7 +287,7 @@ class NewPackage extends PureComponent {
                           }}
                         />
                         <h6>
-                          {getAmountFormart(this.state.total_service_amount)}
+                          {GetAmountFormart(this.state.total_service_amount)}
                         </h6>
                       </div>
 
@@ -298,7 +298,7 @@ class NewPackage extends PureComponent {
                           }}
                         />
                         <h6>
-                          {getAmountFormart(this.state.pl_amount)}
+                          {GetAmountFormart(this.state.pl_amount)}
                           {this.state.profit_loss === null ? (
                             " "
                           ) : this.state.profit_loss === "P" ? (
@@ -869,7 +869,7 @@ class NewPackage extends PureComponent {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.service_amount, {
+                                    {GetAmountFormart(row.service_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -886,7 +886,7 @@ class NewPackage extends PureComponent {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.tot_service_amount, {
+                                    {GetAmountFormart(row.tot_service_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -903,7 +903,7 @@ class NewPackage extends PureComponent {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.appropriate_amount, {
+                                    {GetAmountFormart(row.appropriate_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>

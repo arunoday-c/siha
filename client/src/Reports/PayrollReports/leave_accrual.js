@@ -2,7 +2,7 @@
 import { payrollHeader } from "./payrollHeader";
 import "../report-style.scss";
 import _ from "lodash";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 
 export function printReport(data) {
   // let leave_days = _.sumBy(data, s => parseFloat(s.leave_days));
@@ -40,10 +40,10 @@ export function printReport(data) {
      <td class="center" >${list.sub_department_name}</td>
      
      <td class="right" >${list.leave_days} </td>
-     <td class="right" >${getAmountFormart(list.leave_salary, {
+     <td class="right" >${GetAmountFormart(list.leave_salary, {
        appendSymbol: false
      })} </td>
-     <td class="right" >${getAmountFormart(list.airfare_amount, {
+     <td class="right" >${GetAmountFormart(list.airfare_amount, {
        appendSymbol: false
      })} </td>
      
@@ -63,12 +63,12 @@ export function printReport(data) {
    <div class="col-2">
     <label> Total Leave Amount</label>
 
-      <h6>${getAmountFormart(leave_salary)} </h6>
+      <h6>${GetAmountFormart(leave_salary)} </h6>
       </div>
       <div class="col-2">
     <label> Total Airfare</label>
 
-      <h6>${getAmountFormart(airfare_amount)} </h6>
+      <h6>${GetAmountFormart(airfare_amount)} </h6>
       </div>
    
       

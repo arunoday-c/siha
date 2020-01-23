@@ -16,7 +16,7 @@ import {
   selectAllPaySlip
 } from "./NewSalaryPaymentsEvents.js";
 import moment from "moment";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import { EmployeeFilter } from "../../../common/EmployeeFilter";
 
 class NewSalaryPayment extends Component {
@@ -258,7 +258,7 @@ class NewSalaryPayment extends Component {
                                   return (
                                     <span>
                                       {" "}
-                                      {getAmountFormart(row.advance_due)}
+                                      {GetAmountFormart(row.advance_due)}
                                     </span>
                                   );
                                 }
@@ -278,7 +278,7 @@ class NewSalaryPayment extends Component {
                                   return (
                                     <span>
                                       {" "}
-                                      {getAmountFormart(row.loan_due_amount)}
+                                      {GetAmountFormart(row.loan_due_amount)}
                                     </span>
                                   );
                                 }
@@ -297,7 +297,7 @@ class NewSalaryPayment extends Component {
                                   return (
                                     <span>
                                       {" "}
-                                      {getAmountFormart(
+                                      {GetAmountFormart(
                                         row.loan_payable_amount
                                       )}
                                     </span>
@@ -318,7 +318,7 @@ class NewSalaryPayment extends Component {
                                   return (
                                     <span>
                                       {" "}
-                                      {getAmountFormart(row.net_salary)}
+                                      {GetAmountFormart(row.net_salary)}
                                     </span>
                                   );
                                 }

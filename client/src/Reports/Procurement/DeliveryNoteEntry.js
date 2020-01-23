@@ -2,7 +2,7 @@
 
 import { getCookie } from "../../utils/algaehApiCall";
 import { ReportHeader } from "../ReportHeader";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 
 export function printReport(data) {
   return `<div class="cashReciptStyles">
@@ -86,16 +86,16 @@ export function printReport(data) {
               
               
               
-              <td class="co-4"> ${getAmountFormart(item.discount_amount, {
+              <td class="co-4"> ${GetAmountFormart(item.discount_amount, {
                 appendSymbol: false
               })}</td>
-              <td class="co-4"> ${getAmountFormart(item.net_extended_cost, {
+              <td class="co-4"> ${GetAmountFormart(item.net_extended_cost, {
                 appendSymbol: false
               })}</td>
-              <td class="co-4"> ${getAmountFormart(item.tax_amount, {
+              <td class="co-4"> ${GetAmountFormart(item.tax_amount, {
                 appendSymbol: false
               })}</td>
-              <td class="co-4"> ${getAmountFormart(item.total_amount, {
+              <td class="co-4"> ${GetAmountFormart(item.total_amount, {
                 appendSymbol: false
               })}</td>
 

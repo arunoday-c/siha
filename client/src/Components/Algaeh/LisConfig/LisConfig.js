@@ -34,7 +34,7 @@ export default function LisConfig(props) {
     description: "",
     hospital_id: JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    ).hims_d_hospital_id,
+    ).hims_d_hospital_id
   };
   const [lis_config, setLisConfig] = useState({ ...baseState });
   const [lodingAddtoList, setLoadingAddtoList] = useState(false);
@@ -126,7 +126,6 @@ export default function LisConfig(props) {
                               setLisConfig(state => {
                                 return { ...state, hospital_id: null };
                               });
-
                             }
                           }}
                         />
@@ -450,67 +449,67 @@ export default function LisConfig(props) {
                     </div>
                   </div>
                 ) : (
-                    <div className="col-6">
-                      <div className="portlet portlet-bordered margin-bottom-15">
-                        <div className="portlet-title">
-                          <div className="caption">
-                            <h3 className="caption-subject">TCP Port Mode</h3>
-                          </div>
-                          <div className="actions"></div>
+                  <div className="col-6">
+                    <div className="portlet portlet-bordered margin-bottom-15">
+                      <div className="portlet-title">
+                        <div className="caption">
+                          <h3 className="caption-subject">TCP Port Mode</h3>
                         </div>
+                        <div className="actions"></div>
+                      </div>
 
-                        <div className="portlet-body">
-                          <div className="row">
-                            <AlagehFormGroup
-                              div={{ className: "col" }}
-                              label={{
-                                forceLabel: "Host IP Address",
-                                isImp: false
-                              }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "host_ip_address",
-                                value: lis_config.host_ip_address,
-                                events: {
-                                  onChange: EventHandaler
-                                }
-                              }}
-                            />
-                            <AlagehFormGroup
-                              div={{ className: "col" }}
-                              label={{
-                                forceLabel: "Port No.",
-                                isImp: false
-                              }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "port_no",
-                                value: lis_config.port_no,
-                                events: {
-                                  onChange: EventHandaler
-                                }
-                              }}
-                            />
-                            <AlagehFormGroup
-                              div={{ className: "col" }}
-                              label={{
-                                forceLabel: "Result Path Location",
-                                isImp: false
-                              }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "tcp_result_part_loc",
-                                value: lis_config.tcp_result_part_loc,
-                                events: {
-                                  onChange: EventHandaler
-                                }
-                              }}
-                            />
-                          </div>
+                      <div className="portlet-body">
+                        <div className="row">
+                          <AlagehFormGroup
+                            div={{ className: "col" }}
+                            label={{
+                              forceLabel: "Host IP Address",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "host_ip_address",
+                              value: lis_config.host_ip_address,
+                              events: {
+                                onChange: EventHandaler
+                              }
+                            }}
+                          />
+                          <AlagehFormGroup
+                            div={{ className: "col" }}
+                            label={{
+                              forceLabel: "Port No.",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "port_no",
+                              value: lis_config.port_no,
+                              events: {
+                                onChange: EventHandaler
+                              }
+                            }}
+                          />
+                          <AlagehFormGroup
+                            div={{ className: "col" }}
+                            label={{
+                              forceLabel: "Result Path Location",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "tcp_result_part_loc",
+                              value: lis_config.tcp_result_part_loc,
+                              events: {
+                                onChange: EventHandaler
+                              }
+                            }}
+                          />
                         </div>
                       </div>
                     </div>
-                  )}
+                  </div>
+                )}
                 <div className="col-6">
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="portlet-title">

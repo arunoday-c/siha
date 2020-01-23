@@ -10,7 +10,7 @@ import {
 // import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 
 import { deleteSalesDetail } from "./InvoiceListServiceEvents";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 // import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import _ from "lodash";
 

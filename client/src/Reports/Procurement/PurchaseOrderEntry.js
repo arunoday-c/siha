@@ -2,7 +2,7 @@
 
 import { getCookie } from "../../utils/algaehApiCall";
 import { ReportHeader } from "../ReportHeader";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 import "../report-style.scss";
 
 export function printReport(data) {
@@ -75,13 +75,13 @@ export function printReport(data) {
               <td class="co-4"> ${item.uom_description}</td>          
               <td class="co-4"> ${item.order_quantity}</td>
               <td class="co-4"> ${item.unit_price}</td>
-              <td class="co-4"> ${getAmountFormart(item.sub_discount_amount, {
+              <td class="co-4"> ${GetAmountFormart(item.sub_discount_amount, {
                 appendSymbol: false
               })}</td>
-              <td class="co-4"> ${getAmountFormart(item.net_extended_cost, {
+              <td class="co-4"> ${GetAmountFormart(item.net_extended_cost, {
                 appendSymbol: false
               })}</td>
-              <td class="co-4"> ${getAmountFormart(item.tax_amount, {
+              <td class="co-4"> ${GetAmountFormart(item.tax_amount, {
                 appendSymbol: false
               })}</td>
 
@@ -98,7 +98,7 @@ export function printReport(data) {
       <div class="col-2">
         <label> Total Amount</label>
   
-          <h6>${getAmountFormart(data.net_payable)} </h6>
+          <h6>${GetAmountFormart(data.net_payable)} </h6>
           </div>          
       </div> 
     </div>

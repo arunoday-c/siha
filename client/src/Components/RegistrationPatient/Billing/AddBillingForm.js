@@ -36,7 +36,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
 class AddBillingForm extends Component {
   constructor(props) {
@@ -164,7 +164,7 @@ class AddBillingForm extends Component {
                         <div className="col">
                           <AlgaehLabel label={{ forceLabel: "Due Amount" }} />
                           <h6 style={{ color: "red" }}>
-                            {getAmountFormart(this.state.due_amount)}
+                            {GetAmountFormart(this.state.due_amount)}
                           </h6>
                         </div>
                       ) : null}
@@ -178,7 +178,7 @@ class AddBillingForm extends Component {
                           }}
                         />
 
-                        <h6>{getAmountFormart(this.state.gross_total)}</h6>
+                        <h6>{GetAmountFormart(this.state.gross_total)}</h6>
                       </div>
 
                       <div className="col">
@@ -187,7 +187,7 @@ class AddBillingForm extends Component {
                             fieldName: "patient_payable"
                           }}
                         />
-                        <h6>{getAmountFormart(this.state.patient_payable)}</h6>
+                        <h6>{GetAmountFormart(this.state.patient_payable)}</h6>
                       </div>
                     </div>
                     <hr style={{ margin: "0.3rem 0rem" }} />
@@ -313,7 +313,7 @@ class AddBillingForm extends Component {
                             fieldName: "advance"
                           }}
                         />
-                        <h6>{getAmountFormart(this.state.advance_amount)}</h6>
+                        <h6>{GetAmountFormart(this.state.advance_amount)}</h6>
                       </div>
 
                       <div className="col">
@@ -322,7 +322,7 @@ class AddBillingForm extends Component {
                             fieldName: "net_amount"
                           }}
                         />
-                        <h6>{getAmountFormart(this.state.net_amount)}</h6>
+                        <h6>{GetAmountFormart(this.state.net_amount)}</h6>
                       </div>
 
                       <AlagehFormGroup
@@ -367,7 +367,7 @@ class AddBillingForm extends Component {
                           }}
                         />
                         <h4>
-                          {getAmountFormart(this.state.receiveable_amount)}
+                          {GetAmountFormart(this.state.receiveable_amount)}
                         </h4>
                       </div>
                       <div className="col highlightGrey">
@@ -376,7 +376,7 @@ class AddBillingForm extends Component {
                             fieldName: "balance_due"
                           }}
                         />
-                        <h6>{getAmountFormart(this.state.balance_credit)}</h6>
+                        <h6>{GetAmountFormart(this.state.balance_credit)}</h6>
                       </div>
                     </div>
                     {/* <div className="container-fluid"> */}
@@ -784,7 +784,7 @@ class AddBillingForm extends Component {
                             }}
                           />
                           <h6>
-                            {getAmountFormart(this.state.unbalanced_amount)}
+                            {GetAmountFormart(this.state.unbalanced_amount)}
                           </h6>
                         </div>
 

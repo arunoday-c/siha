@@ -8,7 +8,7 @@ import "./PatientDetails.scss";
 import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import MyContext from "../../../utils/MyContext.js";
 import { PatientSearch, selectVisit } from "./DisPatientHandlers";
-import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
 import moment from "moment";
 class DisPatientForm extends Component {
@@ -191,7 +191,7 @@ class DisPatientForm extends Component {
                       <div className="col">
                         <AlgaehLabel label={{ forceLabel: "Due Amount" }} />
                         <h6 style={{ color: "red" }}>
-                          {getAmountFormart(this.state.due_amount)}
+                          {GetAmountFormart(this.state.due_amount)}
                         </h6>
                       </div>
                     ) : null}

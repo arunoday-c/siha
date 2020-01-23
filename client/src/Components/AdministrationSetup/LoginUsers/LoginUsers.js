@@ -9,8 +9,8 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 import {
-  AlgaehValidation,
-  AlgaehOpenContainer
+  AlgaehValidation
+  // AlgaehOpenContainer
 } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import {

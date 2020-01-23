@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 
 const DoctorExplained = {
   labels: [
@@ -202,7 +202,7 @@ class Dashboard extends Component {
                   <div className="numbers">
                     <p>Total Commission</p>
 
-                    {getAmountFormart("1378.00")}
+                    {GetAmountFormart("1378.00")}
                   </div>
                 </div>
               </div>
@@ -381,8 +381,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Dashboard)
+  connect(mapStateToProps, mapDispatchToProps)(Dashboard)
 );

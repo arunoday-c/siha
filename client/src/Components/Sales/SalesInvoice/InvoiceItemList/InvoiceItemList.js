@@ -13,7 +13,7 @@ import {
   getDeliveryItemDetails,
   CloseItemDetail
 } from "./InvoiceItemListEvents";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import OrderItemDetails from "./OrderItemDetails";
 
 class InvoiceItemList extends Component {
@@ -111,7 +111,7 @@ class InvoiceItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.sub_total, {
+                                    {GetAmountFormart(row.sub_total, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -130,7 +130,7 @@ class InvoiceItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.discount_amount, {
+                                    {GetAmountFormart(row.discount_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -148,7 +148,7 @@ class InvoiceItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.net_total, {
+                                    {GetAmountFormart(row.net_total, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -166,7 +166,7 @@ class InvoiceItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.total_tax, {
+                                    {GetAmountFormart(row.total_tax, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -185,7 +185,7 @@ class InvoiceItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.net_payable, {
+                                    {GetAmountFormart(row.net_payable, {
                                       appendSymbol: false
                                     })}
                                   </span>

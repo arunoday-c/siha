@@ -24,9 +24,9 @@ import {
   generateTimeslotsForDoctor,
   generateReport
 } from "./AppointmentHelper";
-import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
+// import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import sockets from "../../sockets";
-
+import { MainContext } from "algaeh-react-components/context";
 class Appointment extends PureComponent {
   constructor(props) {
     super(props);
@@ -51,12 +51,15 @@ class Appointment extends PureComponent {
       // byPassValidation: false,
       width: 0,
       byPassValidation: true,
-      patient_name: ""
+      patient_name: "",
+      requied_emp_id: "N"
     };
     this.appSock = sockets;
   }
-
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({ requied_emp_id: userToken.requied_emp_id });
     this.getDoctorsAndDepts();
     this.getAppointmentStatus();
     this.getTitles();
@@ -70,7 +73,6 @@ class Appointment extends PureComponent {
       }
     });
     this.appSock.on("refresh_appointment", patient => {
-      console.log(patient);
       const { provider_id, sub_department_id } = this.state;
       if (
         sub_department_id === patient.sub_department_id ||
@@ -1863,9 +1865,9 @@ class Appointment extends PureComponent {
   }
 
   render() {
-    let requied_emp_id = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    ).requied_emp_id;
+    // let requied_emp_id = JSON.parse(
+    //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    // ).requied_emp_id;
     return (
       <AppointmentComponent
         state={this.state}
@@ -1890,7 +1892,7 @@ class Appointment extends PureComponent {
         AppointmentSearch={(result, name) =>
           this.AppointmentSearch(result, name)
         }
-        requied_emp_id={requied_emp_id}
+        requied_emp_id={this.state.requied_emp_id} //requied_emp_id}
       />
     );
   }
@@ -1912,8 +1914,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Appointment)
+  connect(mapStateToProps, mapDispatchToProps)(Appointment)
 );

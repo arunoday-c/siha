@@ -32,7 +32,7 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Options from "../../../Options.json";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
-import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
 class InvStockAdjustment extends Component {
     constructor(props) {
@@ -313,7 +313,7 @@ class InvStockAdjustment extends Component {
                                             />
                                             <h6>
                                                 {this.state.sales_price
-                                                    ? getAmountFormart(this.state.sales_price)
+                                                    ? GetAmountFormart(this.state.sales_price)
                                                     : "----------"}
                                             </h6>
                                         </div>

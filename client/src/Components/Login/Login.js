@@ -4,16 +4,24 @@ import { Spin } from "algaeh-react-components";
 import { MainContext } from "algaeh-react-components/context";
 import { setItem, clearItem } from "algaeh-react-components/storage";
 import Swal from "sweetalert2";
-import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
+// import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 import { AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import {
   algaehApiCall,
   setCookie,
   swalMessage,
-  getLocalIP
+  // getLocalIP,
+  collectIP
 } from "../../utils/algaehApiCall.js";
-import { getTokenDetals } from "../../actions/Login/Loginactions.js";
-import { AlgaehCloseContainer, encrypter } from "../../utils/GlobalFunctions";
+import {
+  getTokenDetals,
+  checkUser,
+  OnSubmitUser
+} from "../../actions/Login/Loginactions.js";
+import {
+  // AlgaehCloseContainer,
+  encrypter
+} from "../../utils/GlobalFunctions";
 import connecting from "../../assets/svg/connecting.svg";
 import "./Login.scss";
 import sockets from "../../sockets";
@@ -27,9 +35,14 @@ function Login(props) {
     token: "",
     item_id: "",
     hospitalList: [],
+    full_name: "",
+    arabic_name: "",
+    happyBirthDay: "",
     loading: true
   });
+
   const [loginLoad, setLoginLoad] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   let userRef = useRef(undefined);
   let passwordRef = useRef(undefined);
   const { clearAll } = useContext(MainContext);
@@ -75,7 +88,7 @@ function Login(props) {
     }).then(({ value }) => {
       if (value !== undefined && value !== "") {
         const { username, item_id } = login;
-        getLocalIP(identity => {
+        collectIP().then(identity => {
           setLoginLoad(true);
           const dataSent = encrypter(
             JSON.stringify({
@@ -85,51 +98,63 @@ function Login(props) {
               identity: identity
             })
           );
-
+          console.log("dataSent", {
+            username: username,
+            password: value,
+            item_id: item_id,
+            identity: identity
+          });
           algaehApiCall({
             uri: "/apiAuth/relogin",
             data: { post: dataSent },
+            notoken: true,
             method: "POST",
             onSuccess: response => {
               const { success, records, message } = response.data;
 
               if (success === true) {
-                setCookie("authToken", records.token);
-                setItem("token", records.token);
-                getActiveModulesForUser()
-                  .then(() => {
-                    setLoginLoad(false);
+                // setCookie("authToken", records.token);
+                setItem("token", records.token).then(() => {
+                  getActiveModulesForUser()
+                    .then(() => {
+                      setLoginLoad(false);
+                      setItem("userName", records.user_display_name);
 
-                    setItem("userName", records.user_display_name);
+                      // setCookie("userName", records.user_display_name);
+                      // setCookie("authToken", records.token);
+                      // userToken;
+                      // sessionStorage.setItem(
+                      //   "keyData",
+                      //   AlgaehCloseContainer(JSON.stringify(records.keyData))
+                      // );
+                      // sessionStorage.setItem(
+                      //   "CurrencyDetail",
+                      //   AlgaehCloseContainer(
+                      //     JSON.stringify(records.hospitalDetails)
+                      //   )
+                      // );
 
-                    setCookie("userName", records.user_display_name);
-                    // setCookie("authToken", records.token);
-                    // userToken;
-                    sessionStorage.setItem(
-                      "keyData",
-                      AlgaehCloseContainer(JSON.stringify(records.keyData))
-                    );
-                    sessionStorage.setItem(
-                      "CurrencyDetail",
-                      AlgaehCloseContainer(
-                        JSON.stringify(records.hospitalDetails)
-                      )
-                    );
-
-                    sessionStorage.setItem(
-                      "appRole",
-                      records.app_d_app_roles_id
-                    );
-                    history.push(`/${records.page_to_redirect}`);
-                    // history.push("/Dashboard");
-                  })
-                  .catch(error => {
-                    setLoginLoad(false);
-                    swalMessage({
-                      type: "error",
-                      title: error
+                      // sessionStorage.setItem(
+                      //   "appRole",
+                      //   records.app_d_app_roles_id
+                      // );
+                      history.push(
+                        `/${
+                          records.page_to_redirect === null
+                            ? "NoDashboard"
+                            : records.page_to_redirect
+                        }`
+                      );
+                      // history.push("/Dashboard");
+                    })
+                    .catch(error => {
+                      setLoginLoad(false);
+                      swalMessage({
+                        type: "error",
+                        title: error
+                      });
                     });
-                  });
+                });
               } else {
                 //  popUpMessage(message);
                 swalMessage({ type: "warning", title: message });
@@ -177,7 +202,57 @@ function Login(props) {
       }
     });
   }
-
+  function checkUserActive() {
+    setLoginLoad(true);
+    checkUser({ userId: login.username })
+      .then(result => {
+        setLoginLoad(false);
+        setShowPassword(true);
+        setLogin(data => {
+          return { ...data, ...result, item_id: result.hospital_id };
+        });
+      })
+      .catch(error => {
+        setLoginLoad(false);
+        setShowPassword(false);
+        swalMessage({ type: "error", title: error });
+      });
+  }
+  function submitLogin() {
+    setLoginLoad(true);
+    OnSubmitUser(login)
+      .then(records => {
+        setItem("token", records.token).then(() => {
+          getActiveModulesForUser()
+            .then(() => {
+              setLoginLoad(false);
+              history.push(
+                `/${
+                  records.page_to_redirect === null
+                    ? "NoDashboard"
+                    : records.page_to_redirect
+                }`
+              );
+            })
+            .catch(error => {
+              setLoginLoad(false);
+              swalMessage({ type: "error", title: error });
+              logout();
+            });
+        });
+      })
+      .catch(error => {
+        setLoginLoad(false);
+        if (
+          typeof error === "string" &&
+          error.includes("Your are already logged")
+        ) {
+          popUpMessage(error);
+          return;
+        }
+        swalMessage({ type: "error", title: error });
+      });
+  }
   return (
     <div className="login bg">
       <Spin
@@ -211,11 +286,12 @@ function Login(props) {
                         paddingBottom: 15
                       }}
                     >
-                      <form
+                      {/* <form
                         onSubmit={e => {
                           e.preventDefault();
                           setLoginLoad(true);
                           const { username, password, item_id } = login;
+
                           if (username === "") {
                             userRef.focus();
                             setLoginLoad(false);
@@ -309,55 +385,22 @@ function Login(props) {
                         }}
                         className="row"
                         autoComplete="none"
-                      >
-                        <div className="col-12 usernameSec">
-                          <div className="row">
-                            <AlagehFormGroup
-                              div={{ className: "col-12 form-group" }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "username",
-                                value: login.username,
-                                events: {
-                                  onChange: e => {
-                                    setLogin({
-                                      ...login,
-                                      username: e.target.value
-                                    });
-                                  }
-                                },
-                                others: {
-                                  tabIndex: "1",
-                                  placeholder: "Enter Username",
-                                  ref: c => {
-                                    userRef = c;
-                                  }
-                                }
-                              }}
-                            />
-                            <br />
-                            {/* <div
-                              className="col-12 form-group"
-                              style={{ textAlign: "right" }}
-                            >
-                              <button
-                                className="btn btn-lg btn-block btn-secondary sign-btn"
-                                type="submit"
-                                tabIndex="2"
-                              >
-                                Next
-                              </button>
-                            </div>{" "} */}
-                          </div>
-                        </div>
+                      > */}
 
+                      {showPassword === true ? (
                         <div className="col-12 passwordSec">
                           <div className="row">
-                            {/* <div className="col userAfterLogin">
-                              {" "}
+                            <div className="col userAfterLogin">
                               <h1>Welcome,</h1>
-                              <h6>Aboobacker Sidhiqe</h6>
-                            </div> */}
+                              <h6>{login.full_name}</h6>
+                              {login.happyBirthDay !== "" ? (
+                                <small>
+                                  <span>&#127881;</span>
+                                  {login.happyBirthDay}
+                                  <span>&#127873;</span>
+                                </small>
+                              ) : null}
+                            </div>
                             <AlagehFormGroup
                               div={{ className: "col-12 form-group" }}
                               textBox={{
@@ -383,7 +426,7 @@ function Login(props) {
                               }}
                             />
                             <br />
-                            <AlagehAutoComplete
+                            {/* <AlagehAutoComplete
                               div={{ className: "col-12 form-group" }}
                               selector={{
                                 name: "item_id",
@@ -419,7 +462,7 @@ function Login(props) {
                                   setLogin({ ...login, item_id: "" });
                                 }
                               }}
-                            />
+                            /> */}
                             <div className="col-12 form-group">
                               <div className="checkbox">
                                 <label>
@@ -437,6 +480,7 @@ function Login(props) {
                                 className="btn btn-lg btn-secondary btn-block sign-btn"
                                 type="submit"
                                 tabIndex="4"
+                                onClick={submitLogin}
                               >
                                 Login
                               </button>
@@ -449,7 +493,55 @@ function Login(props) {
                             </div>
                           </div>
                         </div>
-                      </form>
+                      ) : (
+                        <div className="col-12 usernameSec">
+                          <div className="row">
+                            <AlagehFormGroup
+                              div={{ className: "col-12 form-group" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "username",
+                                value: login.username,
+                                events: {
+                                  onChange: e => {
+                                    setLogin({
+                                      ...login,
+                                      username: e.target.value
+                                    });
+                                  }
+                                },
+                                others: {
+                                  tabIndex: "1",
+                                  placeholder: "Enter Username",
+                                  ref: c => {
+                                    userRef = c;
+                                  }
+                                }
+                              }}
+                            />
+                            <br />
+                            <div
+                              className="col-12 form-group"
+                              style={{ textAlign: "right" }}
+                            >
+                              <button
+                                className="btn btn-lg btn-block btn-secondary sign-btn"
+                                disabled={
+                                  login.username.replace(/ /g, "") !== ""
+                                    ? false
+                                    : true
+                                }
+                                type="submit"
+                                tabIndex="2"
+                                onClick={checkUserActive}
+                              >
+                                Next
+                              </button>
+                            </div>{" "}
+                          </div>
+                        </div>
+                      )}
+                      {/* </form> */}
                     </div>
                   </div>
                 </div>

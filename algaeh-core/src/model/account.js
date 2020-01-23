@@ -2,7 +2,7 @@ import extend from "extend";
 import httpStatus from "../utils/httpStatus";
 const keyPath = require("algaeh-keys/keys");
 import algaehMysql from "algaeh-mysql";
-
+import moment from "moment";
 let getUserNamePassWord = base64String => {
   try {
     const temp = base64String.split(" ");
@@ -110,7 +110,7 @@ let authUser = (req, res, next) => {
      password_expiry_rule, algaeh_m_role_user_mappings_id,app_d_app_roles_id,app_group_id,\
      role_code, role_name, role_discreption, role_type,loan_authorize_privilege,leave_authorize_privilege,finance_authorize_privilege,edit_monthly_attendance,\
      algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc, group_type, \
-      U.employee_id, E.sub_department_id,UEM.hospital_id,S.page_to_redirect\
+      U.employee_id, E.sub_department_id,UEM.hospital_id,S.page_to_redirect,E.full_name,E.arabic_name \
      FROM  algaeh_d_app_user U inner join algaeh_m_role_user_mappings RU on RU.user_id=U.algaeh_d_app_user_id\
      inner join algaeh_d_app_roles R on RU.role_id=R.app_d_app_roles_id\
      inner join algaeh_d_app_group G on R.app_group_id=G.algaeh_d_app_group_id\
@@ -120,7 +120,7 @@ let authUser = (req, res, next) => {
      left join algaeh_d_app_screens S on  R.default_land_screen_id=S.algaeh_app_screens_id \
      WHERE P.password=md5(?) AND U.username=? AND U.record_status='A'   AND U.user_status='A' \
      AND P.record_status='A' AND G.record_status='A' AND R.record_status='A' and UEM.record_status='A' and E.employee_status <>'I'and UEM.hospital_id=?;\
-     SELECT ORG.business_registration_number,ORG.tax_number,ORG.other_lang,ORG.other_lang_short,hims_d_hospital_id, hospital_code, local_vat_applicable, default_nationality, default_country, \
+     SELECT ORG.product_type, ORG.business_registration_number,ORG.tax_number,ORG.other_lang,ORG.other_lang_short,hims_d_hospital_id, hospital_code, local_vat_applicable, default_nationality, default_country, \
    H.default_currency, H.default_slot, H.default_patient_type, H.standard_from_time, H.standard_to_time, H.hospital_name, \
    H.arabic_hospital_name, H.hospital_address, H.city_id, organization_id, H.effective_start_date, H.effective_end_date, \
    hosital_status, lab_location_code ,hims_d_currency_id, currency_code, currency_description, currency_symbol,\
@@ -201,8 +201,60 @@ let apiAuthentication = (req, res, next) => {
   }
 };
 
+let userCheck = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    const { userId } = req.body;
+    _mysql
+      .executeQuery({
+        query: `select ume.hospital_id,e.full_name,e.arabic_name,
+      e.date_of_birth from algaeh_d_app_user as u inner join 
+      hims_m_user_employee as ume  on ume.user_id = u.algaeh_d_app_user_id
+      inner join hims_d_employee as e on e.hims_d_employee_id = ume.employee_id
+      where UCASE(u.username)=UCASE(?) and u.record_status='A' and date(u.effective_start_date) <= date(now()) 
+      and date(u.effective_end_date) >= date(now()) and e.employee_status in ('A','R') and u.locked='N'; `,
+        values: [userId]
+      })
+      .then(result => {
+        if (result.length === 1) {
+          const {
+            date_of_birth,
+            hospital_id,
+            full_name,
+            arabic_name
+          } = result[0];
+          let happyBirthDay = "";
+          const dobMonthDay = parseInt(moment(date_of_birth).format("MMDD"));
+          const currentMonthDay = parseInt(moment().format("MMDD"));
+          if (dobMonthDay === currentMonthDay) {
+            happyBirthDay = `Happy Birthday`;
+          }
+          // happyBirthDay = `Happy Birthday`;
+          req.records = {
+            hospital_id,
+            full_name,
+            arabic_name,
+            happyBirthDay
+          };
+
+          next();
+        } else {
+          next(new Error("No such user find! / user might be inactive."));
+        }
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
 export default {
   apiAuth,
   authUser,
-  apiAuthentication
+  apiAuthentication,
+  userCheck
 };

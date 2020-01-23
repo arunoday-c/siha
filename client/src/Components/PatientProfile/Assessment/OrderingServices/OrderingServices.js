@@ -35,7 +35,7 @@ import "../../../../styles/site.scss";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import _ from "lodash";
 import sockets from "../../../../sockets";
 import FavouriteOrder from "../../../FavouriteOrderList/FavouriteOrder/FavouriteOrder";
@@ -860,7 +860,7 @@ const {current_patient,visit_id,provider_id} = this.props.location.state.content
                       fieldName: "sub_ttl"
                     }}
                   />
-                  <h5>{getAmountFormart(this.state.sub_total_amount)}</h5>
+                  <h5>{GetAmountFormart(this.state.sub_total_amount)}</h5>
                 </div>
                 <div className="col" style={{ textAlign: "right" }}>
                   <AlgaehLabel
@@ -868,7 +868,7 @@ const {current_patient,visit_id,provider_id} = this.props.location.state.content
                       fieldName: "dsct_amt"
                     }}
                   />
-                  <h5>{getAmountFormart(this.state.discount_amount)}</h5>
+                  <h5>{GetAmountFormart(this.state.discount_amount)}</h5>
                 </div>
 
                 <div className="col" style={{ textAlign: "right" }}>
@@ -877,7 +877,7 @@ const {current_patient,visit_id,provider_id} = this.props.location.state.content
                       fieldName: "net_ttl"
                     }}
                   />
-                  <h5>{getAmountFormart(this.state.net_total)}</h5>
+                  <h5>{GetAmountFormart(this.state.net_total)}</h5>
                 </div>
                 <div className="col" style={{ textAlign: "right" }}>
                   <AlgaehLabel
@@ -885,7 +885,7 @@ const {current_patient,visit_id,provider_id} = this.props.location.state.content
                       fieldName: "pat_payable"
                     }}
                   />
-                  <h5>{getAmountFormart(this.state.patient_payable)}</h5>
+                  <h5>{GetAmountFormart(this.state.patient_payable)}</h5>
                 </div>
                 <div className="col" style={{ textAlign: "right" }}>
                   <AlgaehLabel
@@ -893,7 +893,7 @@ const {current_patient,visit_id,provider_id} = this.props.location.state.content
                       fieldName: "co_payable"
                     }}
                   />
-                  <h5>{getAmountFormart(this.state.company_payble)}</h5>
+                  <h5>{GetAmountFormart(this.state.company_payble)}</h5>
                 </div>
               </div>
             </div>

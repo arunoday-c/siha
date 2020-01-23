@@ -2,7 +2,7 @@
 import { payrollHeader } from "./payrollHeader";
 import "../report-style.scss";
 import _ from "lodash";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 
 export function printReport(data) {
   let net_salary = _.sumBy(data, s => parseFloat(s.net_salary));
@@ -68,23 +68,23 @@ export function printReport(data) {
     <div class="col-2">
     <label> Total Earnings</label>
 
-      <h6>${getAmountFormart(total_earnings)} </h6>
+      <h6>${GetAmountFormart(total_earnings)} </h6>
       </div>
 
    <div class="col-2">
     <label> Total Dedections</label>
 
-      <h6>${getAmountFormart(total_deductions)} </h6>
+      <h6>${GetAmountFormart(total_deductions)} </h6>
       </div>
       <div class="col-2">
     <label> Total Contribution</label>
 
-      <h6>${getAmountFormart(total_contributions)} </h6>
+      <h6>${GetAmountFormart(total_contributions)} </h6>
       </div>
     <div class="col-2">
     <label> Total Salary</label>
 
-      <h6>${getAmountFormart(net_salary)} </h6>
+      <h6>${GetAmountFormart(net_salary)} </h6>
       </div>
       
     </div>

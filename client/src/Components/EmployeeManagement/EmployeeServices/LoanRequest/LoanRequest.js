@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import "./LoanRequest.scss";
 import {
-  getAmountFormart,
+  GetAmountFormart,
   AlgaehValidation
 } from "../../../../utils/GlobalFunctions";
 import { NO_OF_EMI, MONTHS } from "../../../../utils/GlobalVariables.json";
@@ -548,7 +548,7 @@ class LoanRequest extends Component {
                       label: <AlgaehLabel label={{ forceLabel: "Due Amt." }} />,
                       displayTemplate: row => {
                         return (
-                          <span>{getAmountFormart(row.pending_loan)}</span>
+                          <span>{GetAmountFormart(row.pending_loan)}</span>
                         );
                       }
                     },
@@ -572,7 +572,7 @@ class LoanRequest extends Component {
                       displayTemplate: row => {
                         return (
                           <span>
-                            {getAmountFormart(row.installment_amount)}
+                            {GetAmountFormart(row.installment_amount)}
                           </span>
                         );
                       }
@@ -609,7 +609,7 @@ class LoanRequest extends Component {
                         <AlgaehLabel label={{ forceLabel: "Req. Amount" }} />
                       ),
                       displayTemplate: row => {
-                        return <span>{getAmountFormart(row.loan_amount)}</span>;
+                        return <span>{GetAmountFormart(row.loan_amount)}</span>;
                       },
                       others: { minWidth: 100 }
                     },
@@ -620,7 +620,7 @@ class LoanRequest extends Component {
                       ),
                       displayTemplate: row => {
                         return (
-                          <span>{getAmountFormart(row.approved_amount)}</span>
+                          <span>{GetAmountFormart(row.approved_amount)}</span>
                         );
                       },
                       others: { minWidth: 100 }
@@ -712,7 +712,7 @@ class LoanRequest extends Component {
                       ),
                       displayTemplate: row => {
                         return (
-                          <span>{getAmountFormart(row.advance_amount)}</span>
+                          <span>{GetAmountFormart(row.advance_amount)}</span>
                         );
                       }
                     },
@@ -906,7 +906,7 @@ class LoanRequest extends Component {
                           forceLabel: "Max-Limit"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.loan_limit)}</h6>
+                      <h6>{GetAmountFormart(this.state.loan_limit)}</h6>
                     </div>
 
                     <AlagehFormGroup
@@ -952,7 +952,7 @@ class LoanRequest extends Component {
                           forceLabel: "Installment Amount"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.installment_amount)}</h6>
+                      <h6>{GetAmountFormart(this.state.installment_amount)}</h6>
                     </div>
 
                     <AlagehAutoComplete

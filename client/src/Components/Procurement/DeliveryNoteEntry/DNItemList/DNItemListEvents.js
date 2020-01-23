@@ -1,7 +1,7 @@
 import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
 // import AlgaehReport from "../../../Wrapper/printReports";
 import _ from "lodash";
@@ -248,14 +248,14 @@ const onchhangegriddiscount = ($this, row, e) => {
       extended_cost = extended_price - discount_amount;
 
       extended_price = parseFloat(
-        getAmountFormart(extended_price, {
+        GetAmountFormart(extended_price, {
           appendSymbol: false
         })
       );
-      discount_amount = getAmountFormart(discount_amount, {
+      discount_amount = GetAmountFormart(discount_amount, {
         appendSymbol: false
       });
-      tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
+      tax_amount = GetAmountFormart(tax_amount, { appendSymbol: false });
 
       row["quantity_outstanding"] =
         row.po_quantity - row.quantity_recieved_todate - parseFloat(value);
@@ -473,14 +473,14 @@ const OnChangeDeliveryQty = ($this, context, e) => {
         (extended_cost * parseFloat(item_details.tax_percentage)) / 100;
 
       extended_price = parseFloat(
-        getAmountFormart(extended_price, {
+        GetAmountFormart(extended_price, {
           appendSymbol: false
         })
       );
-      discount_amount = getAmountFormart(discount_amount, {
+      discount_amount = GetAmountFormart(discount_amount, {
         appendSymbol: false
       });
-      tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
+      tax_amount = GetAmountFormart(tax_amount, { appendSymbol: false });
 
       item_details["extended_price"] = parseFloat(extended_price);
       item_details["extended_cost"] = parseFloat(extended_cost);

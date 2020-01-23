@@ -10,7 +10,7 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import extend from "extend";
 import Options from "../../../../Options.json";
 import moment from "moment";
@@ -227,7 +227,7 @@ class DNItemList extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {getAmountFormart(row.discount_amount, {
+                          {GetAmountFormart(row.discount_amount, {
                             appendSymbol: false
                           })}
                         </span>
@@ -243,7 +243,7 @@ class DNItemList extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {getAmountFormart(row.net_extended_cost, {
+                          {GetAmountFormart(row.net_extended_cost, {
                             appendSymbol: false
                           })}
                         </span>
@@ -258,7 +258,7 @@ class DNItemList extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {getAmountFormart(row.tax_amount, {
+                          {GetAmountFormart(row.tax_amount, {
                             appendSymbol: false
                           })}
                         </span>
@@ -273,7 +273,7 @@ class DNItemList extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {getAmountFormart(row.total_amount, {
+                          {GetAmountFormart(row.total_amount, {
                             appendSymbol: false
                           })}
                         </span>

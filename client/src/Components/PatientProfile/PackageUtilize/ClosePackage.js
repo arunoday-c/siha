@@ -13,7 +13,7 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import ButtonType from "../../Wrapper/algaehButton";
 
-import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import {
   algaehApiCall,
   swalMessage,
@@ -258,7 +258,7 @@ class ClosePackage extends PureComponent {
                     forceLabel: "Actual Amount"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.actual_amount)}</h6>
+                <h6>{GetAmountFormart(this.state.actual_amount)}</h6>
               </div>
 
               <div className="col-lg-2">
@@ -267,7 +267,7 @@ class ClosePackage extends PureComponent {
                     forceLabel: "Package Amount"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.unit_cost)}</h6>
+                <h6>{GetAmountFormart(this.state.unit_cost)}</h6>
               </div>
 
               <div className="col-lg-2">
@@ -276,7 +276,7 @@ class ClosePackage extends PureComponent {
                     forceLabel: "Advance Paid"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.advance_amount)}</h6>
+                <h6>{GetAmountFormart(this.state.advance_amount)}</h6>
               </div>
 
               <div className="col-lg-2">
@@ -285,7 +285,7 @@ class ClosePackage extends PureComponent {
                     forceLabel: "Actual Utilized Amount"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.actual_utilize_amount)}</h6>
+                <h6>{GetAmountFormart(this.state.actual_utilize_amount)}</h6>
               </div>
               <div className="col-lg-2">
                 <AlgaehLabel
@@ -293,7 +293,7 @@ class ClosePackage extends PureComponent {
                     forceLabel: "Utilized Amount"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.utilize_amount)}</h6>
+                <h6>{GetAmountFormart(this.state.utilize_amount)}</h6>
               </div>
               <div className="col-lg-2">
                 <AlgaehLabel
@@ -301,7 +301,7 @@ class ClosePackage extends PureComponent {
                     forceLabel: "Balance Amount"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.balance_amount)}</h6>
+                <h6>{GetAmountFormart(this.state.balance_amount)}</h6>
               </div>
             </div>
             {this.state.closed_type === "R" ? (

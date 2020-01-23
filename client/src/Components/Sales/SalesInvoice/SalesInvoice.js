@@ -22,7 +22,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 // import SalesInvoiceInp from "../../../Models/SalesInvoice";
 import MyContext from "../../../utils/MyContext";
 import _ from "lodash";
-import { getAmountFormart, AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { GetAmountFormart, AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 import InvoiceListService from "./InvoiceListService/InvoiceListService";
 import InvoiceItemList from "./InvoiceItemList/InvoiceItemList";
 import SalesInvoiceIO from "../../../Models/SalesInvoice";
@@ -285,7 +285,7 @@ class SalesInvoice extends Component {
                                             forceLabel: "Sub Total"
                                         }}
                                     />
-                                    <h6>{getAmountFormart(this.state.sub_total)}</h6>
+                                    <h6>{GetAmountFormart(this.state.sub_total)}</h6>
                                 </div>
                                 <div className="col">
                                     <AlgaehLabel
@@ -293,7 +293,7 @@ class SalesInvoice extends Component {
                                             forceLabel: "Discount Amount"
                                         }}
                                     />
-                                    <h6>{getAmountFormart(this.state.discount_amount)}</h6>
+                                    <h6>{GetAmountFormart(this.state.discount_amount)}</h6>
                                 </div>
 
                                 <div className="col">
@@ -302,7 +302,7 @@ class SalesInvoice extends Component {
                                             forceLabel: "Net Total"
                                         }}
                                     />
-                                    <h6>{getAmountFormart(this.state.net_total)}</h6>
+                                    <h6>{GetAmountFormart(this.state.net_total)}</h6>
                                 </div>
                                 <div className="col">
                                     <AlgaehLabel
@@ -310,7 +310,7 @@ class SalesInvoice extends Component {
                                             forceLabel: "Total Tax"
                                         }}
                                     />
-                                    <h6>{getAmountFormart(this.state.total_tax)}</h6>
+                                    <h6>{GetAmountFormart(this.state.total_tax)}</h6>
                                 </div>
                                 <div className="col">
                                     <AlgaehLabel
@@ -318,7 +318,7 @@ class SalesInvoice extends Component {
                                             forceLabel: "Net Receivable"
                                         }}
                                     />
-                                    <h6>{getAmountFormart(this.state.net_payable)}</h6>
+                                    <h6>{GetAmountFormart(this.state.net_payable)}</h6>
                                 </div>
                             </div>
                         </div>

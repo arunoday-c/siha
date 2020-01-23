@@ -26,8 +26,8 @@ import {
 import variableJson from "../../../../utils/GlobalVariables.json";
 import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
 import Enumerable from "linq";
-import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
-
+// import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 class AddPatientForm extends Component {
   constructor(props) {
     super(props);
@@ -37,20 +37,23 @@ class AddPatientForm extends Component {
       DOBErrorMsg: "",
       DOBError: false,
       DOB: 0,
-      CurrentDate: new Date()
+      CurrentDate: new Date(),
+      requied_emp_id: "N"
       // patientImage: undefined
     };
     this.widthImg = "";
     this.widthDate = "";
     this.innerContext = {};
   }
-
+  static contextType = MainContext;
   UNSAFE_componentWillMount() {
     let InputOutput = this.props.PatRegIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({ requied_emp_id: userToken.requied_emp_id });
     if (this.props.titles === undefined || this.props.titles.length === 0) {
       this.props.getTitles({
         uri: "/masters/get/title",
@@ -213,9 +216,7 @@ class AddPatientForm extends Component {
     }
   }
   render() {
-    let requied_emp_id = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    ).requied_emp_id;
+    let requied_emp_id = this.state.requied_emp_id;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -950,8 +951,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AddPatientForm)
+  connect(mapStateToProps, mapDispatchToProps)(AddPatientForm)
 );

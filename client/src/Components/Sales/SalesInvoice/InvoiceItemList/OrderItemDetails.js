@@ -5,7 +5,7 @@ import {
   AlgaehModalPopUp
 } from "../../../Wrapper/algaehWrapper";
 
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
 import moment from "moment";
 
@@ -101,7 +101,7 @@ export default class OrderItemDetails extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {getAmountFormart(row.discount_amount, {
+                          {GetAmountFormart(row.discount_amount, {
                             appendSymbol: false
                           })}
                         </span>
@@ -117,7 +117,7 @@ export default class OrderItemDetails extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {getAmountFormart(row.net_extended_cost, {
+                          {GetAmountFormart(row.net_extended_cost, {
                             appendSymbol: false
                           })}
                         </span>
@@ -132,7 +132,7 @@ export default class OrderItemDetails extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {getAmountFormart(row.tax_amount, {
+                          {GetAmountFormart(row.tax_amount, {
                             appendSymbol: false
                           })}
                         </span>
@@ -147,7 +147,7 @@ export default class OrderItemDetails extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {getAmountFormart(row.total_amount, {
+                          {GetAmountFormart(row.total_amount, {
                             appendSymbol: false
                           })}
                         </span>

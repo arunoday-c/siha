@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import "./SalaryProcessing.scss";
 // import "./../../styles/site.scss";
 import {
@@ -222,7 +222,7 @@ export default class SalariesComponents extends PureComponent {
                                 ),
                                 displayTemplate: row => {
                                   return (
-                                    <span>{getAmountFormart(row.amount)}</span>
+                                    <span>{GetAmountFormart(row.amount)}</span>
                                   );
                                 },
 
@@ -294,7 +294,7 @@ export default class SalariesComponents extends PureComponent {
                                 ),
                                 displayTemplate: row => {
                                   return (
-                                    <span>{getAmountFormart(row.amount)}</span>
+                                    <span>{GetAmountFormart(row.amount)}</span>
                                   );
                                 },
 
@@ -368,7 +368,7 @@ export default class SalariesComponents extends PureComponent {
                                 ),
                                 displayTemplate: row => {
                                   return (
-                                    <span>{getAmountFormart(row.amount)}</span>
+                                    <span>{GetAmountFormart(row.amount)}</span>
                                   );
                                 },
 
@@ -409,7 +409,7 @@ export default class SalariesComponents extends PureComponent {
                       <h6>
                         {this.state.total_earnings === null
                           ? 0
-                          : getAmountFormart(this.state.total_earnings)}
+                          : GetAmountFormart(this.state.total_earnings)}
                       </h6>
                     </div>
                     <div className="col-2">
@@ -421,7 +421,7 @@ export default class SalariesComponents extends PureComponent {
                       <h6>
                         {this.state.total_deductions === null
                           ? 0
-                          : getAmountFormart(this.state.total_deductions)}
+                          : GetAmountFormart(this.state.total_deductions)}
                       </h6>
                     </div>
 
@@ -434,7 +434,7 @@ export default class SalariesComponents extends PureComponent {
                       <h6>
                         {this.state.loan_payable_amount === null
                           ? 0
-                          : getAmountFormart(this.state.loan_payable_amount)}
+                          : GetAmountFormart(this.state.loan_payable_amount)}
                       </h6>
                     </div>
                     <div className="col-2">
@@ -446,7 +446,7 @@ export default class SalariesComponents extends PureComponent {
                       <h6>
                         {this.state.loan_due_amount === null
                           ? 0
-                          : getAmountFormart(this.state.loan_due_amount)}
+                          : GetAmountFormart(this.state.loan_due_amount)}
                       </h6>
                     </div>
                     <div className="col-2">
@@ -458,7 +458,7 @@ export default class SalariesComponents extends PureComponent {
                       <h6>
                         {this.state.net_salary === null
                           ? 0
-                          : getAmountFormart(this.state.net_salary)}
+                          : GetAmountFormart(this.state.net_salary)}
                       </h6>
                     </div>
                   </div>

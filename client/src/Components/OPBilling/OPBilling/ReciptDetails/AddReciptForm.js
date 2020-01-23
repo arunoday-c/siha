@@ -27,7 +27,7 @@ import "./AddReciptForm.scss";
 import "./../../../../styles/site.scss";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class AddReciptForm extends Component {
   constructor(props) {
@@ -411,7 +411,7 @@ class AddReciptForm extends Component {
                         fieldName: "unbalanced_amount"
                       }}
                     />
-                    <h6>{getAmountFormart(this.state.unbalanced_amount)}</h6>
+                    <h6>{GetAmountFormart(this.state.unbalanced_amount)}</h6>
                   </div>
                 </div>
               </div>

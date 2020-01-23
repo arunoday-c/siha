@@ -22,7 +22,7 @@ import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall";
 import AlgaehReport from "../../Wrapper/printReports.js";
-import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
 class InvoiceGeneration extends Component {
   constructor(props) {
@@ -778,7 +778,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Gross Total"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.gross_amount)}</h6>
+                      <h6>{GetAmountFormart(this.state.gross_amount)}</h6>
                     </div>
                     <div className="col-4">
                       <AlgaehLabel
@@ -786,7 +786,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Discount Total"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.discount_amount)}</h6>
+                      <h6>{GetAmountFormart(this.state.discount_amount)}</h6>
                     </div>
 
                     <div className="col-4">
@@ -795,7 +795,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Net Total"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.net_amout)}</h6>
+                      <h6>{GetAmountFormart(this.state.net_amout)}</h6>
                     </div>
 
                     <div className="col-4">
@@ -804,7 +804,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Patient Resp."
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.patient_resp)}</h6>
+                      <h6>{GetAmountFormart(this.state.patient_resp)}</h6>
                     </div>
 
                     <div className="col-4">
@@ -813,7 +813,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Patient Tax"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.patient_tax)}</h6>
+                      <h6>{GetAmountFormart(this.state.patient_tax)}</h6>
                     </div>
 
                     <div className="col-4">
@@ -822,7 +822,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Patient Payable"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.patient_payable)}</h6>
+                      <h6>{GetAmountFormart(this.state.patient_payable)}</h6>
                     </div>
 
                     <div className="col-4">
@@ -831,7 +831,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Company Resp."
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.company_resp)}</h6>
+                      <h6>{GetAmountFormart(this.state.company_resp)}</h6>
                     </div>
                     <div className="col-4">
                       <AlgaehLabel
@@ -839,7 +839,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Company Tax"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.company_tax)}</h6>
+                      <h6>{GetAmountFormart(this.state.company_tax)}</h6>
                     </div>
                     <div className="col-4">
                       <AlgaehLabel
@@ -847,7 +847,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Company Payable"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.company_payble)}</h6>
+                      <h6>{GetAmountFormart(this.state.company_payble)}</h6>
                     </div>
 
                     {/* <div className="col-4">

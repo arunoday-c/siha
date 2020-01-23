@@ -1,8 +1,10 @@
+import React from "react";
 import extend from "extend";
 import { swalMessage, algaehApiCall, getCookie } from "../utils/algaehApiCall";
 import crypto from "crypto";
 import Enumerable from "linq";
-
+import Mediate from "./meadiate";
+// import { MainContext } from "algaeh-react-components/context";
 export function successfulMessage(options) {
   options.icon = options.icon || "error";
 
@@ -460,14 +462,18 @@ export function AlgaehValidation(options) {
   // }
 }
 
-export function getAmountFormart(value, options) {
-  return numberFormater(value, options);
+export function GetAmountFormart(value, options) {
+  return <Mediate value={value} options={options} />;
+  // return <>{numberFormater(value, options, userContext.userToken)}</>;
+
+  //numberFormater(value, options).then(result => result);
 }
 
-export function numberFormater(value, options) {
-  let CurrencyDetail = JSON.parse(
-    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-  );
+export function numberFormater(value, options, CurrencyDetail) {
+  // let CurrencyDetail = JSON.parse(
+  //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+  // );
+  console.log("token", CurrencyDetail);
   const settings = {
     ...CurrencyDetail,
     ...{ appendSymbol: true },
@@ -606,6 +612,7 @@ export function AlgaehCloseContainer(string) {
   return crypted;
 }
 export function AlgaehOpenContainer(string) {
+  debugger;
   var decipher = crypto.createDecipher(algorithm, containerId);
   var dec = decipher.update(string, "hex", "utf8");
   dec += decipher.final("utf8");

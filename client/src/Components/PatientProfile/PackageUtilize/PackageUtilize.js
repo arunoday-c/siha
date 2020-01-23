@@ -16,7 +16,7 @@ import "./PackageUtilize.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
-import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import _ from "lodash";
 import PackageUtilizeEvent from "./PackageUtilizeEvent";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
@@ -431,7 +431,7 @@ class PackageUtilize extends Component {
                       }}
                     />
                     <h5 style={{ margin: 0 }}>
-                      {getAmountFormart(this.state.unit_cost)}
+                      {GetAmountFormart(this.state.unit_cost)}
                     </h5>
                   </div>
                   <div className="col">
@@ -441,7 +441,7 @@ class PackageUtilize extends Component {
                       }}
                     />
                     <h5 style={{ margin: 0 }}>
-                      {getAmountFormart(this.state.actual_amount)}
+                      {GetAmountFormart(this.state.actual_amount)}
                     </h5>
                   </div>
                   <div className="col">
@@ -451,7 +451,7 @@ class PackageUtilize extends Component {
                       }}
                     />
                     <h5 style={{ margin: 0 }}>
-                      {getAmountFormart(this.state.advance_amount)}
+                      {GetAmountFormart(this.state.advance_amount)}
                     </h5>
                   </div>
                   <div className="col">
@@ -461,7 +461,7 @@ class PackageUtilize extends Component {
                       }}
                     />
                     <h5 style={{ margin: 0 }}>
-                      {getAmountFormart(this.state.utilize_amount)}
+                      {GetAmountFormart(this.state.utilize_amount)}
                     </h5>
                   </div>
                   <div className="col">
@@ -471,7 +471,7 @@ class PackageUtilize extends Component {
                       }}
                     />
                     <h5 style={{ margin: 0 }}>
-                      {getAmountFormart(this.state.balance_amount)}
+                      {GetAmountFormart(this.state.balance_amount)}
                     </h5>
                   </div>
                 </div>

@@ -16,25 +16,36 @@ import CategorySpeciality from "./CategorySpecialityMapping/CategorySpeciality";
 import BankMaster from "./BankMaster/BankMaster";
 import CompanyAccount from "./CompanyAccount/CompanyAccount";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
-import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
+// import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import _ from "lodash";
 import { CheckElement } from "../Wrapper";
-
+import { MainContext } from "algaeh-react-components/context";
 class BusinessSetup extends Component {
   constructor(props) {
     super(props);
-    let Activated_Modueles = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    );
-    const HIMS_Active = _.filter(Activated_Modueles, f => {
-      return f.module_code === "FTDSK";
-    });
+    // let Activated_Modueles = JSON.parse(
+    //   AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+    // );
+    // const HIMS_Active = _.filter(Activated_Modueles, f => {
+    //   return f.module_code === "FTDSK";
+    // });
     this.state = {
       pageDisplay: "BranchMaster",
-      HIMS_Active: HIMS_Active.length > 0 ? true : false
+      HIMS_Active: false //HIMS_Active.length > 0 ? true : false
     };
   }
-
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+    const active =
+      userToken.product_type === "HIMS_ERP" ||
+      userToken.product_type === "HIMS_CLINICAL"
+        ? true
+        : false;
+    this.setState({
+      HIMS_Active: active
+    });
+  }
   openTab(e) {
     var element = document.querySelectorAll("[algaehtabs]");
     for (var i = 0; i < element.length; i++) {

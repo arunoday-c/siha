@@ -2,7 +2,7 @@
 
 import { getCookie } from "../../utils/algaehApiCall";
 import { ReportHeader } from "../ReportHeader";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 
 export function printReport(data) {
   const calculteTotal = details => {
@@ -117,7 +117,7 @@ export function printReport(data) {
               <td class="co-4"> ${item.unit_cost}</td>
               ${calculteTotal(item).map(
                 final_amount =>
-                  `  <td class="right" style="width:200px">${getAmountFormart(
+                  `  <td class="right" style="width:200px">${GetAmountFormart(
                     final_amount,
                     {
                       appendSymbol: false

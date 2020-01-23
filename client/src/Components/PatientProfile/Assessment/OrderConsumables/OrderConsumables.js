@@ -28,7 +28,7 @@ import "./OrderConsumables.scss";
 import "../../../../styles/site.scss";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 class OrderConsumables extends Component {
   constructor(props) {
     super(props);
@@ -686,7 +686,7 @@ class OrderConsumables extends Component {
                           fieldName: "sub_ttl"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.sub_total_amount)}</h5>
+                      <h5>{GetAmountFormart(this.state.sub_total_amount)}</h5>
                     </div>
                     <div className="col">
                       <AlgaehLabel
@@ -694,7 +694,7 @@ class OrderConsumables extends Component {
                           fieldName: "dsct_amt"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.discount_amount)}</h5>
+                      <h5>{GetAmountFormart(this.state.discount_amount)}</h5>
                     </div>
 
                     <div className="col">
@@ -703,7 +703,7 @@ class OrderConsumables extends Component {
                           fieldName: "net_ttl"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.net_total)}</h5>
+                      <h5>{GetAmountFormart(this.state.net_total)}</h5>
                     </div>
                   </div>
                 </div>
@@ -716,7 +716,7 @@ class OrderConsumables extends Component {
                           fieldName: "pat_payable"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.patient_payable)}</h5>
+                      <h5>{GetAmountFormart(this.state.patient_payable)}</h5>
                     </div>
                     <div className="col">
                       <AlgaehLabel
@@ -724,7 +724,7 @@ class OrderConsumables extends Component {
                           fieldName: "co_payable"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.company_payble)}</h5>
+                      <h5>{GetAmountFormart(this.state.company_payble)}</h5>
                     </div>
                   </div>
                 </div>

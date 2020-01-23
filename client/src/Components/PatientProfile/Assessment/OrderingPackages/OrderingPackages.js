@@ -26,7 +26,7 @@ import "../../../../styles/site.scss";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
 // import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import ButtonType from "../../../Wrapper/algaehButton";
 import _ from "lodash";
 import NewPackage from "../../../PackageSetup/NewPackage/NewPackage";
@@ -650,7 +650,7 @@ class OrderingPackages extends Component {
                           fieldName: "net_ttl"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.net_total)}</h5>
+                      <h5>{GetAmountFormart(this.state.net_total)}</h5>
                     </div>
                   </div>
                 </div>
@@ -663,7 +663,7 @@ class OrderingPackages extends Component {
                           fieldName: "pat_payable"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.patient_payable)}</h5>
+                      <h5>{GetAmountFormart(this.state.patient_payable)}</h5>
                     </div>
                     <div className="col" style={{ textAlign: "right" }}>
                       <AlgaehLabel
@@ -671,7 +671,7 @@ class OrderingPackages extends Component {
                           fieldName: "co_payable"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.company_payble)}</h5>
+                      <h5>{GetAmountFormart(this.state.company_payble)}</h5>
                     </div>
                   </div>
                 </div>
