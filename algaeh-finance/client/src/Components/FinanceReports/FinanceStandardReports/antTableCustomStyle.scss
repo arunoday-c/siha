@@ -3,6 +3,7 @@
   .ant-table-tfoot {
     tr {
       height: 15px;
+      box-sizing: border-box;
       td {
         border: 1px solid #000;
       }
