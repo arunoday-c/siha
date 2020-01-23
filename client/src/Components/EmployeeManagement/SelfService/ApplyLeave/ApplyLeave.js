@@ -11,24 +11,20 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import {
-  AlgaehValidation,
-  AlgaehOpenContainer
+  AlgaehValidation
+  //AlgaehOpenContainer
 } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import swal from "sweetalert2";
 import Socket from "../../../../sockets";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import ButtonType from "../../../Wrapper/algaehButton";
+import { MainContext } from "algaeh-react-components/context";
 
 class ApplyLeave extends Component {
   constructor(props) {
     super(props);
-    const obritery = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    );
-    const orbKeyData = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("keyData"))
-    );
+
     this.state = {
       extra: {},
       selectedLang: this.props.SelectLanguage,
@@ -45,19 +41,28 @@ class ApplyLeave extends Component {
       to_leave_session: props.leave.to_session ? props.leave.to_session : "FD",
       absent_id: props.leave.absent_id ? props.leave.absent_id : null,
       leave_from: props.leave.leave_from ? props.leave.leave_from : null,
-      hospital_id: obritery.hims_d_hospital_id,
-      employee_branch: orbKeyData.employee_branch,
+
       projected_leave_enable: false,
       Request_enable: true,
       projected_applied_leaves: null,
       is_projected_leave: "N",
-      loading_Process: false
+      loading_Process: false,
+      hospital_id: "",
+      employee_branch: ""
     };
     this.leaveSocket = Socket;
     this.getLeaveTypes();
     // this.getEmployees();
   }
 
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id,
+      employee_branch: userToken.hims_d_hospital_id
+    });
+  }
   componentWillUnmount() {
     this.clearState();
   }
