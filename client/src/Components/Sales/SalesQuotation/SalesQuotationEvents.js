@@ -349,8 +349,7 @@ const deleteComment = ($this, row) => {
 };
 
 const generateSalesQuotation = ($this, data) => {
-  console.log("data:", data);
-  debugger
+
   algaehApiCall({
     uri: "/report",
     method: "GET",

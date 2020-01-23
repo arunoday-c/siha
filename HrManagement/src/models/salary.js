@@ -2087,13 +2087,7 @@ export default {
       const _mysql = new algaehMysql();
       const inputParam = { ...req.body };
 
-      const utilities = new algaehUtilities();
-      // const decimal_places = req.userIdentity.decimal_places;
 
-      // utilities.logger().log("employee_id: ", inputParam.employee_id);
-      // utilities
-      //   .logger()
-      //   .log("_leave_salary_acc: ", inputParam._leave_salary_acc.length);
       let strQuery = "";
       if (inputParam.annual_leave_calculation === "A") {
         strQuery =
@@ -2129,11 +2123,17 @@ export default {
           printQuery: true
         })
         .then(leave_accrual_data => {
-          // utilities.logger().log("leave_accrual_data: ", leave_accrual_data[0]);
+
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection: _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
+
           let leave_accrual_detail = leave_accrual_data[0];
           let annual_leave_data = leave_accrual_data[1];
 
-          // utilities.logger().log("annual_leave_data: ", annual_leave_data);
+
           if (leave_accrual_detail.length > 0) {
             _mysql
               .generateRunningNumber({
@@ -2143,10 +2143,6 @@ export default {
               })
               .then(generatedNumbers => {
                 let leave_salary_number = generatedNumbers.LEAVE_ACCRUAL;
-
-                // utilities
-                //   .logger()
-                //   .log("leave_accrual_detail: ", leave_accrual_detail);
 
                 let leave_salary_accrual_detail = leave_accrual_detail;
 
@@ -2225,9 +2221,6 @@ export default {
                               decimal_places: req.userIdentity.decimal_places
                             })
                               .then(Employee_Leave_Salary => {
-                                // utilities
-                                //   .logger()
-                                //   .log("InsertEmployeeLeaveSalary: ");
                                 _mysql
                                   .executeQuery({
                                     query:
@@ -2239,20 +2232,10 @@ export default {
                                       inputParam.month,
                                       inputParam.hospital_id,
                                       inputParam.employee_id
-                                      // inputParam.year,
-                                      // inputParam.month,
-                                      // inputParam.hospital_id,
-                                      // inputParam.employee_id
                                     ],
                                     printQuery: true
                                   })
                                   .then(project_wise_payroll => {
-                                    // utilities
-                                    //   .logger()
-                                    //   .log(
-                                    //     "project_wise_payroll: ",
-                                    //     project_wise_payroll
-                                    //   );
                                     if (project_wise_payroll.length > 0) {
                                       UpdateProjectWisePayroll({
                                         project_wise_payroll: project_wise_payroll,
@@ -2263,9 +2246,6 @@ export default {
                                           req.userIdentity.decimal_places
                                       })
                                         .then(Employee_Leave_Salary => {
-                                          // utilities
-                                          //   .logger()
-                                          //   .log("Employee_Leave_Salary: ");
                                           InsertGratuityProvision({
                                             inputParam: inputParam,
                                             _mysql: _mysql,
@@ -2274,11 +2254,6 @@ export default {
                                               req.userIdentity.decimal_places
                                           })
                                             .then(gratuity_provision => {
-                                              // utilities
-                                              //   .logger()
-                                              //   .log(
-                                              //     "Employee_Leave_Salary gratuity_provision: "
-                                              //   );
                                               if (
                                                 inputParam._leave_salary_acc
                                                   .length > 0
@@ -2293,15 +2268,14 @@ export default {
                                                 })
                                                   .then(
                                                     Leave_Salary_Provission => {
-                                                      _mysql.commitTransaction(
-                                                        () => {
-                                                          _mysql.releaseConnection();
-                                                          req.records = {
-                                                            leave_salary_number: leave_salary_number
-                                                          };
-                                                          next();
-                                                        }
-                                                      );
+                                                      // _mysql.commitTransaction(
+                                                      //   () => {
+                                                      //     _mysql.releaseConnection();
+                                                      req.records = {
+                                                        leave_salary_number: leave_salary_number
+                                                      };
+                                                      next();
+                                                      // });
                                                     }
                                                   )
                                                   .catch(e => {
@@ -2312,13 +2286,13 @@ export default {
                                                     );
                                                   });
                                               } else {
-                                                _mysql.commitTransaction(() => {
-                                                  _mysql.releaseConnection();
-                                                  req.records = {
-                                                    leave_salary_number: leave_salary_number
-                                                  };
-                                                  next();
-                                                });
+                                                // _mysql.commitTransaction(() => {
+                                                //   _mysql.releaseConnection();
+                                                req.records = {
+                                                  leave_salary_number: leave_salary_number
+                                                };
+                                                next();
+                                                // });
                                               }
                                             })
                                             .catch(e => {
@@ -2333,7 +2307,6 @@ export default {
                                           });
                                         });
                                     } else {
-                                      // utilities.logger().log("else: ");
                                       InsertGratuityProvision({
                                         inputParam: inputParam,
                                         _mysql: _mysql,
@@ -2342,9 +2315,7 @@ export default {
                                           req.userIdentity.decimal_places
                                       })
                                         .then(gratuity_provision => {
-                                          // utilities
-                                          //   .logger()
-                                          //   .log("else gratuity_provision: ");
+
                                           if (
                                             inputParam._leave_salary_acc
                                               .length > 0
@@ -2357,13 +2328,13 @@ export default {
                                                 req.userIdentity.decimal_places
                                             })
                                               .then(Leave_Salary_Provission => {
-                                                _mysql.commitTransaction(() => {
-                                                  _mysql.releaseConnection();
-                                                  req.records = {
-                                                    leave_salary_number: leave_salary_number
-                                                  };
-                                                  next();
-                                                });
+                                                // _mysql.commitTransaction(() => {
+                                                //   _mysql.releaseConnection();
+                                                req.records = {
+                                                  leave_salary_number: leave_salary_number
+                                                };
+                                                next();
+                                                // });
                                               })
                                               .catch(e => {
                                                 _mysql.rollBackTransaction(
@@ -2373,13 +2344,13 @@ export default {
                                                 );
                                               });
                                           } else {
-                                            _mysql.commitTransaction(() => {
-                                              _mysql.releaseConnection();
-                                              req.records = {
-                                                leave_salary_number: leave_salary_number
-                                              };
-                                              next();
-                                            });
+                                            // _mysql.commitTransaction(() => {
+                                            //   _mysql.releaseConnection();
+                                            req.records = {
+                                              leave_salary_number: leave_salary_number
+                                            };
+                                            next();
+                                            // });
                                           }
                                         })
                                         .catch(e => {
@@ -2425,7 +2396,6 @@ export default {
                 });
               });
           } else {
-            // utilities.logger().log("else: ", leave_accrual_detail);
             _mysql
               .executeQuery({
                 query:
@@ -2434,7 +2404,6 @@ export default {
                 printQuery: true
               })
               .then(salary_process => {
-                // utilities.logger().log("salary_process: ");
                 _mysql
                   .executeQuery({
                     query:
@@ -2446,17 +2415,10 @@ export default {
                       inputParam.month,
                       inputParam.hospital_id,
                       inputParam.employee_id
-                      // inputParam.year,
-                      // inputParam.month,
-                      // inputParam.hospital_id,
-                      // inputParam.employee_id
                     ],
                     printQuery: true
                   })
                   .then(project_wise_payroll => {
-                    // utilities
-                    //   .logger()
-                    //   .log("project_wise_payroll: ", project_wise_payroll);
                     if (project_wise_payroll.length > 0) {
                       UpdateProjectWisePayroll({
                         project_wise_payroll: project_wise_payroll,
@@ -2482,11 +2444,13 @@ export default {
                                     req.userIdentity.decimal_places
                                 })
                                   .then(Leave_Salary_Provission => {
-                                    _mysql.commitTransaction(() => {
-                                      _mysql.releaseConnection();
-                                      req.records = gratuity_provision;
-                                      next();
-                                    });
+                                    // _mysql.commitTransaction(() => {
+                                    //   _mysql.releaseConnection();
+                                    //   req.records = gratuity_provision;
+                                    //   next();
+                                    // });
+                                    req.records = gratuity_provision;
+                                    next();
                                   })
                                   .catch(e => {
                                     _mysql.rollBackTransaction(() => {
@@ -2494,11 +2458,13 @@ export default {
                                     });
                                   });
                               } else {
-                                _mysql.commitTransaction(() => {
-                                  _mysql.releaseConnection();
-                                  req.records = gratuity_provision;
-                                  next();
-                                });
+                                // _mysql.commitTransaction(() => {
+                                //   _mysql.releaseConnection();
+                                //   req.records = gratuity_provision;
+                                //   next();
+                                // });
+                                req.records = gratuity_provision;
+                                next();
                               }
                             })
                             .catch(e => {
@@ -2528,11 +2494,13 @@ export default {
                               decimal_places: req.userIdentity.decimal_places
                             })
                               .then(Leave_Salary_Provission => {
-                                _mysql.commitTransaction(() => {
-                                  _mysql.releaseConnection();
-                                  req.records = gratuity_provision;
-                                  next();
-                                });
+                                // _mysql.commitTransaction(() => {
+                                //   _mysql.releaseConnection();
+                                //   req.records = gratuity_provision;
+                                //   next();
+                                // });
+                                req.records = gratuity_provision;
+                                next();
                               })
                               .catch(e => {
                                 _mysql.rollBackTransaction(() => {
@@ -2540,11 +2508,13 @@ export default {
                                 });
                               });
                           } else {
-                            _mysql.commitTransaction(() => {
-                              _mysql.releaseConnection();
-                              req.records = gratuity_provision;
-                              next();
-                            });
+                            // _mysql.commitTransaction(() => {
+                            //   _mysql.releaseConnection();
+                            //   req.records = gratuity_provision;
+                            //   next();
+                            // });
+                            req.records = gratuity_provision;
+                            next();
                           }
                         })
                         .catch(e => {
@@ -3407,6 +3377,208 @@ export default {
         });
     } catch (e) {
       next(e);
+    }
+  },
+
+  generateAccountingEntry: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      if (req.flag != 1) {
+
+        let inputParam = req.body;
+        _mysql
+          .executeQueryWithTransaction({
+            query:
+              "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
+            select head_id, child_id from finance_accounts_maping where account in ('SAL_PYBLS');"
+          })
+          .then(result => {
+            // console.log("result", result)
+            const salary_pay_acc = result[1][0]
+            const org_data = result[0]
+
+            if (
+              org_data[0]["product_type"] == "HIMS_ERP" ||
+              org_data[0]["product_type"] == "FINANCE_ERP"
+            ) {
+              _mysql
+                .executeQueryWithTransaction({
+                  query: `select hims_f_salary_id as document_id, '${inputParam.ScreenCode}' as from_screen,
+                  salary_number as document_number, salary_date as transaction_date,
+                  S.net_salary as amount, S.hospital_id, 'payment' as voucher_type, \
+                  concat('Salary for Employee: ', E.employee_code , ' in ' , year , '/' , monthname(concat('1999-',month,'-01'))) as narration
+                  from hims_f_salary s 
+                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
+                  where hims_f_salary_id in (?);
+                  select hims_f_salary_id, curDate() payment_date,SE.amount as debit_amount, ED.head_id, ED.child_id,'DR' as payment_type, 0 as credit_amount from hims_f_salary s 
+                  left join hims_f_salary_earnings SE on SE.salary_header_id = S.hims_f_salary_id
+                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id
+                  where hims_f_salary_id in(?); 
+                  select hims_f_salary_id, curDate() payment_date, SD.amount as credit_amount, ED.head_id, ED.child_id, 'CR' as payment_type, 0 as debit_amount 
+                  from hims_f_salary s 
+                  left join hims_f_salary_deductions SD on SD.salary_header_id = S.hims_f_salary_id 
+                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SD.deductions_id
+                  where hims_f_salary_id in(?); 
+                  select hims_f_salary_id, curDate() payment_date, SC.amount as debit_amount, ED.head_id, ED.child_id, 'DR' as payment_type,0 as credit_amount from hims_f_salary s 
+                  left join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id
+                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id 
+                  where hims_f_salary_id in(?);`,
+                  values: [
+                    inputParam.salary_header_id,
+                    inputParam.salary_header_id,
+                    inputParam.salary_header_id,
+                    inputParam.salary_header_id
+                  ],
+                  printQuery: true
+                })
+                .then(headerResult => {
+
+                  const Header_IncludeValuess = [
+                    "document_id",
+                    "from_screen",
+                    "document_number",
+                    "transaction_date",
+                    "amount",
+                    "hospital_id",
+                    "voucher_type",
+                    "narration"
+                  ];
+
+                  _mysql
+                    .executeQueryWithTransaction({
+                      query:
+                        "INSERT INTO finance_day_end_header (??) VALUES ? ;",
+                      values: headerResult[0],
+                      includeValues: Header_IncludeValuess,
+                      bulkInsertOrUpdate: true,
+                      printQuery: true
+                    })
+                    .then(finance_header => {
+                      _mysql
+                        .executeQueryWithTransaction({
+                          query:
+                            "SELECT finance_day_end_header_id, document_id, amount FROM finance_day_end_header \
+                            where from_screen = ? and document_id in (?)",
+                          values: [inputParam.ScreenCode, inputParam.salary_header_id],
+                          printQuery: true
+                        })
+                        .then(insert_result => {
+                          const insert_finance_detail = []
+
+                          insert_result.forEach(per_salary => {
+                            // console.log("per_salary", per_salary)
+                            const earnings = headerResult[1].filter(f => f.hims_f_salary_id === per_salary.document_id).map(m => {
+                              return { ...m, day_end_header_id: per_salary.finance_day_end_header_id }
+                            });
+                            const deduction = headerResult[2].filter(f => f.hims_f_salary_id === per_salary.document_id).map(m => {
+                              return { ...m, day_end_header_id: per_salary.finance_day_end_header_id }
+                            });
+                            const contribution = headerResult[3].filter(f => f.hims_f_salary_id === per_salary.document_id).map(m => {
+                              return { ...m, day_end_header_id: per_salary.finance_day_end_header_id }
+                            });
+                            // console.log("earnings", earnings)
+                            // console.log("deduction", deduction)
+                            // console.log("contribution", contribution)
+                            insert_finance_detail.push(
+                              ...earnings,
+                              ...deduction,
+                              ...contribution,
+                              {
+                                day_end_header_id: per_salary.finance_day_end_header_id,
+                                payment_date: new Date(),
+                                head_id: salary_pay_acc.head_id,
+                                child_id: salary_pay_acc.child_id,
+                                debit_amount: 0,
+                                payment_type: "CR",
+                                credit_amount: per_salary.amount
+                              })
+                          })
+
+                          // console.log("insert_finance_detail", insert_finance_detail)
+
+                          const IncludeValuess = [
+                            "day_end_header_id",
+                            "payment_date",
+                            "head_id",
+                            "child_id",
+                            "debit_amount",
+                            "payment_type",
+                            "credit_amount"
+                          ];
+
+                          const month = moment().format("M");
+                          const year = moment().format("YYYY");
+
+                          _mysql
+                            .executeQueryWithTransaction({
+                              query:
+                                "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                              values: insert_finance_detail,
+                              includeValues: IncludeValuess,
+                              bulkInsertOrUpdate: true,
+                              extraValues: {
+                                year: year,
+                                month: month,
+                                entered_date: new Date(),
+                                entered_by: req.userIdentity.algaeh_d_app_user_id,
+                                hospital_id: req.userIdentity.hospital_id
+                              },
+                              printQuery: true
+                            })
+                            .then(subResult => {
+                              _mysql.commitTransaction(() => {
+                                _mysql.releaseConnection();
+                                // req.records = subResult;
+                                next();
+                              });
+                            })
+                            .catch(error => {
+                              _mysql.rollBackTransaction(() => {
+                                next(error);
+                              });
+                            });
+                        })
+                        .catch(error => {
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
+                        });
+                    })
+                    .catch(error => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                      });
+                    });
+                })
+                .catch(error => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            } else {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                // req.records = org_data;
+                next();
+              });
+            }
+          })
+          .catch(error => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      } else {
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          next();
+        });
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
     }
   }
 };
