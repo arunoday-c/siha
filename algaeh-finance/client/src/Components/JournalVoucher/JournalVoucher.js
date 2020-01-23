@@ -104,33 +104,35 @@ export default function JournalVoucher() {
       return;
     }
 
-    if (payment.payment_mode) {
-      if (payment.payment_mode === "CHEQUE") {
-        if (!payment.ref_no || !payment.cheque_date) {
-          AlgaehMessagePop({
-            type: "error",
-            display: "Reference No and Cheque Date is mandatory"
-          });
-          setLoading(false);
-          return;
+    if (voucherType === "receipt" || voucherType === "payment") {
+      if (payment.payment_mode) {
+        if (payment.payment_mode === "CHEQUE") {
+          if (!payment.ref_no || !payment.cheque_date) {
+            AlgaehMessagePop({
+              type: "error",
+              display: "Reference No and Cheque Date is mandatory"
+            });
+            setLoading(false);
+            return;
+          }
+        } else {
+          if (payment.payment_mode !== "CASH" && !payment.ref_no) {
+            AlgaehMessagePop({
+              type: "error",
+              display: "Reference Number is mandatory"
+            });
+            setLoading(false);
+            return;
+          }
         }
       } else {
-        if (payment.payment_mode !== "CASH" && !payment.ref_no) {
-          AlgaehMessagePop({
-            type: "error",
-            display: "Reference Number is mandatory"
-          });
-          setLoading(false);
-          return;
-        }
+        AlgaehMessagePop({
+          type: "error",
+          display: "Please Select Any one of the payment mode"
+        });
+        setLoading(false);
+        return;
       }
-    } else {
-      AlgaehMessagePop({
-        type: "error",
-        display: "Please Select Any one of the payment mode"
-      });
-      setLoading(false);
-      return;
     }
 
     let costcenter = {};
