@@ -78,7 +78,13 @@ const ClearData = ($this, e) => {
     hims_f_terms_condition_id: null,
     selected_terms_conditions: "",
     comment_list: [],
-    qotation_status: "G"
+    qotation_status: "G",
+
+
+    service_name: "",
+    services_id: null,
+    service_frequency: null
+
   };
 
   $this.setState(IOputs);
