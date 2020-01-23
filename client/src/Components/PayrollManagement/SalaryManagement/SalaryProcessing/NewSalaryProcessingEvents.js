@@ -311,57 +311,10 @@ const closeSalaryComponents = ($this, e) => {
   });
 };
 
-
-
-const TestAccountingEntry = $this => {
-  swal({
-    title: "You want to finalize the salary?",
-    text:
-      "Please verify all the information before finalize, Once finalize can't be revert back.",
-    type: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Finalize",
-    confirmButtonColor: "#44b8bd",
-    cancelButtonColor: "#d33",
-    cancelButtonText: "Cancel"
-  }).then(willFinalize => {
-    if (willFinalize.value) {
-      AlgaehLoader({ show: true });
-      const { salaryprocess_header } = $this.state;
-
-      const salary_header_id = salaryprocess_header.map(o => {
-        return o.hims_f_salary_id;
-      });
-
-      let inputObj = {
-        salary_header_id: salary_header_id,
-        ScreenCode: getCookie("ScreenCode")
-      };
-
-      algaehApiCall({
-        uri: "/salary/generateAccountingEntry",
-        module: "hrManagement",
-        data: inputObj,
-        method: "PUT",
-        onSuccess: response => {
-          if (response.data.success) {
-            AlgaehLoader({ show: false });
-            swalMessage({
-              title: "Finalized Successfully.",
-              type: "success"
-            });
-          }
-        }
-      });
-    }
-  });
-};
-
 export {
   SalaryProcess,
   FinalizeSalary,
   ClearData,
   openSalaryComponents,
-  closeSalaryComponents,
-  TestAccountingEntry
+  closeSalaryComponents
 };

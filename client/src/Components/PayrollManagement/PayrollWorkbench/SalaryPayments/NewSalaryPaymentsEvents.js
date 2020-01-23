@@ -1,4 +1,4 @@
-import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
+import { swalMessage, algaehApiCall, getCookie } from "../../../../utils/algaehApiCall.js";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import moment from "moment";
@@ -103,7 +103,8 @@ const PaySalary = $this => {
   let inputObj = {
     year: $this.state.inputs.year,
     month: $this.state.inputs.month,
-    salary_payment: _salarypayment
+    salary_payment: _salarypayment,
+    ScreenCode: getCookie("ScreenCode")
   };
   AlgaehLoader({ show: true });
   const settings = { header: undefined, footer: undefined };
