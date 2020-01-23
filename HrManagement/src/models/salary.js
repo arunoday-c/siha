@@ -2557,6 +2557,7 @@ export default {
       req.on("end", () => {
         const _mysql = new algaehMysql();
         const inputParam = JSON.parse(buffer);
+        req.body = inputParam
 
         const _salaryHeader_id = _.map(inputParam.salary_payment, o => {
           return o.hims_f_salary_id;
@@ -2595,6 +2596,11 @@ export default {
                 printQuery: true
               })
               .then(miscellaneous_earning_deduction => {
+                req.connection = {
+                  connection: _mysql.connection,
+                  isTransactionConnection: _mysql.isTransactionConnection,
+                  pool: _mysql.pool
+                };
                 //Employee Payments Advance
                 _mysql
                   .executeQuery({
@@ -2680,11 +2686,11 @@ export default {
                                     printQuery: true
                                   })
                                   .then(update_loan_application => {
-                                    _mysql.commitTransaction(() => {
-                                      _mysql.releaseConnection();
-                                      req.records = update_loan_application;
-                                      next();
-                                    });
+                                    // _mysql.commitTransaction(() => {
+                                    //   _mysql.releaseConnection();
+                                    req.records = update_loan_application;
+                                    next();
+                                    // });
                                   })
                                   .catch(e => {
                                     next(e);
@@ -2697,11 +2703,11 @@ export default {
                               });
                             });
                         } else {
-                          _mysql.commitTransaction(() => {
-                            _mysql.releaseConnection();
-                            req.records = salary_loans;
-                            next();
-                          });
+                          // _mysql.commitTransaction(() => {
+                          //   _mysql.releaseConnection();
+                          req.records = salary_loans;
+                          next();
+                          // });
                         }
                       })
                       .catch(error => {
@@ -3406,7 +3412,7 @@ export default {
                 .executeQueryWithTransaction({
                   query: `select hims_f_salary_id as document_id, '${inputParam.ScreenCode}' as from_screen,
                   salary_number as document_number, salary_date as transaction_date,
-                  S.net_salary as amount, S.hospital_id, 'payment' as voucher_type, \
+                  S.net_salary as amount, S.hospital_id, 'journal' as voucher_type, \
                   concat('Salary for Employee: ', E.employee_code , ' in ' , year , '/' , monthname(concat('1999-',month,'-01'))) as narration
                   from hims_f_salary s 
                   inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
@@ -3544,6 +3550,169 @@ export default {
                             next(error);
                           });
                         });
+                    })
+                    .catch(error => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                      });
+                    });
+                })
+                .catch(error => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            } else {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                // req.records = org_data;
+                next();
+              });
+            }
+          })
+          .catch(error => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      } else {
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          next();
+        });
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  generateAccountingEntrySalaryPayment: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      if (req.flag != 1) {
+        let inputParam = req.body;
+
+        const _salaryHeader_id = _.map(inputParam.salary_payment, o => {
+          return o.hims_f_salary_id;
+        });
+
+
+        _mysql
+          .executeQueryWithTransaction({
+            query:
+              "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
+            select head_id, child_id from finance_accounts_maping where account in ('SAL_PYBLS');"
+          })
+          .then(result => {
+            // console.log("result", result)
+            const salary_pay_acc = result[1][0]
+            const org_data = result[0]
+
+            if (
+              org_data[0]["product_type"] == "HIMS_ERP" ||
+              org_data[0]["product_type"] == "FINANCE_ERP"
+            ) {
+              _mysql
+                .executeQueryWithTransaction({
+                  query: `SELECT hims_f_salary_id, salary_number, sum(net_salary) as salary_payable,
+                  concat('Salary Payment for: ', year , '/' , monthname(concat('1999-',month,'-01'))) as narration FROM hims_f_salary where hims_f_salary_id in (?);
+                  SELECT sum(S.net_salary) as salary_payable, E.company_bank_id, head_id, child_id FROM hims_f_salary s 
+                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
+                  inner join hims_d_bank B on B.hims_d_bank_id = E.company_bank_id 
+                  where hims_f_salary_id in (?) group by E.company_bank_id;`,
+                  values: [_salaryHeader_id, _salaryHeader_id],
+                  printQuery: true
+                })
+                .then(headerResult => {
+                  const laibility_amount = headerResult[0][0]
+                  const bank_booking = headerResult[1]
+                  _mysql
+                    .executeQueryWithTransaction({
+                      query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
+                        voucher_type, document_id, document_number, from_screen, \
+                        narration, hospital_id) VALUES (?,?,?,?,?,?,?,?)",
+                      values: [
+                        new Date(),
+                        laibility_amount.salary_payable,
+                        "payment",
+                        laibility_amount.hims_f_salary_id,
+                        laibility_amount.salary_number,
+                        inputParam.ScreenCode,
+                        "Salary Payment for " + laibility_amount.narration + laibility_amount.salary_payable,
+                        req.userIdentity.hospital_id
+                      ],
+                      printQuery: true
+                    })
+                    .then(day_end_header => {
+                      const insertSubDetail = []
+
+                      //Salary Payable Laibility Account
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: salary_pay_acc.head_id,
+                        child_id: salary_pay_acc.child_id,
+                        debit_amount: laibility_amount.salary_payable,
+                        payment_type: "DR",
+                        credit_amount: 0
+                      });
+
+                      bank_booking.forEach(per_salary => {
+                        //Booking salary To the bank
+                        insertSubDetail.push({
+                          payment_date: new Date(),
+                          head_id: per_salary.head_id,
+                          child_id: per_salary.child_id,
+                          debit_amount: 0,
+                          payment_type: "CR",
+                          credit_amount: per_salary.salary_payable
+                        });
+                      })
+
+                      const IncludeValuess = [
+                        "payment_date",
+                        "head_id",
+                        "child_id",
+                        "debit_amount",
+                        "payment_type",
+                        "credit_amount"
+                      ];
+
+                      const month = moment().format("M");
+                      const year = moment().format("YYYY");
+
+                      _mysql
+                        .executeQueryWithTransaction({
+                          query:
+                            "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                          values: insertSubDetail,
+                          includeValues: IncludeValuess,
+                          bulkInsertOrUpdate: true,
+                          extraValues: {
+                            day_end_header_id: day_end_header.insertId,
+                            year: year,
+                            month: month,
+                            entered_date: new Date(),
+                            entered_by: req.userIdentity.algaeh_d_app_user_id,
+                            hospital_id: req.userIdentity.hospital_id
+                          },
+                          printQuery: true
+                        })
+                        .then(subResult => {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            // req.records = subResult;
+                            next();
+                          });
+                        })
+                        .catch(error => {
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
+                        });
+
                     })
                     .catch(error => {
                       _mysql.rollBackTransaction(() => {

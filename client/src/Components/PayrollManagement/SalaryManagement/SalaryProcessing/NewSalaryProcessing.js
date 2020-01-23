@@ -9,8 +9,7 @@ import {
   FinalizeSalary,
   ClearData,
   openSalaryComponents,
-  closeSalaryComponents,
-  TestAccountingEntry
+  closeSalaryComponents
 } from "./NewSalaryProcessingEvents.js";
 import SalariesComponents from "./SalariesComponents";
 
@@ -332,15 +331,6 @@ class NewSalaryProcessing extends Component {
                   />
                 </button>
 
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={TestAccountingEntry.bind(this, this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Test", returnText: true }}
-                  />
-                </button>
               </div>
             </div>
           </div>
