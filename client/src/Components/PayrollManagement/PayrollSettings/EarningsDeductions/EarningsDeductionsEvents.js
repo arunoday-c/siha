@@ -23,9 +23,26 @@ const onEditHandler = ($this, row) => {
 
     edit_data.selected_account = row.child_id !== null ? row.head_id + "-" + row.child_id : null;
     edit_data.selected_li_account = row.li_child_id !== null ? row.li_head_id + "-" + row.li_child_id : null;
+
+    if (row.component_category === "A") {
+        getFinanceHeaders($this, 1)
+    } else {
+        getFinanceHeaders($this, 5)
+    }
     $this.setState({
         ...$this.state,
         ...edit_data
+    });
+}
+
+const compDownHandler = ($this, value) => {
+    if (value.value === "A") {
+        getFinanceHeaders($this, 1)
+    } else {
+        getFinanceHeaders($this, 5)
+    }
+    $this.setState({
+        [value.name]: value.value
     });
 }
 
@@ -226,10 +243,10 @@ const getEarningDeductions = ($this) => {
     });
 }
 
-const getFinanceHeaders = ($this) => {
+const getFinanceHeaders = ($this, head_id) => {
     algaehApiCall({
         uri: "/finance/getAccountHeadsForDropdown",
-        data: { finance_account_head_id: 5 },
+        data: { finance_account_head_id: head_id },
         method: "GET",
         module: "finance",
         onSuccess: response => {
@@ -240,6 +257,9 @@ const getFinanceHeaders = ($this) => {
             }
         }
     });
+}
+
+const getFinanceLibilityHeaders = ($this) => {
 
     algaehApiCall({
         uri: "/finance/getAccountHeadsForDropdown",
@@ -389,7 +409,9 @@ export {
     clearState,
     getEarningDeductions,
     getFinanceHeaders,
-    addEarningsDeductions
+    addEarningsDeductions,
+    getFinanceLibilityHeaders,
+    compDownHandler
 };
 
 

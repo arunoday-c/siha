@@ -32,7 +32,9 @@ import {
   clearState,
   getEarningDeductions,
   getFinanceHeaders,
-  addEarningsDeductions
+  addEarningsDeductions,
+  compDownHandler,
+  getFinanceLibilityHeaders
 } from "./EarningsDeductionsEvents"
 
 class EarningsDeductions extends Component {
@@ -80,7 +82,8 @@ class EarningsDeductions extends Component {
     getEarningDeductions(this);
 
     if (this.FIN_Active === true) {
-      getFinanceHeaders(this);
+      getFinanceHeaders(this, 5);
+      getFinanceLibilityHeaders(this);
     }
   }
 
@@ -413,7 +416,7 @@ class EarningsDeductions extends Component {
                         valueField: "value",
                         data: GlobalVariables.COMPONENT_CATEGORY
                       },
-                      onChange: dropDownHandler.bind(this, this)
+                      onChange: compDownHandler.bind(this, this)
                     }}
                   />
                   <AlagehAutoComplete
