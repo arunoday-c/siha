@@ -1,0 +1,11 @@
+.ant-table-footer {
+  padding: 0;
+  .ant-table-tfoot {
+    tr {
+      height: 15px;
+      td {
+        border: 1px solid #000;
+      }
+    }
+  }
+}

@@ -1,15 +1,40 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Row, Col } from "antd";
-
+import "./antTableCustomStyle.scss";
+import { AlgaehDataGrid } from "algaeh-react-components";
 // import { Button } from "algaeh-react-components";
 import ReactToPrint from "react-to-print";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 export default function ArAging({ style, result, footer, layout }) {
   const createPrintObject = useRef(undefined);
-  //if (result.length === 0) return null;
-  // if (Object.keys(data).length === 0) {
-  //   return null;
-  // } else {
+
+  const [arAgingData, setData] = useState([]);
+  const [arAgingDataFooter, setFooterData] = useState({});
+  useEffect(function() {
+    algaehApiCall({
+      uri: `/financeReports/getAccountReceivableAging`,
+      method: "GET",
+      module: "finance",
+      onSuccess: response => {
+        if (response.data.success === true) {
+          setData(response.data.result.data);
+          const footer = response.data.result;
+          setFooterData({
+            todays_total: footer.todays_total,
+            thirty_days_total: footer.thirty_days_total,
+            sixty_days_total: footer.sixty_days_total,
+            ninety_days_total: footer.ninety_days_total,
+            above_ninety_days_total: footer.above_ninety_days_total,
+            grand_total: footer.grand_total
+          });
+        }
+      }
+      // onCatch: error => {
+      //   reject(error);
+      // }
+    });
+  }, []);
   return (
     <>
       <ReactToPrint
@@ -31,91 +56,85 @@ export default function ArAging({ style, result, footer, layout }) {
         </div>
 
         <div className="reportTableStyle" style={{ border: "none" }}>
-          <table className="ar_ap_ReportStyle">
-            <thead>
-              <tr>
-                <th valign="middle" width="40%">
-                  Customer
-                </th>
-                <th valign="middle">0-30</th>
-                <th valign="middle">31-60</th>
-                <th valign="middle">61-90</th>
-                <th valign="middle">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="textFld">Customer Name</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-              </tr>{" "}
-              <tr>
-                <td class="textFld">Customer Name</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-              </tr>{" "}
-              <tr>
-                <td class="textFld">Customer Name</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-              </tr>{" "}
-              <tr>
-                <td class="textFld">Customer Name</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-              </tr>{" "}
-              <tr>
-                <td class="textFld">Customer Name</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-              </tr>{" "}
-              <tr>
-                <td class="textFld">Customer Name</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-              </tr>{" "}
-              <tr>
-                <td class="textFld">Customer Name</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-              </tr>{" "}
-              <tr>
-                <td class="textFld">Customer Name</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-              </tr>{" "}
-              <tr>
-                <td class="textFld">Customer Name</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-              </tr>
-              <tr className="footerTotal">
-                <td class="textFld">Total</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-                <td class="numberFld">SAR 0.00</td>
-              </tr>
-            </tbody>
-          </table>
+          <AlgaehDataGrid
+            columns={[
+              {
+                key: "customer",
+                title: "Customer Name",
+                sortable: true
+              },
+              {
+                key: "todays_amount",
+                title: "Current",
+                sortable: false
+              },
+              {
+                key: "thirty_days_amount",
+                title: "1-30 Days",
+                sortable: false
+              },
+              {
+                key: "sixty_days_amount",
+                title: "31-60 Days",
+                sortable: false
+              },
+              {
+                key: "ninety_days_amount",
+                title: "61-90 Days",
+                sortable: false
+              },
+              {
+                key: "above_ninety_days_amount",
+                title: "Over 90 Days",
+                sortable: false
+              },
+              {
+                key: "balance",
+                title: "Balance",
+                sortable: false
+              }
+            ]}
+            loading={false}
+            isEditable={false}
+            height="40vh"
+            dataSource={{
+              data: arAgingData
+            }}
+            // xaxis={1500}
+            events={{}}
+            others={{
+              footer: () => {
+                return (
+                  //   debugger;
+                  <table>
+                    <tfoot className="ant-table-tfoot">
+                      <tr className="ant-table-row">
+                        <td>Total</td>
+                        <td style={{ textAlign: "center" }}>
+                          {arAgingDataFooter.todays_total}
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          {arAgingDataFooter.thirty_days_total}
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          {arAgingDataFooter.sixty_days_total}
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          {arAgingDataFooter.ninety_days_total}
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          {arAgingDataFooter.above_ninety_days_total}
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          {arAgingDataFooter.grand_total}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                );
+              }
+            }}
+          />
         </div>
       </div>
     </>
