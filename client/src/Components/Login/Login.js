@@ -10,6 +10,7 @@ import {
   algaehApiCall,
   setCookie,
   swalMessage,
+  getCookie,
   // getLocalIP,
   collectIP
 } from "../../utils/algaehApiCall.js";
@@ -29,8 +30,9 @@ import { from } from "linq";
 
 function Login(props) {
   const { history } = props;
+  const remebermeUser = getCookie("userName");
   const [login, setLogin] = useState({
-    username: "",
+    username: remebermeUser,
     password: "",
     token: "",
     item_id: "",
@@ -40,7 +42,9 @@ function Login(props) {
     happyBirthDay: "",
     loading: true
   });
-
+  const [remberMe, setRememberMe] = useState(
+    remebermeUser !== null && remebermeUser !== "" ? true : false
+  );
   const [loginLoad, setLoginLoad] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   let userRef = useRef(undefined);
@@ -55,7 +59,7 @@ function Login(props) {
       const cookie = cookies[i];
       const eqPos = cookie.indexOf("=");
       const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-      if (String(name).trim() !== "authToken")
+      if (String(name).trim() !== "userName")
         document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
     }
     setCookie("ScreenName", "Login", 30);
@@ -63,12 +67,17 @@ function Login(props) {
     (() => {
       getTokenDetals({
         loading: enabled => {
-          setLogin({ ...login, loading: enabled });
+          setLogin(data => {
+            return { ...data, loading: enabled };
+          });
         },
         setHospitals: list => {
           setLogin({ ...login, loading: false, hospitalList: list });
         }
       });
+      if (login.username !== null && login.username !== "") {
+        checkUserActive();
+      }
     })();
   }, []);
 
@@ -98,12 +107,7 @@ function Login(props) {
               identity: identity
             })
           );
-          console.log("dataSent", {
-            username: username,
-            password: value,
-            item_id: item_id,
-            identity: identity
-          });
+
           algaehApiCall({
             uri: "/apiAuth/relogin",
             data: { post: dataSent },
@@ -119,25 +123,6 @@ function Login(props) {
                     .then(() => {
                       setLoginLoad(false);
                       setItem("userName", records.user_display_name);
-
-                      // setCookie("userName", records.user_display_name);
-                      // setCookie("authToken", records.token);
-                      // userToken;
-                      // sessionStorage.setItem(
-                      //   "keyData",
-                      //   AlgaehCloseContainer(JSON.stringify(records.keyData))
-                      // );
-                      // sessionStorage.setItem(
-                      //   "CurrencyDetail",
-                      //   AlgaehCloseContainer(
-                      //     JSON.stringify(records.hospitalDetails)
-                      //   )
-                      // );
-
-                      // sessionStorage.setItem(
-                      //   "appRole",
-                      //   records.app_d_app_roles_id
-                      // );
                       history.push(
                         `/${
                           records.page_to_redirect === null
@@ -145,7 +130,6 @@ function Login(props) {
                             : records.page_to_redirect
                         }`
                       );
-                      // history.push("/Dashboard");
                     })
                     .catch(error => {
                       setLoginLoad(false);
@@ -156,7 +140,6 @@ function Login(props) {
                     });
                 });
               } else {
-                //  popUpMessage(message);
                 swalMessage({ type: "warning", title: message });
               }
             },
@@ -206,11 +189,16 @@ function Login(props) {
     setLoginLoad(true);
     checkUser({ userId: login.username })
       .then(result => {
-        setLoginLoad(false);
-        setShowPassword(true);
+        // if (passwordRef.current !== undefined) passwordRef.current.focus();
         setLogin(data => {
-          return { ...data, ...result, item_id: result.hospital_id };
+          return {
+            username: login.username,
+            item_id: result.hospital_id,
+            ...result
+          };
         });
+        setShowPassword(true);
+        setLoginLoad(false);
       })
       .catch(error => {
         setLoginLoad(false);
@@ -253,6 +241,24 @@ function Login(props) {
         swalMessage({ type: "error", title: error });
       });
   }
+  function onHitEnter(e) {
+    if (e.key === "Enter") {
+      checkUserActive();
+    }
+  }
+  function onChangeRememberMe(e) {
+    const checked = e.target.checked;
+    setRememberMe(checked);
+    if (checked === true) {
+      setCookie("userName", login.username, 100);
+    } else {
+      document.cookie = "userName=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
+  }
+  function loginDifferenctUser() {
+    document.cookie = "userName=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    window.location.reload(true);
+  }
   return (
     <div className="login bg">
       <Spin
@@ -286,107 +292,6 @@ function Login(props) {
                         paddingBottom: 15
                       }}
                     >
-                      {/* <form
-                        onSubmit={e => {
-                          e.preventDefault();
-                          setLoginLoad(true);
-                          const { username, password, item_id } = login;
-
-                          if (username === "") {
-                            userRef.focus();
-                            setLoginLoad(false);
-                            return;
-                          } else if (password === "") {
-                            passwordRef.focus();
-                            setLoginLoad(false);
-                            return;
-                          } else if (item_id === "") {
-                            document.getElementsByName("item_id")[0].focus();
-                            setLoginLoad(false);
-                            return;
-                          }
-
-                          getLocalIP(identity => {
-                            const dataSent = encrypter(
-                              JSON.stringify({
-                                username: username,
-                                password: password,
-                                item_id: item_id,
-                                identity: identity
-                              })
-                            );
-
-                            algaehApiCall({
-                              uri: "/apiAuth/authUser",
-                              data: { post: dataSent },
-                              onSuccess: response => {
-                                const {
-                                  success,
-                                  records,
-                                  message
-                                } = response.data;
-                                if (success === true) {
-                                  setCookie("authToken", records.token);
-                                  setItem("token", records.token);
-                                  getActiveModulesForUser()
-                                    .then(() => {
-                                      setLoginLoad(false);
-
-                                      setCookie(
-                                        "userName",
-                                        records.user_display_name
-                                      );
-
-                                      setItem(
-                                        "userName",
-                                        records.user_display_name
-                                      );
-                                      sessionStorage.setItem(
-                                        "keyData",
-                                        AlgaehCloseContainer(
-                                          JSON.stringify(records.keyData)
-                                        )
-                                      );
-                                      sessionStorage.setItem(
-                                        "CurrencyDetail",
-                                        AlgaehCloseContainer(
-                                          JSON.stringify(
-                                            records.hospitalDetails
-                                          )
-                                        )
-                                      );
-
-                                      sessionStorage.setItem(
-                                        "appRole",
-                                        records.app_d_app_roles_id
-                                      );
-                                      history.push(
-                                        `/${records.page_to_redirect}`
-                                      ); //("/Dashboard");
-                                    })
-                                    .catch(error => {
-                                      setLoginLoad(false);
-                                      swalMessage({
-                                        type: "error",
-                                        title: error
-                                      });
-                                    });
-                                } else {
-                                  popUpMessage(message);
-                                }
-                              },
-                              onCatch: e => {
-                                setLoginLoad(false);
-                                logout();
-                                swalMessage({ type: "error", title: e });
-                              }
-                            });
-                          });
-                        }}
-                        className="row"
-                        autoComplete="none"
-                      > */}
-
                       {showPassword === true ? (
                         <div className="col-12 passwordSec">
                           <div className="row">
@@ -419,61 +324,31 @@ function Login(props) {
                                   type: "password",
                                   tabIndex: "2",
                                   placeholder: "Enter Password",
-                                  ref: c => {
-                                    passwordRef = c;
-                                  }
+                                  ref: passwordRef
                                 }
                               }}
                             />
                             <br />
-                            {/* <AlagehAutoComplete
-                              div={{ className: "col-12 form-group" }}
-                              selector={{
-                                name: "item_id",
-                                className: "select-fld",
-                                value: login.item_id,
-                                autoComplete: "off",
-                                dataSource: {
-                                  textField: "hospital_name",
-                                  valueField: "hims_d_hospital_id",
-                                  data: login.hospitalList
-                                },
-                                placeholder: "Select a Branch",
-                                others: {
-                                  tabIndex: "3"
-                                },
-                                onChange: selector => {
-                                  setCookie(
-                                    "HospitalName",
-                                    selector.selected.hospital_name
-                                  );
-                                  setCookie("HospitalId", selector.value);
-                                  setCookie(
-                                    "algaeh_api_auth_id",
-                                    selector.selected.algaeh_api_auth_id
-                                  );
+                            <span
+                              className="diffUser"
+                              onClick={loginDifferenctUser}
+                            >
+                              Different User Login?
+                            </span>
+                            <br />
 
-                                  setLogin({
-                                    ...login,
-                                    item_id: selector.value
-                                  });
-                                },
-                                onClear: () => {
-                                  setLogin({ ...login, item_id: "" });
-                                }
-                              }}
-                            /> */}
                             <div className="col-12 form-group">
                               <div className="checkbox">
                                 <label>
                                   <span>
-                                    {" "}
                                     <input
                                       type="checkbox"
                                       value="remember-me"
+                                      onChange={onChangeRememberMe}
+                                      checked={remberMe}
                                     />
+                                    <b> Remember me</b>
                                   </span>
-                                  <b> Remember me</b>
                                 </label>
                               </div>
                               <button
@@ -511,11 +386,10 @@ function Login(props) {
                                   }
                                 },
                                 others: {
-                                  tabIndex: "1",
+                                  tabIndex: "0",
                                   placeholder: "Enter Username",
-                                  ref: c => {
-                                    userRef = c;
-                                  }
+                                  ref: userRef,
+                                  onKeyDown: onHitEnter
                                 }
                               }}
                             />
@@ -532,7 +406,7 @@ function Login(props) {
                                     : true
                                 }
                                 type="submit"
-                                tabIndex="2"
+                                tabIndex="1"
                                 onClick={checkUserActive}
                               >
                                 Next
@@ -541,7 +415,6 @@ function Login(props) {
                           </div>
                         </div>
                       )}
-                      {/* </form> */}
                     </div>
                   </div>
                 </div>
