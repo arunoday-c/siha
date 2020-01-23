@@ -362,11 +362,15 @@ export default {
                               deductionOutput.final_deduction_amount;
 
                             //Contribution -- Start
+                            console.log("empResult[i]employee_id", results[2])
+
                             const _contrubutions = _.filter(results[2], f => {
                               return (
                                 f.employee_id == empResult[i]["employee_id"]
                               );
                             });
+                            console.log("_contrubutions", _contrubutions)
+
                             getContrubutionsComponents({
                               contribution: _contrubutions,
                               empResult: empResult[i],
@@ -375,6 +379,7 @@ export default {
                               next: next,
                               decimal_places: req.userIdentity.decimal_places
                             }).then(contributionOutput => {
+                              console.log("contributionOutput", contributionOutput)
                               current_contribution_amt_array =
                                 contributionOutput.current_contribution_amt_array;
                               final_contribution_amount =
@@ -3413,7 +3418,7 @@ export default {
                   query: `select hims_f_salary_id as document_id, '${inputParam.ScreenCode}' as from_screen,
                   salary_number as document_number, salary_date as transaction_date,
                   S.net_salary as amount, S.hospital_id, 'journal' as voucher_type, \
-                  concat('Salary for Employee: ', E.employee_code , ' in ' , year , '/' , monthname(concat('1999-',month,'-01'))) as narration
+                  concat('Salary for Employee: ', E.employee_code , '/' , E.full_name , ' in ' , year , '/' , monthname(concat('1999-',month,'-01'))) as narration
                   from hims_f_salary s 
                   inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
                   where hims_f_salary_id in (?);
@@ -3429,8 +3434,21 @@ export default {
                   select hims_f_salary_id, curDate() payment_date, SC.amount as debit_amount, ED.head_id, ED.child_id, 'DR' as payment_type,0 as credit_amount from hims_f_salary s 
                   left join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id
                   inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id 
+                  where hims_f_salary_id in(?);
+                  select hims_f_salary_id, curDate() payment_date, SC.amount as credit_amount, ED.li_head_id as  head_id, 
+                  ED.li_child_id as child_id, 'CR' as payment_type,0 as debit_amount from hims_f_salary s 
+                  left join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id
+                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id 
+                  where hims_f_salary_id in(?);
+                  select hims_f_salary_id, curDate() payment_date, SL.loan_due_amount as credit_amount, L.head_id, 
+                  L.child_id, 'CR' as payment_type, 0 as debit_amount from hims_f_salary s 
+                  left join hims_f_salary_loans SL on SL.salary_header_id = S.hims_f_salary_id
+                  left join hims_f_loan_application LA on LA.hims_f_loan_application_id = SL.loan_application_id
+                  inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id 
                   where hims_f_salary_id in(?);`,
                   values: [
+                    inputParam.salary_header_id,
+                    inputParam.salary_header_id,
                     inputParam.salary_header_id,
                     inputParam.salary_header_id,
                     inputParam.salary_header_id,
@@ -3483,13 +3501,21 @@ export default {
                             const contribution = headerResult[3].filter(f => f.hims_f_salary_id === per_salary.document_id).map(m => {
                               return { ...m, day_end_header_id: per_salary.finance_day_end_header_id }
                             });
-                            // console.log("earnings", earnings)
-                            // console.log("deduction", deduction)
-                            // console.log("contribution", contribution)
+
+                            const lib_acc_contribution = headerResult[4].filter(f => f.hims_f_salary_id === per_salary.document_id).map(m => {
+                              return { ...m, day_end_header_id: per_salary.finance_day_end_header_id }
+                            });
+
+                            const loan_data = headerResult[5].filter(f => f.hims_f_salary_id === per_salary.document_id).map(m => {
+                              return { ...m, day_end_header_id: per_salary.finance_day_end_header_id }
+                            });
+
                             insert_finance_detail.push(
                               ...earnings,
                               ...deduction,
                               ...contribution,
+                              ...lib_acc_contribution,
+                              ...loan_data,
                               {
                                 day_end_header_id: per_salary.finance_day_end_header_id,
                                 payment_date: new Date(),

@@ -1,5 +1,5 @@
 // import Enumerable from "linq";
-import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
+import { swalMessage, algaehApiCall, getCookie } from "../../../../utils/algaehApiCall.js";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import {
@@ -406,7 +406,7 @@ const ProessEmpPayment = ($this, e) => {
     querySelector: "data-validate='processData'",
     onSuccess: () => {
       AlgaehLoader({ show: true });
-
+      $this.state.ScreenCode = getCookie("ScreenCode")
       algaehApiCall({
         uri: "/employeepayments/InsertEmployeePayment",
         module: "hrManagement",

@@ -333,7 +333,14 @@ export default {
               ]
             })
             .then(result => {
-              utilities.logger().log("payment_type: ", inputParam.payment_type);
+              req.body.payment_application_code = payment_application_code
+              req.body.hims_f_employee_payments_id = result.insertId
+              req.connection = {
+                connection: _mysql.connection,
+                isTransactionConnection: _mysql.isTransactionConnection,
+                pool: _mysql.pool
+              };
+              // utilities.logger().log("payment_type: ", inputParam.payment_type);
               if (inputParam.payment_type == "AD") {
                 _mysql
                   .executeQuery({
@@ -375,11 +382,11 @@ export default {
                     let result = {
                       payment_application_code: payment_application_code
                     };
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = result;
-                      next();
-                    });
+                    // _mysql.commitTransaction(() => {
+                    //   _mysql.releaseConnection();
+                    req.records = result;
+                    next();
+                    // });
                   })
                   .catch(error => {
                     next(error);
@@ -777,10 +784,11 @@ export default {
   CancelEmployeePayment: (req, res, next) => {
     try {
       const _mysql = new algaehMysql();
-      let inputParam = { ...req.body };
+
+      let inputParam = req.body;
 
       _mysql
-        .executeQuery({
+        .executeQueryWithTransaction({
           query:
             "UPDATE `hims_f_employee_payments` SET cancel='Y', cancel_by=?, cancel_date=? WHERE \
           hims_f_employee_payments_id=?",
@@ -792,6 +800,12 @@ export default {
           printQuery: true
         })
         .then(result => {
+          req.body.payment_cancel = "Y"
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection: _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
           if (inputParam.payment_type == "AD") {
             _mysql
               .executeQuery({
@@ -824,11 +838,11 @@ export default {
                 ]
               })
               .then(LoanResult => {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = LoanResult;
-                  next();
-                });
+                // _mysql.commitTransaction(() => {
+                //   _mysql.releaseConnection();
+                req.records = LoanResult;
+                next();
+                // });
               });
           } else if (inputParam.payment_type == "EN") {
             _mysql
@@ -1288,5 +1302,220 @@ export default {
     } catch (e) {
       next(e);
     }
-  }
+  },
+
+  generateAccountingEntry: (req, res, next) => {
+
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      let inputParam = req.body;
+      let str_bank_qry = "select 1"
+      if (inputParam.bank_id !== null) {
+        str_bank_qry = _mysql.mysqlQueryFormat(
+          "select head_id, child_id from hims_d_bank where hims_d_bank_id=?;",
+          [inputParam.bank_id]
+        );
+      }
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;" + str_bank_qry,
+        })
+        .then(result => {
+          const org_data = result[0]
+          const bank_acc = result[1][0]
+
+          if (
+            org_data[0]["product_type"] == "HIMS_ERP" ||
+            org_data[0]["product_type"] == "FINANCE_ERP"
+          ) {
+            // inputParam.payment_mode,
+            let strQuery = ""
+            if (inputParam.payment_type === "LN") {
+              strQuery += _mysql.mysqlQueryFormat(
+                "select head_id, child_id, loan_amount as pay_amount, employee_code, full_name from hims_f_loan_application LA \
+                inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id \
+                inner join hims_d_employee E on E.hims_d_employee_id = LA.employee_id \
+                where hims_f_loan_application_id = ?;",
+                [inputParam.employee_loan_id]
+              );
+            }
+            _mysql
+              .executeQueryWithTransaction({
+                query: strQuery,
+                printQuery: true
+              })
+              .then(headerResult => {
+                let _header_narattion = ""
+
+                if (inputParam.payment_type === "LN") {
+                  _header_narattion = "Loan Payment " + headerResult[0].loan_description + " For " +
+                    headerResult[0].employee_code + "/" + headerResult[0].full_name;
+                }
+
+                _mysql
+                  .executeQueryWithTransaction({
+                    query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
+                    voucher_type, document_id, document_number, from_screen, \
+                    narration, hospital_id) VALUES (?,?,?,?,?,?,?,?)",
+                    values: [
+                      new Date(),
+                      inputParam.payment_amount,
+                      "payment",
+                      inputParam.hims_f_employee_payments_id,
+                      inputParam.payment_application_code,
+                      inputParam.ScreenCode,
+                      _header_narattion,
+                      req.userIdentity.hospital_id
+                    ],
+                    printQuery: true
+                  })
+                  .then(day_end_header => {
+                    const insertSubDetail = []
+
+                    console.log("payment_cancel", inputParam.payment_cancel)
+
+                    if (inputParam.payment_mode === "CS") {
+                      //Cash in Hand Entry                      
+                      if (inputParam.payment_cancel === "Y") {
+                        insertSubDetail.push({
+                          payment_date: new Date(),
+                          head_id: bank_acc.head_id,
+                          child_id: bank_acc.child_id,
+                          debit_amount: headerResult[0].pay_amount,
+                          payment_type: "DR",
+                          credit_amount: 0
+                        });
+                      } else {
+                        insertSubDetail.push({
+                          payment_date: new Date(),
+                          head_id: bank_acc.head_id,
+                          child_id: bank_acc.child_id,
+                          debit_amount: 0,
+                          payment_type: "CR",
+                          credit_amount: headerResult[0].pay_amount
+                        });
+                      }
+                    } else if (inputParam.payment_mode === "CH") {
+                      //Bank Entry
+                      if (inputParam.payment_cancel === "Y") {
+                        insertSubDetail.push({
+                          payment_date: new Date(),
+                          head_id: bank_acc.head_id,
+                          child_id: bank_acc.child_id,
+                          debit_amount: headerResult[0].pay_amount,
+                          payment_type: "DR",
+                          credit_amount: 0
+                        });
+                      } else {
+                        insertSubDetail.push({
+                          payment_date: new Date(),
+                          head_id: bank_acc.head_id,
+                          child_id: bank_acc.child_id,
+                          debit_amount: 0,
+                          payment_type: "CR",
+                          credit_amount: headerResult[0].pay_amount
+                        });
+                      }
+
+                    }
+
+                    //Asset Loan Entry
+                    if (inputParam.payment_cancel === "Y") {
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: headerResult[0].head_id,
+                        child_id: headerResult[0].child_id,
+                        debit_amount: 0,
+                        payment_type: "CR",
+                        credit_amount: headerResult[0].pay_amount
+                      });
+                    } else {
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: headerResult[0].head_id,
+                        child_id: headerResult[0].child_id,
+                        debit_amount: headerResult[0].pay_amount,
+                        payment_type: "DR",
+                        credit_amount: 0
+                      });
+                    }
+
+
+
+
+                    const IncludeValuess = [
+                      "payment_date",
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "payment_type",
+                      "credit_amount"
+                    ];
+
+                    const month = moment().format("M");
+                    const year = moment().format("YYYY");
+
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                        values: insertSubDetail,
+                        includeValues: IncludeValuess,
+                        bulkInsertOrUpdate: true,
+                        extraValues: {
+                          day_end_header_id: day_end_header.insertId,
+                          year: year,
+                          month: month,
+                          entered_date: new Date(),
+                          entered_by: req.userIdentity.algaeh_d_app_user_id,
+                          hospital_id: req.userIdentity.hospital_id
+                        },
+                        printQuery: true
+                      })
+                      .then(subResult => {
+                        _mysql.commitTransaction(() => {
+                          _mysql.releaseConnection();
+                          // req.records = subResult;
+                          next();
+                        });
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              // req.records = org_data;
+              next();
+            });
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
 };

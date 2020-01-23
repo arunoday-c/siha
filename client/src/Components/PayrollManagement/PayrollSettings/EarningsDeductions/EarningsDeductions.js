@@ -67,9 +67,13 @@ class EarningsDeductions extends Component {
       hims_d_earning_deduction_id: null,
       annual_salary_comp: false,
       finance_account: [],
+      laibility_finance_account: [],
       child_id: null,
       head_id: null,
-      selected_account: null
+      li_child_id: null,
+      li_head_id: null,
+      selected_account: null,
+      selected_li_account: null
       // selected_collections: []
     };
     this.selected_collections = [];
@@ -786,40 +790,81 @@ class EarningsDeductions extends Component {
                     }}
                   />
 
-                  <AlgaehTreeSearch
-                    div={{ className: "col-3 form-group" }}
-                    label={{
-                      forceLabel: "OP CONTROL A/C",
-                      isImp: true,
-                      align: "ltr"
-                    }}
-                    tree={{
-                      treeDefaultExpandAll: true,
-                      onChange: value => {
+                  {this.FIN_Active ?
+                    <div className="col-8">
+                      <div className="row">
+                        <AlgaehTreeSearch
+                          div={{ className: "col-6 form-group" }}
+                          label={{
+                            forceLabel: "G/L Account",
+                            isImp: true,
+                            align: "ltr"
+                          }}
+                          tree={{
+                            treeDefaultExpandAll: true,
+                            onChange: value => {
 
-                        this.setState({
-                          selected_account: value
-                        })
+                              this.setState({
+                                selected_account: value
+                              })
 
-                      },
-                      data: this.state.finance_account || [],
-                      textField: "label",
-                      valueField: node => {
-                        if (node["leafnode"] === "Y") {
-                          return (
-                            node["head_id"] +
-                            "-" +
-                            node["finance_account_child_id"]
-                          );
-                        } else {
-                          return node["finance_account_head_id"];
-                        }
-                      },
-                      value: this.state.selected_account
-                    }}
-                  />
+                            },
+                            data: this.state.finance_account || [],
+                            textField: "label",
+                            valueField: node => {
+                              if (node["leafnode"] === "Y") {
+                                return (
+                                  node["head_id"] +
+                                  "-" +
+                                  node["finance_account_child_id"]
+                                );
+                              } else {
+                                return node["finance_account_head_id"];
+                              }
+                            },
+                            value: this.state.selected_account
+                          }}
+                        />
+
+                        {this.state.component_category === "C" ?
+                          <AlgaehTreeSearch
+                            div={{ className: "col-6 form-group" }}
+                            label={{
+                              forceLabel: "Laibility Account",
+                              isImp: true,
+                              align: "ltr"
+                            }}
+                            tree={{
+                              treeDefaultExpandAll: true,
+                              onChange: value => {
+                                this.setState({
+                                  selected_li_account: value
+                                })
+
+                              },
+                              data: this.state.laibility_finance_account || [],
+                              textField: "label",
+                              valueField: node => {
+                                if (node["leafnode"] === "Y") {
+                                  return (
+                                    node["head_id"] +
+                                    "-" +
+                                    node["finance_account_child_id"]
+                                  );
+                                } else {
+                                  return node["finance_account_head_id"];
+                                }
+                              },
+                              value: this.state.selected_li_account
+                            }}
+                          />
+                          : null}
+                      </div>
+                    </div> : null}
+
+
                   <div
-                    className="col form-group"
+                    className="col-12 form-group"
                     style={{ paddingTop: 19, textAlign: "right" }}
                   >
                     <button

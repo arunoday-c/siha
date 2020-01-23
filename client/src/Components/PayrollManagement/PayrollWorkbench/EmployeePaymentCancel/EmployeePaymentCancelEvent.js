@@ -1,4 +1,4 @@
-import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
+import { swalMessage, algaehApiCall, getCookie } from "../../../../utils/algaehApiCall.js";
 import swal from "sweetalert2";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
@@ -55,6 +55,7 @@ const CancelPayment = ($this, row) => {
     cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
+      row.ScreenCode = getCookie("ScreenCode")
       algaehApiCall({
         uri: "/employeepayments/CancelEmployeePayment",
         data: row,

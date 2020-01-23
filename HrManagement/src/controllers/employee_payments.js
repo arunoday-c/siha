@@ -13,7 +13,8 @@ const {
   getFinalSettleTopayment,
   getLeaveSettleTopayment,
   getEmployeeLeaveSalary,
-  updateEmployeeLeaveSalary
+  updateEmployeeLeaveSalary,
+  generateAccountingEntry
 } = empPaymentModels;
 
 export default () => {
@@ -83,6 +84,7 @@ export default () => {
   api.post(
     "/InsertEmployeePayment",
     InsertEmployeePayment,
+    generateAccountingEntry,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
@@ -91,12 +93,16 @@ export default () => {
     }
   );
 
-  api.put("/CancelEmployeePayment", CancelEmployeePayment, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      result: req.records
+  api.put(
+    "/CancelEmployeePayment",
+    CancelEmployeePayment,
+    generateAccountingEntry,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
     });
-  });
 
   api.get(
     "/getEmployeeLeaveSalary",

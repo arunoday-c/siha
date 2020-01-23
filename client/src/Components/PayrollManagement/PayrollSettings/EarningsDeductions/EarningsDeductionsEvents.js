@@ -20,7 +20,9 @@ const onEditHandler = ($this, row) => {
     edit_data.annual_salary_comp =
         row.annual_salary_comp === "Y" ? true : false;
 
+
     edit_data.selected_account = row.child_id !== null ? row.head_id + "-" + row.child_id : null;
+    edit_data.selected_li_account = row.li_child_id !== null ? row.li_head_id + "-" + row.li_child_id : null;
     $this.setState({
         ...$this.state,
         ...edit_data
@@ -201,7 +203,10 @@ const clearState = ($this) => {
         on_edit: false,
         child_id: null,
         head_id: null,
-        selected_account: null
+        li_child_id: null,
+        li_head_id: null,
+        selected_account: null,
+        selected_li_account: null
     });
 }
 
@@ -235,6 +240,20 @@ const getFinanceHeaders = ($this) => {
             }
         }
     });
+
+    algaehApiCall({
+        uri: "/finance/getAccountHeadsForDropdown",
+        data: { finance_account_head_id: 2 },
+        method: "GET",
+        module: "finance",
+        onSuccess: response => {
+            if (response.data.success === true) {
+                $this.setState({
+                    laibility_finance_account: response.data.result
+                });
+            }
+        }
+    });
 }
 
 
@@ -243,9 +262,30 @@ const addEarningsDeductions = ($this) => {
         alertTypeIcon: "warning",
         pageState: $this,
         onSuccess: () => {
+
+            if ($this.FIN_Active) {
+                if ($this.state.selected_account === null || $this.state.selected_account === undefined) {
+                    swalMessage({
+                        title: "Please Select G/L Account",
+                        type: "warning"
+                    });
+                    return
+                }
+
+                if ($this.state.component_category === "C" &&
+                    ($this.state.selected_li_account === null || $this.state.selected_li_account === undefined)) {
+                    swalMessage({
+                        title: "Please Select G/L Account",
+                        type: "warning"
+                    });
+                    return
+                }
+            }
             let gl_selected_account = $this.state.selected_account !== null ?
                 $this.state.selected_account.split("-") : []
 
+            let li_selected_account = $this.state.selected_li_account !== null ?
+                $this.state.selected_li_account.split("-") : []
             let inputObj = {
                 miscellaneous_component: $this.state.miscellaneous_component
                     ? "Y"
@@ -281,8 +321,10 @@ const addEarningsDeductions = ($this) => {
                 print_order_by: $this.state.print_order_by,
                 annual_salary_comp:
                     $this.state.annual_salary_comp === true ? "Y" : "N",
-                child_id: gl_selected_account.length > 0 ? gl_selected_account[1] : null,
-                head_id: gl_selected_account.length > 0 ? gl_selected_account[0] : null
+                child_id: gl_selected_account.length > 0 ? gl_selected_account[1] : undefined,
+                head_id: gl_selected_account.length > 0 ? gl_selected_account[0] : undefined,
+                li_child_id: li_selected_account.length > 0 ? li_selected_account[1] : undefined,
+                li_head_id: li_selected_account.length > 0 ? li_selected_account[0] : undefined
             }
 
 
