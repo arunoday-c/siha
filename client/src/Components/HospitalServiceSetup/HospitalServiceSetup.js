@@ -367,69 +367,72 @@ class HospitalServiceSetup extends Component {
                       fieldName: "service_code",
                       label: (
                         <AlgaehLabel label={{ fieldName: "service_code" }} />
-                      )
+                      ),
+                      others: {
+                        maxWidth: 200
+                      }
                     },
-                    {
-                      fieldName: "cpt_p_code",
-                      label: <AlgaehLabel label={{ fieldName: "cpt_code" }} />
-                    },
+                    // {
+                    //   fieldName: "cpt_p_code",
+                    //   label: <AlgaehLabel label={{ fieldName: "cpt_code" }} />
+                    // },
                     {
                       fieldName: "service_name",
                       label: (
                         <AlgaehLabel label={{ fieldName: "service_name" }} />
                       )
                     },
-                    {
-                      fieldName: "sub_department_id",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "sub_department_id" }}
-                        />
-                      ),
-                      displayTemplate: row => {
-                        let display =
-                          this.props.subdepartments === undefined
-                            ? []
-                            : this.props.subdepartments.filter(
-                                f =>
-                                  f.hims_d_sub_department_id ===
-                                  row.sub_department_id
-                              );
+                    // {
+                    //   fieldName: "sub_department_id",
+                    //   label: (
+                    //     <AlgaehLabel
+                    //       label={{ fieldName: "sub_department_id" }}
+                    //     />
+                    //   ),
+                    //   displayTemplate: row => {
+                    //     let display =
+                    //       this.props.subdepartments === undefined
+                    //         ? []
+                    //         : this.props.subdepartments.filter(
+                    //             f =>
+                    //               f.hims_d_sub_department_id ===
+                    //               row.sub_department_id
+                    //           );
 
-                        return (
-                          <span>
-                            {display !== null && display.length !== 0
-                              ? this.state.selectedLang === "en"
-                                ? display[0].sub_department_name
-                                : display[0].arabic_sub_department_name
-                              : ""}
-                          </span>
-                        );
-                      }
-                    },
-                    {
-                      fieldName: "hospital_id",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "hospital_id" }} />
-                      ),
-                      displayTemplate: row => {
-                        let display =
-                          this.props.hospitaldetails === undefined
-                            ? []
-                            : this.props.hospitaldetails.filter(
-                                f => f.hims_d_hospital_id === row.hospital_id
-                              );
-                        return (
-                          <span>
-                            {display !== null && display.length !== 0
-                              ? this.state.selectedLang === "en"
-                                ? display[0].hospital_name
-                                : display[0].arabic_hospital_name
-                              : ""}
-                          </span>
-                        );
-                      }
-                    },
+                    //     return (
+                    //       <span>
+                    //         {display !== null && display.length !== 0
+                    //           ? this.state.selectedLang === "en"
+                    //             ? display[0].sub_department_name
+                    //             : display[0].arabic_sub_department_name
+                    //           : ""}
+                    //       </span>
+                    //     );
+                    //   }
+                    // },
+                    // {
+                    //   fieldName: "hospital_id",
+                    //   label: (
+                    //     <AlgaehLabel label={{ fieldName: "hospital_id" }} />
+                    //   ),
+                    //   displayTemplate: row => {
+                    //     let display =
+                    //       this.props.hospitaldetails === undefined
+                    //         ? []
+                    //         : this.props.hospitaldetails.filter(
+                    //             f => f.hims_d_hospital_id === row.hospital_id
+                    //           );
+                    //     return (
+                    //       <span>
+                    //         {display !== null && display.length !== 0
+                    //           ? this.state.selectedLang === "en"
+                    //             ? display[0].hospital_name
+                    //             : display[0].arabic_hospital_name
+                    //           : ""}
+                    //       </span>
+                    //     );
+                    //   }
+                    // },
                     {
                       fieldName: "service_type_id",
                       label: (
@@ -454,13 +457,19 @@ class HospitalServiceSetup extends Component {
                               : ""}
                           </span>
                         );
+                      },
+                      others: {
+                        maxWidth: 150
                       }
                     },
                     {
                       fieldName: "standard_fee",
                       label: (
                         <AlgaehLabel label={{ fieldName: "standard_fee" }} />
-                      )
+                      ),
+                      others: {
+                        maxWidth: 150
+                      }
                     },
                     {
                       fieldName: "vat_applicable",
@@ -469,13 +478,19 @@ class HospitalServiceSetup extends Component {
                       ),
                       displayTemplate: row => {
                         return row.vat_applicable === "Y" ? "Yes" : "No";
+                      },
+                      others: {
+                        maxWidth: 150
                       }
                     },
                     {
                       fieldName: "vat_percent",
                       label: (
                         <AlgaehLabel label={{ fieldName: "vat_percent" }} />
-                      )
+                      ),
+                      others: {
+                        maxWidth: 150
+                      }
                     }
                   ]}
                   keyId="service_code"
@@ -521,8 +536,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(HospitalServiceSetup)
+  connect(mapStateToProps, mapDispatchToProps)(HospitalServiceSetup)
 );

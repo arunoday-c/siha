@@ -54,14 +54,13 @@ class HospitalServices extends PureComponent {
       direct_call: true,
       PhyService: false,
       physiotherapy_service: "N",
-      cashPatientAccount:"",
-      insurancePatientAccount:"",
-      head_id:null,
-      child_id:null,
-      insurance_head_id:null,
-      insurance_child_id:null
+      cashPatientAccount: "",
+      insurancePatientAccount: "",
+      head_id: null,
+      child_id: null,
+      insurance_head_id: null,
+      insurance_child_id: null
     };
-
   }
 
   initCall() {
@@ -110,8 +109,12 @@ class HospitalServices extends PureComponent {
         IOputs.PhyService = false;
       }
 
-      this.setState({ ...this.state, ...IOputs,cashPatientAccount:IOputs.cash_child_account,
-        insurancePatientAccount:IOputs.insurance_child_account  });
+      this.setState({
+        ...this.state,
+        ...IOputs,
+        cashPatientAccount: IOputs.cash_child_account,
+        insurancePatientAccount: IOputs.insurance_child_account
+      });
     } else {
       clearData(this, this);
     }
@@ -160,92 +163,12 @@ class HospitalServices extends PureComponent {
             {/* <div className="popupInner"> */}
             <div
               className="col-12 popRightDiv margin-top-15 margin-bottom-15"
-              data-validate="HospitalServices" style={{minHeight:"72vh"}}
+              data-validate="HospitalServices"
+              style={{ minHeight: "72vh" }}
             >
               <div className="row">
-                <AlagehFormGroup
-                  div={{ className: "col-6 form-group" }}
-                  label={{
-                    fieldName: "service_code",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "service_code",
-                    value: this.state.service_code,
-                    events: {
-                      onChange: texthandle.bind(this, this)
-                    },
-                    others: {
-                      tabIndex: "1",
-                      placeholder: this.state.service_code_placeHolder
-                    }
-                  }}
-                />
-
-                <AlagehFormGroup
-                  div={{ className: "col-6 form-group" }}
-                  label={{
-                    fieldName: "service_name",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "service_name",
-                    value: this.state.service_name,
-                    events: {
-                      onChange: texthandle.bind(this, this)
-                    }
-                  }}
-                />
-
-                <AlagehFormGroup
-                  div={{ className: "col-7 form-group" }}
-                  label={{
-                    fieldName: "cpt_code"
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "cpt_code",
-                    value: this.state.cpt_code_data,
-                    events: {
-                      onChange: texthandle.bind(this, this)
-                    },
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
-
-                <div className="col-1 form-group">
-                  <i
-                    className="fas fa-search"
-                    onClick={CptCodesSearch.bind(this, this)}
-                    style={{ marginTop: 25, fontSize: "1.4rem" }}
-                  />
-                </div>
-
-                <div
-                  className="col-3 customCheckbox"
-                  style={{ border: "none", marginTop: "22px" }}
-                >
-                  <label className="checkbox">
-                    <input
-                      type="checkbox"
-                      name="physiotherapy_service"
-                      value="Y"
-                      checked={this.state.PhyService}
-                      onChange={PhyThryAppilicable.bind(this, this)}
-                    />
-                    <span>
-                      <AlgaehLabel
-                        label={{ forceLabel: "Physiotherapy Service" }}
-                      />
-                    </span>
-                  </label>
-                </div>
                 <AlagehAutoComplete
-                  div={{ className: "col-6 form-group" }}
+                  div={{ className: "col-3 form-group mandatory" }}
                   label={{
                     fieldName: "hospital_id",
                     isImp: true
@@ -265,29 +188,42 @@ class HospitalServices extends PureComponent {
                     onChange: texthandle.bind(this, this)
                   }}
                 />
-                <AlagehAutoComplete
-                  div={{ className: "col-6 form-group" }}
+                <AlagehFormGroup
+                  div={{ className: "col-3 form-group mandatory" }}
                   label={{
-                    fieldName: "sub_department_id"
+                    fieldName: "service_code",
+                    isImp: true
                   }}
-                  selector={{
-                    name: "sub_department_id",
-                    className: "select-fld",
-                    value: this.state.sub_department_id,
-                    dataSource: {
-                      textField:
-                        this.state.selectedLang === "en"
-                          ? "sub_department_name"
-                          : "arabic_sub_department_name",
-                      valueField: "hims_d_sub_department_id",
-                      data: this.props.subdepartments
+                  textBox={{
+                    className: "txt-fld",
+                    name: "service_code",
+                    value: this.state.service_code,
+                    events: {
+                      onChange: texthandle.bind(this, this)
                     },
-                    onChange: texthandle.bind(this, this)
+                    others: {
+                      tabIndex: "1",
+                      placeholder: this.state.service_code_placeHolder
+                    }
                   }}
                 />
-
+                <AlagehFormGroup
+                  div={{ className: "col-6 form-group mandatory" }}
+                  label={{
+                    fieldName: "service_name",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "service_name",
+                    value: this.state.service_name,
+                    events: {
+                      onChange: texthandle.bind(this, this)
+                    }
+                  }}
+                />
                 <AlagehAutoComplete
-                  div={{ className: "col-6 form-group" }}
+                  div={{ className: "col-3 form-group mandatory" }}
                   label={{
                     fieldName: "service_type_id",
                     isImp: true
@@ -308,7 +244,7 @@ class HospitalServices extends PureComponent {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col-6 form-group" }}
+                  div={{ className: "col form-group mandatory" }}
                   label={{
                     fieldName: "standard_fee",
                     isImp: true
@@ -322,55 +258,103 @@ class HospitalServices extends PureComponent {
                       onChange: texthandle.bind(this, this)
                     }
                   }}
+                />{" "}
+                <div className="col-3">
+                  <label>Is Physiotherapy Service</label>
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        name="physiotherapy_service"
+                        value="Y"
+                      />
+                      <span>Yes</span>
+                    </label>
+                  </div>
+                </div>
+                <div className="col-4 globalSearchCntr">
+                  <AlgaehLabel label={{ forceLabel: "Search CPT COde" }} />
+                  <h6 onClick={CptCodesSearch.bind(this, this)}>
+                    {this.state.cpt_code_data
+                      ? this.state.cpt_code_data
+                      : "Select CPT Code"}
+                    <i className="fas fa-search fa-lg"></i>
+                  </h6>
+                </div>
+                <AlagehAutoComplete
+                  div={{ className: "col-6 form-group" }}
+                  label={{
+                    fieldName: "sub_department_id"
+                  }}
+                  selector={{
+                    name: "sub_department_id",
+                    className: "select-fld",
+                    value: this.state.sub_department_id,
+                    dataSource: {
+                      textField:
+                        this.state.selectedLang === "en"
+                          ? "sub_department_name"
+                          : "arabic_sub_department_name",
+                      valueField: "hims_d_sub_department_id",
+                      data: this.props.subdepartments
+                    },
+                    onChange: texthandle.bind(this, this)
+                  }}
                 />
-
+                <div className="col-3">
+                  <label>Vat Applicable</label>
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        name="vat_applicable"
+                        value="Y"
+                        checked={this.state.Applicable}
+                        onChange={VatAppilicable.bind(this, this)}
+                      />
+                      <span>Yes</span>
+                    </label>
+                  </div>
+                </div>
+                <AlagehFormGroup
+                  div={{
+                    className: this.state.Applicable
+                      ? "col-3 mandatory"
+                      : "col-3"
+                  }}
+                  label={{
+                    fieldName: "vat_percent",
+                    isImp: this.state.Applicable
+                  }}
+                  textBox={{
+                    decimal: { allowNegative: false },
+                    className: "txt-fld",
+                    name: "vat_percent",
+                    value: this.state.vat_percent,
+                    events: {
+                      onChange: numberEventHandaler.bind(this, this)
+                    },
+                    others: {
+                      disabled: !this.state.Applicable
+                    }
+                  }}
+                />
                 <div className="col-12 form-group">
                   <div className="row">
-                    <div
-                      className="col-6 customCheckbox"
-                      style={{ paddingTop: "10px" }}
-                    >
-                      <label className="checkbox inline">
-                        <input
-                          type="checkbox"
-                          name="vat_applicable"
-                          value="Y"
-                          checked={this.state.Applicable}
-                          onChange={VatAppilicable.bind(this, this)}
-                        />
-                        <span>
-                          <AlgaehLabel
-                            label={{ fieldName: "vat_applicable" }}
-                          />
-                        </span>
-                      </label>
-                    </div>
-                    <AlagehFormGroup
-                      div={{ className: "col-6" }}
-                      label={{
-                        fieldName: "vat_percent"
-                      }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        className: "txt-fld",
-                        name: "vat_percent",
-                        value: this.state.vat_percent,
-                        events: {
-                          onChange: numberEventHandaler.bind(this, this)
-                        },
-                        others: {
-                          disabled:
-                            this.state.Applicable === true ? false : true
-                        }
-                      }}
-                    />
                     <AccountDropDown
-                        labelText="Account mapping cash patient"
-                        accountHeadeId={4}
+                      labelText="Account mapping cash patient"
+                      accountHeadeId={4}
                       value={this.state.cashPatientAccount}
                       onChange={(currentNode, selectedNode) => {
-                        const {head_id,finance_account_child_id,label} = currentNode;
-                        this.setState({cashPatientAccount:label,...{head_id,child_id:finance_account_child_id}});
+                        const {
+                          head_id,
+                          finance_account_child_id,
+                          label
+                        } = currentNode;
+                        this.setState({
+                          cashPatientAccount: label,
+                          ...{ head_id, child_id: finance_account_child_id }
+                        });
                       }}
                       others={{
                         data: [],
@@ -383,22 +367,32 @@ class HospitalServices extends PureComponent {
                       }}
                     />
                     <AccountDropDown
-                        accountHeadeId={4}
-                        labelText="Account mapping insurance patient"
-                        value={this.state.insurancePatientAccount}
-                        onChange={(currentNode, selectedNode) => {
-                          const {head_id,finance_account_child_id,label} = currentNode;
-                          this.setState({insurancePatientAccount:label,...{insurance_head_id:head_id,insurance_child_id:finance_account_child_id}})
-                        }}
-                        others={{
-                          data: [],
-                          texts: {
-                            placeholder: "Please select account",
-                            noMatches: "No records found",
-                            label: "Visa"
-                          },
-                          mode: "radioSelect"
-                        }}
+                      accountHeadeId={4}
+                      labelText="Account mapping insurance patient"
+                      value={this.state.insurancePatientAccount}
+                      onChange={(currentNode, selectedNode) => {
+                        const {
+                          head_id,
+                          finance_account_child_id,
+                          label
+                        } = currentNode;
+                        this.setState({
+                          insurancePatientAccount: label,
+                          ...{
+                            insurance_head_id: head_id,
+                            insurance_child_id: finance_account_child_id
+                          }
+                        });
+                      }}
+                      others={{
+                        data: [],
+                        texts: {
+                          placeholder: "Please select account",
+                          noMatches: "No records found",
+                          label: "Visa"
+                        },
+                        mode: "radioSelect"
+                      }}
                     />
                   </div>
                 </div>
@@ -476,8 +470,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(HospitalServices)
+  connect(mapStateToProps, mapDispatchToProps)(HospitalServices)
 );
