@@ -727,6 +727,12 @@ ul.ul-legend {
       }
     }
   }
+  .btn-primary .btn-circle {
+    i {
+      color: $color-white;
+      line-height: 22px;
+    }
+  }
   .btn-green {
     cursor: pointer;
     .active {
