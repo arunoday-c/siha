@@ -122,7 +122,7 @@ const InvoiceSearch = ($this, e) => {
         method: "GET",
         onSuccess: response => {
           if (response.data.success) {
-            debugger
+
             let data = response.data.records;
 
             data.saveEnable = false;
@@ -335,7 +335,7 @@ const PostSalesReturnEntry = $this => {
   }
 
   InputObj.ScreenCode = getCookie("ScreenCode")
-  debugger
+
   algaehApiCall({
     uri: "/SalesReturnEntry/postSalesReturnEntry",
     module: "sales",

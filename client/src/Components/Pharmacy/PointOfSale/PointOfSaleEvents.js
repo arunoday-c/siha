@@ -494,7 +494,7 @@ const SavePosEnrty = $this => {
     delete posdata.patInsuranceFrontImg;
     delete posdata.patInsuranceBackImg;
 
-    debugger
+
     algaehApiCall({
       uri: callUri,
       module: "pharmacy",
@@ -665,7 +665,7 @@ const PostPosEntry = $this => {
           const _patInsuranceBackImg = $this.state.patInsuranceBackImg;
           delete posdata.patInsuranceFrontImg;
           delete posdata.patInsuranceBackImg;
-          debugger
+
           algaehApiCall({
             uri: callUri,
             data: posdata,

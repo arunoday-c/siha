@@ -120,7 +120,7 @@ const AddItems = ($this, context) => {
     git_qty: $this.state.quantity,
     ack_quantity: 0
   };
-  debugger
+
   if (Item_Exists !== undefined) {
     let item_index = stock_detail.indexOf(Item_Exists);
 
@@ -462,7 +462,6 @@ const AddSelectedBatches = ($this, context) => {
       type: "warning"
     });
   } else {
-    debugger
     if (context !== null) {
       let saveEnable = true;
       let _inventory_stock_detail = $this.state.inventory_stock_detail;

@@ -146,7 +146,7 @@ const SaveContract = $this => {
 
 const getCtrlCode = ($this, docNumber, row) => {
     AlgaehLoader({ show: true });
-    debugger
+
     algaehApiCall({
         uri: "/ContractManagement/getContractManagement",
         module: "sales",

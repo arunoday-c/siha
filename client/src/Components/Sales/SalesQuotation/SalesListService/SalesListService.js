@@ -28,9 +28,6 @@ class SalesListService extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectBatch: false,
-            selectBatchButton: true,
-
             addItemButton: true,
             service_name: "",
             addedItem: true,

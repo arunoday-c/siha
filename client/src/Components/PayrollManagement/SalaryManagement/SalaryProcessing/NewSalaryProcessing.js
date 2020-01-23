@@ -9,7 +9,8 @@ import {
   FinalizeSalary,
   ClearData,
   openSalaryComponents,
-  closeSalaryComponents
+  closeSalaryComponents,
+  TestAccountingEntry
 } from "./NewSalaryProcessingEvents.js";
 import SalariesComponents from "./SalariesComponents";
 
@@ -130,10 +131,10 @@ class NewSalaryProcessing extends Component {
                                       Not Finalized
                                     </span>
                                   ) : (
-                                    <span className="badge badge-success">
-                                      Finalized
+                                      <span className="badge badge-success">
+                                        Finalized
                                     </span>
-                                  );
+                                    );
                                 },
                                 others: {
                                   minWidth: 100
@@ -155,10 +156,10 @@ class NewSalaryProcessing extends Component {
                                       Unpaid
                                     </span>
                                   ) : (
-                                    <span className="badge badge-success">
-                                      Paid
+                                      <span className="badge badge-success">
+                                        Paid
                                     </span>
-                                  );
+                                    );
                                 },
                                 others: {
                                   minWidth: 100
@@ -291,9 +292,9 @@ class NewSalaryProcessing extends Component {
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 20 }}
                             events={{
-                              onEdit: () => {},
-                              onDelete: () => {},
-                              onDone: () => {}
+                              onEdit: () => { },
+                              onDelete: () => { },
+                              onDone: () => { }
                             }}
                           />
                         </div>
@@ -328,6 +329,16 @@ class NewSalaryProcessing extends Component {
                 >
                   <AlgaehLabel
                     label={{ forceLabel: "Clear", returnText: true }}
+                  />
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={TestAccountingEntry.bind(this, this)}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Test", returnText: true }}
                   />
                 </button>
               </div>

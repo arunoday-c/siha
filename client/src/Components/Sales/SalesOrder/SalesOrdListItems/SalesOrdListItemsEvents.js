@@ -477,7 +477,7 @@ const onchangegridcol = ($this, context, row, e) => {
 };
 
 const qtyonchangegridcol = ($this, context, row, e) => {
-    debugger
+
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     let _index = $this.state.sales_order_items.indexOf(row);
@@ -493,7 +493,7 @@ const qtyonchangegridcol = ($this, context, row, e) => {
             type: "warning"
         });
     } else {
-        debugger
+
         if (
             $this.props.sales_order_number !== undefined &&
             $this.props.sales_order_number.length !== 0

@@ -121,7 +121,7 @@ const numberchangeTexts = ($this, context, e) => {
       type: "warning"
     });
   } else {
-    debugger
+
     let extended_price = 0;
     if (parseFloat(value) > 0 && parseFloat($this.state.unit_price) > 0) {
       extended_price = (parseFloat(value) * parseFloat($this.state.unit_price)).toFixed(

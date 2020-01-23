@@ -542,7 +542,7 @@ const PostPOReturnEntry = $this => {
   }
 
   InputObj.ScreenCode = getCookie("ScreenCode")
-  debugger
+
   algaehApiCall({
     uri: "/PurchaseReturnEntry/postPurchaseOrderEntry",
     module: "procurement",

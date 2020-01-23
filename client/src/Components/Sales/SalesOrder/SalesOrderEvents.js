@@ -94,7 +94,7 @@ const customerTexthandle = ($this, e) => {
             method: "GET",
             data: { customer_id: value },
             onSuccess: response => {
-                debugger
+
                 if (response.data.success) {
                     $this.setState({
                         [name]: value,

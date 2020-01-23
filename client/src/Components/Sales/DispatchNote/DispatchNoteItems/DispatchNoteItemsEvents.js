@@ -145,7 +145,7 @@ const AddSelectedBatches = ($this, context) => {
             type: "warning"
         });
     } else {
-        debugger
+
         if (context !== null) {
             let saveEnable = true;
             let _inventory_stock_detail = $this.state.inventory_stock_detail;

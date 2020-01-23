@@ -209,7 +209,7 @@ const SalesOrderSearch = ($this, e) => {
         onRowSelect: row => {
             AlgaehLoader({ show: true });
             if ($this.state.sales_invoice_mode === "I") {
-                debugger
+
                 algaehApiCall({
                     uri: "/SalesInvoice/getDispatchForInvoice",
                     module: "sales",

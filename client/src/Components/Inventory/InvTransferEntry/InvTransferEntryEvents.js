@@ -167,8 +167,6 @@ const SaveTransferEntry = $this => {
   InputObj.transaction_date = moment(InputObj.transfer_date, "YYYY-MM-DD").format("YYYY-MM-DD");
   InputObj.git_location_type = gitLoaction_Exists.location_type;
   InputObj.git_location_id = gitLoaction_Exists.hims_d_inventory_location_id;
-
-  debugger
   for (let i = 0; i < InputObj.inventory_stock_detail.length; i++) {
     InputObj.inventory_stock_detail[i].location_id =
       InputObj.from_location_id;
