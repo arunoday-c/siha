@@ -180,21 +180,21 @@ class BusinessSetup extends Component {
                   />
                 }
               </li>
-              <CheckElement permission={"businesssetup-bankmaster"}>
-                <li
-                  algaehtabs={"BankMaster"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Bank Master"
-                      }}
-                    />
-                  }
-                </li>
-              </CheckElement>
+              {/* <CheckElement permission={"businesssetup-bankmaster"}> */}
+              <li
+                algaehtabs={"BankMaster"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Bank Master"
+                    }}
+                  />
+                }
+              </li>
+              {/* </CheckElement> */}
               <li
                 algaehtabs={"CompanyAccount"}
                 className={"nav-item tab-button"}
