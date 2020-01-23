@@ -6,26 +6,26 @@ import "./PurchaseReturnEntry.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import MyContext from "../../../utils/MyContext";
 import {
-    AlgaehLabel,
-    AlagehFormGroup,
-    AlagehAutoComplete
+  AlgaehLabel,
+  AlagehFormGroup,
+  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import {
-    vendortexthandle,
-    loctexthandle,
-    texthandle,
-    poforhandle,
-    ReceiptSearch,
-    ClearData,
-    SavePOReutrnEnrty,
-    getCtrlCode,
-    PostPOReturnEntry,
-    getVendorMaster,
-    generatePOReceipt,
-    generatePOReceiptNoPrice
+  vendortexthandle,
+  loctexthandle,
+  texthandle,
+  poforhandle,
+  ReceiptSearch,
+  ClearData,
+  SavePOReutrnEnrty,
+  getCtrlCode,
+  PostPOReturnEntry,
+  getVendorMaster,
+  generatePOReceipt,
+  generatePOReceiptNoPrice
 } from "./PurchaseReturnEntryEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POReturnEntry from "../../../Models/POReturnEntry";
@@ -33,230 +33,231 @@ import Enumerable from "linq";
 import POReturnItemList from "./POReturnItemList/POReturnItemList";
 
 class PurchaseReturnEntry extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-        getVendorMaster(this, this);
+  constructor(props) {
+    super(props);
+    this.state = {};
+    getVendorMaster(this, this);
+  }
+
+  UNSAFE_componentWillMount() {
+    let IOputs = POReturnEntry.inputParam();
+    this.setState(IOputs);
+  }
+
+  componentDidMount() {
+    if (
+      this.props.purchase_return_number !== undefined &&
+      this.props.purchase_return_number.length !== 0
+    ) {
+      getCtrlCode(this, this.props.purchase_return_number);
     }
+  }
 
-    UNSAFE_componentWillMount() {
-        let IOputs = POReturnEntry.inputParam();
-        this.setState(IOputs);
-    }
+  render() {
+    const _mainStore =
+      this.state.po_return_from === null
+        ? []
+        : Enumerable.from(this.props.polocations)
+            .where(w => w.location_type === "WH")
+            .toArray();
 
-    componentDidMount() {
-        if (
-            this.props.purchase_return_number !== undefined &&
-            this.props.purchase_return_number.length !== 0
-        ) {
-            getCtrlCode(this, this.props.purchase_return_number);
-        }
-    }
+    const class_finder =
+      this.state.dataFinder === true
+        ? " disableFinder"
+        : this.state.ReqData === false
+        ? ""
+        : " disableFinder";
 
-    render() {
-        const _mainStore =
-            this.state.po_return_from === null
-                ? []
-                : Enumerable.from(this.props.polocations)
-                    .where(w => w.location_type === "WH")
-                    .toArray();
-
-        const class_finder = this.state.dataFinder === true
-            ? " disableFinder"
-            : this.state.ReqData === false
-                ? ""
-                : " disableFinder"
-
-        return (
-            <div>
-                <BreadCrumb
-                    title={
-                        <AlgaehLabel
-                            label={{ forceLabel: "Purchase Return Entry", align: "ltr" }}
-                        />
-                    }
-                    breadStyle={this.props.breadStyle}
-                    pageNavPath={[
-                        {
-                            pageName: (
-                                <AlgaehLabel
-                                    label={{
-                                        forceLabel: "Home",
-                                        align: "ltr"
-                                    }}
-                                />
-                            )
-                        },
-                        {
-                            pageName: (
-                                <AlgaehLabel
-                                    label={{ forceLabel: "Purchase Return Entry", align: "ltr" }}
-                                />
-                            )
-                        }
-                    ]}
-                    soptlightSearch={{
-                        label: (
-                            <AlgaehLabel
-                                label={{ forceLabel: "PO Return Number", returnText: true }}
-                            />
-                        ),
-                        value: this.state.purchase_return_number,
-                        selectValue: "purchase_return_number",
-                        events: {
-                            onChange: getCtrlCode.bind(this, this)
-                        },
-                        jsonFile: {
-                            fileName: "spotlightSearch",
-                            fieldName: "Purchase.POReturnEntry"
-                        },
-                        searchName: "POReturnEntry"
-                    }}
-                    userArea={
-                        <div className="row">
-                            <div className="col">
-                                <AlgaehLabel
-                                    label={{
-                                        forceLabel: "PO Return Date"
-                                    }}
-                                />
-                                <h6>
-                                    {this.state.return_date
-                                        ? moment(this.state.return_date).format(Options.dateFormat)
-                                        : Options.dateFormat}
-                                </h6>
-                            </div>
-                        </div>
-                    }
-                    printArea={
-                        this.state.hims_f_procurement_po_header_id !== null
-                            ? {
-                                menuitems: [
-                                    {
-                                        label: "Receipt for Internal",
-                                        events: {
-                                            onClick: () => {
-                                                generatePOReceipt(this.state);
-                                            }
-                                        }
-                                    },
-                                    {
-                                        label: "Receipt for Vendor",
-                                        events: {
-                                            onClick: () => {
-                                                generatePOReceiptNoPrice(this.state);
-                                            }
-                                        }
-                                    }
-                                ]
-                            }
-                            : ""
-                    }
-                    selectedLang={this.state.selectedLang}
+    return (
+      <div>
+        <BreadCrumb
+          title={
+            <AlgaehLabel
+              label={{ forceLabel: "Purchase Return Entry", align: "ltr" }}
+            />
+          }
+          breadStyle={this.props.breadStyle}
+          pageNavPath={[
+            {
+              pageName: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Home",
+                    align: "ltr"
+                  }}
                 />
-                <div className="hims-purchase-order-entry">
-                    <div
-                        className="row inner-top-search"
-                        style={{ marginTop: "75px", paddingBottom: "10px" }}
-                    >
-                        <div className="col-lg-12">
-                            <div className="row">
-                                <AlagehAutoComplete
-                                    div={{ className: "col-2" }}
-                                    label={{ forceLabel: "PO Return For" }}
-                                    selector={{
-                                        name: "po_return_from",
-                                        className: "select-fld",
-                                        value: this.state.po_return_from,
-                                        dataSource: {
-                                            textField: "name",
-                                            valueField: "value",
-                                            data: GlobalVariables.PO_FROM
-                                        },
-                                        others: {
-                                            disabled: this.state.dataExitst
-                                        },
-                                        onChange: poforhandle.bind(this, this),
-                                        onClear: () => {
-                                            this.setState({
-                                                po_return_from: null,
-                                                ReqData: true,
-                                                pharmcy_location_id: null,
-                                                inventory_location_id: null
-                                            });
-                                        }
-                                    }}
-                                />
-                                <AlagehAutoComplete
-                                    div={{ className: "col-2" }}
-                                    label={{ forceLabel: "Location Code" }}
-                                    selector={{
-                                        name:
-                                            this.state.po_return_from === "PHR"
-                                                ? "pharmcy_location_id"
-                                                : "inventory_location_id",
-                                        className: "select-fld",
-                                        value:
-                                            this.state.po_return_from === "PHR"
-                                                ? this.state.pharmcy_location_id
-                                                : this.state.inventory_location_id,
-                                        dataSource: {
-                                            textField: "location_description",
-                                            valueField:
-                                                this.state.po_return_from === "PHR"
-                                                    ? "hims_d_pharmacy_location_id"
-                                                    : "hims_d_inventory_location_id",
-                                            data: _mainStore
-                                        },
-                                        others: {
-                                            disabled: this.state.dataExitst
-                                        },
-                                        onChange: loctexthandle.bind(this, this),
-                                        onClear: () => {
-                                            this.setState({
-                                                location_description: null,
-                                                pharmcy_location_id: null,
-                                                inventory_location_id: null
-                                            });
-                                        }
-                                    }}
-                                />
+              )
+            },
+            {
+              pageName: (
+                <AlgaehLabel
+                  label={{ forceLabel: "Purchase Return Entry", align: "ltr" }}
+                />
+              )
+            }
+          ]}
+          soptlightSearch={{
+            label: (
+              <AlgaehLabel
+                label={{ forceLabel: "PO Return Number", returnText: true }}
+              />
+            ),
+            value: this.state.purchase_return_number,
+            selectValue: "purchase_return_number",
+            events: {
+              onChange: getCtrlCode.bind(this, this)
+            },
+            jsonFile: {
+              fileName: "spotlightSearch",
+              fieldName: "Purchase.POReturnEntry"
+            },
+            searchName: "POReturnEntry"
+          }}
+          userArea={
+            <div className="row">
+              <div className="col">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "PO Return Date"
+                  }}
+                />
+                <h6>
+                  {this.state.return_date
+                    ? moment(this.state.return_date).format(Options.dateFormat)
+                    : Options.dateFormat}
+                </h6>
+              </div>
+            </div>
+          }
+          printArea={
+            this.state.hims_f_procurement_po_header_id !== null
+              ? {
+                  menuitems: [
+                    {
+                      label: "Receipt for Internal",
+                      events: {
+                        onClick: () => {
+                          generatePOReceipt(this.state);
+                        }
+                      }
+                    },
+                    {
+                      label: "Receipt for Vendor",
+                      events: {
+                        onClick: () => {
+                          generatePOReceiptNoPrice(this.state);
+                        }
+                      }
+                    }
+                  ]
+                }
+              : ""
+          }
+          selectedLang={this.state.selectedLang}
+        />
+        <div className="hims-purchase-order-entry">
+          <div
+            className="row inner-top-search"
+            style={{ marginTop: "75px", paddingBottom: "10px" }}
+          >
+            <div className="col-lg-12">
+              <div className="row">
+                <AlagehAutoComplete
+                  div={{ className: "col-2" }}
+                  label={{ forceLabel: "PO Return For" }}
+                  selector={{
+                    name: "po_return_from",
+                    className: "select-fld",
+                    value: this.state.po_return_from,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.PO_FROM
+                    },
+                    others: {
+                      disabled: this.state.dataExitst
+                    },
+                    onChange: poforhandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        po_return_from: null,
+                        ReqData: true,
+                        pharmcy_location_id: null,
+                        inventory_location_id: null
+                      });
+                    }
+                  }}
+                />
+                <AlagehAutoComplete
+                  div={{ className: "col-2" }}
+                  label={{ forceLabel: "Location Code" }}
+                  selector={{
+                    name:
+                      this.state.po_return_from === "PHR"
+                        ? "pharmcy_location_id"
+                        : "inventory_location_id",
+                    className: "select-fld",
+                    value:
+                      this.state.po_return_from === "PHR"
+                        ? this.state.pharmcy_location_id
+                        : this.state.inventory_location_id,
+                    dataSource: {
+                      textField: "location_description",
+                      valueField:
+                        this.state.po_return_from === "PHR"
+                          ? "hims_d_pharmacy_location_id"
+                          : "hims_d_inventory_location_id",
+                      data: _mainStore
+                    },
+                    others: {
+                      disabled: this.state.dataExitst
+                    },
+                    onChange: loctexthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        location_description: null,
+                        pharmcy_location_id: null,
+                        inventory_location_id: null
+                      });
+                    }
+                  }}
+                />
 
-                                <AlagehAutoComplete
-                                    div={{ className: "col-2" }}
-                                    label={{ forceLabel: "Vendor No." }}
-                                    selector={{
-                                        name: "vendor_id",
-                                        className: "select-fld",
-                                        value: this.state.vendor_id,
-                                        dataSource: {
-                                            textField: "vendor_name",
-                                            valueField: "hims_d_vendor_id",
-                                            data: this.props.povendors
-                                        },
-                                        others: {
-                                            disabled: this.state.dataExitst
-                                        },
-                                        onChange: vendortexthandle.bind(this, this),
-                                        onClear: () => {
-                                            this.setState({
-                                                vendor_id: null
-                                            });
-                                        }
-                                    }}
-                                />
+                <AlagehAutoComplete
+                  div={{ className: "col-2" }}
+                  label={{ forceLabel: "Vendor Name" }}
+                  selector={{
+                    name: "vendor_id",
+                    className: "select-fld",
+                    value: this.state.vendor_id,
+                    dataSource: {
+                      textField: "vendor_name",
+                      valueField: "hims_d_vendor_id",
+                      data: this.props.povendors
+                    },
+                    others: {
+                      disabled: this.state.dataExitst
+                    },
+                    onChange: vendortexthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        vendor_id: null
+                      });
+                    }
+                  }}
+                />
 
-                                <div className={"col-2 globalSearchCntr" + class_finder} >
-                                    <AlgaehLabel label={{ forceLabel: "Search Receipt No." }} />
-                                    <h6 onClick={ReceiptSearch.bind(this, this)}>
-                                        {this.state.grn_number
-                                            ? this.state.grn_number
-                                            : "Receipt No."}
-                                        <i className="fas fa-search fa-lg"></i>
-                                    </h6>
-                                </div>
+                <div className={"col-2 globalSearchCntr" + class_finder}>
+                  <AlgaehLabel label={{ forceLabel: "Search Receipt No." }} />
+                  <h6 onClick={ReceiptSearch.bind(this, this)}>
+                    {this.state.grn_number
+                      ? this.state.grn_number
+                      : "Receipt No."}
+                    <i className="fas fa-search fa-lg"></i>
+                  </h6>
+                </div>
 
-                                {/* <AlagehFormGroup
+                {/* <AlagehFormGroup
                                     div={{ className: "col-2" }}
                                     label={{
                                         forceLabel: "Receipt Number"
@@ -297,124 +298,118 @@ class PurchaseReturnEntry extends Component {
                                         onClick={ReceiptSearch.bind(this, this)}
                                     />
                                 </div> */}
-                                <AlagehAutoComplete
-                                    div={{ className: "col" }}
-                                    label={{ forceLabel: "Payment Terms" }}
-                                    selector={{
-                                        name: "payment_terms",
-                                        className: "select-fld",
-                                        value: this.state.payment_terms,
-                                        dataSource: {
-                                            textField: "name",
-                                            valueField: "value",
-                                            data: GlobalVariables.PAYMENT_TERMS
-                                        },
-                                        others: {
-                                            disabled: true
-                                        },
-                                        onChange: texthandle.bind(this, this),
-                                        onClear: () => {
-                                            this.setState({
-                                                payment_terms: null
-                                            });
-                                        }
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    <MyContext.Provider
-                        value={{
-                            state: this.state,
-                            updateState: obj => {
-
-                                this.setState({ ...obj });
-                            }
-                        }}
-                    >
-                        <POReturnItemList POReturnEntry={this.state} />
-                    </MyContext.Provider>
-                </div>
-
-                <div className="hptl-phase1-footer">
-                    <div className="row">
-                        <div className="col-lg-12">
-                            <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={SavePOReutrnEnrty.bind(this, this)}
-                                disabled={this.state.saveEnable}
-                            >
-                                <AlgaehLabel
-                                    label={{
-                                        forceLabel: "Save",
-                                        returnText: true
-                                    }}
-                                />
-                            </button>
-
-                            <button
-                                type="button"
-                                className="btn btn-default"
-                                disabled={this.state.ClearDisable}
-                                onClick={ClearData.bind(this, this)}
-                            >
-                                <AlgaehLabel
-                                    label={{ forceLabel: "Clear", returnText: true }}
-                                />
-                            </button>
-
-
-                            <button
-                                type="button"
-                                className="btn btn-other"
-                                onClick={PostPOReturnEntry.bind(this, this)}
-                                disabled={this.state.postEnable}
-                            >
-                                <AlgaehLabel
-                                    label={{
-                                        forceLabel: "Post",
-                                        returnText: true
-                                    }}
-                                />
-                            </button>
-
-                        </div>
-                    </div>
-                </div>
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{ forceLabel: "Payment Terms" }}
+                  selector={{
+                    name: "payment_terms",
+                    className: "select-fld",
+                    value: this.state.payment_terms,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.PAYMENT_TERMS
+                    },
+                    others: {
+                      disabled: true
+                    },
+                    onChange: texthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        payment_terms: null
+                      });
+                    }
+                  }}
+                />
+              </div>
             </div>
-        );
-    }
+          </div>
+
+          <MyContext.Provider
+            value={{
+              state: this.state,
+              updateState: obj => {
+                this.setState({ ...obj });
+              }
+            }}
+          >
+            <POReturnItemList POReturnEntry={this.state} />
+          </MyContext.Provider>
+        </div>
+
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={SavePOReutrnEnrty.bind(this, this)}
+                disabled={this.state.saveEnable}
+              >
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Save",
+                    returnText: true
+                  }}
+                />
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-default"
+                disabled={this.state.ClearDisable}
+                onClick={ClearData.bind(this, this)}
+              >
+                <AlgaehLabel
+                  label={{ forceLabel: "Clear", returnText: true }}
+                />
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-other"
+                onClick={PostPOReturnEntry.bind(this, this)}
+                disabled={this.state.postEnable}
+              >
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Post",
+                    returnText: true
+                  }}
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 function mapStateToProps(state) {
-    return {
-        polocations: state.polocations,
-        poitemcategory: state.poitemcategory,
-        poitemgroup: state.poitemgroup,
-        poitemuom: state.poitemuom,
-        povendors: state.povendors,
-    };
+  return {
+    polocations: state.polocations,
+    poitemcategory: state.poitemcategory,
+    poitemgroup: state.poitemgroup,
+    poitemuom: state.poitemuom,
+    povendors: state.povendors
+  };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators(
-        {
-            getItems: AlgaehActions,
-            getLocation: AlgaehActions,
-            getItemCategory: AlgaehActions,
-            getItemGroup: AlgaehActions,
-            getItemUOM: AlgaehActions,
-            getVendorMaster: AlgaehActions,
-        },
-        dispatch
-    );
+  return bindActionCreators(
+    {
+      getItems: AlgaehActions,
+      getLocation: AlgaehActions,
+      getItemCategory: AlgaehActions,
+      getItemGroup: AlgaehActions,
+      getItemUOM: AlgaehActions,
+      getVendorMaster: AlgaehActions
+    },
+    dispatch
+  );
 }
 
 export default withRouter(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps
-    )(PurchaseReturnEntry)
+  connect(mapStateToProps, mapDispatchToProps)(PurchaseReturnEntry)
 );
