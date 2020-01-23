@@ -56,7 +56,10 @@ class LoginUsers extends Component {
       apiConfig: false,
       selectedUSer: {},
       roles_grid: [],
-      branch_detail: []
+      branch_detail: [],
+      user_type: "",
+      hospitals: [],
+      password_email: ""
     };
     this.getGroups();
     this.getLoginUsers();
@@ -65,23 +68,31 @@ class LoginUsers extends Component {
   }
   componentDidMount() {
     // console.log("Activated_Modueles", this.context);
-    let Activated_Modueles = this.context.userMenu;
+    const userToken = this.context.userToken;
 
-    const HIMS_Active = _.filter(Activated_Modueles, f => {
-      return f.module_code === "FTDSK";
-    });
-    const HRMS_Active = _.filter(Activated_Modueles, f => {
-      return f.module_code === "PAYROLL";
-    });
+    const HIMS_Active =
+      userToken.product_type === "HIMS_ERP" ||
+      userToken.product_type === "HIMS_CLINICAL"
+        ? true
+        : false;
+
+    const HRMS_Active =
+      userToken.product_type === "HIMS_ERP" ||
+      userToken.product_type === "HRMS" ||
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP"
+        ? true
+        : false;
 
     const USER_TYPE =
-      HIMS_Active.length > 0 && HRMS_Active.length > 0
+      HIMS_Active === true && HRMS_Active === true
         ? HIMS_HR_USER_TYPE
-        : HIMS_Active.length > 0
+        : HIMS_Active === true
         ? HIMS_USER_TYPE
-        : HRMS_Active.length > 0
+        : HRMS_Active
         ? HR_USER_TYPE
         : [];
+    this.setState({ PR_USER_TYPE: USER_TYPE, user_type: userToken.user_type });
   }
   searchSelect(data) {
     let branch_detail = this.state.branch_detail;
@@ -98,9 +109,15 @@ class LoginUsers extends Component {
       sub_department_id: data.sub_department_id,
       full_name: data.full_name,
       display_name: data.full_name,
-      // username: data.full_name.split(" ")[0].toLowerCase(),
-      username: data.work_email.toLowerCase(),
-      branch_detail: branch_detail
+      username: data.full_name.split(" ")[0].toLowerCase(),
+      // username: data.work_email.toLowerCase(),
+      branch_detail: branch_detail,
+      password_email:
+        data.work_email !== null
+          ? data.work_email
+          : data.email !== null
+          ? data.email
+          : ""
     });
   }
 
@@ -117,7 +134,8 @@ class LoginUsers extends Component {
       sub_department_id: null,
       user_type: "",
       full_name: "",
-      branch_detail: []
+      branch_detail: [],
+      branch_desc: ""
     });
     this.getBranchDetail();
   }
@@ -128,7 +146,11 @@ class LoginUsers extends Component {
     row[name] = value;
     row.update();
   }
-
+  onClearBranch() {
+    this.setState({
+      hospital_id: undefined
+    });
+  }
   getOrganization() {
     algaehApiCall({
       uri: "/organization/getOrganizationByUser",
@@ -190,12 +212,13 @@ class LoginUsers extends Component {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
           let login_users = Enumerable.from(response.data.records)
             .groupBy("$.hims_d_employee_id", null, (k, g) => {
               let firstRecordSet = Enumerable.from(g).firstOrDefault();
-              debugger;
+
               return {
+                email: firstRecordSet.email,
+                work_email: firstRecordSet.work_email,
                 algaeh_d_app_user_id: firstRecordSet.algaeh_d_app_user_id,
                 full_name: firstRecordSet.full_name,
                 employee_code: firstRecordSet.employee_code,
@@ -276,9 +299,7 @@ class LoginUsers extends Component {
         this.setState({
           [value.name]: value.value
         });
-
         break;
-
       default:
         this.setState({
           [value.name]: value.value
@@ -487,7 +508,15 @@ class LoginUsers extends Component {
       // branch_data: branch_data
     });
   }
+  getHospitalShortDesc() {
+    debugger;
+    const detail = this.state.hospitals.find(
+      f => f.hims_d_hospital_id === this.state.hospital_id
+    );
+    if (detail !== undefined) return detail.hospital_code;
 
+    return "";
+  }
   render() {
     return (
       <div className="login_users">
@@ -539,7 +568,8 @@ class LoginUsers extends Component {
                             ? false
                             : true
                       },
-                      onChange: this.dropDownHandler.bind(this)
+                      onChange: this.dropDownHandler.bind(this),
+                      onClear: this.onClearBranch.bind(this)
                     }}
                   />
                   <AlgaehAutoSearch
@@ -577,6 +607,30 @@ class LoginUsers extends Component {
                     }}
                     onClick={this.searchSelect.bind(this)}
                   />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-12 form-group" }}
+                    label={{
+                      forceLabel: "Email ID to send password",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "password_email",
+                      value: this.state.password_email,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      },
+                      others: {
+                        disabled:
+                          this.state.password_email !== null &&
+                          this.state.password_email !== "" &&
+                          this.state.password_email !== undefined
+                            ? true
+                            : false
+                      }
+                    }}
+                  />
                   <AlagehFormGroup
                     div={{ className: "col-6 form-group" }}
                     label={{
@@ -589,12 +643,15 @@ class LoginUsers extends Component {
                       value: this.state.username,
                       events: {
                         onChange: this.changeTexts.bind(this)
-                      },
-                      others: {
-                        disabled: true
                       }
                     }}
                   />
+                  <div className="col-6" style={{ paddingLeft: 0 }}>
+                    <span style={{ paddingTop: 15, display: "inline-block" }}>
+                      {" "}
+                      @<b>{this.getHospitalShortDesc()}</b>
+                    </span>
+                  </div>
                   <AlagehAutoComplete
                     div={{ className: "col-6 form-group" }}
                     label={{
@@ -684,9 +741,18 @@ class LoginUsers extends Component {
                                 onChange={this.selectBranch.bind(this, data)}
                                 name="modules"
                                 checked={
-                                  data.checked === undefined
+                                  this.state.hospital_id ===
+                                  data.hims_d_hospital_id
+                                    ? true
+                                    : data.checked === undefined
                                     ? false
                                     : data.checked
+                                }
+                                disabled={
+                                  this.state.hospital_id ===
+                                  data.hims_d_hospital_id
+                                    ? true
+                                    : false
                                 }
                                 value={data.hims_d_hospital_id}
                               />
@@ -779,7 +845,8 @@ class LoginUsers extends Component {
                           fieldName: "none",
                           label: "API",
                           others: {
-                            filterable: false
+                            filterable: false,
+                            show: this.state.user_type === "SU" ? true : false
                           },
                           displayTemplate: row => {
                             return (

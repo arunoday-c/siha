@@ -82,10 +82,10 @@ let getLoginUserMasterOLD = (req, res, next) => {
         inner join algaeh_m_role_user_mappings RU  on  UM.user_id=RU.user_id inner join algaeh_d_app_roles R on  \
         RU.role_id=R.app_d_app_roles_id inner join algaeh_d_app_group G on R.app_group_id=G.algaeh_d_app_group_id\
         where E.record_status='A' and U.record_status='A' " +
-        adminUSer +
-        "and " +
-        where.condition +
-        " order by algaeh_m_role_user_mappings_id desc",
+          adminUSer +
+          "and " +
+          where.condition +
+          " order by algaeh_m_role_user_mappings_id desc",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -116,7 +116,7 @@ let getLoginUserMaster = (req, res, next) => {
         .executeQuery({
           query:
             "select  algaeh_d_app_user_id,username,user_display_name,user_type,user_status,hims_d_employee_id,\
-            employee_code,full_name,role_name,app_group_name,algaeh_m_role_user_mappings_id , app_d_app_roles_id, \
+            employee_code,full_name,E.email,E.work_email, role_name,app_group_name,algaeh_m_role_user_mappings_id , app_d_app_roles_id, \
             UM.hospital_id, hims_m_user_employee_id, R.app_group_id, RU.role_id from  hims_m_user_employee UM \
             inner join algaeh_d_app_user U on UM.user_id=U.algaeh_d_app_user_id\
             inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id\
@@ -813,8 +813,6 @@ let createUserLogin = (req, res, next) => {
   try {
     let input = req.body;
 
-
-
     if (req.userIdentity.user_type == "AD" && input.user_type == "AD") {
       req.records = {
         validUser: false,
@@ -830,7 +828,6 @@ let createUserLogin = (req, res, next) => {
                 created_date, created_by, updated_date, updated_by)\
             VALUE(?,?,?,?,?,?,?,?,?)",
             values: [
-
               input.username,
               input.user_display_name,
               input.employee_id,
@@ -839,7 +836,7 @@ let createUserLogin = (req, res, next) => {
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              req.userIdentity.algaeh_d_app_user_id,
+              req.userIdentity.algaeh_d_app_user_id
             ],
             printQuery: true
           })
@@ -855,13 +852,12 @@ let createUserLogin = (req, res, next) => {
                     "INSERT INTO `algaeh_d_app_password` ( userid,password,created_date, created_by, updated_date, \
                       updated_by) VALUE(?,md5(?),?,?,?,?)",
                   values: [
-
                     result.insertId,
                     new_password,
                     new Date(),
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
-                    req.userIdentity.algaeh_d_app_user_id,
+                    req.userIdentity.algaeh_d_app_user_id
                   ],
                   printQuery: true
                 })
@@ -878,32 +874,31 @@ let createUserLogin = (req, res, next) => {
                           new Date(),
                           req.userIdentity.algaeh_d_app_user_id,
                           new Date(),
-                          req.userIdentity.algaeh_d_app_user_id,
+                          req.userIdentity.algaeh_d_app_user_id
                         ],
                         printQuery: true
                       })
                       .then(finalResult => {
-                        if (
-                          finalResult.insertId > 0 &&
-                          input.employee_id > 0
-                        ) {
-                          const insurtColumns = [
-                            "hospital_id"
-                          ];
+                        if (finalResult.insertId > 0 && input.employee_id > 0) {
+                          const insurtColumns = ["hospital_id"];
                           let strGrnQry = mysql.format(
                             "select trim(email)as email  from hims_d_employee where hims_d_employee_id=?;",
                             [input.employee_id]
                           );
                           _mysql
                             .executeQuery({
-                              query: "INSERT INTO hims_m_user_employee (??) VALUES ? ; " + strGrnQry,
+                              query:
+                                "INSERT INTO hims_m_user_employee (??) VALUES ? ; " +
+                                strGrnQry,
                               values: input.branch_data,
                               includeValues: insurtColumns,
                               extraValues: {
                                 user_id: result.insertId,
-                                created_by: req.userIdentity.algaeh_d_app_user_id,
+                                created_by:
+                                  req.userIdentity.algaeh_d_app_user_id,
                                 created_date: new Date(),
-                                updated_by: req.userIdentity.algaeh_d_app_user_id,
+                                updated_by:
+                                  req.userIdentity.algaeh_d_app_user_id,
                                 updated_date: new Date()
                               },
                               bulkInsertOrUpdate: true,
@@ -956,7 +951,6 @@ let createUserLogin = (req, res, next) => {
                             next();
                           });
                         }
-
                       })
                       .catch(e => {
                         _mysql.rollBackTransaction(() => {
@@ -978,8 +972,7 @@ let createUserLogin = (req, res, next) => {
                     next(e);
                   });
                 });
-            }
-            else {
+            } else {
               _mysql.rollBackTransaction(() => {
                 req.records = {
                   validUser: false,
@@ -994,7 +987,6 @@ let createUserLogin = (req, res, next) => {
               next(e);
             });
           });
-
       } else {
         req.records = {
           validUser: false,
@@ -1003,7 +995,6 @@ let createUserLogin = (req, res, next) => {
         next();
       }
     }
-
   } catch (e) {
     next(e);
   }
@@ -1087,11 +1078,9 @@ let changePassword = (req, res, next) => {
 let updateUser = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
-    let input = req.body
-    console.log("input", input)
-    if (
-      input.algaeh_d_app_user_id > 0
-    ) {
+    let input = req.body;
+    console.log("input", input);
+    if (input.algaeh_d_app_user_id > 0) {
       _mysql
         .executeQueryWithTransaction({
           query:
@@ -1115,7 +1104,7 @@ let updateUser = (req, res, next) => {
                 req.userIdentity.algaeh_d_app_user_id,
                 input.algaeh_m_role_user_mappings_id
               ]
-            )
+            );
             if (input.delete_branch_data.length > 0) {
               let user_employee_id = _.map(input.delete_branch_data, o => {
                 return o.hims_m_user_employee_id;
@@ -1127,12 +1116,11 @@ let updateUser = (req, res, next) => {
               );
             }
 
-            const insurtColumns = [
-              "hospital_id"
-            ];
+            const insurtColumns = ["hospital_id"];
             _mysql
               .executeQuery({
-                query: "INSERT INTO hims_m_user_employee (??) VALUES ? ; " + strQry,
+                query:
+                  "INSERT INTO hims_m_user_employee (??) VALUES ? ; " + strQry,
                 values: input.branch_data,
                 includeValues: insurtColumns,
                 extraValues: {
@@ -1146,13 +1134,11 @@ let updateUser = (req, res, next) => {
                 printQuery: true
               })
               .then(user_employee_res => {
-
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
                   req.records = user_employee_res;
                   next();
                 });
-
               })
               .catch(e => {
                 _mysql.rollBackTransaction(() => {
@@ -1197,7 +1183,6 @@ let updateUser = (req, res, next) => {
             };
             next();
           }
-
         })
         .catch(error => {
           _mysql.releaseConnection();
@@ -1329,7 +1314,7 @@ function sendMailFunction(n_name, n_Password, n_from_mail, n_to_mail) {
       }
     };
 
-    transporter.sendMail(mailOptions, function (e, r) {
+    transporter.sendMail(mailOptions, function(e, r) {
       transporter.close();
       if (e) {
         console.log(e);
