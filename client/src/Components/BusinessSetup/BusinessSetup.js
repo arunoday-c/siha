@@ -139,21 +139,6 @@ class BusinessSetup extends Component {
               </li>
               {this.state.HIMS_Active === true ? (
                 <li
-                  algaehtabs={"Counter"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "counter"
-                      }}
-                    />
-                  }
-                </li>
-              ) : null}
-              {this.state.HIMS_Active === true ? (
-                <li
                   algaehtabs={"UserShiftMapping"}
                   className={"nav-item tab-button"}
                   onClick={this.openTab.bind(this)}
@@ -162,6 +147,21 @@ class BusinessSetup extends Component {
                     <AlgaehLabel
                       label={{
                         fieldName: "users_shift"
+                      }}
+                    />
+                  }
+                </li>
+              ) : null}
+              {this.state.HIMS_Active === true ? (
+                <li
+                  algaehtabs={"Counter"}
+                  className={"nav-item tab-button"}
+                  onClick={this.openTab.bind(this)}
+                >
+                  {
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "counter"
                       }}
                     />
                   }
