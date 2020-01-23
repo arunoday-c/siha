@@ -1,6 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 export default {
-  addBank: (req, res, next) => {
+  addBank_Backup_JAN_23_2020: (req, res, next) => {
     const _mysql = new algaehMysql();
 
     let input = req.body;
@@ -28,6 +28,121 @@ export default {
           _mysql.releaseConnection();
           req.records = result;
           next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  //modified by:irfan to add Bank in finance
+  addBank: (req, res, next) => {
+    let input = req.body;
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+        })
+        .then(result => {
+          if (
+            result[0]["product_type"] == "HIMS_ERP" ||
+            result[0]["product_type"] == "FINANCE_ERP"
+          ) {
+            const head_id = 25;
+
+            _mysql
+              .executeQueryWithTransaction({
+                query:
+                  "INSERT INTO `finance_account_child` (child_name,head_id,created_from\
+                  ,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?)",
+                values: [
+                  input.bank_name,
+                  head_id,
+                  "U",
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id
+                ],
+                printQuery: false
+              })
+              .then(childRes => {
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO hims_d_bank (bank_name, bank_code, bank_short_name, address1, contact_person,\
+                       contact_number, created_date, created_by, updated_date, updated_by,head_id,child_id)\
+                         values(?,?,?,?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      input.bank_name,
+                      input.bank_code,
+                      input.bank_short_name,
+                      input.address1,
+                      input.contact_person,
+                      input.contact_number,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      head_id,
+                      childRes.insertId
+                    ],
+                    printQuery: true
+                  })
+                  .then(Result => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = Result;
+                      next();
+                    });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO hims_d_bank (bank_name, bank_code, bank_short_name, address1, contact_person, contact_number, created_date, created_by, updated_date, updated_by)\
+               values(?,?,?,?,?,?,?,?,?,?)",
+                values: [
+                  input.bank_name,
+                  input.bank_code,
+                  input.bank_short_name,
+                  input.address1,
+                  input.contact_person,
+                  input.contact_number,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id
+                ],
+                printQuery: true
+              })
+              .then(result => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              })
+              .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          }
         })
         .catch(error => {
           _mysql.releaseConnection();
