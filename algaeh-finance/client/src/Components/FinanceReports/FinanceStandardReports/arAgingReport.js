@@ -61,37 +61,48 @@ export default function ArAging({ style, result, footer, layout }) {
               {
                 key: "customer",
                 title: "Customer Name",
-                sortable: true
+                sortable: true,
+                others: {
+                  style: { textAlign: "left" }
+                }
               },
               {
                 key: "todays_amount",
                 title: "Current",
-                sortable: false
+                sortable: false,
+                others: {
+                  width: 100
+                }
               },
               {
                 key: "thirty_days_amount",
                 title: "1-30 Days",
-                sortable: false
+                sortable: false,
+                others: { width: 100 }
               },
               {
                 key: "sixty_days_amount",
                 title: "31-60 Days",
-                sortable: false
+                sortable: false,
+                others: { width: 100 }
               },
               {
                 key: "ninety_days_amount",
                 title: "61-90 Days",
-                sortable: false
+                sortable: false,
+                others: { width: 100 }
               },
               {
                 key: "above_ninety_days_amount",
                 title: "Over 90 Days",
-                sortable: false
+                sortable: false,
+                others: { width: 100 }
               },
               {
                 key: "balance",
                 title: "Balance",
-                sortable: false
+                sortable: false,
+                others: { width: 100 }
               }
             ]}
             loading={false}
