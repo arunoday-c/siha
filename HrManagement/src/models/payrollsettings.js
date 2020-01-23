@@ -65,7 +65,7 @@ export default {
       });
   },
 
-  addLoanMaster: (req, res, next) => {
+  addLoanMaster_JAN_23_2020: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = { ...req.body };
 
@@ -96,6 +96,118 @@ export default {
         _mysql.releaseConnection();
         next(e);
       });
+  },
+
+  //modified by:irfan to add vendor
+  addLoanMaster: (req, res, next) => {
+    let input = req.body;
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+        })
+        .then(result => {
+          if (
+            result[0]["product_type"] == "HIMS_ERP" ||
+            result[0]["product_type"] == "FINANCE_ERP"
+          ) {
+            const head_id = 23;
+
+            _mysql
+              .executeQueryWithTransaction({
+                query:
+                  "INSERT INTO `finance_account_child` (child_name,head_id,created_from\
+                    ,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?)",
+                values: [
+                  input.loan_description,
+                  head_id,
+                  "U",
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id
+                ],
+                printQuery: false
+              })
+              .then(childRes => {
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO hims_d_loan (loan_code,loan_description, loan_account,loan_limit_type,\
+                          loan_maximum_amount, created_date,created_by,updated_date,updated_by,head_id,child_id) \
+                          values(?,?,?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      input.loan_code,
+                      input.loan_description,
+                      input.loan_account,
+                      input.loan_limit_type,
+                      input.loan_maximum_amount,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      head_id,
+                      childRes.insertId
+                    ]
+                  })
+                  .then(inserted_loan => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = inserted_loan;
+                      next();
+                    });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO hims_d_loan (loan_code,loan_description, loan_account,loan_limit_type,\
+              loan_maximum_amount, created_date,created_by,updated_date,updated_by) \
+              values(?,?,?,?,?,?,?,?,?)",
+                values: [
+                  input.loan_code,
+                  input.loan_description,
+                  input.loan_account,
+                  input.loan_limit_type,
+                  input.loan_maximum_amount,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id
+                ]
+              })
+              .then(inserted_loan => {
+                _mysql.releaseConnection();
+                req.records = inserted_loan;
+                next();
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
+          }
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   },
 
   updateLoanMaster: (req, res, next) => {
@@ -138,8 +250,8 @@ export default {
       input.year > 0
         ? input.year
         : moment()
-          .startOf("year")
-          .format("YYYY-MM-DD");
+            .startOf("year")
+            .format("YYYY-MM-DD");
 
     const start_of_year = moment(year, "YYYY")
       .startOf("year")
