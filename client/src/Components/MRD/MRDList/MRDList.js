@@ -107,7 +107,7 @@ class MRDList extends Component {
           <div className="row padding-10">
             <AlgaehDateHandler
               div={{ className: "col" }}
-              label={{ forceLabel: "From Registration", isImp: false }}
+              label={{ forceLabel: "Record From", isImp: false }}
               textBox={{
                 className: "txt-fld",
                 name: "from_date"
@@ -121,7 +121,7 @@ class MRDList extends Component {
 
             <AlgaehDateHandler
               div={{ className: "col" }}
-              label={{ forceLabel: "To Registration", isImp: false }}
+              label={{ forceLabel: "Record To", isImp: false }}
               textBox={{
                 className: "txt-fld",
                 name: "to_date"
@@ -139,7 +139,7 @@ class MRDList extends Component {
                 type="button"
                 style={{ marginTop: "1.5em" }}
               >
-                Load Data
+                Load Record
               </button>
             </div>
           </div>

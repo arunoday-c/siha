@@ -54,50 +54,32 @@ class DisPatientForm extends Component {
                 style={{ paddingTop: 10, paddingBottom: 10 }}
               >
                 {/* Patient code */}
-                <div className="col-lg-3">
-                  <div
-                    className="row"
-                    style={{
-                      border: " 1px solid #ced4d9",
-                      borderRadius: 5,
-                      marginLeft: 0,
-                      height: 50
-                    }}
-                  >
-                    <div className="col">
-                      <AlgaehLabel label={{ fieldName: "patient_code" }} />
-                      <h6>
-                        {this.state.patient_code
-                          ? this.state.patient_code
-                          : "----------"}
-                      </h6>
-                    </div>
-                    <div
-                      className="col-lg-3"
-                      style={{ borderLeft: "1px solid #ced4d8" }}
-                    >
-                      <i
-                        className="fas fa-search fa-lg"
-                        style={{
-                          paddingTop: 17,
-                          paddingLeft: 3,
-                          cursor: "pointer",
-                          pointerEvents:
-                            this.state.Billexists === true
-                              ? "none"
-                              : this.state.patient_code
-                              ? "none"
-                              : ""
-                        }}
-                        onClick={PatientSearch.bind(this, this, context)}
-                      />
-                    </div>
-                  </div>
+
+                <div
+                  className="col-2 globalSearchCntr"
+                  style={{
+                    cursor: "pointer",
+                    pointerEvents:
+                      this.state.Billexists === true
+                        ? "none"
+                        : this.state.patient_code
+                        ? "none"
+                        : ""
+                  }}
+                >
+                  <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+                  <h6 onClick={PatientSearch.bind(this, this, context)}>
+                    {this.state.patient_code
+                      ? this.state.patient_code
+                      : "Search Employee"}
+                    <i className="fas fa-search fa-lg"></i>
+                  </h6>
                 </div>
-                <div className="col-lg-9">
+
+                <div className="col-10">
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col" }}
+                      div={{ className: "col-2 mandatory" }}
                       label={{
                         fieldName: "select_visit",
                         isImp: true
@@ -143,7 +125,7 @@ class DisPatientForm extends Component {
                       </h6>
                     </div>
 
-                    <div className="col">
+                    <div className="col-2">
                       <AlgaehLabel
                         label={{
                           fieldName: "patient_type"
@@ -156,7 +138,7 @@ class DisPatientForm extends Component {
                       </h6>
                     </div>
 
-                    <div className="col">
+                    <div className="col-2">
                       <AlgaehLabel
                         label={{
                           fieldName: "mode_of_pay"
@@ -170,7 +152,7 @@ class DisPatientForm extends Component {
                     </div>
 
                     {this.state.Billexists === true ? (
-                      <div className="col">
+                      <div className="col-2">
                         <AlgaehLabel label={{ forceLabel: "Bill Status" }} />
                         <h6>
                           {this.state.cancelled === "Y" ? (
@@ -188,7 +170,7 @@ class DisPatientForm extends Component {
                       </div>
                     ) : null}
                     {this.state.due_amount > 0 ? (
-                      <div className="col">
+                      <div className="col-2">
                         <AlgaehLabel label={{ forceLabel: "Due Amount" }} />
                         <h6 style={{ color: "red" }}>
                           {getAmountFormart(this.state.due_amount)}
@@ -226,8 +208,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(DisPatientForm)
+  connect(mapStateToProps, mapDispatchToProps)(DisPatientForm)
 );

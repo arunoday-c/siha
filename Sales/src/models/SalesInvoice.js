@@ -500,7 +500,7 @@ export function generateAccountingEntry(req, res, next) {
                                     values: [
                                         new Date(),
                                         headerResult[0].net_payable,
-                                        "journal",
+                                        "sales",
                                         headerResult[0].hims_f_sales_invoice_header_id,
                                         headerResult[0].invoice_number,
                                         inputParam.ScreenCode,
