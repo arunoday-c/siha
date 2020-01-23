@@ -1526,13 +1526,19 @@ export default {
       input.finance_account_head_id > 0 &&
       input.finance_account_head_id < 6
     ) {
+      let str = "";
+
+      if (input.finance_account_head_id == 3) {
+        str = " and  finance_account_child_id <> 1";
+      }
+
       _mysql
         .executeQuery({
           query: `select finance_account_head_id,account_code,account_name,account_parent,account_level,
           H.created_from as created_status ,sort_order,parent_acc_id,root_id,
           finance_account_child_id,child_name,head_id,C.created_from as child_created_from
           from finance_account_head H left join 
-          finance_account_child C on C.head_id=H.finance_account_head_id
+          finance_account_child C on C.head_id=H.finance_account_head_id  ${str}
            where (root_id=? or finance_account_head_id=?) order by account_level,sort_order;     `,
 
           printQuery: false,
@@ -1610,7 +1616,7 @@ export default {
             ,root_id,
             finance_account_child_id,child_name,head_id,C.created_from as child_created_from
             from finance_account_head H left join
-            finance_account_child C on C.head_id=H.finance_account_head_id ${whereStr}
+            finance_account_child C on C.head_id=H.finance_account_head_id and  finance_account_child_id <> 1 ${whereStr}
            
             union                  
             select H.finance_account_head_id,H.account_code,H.account_name,H.account_parent,H.account_level,
@@ -2234,43 +2240,42 @@ function calcAmount(account_heads, levels, decimal_places) {
 
       for (let i = max_account_level - 1; i >= 0; i--) {
         // for (let k = 0; k < levels_group[i].length; k++) {
-          levels_group[i].map(item => {
-            let immediate_childs = levels_group[i + 1].filter(child => {
-              if (item.finance_account_head_id == child.parent_acc_id) {
-                return item;
-              }
-            });
-
-            const total_debit_amount = _.chain(immediate_childs)
-              .sumBy(s => parseFloat(s.total_debit_amount))
-              .value()
-              .toFixed(decimal_places);
-
-            const total_credit_amount = _.chain(immediate_childs)
-              .sumBy(s => parseFloat(s.total_credit_amount))
-              .value()
-              .toFixed(decimal_places);
-
-            item["total_debit_amount"] = parseFloat(
-              parseFloat(item["debit_amount"]) + parseFloat(total_debit_amount)
-            ).toFixed(decimal_places);
-
-            item["total_credit_amount"] = parseFloat(
-              parseFloat(item["credit_amount"]) +
-                parseFloat(total_credit_amount)
-            ).toFixed(decimal_places);
-
-            item["cred_minus_deb"] = parseFloat(
-              parseFloat(item["total_credit_amount"]) -
-                parseFloat(item["total_debit_amount"])
-            ).toFixed(decimal_places);
-            item["deb_minus_cred"] = parseFloat(
-              parseFloat(item["total_debit_amount"]) -
-                parseFloat(item["total_credit_amount"])
-            ).toFixed(decimal_places);
-
-            return item;
+        levels_group[i].map(item => {
+          let immediate_childs = levels_group[i + 1].filter(child => {
+            if (item.finance_account_head_id == child.parent_acc_id) {
+              return item;
+            }
           });
+
+          const total_debit_amount = _.chain(immediate_childs)
+            .sumBy(s => parseFloat(s.total_debit_amount))
+            .value()
+            .toFixed(decimal_places);
+
+          const total_credit_amount = _.chain(immediate_childs)
+            .sumBy(s => parseFloat(s.total_credit_amount))
+            .value()
+            .toFixed(decimal_places);
+
+          item["total_debit_amount"] = parseFloat(
+            parseFloat(item["debit_amount"]) + parseFloat(total_debit_amount)
+          ).toFixed(decimal_places);
+
+          item["total_credit_amount"] = parseFloat(
+            parseFloat(item["credit_amount"]) + parseFloat(total_credit_amount)
+          ).toFixed(decimal_places);
+
+          item["cred_minus_deb"] = parseFloat(
+            parseFloat(item["total_credit_amount"]) -
+              parseFloat(item["total_debit_amount"])
+          ).toFixed(decimal_places);
+          item["deb_minus_cred"] = parseFloat(
+            parseFloat(item["total_debit_amount"]) -
+              parseFloat(item["total_credit_amount"])
+          ).toFixed(decimal_places);
+
+          return item;
+        });
         // }
       }
       const final_res = [];
