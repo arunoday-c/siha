@@ -15,14 +15,17 @@ import EmployeeMaster from "./EmployeeMaster/EmployeeMaster";
 import moment from "moment";
 import Options from "../../../Options.json";
 import { getCookie } from "../../../utils/algaehApiCall";
-import { setGlobal, AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import {
+  setGlobal
+  //AlgaehOpenContainer
+} from "../../../utils/GlobalFunctions";
 import {
   getEmployeeDetails,
   EditEmployeeMaster,
   texthandle
 } from "./EmployeeMasterIndexEvent";
 // import variableJson from "../../../utils/GlobalVariables.json";
-
+import { MainContext } from "algaeh-react-components/context";
 class EmployeeMasterIndex extends Component {
   constructor(props) {
     super(props);
@@ -33,17 +36,21 @@ class EmployeeMasterIndex extends Component {
       selectedLang: "en",
       editEmployee: false,
       forceRender: false,
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id
+      hospital_id: ""
+      //   JSON.parse(
+      //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      // ).hims_d_hospital_id
     };
   }
-
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
     this.setState({
-      selectedLang: prevLang
+      selectedLang: prevLang,
+      hospital_id: userToken.hims_d_hospital_id
     });
 
     if (
@@ -469,8 +476,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(EmployeeMasterIndex)
+  connect(mapStateToProps, mapDispatchToProps)(EmployeeMasterIndex)
 );

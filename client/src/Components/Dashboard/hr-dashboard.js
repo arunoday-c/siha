@@ -13,8 +13,9 @@ import {
   AlgaehLabel,
   AlgaehDataGrid
 } from "../Wrapper/algaehWrapper";
-import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
+// import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 
+import { MainContext } from "algaeh-react-components/context";
 class Dashboard extends Component {
   constructor(props) {
     super(props);
@@ -28,12 +29,16 @@ class Dashboard extends Component {
       no_of_emp_join: [],
       avg_salary: 0,
       no_of_projects: 0,
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id
+      hospital_id: ""
     };
   }
-
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    });
+  }
   componentWillMount() {
     DashBoardEvents().getEmployeeList(this);
     DashBoardEvents().getEmployeeDepartmentsWise(this);

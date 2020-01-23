@@ -20,33 +20,34 @@ import { getCookie } from "../../../../utils/algaehApiCall";
 import { InsertUpdateEmployee } from "./EmployeeMasterEvents";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import {
-  AlgaehValidation,
-  AlgaehOpenContainer
+  AlgaehValidation
+  // AlgaehOpenContainer
 } from "../../../../utils/GlobalFunctions";
-
+import { MainContext } from "algaeh-react-components/context";
 class EmployeeMaster extends Component {
   constructor(props) {
     super(props);
 
-    let Activated_Modueles = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    );
-    const HIMS_Active = Activated_Modueles.filter(f => {
-      return f.module_code === "FTDSK";
-    });
+    // let Activated_Modueles = JSON.parse(
+    //   AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+    // );
+    // const HIMS_Active = Activated_Modueles.filter(f => {
+    //   return f.module_code === "FTDSK";
+    // });
 
-    const HRMS_Active = Activated_Modueles.filter(f => {
-      return f.module_code === "PAYROLL";
-    });
+    // const HRMS_Active = Activated_Modueles.filter(f => {
+    //   return f.module_code === "PAYROLL";
+    // });
     this.state = {
       pageDisplay: "PersonalDetails",
       personalDetails: {},
       department_and_other: {},
       payroll: {},
-      HIMS_Active: HIMS_Active.length > 0 ? true : false,
-      HRMS_Active: HRMS_Active.length > 0 ? true : false
+      HIMS_Active: false, //HIMS_Active.length > 0 ? true : false,
+      HRMS_Active: false //HRMS_Active.length > 0 ? true : false
     };
   }
+  static contextType = MainContext;
 
   openTab(e) {
     AlgaehValidation({
@@ -83,17 +84,32 @@ class EmployeeMaster extends Component {
   componentDidMount() {
     // let IOputs = EmpMasterIOputs.inputParam();
     // this.setState(IOputs);
-
+    const userToken = this.context.userToken;
     let prevLang = getCookie("Language");
 
     let IOputs = EmpMasterIOputs.inputParam();
     IOputs.selectedLang = prevLang;
 
+    const HIMS_Active =
+      userToken.product_type === "HIMS_ERP" ||
+      userToken.product_type === "HIMS_CLINICAL"
+        ? true
+        : false;
+    const HRMS_Active =
+      userToken.product_type === "HIMS_ERP" ||
+      userToken.product_type === "HRMS" ||
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP"
+        ? true
+        : false;
+
     this.setState({
       personalDetails: {
         ...IOputs,
         ...this.props.employeeDetailsPop
-      }
+      },
+      HIMS_Active: HIMS_Active,
+      HRMS_Active: HRMS_Active
     });
 
     if (
@@ -602,8 +618,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(EmployeeMaster)
+  connect(mapStateToProps, mapDispatchToProps)(EmployeeMaster)
 );
