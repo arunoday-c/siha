@@ -87,14 +87,30 @@
   }
 
   .spotlightSearchBox {
-    border: 1px solidlighten($color-black, 80%);
-    border-radius: 5px;
     margin-left: 0;
-    margin-bottom: 13px;
+    div {
+      border: 1px solid lighten($color-black, 80%);
+      border-radius: 5px 0 0 5px;
+    }
+    h6 {
+      font-weight: bold;
+    }
   }
 
   .spotlightSearchIconBox {
-    border-left: 1px solid lighten($color-black, 80%);
+    max-width: 47px;
+    border: 1px solid lighten($color-black, 80%);
+    border-radius: 0 5px 5px 0 !important;
+    border-left: none !important;
+    i {
+      line-height: 45px;
+      margin-left: -2px;
+    }
+    &:hover {
+      cursor: pointer;
+      background: $primary-color;
+      color: $color-white;
+    }
   }
 }
 // .text {
