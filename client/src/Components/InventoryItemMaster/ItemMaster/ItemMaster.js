@@ -253,11 +253,9 @@ class InvItemMaster extends Component {
 
                     <div className="col-12">
                       <div className="row">
-                        <div className="col-6">
-                          <AlgaehLabel
-                            label={{ fieldName: "vat_applicable" }}
-                          />
-                          <div className=" customCheckbox ">
+                        <div className="col-3">
+                          <label>Vat Applicable</label>
+                          <div className="customCheckbox">
                             <label className="checkbox inline">
                               <input
                                 type="checkbox"
@@ -274,10 +272,18 @@ class InvItemMaster extends Component {
                             </label>
                           </div>
                         </div>
+
                         <AlagehFormGroup
-                          div={{ className: "col-6 form-group" }}
+                          div={{
+                            className:
+                              this.state.vat_applicable === "Y"
+                                ? "col-3 mandatory form-group"
+                                : "col-3 form-group"
+                          }}
                           label={{
-                            fieldName: "vat_percent"
+                            fieldName: "vat_percent",
+                            isImp:
+                              this.state.vat_applicable === "Y" ? true : false
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
@@ -430,9 +436,9 @@ class InvItemMaster extends Component {
                                 this.props.inventoryitemuom === undefined
                                   ? []
                                   : this.props.inventoryitemuom.filter(
-                                    f =>
-                                      f.hims_d_inventory_uom_id === row.uom_id
-                                  );
+                                      f =>
+                                        f.hims_d_inventory_uom_id === row.uom_id
+                                    );
 
                               return (
                                 <span>
@@ -560,7 +566,7 @@ class InvItemMaster extends Component {
                         paging={{ page: 0, rowsPerPage: 5 }}
                         events={{
                           onDelete: deleteUOM.bind(this, this),
-                          onEdit: row => { },
+                          onEdit: row => {},
                           onDone: updateUOM.bind(this, this)
                         }}
                       />
@@ -693,8 +699,8 @@ class InvItemMaster extends Component {
                     {this.state.hims_d_inventory_item_master_id === null ? (
                       <AlgaehLabel label={{ fieldName: "btnSave" }} />
                     ) : (
-                        <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                      )}
+                      <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                    )}
                   </button>
                   <button
                     onClick={e => {
@@ -737,8 +743,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(InvItemMaster)
+  connect(mapStateToProps, mapDispatchToProps)(InvItemMaster)
 );

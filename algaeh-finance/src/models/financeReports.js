@@ -209,6 +209,342 @@ export default {
       .catch(e => {
         next(e);
       });
+  },
+
+  //created by irfan: ACCOUNT RECEIVABLE REPORT
+  getAccountReceivableAging: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    const decimal_places = req.userIdentity.decimal_places;
+
+    _mysql
+      .executeQuery({
+        query:
+          "with recursive cte  as (\
+            select  finance_account_head_id\
+            from finance_account_head where finance_account_head_id =21\
+            union select H.finance_account_head_id\
+            from finance_account_head  H inner join cte\
+            on H.parent_acc_id = cte.finance_account_head_id  \
+            )select * from cte;",
+
+        printQuery: false
+      })
+      .then(result => {
+        const head_ids = [];
+
+        result.forEach(item => {
+          head_ids.push(item.finance_account_head_id);
+        });
+
+        _mysql
+          .executeQuery({
+            query: ` select finance_account_child_id,child_name from finance_account_child
+              where head_id in (${head_ids});
+            select    ROUND(sum(debit_amount), ${decimal_places}) as debit_amount ,child_id from finance_voucher_details where
+            head_id in(${head_ids}) and payment_date =CURDATE()
+            group by child_id  with rollup;
+            select  ROUND(sum(debit_amount), ${decimal_places}) as debit_amount ,child_id from finance_voucher_details where
+            head_id in(${head_ids}) and payment_date between  DATE_SUB(CURDATE(),INTERVAL 31 DAY)  and
+            DATE_SUB(CURDATE(),INTERVAL 1 DAY) group by child_id  with rollup;
+            select  ROUND(sum(debit_amount) , ${decimal_places}) as debit_amount ,child_id from finance_voucher_details where
+            head_id in(${head_ids}) and payment_date between  DATE_SUB(CURDATE(),INTERVAL 62 DAY) and
+            DATE_SUB(CURDATE(),INTERVAL 32 DAY) group by child_id  with rollup;
+            select ROUND( sum(debit_amount), ${decimal_places}) as debit_amount ,child_id from finance_voucher_details where
+            head_id in(${head_ids}) and payment_date between  DATE_SUB(CURDATE(),INTERVAL 93 DAY) and 
+            DATE_SUB(CURDATE(),INTERVAL 63 DAY) group by child_id  with rollup;
+            select  ROUND(sum(debit_amount), ${decimal_places}) as debit_amount ,child_id from finance_voucher_details where
+            head_id in(${head_ids}) and payment_date < DATE_SUB(CURDATE(),INTERVAL 93 DAY)
+            group by child_id  with rollup;`,
+
+            printQuery: false
+          })
+          .then(Result => {
+            const ledgers = Result[0];
+            let todays_total = parseFloat(0).toFixed(decimal_places);
+            let thirty_days_total = parseFloat(0).toFixed(decimal_places);
+            let sixty_days_total = parseFloat(0).toFixed(decimal_places);
+            let ninety_days_total = parseFloat(0).toFixed(decimal_places);
+            let above_ninety_days_total = parseFloat(0).toFixed(decimal_places);
+            let grand_total = parseFloat(0).toFixed(decimal_places);
+
+            const outputArray = [];
+            if (Result[1].length > 1) {
+              todays_total = Result[1].pop().debit_amount;
+            }
+            if (Result[2].length > 1) {
+              thirty_days_total = Result[2].pop().debit_amount;
+            }
+            if (Result[3].length > 1) {
+              sixty_days_total = Result[3].pop().debit_amount;
+            }
+            if (Result[4].length > 1) {
+              ninety_days_total = Result[4].pop().debit_amount;
+            }
+            if (Result[5].length > 1) {
+              above_ninety_days_total = Result[5].pop().debit_amount;
+            }
+
+            ledgers.forEach(ledger => {
+              let todays_amount = parseFloat(0).toFixed(decimal_places);
+              let thirty_days_amount = parseFloat(0).toFixed(decimal_places);
+              let sixty_days_amount = parseFloat(0).toFixed(decimal_places);
+              let ninety_days_amount = parseFloat(0).toFixed(decimal_places);
+              let above_ninety_days_amount = parseFloat(0).toFixed(
+                decimal_places
+              );
+
+              const todays = Result[1].find(
+                f => f.child_id == ledger.finance_account_child_id
+              );
+
+              if (todays) {
+                todays_amount = todays.debit_amount;
+              }
+              const thirty_days = Result[2].find(
+                f => f.child_id == ledger.finance_account_child_id
+              );
+
+              if (thirty_days) {
+                thirty_days_amount = thirty_days.debit_amount;
+              }
+              const sixty_days = Result[3].find(
+                f => f.child_id == ledger.finance_account_child_id
+              );
+              if (sixty_days) {
+                sixty_days_amount = sixty_days.debit_amount;
+              }
+              const ninety_days = Result[4].find(
+                f => f.child_id == ledger.finance_account_child_id
+              );
+              if (ninety_days) {
+                ninety_days_amount = ninety_days.debit_amount;
+              }
+              const above_ninety_days = Result[5].find(
+                f => f.child_id == ledger.finance_account_child_id
+              );
+
+              if (above_ninety_days) {
+                above_ninety_days_amount = above_ninety_days.debit_amount;
+              }
+
+              const balance = (
+                parseFloat(todays_amount) +
+                parseFloat(thirty_days_amount) +
+                parseFloat(sixty_days_amount) +
+                parseFloat(ninety_days_amount) +
+                parseFloat(above_ninety_days_amount)
+              ).toFixed(decimal_places);
+
+              if (balance > 0) {
+                outputArray.push({
+                  customer: ledger.child_name,
+                  todays_amount: todays_amount,
+                  thirty_days_amount: thirty_days_amount,
+                  sixty_days_amount: sixty_days_amount,
+                  ninety_days_amount: ninety_days_amount,
+                  above_ninety_days_amount: above_ninety_days_amount,
+                  balance: balance
+                });
+              }
+            });
+
+            grand_total = (
+              parseFloat(todays_total) +
+              parseFloat(thirty_days_total) +
+              parseFloat(sixty_days_total) +
+              parseFloat(ninety_days_total) +
+              parseFloat(above_ninety_days_total)
+            ).toFixed(decimal_places);
+
+            req.records = {
+              data: outputArray,
+              todays_total: todays_total,
+              thirty_days_total: thirty_days_total,
+              sixty_days_total: sixty_days_total,
+              ninety_days_total: ninety_days_total,
+              above_ninety_days_total: above_ninety_days_total,
+              grand_total: grand_total
+            };
+            next();
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  //created by irfan: ACCOUNT PAYBLE REPORT
+  getAccountPayableAging: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    const decimal_places = req.userIdentity.decimal_places;
+
+    _mysql
+      .executeQuery({
+        query:
+          "with recursive cte  as (\
+                  select  finance_account_head_id\
+                  from finance_account_head where finance_account_head_id =21\
+                  union select H.finance_account_head_id\
+                  from finance_account_head  H inner join cte\
+                  on H.parent_acc_id = cte.finance_account_head_id  \
+                  )select * from cte;",
+
+        printQuery: false
+      })
+      .then(result => {
+        const head_ids = [];
+
+        result.forEach(item => {
+          head_ids.push(item.finance_account_head_id);
+        });
+
+        _mysql
+          .executeQuery({
+            query: ` select finance_account_child_id,child_name from finance_account_child
+                    where head_id in (${head_ids});
+                  select    ROUND(sum(credit_amount), ${decimal_places}) as credit_amount ,child_id from finance_voucher_details where
+                  head_id in(${head_ids}) and payment_date =CURDATE()
+                  group by child_id  with rollup;
+                  select  ROUND(sum(credit_amount), ${decimal_places}) as credit_amount ,child_id from finance_voucher_details where
+                  head_id in(${head_ids}) and payment_date between  DATE_SUB(CURDATE(),INTERVAL 31 DAY)  and
+                  DATE_SUB(CURDATE(),INTERVAL 1 DAY) group by child_id  with rollup;
+                  select  ROUND(sum(credit_amount) , ${decimal_places}) as credit_amount ,child_id from finance_voucher_details where
+                  head_id in(${head_ids}) and payment_date between  DATE_SUB(CURDATE(),INTERVAL 62 DAY) and
+                  DATE_SUB(CURDATE(),INTERVAL 32 DAY) group by child_id  with rollup;
+                  select ROUND( sum(credit_amount), ${decimal_places}) as credit_amount ,child_id from finance_voucher_details where
+                  head_id in(${head_ids}) and payment_date between  DATE_SUB(CURDATE(),INTERVAL 93 DAY) and 
+                  DATE_SUB(CURDATE(),INTERVAL 63 DAY) group by child_id  with rollup;
+                  select  ROUND(sum(credit_amount), ${decimal_places}) as credit_amount ,child_id from finance_voucher_details where
+                  head_id in(${head_ids}) and payment_date < DATE_SUB(CURDATE(),INTERVAL 93 DAY)
+                  group by child_id  with rollup;`,
+
+            printQuery: false
+          })
+          .then(Result => {
+            const ledgers = Result[0];
+            let todays_total = parseFloat(0).toFixed(decimal_places);
+            let thirty_days_total = parseFloat(0).toFixed(decimal_places);
+            let sixty_days_total = parseFloat(0).toFixed(decimal_places);
+            let ninety_days_total = parseFloat(0).toFixed(decimal_places);
+            let above_ninety_days_total = parseFloat(0).toFixed(decimal_places);
+            let grand_total = parseFloat(0).toFixed(decimal_places);
+
+            const outputArray = [];
+            if (Result[1].length > 1) {
+              todays_total = Result[1].pop().credit_amount;
+            }
+            if (Result[2].length > 1) {
+              thirty_days_total = Result[2].pop().credit_amount;
+            }
+            if (Result[3].length > 1) {
+              sixty_days_total = Result[3].pop().credit_amount;
+            }
+            if (Result[4].length > 1) {
+              ninety_days_total = Result[4].pop().credit_amount;
+            }
+            if (Result[5].length > 1) {
+              above_ninety_days_total = Result[5].pop().credit_amount;
+            }
+
+            ledgers.forEach(ledger => {
+              let todays_amount = parseFloat(0).toFixed(decimal_places);
+              let thirty_days_amount = parseFloat(0).toFixed(decimal_places);
+              let sixty_days_amount = parseFloat(0).toFixed(decimal_places);
+              let ninety_days_amount = parseFloat(0).toFixed(decimal_places);
+              let above_ninety_days_amount = parseFloat(0).toFixed(
+                decimal_places
+              );
+
+              const todays = Result[1].find(
+                f => f.child_id == ledger.finance_account_child_id
+              );
+
+              if (todays) {
+                todays_amount = todays.credit_amount;
+              }
+              const thirty_days = Result[2].find(
+                f => f.child_id == ledger.finance_account_child_id
+              );
+
+              if (thirty_days) {
+                thirty_days_amount = thirty_days.credit_amount;
+              }
+              const sixty_days = Result[3].find(
+                f => f.child_id == ledger.finance_account_child_id
+              );
+              if (sixty_days) {
+                sixty_days_amount = sixty_days.credit_amount;
+              }
+              const ninety_days = Result[4].find(
+                f => f.child_id == ledger.finance_account_child_id
+              );
+              if (ninety_days) {
+                ninety_days_amount = ninety_days.credit_amount;
+              }
+              const above_ninety_days = Result[5].find(
+                f => f.child_id == ledger.finance_account_child_id
+              );
+
+              if (above_ninety_days) {
+                above_ninety_days_amount = above_ninety_days.credit_amount;
+              }
+
+              const balance = (
+                parseFloat(todays_amount) +
+                parseFloat(thirty_days_amount) +
+                parseFloat(sixty_days_amount) +
+                parseFloat(ninety_days_amount) +
+                parseFloat(above_ninety_days_amount)
+              ).toFixed(decimal_places);
+
+              if (balance > 0) {
+                outputArray.push({
+                  customer: ledger.child_name,
+                  todays_amount: todays_amount,
+                  thirty_days_amount: thirty_days_amount,
+                  sixty_days_amount: sixty_days_amount,
+                  ninety_days_amount: ninety_days_amount,
+                  above_ninety_days_amount: above_ninety_days_amount,
+                  balance: balance
+                });
+              }
+            });
+
+            grand_total = (
+              parseFloat(todays_total) +
+              parseFloat(thirty_days_total) +
+              parseFloat(sixty_days_total) +
+              parseFloat(ninety_days_total) +
+              parseFloat(above_ninety_days_total)
+            ).toFixed(decimal_places);
+
+            req.records = {
+              data: outputArray,
+              todays_total: todays_total,
+              thirty_days_total: thirty_days_total,
+              sixty_days_total: sixty_days_total,
+              ninety_days_total: ninety_days_total,
+              above_ninety_days_total: above_ninety_days_total,
+              grand_total: grand_total
+            };
+            next();
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };
 

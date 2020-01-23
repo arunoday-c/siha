@@ -11,12 +11,12 @@ export default class DisplayInsuranceDetails extends Component {
   }
 
   render() {
-    
     return (
-      <div className="col-12">
-      
+      <div
+        className="col-12"
+        style={{ background: "#fff", border: "1px solid #d3d3d3" }}
+      >
         <PrimaryInsurance BillingIOputs={this.props.BillingIOputs} />
-   
       </div>
     );
   }

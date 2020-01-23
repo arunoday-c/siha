@@ -78,7 +78,10 @@ class AddReciptForm extends Component {
           {context => (
             <div className="hptl-phase1-add-recipt-form">
               <div className="container-fluid">
-                <div className="row secondary-box-container">
+                <div
+                  className="row secondary-box-container"
+                  style={{ paddingTop: 10 }}
+                >
                   <div className="col-lg-3">
                     <AlgaehLabel
                       label={{
@@ -89,8 +92,8 @@ class AddReciptForm extends Component {
                       {this.state.receipt_number
                         ? this.state.receipt_number
                         : this.state.selectedLang === "en"
-                          ? "Not Generated"
-                          : "غير مولدة"}
+                        ? "Not Generated"
+                        : "غير مولدة"}
                     </h6>
                   </div>
                   <div className="col-lg-3">
@@ -231,31 +234,32 @@ class AddReciptForm extends Component {
                     </label>
                   </div>
 
-                  {this.state.Cardchecked === true ? <AlagehAutoComplete
-                    div={{ className: "col-lg-2 mandatory" }}
-                    label={{
-                      fieldName: "select_card",
-                      isImp: this.state.Cardchecked
-                    }}
-                    selector={{
-                      name: "bank_card_id",
-                      className: "select-fld",
-                      value: this.state.bank_card_id,
-                      dataSource: {
-                        textField: "card_name",
-                        valueField: "hims_d_bank_card_id",
-                        data: this.props.bankscards
-                      },
-                      onChange: texthandle.bind(this, this, context),
-                      onClear: () => {
-                        context.updateState({ bank_card_id: null });
-                        // this.setState({
-                        //   bank_card_id: null
-                        // });
-                      }
-
-                    }}
-                  /> : null}
+                  {this.state.Cardchecked === true ? (
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-2 mandatory" }}
+                      label={{
+                        fieldName: "select_card",
+                        isImp: this.state.Cardchecked
+                      }}
+                      selector={{
+                        name: "bank_card_id",
+                        className: "select-fld",
+                        value: this.state.bank_card_id,
+                        dataSource: {
+                          textField: "card_name",
+                          valueField: "hims_d_bank_card_id",
+                          data: this.props.bankscards
+                        },
+                        onChange: texthandle.bind(this, this, context),
+                        onClear: () => {
+                          context.updateState({ bank_card_id: null });
+                          // this.setState({
+                          //   bank_card_id: null
+                          // });
+                        }
+                      }}
+                    />
+                  ) : null}
 
                   <AlagehFormGroup
                     div={{ className: "col-lg-2" }}
@@ -443,8 +447,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AddReciptForm)
+  connect(mapStateToProps, mapDispatchToProps)(AddReciptForm)
 );
