@@ -223,7 +223,7 @@ export default {
             select hims_f_loan_application_id, loan_application_number, employee_id, loan_id,\
               loan_application_date, approved_amount\
               from  hims_f_loan_application where loan_authorized='APR' and loan_dispatch_from='SAL' and employee_id in (?);\
-            select hims_d_earning_deduction_id from hims_d_earning_deduction where component_category = 'D' and component_type='AD';\
+            select hims_d_earning_deduction_id from hims_d_earning_deduction where component_category = 'A';\
             select hims_d_hrms_options_id,standard_working_hours,standard_break_hours,salary_calendar,salary_calendar_fixed_days, ot_calculation from hims_d_hrms_options;\
             select hims_d_earning_deduction_id from hims_d_earning_deduction where component_type='OV';\
             select E.hims_d_employee_id as employee_id, OT.payment_type, OT.working_day_hour, OT. weekoff_day_hour, \
@@ -369,7 +369,6 @@ export default {
                                 f.employee_id == empResult[i]["employee_id"]
                               );
                             });
-                            console.log("_contrubutions", _contrubutions)
 
                             getContrubutionsComponents({
                               contribution: _contrubutions,
@@ -379,7 +378,6 @@ export default {
                               next: next,
                               decimal_places: req.userIdentity.decimal_places
                             }).then(contributionOutput => {
-                              console.log("contributionOutput", contributionOutput)
                               current_contribution_amt_array =
                                 contributionOutput.current_contribution_amt_array;
                               final_contribution_amount =

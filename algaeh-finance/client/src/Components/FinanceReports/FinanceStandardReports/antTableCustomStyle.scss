@@ -4,8 +4,13 @@
     tr {
       height: 15px;
       box-sizing: border-box;
+      border-collapse: collapse;
       td {
-        border: 1px solid #000;
+        border-right: 1px solid #e8e8e8;
+        overflow-wrap: break-word;
+        padding: 0;
+        margin: 0;
+        border-collapse: collapse;
       }
     }
   }

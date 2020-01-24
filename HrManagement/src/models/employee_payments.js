@@ -346,22 +346,25 @@ export default {
                   .executeQuery({
                     query:
                       "UPDATE `hims_f_employee_advance` SET `advance_status`='PAI', `updated_date`=?, `updated_by`=? \
-              where hims_f_employee_advance_id=?",
+                      where hims_f_employee_advance_id=? ; select head_id, child_id from hims_d_earning_deduction where hims_d_earning_deduction_id=?",
                     values: [
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
-                      inputParam.employee_advance_id
-                    ]
+                      inputParam.employee_advance_id,
+                      inputParam.earnings_id
+                    ],
+                    printQuery: true
                   })
                   .then(AdvanceResult => {
+                    req.body.advance_acc = AdvanceResult[1]
                     let result = {
                       payment_application_code: payment_application_code
                     };
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = result;
-                      next();
-                    });
+                    // _mysql.commitTransaction(() => {
+                    //   _mysql.releaseConnection();
+                    req.records = result;
+                    next();
+                    // });
                   })
                   .catch(error => {
                     next(error);
@@ -806,24 +809,28 @@ export default {
             isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool
           };
+          console.log("inputParam.payment_type", inputParam.payment_type)
+          console.log("inputParam.earnings_id", inputParam.earnings_id)
           if (inputParam.payment_type == "AD") {
             _mysql
               .executeQuery({
                 query:
                   "UPDATE `hims_f_employee_advance` SET `advance_status`='APR', `updated_date`=?, `updated_by`=? \
-              where hims_f_employee_advance_id=?",
+              where hims_f_employee_advance_id=?; select head_id, child_id from hims_d_earning_deduction where hims_d_earning_deduction_id=?",
                 values: [
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
-                  inputParam.employee_advance_id
+                  inputParam.employee_advance_id,
+                  inputParam.earnings_id
                 ]
               })
               .then(AdvanceResult => {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = AdvanceResult;
-                  next();
-                });
+                req.body.advance_acc = AdvanceResult[1]
+                // _mysql.commitTransaction(() => {
+                //   _mysql.releaseConnection();
+                req.records = AdvanceResult;
+                next();
+                // });
               });
           } else if (inputParam.payment_type == "LN") {
             _mysql
@@ -1209,8 +1216,8 @@ export default {
             "select hims_f_employee_payments_id,employee_id,employee_advance_id,employee_loan_id,employee_leave_encash_id,\
           employee_end_of_service_id,employee_final_settlement_id,employee_leave_settlement_id,payment_application_code, \
           payment_type, payment_amount, payment_date, payment_mode, cheque_number, deduction_month, cancel, bank_id,\
-          emp.employee_code, emp.full_name from hims_f_employee_payments, hims_d_employee emp where \
-          hims_f_employee_payments.employee_id = emp.hims_d_employee_id and emp.hospital_id=? and payment_type=?" +
+          emp.employee_code, emp.full_name,earnings_id from hims_f_employee_payments EP, hims_d_employee emp where \
+          EP.employee_id = emp.hims_d_employee_id and emp.hospital_id=? and payment_type=?" +
             _stringData,
           values: inputValues,
           printQuery: true
@@ -1332,12 +1339,20 @@ export default {
           ) {
             // inputParam.payment_mode,
             let strQuery = ""
-            if (inputParam.payment_type === "LN") {
+            if (inputParam.payment_type === "AD") {
+              strQuery += _mysql.mysqlQueryFormat(
+                "select advance_amount as pay_amount, employee_code, full_name from hims_f_employee_advance LA  \
+                inner join hims_d_employee E on E.hims_d_employee_id = LA.employee_id \
+                where hims_f_employee_advance_id = ?;",
+                [inputParam.employee_advance_id]
+              );
+            }
+            else if (inputParam.payment_type === "LN") {
               strQuery += _mysql.mysqlQueryFormat(
                 "select head_id, child_id, loan_amount as pay_amount, employee_code, full_name from hims_f_loan_application LA \
                 inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id \
                 inner join hims_d_employee E on E.hims_d_employee_id = LA.employee_id \
-                where hims_f_loan_application_id = ?;",
+                where hims_f_loan_application_id = ?",
                 [inputParam.employee_loan_id]
               );
             }
@@ -1349,7 +1364,14 @@ export default {
               .then(headerResult => {
                 let _header_narattion = ""
 
-                if (inputParam.payment_type === "LN") {
+                if (inputParam.payment_type === "AD") {
+                  _header_narattion = "Advance Payment For " + headerResult[0].employee_code + "/" +
+                    headerResult[0].full_name;
+                  headerResult[0].head_id = inputParam.advance_acc[0].head_id
+                  headerResult[0].child_id = inputParam.advance_acc[0].child_id
+
+                }
+                else if (inputParam.payment_type === "LN") {
                   _header_narattion = "Loan Payment " + headerResult[0].loan_description + " For " +
                     headerResult[0].employee_code + "/" + headerResult[0].full_name;
                 }
@@ -1374,7 +1396,7 @@ export default {
                   .then(day_end_header => {
                     const insertSubDetail = []
 
-                    console.log("payment_cancel", inputParam.payment_cancel)
+                    // console.log("payment_cancel", inputParam.payment_cancel)
 
                     if (inputParam.payment_mode === "CS") {
                       //Cash in Hand Entry                      
