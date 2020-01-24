@@ -283,15 +283,6 @@ function Login(props) {
                 <div className="col-12">
                   <div className="row">
                     <div className="col-12">
-                      <div className="companyLogo" />
-                    </div>
-                    <div
-                      className="col-12"
-                      style={{
-                        paddingTop: 15,
-                        paddingBottom: 15
-                      }}
-                    >
                       {showPassword === true ? (
                         <div className="col-12 passwordSec">
                           {login.happyBirthDay !== "" ? (
@@ -391,51 +382,57 @@ function Login(props) {
                           </div>
                         </div>
                       ) : (
-                        <div className="col-12 usernameSec">
-                          <div className="row">
-                            <AlagehFormGroup
-                              div={{ className: "col-12 form-group" }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "username",
-                                value: login.username,
-                                events: {
-                                  onChange: e => {
-                                    setLogin({
-                                      ...login,
-                                      username: e.target.value
-                                    });
-                                  }
-                                },
-                                others: {
-                                  tabIndex: "1",
-                                  placeholder: "Enter Username",
-                                  ref: userRef,
-                                  onKeyDown: onHitEnter
-                                }
-                              }}
-                            />
-                            <br />
-                            <div
-                              className="col-12 form-group"
-                              style={{ textAlign: "right" }}
-                            >
-                              <button
-                                className="btn btn-lg btn-block btn-secondary sign-btn"
-                                disabled={
-                                  login.username.replace(/ /g, "") !== ""
-                                    ? false
-                                    : true
-                                }
-                                type="submit"
-                                tabIndex="2"
-                                onClick={checkUserActive}
-                              >
-                                Next
-                              </button>
-                            </div>{" "}
+                        <>
+                          {" "}
+                          <div className="col-12">
+                            <div className="companyLogo" />
                           </div>
-                        </div>
+                          <div className="col-12 usernameSec">
+                            <div className="row">
+                              <AlagehFormGroup
+                                div={{ className: "col-12 form-group" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "username",
+                                  value: login.username,
+                                  events: {
+                                    onChange: e => {
+                                      setLogin({
+                                        ...login,
+                                        username: e.target.value
+                                      });
+                                    }
+                                  },
+                                  others: {
+                                    tabIndex: "1",
+                                    placeholder: "Enter Username",
+                                    ref: userRef,
+                                    onKeyDown: onHitEnter
+                                  }
+                                }}
+                              />
+                              <br />
+                              <div
+                                className="col-12 form-group"
+                                style={{ textAlign: "right" }}
+                              >
+                                <button
+                                  className="btn btn-lg btn-block btn-secondary sign-btn"
+                                  disabled={
+                                    login.username.replace(/ /g, "") !== ""
+                                      ? false
+                                      : true
+                                  }
+                                  type="submit"
+                                  tabIndex="2"
+                                  onClick={checkUserActive}
+                                >
+                                  Next
+                                </button>
+                              </div>{" "}
+                            </div>
+                          </div>
+                        </>
                       )}
                     </div>
                   </div>
