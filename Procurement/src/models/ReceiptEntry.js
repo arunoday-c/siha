@@ -492,7 +492,7 @@ export default {
 
               strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, \
                 GH.net_total, GH.total_tax, \
-                GH.net_payable, PL.head_id, PL.child_id, V.head_id as v_head_id, V.child_id as v_child_id \
+                GH.net_payable, PL.head_id, PL.child_id, PL.hospital_id ,V.head_id as v_head_id, V.child_id as v_child_id \
                 from hims_f_procurement_grn_header GH \
                 inner join hims_d_pharmacy_location PL on PL.hims_d_pharmacy_location_id = GH.pharmcy_location_id\
                 inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id\
@@ -512,8 +512,8 @@ export default {
 
               strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, \
                 GH.net_total, GH.total_tax, \
-                GH.net_payable, PL.head_id, PL.child_id, V.head_id as v_head_id, V.child_id as v_child_id \
-                from hims_f_procurement_grn_header GH \
+                GH.net_payable, PL.head_id, PL.child_id, PL.hospital_id, V.head_id as v_head_id, V.child_id as v_child_id, \
+                V.vendor_name from hims_f_procurement_grn_header GH \
                 inner join hims_d_inventory_location PL on PL.hims_d_inventory_location_id = GH.inventory_location_id \
                 inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id\
                 where hims_f_procurement_grn_header_id=?;"
@@ -529,8 +529,8 @@ export default {
                 _mysql
                   .executeQuery({
                     query: "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
-                        document_number, from_screen, narration, hospital_id) \
-                        VALUES (?,?,?,?,?,?,?,?)",
+                        document_number, from_screen, narration,  invoice_no, entered_date, entered_by) \
+                        VALUES (?,?,?,?,?,?,?,?,?,?)",
                     values: [
                       new Date(),
                       headerResult[0].net_payable,
@@ -538,8 +538,10 @@ export default {
                       headerResult[0].hims_f_procurement_grn_header_id,
                       headerResult[0].grn_number,
                       inputParam.ScreenCode,
+                      "Receipt Generated " + + headerResult[0].vendor_name + "/" + headerResult[0].net_payable,
                       headerResult[0].inovice_number,
-                      req.userIdentity.hospital_id
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id
                     ],
                     printQuery: true
                   })
@@ -553,7 +555,8 @@ export default {
                       "child_id",
                       "debit_amount",
                       "payment_type",
-                      "credit_amount"
+                      "credit_amount",
+                      "hospital_id"
                     ];
 
                     //Vendor Entry
@@ -564,6 +567,7 @@ export default {
                       debit_amount: 0,
                       payment_type: "CR",
                       credit_amount: headerResult[0].net_payable,
+                      hospital_id: req.userIdentity.hospital_id
                     });
 
                     //Tax Entry
@@ -575,6 +579,7 @@ export default {
                         debit_amount: headerResult[0].total_tax,
                         payment_type: "DR",
                         credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
                       });
                     }
 
@@ -585,6 +590,7 @@ export default {
                       debit_amount: headerResult[0].net_total,
                       payment_type: "DR",
                       credit_amount: 0,
+                      hospital_id: headerResult[0].hospital_id
                     });
 
 
@@ -599,10 +605,7 @@ export default {
                         extraValues: {
                           day_end_header_id: day_end_header.insertId,
                           year: year,
-                          month: month,
-                          entered_date: new Date(),
-                          entered_by: req.userIdentity.algaeh_d_app_user_id,
-                          hospital_id: req.userIdentity.hospital_id
+                          month: month
                         },
                         printQuery: false
                       })

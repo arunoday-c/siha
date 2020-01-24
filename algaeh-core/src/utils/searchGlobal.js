@@ -126,8 +126,7 @@ let algaehSearchConfig = (searchName, req) => {
           hims_d_pharmacy_location FPL, hims_d_pharmacy_location TPL \
           where FPL.hims_d_pharmacy_location_id = RH.from_location_id and \
           RH.to_location_id = TPL.hims_d_pharmacy_location_id and RH.authorize1 = 'Y' and RH.authorie2 = 'Y' \
-          and RH.is_completed = 'N' and RH.requistion_type='MR' and RH.cancelled='N' and  RH.hospital_id=" +
-          hospitalId,
+          and RH.is_completed = 'N' and RH.requistion_type='MR' and RH.cancelled='N' ",
         orderBy: "hims_f_pharamcy_material_header_id desc"
       },
       {
@@ -208,8 +207,7 @@ let algaehSearchConfig = (searchName, req) => {
           hims_d_inventory_location FPL, hims_d_inventory_location TPL \
           where FPL.hims_d_inventory_location_id = RH.from_location_id and \
           RH.to_location_id = TPL.hims_d_inventory_location_id and RH.authorize1 = 'Y' and RH.authorie2 = 'Y'\
-          and RH.is_completed = 'N' and RH.requistion_type='MR' and RH.cancelled='N' and  RH.hospital_id=" +
-          hospitalId,
+          and RH.is_completed = 'N' and RH.requistion_type='MR' and RH.cancelled='N'",
         orderBy: "hims_f_inventory_material_header_id desc"
       },
       {

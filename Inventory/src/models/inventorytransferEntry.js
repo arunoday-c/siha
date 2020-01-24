@@ -849,9 +849,9 @@ export default {
             _mysql
               .executeQuery({
                 query: "select TH.hims_f_inventory_transfer_header_id, TH.transfer_number, \
-                FPL.head_id, FPL.child_id, TPL.head_id as to_head_id, TPL.child_id as to_child_id, \
-                TB.ack_quantity, TB.quantity_transfer, TB.unit_cost, (TB.unit_cost * TB.ack_quantity) as ack_cost, \
-                (TB.unit_cost * TB.quantity_transfer) as transfered_cost, \
+                FPL.head_id, FPL.child_id, FPL.hospital_id, TPL.hospital_id as to_hospital_id, TPL.head_id as to_head_id, \
+                TPL.child_id as to_child_id, TB.ack_quantity, TB.quantity_transfer, TB.unit_cost, \
+                (TB.unit_cost * TB.ack_quantity) as ack_cost, (TB.unit_cost * TB.quantity_transfer) as transfered_cost, \
                 (TB.quantity_transfer - TB.ack_quantity) as not_recived, \
                 ((TB.unit_cost) * (TB.quantity_transfer - TB.ack_quantity)) as non_reviced_transfer_cost \
                 from hims_f_inventory_transfer_header TH \
@@ -892,8 +892,8 @@ export default {
                 _mysql
                   .executeQuery({
                     query: "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
-                        document_number, from_screen, narration, hospital_id) \
-                        VALUES (?,?,?,?,?,?,?,?)",
+                        document_number, from_screen, narration, entered_date, entered_by) \
+                        VALUES (?,?,?,?,?,?,?,?,?)",
                     values: [
                       new Date(),
                       transfered_cost,
@@ -902,7 +902,8 @@ export default {
                       headerResult[0].transfer_number,
                       inputParam.ScreenCode,
                       "Transfer Done",
-                      req.userIdentity.hospital_id
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id
                     ],
                     printQuery: true
                   })
@@ -916,7 +917,8 @@ export default {
                       "child_id",
                       "debit_amount",
                       "payment_type",
-                      "credit_amount"
+                      "credit_amount",
+                      "hospital_id"
                     ];
 
                     //From Location Entry
@@ -927,6 +929,7 @@ export default {
                       debit_amount: 0,
                       payment_type: "CR",
                       credit_amount: transfered_cost,
+                      hospital_id: headerResult[0].hospital_id
                     });
 
                     //Non Recived Entry
@@ -942,7 +945,8 @@ export default {
                         child_id: "38",
                         debit_amount: non_reviced_transfer_cost,
                         payment_type: "DR",
-                        credit_amount: 0
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
                       });
                     }
 
@@ -954,6 +958,7 @@ export default {
                       debit_amount: ack_cost,
                       payment_type: "DR",
                       credit_amount: 0,
+                      hospital_id: headerResult[0].to_hospital_id
                     });
 
 
@@ -968,10 +973,7 @@ export default {
                         extraValues: {
                           day_end_header_id: day_end_header.insertId,
                           year: year,
-                          month: month,
-                          entered_date: new Date(),
-                          entered_by: req.userIdentity.algaeh_d_app_user_id,
-                          hospital_id: req.userIdentity.hospital_id
+                          month: month
                         },
                         printQuery: false
                       })

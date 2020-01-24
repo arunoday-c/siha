@@ -190,7 +190,9 @@ export default {
               printQuery: true
             })
             .then(finalResult => {
-              let headerResult = finalResult[0]
+              console.log("finalResult", finalResult)
+              let headerResult = finalResult
+              console.log("headerResult", headerResult)
               req.body.hims_f_pharmcy_sales_return_header_id = headerResult.insertId;
               req.body.sales_return_number = sales_return_number;
 
@@ -498,7 +500,7 @@ export default {
             SELECT * FROM finance_accounts_maping; \
             SELECT hims_d_services_id, head_id, child_id FROM hims_d_services where hims_d_services_id in (?); \
             SELECT hims_d_item_master_id, waited_avg_cost FROM hims_d_item_master where hims_d_item_master_id in (?); \
-            SELECT head_id, child_id FROM hims_d_pharmacy_location where hims_d_pharmacy_location_id=?;",
+            SELECT head_id, child_id, hospital_id FROM hims_d_pharmacy_location where hims_d_pharmacy_location_id=?;",
           values: [_all_service_id, _all_item_id, inputParam.location_id],
           printQuery: true
         })
@@ -524,7 +526,7 @@ export default {
               .executeQuery({
                 query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
                           voucher_type, document_id, document_number, from_screen, \
-                          narration, hospital_id) VALUES (?,?,?,?,?,?,?,?)",
+                          narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?)",
                 values: [
                   new Date(),
                   inputParam.net_amount,
@@ -533,7 +535,8 @@ export default {
                   inputParam.sales_return_number,
                   inputParam.ScreenCode,
                   "Pharmacy Sales for " + inputParam.net_amount,
-                  req.userIdentity.hospital_id
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id
                 ],
                 printQuery: true
               })
@@ -547,7 +550,8 @@ export default {
                   "child_id",
                   "debit_amount",
                   "payment_type",
-                  "credit_amount"
+                  "credit_amount",
+                  "hospital_id"
                 ];
 
                 // Sheet Level Discount
@@ -558,7 +562,8 @@ export default {
                     child_id: sales_discount_acc.child_id,
                     debit_amount: 0,
                     payment_type: "CR",
-                    credit_amount: inputParam.sheet_discount_amount
+                    credit_amount: inputParam.sheet_discount_amount,
+                    hospital_id: req.userIdentity.hospital_id
                   });
                 }
 
@@ -570,7 +575,8 @@ export default {
                     child_id: pos_criedt_settl_acc.child_id,
                     debit_amount: 0,
                     payment_type: "CR",
-                    credit_amount: inputParam.credit_amount
+                    credit_amount: inputParam.credit_amount,
+                    hospital_id: req.userIdentity.hospital_id
                   });
                 }
 
@@ -582,7 +588,8 @@ export default {
                     child_id: output_tax_acc.child_id,
                     debit_amount: parseFloat(inputParam.patient_tax) + parseFloat(inputParam.company_tax),
                     payment_type: "DR",
-                    credit_amount: 0
+                    credit_amount: 0,
+                    hospital_id: req.userIdentity.hospital_id
                   });
                 }
 
@@ -596,7 +603,8 @@ export default {
                       child_id: cash_in_acc.child_id,
                       debit_amount: 0,
                       payment_type: "CR",
-                      credit_amount: inputParam.receiptdetails[i].amount
+                      credit_amount: inputParam.receiptdetails[i].amount,
+                      hospital_id: req.userIdentity.hospital_id
                     });
                   }
                 }
@@ -617,7 +625,8 @@ export default {
                     child_id: income_child_id.child_id,
                     debit_amount: inputParam.pharmacy_stock_detail[i].net_extended_cost,
                     payment_type: "DR",
-                    credit_amount: 0
+                    credit_amount: 0,
+                    hospital_id: req.userIdentity.hospital_id
                   });
 
                   const waited_avg_cost =
@@ -635,7 +644,8 @@ export default {
                     child_id: cogs_acc_data.child_id,
                     debit_amount: 0,
                     payment_type: "CR",
-                    credit_amount: waited_avg_cost
+                    credit_amount: waited_avg_cost,
+                    hospital_id: req.userIdentity.hospital_id
                   });
 
                   //Location Wise
@@ -645,7 +655,9 @@ export default {
                     child_id: location_acc[0].child_id,
                     debit_amount: waited_avg_cost,
                     payment_type: "DR",
-                    credit_amount: 0
+                    credit_amount: 0,
+                    hospital_id: location_acc[0].hospital_id
+
                   });
                 }
 
@@ -660,10 +672,7 @@ export default {
                     extraValues: {
                       day_end_header_id: day_end_header.insertId,
                       year: year,
-                      month: month,
-                      entered_date: new Date(),
-                      entered_by: req.userIdentity.algaeh_d_app_user_id,
-                      hospital_id: req.userIdentity.hospital_id
+                      month: month
                     },
                     printQuery: false
                   })

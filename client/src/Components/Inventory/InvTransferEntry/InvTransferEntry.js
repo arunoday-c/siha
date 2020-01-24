@@ -30,7 +30,7 @@ import Options from "../../../Options.json";
 import TransferEntryItems from "./TransferEntryItems/TransferEntryItems";
 import MyContext from "../../../utils/MyContext";
 import TransferIOputs from "../../../Models/InventoryTransferEntry";
-import AlgaehReport from "../../Wrapper/printReports";
+// import AlgaehReport from "../../Wrapper/printReports";
 import _ from "lodash";
 import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
@@ -101,25 +101,25 @@ class InvTransferEntry extends Component {
     });
 
 
-    if (
-      this.props.invuserwiselocations === undefined ||
-      this.props.invuserwiselocations.length === 0
-    ) {
-      this.props.getUserLocationPermission({
-        uri: "/inventoryGlobal/getUserLocationPermission",
-        module: "inventory",
-        method: "GET",
-        data: {
-          location_status: "A",
-          hospital_id: hospital.hims_d_hospital_id,
-          git_location: "N"
-        },
-        redux: {
-          type: "LOCATIOS_GET_DATA",
-          mappingName: "invuserwiselocations"
-        }
-      });
-    }
+    // if (
+    //   this.props.invuserwiselocations === undefined ||
+    //   this.props.invuserwiselocations.length === 0
+    // ) {
+    this.props.getUserLocationPermission({
+      uri: "/inventoryGlobal/getUserLocationPermission",
+      module: "inventory",
+      method: "GET",
+      data: {
+        location_status: "A",
+        hospital_id: hospital.hims_d_hospital_id,
+        git_location: "N"
+      },
+      redux: {
+        type: "LOCATIOS_GET_DATA",
+        mappingName: "invuserwiselocations"
+      }
+    });
+    // }
 
     if (
       this.props.hims_f_inventory_material_header_id !== undefined &&

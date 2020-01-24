@@ -451,13 +451,13 @@ export function generateAccountingEntry(req, res, next) {
                 ) {
                     console.log("inputParam.sales_invoice_mode ", inputParam.sales_invoice_mode)
                     let strQuery = "";
-                    let sales_done = ""
+                    let sales_done = "";
                     if (inputParam.sales_invoice_mode === "I") {
                         strQuery = mysql.format(
                             "select GH.hims_f_sales_invoice_header_id, GH.invoice_number, GH.net_total, GH.total_tax, \
-                            GH.net_payable, IL.head_id as inv_head_id, IL.child_id as inv_child_id, C.head_id as customer_head_id, C.child_id as customer_child_id,\
+                            GH.net_payable, IL.hospital_id ,IL.head_id as inv_head_id, IL.child_id as inv_child_id, C.head_id as customer_head_id, C.child_id as customer_child_id,\
                             DB.dispatch_quantity , DB.net_extended_cost, ITM.waited_avg_cost, S.head_id as income_head_id, \
-                            S.child_id as income_child_id, C.customer_name, IU.conversion_factor\
+                            S.child_id as income_child_id, C.customer_name, IU.conversion_factor, GH.hospital_id as c_hospital_id\
                             from hims_f_sales_invoice_header GH \
                             inner join hims_f_sales_invoice_detail GD on GH.hims_f_sales_invoice_header_id = GD.sales_invoice_header_id \
                             inner join hims_f_sales_dispatch_note_detail DD on DD.dispatch_note_header_id = GD.dispatch_note_header_id \
@@ -475,7 +475,7 @@ export function generateAccountingEntry(req, res, next) {
                         strQuery = mysql.format(
                             "select GH.hims_f_sales_invoice_header_id, GH.invoice_number, GH.net_total, GH.total_tax, \
                             GH.net_payable, GS.net_extended_cost, C.head_id as customer_head_id, C.child_id as customer_child_id, \
-                            S.head_id as income_head_id, S.child_id as income_child_id, C.customer_name\
+                            S.head_id as income_head_id, S.child_id as income_child_id, C.customer_name, GH.hospital_id as c_hospital_id\
                             from hims_f_sales_invoice_header GH \
                             inner join hims_f_sales_invoice_services GS on GH.hims_f_sales_invoice_header_id = GS.sales_invoice_header_id \
                             inner join hims_d_customer C on C.hims_d_customer_id = GH.customer_id\
@@ -496,7 +496,7 @@ export function generateAccountingEntry(req, res, next) {
                                 .executeQuery({
                                     query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
                                         voucher_type, document_id, document_number, from_screen, \
-                                        narration, hospital_id) VALUES (?,?,?,?,?,?,?,?)",
+                                        narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?)",
                                     values: [
                                         new Date(),
                                         headerResult[0].net_payable,
@@ -505,7 +505,8 @@ export function generateAccountingEntry(req, res, next) {
                                         headerResult[0].invoice_number,
                                         inputParam.ScreenCode,
                                         sales_done + " Sales done for  " + headerResult[0].customer_name,
-                                        req.userIdentity.hospital_id
+                                        new Date(),
+                                        req.userIdentity.algaeh_d_app_user_id
                                     ],
                                     printQuery: true
                                 })
@@ -519,7 +520,8 @@ export function generateAccountingEntry(req, res, next) {
                                         "child_id",
                                         "debit_amount",
                                         "payment_type",
-                                        "credit_amount"
+                                        "credit_amount",
+                                        "hospital_id"
                                     ];
 
                                     //Customer Entry
@@ -529,7 +531,8 @@ export function generateAccountingEntry(req, res, next) {
                                         child_id: headerResult[0].customer_child_id,
                                         debit_amount: headerResult[0].net_payable,
                                         payment_type: "DR",
-                                        credit_amount: 0
+                                        credit_amount: 0,
+                                        hospital_id: headerResult[0].c_hospital_id
                                     });
 
                                     //OUT PUT Tax Entry
@@ -541,6 +544,7 @@ export function generateAccountingEntry(req, res, next) {
                                             debit_amount: 0,
                                             payment_type: "CR",
                                             credit_amount: headerResult[0].total_tax,
+                                            hospital_id: req.userIdentity.hospital_id
                                         });
                                     }
 
@@ -562,7 +566,8 @@ export function generateAccountingEntry(req, res, next) {
                                             child_id: headerResult[i].income_child_id,
                                             debit_amount: 0,
                                             payment_type: "CR",
-                                            credit_amount: headerResult[i].net_extended_cost
+                                            credit_amount: headerResult[i].net_extended_cost,
+                                            hospital_id: req.userIdentity.hospital_id
                                         });
 
                                         if (inputParam.sales_invoice_mode === "I") {
@@ -573,7 +578,8 @@ export function generateAccountingEntry(req, res, next) {
                                                 child_id: cogs_acc_data.child_id,
                                                 debit_amount: waited_avg_cost,
                                                 payment_type: "DR",
-                                                credit_amount: 0
+                                                credit_amount: 0,
+                                                hospital_id: req.userIdentity.hospital_id
                                             });
 
                                             //Location Wise
@@ -583,7 +589,8 @@ export function generateAccountingEntry(req, res, next) {
                                                 child_id: headerResult[i].inv_child_id,
                                                 debit_amount: 0,
                                                 payment_type: "CR",
-                                                credit_amount: waited_avg_cost
+                                                credit_amount: waited_avg_cost,
+                                                hospital_id: headerResult[i].hospital_id
                                             });
                                         }
                                     }
@@ -599,10 +606,7 @@ export function generateAccountingEntry(req, res, next) {
                                             extraValues: {
                                                 day_end_header_id: day_end_header.insertId,
                                                 year: year,
-                                                month: month,
-                                                entered_date: new Date(),
-                                                entered_by: req.userIdentity.algaeh_d_app_user_id,
-                                                hospital_id: req.userIdentity.hospital_id
+                                                month: month
                                             },
                                             printQuery: false
                                         })

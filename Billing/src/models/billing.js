@@ -2205,14 +2205,15 @@ export default {
                where   SIN.hospital_id=${req.userIdentity.hospital_id} and SIN.network_id in (${network_ids})\
                AND SIN.services_id in (${service_ids}) and SIN.record_status='A' and NET.record_status='A';`;
           }
-
+          // req.userIdentity.hospital_id,
+          // hospital_id=? and
           _mysql
             .executeQuery({
               query: `select hims_d_services_id,service_code,cpt_code,service_name,arabic_service_name,service_desc,sub_department_id,\
              service_type_id,procedure_type,standard_fee,followup_free_fee,followup_paid_fee,discount,vat_applicable,\
              vat_percent,service_status,effective_start_date,effectice_end_date,physiotherapy_service from hims_d_services\
-             where hospital_id=? and hims_d_services_id in (?);${strQuery}`,
-              values: [req.userIdentity.hospital_id, service_ids],
+             where hims_d_services_id in (?);${strQuery}`,
+              values: [service_ids],
               printQuery: true
             })
             .then(result => {

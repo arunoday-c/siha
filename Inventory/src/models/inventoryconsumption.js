@@ -193,7 +193,7 @@ export default {
               select * from finance_accounts_maping;\
               SELECT hims_d_inventory_item_master_id, waited_avg_cost FROM hims_d_inventory_item_master \
               where hims_d_inventory_item_master_id in (?); \
-              SELECT head_id, child_id FROM hims_d_inventory_location where hims_d_inventory_location_id=?;",
+              SELECT location_description, head_id, child_id, hospital_id FROM hims_d_inventory_location where hims_d_inventory_location_id=?;",
           values: [_all_item_id, inputParam.location_id],
           printQuery: true
         })
@@ -215,7 +215,7 @@ export default {
               .executeQuery({
                 query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
                   voucher_type, document_id, document_number, from_screen, \
-                  narration, hospital_id) VALUES (?,?,?,?,?,?,?,?)",
+                  narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?)",
                 values: [
                   new Date(),
                   net_payable,
@@ -223,8 +223,9 @@ export default {
                   inputParam.hims_f_inventory_consumption_header_id,
                   inputParam.consumption_number,
                   inputParam.ScreenCode,
-                  "Consumption done for " + net_payable,
-                  req.userIdentity.hospital_id
+                  "Consumption done for " + location_acc[0].location_description + "/" + net_payable,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id
                 ],
                 printQuery: true
               })
@@ -238,7 +239,8 @@ export default {
                   "child_id",
                   "debit_amount",
                   "payment_type",
-                  "credit_amount"
+                  "credit_amount",
+                  "hospital_id"
                 ];
                 for (let i = 0; i < inputParam.inventory_stock_detail.length; i++) {
                   const item_avg_cost = item_waited_avg_cost.find(f =>
@@ -258,7 +260,8 @@ export default {
                     child_id: cogs_acc_data.child_id,
                     debit_amount: waited_avg_cost,
                     payment_type: "DR",
-                    credit_amount: 0
+                    credit_amount: 0,
+                    hospital_id: location_acc[0].hospital_id
                   });
 
                   //Location Wise
@@ -268,7 +271,8 @@ export default {
                     child_id: location_acc[0].child_id,
                     debit_amount: 0,
                     payment_type: "CR",
-                    credit_amount: waited_avg_cost
+                    credit_amount: waited_avg_cost,
+                    hospital_id: location_acc[0].hospital_id
                   });
 
                 }
@@ -284,10 +288,7 @@ export default {
                     extraValues: {
                       day_end_header_id: day_end_header.insertId,
                       year: year,
-                      month: month,
-                      entered_date: new Date(),
-                      entered_by: req.userIdentity.algaeh_d_app_user_id,
-                      hospital_id: req.userIdentity.hospital_id
+                      month: month
                     },
                     printQuery: false
                   })

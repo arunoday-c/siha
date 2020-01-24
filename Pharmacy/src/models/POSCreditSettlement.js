@@ -272,7 +272,7 @@ export default {
               .executeQuery({
                 query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
                           voucher_type, document_id, document_number, from_screen, \
-                          narration, hospital_id) VALUES (?,?,?,?,?,?,?,?)",
+                          narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?)",
                 values: [
                   new Date(),
                   inputParam.reciept_amount,
@@ -281,7 +281,8 @@ export default {
                   inputParam.pos_credit_number,
                   inputParam.ScreenCode,
                   "Pharmacy Criedt Settlemet " + inputParam.reciept_amount,
-                  req.userIdentity.hospital_id
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id
                 ],
                 printQuery: true
               })
@@ -367,14 +368,12 @@ export default {
                       day_end_header_id: day_end_header.insertId,
                       year: year,
                       month: month,
-                      entered_date: new Date(),
-                      entered_by: req.userIdentity.algaeh_d_app_user_id,
                       hospital_id: req.userIdentity.hospital_id
                     },
                     printQuery: false
                   })
                   .then(subResult => {
-                    _mysql.releaseConnection();
+                    // _mysql.releaseConnection();
                     next();
                   })
                   .catch(error => {
