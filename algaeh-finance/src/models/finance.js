@@ -745,11 +745,23 @@ export default {
   //created by irfan: to
   getDayEndData: (req, res, next) => {
     const _mysql = new algaehMysql();
-    // const utilities = new algaehUtilities();
+    const decimal_places = req.userIdentity.decimal_places;
     let input = req.query;
 
     let strQry = "";
 
+    if (input.posted == "Y") {
+      strQry += " posted='Y' ";
+    } else {
+      strQry += " posted='N' ";
+    }
+
+    if (input.module_id > 0) {
+      strQry += ` and  S.module_id=${input.module_id}`;
+    }
+    if (input.screen_code !== undefined && input.screen_code == null) {
+      strQry += ` and H.screen_code=${input.screen_code}`;
+    }
     if (
       moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD") > 0 &&
       moment(input.to_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
@@ -758,14 +770,14 @@ export default {
     }
 
     if (input.document_number !== undefined && input.document_number == null) {
-      strQry += ` and  H.document_number='${input.document_number}'`;
+      strQry += ` and  H.document_number like '%${input.document_number}%' `;
     }
-    if (
-      input.transaction_type !== undefined &&
-      input.transaction_type == null
-    ) {
-      strQry += ` and H.transaction_type='${input.transaction_type}'`;
-    }
+    // if (
+    //   input.transaction_type !== undefined &&
+    //   input.transaction_type == null
+    // ) {
+    //   strQry += ` and H.transaction_type='${input.transaction_type}'`;
+    // }
 
     // `select SD.finance_day_end_sub_detail_id,D.finance_day_end_detail_id ,H.transaction_date,case D.payment_mode when 'CA' then\
     // 'CASH' when 'CH' then 'CHEQUE' when 'CD' then 'CARD'  end as payment_mode ,D.amount,SD.narration,\
@@ -776,18 +788,27 @@ export default {
     // left join  algaeh_d_app_screens S on H.from_screen=S.screen_code\
     // where  SD.posted='N'  ${strQry}  group by finance_day_end_detail_id;`
 
+    // select finance_day_end_header_id,transaction_date,amount,
+    // document_number,from_screen,case H.transaction_type when 'AD' then 'ADVANCE'
+    // when 'RF' then 'REFUND' when 'BILL' then 'OPBILL' when  'CREDIT' then
+    // 'PATIENT CREDIT'  when  'ADJUST' then 'ADVANCE ADJUST'  when 'CREDIT_ST' then 'CREDIT SETTLEMENT'
+    // when 'OP_BIL_CAN' then 'OP BILL CANCEL'  when 'JV' then 'JOURNAL VOUCHER'
+    // end as transaction_type,S.screen_name
+    // from finance_day_end_header H inner join finance_day_end_sub_detail SD on
+    //  H.finance_day_end_header_id=SD.day_end_header_id
+    // left join  algaeh_d_app_screens S on H.from_screen=S.screen_code  where  SD.posted='N'  ${strQry}
+    // group by  finance_day_end_header_id;
+
     _mysql
       .executeQuery({
-        query: ` select finance_day_end_header_id,transaction_date,amount,
-        document_number,from_screen,case H.transaction_type when 'AD' then 'ADVANCE' 
-        when 'RF' then 'REFUND' when 'BILL' then 'OPBILL' when  'CREDIT' then 
-        'PATIENT CREDIT'  when  'ADJUST' then 'ADVANCE ADJUST'  when 'CREDIT_ST' then 'CREDIT SETTLEMENT'
-        when 'OP_BIL_CAN' then 'OP BILL CANCEL'  when 'JV' then 'JOURNAL VOUCHER'
-        end as transaction_type,S.screen_name
-        from finance_day_end_header H inner join finance_day_end_sub_detail SD on
-         H.finance_day_end_header_id=SD.day_end_header_id
-        left join  algaeh_d_app_screens S on H.from_screen=S.screen_code  where  SD.posted='N'  ${strQry}
-        group by  finance_day_end_header_id; `,
+        query: `select finance_day_end_header_id, transaction_date,    
+        ROUND( amount , ${decimal_places}) as amount, voucher_type, document_number,  
+        invoice_no, screen_name, ref_no as cheque_no,cheque_date, 
+         ROUND( cheque_amount , ${decimal_places}) as  cheque_amount, narration, 
+        U.username as entered_by, entered_date from finance_day_end_header H 
+        left join  algaeh_d_app_screens S on H.from_screen=S.screen_code
+        left join algaeh_d_app_user U on H.entered_by=U.algaeh_d_app_user_id
+        where ${strQry}; `,
 
         printQuery: false
       })
@@ -1015,7 +1036,7 @@ export default {
             where  D.day_end_header_id in (SELECT day_end_header_id
             FROM cte_ where is_equal='true');`,
         values: [input.finance_day_end_header_ids],
-        printQuery: true
+        printQuery: false
       })
       .then(result => {
         // _mysql.releaseConnection();
@@ -1483,30 +1504,35 @@ export default {
   //created by irfan: to
   previewDayEndEntries: (req, res, next) => {
     const _mysql = new algaehMysql();
-    const utilities = new algaehUtilities();
 
+    // select finance_day_end_sub_detail_id ,payment_date,SD.head_id,
+    //     child_id,concat(account_name,'-->',child_name ) as to_account,debit_amount,
+    //     case payment_type when 'CR' then 'Credit' else 'Debit' end
+    //      as payment_type,credit_amount
+    //     from finance_day_end_sub_detail SD left join finance_account_head H on SD.head_id=H.finance_account_head_id
+    //     left join finance_account_child C on SD.child_id=C.finance_account_child_id where day_end_header_id=?;
+    //     select coalesce(sum(cash),0)as cash,coalesce(sum(card),0)as card,coalesce(sum(cheque),0)as cheque
+    //     from (select  case when payment_mode = "CA" then amount end as cash,
+    //     case when payment_mode = "CD" then amount end as card,
+    //     case when payment_mode = "CH" then amount end as cheque
+    //     from finance_day_end_detail where day_end_header_id=?) as A ;
+    const decimal_places = req.userIdentity.decimal_places;
     _mysql
       .executeQuery({
         query: `select finance_day_end_sub_detail_id ,payment_date,SD.head_id,
-        child_id,concat(account_name,'-->',child_name ) as to_account,debit_amount,
+        child_id,concat(account_name,'-->',child_name ) as to_account,  ROUND( debit_amount , ${decimal_places}) as debit_amount,
         case payment_type when 'CR' then 'Credit' else 'Debit' end
-         as payment_type,credit_amount
+         as payment_type, ROUND( credit_amount , ${decimal_places}) as credit_amount
         from finance_day_end_sub_detail SD left join finance_account_head H on SD.head_id=H.finance_account_head_id
-        left join finance_account_child C on SD.child_id=C.finance_account_child_id where day_end_header_id=?;
-        select coalesce(sum(cash),0)as cash,coalesce(sum(card),0)as card,coalesce(sum(cheque),0)as cheque
-        from (select  case when payment_mode = "CA" then amount end as cash,
-        case when payment_mode = "CD" then amount end as card,
-        case when payment_mode = "CH" then amount end as cheque
-        from finance_day_end_detail where day_end_header_id=?) as A ;`,
-        values: [req.query.day_end_header_id, req.query.day_end_header_id],
+        left join finance_account_child C on SD.child_id=C.finance_account_child_id where day_end_header_id=?;`,
+        values: [req.query.day_end_header_id],
         printQuery: false
       })
       .then(result => {
         _mysql.releaseConnection();
 
         req.records = {
-          ...result[1][0],
-          entries: result[0]
+          entries: result
         };
         next();
       })
