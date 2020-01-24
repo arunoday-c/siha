@@ -22,9 +22,9 @@ export default {
         let inputValues = [input.year, input.month];
         let _stringData = "";
 
-        console.log("_stringData: ", input.leave_salary);
-        console.log("month_number: ", month_number);
-        console.log("leave_salary: ", input.leave_salary);
+        // console.log("_stringData: ", input.leave_salary);
+        // console.log("month_number: ", month_number);
+        // console.log("leave_salary: ", input.leave_salary);
 
         let strQuery = "";
 
@@ -115,9 +115,9 @@ export default {
             printQuery: true
           })
           .then(empResult => {
-            console.log("empResult: ", empResult.length);
+            // console.log("empResult: ", empResult.length);
             if (empResult.length == 0) {
-              console.log("empResult reslove: ", empResult.length);
+              // console.log("empResult reslove: ", empResult.length);
 
               if (req.connection == null) {
                 // utilities.logger().log("req.connection : ");
@@ -362,7 +362,7 @@ export default {
                               deductionOutput.final_deduction_amount;
 
                             //Contribution -- Start
-                            console.log("empResult[i]employee_id", results[2])
+                            // console.log("empResult[i]employee_id", results[2])
 
                             const _contrubutions = _.filter(results[2], f => {
                               return (
@@ -1931,7 +1931,7 @@ export default {
           ? " and salary_type = '" + inputParam.salary_type + "'"
           : " and salary_type='NS'";
 
-      console.log("inputParam", inputParam);
+      // console.log("inputParam", inputParam);
       _mysql
         .executeQuery({
           query:
@@ -3413,33 +3413,36 @@ export default {
             ) {
               _mysql
                 .executeQueryWithTransaction({
-                  query: `select hims_f_salary_id as document_id, '${inputParam.ScreenCode}' as from_screen,
+                  query: `select hims_f_salary_id, hims_f_salary_id as document_id, '${inputParam.ScreenCode}' as from_screen,
                   salary_number as document_number, salary_date as transaction_date,
-                  S.net_salary as amount, S.hospital_id, 'journal' as voucher_type, \
+                  S.net_salary as amount, 'journal' as voucher_type,S.hospital_id, 
                   concat('Salary for Employee: ', E.employee_code , '/' , E.full_name , ' in ' , year , '/' , monthname(concat('1999-',month,'-01'))) as narration
                   from hims_f_salary s 
                   inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
                   where hims_f_salary_id in (?);
-                  select hims_f_salary_id, curDate() payment_date,SE.amount as debit_amount, ED.head_id, ED.child_id,'DR' as payment_type, 0 as credit_amount from hims_f_salary s 
+                  select hims_f_salary_id, curDate() payment_date,SE.amount as debit_amount, ED.head_id, ED.child_id,\
+                  'DR' as payment_type, 0 as credit_amount, S.hospital_id from hims_f_salary s 
                   left join hims_f_salary_earnings SE on SE.salary_header_id = S.hims_f_salary_id
                   inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id
                   where hims_f_salary_id in(?); 
-                  select hims_f_salary_id, curDate() payment_date, SD.amount as credit_amount, ED.head_id, ED.child_id, 'CR' as payment_type, 0 as debit_amount 
+                  select hims_f_salary_id, curDate() payment_date, SD.amount as credit_amount, ED.head_id, ED.child_id, \
+                  'CR' as payment_type, 0 as debit_amount ,S.hospital_id
                   from hims_f_salary s 
                   left join hims_f_salary_deductions SD on SD.salary_header_id = S.hims_f_salary_id 
                   inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SD.deductions_id
                   where hims_f_salary_id in(?); 
-                  select hims_f_salary_id, curDate() payment_date, SC.amount as debit_amount, ED.head_id, ED.child_id, 'DR' as payment_type,0 as credit_amount from hims_f_salary s 
+                  select hims_f_salary_id, curDate() payment_date, SC.amount as debit_amount, ED.head_id, ED.child_id, \
+                  'DR' as payment_type,0 as credit_amount ,S.hospital_id from hims_f_salary s 
                   left join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id
                   inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id 
                   where hims_f_salary_id in(?);
                   select hims_f_salary_id, curDate() payment_date, SC.amount as credit_amount, ED.li_head_id as  head_id, 
-                  ED.li_child_id as child_id, 'CR' as payment_type,0 as debit_amount from hims_f_salary s 
+                  ED.li_child_id as child_id, 'CR' as payment_type,0 as debit_amount, S.hospital_id from hims_f_salary s 
                   left join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id
                   inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id 
                   where hims_f_salary_id in(?);
                   select hims_f_salary_id, curDate() payment_date, SL.loan_due_amount as credit_amount, L.head_id, 
-                  L.child_id, 'CR' as payment_type, 0 as debit_amount from hims_f_salary s 
+                  L.child_id, 'CR' as payment_type, 0 as debit_amount,S.hospital_id from hims_f_salary s 
                   left join hims_f_salary_loans SL on SL.salary_header_id = S.hims_f_salary_id
                   left join hims_f_loan_application LA on LA.hims_f_loan_application_id = SL.loan_application_id
                   inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id 
@@ -3462,7 +3465,6 @@ export default {
                     "document_number",
                     "transaction_date",
                     "amount",
-                    "hospital_id",
                     "voucher_type",
                     "narration"
                   ];
@@ -3473,6 +3475,10 @@ export default {
                         "INSERT INTO finance_day_end_header (??) VALUES ? ;",
                       values: headerResult[0],
                       includeValues: Header_IncludeValuess,
+                      extraValues: {
+                        entered_date: new Date(),
+                        entered_by: req.userIdentity.algaeh_d_app_user_id
+                      },
                       bulkInsertOrUpdate: true,
                       printQuery: true
                     })
@@ -3490,6 +3496,8 @@ export default {
 
                           insert_result.forEach(per_salary => {
                             // console.log("per_salary", per_salary)
+                            const employee_barnch = headerResult[0].find(f => f.hims_f_salary_id === per_salary.document_id)
+
                             const earnings = headerResult[1].filter(f => f.hims_f_salary_id === per_salary.document_id).map(m => {
                               return { ...m, day_end_header_id: per_salary.finance_day_end_header_id }
                             });
@@ -3508,6 +3516,7 @@ export default {
                               return { ...m, day_end_header_id: per_salary.finance_day_end_header_id }
                             });
 
+
                             insert_finance_detail.push(
                               ...earnings,
                               ...deduction,
@@ -3521,7 +3530,8 @@ export default {
                                 child_id: salary_pay_acc.child_id,
                                 debit_amount: 0,
                                 payment_type: "CR",
-                                credit_amount: per_salary.amount
+                                credit_amount: per_salary.amount,
+                                hospital_id: employee_barnch.hospital_id
                               })
                           })
 
@@ -3534,7 +3544,8 @@ export default {
                             "child_id",
                             "debit_amount",
                             "payment_type",
-                            "credit_amount"
+                            "credit_amount",
+                            "hospital_id"
                           ];
 
                           const month = moment().format("M");
@@ -3549,10 +3560,7 @@ export default {
                               bulkInsertOrUpdate: true,
                               extraValues: {
                                 year: year,
-                                month: month,
-                                entered_date: new Date(),
-                                entered_by: req.userIdentity.algaeh_d_app_user_id,
-                                hospital_id: req.userIdentity.hospital_id
+                                month: month
                               },
                               printQuery: true
                             })
@@ -3623,143 +3631,158 @@ export default {
           return o.hims_f_salary_id;
         });
 
-
         _mysql
-          .executeQueryWithTransaction({
-            query:
-              "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
-            select head_id, child_id from finance_accounts_maping where account in ('SAL_PYBLS');"
+          .generateRunningNumber({
+            user_id: req.userIdentity.algaeh_d_app_user_id,
+            numgen_codes: ["PAYMENT"],
+            table_name: "finance_numgen"
           })
-          .then(result => {
-            // console.log("result", result)
-            const salary_pay_acc = result[1][0]
-            const org_data = result[0]
+          .then(generatedNumbers => {
+            _mysql
+              .executeQueryWithTransaction({
+                query:
+                  "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
+            select head_id, child_id from finance_accounts_maping where account in ('SAL_PYBLS');"
+              })
+              .then(result => {
+                // console.log("result", result)
+                const salary_pay_acc = result[1][0]
+                const org_data = result[0]
 
-            if (
-              org_data[0]["product_type"] == "HIMS_ERP" ||
-              org_data[0]["product_type"] == "FINANCE_ERP"
-            ) {
-              _mysql
-                .executeQueryWithTransaction({
-                  query: `SELECT hims_f_salary_id, salary_number, sum(net_salary) as salary_payable,
-                  concat('Salary Payment for: ', year , '/' , monthname(concat('1999-',month,'-01'))) as narration FROM hims_f_salary where hims_f_salary_id in (?);
-                  SELECT sum(S.net_salary) as salary_payable, E.company_bank_id, head_id, child_id FROM hims_f_salary s 
+                if (
+                  org_data[0]["product_type"] == "HIMS_ERP" ||
+                  org_data[0]["product_type"] == "FINANCE_ERP"
+                ) {
+                  _mysql
+                    .executeQueryWithTransaction({
+                      query: `SELECT hims_f_salary_id, salary_number, sum(net_salary) as salary_payable,
+                  concat('Salary Payment for: ', year , '/' , monthname(concat('1999-',month,'-01'))) as narration, 
+                  hospital_id FROM hims_f_salary where hims_f_salary_id in (?);
+                  SELECT sum(S.net_salary) as salary_payable, E.company_bank_id, head_id, child_id, 
+                  S.hospital_id FROM hims_f_salary s 
                   inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
                   inner join hims_d_bank B on B.hims_d_bank_id = E.company_bank_id 
                   where hims_f_salary_id in (?) group by E.company_bank_id;`,
-                  values: [_salaryHeader_id, _salaryHeader_id],
-                  printQuery: true
-                })
-                .then(headerResult => {
-                  const laibility_amount = headerResult[0][0]
-                  const bank_booking = headerResult[1]
-                  _mysql
-                    .executeQueryWithTransaction({
-                      query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
-                        voucher_type, document_id, document_number, from_screen, \
-                        narration, hospital_id) VALUES (?,?,?,?,?,?,?,?)",
-                      values: [
-                        new Date(),
-                        laibility_amount.salary_payable,
-                        "payment",
-                        laibility_amount.hims_f_salary_id,
-                        laibility_amount.salary_number,
-                        inputParam.ScreenCode,
-                        "Salary Payment for " + laibility_amount.narration + laibility_amount.salary_payable,
-                        req.userIdentity.hospital_id
-                      ],
+                      values: [_salaryHeader_id, _salaryHeader_id],
                       printQuery: true
                     })
-                    .then(day_end_header => {
-                      const insertSubDetail = []
-
-                      //Salary Payable Laibility Account
-                      insertSubDetail.push({
-                        payment_date: new Date(),
-                        head_id: salary_pay_acc.head_id,
-                        child_id: salary_pay_acc.child_id,
-                        debit_amount: laibility_amount.salary_payable,
-                        payment_type: "DR",
-                        credit_amount: 0
-                      });
-
-                      bank_booking.forEach(per_salary => {
-                        //Booking salary To the bank
-                        insertSubDetail.push({
-                          payment_date: new Date(),
-                          head_id: per_salary.head_id,
-                          child_id: per_salary.child_id,
-                          debit_amount: 0,
-                          payment_type: "CR",
-                          credit_amount: per_salary.salary_payable
-                        });
-                      })
-
-                      const IncludeValuess = [
-                        "payment_date",
-                        "head_id",
-                        "child_id",
-                        "debit_amount",
-                        "payment_type",
-                        "credit_amount"
-                      ];
-
-                      const month = moment().format("M");
-                      const year = moment().format("YYYY");
-
+                    .then(headerResult => {
+                      const laibility_amount = headerResult[0][0]
+                      const bank_booking = headerResult[1]
                       _mysql
                         .executeQueryWithTransaction({
-                          query:
-                            "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
-                          values: insertSubDetail,
-                          includeValues: IncludeValuess,
-                          bulkInsertOrUpdate: true,
-                          extraValues: {
-                            day_end_header_id: day_end_header.insertId,
-                            year: year,
-                            month: month,
-                            entered_date: new Date(),
-                            entered_by: req.userIdentity.algaeh_d_app_user_id,
-                            hospital_id: req.userIdentity.hospital_id
-                          },
+                          query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
+                        voucher_type, document_id, document_number, from_screen, \
+                        narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?)",
+                          values: [
+                            new Date(),
+                            laibility_amount.salary_payable,
+                            "payment",
+                            laibility_amount.hims_f_salary_id,
+                            generatedNumbers.PAYMENT,
+                            inputParam.ScreenCode,
+                            "Salary Payment for " + laibility_amount.narration + laibility_amount.salary_payable,
+                            new Date(),
+                            req.userIdentity.algaeh_d_app_user_id
+                          ],
                           printQuery: true
                         })
-                        .then(subResult => {
-                          _mysql.commitTransaction(() => {
-                            _mysql.releaseConnection();
-                            // req.records = subResult;
-                            next();
+                        .then(day_end_header => {
+                          const insertSubDetail = []
+
+                          //Salary Payable Laibility Account
+                          insertSubDetail.push({
+                            payment_date: new Date(),
+                            head_id: salary_pay_acc.head_id,
+                            child_id: salary_pay_acc.child_id,
+                            debit_amount: laibility_amount.salary_payable,
+                            payment_type: "DR",
+                            credit_amount: 0,
+                            hospital_id: laibility_amount.hospital_id
                           });
+
+                          bank_booking.forEach(per_salary => {
+                            //Booking salary To the bank
+                            insertSubDetail.push({
+                              payment_date: new Date(),
+                              head_id: per_salary.head_id,
+                              child_id: per_salary.child_id,
+                              debit_amount: 0,
+                              payment_type: "CR",
+                              credit_amount: per_salary.salary_payable,
+                              hospital_id: per_salary.hospital_id
+                            });
+                          })
+
+                          const IncludeValuess = [
+                            "payment_date",
+                            "head_id",
+                            "child_id",
+                            "debit_amount",
+                            "payment_type",
+                            "credit_amount",
+                            "hospital_id"
+                          ];
+
+                          const month = moment().format("M");
+                          const year = moment().format("YYYY");
+
+                          _mysql
+                            .executeQueryWithTransaction({
+                              query:
+                                "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                              values: insertSubDetail,
+                              includeValues: IncludeValuess,
+                              bulkInsertOrUpdate: true,
+                              extraValues: {
+                                day_end_header_id: day_end_header.insertId,
+                                year: year,
+                                month: month
+                              },
+                              printQuery: true
+                            })
+                            .then(subResult => {
+                              _mysql.commitTransaction(() => {
+                                _mysql.releaseConnection();
+                                // req.records = subResult;
+                                next();
+                              });
+                            })
+                            .catch(error => {
+                              _mysql.rollBackTransaction(() => {
+                                next(error);
+                              });
+                            });
+
                         })
                         .catch(error => {
                           _mysql.rollBackTransaction(() => {
                             next(error);
                           });
                         });
-
                     })
                     .catch(error => {
                       _mysql.rollBackTransaction(() => {
                         next(error);
                       });
                     });
-                })
-                .catch(error => {
-                  _mysql.rollBackTransaction(() => {
-                    next(error);
+                } else {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    // req.records = org_data;
+                    next();
                   });
+                }
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
                 });
-            } else {
-              _mysql.commitTransaction(() => {
-                _mysql.releaseConnection();
-                // req.records = org_data;
-                next();
               });
-            }
           })
-          .catch(error => {
+          .catch(e => {
             _mysql.rollBackTransaction(() => {
-              next(error);
+              next(e);
             });
           });
       } else {
@@ -4097,10 +4120,10 @@ function getOtManagement(options) {
       let final_earning_amount = 0;
       let current_ot_amt_array = [];
 
-      console.log("over_time: ", options.over_time.length);
-      console.log("ot_work_hours: ", empResult["ot_work_hours"]);
-      console.log("ot_weekoff_hours: ", empResult["ot_weekoff_hours"]);
-      console.log("ot_holiday_hours: ", empResult["ot_holiday_hours"]);
+      // console.log("over_time: ", options.over_time.length);
+      // console.log("ot_work_hours: ", empResult["ot_work_hours"]);
+      // console.log("ot_weekoff_hours: ", empResult["ot_weekoff_hours"]);
+      // console.log("ot_holiday_hours: ", empResult["ot_holiday_hours"]);
       if (options.over_time.length > 0) {
         let ot_hours =
           parseFloat(empResult["ot_work_hours"]) +
@@ -4172,10 +4195,10 @@ function getOtManagement(options) {
               let _per_day_salary = 0;
               let per_hour_salary = 0;
 
-              console.log(
-                "hrms_option[0].ot_calculation",
-                hrms_option[0].ot_calculation
-              );
+              // console.log(
+              //   "hrms_option[0].ot_calculation",
+              //   hrms_option[0].ot_calculation
+              // );
               if (hrms_option[0].ot_calculation == "F") {
                 _per_day_salary = parseFloat(
                   parseFloat(earn_amount[0].amount) /
@@ -4939,7 +4962,7 @@ function getLoanDueandPayable(options) {
 
       // loan_skip_months > 0
 
-      console.log("_loan", _loan);
+      // console.log("_loan", _loan);
       if (_loan.length == 0) {
         if (_loanPayable.length == 0) {
           resolve({
@@ -4952,7 +4975,7 @@ function getLoanDueandPayable(options) {
             return parseFloat(s.approved_amount);
           });
 
-          console.log("total_loan_payable_amount", total_loan_payable_amount);
+          // console.log("total_loan_payable_amount", total_loan_payable_amount);
 
           resolve({
             total_loan_due_amount,
@@ -4970,7 +4993,7 @@ function getLoanDueandPayable(options) {
         };
       });
 
-      console.log("current_loan_array", current_loan_array);
+      // console.log("current_loan_array", current_loan_array);
       total_loan_due_amount = _.sumBy(current_loan_array, s => {
         return parseFloat(s.loan_due_amount);
       });
@@ -5132,8 +5155,8 @@ function UpdateProjectWisePayroll(options) {
           return f.employee_id == project_wise_payroll[z]["employee_id"];
         });
 
-        console.log("total_complete_hours: ", total_complete_hours);
-        console.log("complete_hours: ", complete_hours);
+        // console.log("total_complete_hours: ", total_complete_hours);
+        // console.log("complete_hours: ", complete_hours);
 
         if (parseFloat(total_complete_hours) > 0) {
           cost =
@@ -5199,7 +5222,7 @@ function InsertGratuityProvision(options) {
           printQuery: true
         })
         .then(result => {
-          console.log("Gratuity Provision result: ", result);
+          // console.log("Gratuity Provision result: ", result);
           // utilities.logger().log("Gratuity Provision result: ", result);
           const _employee = result[0];
           const _options = result[1];
