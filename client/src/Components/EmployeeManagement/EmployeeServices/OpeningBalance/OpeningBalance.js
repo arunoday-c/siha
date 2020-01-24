@@ -15,10 +15,7 @@ import {
 // import spotlightSearch from "../../../../Search/spotlightSearch.json";
 // import GlobalVariables from "../../../../utils/GlobalVariables.json";
 // import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import {
-  AlgaehOpenContainer,
-  getYears
-} from "../../../../utils/GlobalFunctions";
+import { getYears } from "../../../../utils/GlobalFunctions";
 // import EmployeeSearch from "../../../common/EmployeeSearch";
 import OpeningBalanceEvent from "./OpeningBalanceEvent";
 import moment from "moment";
@@ -27,6 +24,7 @@ import EmployeeLeaveOpenBal from "./EmployeeLeaveOpenBal";
 import EmployeeLoanOpenBal from "./EmployeeLoanOpenBal";
 import EmployeeGratuityOpenBal from "./EmployeeGratuityOpenBal";
 import EmployeeLeaveSalaryOpenBal from "./EmployeeLeaveSalaryOpenBal";
+import { MainContext } from "algaeh-react-components/context";
 
 const all_functions = OpeningBalanceEvent();
 
@@ -35,9 +33,7 @@ class OpeningBalance extends Component {
     super(props);
     this.state = {
       employee_group_id: null,
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: "",
       employee_name: null,
       hims_d_employee_id: null,
       leave_dynamic_date: [],
@@ -60,7 +56,12 @@ class OpeningBalance extends Component {
     all_functions.getLeaveMaster(this);
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    });
     if (
       this.props.organizations === undefined ||
       this.props.organizations.length === 0
@@ -95,9 +96,7 @@ class OpeningBalance extends Component {
     all_functions.getLeaveMaster(this);
     this.setState({
       employee_group_id: null,
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: "",
       employee_name: null,
       hims_d_employee_id: null,
       leave_dynamic_date: [],

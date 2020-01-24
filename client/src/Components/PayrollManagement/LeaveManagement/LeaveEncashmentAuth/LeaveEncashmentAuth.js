@@ -32,6 +32,7 @@ import {
   GetAmountFormart
 } from "../../../../utils/GlobalFunctions";
 import EncashmentAuthDtls from "./EncashmentAuthDtls";
+import { MainContext } from "algaeh-react-components/context";
 
 class LeaveEncashmentAuth extends Component {
   constructor(props) {
@@ -41,9 +42,7 @@ class LeaveEncashmentAuth extends Component {
 
     this.state = {
       year: moment().year(),
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: "",
       employee_name: null,
       employee_id: null,
       sub_department_id: null,
@@ -78,7 +77,12 @@ class LeaveEncashmentAuth extends Component {
       }
     });
   }
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    });
     if (
       this.props.organizations === undefined ||
       this.props.organizations.length === 0
@@ -183,18 +187,21 @@ class LeaveEncashmentAuth extends Component {
             employee_name: row.full_name,
             employee_id: row.hims_d_employee_id
           },
-          () => { }
+          () => {}
         );
       }
     });
   }
 
   closePopup() {
-    this.setState({
-      isOpen: false
-    }, () => {
-      LoadEncashment(this, this)
-    });
+    this.setState(
+      {
+        isOpen: false
+      },
+      () => {
+        LoadEncashment(this, this);
+      }
+    );
   }
   render() {
     let allYears = getYears();
@@ -321,8 +328,8 @@ class LeaveEncashmentAuth extends Component {
                 {!this.state.loading ? (
                   <span>Load</span>
                 ) : (
-                    <i className="fas fa-spinner fa-spin" />
-                  )}
+                  <i className="fas fa-spinner fa-spin" />
+                )}
               </button>
             </div>
           </div>
@@ -393,8 +400,8 @@ class LeaveEncashmentAuth extends Component {
                                   Cancelled
                                 </span>
                               ) : (
-                                        "------"
-                                      )}
+                                "------"
+                              )}
                             </span>
                           );
                         }
@@ -459,9 +466,7 @@ class LeaveEncashmentAuth extends Component {
                       {
                         fieldName: "leave_days",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Applied Days" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Applied Days" }} />
                         )
                       },
 
@@ -589,8 +594,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(LeaveEncashmentAuth)
+  connect(mapStateToProps, mapDispatchToProps)(LeaveEncashmentAuth)
 );

@@ -17,22 +17,18 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 // import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import {
-  getYears,
-  AlgaehOpenContainer
-} from "../../../../utils/GlobalFunctions";
+import { getYears } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
+import { MainContext } from "algaeh-react-components/context";
 
 class LoanRequest extends Component {
   constructor(props) {
     super(props);
 
     this.inputRef = React.createRef();
-    const hospital = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    );
+    const hospital = "";
 
     this.state = {
       hospital_id: hospital.hims_d_hospital_id,
@@ -63,7 +59,10 @@ class LoanRequest extends Component {
   //   });
   // }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
     if (
       this.props.organizations === undefined ||
       this.props.organizations.length === 0
@@ -79,6 +78,7 @@ class LoanRequest extends Component {
     }
     let request_type = this.props.type;
     this.setState({
+      hospital_id: userToken.hims_d_hospital_id,
       request_type
     });
   }

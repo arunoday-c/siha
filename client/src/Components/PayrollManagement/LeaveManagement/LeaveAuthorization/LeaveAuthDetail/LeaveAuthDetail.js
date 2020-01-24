@@ -4,8 +4,8 @@ import "./LeaveAuthDetail.scss";
 import { AlgaehLabel, AlgaehDataGrid } from "../../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import moment from "moment";
-import { AlgaehOpenContainer } from "../../../../../utils/GlobalFunctions";
 import AlgaehLoader from "../../../..//Wrapper/fullPageLoader";
+import { MainContext } from "algaeh-react-components/context";
 
 class LeaveAuthDetail extends Component {
   constructor(props) {
@@ -19,14 +19,19 @@ class LeaveAuthDetail extends Component {
     };
   }
 
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      default_nationality: userToken.default_nationality
+    });
+  }
+
   UNSAFE_componentWillReceiveProps(nextProps) {
-    const hospitaldetails = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    );
     const selected_emp_nationality = nextProps.data.nationality;
     nextProps.data.from_normal_salary = "N";
     if (
-      selected_emp_nationality === hospitaldetails.default_nationality &&
+      selected_emp_nationality === this.state.default_nationality &&
       nextProps.data.status === "PEN"
     ) {
       nextProps.data.from_normal_salary = "Y";
@@ -60,7 +65,7 @@ class LeaveAuthDetail extends Component {
           });
         }
       },
-      onFailure: err => { }
+      onFailure: err => {}
     });
   }
 
@@ -105,13 +110,13 @@ class LeaveAuthDetail extends Component {
         if (res.data.success) {
           type === "A"
             ? swalMessage({
-              title: "Leave Authorized Successfully",
-              type: "success"
-            })
+                title: "Leave Authorized Successfully",
+                type: "success"
+              })
             : swalMessage({
-              title: "Leave Rejected Successfully",
-              type: "success"
-            });
+                title: "Leave Rejected Successfully",
+                type: "success"
+              });
 
           this.setState({
             remarks: ""
@@ -309,10 +314,10 @@ class LeaveAuthDetail extends Component {
                                 {this.state.data.from_leave_session === "FD"
                                   ? "Full Day"
                                   : this.state.data.from_leave_session === "FH"
-                                    ? "First Half"
-                                    : this.state.data.from_leave_session === "SH"
-                                      ? "Second Half"
-                                      : "------"}
+                                  ? "First Half"
+                                  : this.state.data.from_leave_session === "SH"
+                                  ? "Second Half"
+                                  : "------"}
                                 )
                               </small>
                             </h6>
@@ -334,10 +339,10 @@ class LeaveAuthDetail extends Component {
                                 {this.state.data.to_leave_session === "FD"
                                   ? "Full Day"
                                   : this.state.data.to_leave_session === "FH"
-                                    ? "First Half"
-                                    : this.state.data.to_leave_session === "SH"
-                                      ? "Second Half"
-                                      : "------"}
+                                  ? "First Half"
+                                  : this.state.data.to_leave_session === "SH"
+                                  ? "Second Half"
+                                  : "------"}
                                 )
                               </small>
                             </h6>
@@ -499,8 +504,8 @@ class LeaveAuthDetail extends Component {
                                         Processed
                                       </span>
                                     ) : (
-                                                "------"
-                                              )}
+                                      "------"
+                                    )}
                                   </span>
                                 );
                               },
@@ -510,14 +515,14 @@ class LeaveAuthDetail extends Component {
                                     {row.status === "PEN"
                                       ? "Pending"
                                       : row.status === "APR"
-                                        ? "Approved"
-                                        : row.status === "REJ"
-                                          ? "Rejected"
-                                          : row.status === "PRO"
-                                            ? "Processed"
-                                            : row.status === "CAN"
-                                              ? "Cancelled"
-                                              : "------"}
+                                      ? "Approved"
+                                      : row.status === "REJ"
+                                      ? "Rejected"
+                                      : row.status === "PRO"
+                                      ? "Processed"
+                                      : row.status === "CAN"
+                                      ? "Cancelled"
+                                      : "------"}
                                   </span>
                                 );
                               }
@@ -672,9 +677,9 @@ class LeaveAuthDetail extends Component {
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onEdit: () => { },
-                            onDelete: () => { },
-                            onDone: () => { }
+                            onEdit: () => {},
+                            onDelete: () => {},
+                            onDone: () => {}
                           }}
                         />
                       </div>

@@ -3,7 +3,7 @@ import "./HolidayListSelf.scss";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import moment from "moment";
-import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 
 export default class HolidayListSelf extends Component {
   constructor(props) {
@@ -14,6 +14,13 @@ export default class HolidayListSelf extends Component {
     this.getHolidayMaster();
   }
 
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    });
+  }
   getHolidayMaster() {
     algaehApiCall({
       uri: "/payrollsettings/getAllHolidays",
@@ -21,9 +28,7 @@ export default class HolidayListSelf extends Component {
       method: "GET",
 
       data: {
-        hospital_id: JSON.parse(
-          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        ).hims_d_hospital_id,
+        hospital_id: "",
         type: "H"
       },
       onSuccess: res => {
