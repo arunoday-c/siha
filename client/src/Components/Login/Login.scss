@@ -73,7 +73,7 @@ $borderRadius: 10px;
     .delete.icon,
     .dropdown.icon,
     .search.icon {
-      color: #ffffff;
+      color: $color-white;
       padding: 0.9rem !important;
       font-size: 1.5rem;
     }
@@ -99,14 +99,20 @@ $borderRadius: 10px;
     }
   }
   .frgtPass {
+    width: 100%;
+    display: block;
     text-align: center;
-    font-size: 12px;
-    margin-top: 20px;
-    margin-bottom: 0;
     color: $color-white;
+    text-shadow: 0 1px 3px rgba($color-black, 0.8);
+    margin: 10px 0;
+    font-size: 12px;
     a {
-      color: $color-white;
+      cursor: pointer;
       text-decoration: underline;
+      color: $color-white;
+      &:hover {
+        color: $secondary-color;
+      }
     }
     a:hover {
       text-decoration: none;
@@ -174,12 +180,13 @@ $borderRadius: 10px;
       background: rgba($color-black, 0.2) !important;
       cursor: pointer;
       span {
-        padding: 7px;
+        padding: 8px;
         border-right: 1px solid $color-white;
         border-radius: $borderRadius;
         background: rgba($color-black, 0.2) !important;
         margin-right: 10px;
         float: left;
+        width: 30px;
       }
       b {
         float: left;
@@ -195,7 +202,7 @@ $borderRadius: 10px;
     width: 100%;
     display: block;
     text-align: center;
-    color: #fff;
+    color: $color-white;
     text-shadow: 0 1px 3px rgba($color-black, 0.8);
     margin: 10px 0;
     b {
@@ -231,6 +238,7 @@ $borderRadius: 10px;
     h6 {
       font-weight: bolder;
       color: $color-white !important;
+      margin-bottom: 15px;
     }
   }
 }
@@ -247,7 +255,7 @@ $borderRadius: 10px;
   top: 0;
   left: 0;
   width: 100%;
-  background: #fff;
+  background: $color-white;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
   .productLogo {
     float: right;
@@ -281,7 +289,7 @@ $borderRadius: 10px;
   text-align: center;
   p {
     text-align: center;
-    color: #fff;
+    color: $color-white;
     text-shadow: 0 1px 3px #000;
     font-weight: bold;
     font-size: 2rem;
@@ -375,7 +383,6 @@ $borderRadius: 10px;
     width: 100vw;
     height: 100vh;
     background: #3e1e68;
-
     span {
       width: $particleSize;
       height: $particleSize;

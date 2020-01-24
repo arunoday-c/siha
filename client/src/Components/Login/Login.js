@@ -373,9 +373,9 @@ function Login(props) {
                                 Another User? <b>Click Here</b>
                               </p>
                               <p className="frgtPass">
-                                FORGOT PASSWORD? |{" "}
+                                Forgot Password? |{" "}
                                 <a href="mailto:we@algaeh.com?Subject=Hello%20New%20Password%20Requesting from ">
-                                  CONTACT ADMINISTRATOR
+                                  Request New Password
                                 </a>
                               </p>
                             </div>
