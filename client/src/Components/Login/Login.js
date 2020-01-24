@@ -27,7 +27,7 @@ import connecting from "../../assets/svg/connecting.svg";
 import "./Login.scss";
 import sockets from "../../sockets";
 import { from } from "linq";
-
+import noUserImg from "../../assets/images/nobody_m.original.webp";
 function Login(props) {
   const { history } = props;
   const remebermeUser = getCookie("userName");
@@ -294,17 +294,41 @@ function Login(props) {
                     >
                       {showPassword === true ? (
                         <div className="col-12 passwordSec">
+                          {login.happyBirthDay !== "" ? (
+                            <div class="wishMsg">
+                              <div class="animated infinte bounceIn delay-1s messegeText">
+                                <small>{login.happyBirthDay}</small> <br></br>{" "}
+                                {login.full_name}
+                              </div>
+                              <div class="birthday">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                              </div>{" "}
+                            </div>
+                          ) : null}
                           <div className="row">
                             <div className="col userAfterLogin">
-                              <h1>Welcome,</h1>
+                              <img className="userImg" src={noUserImg}></img>
+                              <h1>Welcome</h1>
                               <h6>{login.full_name}</h6>
-                              {login.happyBirthDay !== "" ? (
-                                <small>
-                                  <span>&#127881;</span>
-                                  {login.happyBirthDay}
-                                  <span>&#127873;</span>
-                                </small>
-                              ) : null}
                             </div>
                             <AlagehFormGroup
                               div={{ className: "col-12 form-group" }}
@@ -322,20 +346,12 @@ function Login(props) {
                                 },
                                 others: {
                                   type: "password",
-                                  tabIndex: "2",
+                                  tabIndex: "3",
                                   placeholder: "Enter Password",
                                   ref: passwordRef
                                 }
                               }}
                             />
-                            <br />
-                            <span
-                              className="diffUser"
-                              onClick={loginDifferenctUser}
-                            >
-                              Different User Login?
-                            </span>
-                            <br />
 
                             <div className="col-12 form-group">
                               <div className="checkbox">
@@ -347,8 +363,8 @@ function Login(props) {
                                       onChange={onChangeRememberMe}
                                       checked={remberMe}
                                     />
-                                    <b> Remember me</b>
-                                  </span>
+                                  </span>{" "}
+                                  <b> Remember me</b>
                                 </label>
                               </div>
                               <button
@@ -358,10 +374,16 @@ function Login(props) {
                                 onClick={submitLogin}
                               >
                                 Login
-                              </button>
+                              </button>{" "}
+                              <p
+                                className="diffUser"
+                                onClick={loginDifferenctUser}
+                              >
+                                Another User? <b>Click Here</b>
+                              </p>
                               <p className="frgtPass">
                                 FORGOT PASSWORD? |{" "}
-                                <a href="mailto:we@algaeh.com?Subject=Hello%20New%20Password%20Requesting">
+                                <a href="mailto:we@algaeh.com?Subject=Hello%20New%20Password%20Requesting from ">
                                   CONTACT ADMINISTRATOR
                                 </a>
                               </p>
@@ -386,7 +408,7 @@ function Login(props) {
                                   }
                                 },
                                 others: {
-                                  tabIndex: "0",
+                                  tabIndex: "1",
                                   placeholder: "Enter Username",
                                   ref: userRef,
                                   onKeyDown: onHitEnter
@@ -406,7 +428,7 @@ function Login(props) {
                                     : true
                                 }
                                 type="submit"
-                                tabIndex="1"
+                                tabIndex="2"
                                 onClick={checkUserActive}
                               >
                                 Next

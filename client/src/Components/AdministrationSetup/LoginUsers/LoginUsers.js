@@ -647,7 +647,7 @@ class LoginUsers extends Component {
                     }}
                   />
                   <div className="col-6" style={{ paddingLeft: 0 }}>
-                    <span style={{ paddingTop: 15, display: "inline-block" }}>
+                    <span style={{ paddingTop: 24, display: "inline-block" }}>
                       {" "}
                       @<b>{this.getHospitalShortDesc()}</b>
                     </span>

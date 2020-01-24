@@ -173,7 +173,6 @@ $borderRadius: 10px;
       border-radius: $borderRadius;
       background: rgba($color-black, 0.2) !important;
       cursor: pointer;
-
       span {
         padding: 7px;
         border-right: 1px solid $color-white;
@@ -192,12 +191,38 @@ $borderRadius: 10px;
       }
     }
   }
+  .diffUser {
+    width: 100%;
+    display: block;
+    text-align: center;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba($color-black, 0.8);
+    margin: 10px 0;
+    b {
+      cursor: pointer;
+      text-decoration: underline;
+      &:hover {
+        color: $secondary-color;
+      }
+    }
+  }
   .txt-fld {
     background: none !important;
   }
   .userAfterLogin {
     text-align: center;
     text-shadow: 0 1px 3px rgba($color-black, 0.8);
+    .userImg {
+      width: 70px;
+      height: 70px;
+      text-align: center;
+      border-radius: 100%;
+      border: 1px solid $secondary-color;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 3px rgba($color-black, 0.8);
+      background: rgba($color-white, 0.8);
+      box-sizing: border-box;
+    }
     h1 {
       font-weight: lighter;
       color: $color-white !important;
@@ -325,5 +350,62 @@ $borderRadius: 10px;
      * would animate at the same time
      */
     animation-delay: 0.4s;
+  }
+}
+.wishMsg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  text-align: center;
+  .messegeText {
+    font-family: "Pacifico", cursive;
+    color: rgba($color-white, 0.8);
+    position: absolute;
+    top: 10vh;
+    width: 100vw;
+    font-size: 3rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    z-index: 1;
+  }
+  $particleSize: 20vmin;
+  $animationDuration: 6s;
+  $amount: 20;
+  .birthday {
+    width: 100vw;
+    height: 100vh;
+    background: #3e1e68;
+
+    span {
+      width: $particleSize;
+      height: $particleSize;
+      border-radius: $particleSize;
+      backface-visibility: hidden;
+      position: absolute;
+      animation-name: move;
+      animation-duration: $animationDuration;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      $colors: (#583c87, #e45a84, #ffacac);
+      @for $i from 1 through $amount {
+        &:nth-child(#{$i}) {
+          color: nth($colors, random(length($colors)));
+          top: random(100) * 1%;
+          left: random(100) * 1%;
+          animation-duration: (random($animationDuration * 10) / 10) * 1s + 10s;
+          animation-delay: random(($animationDuration + 10s) * 10) / 10 * -1s;
+          transform-origin: (random(50) - 25) * 1vw (random(50) - 25) * 1vh;
+          $blurRadius: (random() + 0.5) * $particleSize * 0.5;
+          $x: if(random() > 0.5, -1, 1);
+          box-shadow: ($particleSize * 2 * $x) 0 $blurRadius currentColor;
+        }
+      }
+    }
+  }
+
+  @keyframes move {
+    100% {
+      transform: translate3d(0, 0, 1px) rotate(360deg);
+    }
   }
 }
