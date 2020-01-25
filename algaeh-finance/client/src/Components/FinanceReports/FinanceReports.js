@@ -225,6 +225,7 @@ export default function FinanceReports() {
                 <Button
                   icon="layout"
                   size="large"
+                  disabled={!selected}
                   onClick={() => layoutDispatch({ type: "switchCol" })}
                 />
               </Tooltip>
@@ -235,6 +236,7 @@ export default function FinanceReports() {
                   <Button
                     icon="arrows-alt"
                     size="large"
+                    disabled={!selected}
                     onClick={() => layoutDispatch({ type: "expand" })}
                   />
                 </Tooltip>
@@ -245,6 +247,7 @@ export default function FinanceReports() {
                   <Button
                     icon="shrink"
                     size="large"
+                    disabled={!selected}
                     onClick={() => layoutDispatch({ type: "collapse" })}
                   />
                 </Tooltip>
