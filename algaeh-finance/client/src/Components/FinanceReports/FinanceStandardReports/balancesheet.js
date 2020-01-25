@@ -17,7 +17,18 @@ export default function BalanceSheet({ style, data, result, footer, layout }) {
           content={() => createPrintObject.current}
           removeAfterPrint={true}
           bodyClass="reportPreviewSecLeft"
-          pageStyle="printing"
+          pageStyle="@media print {
+            html, body {
+              height: initial !important;
+              overflow: initial !important;
+              -webkit-print-color-adjust: exact;
+            }
+          }
+          
+          @page {
+            size: auto;
+            margin: 20mm;
+          }"
         />
         <div ref={createPrintObject}>
           <div className="financeReportHeader">
@@ -38,14 +49,14 @@ export default function BalanceSheet({ style, data, result, footer, layout }) {
               <Col span={layout.col}>
                 <div className="reportTableStyle">
                   <ul className="treeListUL">
-                    {PlotUI(data[result[1]], style, [0])}
+                    {PlotUI(data[result[1]], style, [0], layout.expand)}
                   </ul>
                 </div>
               </Col>{" "}
               <Col span={layout.col}>
                 <div className="reportTableStyle">
                   <ul className="treeListUL">
-                    {PlotUI(data[result[0]], style, [0])}
+                    {PlotUI(data[result[0]], style, [0], layout.expand)}
                   </ul>
                 </div>
               </Col>
