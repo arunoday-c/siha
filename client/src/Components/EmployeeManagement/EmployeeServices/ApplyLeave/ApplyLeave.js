@@ -17,14 +17,12 @@ import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
-import {
-  AlgaehValidation,
-  AlgaehOpenContainer
-} from "../../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import swal from "sweetalert2";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import { MainContext } from "algaeh-react-components/context";
 
 class ApplyLeave extends Component {
   constructor(props) {
@@ -44,9 +42,7 @@ class ApplyLeave extends Component {
       to_leave_session: props.leave.to_session ? props.leave.to_session : "FD",
       absent_id: props.leave.absent_id ? props.leave.absent_id : null,
       leave_from: props.leave.leave_from ? props.leave.leave_from : null,
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: "",
       projected_leave_enable: false,
       Request_enable: true,
       projected_applied_leaves: null,
@@ -75,7 +71,12 @@ class ApplyLeave extends Component {
     return dates;
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    });
     if (
       this.props.organizations === undefined ||
       this.props.organizations.length === 0

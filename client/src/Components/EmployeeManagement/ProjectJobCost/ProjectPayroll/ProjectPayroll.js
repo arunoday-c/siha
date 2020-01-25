@@ -10,15 +10,12 @@ import {
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
 
-import {
-  getYears,
-  AlgaehOpenContainer,
-  GetAmountFormart
-} from "../../../../utils/GlobalFunctions";
+import { getYears, GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import ProjectPayrollEvents from "./ProjectPayrollEvents";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import { MainContext } from "algaeh-react-components/context";
 
 class ProjectPayroll extends Component {
   constructor(props) {
@@ -28,9 +25,7 @@ class ProjectPayroll extends Component {
       year: moment().year(),
       month: moment(new Date()).format("M"),
 
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: "",
       project_wise_payroll: [],
       noEmployees: 0,
       total_worked_hours: 0,
@@ -53,7 +48,12 @@ class ProjectPayroll extends Component {
     this.setState(this.baseState);
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    });
     if (
       this.props.organizations === undefined ||
       this.props.organizations.length === 0

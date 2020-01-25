@@ -15,19 +15,15 @@ import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import {
-  getYears,
-  AlgaehOpenContainer
-} from "../../../../utils/GlobalFunctions";
+import { getYears } from "../../../../utils/GlobalFunctions";
 import YearlyLeaveDetail from "./YearlyLeaveDetail/YearlyLeaveDetail";
+import { MainContext } from "algaeh-react-components/context";
 
 class LeaveYearlyProcess extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: "",
       year: moment().year(),
       leaves: [],
       leave_data: [],
@@ -39,8 +35,12 @@ class LeaveYearlyProcess extends Component {
     };
     this.getLeaveMaster();
   }
-
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    });
     this.getLeaveData();
     if (
       this.props.organizations === undefined ||
@@ -179,9 +179,7 @@ class LeaveYearlyProcess extends Component {
   clearState() {
     this.setState(
       {
-        hospital_id: JSON.parse(
-          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        ).hims_d_hospital_id,
+        hospital_id: "",
         hims_d_employee_id: null,
         employee_name: null,
         year: moment().year(),
@@ -564,8 +562,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(LeaveYearlyProcess)
+  connect(mapStateToProps, mapDispatchToProps)(LeaveYearlyProcess)
 );

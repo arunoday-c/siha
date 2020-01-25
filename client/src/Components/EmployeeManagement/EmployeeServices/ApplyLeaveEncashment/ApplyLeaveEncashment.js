@@ -13,15 +13,13 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import {
-  AlgaehValidation,
-  AlgaehOpenContainer
-} from "../../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import { GetAmountFormart, getYears } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import Options from "../../../../Options.json";
+import { MainContext } from "algaeh-react-components/context";
 
 class ApplyLeaveEncashment extends Component {
   constructor(props) {
@@ -31,16 +29,12 @@ class ApplyLeaveEncashment extends Component {
       emp_leaves_data: [],
       available_balance: 0.0,
       total_applied_days: 0.0,
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
       Request_enable: true,
       is_projected_leave: "N",
       loading_Process: false,
       year: moment().year(),
-      decimal_place: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).decimal_places,
+      hospital_id: "",
+      decimal_place: 0,
       airfare_amount: 0,
       airfare_months: 0,
       leave_amount: 0,
@@ -56,11 +50,15 @@ class ApplyLeaveEncashment extends Component {
     this.clearState();
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
     if (this.props.empData) {
       this.setState(
         {
-          employee_id: this.props.empData.hims_d_employee_id
+          employee_id: this.props.empData.hims_d_employee_id,
+          hospital_id: userToken.hims_d_hospital_id,
+          decimal_place: userToken.decimal_places
         },
         () => {
           this.getEmployeeLeaveData();

@@ -12,9 +12,9 @@ import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 import LeaveAuthDetail from "./LeaveAuthDetail/LeaveAuthDetail";
 import Socket from "../../../../sockets";
+import { MainContext } from "algaeh-react-components/context";
 
 export default class LeaveAuthorization extends Component {
   constructor(props) {
@@ -23,9 +23,7 @@ export default class LeaveAuthorization extends Component {
       open: false,
       leave_levels: [],
       leave_applns: [],
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: "",
       leave_status: "PEN",
       currLeavAppln: {}
     };
@@ -33,7 +31,13 @@ export default class LeaveAuthorization extends Component {
     this.getLeaveLevels();
     this.getHospitals();
   }
-
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    });
+  }
   closePopup() {
     this.setState({
       open: false

@@ -11,13 +11,11 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
-import {
-  getYears,
-  AlgaehOpenContainer
-} from "../../../../utils/GlobalFunctions";
+import { getYears } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Socket from "../../../../sockets";
+import { MainContext } from "algaeh-react-components/context";
 
 class LoanRequest extends Component {
   constructor(props) {
@@ -33,20 +31,23 @@ class LoanRequest extends Component {
       deducting_year: moment().year(),
       deducting_month: parseInt(moment(new Date()).format("M"), 10) + 1,
       request_type: "LO",
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id
+      hospital_id: ""
     };
     this.loanSocket = Socket;
     this.getLoanMaster();
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
     let data = this.props.empData !== null ? this.props.empData : {};
-    this.setState(data, () => {
-      this.getEmployeeLoans();
-      this.getEmployeeAdvances();
-    });
+    this.setState(
+      { ...data, hospital_id: userToken.hims_d_hospital_id },
+      () => {
+        this.getEmployeeLoans();
+        this.getEmployeeAdvances();
+      }
+    );
   }
 
   getEmployeeAdvances() {

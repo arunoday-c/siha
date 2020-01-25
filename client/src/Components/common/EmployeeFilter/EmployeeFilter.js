@@ -1,11 +1,11 @@
-import React, { useEffect, useState, createContext } from "react";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import React, { useEffect, useState, createContext, useContext } from "react";
 import { FilterComponent } from ".";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { getEmpGroups } from "../../PayrollManagement/AttendanceMgmt/BulkTimeSheet/Filter/filter.events";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import moment from "moment";
+import { MainContext } from "algaeh-react-components/context";
 
 export const FilterContext = createContext(null);
 
@@ -15,10 +15,9 @@ export default function EmployeeFilter(props) {
   const [empGroups, setEmpGroups] = useState([]);
   const [subDepts, setSubDepts] = useState([]);
   const [designations, setDesignations] = useState([]);
+  const userToken = useContext(MainContext);
   const baseInput = {
-    hospital_id: JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    ).hims_d_hospital_id,
+    hospital_id: userToken.hims_d_hospital_id,
     year: moment().year(),
     month: moment(new Date()).format("M"),
     department_id: null,
@@ -88,7 +87,7 @@ export default function EmployeeFilter(props) {
           setHospitals(res.data.records);
         }
       },
-      onFailure: err => { }
+      onFailure: err => {}
     });
   }
 
