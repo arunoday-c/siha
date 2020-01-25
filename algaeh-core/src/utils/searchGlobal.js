@@ -766,7 +766,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "admin_employee_search",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS  hims_d_employee_id,employee_code,full_name,date_of_joining,hospital_id, \
-          work_email from hims_d_employee E left join  algaeh_d_app_user U  on E.hims_d_employee_id=U.employee_id\
+          work_email,email from hims_d_employee E left join  algaeh_d_app_user U  on E.hims_d_employee_id=U.employee_id\
           where E.record_status='A' and U.employee_id is null and hospital_id=?",
         orderBy: "hims_d_employee_id desc",
         inputSequence: ["hospital_id"]
@@ -873,7 +873,6 @@ let algaehSearchConfig = (searchName, req) => {
           where IH.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_sales_invoice_header_id desc"
-
       },
       {
         searchName: "InvSalesReturn",
@@ -886,7 +885,6 @@ let algaehSearchConfig = (searchName, req) => {
           where IH.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_sales_return_header_id desc"
-
       },
       {
         searchName: "ContractMang",
@@ -896,12 +894,8 @@ let algaehSearchConfig = (searchName, req) => {
           inner join hims_d_customer C on CM.customer_id = C.hims_d_customer_id where hospital_id=" +
           hospitalId,
         orderBy: "hims_f_contract_management_id desc"
-
       }
-
     ]
-
-
   };
 
   let row = new LINQ(queries.algaehSeach)

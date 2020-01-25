@@ -29,7 +29,7 @@ export default memo(function({ selectedMenu, userLanguage }) {
   return (
     <div className="breadCrumpMenu">
       {" "}
-      <ul class="appMenuNavigation">
+      <ul className="appMenuNavigation">
         <li>
           <span> {userLanguage === "en" ? module_name : other_language}</span>
         </li>

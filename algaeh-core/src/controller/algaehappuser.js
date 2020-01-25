@@ -12,7 +12,8 @@ const {
   createUserLogin,
   getLoginUserMaster,
   changePassword,
-  updateUser
+  updateUser,
+  verifyEmployeeEmailID
 } = userModel;
 
 export default ({ config, db }) => {
@@ -94,25 +95,21 @@ export default ({ config, db }) => {
   );
 
   // created by irfan :
-  api.post(
-    "/createUserLogin",
-    createUserLogin,
-    (req, res, next) => {
-      let result = req.records;
-      if (result.validUser == false) {
-        res.status(httpStatus.ok).json({
-          success: false,
-          records: result
-        });
-      } else {
-        res.status(httpStatus.ok).json({
-          success: true,
-          records: result
-        });
-      }
-      next();
+  api.post("/createUserLogin", createUserLogin, (req, res, next) => {
+    let result = req.records;
+    if (result.validUser == false) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
     }
-  );
+    next();
+  });
 
   // created by irfan :
   api.get(
@@ -171,6 +168,12 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+  api.post("/verifyEmployeeEmail", verifyEmployeeEmailID, (req, res) => {
+    res.status(httpStatus.ok).json({
+      success: true,
+      message: `Successfully verified and updated email to employee.`
+    });
+  });
 
   return api;
 };

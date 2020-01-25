@@ -824,7 +824,8 @@ let createUserLogin = (req, res, next) => {
         _mysql
           .executeQueryWithTransaction({
             query:
-              "INSERT INTO `algaeh_d_app_user` (username, user_display_name,employee_id, user_type, effective_start_date, \
+              "INSERT INTO `algaeh_d_app_user` (username, user_display_name,employee_id,\
+                 user_type, effective_start_date,\
                 created_date, created_by, updated_date, updated_by)\
             VALUE(?,?,?,?,?,?,?,?,?)",
             values: [
@@ -842,10 +843,10 @@ let createUserLogin = (req, res, next) => {
           })
           .then(result => {
             if (result.insertId != null && result.insertId != undefined) {
-              let new_password = "12345";
-              if (process.env.NODE_ENV == "production") {
-                new_password = generatePwd();
-              }
+              let new_password = generatePwd(); //"12345";
+              // if (process.env.NODE_ENV == "production") {
+              //   new_password = generatePwd();
+              // }
               _mysql
                 .executeQuery({
                   query:
@@ -881,15 +882,16 @@ let createUserLogin = (req, res, next) => {
                       .then(finalResult => {
                         if (finalResult.insertId > 0 && input.employee_id > 0) {
                           const insurtColumns = ["hospital_id"];
-                          let strGrnQry = mysql.format(
-                            "select trim(email)as email  from hims_d_employee where hims_d_employee_id=?;",
-                            [input.employee_id]
-                          );
+                          // let strGrnQry = mysql.format(
+                          //   "select trim(email)as email  from hims_d_employee where hims_d_employee_id=?;",
+                          //   [input.employee_id]
+                          // );
                           _mysql
                             .executeQuery({
                               query:
-                                "INSERT INTO hims_m_user_employee (??) VALUES ? ; " +
-                                strGrnQry,
+                                "INSERT INTO hims_m_user_employee (??) VALUES ? ; ",
+                              // +
+                              // strGrnQry,
                               values: input.branch_data,
                               includeValues: insurtColumns,
                               extraValues: {
@@ -905,15 +907,21 @@ let createUserLogin = (req, res, next) => {
                               printQuery: true
                             })
                             .then(user_employee_res => {
+                              const email =
+                                process.env.NODE_ENV === "production"
+                                  ? input.password_email
+                                  : "syednoor.algaeh@gmail.com";
                               if (
-                                user_employee_res[1][0]["email"] != null &&
-                                process.env.NODE_ENV == "production"
+                                // user_employee_res[1][0]["email"] != null &&
+                                //  process.env.NODE_ENV == "production"
+                                email !== ""
                               ) {
                                 sendMailFunction(
                                   input.username,
                                   new_password,
                                   "",
-                                  user_employee_res[1][0]["email"]
+                                  email
+                                  // user_employee_res[1][0]["email"]
                                 )
                                   .then(rs => {
                                     console.log("resultemail:", rs);
@@ -1079,7 +1087,6 @@ let updateUser = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let input = req.body;
-    console.log("input", input);
     if (input.algaeh_d_app_user_id > 0) {
       _mysql
         .executeQueryWithTransaction({
@@ -1253,6 +1260,51 @@ let updateUser = (req, res, next) => {
   // }
 };
 
+let verifyEmployeeEmailID = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    const { email_id, hims_d_employee_id } = req.body;
+    _mysql
+      .executeQuery({
+        query: `select employee_code,full_name from hims_d_employee
+      where email=? or work_email=?`,
+        values: [email_id, email_id]
+      })
+      .then(result => {
+        if (result.length > 0) {
+          _mysql.releaseConnection();
+          const { full_name, employee_code } = result[0];
+          next(
+            new Error(
+              `Provided is email ID already in use for ${full_name},Employee Code ${employee_code} `
+            )
+          );
+          return;
+        }
+        _mysql
+          .executeQuery({
+            query: `update hims_d_employee set work_email=? where hims_d_employee_id =?`,
+            values: [email_id, hims_d_employee_id]
+          })
+          .then(data => {
+            _mysql.releaseConnection();
+            next();
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
 export default {
   selectAppUsers,
   selectLoginUser,
@@ -1261,7 +1313,8 @@ export default {
   createUserLogin,
   getLoginUserMaster,
   changePassword,
-  updateUser
+  updateUser,
+  verifyEmployeeEmailID
 };
 
 function generatePwd() {

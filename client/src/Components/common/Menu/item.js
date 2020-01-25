@@ -1,14 +1,16 @@
-import React, { useState, useContext, memo } from "react";
+import React, { useState, useContext, memo, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { MainContext } from "algaeh-react-components/context";
 import { setItem, getItem } from "algaeh-react-components/storage";
 import { setCookie } from "../../../utils/algaehApiCall";
+
 function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
   const { userMenu, userToken, userLanguage, selectedMenu } = useContext(
     MainContext
   );
   const history = useHistory();
-  const [searchModule, setSearchModule] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [modules, setModules] = useState([]);
   const [activeModule, setActiveModule] = useState("");
   const [activeScreen, setActiveScreen] = useState("");
 
@@ -30,8 +32,31 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
     setCookie("ScreenName", screenName);
     history.push(`/${screenName}`);
   }
+  function searchModuleText(e) {
+    const value = e.target.value;
+    if (value === "") {
+      setModules(userMenu);
+    } else {
+      const result = userMenu.filter(f => {
+        const screens = f.ScreenList.filter(
+          s =>
+            s.screen_name.toLowerCase().indexOf(value.toLowerCase()) > -1 ||
+            s.s_other_language.toLowerCase().indexOf(value.toLowerCase()) > -1
+        );
+        if (screens.length > 0) {
+          return { ...f, ScreenList: screens };
+        }
+      });
+      setModules(() => {
+        return result;
+      });
+    }
+    setSearchText(value);
+  }
+
   const moduleSelect = activeModule === "" ? openModule : activeModule;
   const screenSelected = activeScreen === "" ? openScreen : activeScreen;
+  const list = searchText === "" ? userMenu : modules;
   return (
     <div className={`animated leftNavCntr`}>
       <div className="hptl-phase1-sideMenuBar">
@@ -48,14 +73,14 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
             placeholder="Search Modules"
             // value={searchModule}
             autoFocus={true}
-            // onChange={e => {}}
+            onChange={searchModuleText}
           />
         </div>
         <div className="sideMenu-header">
           <div className="menuBarLoader d-none">
             <i className="fas fa-spinner fa-spin" />
           </div>
-          {userMenu.map((item, index) => (
+          {list.map((item, index) => (
             <div key={index} className="container-fluid">
               <div
                 className="row clearfix side-menu-title"
@@ -72,14 +97,14 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
                     : item.other_language}
                 </div>
                 <div className="col-2" style={{ marginTop: "2px" }}>
-                  {moduleSelect === item.module_name ? (
+                  {moduleSelect === item.module_name || searchText !== "" ? (
                     <i className="fas fa-angle-up" />
                   ) : (
                     <i className="fas fa-angle-down" />
                   )}
                 </div>
               </div>
-              {moduleSelect === item.module_name ? (
+              {moduleSelect === item.module_name || searchText !== "" ? (
                 <div className="row sub-menu-option">
                   <ul className="tree-structure-menu">
                     {item.ScreenList.map((screen, idx) => (
