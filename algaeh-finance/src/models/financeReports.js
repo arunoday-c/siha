@@ -390,7 +390,7 @@ export default {
         query:
           "with recursive cte  as (\
                   select  finance_account_head_id\
-                  from finance_account_head where finance_account_head_id =21\
+                  from finance_account_head where finance_account_head_id =38\
                   union select H.finance_account_head_id\
                   from finance_account_head  H inner join cte\
                   on H.parent_acc_id = cte.finance_account_head_id  \
