@@ -1341,7 +1341,7 @@ export default {
             let strQuery = ""
             if (inputParam.payment_type === "AD") {
               strQuery += _mysql.mysqlQueryFormat(
-                "select advance_amount as pay_amount, employee_code, full_name from hims_f_employee_advance LA  \
+                "select advance_amount as pay_amount, employee_code, full_name,E.hospital_id from hims_f_employee_advance LA  \
                 inner join hims_d_employee E on E.hims_d_employee_id = LA.employee_id \
                 where hims_f_employee_advance_id = ?;",
                 [inputParam.employee_advance_id]
@@ -1349,7 +1349,7 @@ export default {
             }
             else if (inputParam.payment_type === "LN") {
               strQuery += _mysql.mysqlQueryFormat(
-                "select head_id, child_id, loan_amount as pay_amount, employee_code, full_name from hims_f_loan_application LA \
+                "select head_id, child_id, loan_amount as pay_amount, employee_code, full_name,E.hospital_id from hims_f_loan_application LA \
                 inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id \
                 inner join hims_d_employee E on E.hims_d_employee_id = LA.employee_id \
                 where hims_f_loan_application_id = ?",
@@ -1380,16 +1380,18 @@ export default {
                   .executeQueryWithTransaction({
                     query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
                     voucher_type, document_id, document_number, from_screen, \
-                    narration, hospital_id) VALUES (?,?,?,?,?,?,?,?)",
+                    narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?)",
                     values: [
                       new Date(),
                       inputParam.payment_amount,
                       "payment",
                       inputParam.hims_f_employee_payments_id,
-                      inputParam.payment_application_code,
+                      inputParam.payment_cancel === "Y" ? "C-" + inputParam.payment_application_code
+                        : inputParam.payment_application_code,
                       inputParam.ScreenCode,
                       _header_narattion,
-                      req.userIdentity.hospital_id
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id
                     ],
                     printQuery: true
                   })
@@ -1428,7 +1430,8 @@ export default {
                           child_id: bank_acc.child_id,
                           debit_amount: headerResult[0].pay_amount,
                           payment_type: "DR",
-                          credit_amount: 0
+                          credit_amount: 0,
+                          hospital_id: headerResult[0].hospital_id
                         });
                       } else {
                         insertSubDetail.push({
@@ -1437,10 +1440,10 @@ export default {
                           child_id: bank_acc.child_id,
                           debit_amount: 0,
                           payment_type: "CR",
-                          credit_amount: headerResult[0].pay_amount
+                          credit_amount: headerResult[0].pay_amount,
+                          hospital_id: headerResult[0].hospital_id
                         });
                       }
-
                     }
 
                     //Asset Loan Entry
@@ -1451,7 +1454,8 @@ export default {
                         child_id: headerResult[0].child_id,
                         debit_amount: 0,
                         payment_type: "CR",
-                        credit_amount: headerResult[0].pay_amount
+                        credit_amount: headerResult[0].pay_amount,
+                        hospital_id: headerResult[0].hospital_id
                       });
                     } else {
                       insertSubDetail.push({
@@ -1460,12 +1464,10 @@ export default {
                         child_id: headerResult[0].child_id,
                         debit_amount: headerResult[0].pay_amount,
                         payment_type: "DR",
-                        credit_amount: 0
+                        credit_amount: 0,
+                        hospital_id: headerResult[0].hospital_id
                       });
                     }
-
-
-
 
                     const IncludeValuess = [
                       "payment_date",
@@ -1473,7 +1475,8 @@ export default {
                       "child_id",
                       "debit_amount",
                       "payment_type",
-                      "credit_amount"
+                      "credit_amount",
+                      "hospital_id"
                     ];
 
                     const month = moment().format("M");
@@ -1489,10 +1492,7 @@ export default {
                         extraValues: {
                           day_end_header_id: day_end_header.insertId,
                           year: year,
-                          month: month,
-                          entered_date: new Date(),
-                          entered_by: req.userIdentity.algaeh_d_app_user_id,
-                          hospital_id: req.userIdentity.hospital_id
+                          month: month
                         },
                         printQuery: true
                       })

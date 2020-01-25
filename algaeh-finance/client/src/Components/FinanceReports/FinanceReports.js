@@ -19,6 +19,10 @@ function layoutReducer(state, action) {
       return { ...state, col: 12 };
     case "switchCol":
       return { ...state, col: state.col === 12 ? 24 : 12 };
+    case "expand":
+      return { ...state, expand: true };
+    case "collapse":
+      return { ...state, expand: false };
     default:
       return state;
   }
@@ -30,7 +34,8 @@ export default function FinanceReports() {
   const [selected, setSelected] = useState("");
   const [data, setData] = useState({});
   const [layout, layoutDispatch] = useReducer(layoutReducer, {
-    cols: 24
+    cols: 24,
+    expand: false
   });
   const [trailBanlance, setTrailBalance] = useState({});
 
@@ -220,10 +225,34 @@ export default function FinanceReports() {
                 <Button
                   icon="layout"
                   size="large"
+                  disabled={!selected}
                   onClick={() => layoutDispatch({ type: "switchCol" })}
                 />
               </Tooltip>
             </li>
+            {!layout.expand ? (
+              <li>
+                <Tooltip title="Expand" placement="left">
+                  <Button
+                    icon="arrows-alt"
+                    size="large"
+                    disabled={!selected}
+                    onClick={() => layoutDispatch({ type: "expand" })}
+                  />
+                </Tooltip>
+              </li>
+            ) : (
+              <li>
+                <Tooltip title="Shrink" placement="left">
+                  <Button
+                    icon="shrink"
+                    size="large"
+                    disabled={!selected}
+                    onClick={() => layoutDispatch({ type: "collapse" })}
+                  />
+                </Tooltip>
+              </li>
+            )}
           </ul>
         </div>
       </div>

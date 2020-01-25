@@ -344,9 +344,9 @@ export function generateAccountingEntry(req, res, next) {
                     _mysql
                         .executeQuery({
                             query: "select GH.hims_f_sales_return_header_id, GH.sales_return_number, IH.invoice_number, GH.net_total, GH.tax_amount, \
-                            GH.return_total, IL.head_id as inv_head_id, IL.child_id as inv_child_id, C.head_id as customer_head_id, C.child_id as customer_child_id,\
+                            GH.return_total, IL.hospital_id, IL.head_id as inv_head_id, IL.child_id as inv_child_id, C.head_id as customer_head_id, C.child_id as customer_child_id,\
                             GD.return_qty , GD.net_extended_cost, ITM.waited_avg_cost, S.head_id as income_head_id, \
-                            S.child_id as income_child_id, C.customer_name, IU.conversion_factor\
+                            S.child_id as income_child_id, C.customer_name, IU.conversion_factor, GH.hospital_id as c_hospital_id\
                             from hims_f_sales_return_header GH \
                             inner join hims_f_sales_return_detail GD on GH.hims_f_sales_return_header_id = GD.sales_return_header_id \
                             inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = GH.location_id\
@@ -365,16 +365,17 @@ export function generateAccountingEntry(req, res, next) {
                                 .executeQuery({
                                     query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
                                         voucher_type, document_id, document_number, from_screen, \
-                                        narration, hospital_id) VALUES (?,?,?,?,?,?,?,?)",
+                                        narration,  entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?)",
                                     values: [
                                         new Date(),
                                         headerResult[0].net_payable,
                                         "credit_note",
                                         headerResult[0].hims_f_sales_return_header_id,
-                                        headerResult[0].invoice_number,
+                                        headerResult[0].sales_return_number,
                                         inputParam.ScreenCode,
                                         "Return done for  " + headerResult[0].invoice_number + " " + headerResult[0].customer_name,
-                                        req.userIdentity.hospital_id
+                                        new Date(),
+                                        req.userIdentity.algaeh_d_app_user_id
                                     ],
                                     printQuery: true
                                 })
@@ -388,7 +389,8 @@ export function generateAccountingEntry(req, res, next) {
                                         "child_id",
                                         "debit_amount",
                                         "payment_type",
-                                        "credit_amount"
+                                        "credit_amount",
+                                        "hospital_id"
                                     ];
 
                                     //Customer Entry
@@ -398,7 +400,8 @@ export function generateAccountingEntry(req, res, next) {
                                         child_id: headerResult[0].customer_child_id,
                                         debit_amount: 0,
                                         payment_type: "CR",
-                                        credit_amount: headerResult[0].return_total
+                                        credit_amount: headerResult[0].return_total,
+                                        hospital_id: headerResult[0].c_hospital_id
                                     });
 
                                     //OUT PUT Tax Entry
@@ -409,7 +412,8 @@ export function generateAccountingEntry(req, res, next) {
                                             child_id: output_tax_acc.child_id,
                                             debit_amount: headerResult[0].tax_amount,
                                             payment_type: "DR",
-                                            credit_amount: 0
+                                            credit_amount: 0,
+                                            hospital_id: req.userIdentity.hospital_id
                                         });
                                     }
 
@@ -431,7 +435,8 @@ export function generateAccountingEntry(req, res, next) {
                                             child_id: headerResult[i].income_child_id,
                                             debit_amount: headerResult[i].net_extended_cost,
                                             payment_type: "DR",
-                                            credit_amount: 0
+                                            credit_amount: 0,
+                                            hospital_id: req.userIdentity.hospital_id
                                         });
 
                                         //COGS Entry
@@ -441,7 +446,8 @@ export function generateAccountingEntry(req, res, next) {
                                             child_id: cogs_acc_data.child_id,
                                             debit_amount: 0,
                                             payment_type: "CR",
-                                            credit_amount: waited_avg_cost
+                                            credit_amount: waited_avg_cost,
+                                            hospital_id: req.userIdentity.hospital_id
                                         });
 
                                         //Location Wise
@@ -451,7 +457,8 @@ export function generateAccountingEntry(req, res, next) {
                                             child_id: headerResult[i].inv_child_id,
                                             debit_amount: waited_avg_cost,
                                             payment_type: "DR",
-                                            credit_amount: 0
+                                            credit_amount: 0,
+                                            hospital_id: headerResult[i].hospital_id
                                         });
                                     }
 
@@ -466,10 +473,7 @@ export function generateAccountingEntry(req, res, next) {
                                             extraValues: {
                                                 day_end_header_id: day_end_header.insertId,
                                                 year: year,
-                                                month: month,
-                                                entered_date: new Date(),
-                                                entered_by: req.userIdentity.algaeh_d_app_user_id,
-                                                hospital_id: req.userIdentity.hospital_id
+                                                month: month
                                             },
                                             printQuery: false
                                         })
