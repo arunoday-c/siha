@@ -496,7 +496,7 @@ export function generateAccountingEntry(req, res, next) {
                                 .executeQuery({
                                     query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
                                         voucher_type, document_id, document_number, from_screen, \
-                                        narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?)",
+                                        narration, invoice_no, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?,?)",
                                     values: [
                                         new Date(),
                                         headerResult[0].net_payable,
@@ -505,6 +505,7 @@ export function generateAccountingEntry(req, res, next) {
                                         headerResult[0].invoice_number,
                                         inputParam.ScreenCode,
                                         sales_done + " Sales done for  " + headerResult[0].customer_name,
+                                        headerResult[0].invoice_number,
                                         new Date(),
                                         req.userIdentity.algaeh_d_app_user_id
                                     ],
