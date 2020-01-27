@@ -63,15 +63,15 @@ class DisPatientForm extends Component {
                       this.state.Billexists === true
                         ? "none"
                         : this.state.patient_code
-                        ? "none"
-                        : ""
+                          ? "none"
+                          : ""
                   }}
                 >
                   <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
                   <h6 onClick={PatientSearch.bind(this, this, context)}>
                     {this.state.patient_code
                       ? this.state.patient_code
-                      : "Search Employee"}
+                      : "Search Patient"}
                     <i className="fas fa-search fa-lg"></i>
                   </h6>
                 </div>
@@ -101,8 +101,8 @@ class DisPatientForm extends Component {
                             <h5>
                               {item.visit_date
                                 ? moment(item.visit_date).format(
-                                    "DD/MM/YYYY, hh:mm A"
-                                  )
+                                  "DD/MM/YYYY, hh:mm A"
+                                )
                                 : "DD/MM/YYYY"}
                             </h5>
                             <h6>{item.visit_code}</h6>
@@ -164,8 +164,8 @@ class DisPatientForm extends Component {
                               Not Settled
                             </span>
                           ) : (
-                            <span className="badge badge-success">Settled</span>
-                          )}
+                                <span className="badge badge-success">Settled</span>
+                              )}
                         </h6>
                       </div>
                     ) : null}
