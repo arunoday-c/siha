@@ -7305,7 +7305,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
           const AllMonthlyLeaves = result[3];
           const prevoius_year_leave = result[4];
 
-          if (AllEmployees.length > 0 && prevoius_year_leave.length>0) {
+          if (AllEmployees.length > 0) {
             for (let i = 0; i < AllEmployees.length; i++) {
               //already proccesed leaves for selected year
               const already_processed_leaves = AllMonthlyLeaves.filter(item => {
@@ -7475,6 +7475,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
 
               //insertion procces
               new Promise((resolve, reject) => {
+                console.log("insertYearlyleave", insertYearlyleave)
                 try {
                   if (insertYearlyleave.length > 0) {
                     const insurtColumns = ["employee_id", "year"];

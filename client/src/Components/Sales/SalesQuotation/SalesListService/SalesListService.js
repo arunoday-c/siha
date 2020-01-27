@@ -98,21 +98,17 @@ class SalesListService extends Component {
                                             }}
                                         />
 
-
                                         <AlagehFormGroup
                                             div={{ className: "col-6 form-group mandatory" }}
                                             label={{
-                                                forceLabel: "Quantity"
+                                                forceLabel: "Unit Cost",
+                                                isImp: false
                                             }}
                                             textBox={{
-                                                number: {
-                                                    allowNegative: false,
-                                                    thousandSeparator: ","
-                                                },
+                                                decimal: { allowNegative: false },
                                                 className: "txt-fld",
-                                                name: "quantity",
-                                                value: this.state.quantity,
-                                                dontAllowKeys: ["-", "e", "."],
+                                                name: "unit_cost",
+                                                value: this.state.unit_cost,
                                                 events: {
                                                     onChange: numberchangeTexts.bind(
                                                         this,
@@ -121,8 +117,7 @@ class SalesListService extends Component {
                                                     )
                                                 },
                                                 others: {
-                                                    disabled: this.state.dataExitst,
-                                                    tabIndex: "3"
+                                                    tabIndex: "6"
                                                 }
                                             }}
                                         />
@@ -156,6 +151,33 @@ class SalesListService extends Component {
                                         <AlagehFormGroup
                                             div={{ className: "col-6 form-group mandatory" }}
                                             label={{
+                                                forceLabel: "Quantity"
+                                            }}
+                                            textBox={{
+                                                number: {
+                                                    allowNegative: false,
+                                                    thousandSeparator: ","
+                                                },
+                                                className: "txt-fld",
+                                                name: "quantity",
+                                                value: this.state.quantity,
+                                                dontAllowKeys: ["-", "e", "."],
+                                                events: {
+                                                    onChange: numberchangeTexts.bind(
+                                                        this,
+                                                        this,
+                                                        context
+                                                    )
+                                                },
+                                                others: {
+                                                    disabled: this.state.dataExitst,
+                                                    tabIndex: "3"
+                                                }
+                                            }}
+                                        />
+                                        <AlagehFormGroup
+                                            div={{ className: "col-6 form-group mandatory" }}
+                                            label={{
                                                 forceLabel: "Discount (%)",
                                                 isImp: false
                                             }}
@@ -178,29 +200,7 @@ class SalesListService extends Component {
                                         />
 
 
-                                        <AlagehFormGroup
-                                            div={{ className: "col-6 form-group mandatory" }}
-                                            label={{
-                                                forceLabel: "Unit Cost",
-                                                isImp: false
-                                            }}
-                                            textBox={{
-                                                decimal: { allowNegative: false },
-                                                className: "txt-fld",
-                                                name: "unit_cost",
-                                                value: this.state.unit_cost,
-                                                events: {
-                                                    onChange: numberchangeTexts.bind(
-                                                        this,
-                                                        this,
-                                                        context
-                                                    )
-                                                },
-                                                others: {
-                                                    tabIndex: "6"
-                                                }
-                                            }}
-                                        />
+                                       
                                         <div className="col-6 form-group mandatory">
                                             <AlgaehLabel
                                                 label={{

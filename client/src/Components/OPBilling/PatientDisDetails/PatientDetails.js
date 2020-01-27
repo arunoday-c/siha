@@ -63,15 +63,15 @@ class DisPatientForm extends Component {
                       this.state.Billexists === true
                         ? "none"
                         : this.state.patient_code
-                        ? "none"
-                        : ""
+                          ? "none"
+                          : ""
                   }}
                 >
-                  <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+                  <AlgaehLabel label={{ fieldName: "s_patient_code" }} />
                   <h6 onClick={PatientSearch.bind(this, this, context)}>
                     {this.state.patient_code
                       ? this.state.patient_code
-                      : "Search Employee"}
+                      : <AlgaehLabel label={{ fieldName: "patient_code" }} />}
                     <i className="fas fa-search fa-lg"></i>
                   </h6>
                 </div>
@@ -79,7 +79,7 @@ class DisPatientForm extends Component {
                 <div className="col-10">
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col-2 mandatory" }}
+                      div={{ className: "col-3 mandatory" }}
                       label={{
                         fieldName: "select_visit",
                         isImp: true
@@ -101,8 +101,8 @@ class DisPatientForm extends Component {
                             <h5>
                               {item.visit_date
                                 ? moment(item.visit_date).format(
-                                    "DD/MM/YYYY, hh:mm A"
-                                  )
+                                  "DD/MM/YYYY, hh:mm A"
+                                )
                                 : "DD/MM/YYYY"}
                             </h5>
                             <h6>{item.visit_code}</h6>
@@ -164,8 +164,8 @@ class DisPatientForm extends Component {
                               Not Settled
                             </span>
                           ) : (
-                            <span className="badge badge-success">Settled</span>
-                          )}
+                                <span className="badge badge-success">Settled</span>
+                              )}
                         </h6>
                       </div>
                     ) : null}
