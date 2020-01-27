@@ -2,6 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
+import moment from "moment";
 
 export default {
   addCreidtSettlement: (req, res, next) => {
@@ -272,7 +273,7 @@ export default {
     }
   },
   //created by:IRFAN
-  addCreditToDayEnd: (req, res, next) => {
+  addCreditToDayEnd_BKP_27_2020: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     const utilities = new algaehUtilities();
@@ -484,6 +485,187 @@ export default {
     } catch (e) {
       _mysql.releaseConnection();
       next(e);
+    }
+  },
+
+  //created by:IRFAN
+  addCreditToDayEnd: (req, res, next) => {
+    try {
+      const _options = req.connection == null ? {} : req.connection;
+
+      const _mysql = new algaehMysql(_options);
+      const utilities = new algaehUtilities();
+
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from  hims_d_organization where hims_d_organization_id=1\
+          and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
+          printQuery: true
+        })
+        .then(product_type => {
+          if (product_type.length == 1) {
+            const inputParam = req.body;
+
+            _mysql
+              .executeQuery({
+                query:
+                  "select finance_accounts_maping_id,account,head_id,child_id from finance_accounts_maping  where \
+            account in ( 'CIH_OP', 'OP_REC','CARD_SETTL','OP_WF');",
+
+                printQuery: true
+              })
+              .then(controls => {
+                const OP_WF = controls.find(f => {
+                  return f.account == "OP_WF";
+                });
+
+                const CIH_OP = controls.find(f => {
+                  return f.account == "CIH_OP";
+                });
+
+                const OP_REC = controls.find(f => {
+                  return f.account == "OP_REC";
+                });
+                const CARD_SETTL = controls.find(f => {
+                  return f.account == "CARD_SETTL";
+                });
+
+                let voucher_type = "receipt";
+                let narration =
+                  " Credit Settlement From Patient:" + inputParam.patient_code;
+                let amount = inputParam.receipt_amount;
+
+                const EntriesArray = [];
+
+                EntriesArray.push({
+                  payment_date: new Date(),
+                  head_id: OP_REC.head_id,
+                  child_id: OP_REC.child_id,
+                  debit_amount: 0,
+                  payment_type: "CR",
+                  credit_amount: inputParam.receipt_amount,
+                  hospital_id: req.userIdentity.hospital_id
+                });
+
+                if (inputParam.write_off_amount > 0) {
+                  EntriesArray.push({
+                    payment_date: new Date(),
+                    head_id: OP_WF.head_id,
+                    child_id: OP_WF.child_id,
+                    debit_amount: inputParam.write_off_amount,
+                    payment_type: "DR",
+                    credit_amount: 0,
+                    hospital_id: req.userIdentity.hospital_id
+                  });
+                }
+                inputParam.receiptdetails.forEach(m => {
+                  if (m.pay_type == "CD") {
+                    narration = narration + ",Received By CARD:" + m.amount;
+
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: CARD_SETTL.head_id,
+                      child_id: CARD_SETTL.child_id,
+                      debit_amount: m.amount,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                      hospital_id: req.userIdentity.hospital_id
+                    });
+                  } else {
+                    narration = narration + ",Received By CASH:" + m.amount;
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: CIH_OP.head_id,
+                      child_id: CIH_OP.child_id,
+                      debit_amount: m.amount,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                      hospital_id: req.userIdentity.hospital_id
+                    });
+                  }
+                });
+
+                _mysql
+                  .executeQueryWithTransaction({
+                    query:
+                      "INSERT INTO finance_day_end_header (transaction_date,amount,voucher_type,document_id,\
+                  document_number,from_screen,narration,entered_by,entered_date) \
+                  VALUES (?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      new Date(),
+                      amount,
+                      voucher_type,
+                      inputParam.receipt_header_id,
+                      inputParam.receipt_number,
+                      inputParam.ScreenCode,
+                      narration,
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date()
+                    ],
+                    printQuery: true
+                  })
+                  .then(headerDayEnd => {
+                    const month = moment().format("M");
+                    const year = moment().format("YYYY");
+                    const IncludeValuess = [
+                      "payment_date",
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "payment_type",
+                      "credit_amount",
+                      "hospital_id"
+                    ];
+
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                        values: EntriesArray,
+                        includeValues: IncludeValuess,
+                        bulkInsertOrUpdate: true,
+                        extraValues: {
+                          year: year,
+                          month: month,
+                          day_end_header_id: headerDayEnd.insertId
+                        },
+                        printQuery: true
+                      })
+                      .then(subResult => {
+                        console.log("FOUR");
+                        next();
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            next();
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
     }
   }
 };
