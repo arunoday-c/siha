@@ -415,7 +415,7 @@ export default {
             let strQuery = ""
             if (inputParam.po_return_from === "PHR") {
               strQuery = "select RH.hims_f_procurement_return_po_header_id, RH.purchase_return_number, GH.grn_number, \
-              RH.net_total, RH.tax_amount,RH.return_total, PL.head_id, PL.child_id, PL.hospital_id,V.head_id as v_head_id, \
+              GH.inovice_number, RH.net_total, RH.tax_amount,RH.return_total, PL.head_id, PL.child_id, PL.hospital_id,V.head_id as v_head_id, \
               V.child_id as v_child_id\
               from hims_f_procurement_po_return_header RH \
               inner join hims_f_procurement_grn_header GH on GH.hims_f_procurement_grn_header_id = RH.grn_header_id \
@@ -454,8 +454,8 @@ export default {
                 _mysql
                   .executeQuery({
                     query: "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
-                        document_number, from_screen, narration, entered_date, entered_by) \
-                        VALUES (?,?,?,?,?,?,?,?,?)",
+                        document_number, from_screen, narration, cancel_transaction, invoice_no, entered_date, entered_by) \
+                        VALUES (?,?,?,?,?,?,?,?,?,?)",
                     values: [
                       new Date(),
                       headerResult[0].return_total,
@@ -464,6 +464,8 @@ export default {
                       headerResult[0].purchase_return_number,
                       inputParam.ScreenCode,
                       headerResult[0].grn_number,
+                      "Y",
+                      headerResult[0].inovice_number,
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id
                     ],
