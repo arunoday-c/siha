@@ -11,6 +11,7 @@ import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 
 const PatientSearch = ($this, e) => {
+
   AlgaehSearch({
     searchGrid: {
       columns: FrontDesk
@@ -22,22 +23,23 @@ const PatientSearch = ($this, e) => {
     },
 
     onRowSelect: row => {
-      $this.setState(
-        {
-          patient_code: row.patient_code,
-          patient_id: row.hims_d_patient_id,
-          full_name: row.full_name
-        },
-        () => {
-          getPatientDetails($this);
-        }
-      );
+      AlgaehLoader({ show: true });
+      let IOputs = extend(SettlementIOputs.inputParam());
+      IOputs.patient_code = row.patient_code
+      IOputs.patient_id = row.hims_d_patient_id
+      IOputs.full_name = row.full_name
+
+      $this.setState({ ...$this.state, ...IOputs }, () => {
+        getCashiersAndShiftMAP($this);
+        getPatientDetails($this);
+      });
+
     }
   });
 };
 
 const getPatientDetails = $this => {
-  AlgaehLoader({ show: true });
+  // AlgaehLoader({ show: true });
 
   algaehApiCall({
     uri: "/opCreditSettlement/getPatientwiseBill",
@@ -71,27 +73,33 @@ const getPatientDetails = $this => {
   });
 };
 
-const ClearData = ($this, e) => {
-  let _screenName = getCookie("ScreenName").replace("/", "");
-  let counter_id = 0;
-  algaehApiCall({
-    uri: "/userPreferences/get",
-    data: {
-      screenName: _screenName,
-      identifier: "Counter"
-    },
-    method: "GET",
-    onSuccess: response => {
-      counter_id = response.data.records.selectedValue;
+const ClearData = ($this) => {
 
-      let IOputs = extend(SettlementIOputs.inputParam());
-
-      IOputs.counter_id = counter_id;
-      $this.setState({ ...$this.state, ...IOputs }, () => {
-        getCashiersAndShiftMAP($this);
-      });
-    }
+  let IOputs = extend(SettlementIOputs.inputParam());
+  $this.setState({ ...$this.state, ...IOputs }, () => {
+    getCashiersAndShiftMAP($this);
   });
+
+  // let _screenName = getCookie("ScreenName").replace("/", "");
+  // let counter_id = 0;
+  // algaehApiCall({
+  //   uri: "/userPreferences/get",
+  //   data: {
+  //     screenName: _screenName,
+  //     identifier: "Counter"
+  //   },
+  //   method: "GET",
+  //   onSuccess: response => {
+  //     counter_id = response.data.records.selectedValue;
+
+  //     let IOputs = extend(SettlementIOputs.inputParam());
+
+  //     IOputs.counter_id = counter_id;
+  //     $this.setState({ ...$this.state, ...IOputs }, () => {
+  //       getCashiersAndShiftMAP($this);
+  //     });
+  //   }
+  // });
 };
 
 const Validations = $this => {

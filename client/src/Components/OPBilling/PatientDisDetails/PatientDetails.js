@@ -67,11 +67,11 @@ class DisPatientForm extends Component {
                           : ""
                   }}
                 >
-                  <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+                  <AlgaehLabel label={{ fieldName: "s_patient_code" }} />
                   <h6 onClick={PatientSearch.bind(this, this, context)}>
                     {this.state.patient_code
                       ? this.state.patient_code
-                      : "Search Patient"}
+                      : <AlgaehLabel label={{ fieldName: "patient_code" }} />}
                     <i className="fas fa-search fa-lg"></i>
                   </h6>
                 </div>
@@ -79,7 +79,7 @@ class DisPatientForm extends Component {
                 <div className="col-10">
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col-2 mandatory" }}
+                      div={{ className: "col-3 mandatory" }}
                       label={{
                         fieldName: "select_visit",
                         isImp: true
