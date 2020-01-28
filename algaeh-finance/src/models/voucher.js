@@ -1548,6 +1548,52 @@ export default {
           next(e);
         });
       });
+  },
+  //created by irfan:
+  getUnSettledInvoices: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const input = req.query;
+    let voucher_type = "";
+    let str = "";
+    if (input.text != undefined && input.text != "") {
+      str = ` and invoice_no like '%${input.text}%'`;
+    }
+
+    switch (input.voucher_type) {
+      case "payment":
+      case "debit_note":
+        voucher_type = "purchase";
+        break;
+      case "receipt":
+      case "credit_note":
+        voucher_type = "sales";
+        break;
+    }
+
+    if (voucher_type == "") {
+      req.records = {
+        invalid_input: true,
+        message: "Please Select Proper Voucher Type"
+      };
+      next();
+    } else {
+      _mysql
+        .executeQuery({
+          query: `select distinct finance_voucher_header_id,invoice_no from
+        finance_voucher_header H inner join finance_voucher_details D on H.finance_voucher_header_id=D.voucher_header_id
+        and D.auth_status='A' where voucher_type='${voucher_type}' and 
+        settlement_status='P' and invoice_no is not null ${str}; `
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    }
   }
 };
 
