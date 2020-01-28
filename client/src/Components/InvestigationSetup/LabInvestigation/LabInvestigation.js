@@ -181,582 +181,208 @@ class LabInvestigation extends Component {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="hptl-phase1-add-lab-investigation-form">
-              <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col-3 mandatory" }}
-                  label={{
-                    fieldName: "specimen_id",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "specimen_id",
-                    className: "select-fld",
-                    value: this.state.specimen_id,
-                    dataSource: {
-                      textField: "SpeDescription",
-                      valueField: "hims_d_lab_specimen_id",
-                      data: this.props.labspecimen
-                    },
-                    onChange: texthandle.bind(this, this, context),
-                    others: {
-                      tabIndex: "5"
-                    }
-                  }}
-                />
-                <AlagehAutoComplete
-                  div={{ className: "col-3 mandatory" }}
-                  label={{
-                    fieldName: "container_id",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "container_id",
-                    className: "select-fld",
-                    value: this.state.container_id,
-                    dataSource: {
-                      textField: "ConDescription",
-                      valueField: "hims_d_lab_container_id",
-                      data: this.props.labcontainer
-                    },
-                    onChange: containeridhandle.bind(this, this, context),
-                    others: {
-                      tabIndex: "6"
-                    }
-                  }}
-                />
-                <AlagehAutoComplete
-                  div={{ className: "col-3 mandatory" }}
-                  label={{
-                    fieldName: "available_in_house",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "available_in_house",
-                    className: "select-fld",
-                    value: this.state.available_in_house,
-                    dataSource: {
-                      textField:
-                        this.state.selectedLang === "en"
-                          ? "name"
-                          : "arabic_name",
-                      valueField: "value",
-                      data: variableJson.FORMAT_YESNO
-                    },
-                    onChange: texthandle.bind(this, this, context),
-                    others: {
-                      tabIndex: "7"
-                    }
-                  }}
-                />
-                <AlagehAutoComplete
-                  div={{ className: "col-3" }}
-                  label={{
-                    fieldName: "send_out_test"
-                  }}
-                  selector={{
-                    name: "send_out_test",
-                    className: "select-fld",
-                    value: this.state.send_out_test,
-                    dataSource: {
-                      textField:
-                        this.state.selectedLang === "en"
-                          ? "name"
-                          : "arabic_name",
-                      valueField: "value",
-                      data: variableJson.FORMAT_YESNO
-                    },
-                    onChange: texthandle.bind(this, this, context)
-                  }}
-                />
+            <div className="row">
+              <div className="col-3">
+                <div className="row">
+                  <AlagehAutoComplete
+                    div={{ className: "col-12 mandatory form-group" }}
+                    label={{
+                      fieldName: "specimen_id",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "specimen_id",
+                      className: "select-fld",
+                      value: this.state.specimen_id,
+                      dataSource: {
+                        textField: "SpeDescription",
+                        valueField: "hims_d_lab_specimen_id",
+                        data: this.props.labspecimen
+                      },
+                      onChange: texthandle.bind(this, this, context),
+                      others: {
+                        tabIndex: "5"
+                      }
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col-12 mandatory form-group" }}
+                    label={{
+                      fieldName: "container_id",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "container_id",
+                      className: "select-fld",
+                      value: this.state.container_id,
+                      dataSource: {
+                        textField: "ConDescription",
+                        valueField: "hims_d_lab_container_id",
+                        data: this.props.labcontainer
+                      },
+                      onChange: containeridhandle.bind(this, this, context),
+                      others: {
+                        tabIndex: "6"
+                      }
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col-12 mandatory form-group" }}
+                    label={{
+                      fieldName: "available_in_house",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "available_in_house",
+                      className: "select-fld",
+                      value: this.state.available_in_house,
+                      dataSource: {
+                        textField:
+                          this.state.selectedLang === "en"
+                            ? "name"
+                            : "arabic_name",
+                        valueField: "value",
+                        data: variableJson.FORMAT_YESNO
+                      },
+                      onChange: texthandle.bind(this, this, context),
+                      others: {
+                        tabIndex: "7"
+                      }
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col-12 form-group" }}
+                    label={{
+                      fieldName: "send_out_test"
+                    }}
+                    selector={{
+                      name: "send_out_test",
+                      className: "select-fld",
+                      value: this.state.send_out_test,
+                      dataSource: {
+                        textField:
+                          this.state.selectedLang === "en"
+                            ? "name"
+                            : "arabic_name",
+                        valueField: "value",
+                        data: variableJson.FORMAT_YESNO
+                      },
+                      onChange: texthandle.bind(this, this, context)
+                    }}
+                  />
+                </div>
               </div>
-
-              {this.state.analytes_required === true ? (
-                <div className="Paper">
-                  <div className="row" data-validate="analyte_details">
-                    <AlagehAutoComplete
-                      div={{ className: "col-3" }}
-                      label={{
-                        fieldName: "analyte_id",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "analyte_id",
-                        className: "select-fld",
-                        value: this.state.analyte_id,
-                        dataSource: {
-                          textField: "AnaDescription",
-                          valueField: "hims_d_lab_analytes_id",
-                          data: this.props.labanalytes
-                        },
-                        onChange: analyteidhandle.bind(this, this, context)
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Gender",
-                        isImp: false
-                      }}
-                      selector={{
-                        name: "gender",
-                        className: "select-fld",
-                        value: this.state.gender,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: variableJson.FORMAT_GENDER
-                        },
-                        onChange: e => this.genderHandle(context, e)
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Age Type",
-                        isImp: false
-                      }}
-                      selector={{
-                        name: "age_type",
-                        className: "select-fld",
-                        value: this.state.age_type,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: variableJson.LAB_AGE_TYPE
-                        },
-                        onChange: e => this.ageTypeHandle(context, e),
-                        others: {
-                          onBlur: ageValidater.bind(this, this, context)
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Age From",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "from_age",
-                        value: this.state.from_age,
-                        number: {
-                          allowNegative: false
-                        },
-                        events: {
-                          onChange: texthandle.bind(this, this, context)
-                        },
-                        others: {
-                          onBlur: ageValidater.bind(this, this, context)
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Age To",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "to_age",
-                        number: {
-                          allowNegative: false
-                        },
-                        value: this.state.to_age,
-                        events: {
-                          onChange: texthandle.bind(this, this, context)
-                        },
-                        others: {
-                          onBlur: ageValidater.bind(this, this, context)
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "normal_low"
-                      }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        className: "txt-fld",
-                        name: "normal_low",
-                        value: this.state.normal_low,
-                        events: {
-                          onChange: texthandle.bind(this, this, context)
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "normal_high"
-                      }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        className: "txt-fld",
-                        name: "normal_high",
-                        value: this.state.normal_high,
-                        events: {
-                          onChange: texthandle.bind(this, this, context)
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "critical_low"
-                      }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        className: "txt-fld",
-                        name: "critical_low",
-                        value: this.state.critical_low,
-                        events: {
-                          onChange: texthandle.bind(this, this, context)
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "critical_high"
-                      }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        className: "txt-fld",
-                        name: "critical_high",
-                        value: this.state.critical_high,
-                        events: {
-                          onChange: texthandle.bind(this, this, context)
-                        }
-                      }}
-                    />
-
-                    <div className="col" style={{ padding: 0 }}>
-                      <button
-                        className="btn btn-primary"
-                        style={{ marginTop: 19 }}
-                        onClick={AddAnalytes.bind(this, this, context)}
-                      >
-                        Add
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-12" id="analyte_grid_cntr">
-                      <AlgaehDataGrid
-                        id="analyte_grid"
-                        columns={[
-                          {
-                            fieldName: "analyte_id",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "analytes_id" }}
-                              />
-                            ),
-                            displayTemplate: row => {
-                              let display =
-                                this.props.labanalytes === undefined
-                                  ? []
-                                  : this.props.labanalytes.filter(
-                                      f =>
-                                        f.hims_d_lab_analytes_id ===
-                                        row.analyte_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== null && display.length !== 0
-                                    ? display[0].description
-                                    : ""}
-                                </span>
-                              );
-                            },
-                            editorTemplate: row => {
-                              let display =
-                                this.props.labanalytes === undefined
-                                  ? []
-                                  : this.props.labanalytes.filter(
-                                      f =>
-                                        f.hims_d_lab_analytes_id ===
-                                        row.analyte_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== null && display.length !== 0
-                                    ? display[0].description
-                                    : ""}
-                                </span>
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "gender",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Gender" }} />
-                            ),
-                            editorTemplate: row => {
-                              return (
-                                <AlagehAutoComplete
-                                  div={{}}
-                                  selector={{
-                                    name: "gender",
-                                    className: "select-fld",
-                                    value: row.gender.toUpperCase(),
-                                    dataSource: {
-                                      textField: "name",
-                                      valueField: "value",
-                                      data: variableJson.EMP_FORMAT_GENDER
-                                    },
-                                    onChange: onchangegridcol.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )
-                                  }}
-                                />
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "from_age",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Age from" }} />
-                            ),
-                            editorTemplate: row => {
-                              return (
-                                <AlagehFormGroup
-                                  div={{}}
-                                  textBox={{
-                                    className: "txt-fld",
-                                    name: "from_age",
-                                    number: {
-                                      allowNegative: false
-                                    },
-                                    value: row.from_age,
-                                    events: {
-                                      onChange: onchangegridcol.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )
-                                    }
-                                  }}
-                                />
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "to_age",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Age to" }} />
-                            ),
-                            editorTemplate: row => {
-                              return (
-                                <AlagehFormGroup
-                                  div={{}}
-                                  textBox={{
-                                    className: "txt-fld",
-                                    name: "to_age",
-                                    number: {
-                                      allowNegative: false
-                                    },
-                                    others: {
-                                      type: "number"
-                                    },
-                                    value: row.to_age,
-                                    events: {
-                                      onChange: onchangegridcol.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )
-                                    }
-                                  }}
-                                />
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "age_type",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Age Type" }} />
-                            ),
-                            displayTemplate: row => {
-                              let display = variableJson.LAB_AGE_TYPE.filter(
-                                f => f.value === row.age_type
-                              );
-
-                              return (
-                                <span>
-                                  {display !== null && display.length !== 0
-                                    ? display[0].name
-                                    : ""}
-                                </span>
-                              );
-                            },
-                            editorTemplate: row => {
-                              return (
-                                <AlagehAutoComplete
-                                  div={{}}
-                                  selector={{
-                                    name: "age_type",
-                                    className: "select-fld",
-                                    value: row.age_type,
-                                    dataSource: {
-                                      textField: "name",
-                                      valueField: "value",
-                                      data: variableJson.LAB_AGE_TYPE
-                                    },
-                                    onChange: onchangegridcol.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )
-                                  }}
-                                />
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "normal_low",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "normal_low" }}
-                              />
-                            ),
-                            editorTemplate: row => {
-                              return (
-                                <AlagehFormGroup
-                                  div={{}}
-                                  textBox={{
-                                    value: row.normal_low,
-                                    className: "txt-fld",
-                                    name: "normal_low",
-                                    others: {
-                                      type: "number"
-                                    },
-                                    events: {
-                                      onChange: onchangegridcol.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )
-                                    }
-                                  }}
-                                />
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "normal_high",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "normal_high" }}
-                              />
-                            ),
-                            editorTemplate: row => {
-                              return (
-                                <AlagehFormGroup
-                                  div={{}}
-                                  textBox={{
-                                    value: row.normal_high,
-                                    className: "txt-fld",
-                                    name: "normal_high",
-                                    events: {
-                                      onChange: onchangegridcol.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )
-                                    }
-                                  }}
-                                />
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "critical_low",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "critical_low" }}
-                              />
-                            ),
-                            editorTemplate: row => {
-                              return (
-                                <AlagehFormGroup
-                                  div={{}}
-                                  textBox={{
-                                    value: row.critical_low,
-                                    className: "txt-fld",
-                                    name: "critical_low",
-                                    events: {
-                                      onChange: onchangegridcol.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )
-                                    }
-                                  }}
-                                />
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "critical_high",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "critical_high" }}
-                              />
-                            ),
-                            editorTemplate: row => {
-                              return (
-                                <AlagehFormGroup
-                                  div={{}}
-                                  textBox={{
-                                    value: row.critical_high,
-                                    className: "txt-fld",
-                                    name: "critical_high",
-                                    events: {
-                                      onChange: onchangegridcol.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )
-                                    }
-                                  }}
-                                />
-                              );
-                            }
-                          }
-                        ]}
-                        keyId="analyte_id"
-                        dataSource={{
-                          data: this.state.analytes
+              <div
+                className="col-9"
+                style={{ borderLeft: "1px solid rgba(0,0,0,.1)" }}
+              >
+                {this.state.analytes_required === true ? (
+                  <div>
+                    <div className="row" data-validate="analyte_details">
+                      <AlagehAutoComplete
+                        div={{ className: "col-8 mandatory" }}
+                        label={{
+                          fieldName: "analyte_id",
+                          isImp: true
                         }}
-                        isEditable={true}
-                        paging={{ page: 0, rowsPerPage: 10 }}
-                        events={{
-                          onDelete: deleteLabAnalyte.bind(this, this, context),
-                          onEdit: row => {},
-
-                          onDone: updateLabInvestigation.bind(
-                            this,
-                            this,
-                            context
-                          )
+                        selector={{
+                          name: "analyte_id",
+                          className: "select-fld",
+                          value: this.state.analyte_id,
+                          dataSource: {
+                            textField: "AnaDescription",
+                            valueField: "hims_d_lab_analytes_id",
+                            data: this.props.labanalytes
+                          },
+                          onChange: analyteidhandle.bind(this, this, context)
                         }}
                       />
+
+                      <div className="col" style={{ padding: 0 }}>
+                        <button
+                          className="btn btn-primary"
+                          style={{ marginTop: 19 }}
+                          onClick={AddAnalytes.bind(this, this, context)}
+                        >
+                          Add
+                        </button>
+                      </div>
+
+                      <div className="col-12" id="analyte_grid_cntr">
+                        <AlgaehDataGrid
+                          id="analyte_grid"
+                          columns={[
+                            {
+                              fieldName: "analyte_id",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ fieldName: "analytes_id" }}
+                                />
+                              ),
+                              displayTemplate: row => {
+                                let display =
+                                  this.props.labanalytes === undefined
+                                    ? []
+                                    : this.props.labanalytes.filter(
+                                        f =>
+                                          f.hims_d_lab_analytes_id ===
+                                          row.analyte_id
+                                      );
+
+                                return (
+                                  <span>
+                                    {display !== null && display.length !== 0
+                                      ? display[0].description
+                                      : ""}
+                                  </span>
+                                );
+                              },
+                              editorTemplate: row => {
+                                let display =
+                                  this.props.labanalytes === undefined
+                                    ? []
+                                    : this.props.labanalytes.filter(
+                                        f =>
+                                          f.hims_d_lab_analytes_id ===
+                                          row.analyte_id
+                                      );
+
+                                return (
+                                  <span>
+                                    {display !== null && display.length !== 0
+                                      ? display[0].description
+                                      : ""}
+                                  </span>
+                                );
+                              }
+                            }
+                          ]}
+                          keyId="analyte_id"
+                          dataSource={{
+                            data: this.state.analytes
+                          }}
+                          isEditable={true}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                          events={{
+                            onDelete: deleteLabAnalyte.bind(
+                              this,
+                              this,
+                              context
+                            ),
+                            onEdit: row => {},
+
+                            onDone: updateLabInvestigation.bind(
+                              this,
+                              this,
+                              context
+                            )
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              ) : null}
+                ) : null}
+              </div>
             </div>
           )}
         </MyContext.Consumer>
