@@ -13,7 +13,6 @@ import {
   AlgaehLabel,
   AlgaehDataGrid
 } from "../Wrapper/algaehWrapper";
-// import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 
 import { MainContext } from "algaeh-react-components/context";
 class Dashboard extends Component {

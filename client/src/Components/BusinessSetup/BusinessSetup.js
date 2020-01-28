@@ -16,7 +16,6 @@ import CategorySpeciality from "./CategorySpecialityMapping/CategorySpeciality";
 import BankMaster from "./BankMaster/BankMaster";
 import CompanyAccount from "./CompanyAccount/CompanyAccount";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
-// import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import _ from "lodash";
 import { CheckElement } from "../Wrapper";
 import { MainContext } from "algaeh-react-components/context";

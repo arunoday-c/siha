@@ -15,7 +15,6 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-// import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 import _ from "lodash";
 import { MainContext } from "algaeh-react-components/context";
 class BankMaster extends Component {

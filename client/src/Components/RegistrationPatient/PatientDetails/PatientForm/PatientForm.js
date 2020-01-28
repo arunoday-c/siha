@@ -26,7 +26,6 @@ import {
 import variableJson from "../../../../utils/GlobalVariables.json";
 import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
 import Enumerable from "linq";
-// import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 import { MainContext } from "algaeh-react-components/context";
 class AddPatientForm extends Component {
   constructor(props) {

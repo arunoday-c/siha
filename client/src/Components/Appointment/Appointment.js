@@ -24,7 +24,6 @@ import {
   generateTimeslotsForDoctor,
   generateReport
 } from "./AppointmentHelper";
-// import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import sockets from "../../sockets";
 import { MainContext } from "algaeh-react-components/context";
 class Appointment extends PureComponent {
