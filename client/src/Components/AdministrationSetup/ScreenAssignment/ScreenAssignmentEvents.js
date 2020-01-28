@@ -13,7 +13,6 @@ export default function ScreenAssignmentEvents() {
             roles: []
           });
           break;
-
         default:
           getRoleBaseActive($this);
           getRoleActiveModules($this, value.value);
@@ -22,6 +21,9 @@ export default function ScreenAssignmentEvents() {
           });
           break;
       }
+    },
+    assignSelectedModules: that => {
+      console.log("This", that.state.selectedModules);
     },
     assignScreens: $this => {
       //To build delete inputs
@@ -161,11 +163,12 @@ export default function ScreenAssignmentEvents() {
       getRoleBaseActive($this);
     },
     getGroups: $this => {
+      $this._isMounted = true;
       algaehApiCall({
         uri: "/algaehappuser/selectAppGroup",
         method: "GET",
         onSuccess: response => {
-          if (response.data.success) {
+          if (response.data.success === true && $this._isMounted === true) {
             $this.setState({ groups: response.data.records });
           }
         },
@@ -264,11 +267,12 @@ export default function ScreenAssignmentEvents() {
 // }
 
 function getRoleBaseActive($this) {
+  $this._isMounted = true;
   algaehApiCall({
     uri: "/algaehMasters/getRoleBaseActiveModules",
     method: "GET",
     onSuccess: res => {
-      if (res.data.success) {
+      if (res.data.success === true && $this._isMounted === true) {
         $this.setState({
           modules: res.data.records
         });

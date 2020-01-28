@@ -7,7 +7,7 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
-
+import { AlgaehTreeSearch } from "algaeh-react-components";
 class Screens extends Component {
   constructor(props) {
     super(props);
@@ -290,7 +290,7 @@ class Screens extends Component {
                   <div className="col-12">
                     <div data-validate="shiftDiv" id="algaehGrid_Cntr">
                       <AlgaehDataGrid
-                        id="shift-grid"
+                        id="screen-grid"
                         datavalidate="data-validate='shiftDiv'"
                         columns={[
                           {
@@ -394,10 +394,10 @@ class Screens extends Component {
                           data: this.state.screens
                         }}
                         filter={true}
-                        isEditable={true}
+                        isEditable={false}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
-                          onEdit: () => { },
+                          onEdit: () => {},
                           onDelete: this.deleteScreens.bind(this),
                           onDone: this.updateScreens.bind(this)
                         }}

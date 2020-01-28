@@ -6,26 +6,28 @@ import {
   AlagehAutoComplete,
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  cancelRequest
+} from "../../../utils/algaehApiCall";
 import { ROLE_TYPE, FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 import swal from "sweetalert2";
 
 class Roles extends Component {
+  _isMounted = false;
   constructor(props) {
     super(props);
 
-    this.initCall();
     this.state = {
       groups: [],
       roles: []
     };
-    this.getGroups();
-    this.getRoles();
-    this.getAuthPrivilege();
   }
 
   initCall() {
+    this._isMounted = true;
     let that = this;
     algaehApiCall({
       uri: "/init/",
@@ -36,7 +38,7 @@ class Roles extends Component {
         keyFieldName: "app_d_app_roles_id"
       },
       onSuccess: response => {
-        if (response.data.success === true) {
+        if (response.data.success === true && this._isMounted === true) {
           const placeHolder =
             response.data.records.length > 0 ? response.data.records[0] : {};
           that.setState({
@@ -178,11 +180,13 @@ class Roles extends Component {
   }
 
   getGroups() {
+    this._isMounted = true;
     algaehApiCall({
       uri: "/algaehappuser/selectAppGroup",
       method: "GET",
+      cancelRequestId: "selectAppGroup",
       onSuccess: res => {
-        if (res.data.success) {
+        if (res.data.success === true && this._isMounted === true) {
           this.setState({
             groups: res.data.records
           });
@@ -197,11 +201,13 @@ class Roles extends Component {
     });
   }
   getRoles() {
+    this._isMounted = true;
     algaehApiCall({
       uri: "/algaehappuser/selectRoles",
       method: "GET",
+      cancelRequestId: "selectRoles",
       onSuccess: res => {
-        if (res.data.success) {
+        if (res.data.success === true && this._isMounted === true) {
           this.setState({
             roles: res.data.records
           });
@@ -216,11 +222,13 @@ class Roles extends Component {
     });
   }
   getAuthPrivilege() {
+    this._isMounted = true;
     algaehApiCall({
       uri: "/algaehMasters/getHrmsAuthLevels",
       method: "GET",
+      cancelRequestId: "getHrmsAuthLevels",
       onSuccess: res => {
-        if (res.data.success) {
+        if (res.data.success === true && this._isMounted === true) {
           this.setState({
             leave_levels: res.data.records.leave_levels,
             loan_levels: res.data.records.loan_levels
@@ -242,6 +250,20 @@ class Roles extends Component {
     row[name] = value;
     row.update();
   }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+    cancelRequest("selectAppGroup");
+    cancelRequest("selectRoles");
+    cancelRequest("getHrmsAuthLevels");
+  }
+  componentDidMount() {
+    this.initCall();
+    this.getGroups();
+    this.getRoles();
+    this.getAuthPrivilege();
+  }
+
   render() {
     return (
       <div className="roles">

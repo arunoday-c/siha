@@ -748,7 +748,6 @@ export function dateFomater(date) {
 }
 
 export async function getToken() {
-  debugger;
   const details = await GetContextForm("authToken");
   if (details !== "") {
     return details;
