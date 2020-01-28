@@ -481,9 +481,11 @@ export default {
                                         final_deduction_amount =
                                           final_deduction_amount +
                                           miscellaneousOutput.final_deduction_amount;
+                                        // console.log("empResult[i].gross_salary", empResult[i]["gross_salary"])
+                                        // console.log("empResult[i].total_days", empResult[i]["total_days"])
                                         let per_day_sal =
-                                          empResult[i]["gross_salary"] /
-                                          empResult[i]["total_days"];
+                                          parseFloat(empResult[i]["total_days"]) === 0 ? 0 :
+                                            empResult[i]["gross_salary"] / empResult[i]["total_days"];
 
                                         let _salary_number = empResult[i][
                                           "employee_code"
@@ -624,6 +626,7 @@ export default {
                           inserted_salary = [inserted_header];
                         }
 
+                        // console.log("inserted_salary", inserted_salary)
                         if (inserted_salary.length > 0) {
                           let execute_query = "";
 
@@ -3632,9 +3635,9 @@ export default {
                       printQuery: true
                     })
                     .then(headerResult => {
-                      const laibility_amount = headerResult[0][0]
-                      const bank_booking = headerResult[1]
-                      const leave_salary_booking = headerResult[2]
+                      const laibility_amount = headerResult[0][0];
+                      const bank_booking = headerResult[1];
+
                       _mysql
                         .executeQueryWithTransaction({
                           query: "INSERT INTO finance_day_end_header (transaction_date, amount, \

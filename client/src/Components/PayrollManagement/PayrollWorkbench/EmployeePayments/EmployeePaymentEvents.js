@@ -23,17 +23,19 @@ const branchHandelEvent = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let IOputs = EmployeePaymentIOputs.inputParam();
-
+  IOputs.cash_finance_account = $this.state.cash_finance_account
   $this.setState({
     ...IOputs,
     [name]: value
   });
+
 };
 const Paymenttexthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let IOputs = EmployeePaymentIOputs.inputParam();
   IOputs.hospital_id = $this.state.hospital_id;
+  IOputs.cash_finance_account = $this.state.cash_finance_account
   $this.setState({
     ...IOputs,
     [name]: value
@@ -43,6 +45,7 @@ const Paymenttexthandle = ($this, e) => {
 const PaymentOnClear = ($this, e) => {
   let IOputs = EmployeePaymentIOputs.inputParam();
   IOputs.hospital_id = $this.state.hospital_id;
+  IOputs.cash_finance_account = $this.state.cash_finance_account
   $this.setState({
     ...IOputs,
     [e]: null
@@ -405,8 +408,23 @@ const ProessEmpPayment = ($this, e) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='processData'",
     onSuccess: () => {
+      if ($this.FIN_Active) {
+        if ($this.state.payment_mode === "CS" &&
+          ($this.state.selected_account === null || $this.state.selected_account === undefined)) {
+          swalMessage({
+            title: "Please Select Cash in Hand Account",
+            type: "warning"
+          });
+          return
+        }
+      }
+      const cs_selected_account = $this.state.selected_account !== null ?
+        $this.state.selected_account.split("-") : []
+
       AlgaehLoader({ show: true });
       $this.state.ScreenCode = getCookie("ScreenCode")
+      $this.state.child_id = cs_selected_account.length > 0 ? cs_selected_account[1] : undefined
+      $this.state.head_id = cs_selected_account.length > 0 ? cs_selected_account[0] : undefined
       algaehApiCall({
         uri: "/employeepayments/InsertEmployeePayment",
         module: "hrManagement",
@@ -501,8 +519,25 @@ const ClearData = $this => {
   IOputs.hospital_id = JSON.parse(
     AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
   ).hims_d_hospital_id;
+  IOputs.cash_finance_account = $this.state.cash_finance_account
   $this.setState(IOputs);
 };
+
+const getFinanceHeaders = ($this) => {
+  algaehApiCall({
+    uri: "/finance/getAccountHeadsForDropdown",
+    data: { voucher_type: "CIH" },
+    method: "GET",
+    module: "finance",
+    onSuccess: response => {
+      if (response.data.success === true) {
+        $this.setState({
+          cash_finance_account: response.data.result
+        });
+      }
+    }
+  });
+}
 
 export {
   texthandle,
@@ -515,5 +550,6 @@ export {
   getEmployeePayments,
   ClearData,
   PaymentOnClear,
-  branchHandelEvent
+  branchHandelEvent,
+  getFinanceHeaders
 };

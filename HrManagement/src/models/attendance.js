@@ -8956,7 +8956,7 @@ export default {
                       input.from_date,
                       input.to_date
                     ],
-                    printQuery: false
+                    printQuery: true
                   })
                   .then(result => {
                     _mysql.releaseConnection();

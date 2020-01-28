@@ -1,5 +1,5 @@
 import Enumerable from "linq";
-import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
+import { swalMessage, algaehApiCall, getCookie } from "../../../../utils/algaehApiCall.js";
 // import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
@@ -249,6 +249,31 @@ const SaveLeaveSalary = $this => {
   ).annual_leave_calculation;
   let inputObj = $this.state;
   inputObj.annual_leave_calculation = annual_leave_calculation;
+
+  let hrms_options = JSON.parse(
+    AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
+  );
+  debugger
+  inputObj.salary_end_date = moment($this.state.leave_salary_detail[0].end_date)
+    .endOf("month")
+    .format("YYYY-MM-DD");
+  if (hrms_options.attendance_starts === "PM") {
+    inputObj.salary_date =
+      hrms_options.at_st_date +
+      "-" +
+      $this.state.month +
+      "-" +
+      $this.state.year;
+    inputObj.salary_end_date =
+      $this.state.year +
+      "-" +
+      $this.state.month +
+      "-" +
+      hrms_options.at_end_date;
+  }
+
+  inputObj.ScreenCode = getCookie("ScreenCode")
+
   algaehApiCall({
     uri: "/leavesalaryprocess/InsertLeaveSalary",
     module: "hrManagement",
