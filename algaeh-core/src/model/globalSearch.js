@@ -45,47 +45,35 @@ let searchData = (req, res, next) => {
     //       "%')";
 
     let whereCondition = " ";
-
     if (
-      req.query.fieldName != null &&
-      req.query.fieldContains != null &&
-      req.query.fieldContains.length > 1
+      req.query.fieldName != null
+      // &&
+      // req.query.fieldContains != null
+      // &&
+      // req.query.fieldContains.length > 1
     ) {
       const filterBy = req.query.filterBy;
+      const filContains =
+        req.query.fieldContains === undefined ? "" : req.query.fieldContains;
+
       switch (filterBy) {
         case "STW":
           whereCondition =
-            " and " +
-            req.query.fieldName +
-            " like  '" +
-            req.query.fieldContains +
-            "%' ";
+            " and " + req.query.fieldName + " like  '" + filContains + "%' ";
           break;
 
         case "ENW":
           whereCondition =
-            " and " +
-            req.query.fieldName +
-            " like  '%" +
-            req.query.fieldContains +
-            "' ";
+            " and " + req.query.fieldName + " like  '%" + filContains + "' ";
           break;
         case "EQU":
           whereCondition =
-            " and " +
-            req.query.fieldName +
-            " =  '" +
-            req.query.fieldContains +
-            "' ";
+            " and " + req.query.fieldName + " =  '" + filContains + "' ";
           break;
 
         default:
           whereCondition =
-            " and " +
-            req.query.fieldName +
-            " like  '%" +
-            req.query.fieldContains +
-            "%' ";
+            " and " + req.query.fieldName + " like  '%" + filContains + "%' ";
           break;
       }
     }
@@ -99,7 +87,11 @@ let searchData = (req, res, next) => {
         : "";
 
     whereCondition +=
-      req.query.inputs == "null" || null ? "" : " and " + req.query.inputs;
+      req.query.inputs == "null" ||
+      req.query.inputs === null ||
+      req.query.inputs === undefined
+        ? ""
+        : " and " + req.query.inputs;
     let query =
       queryConfig.searchQuery +
       whereCondition +
@@ -121,17 +113,20 @@ let searchData = (req, res, next) => {
         // console.log("result",result);
         _mysql.releaseConnection();
         // req.records = result;
-        let rec={};
+        let rec = {};
         if (result !== undefined) {
           // result = new Object();
-          rec["totalPages"] =result[1][0].total_pages;
+          rec["totalPages"] = result[1][0].total_pages;
           rec["data"] = result[0];
         }
 
-        res.status(httpStatus.ok).json({
-          success: true,
-          records: rec
-        }).end();
+        res
+          .status(httpStatus.ok)
+          .json({
+            success: true,
+            records: rec
+          })
+          .end();
         // next();
       })
       .catch(e => {
