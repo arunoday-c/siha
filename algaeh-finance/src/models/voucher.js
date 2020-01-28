@@ -173,8 +173,8 @@ export default {
                     .executeQueryWithTransaction({
                       query:
                         "INSERT INTO `finance_voucher_header` (payment_mode,ref_no,cheque_date,amount, payment_date, month, year,\
-                       narration, voucher_no, voucher_type,from_screen,posted_from)\
-                       VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
+                       narration, voucher_no, voucher_type,from_screen,invoice_no,posted_from)\
+                       VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
                       values: [
                         payment_mode,
                         ref_no,
@@ -185,9 +185,9 @@ export default {
                         year,
                         input.narration,
                         numgen[voucher_type],
-
                         input.voucher_type,
                         input.from_screen,
+                        input.invoice_no,
                         "V"
                       ],
                       printQuery: true
