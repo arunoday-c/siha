@@ -1,5 +1,5 @@
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
@@ -46,7 +46,9 @@ export default {
       full_name: null,
       processBtn: true,
       PreviousPayments: [],
-      employee_name: null
+      employee_name: null,
+      cash_finance_account: [],
+      selected_account: null
     };
     return output;
   }
