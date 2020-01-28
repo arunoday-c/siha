@@ -24,9 +24,10 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select loan.hims_f_loan_application_id, loan.loan_application_number as request_number, loan.employee_id, loan.approved_amount as payment_amount,\
-          emp.employee_code,emp.full_name from hims_f_loan_application loan, hims_d_employee emp where loan.loan_authorized = 'APR' and \
-          loan.employee_id = emp.hims_d_employee_id " +
+            "select loan.hims_f_loan_application_id, loan.loan_application_number as request_number, \
+            loan.employee_id, loan.approved_amount as payment_amount, emp.employee_code,emp.full_name \
+            from hims_f_loan_application loan, hims_d_employee emp where loan.loan_authorized = 'APR' \
+            and loan.loan_dispatch_from = 'EMP' and loan.employee_id = emp.hims_d_employee_id " +
             _stringData,
           values: _.valuesIn(_loanDetails),
           printQuery: true
@@ -1349,7 +1350,7 @@ export default {
             }
             else if (inputParam.payment_type === "LN") {
               strQuery += _mysql.mysqlQueryFormat(
-                "select head_id, child_id, loan_amount as pay_amount, employee_code, full_name,E.hospital_id from hims_f_loan_application LA \
+                "select head_id, child_id, approved_amount as pay_amount, employee_code, full_name,E.hospital_id from hims_f_loan_application LA \
                 inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id \
                 inner join hims_d_employee E on E.hims_d_employee_id = LA.employee_id \
                 where hims_f_loan_application_id = ?",

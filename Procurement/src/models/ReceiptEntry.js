@@ -534,7 +534,7 @@ export default {
                     values: [
                       new Date(),
                       headerResult[0].net_payable,
-                      "journal",
+                      "purchase",
                       headerResult[0].hims_f_procurement_grn_header_id,
                       headerResult[0].grn_number,
                       inputParam.ScreenCode,

@@ -34,17 +34,17 @@ const executePDF = function executePDFMethod(options) {
           })
           .then(resul => {
             //ST-cost center
-            if (
-              resul[0]["cost_center_type"] == "P" &&
-              input.cost_center_id > 0
-            ) {
-              strQry += ` and project_id=${input.cost_center_id} `;
-            } else if (
-              resul[0]["cost_center_type"] == "SD" &&
-              input.cost_center_id > 0
-            ) {
-              strQry += ` and sub_department_id=${input.cost_center_id} `;
-            }
+            // if (
+            //   resul[0]["cost_center_type"] == "P" &&
+            //   input.cost_center_id > 0
+            // ) {
+            //   strQry += ` and project_id=${input.cost_center_id} `;
+            // } else if (
+            //   resul[0]["cost_center_type"] == "SD" &&
+            //   input.cost_center_id > 0
+            // ) {
+            //   strQry += ` and sub_department_id=${input.cost_center_id} `;
+            // }
             //END-cost center
 
             options.mysql
