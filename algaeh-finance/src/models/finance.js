@@ -2189,8 +2189,8 @@ postDayEndData: (req, res, next) => {
           break;
         case "sales":
           selectStr = " ,parent_acc_id ";
-          whereStr = ` where account_type  not in ('B','C') `;
-          unionStr = ` where account_type  not in ('B','C') `;
+          // whereStr = ` where account_type  not in ('B','C') `;
+          // unionStr = ` where account_type  not in ('B','C') `;
           break;
         default:
           selectStr = " ,parent_acc_id ";
