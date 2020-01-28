@@ -6,25 +6,25 @@ import { successfulMessage } from "../../utils/GlobalFunctions";
 const reportWindow = document.getElementById("reportWindow");
 export function accessReport(options) {
   let getReport = options.report;
-  const { printReport } = require("../../Reports/" +
-    getReport.fileName +
-    ".js");
+  // const { printReport } = require("../../Reports/" +
+  //   getReport.fileName +
+  //   ".js");
+  const _modifiedTemplate = "";
+  // const _modifiedTemplate = printReport(options.data, {
+  //   generateBarcode: stringToBarcode => {
+  //     let canvas = document.createElement("canvas");
+  //     const barCodeModel = {
+  //       format: "CODE128",
+  //       lineColor: "#000"
+  //     };
+  //     JsBarcode(canvas, stringToBarcode, {
+  //       ...barCodeModel,
+  //       ...options.report
+  //     });
 
-  const _modifiedTemplate = printReport(options.data, {
-    generateBarcode: stringToBarcode => {
-      let canvas = document.createElement("canvas");
-      const barCodeModel = {
-        format: "CODE128",
-        lineColor: "#000"
-      };
-      JsBarcode(canvas, stringToBarcode, {
-        ...barCodeModel,
-        ...options.report
-      });
-
-      return canvas.toDataURL("image/png");
-    }
-  });
+  //     return canvas.toDataURL("image/png");
+  //   }
+  // });
   if (options.getRaw === undefined) {
     const _isBarCodeRepot =
       options.report !== undefined && options.report.barcode !== undefined
