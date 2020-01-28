@@ -37,7 +37,7 @@ header {
   padding: 0;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   font-size: 1.1em;
-  width: 30vw;
+  width: 50vw;
   text-overflow: ellipsis;
   height: 52px;
   white-space: nowrap;
@@ -187,13 +187,13 @@ header {
           vertical-align: initial;
           color: #c1c1c1;
         }
-       span {
-        padding: 8px 5px 8px 13px;
-        display: inline-block;
-        width: 78%;
-        border-left: 1px solid #f7f7f7;
-        font-size: 0.8em;
-      }
+        span {
+          padding: 8px 5px 8px 13px;
+          display: inline-block;
+          width: 78%;
+          border-left: 1px solid #f7f7f7;
+          font-size: 0.8em;
+        }
         &:hover {
           background: #afafaf;
           i {
@@ -476,5 +476,5 @@ header {
   }
 }
 .faltRed {
-  border:1px solid red !important;
+  border: 1px solid red !important;
 }
