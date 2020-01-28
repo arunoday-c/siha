@@ -2192,6 +2192,12 @@ postDayEndData: (req, res, next) => {
           // whereStr = ` where account_type  not in ('B','C') `;
           // unionStr = ` where account_type  not in ('B','C') `;
           break;
+
+
+          case "CIH":
+            selectStr = ` ,  case  account_type   when 'C' then null else parent_acc_id end as parent_acc_id `;
+            whereStr = ` where account_type  ='C' `;
+            break;
         default:
           selectStr = " ,parent_acc_id ";
       }
