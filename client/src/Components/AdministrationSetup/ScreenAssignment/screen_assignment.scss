@@ -1,11 +1,13 @@
 .screen_assignment {
   .moduleList {
     border: 1px solid #d3d3d3;
-    overflow-x: hidden;
-    overflow-y: auto;
     border-radius: 5px;
     width: calc(56% - 110px);
     float: left;
+
+.moduleSearchInput{
+  width: 100%;
+}
 
     /* reset our lists to remove bullet points and padding */
     .mainmenu,
@@ -21,7 +23,10 @@
     /* make ALL links (main and submenu) have padding and background color */
     .mainmenu {
       min-height: 46vh;
+      max-height: 46vh;    min-height: 46vh;
       max-height: 46vh;
+      overflow-x: hidden;
+      overflow-y: auto;
       li {
         display: block;
         text-decoration: none;
@@ -43,7 +48,7 @@
           /* background: #efefef; */
           border-top: 1px dashed #d3d3d3;
           border-bottom: 0;
-          margin-left: 32px;
+          margin-left: 22px;//32px;
           border-left: 1px solid #d3d3d3;
           li {
             &:hover {
@@ -65,6 +70,16 @@
         border-left: 1px solid #d3d3d3;
         display: inline-block;
       }
+.ant-checkbox-wrapper{
+      .ant-checkbox{
+        border-right: 1px solid #d3d3d3;
+        padding: 3px;
+      }
+      span{
+        font-size: 0.8rem;
+        text-transform:normal;
+      }
+    }
     }
 
     /* this is the initial state of all submenus.

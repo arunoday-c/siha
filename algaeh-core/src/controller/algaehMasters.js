@@ -11,6 +11,7 @@ const {
   updateAlgaehRoleMAster,
   deleteAlgaehRoleMAster,
   addAlgaehModule,
+  deleteAlgaehModule,
   getRoleBaseActiveModules, //Done
   getRoleBaseInActiveComponents, //Done
   getAlgaehModules,
@@ -35,7 +36,9 @@ const {
   getHrmsAuthLevels,
   addLisMachineConfiguration,
   getLisMachineConfiguration,
-  updateLisMachineConfiguration
+  updateLisMachineConfiguration,
+  getAlgaehScreensWithModules,
+  getAlgaehComponentsWithScreens
 } = masterModels;
 const { releaseConnection } = utils;
 
@@ -179,6 +182,14 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  api.delete("/deleteAlgaehModule", deleteAlgaehModule, (req, res) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      message: "Successfully Deleted...."
+    });
+  });
+
   // created by irfan :to
   api.get(
     "/getRoleBaseActiveModules",
@@ -193,6 +204,30 @@ export default ({ config, db }) => {
     }
   );
 
+  api.get(
+    "/getAlgaehScreensWithModules",
+    getAlgaehScreensWithModules,
+    (req, res) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      delete req.records;
+    }
+  );
+  api.get(
+    "/getAlgaehComponentsWithScreens",
+    getAlgaehComponentsWithScreens,
+    (req, res) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      delete req.records;
+    }
+  );
   // created by irfan :to add
   api.get(
     "/getRoleBaseInActiveComponents",
@@ -599,39 +634,50 @@ export default ({ config, db }) => {
     next();
   });
 
-  api.post("/addLisMachineConfiguration", addLisMachineConfiguration, (req, res, next) => {
-    let result = req.records;
+  api.post(
+    "/addLisMachineConfiguration",
+    addLisMachineConfiguration,
+    (req, res, next) => {
+      let result = req.records;
 
-    res.status(httpStatus.ok).json({
-      success: true,
-      records: result
-    });
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
 
-    next();
-  });
+      next();
+    }
+  );
 
-  api.get("/getLisMachineConfiguration", getLisMachineConfiguration, (req, res, next) => {
-    let result = req.records;
+  api.get(
+    "/getLisMachineConfiguration",
+    getLisMachineConfiguration,
+    (req, res, next) => {
+      let result = req.records;
 
-    res.status(httpStatus.ok).json({
-      success: true,
-      records: result
-    });
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
 
-    next();
-  });
+      next();
+    }
+  );
 
-  api.put("/updateLisMachineConfiguration", updateLisMachineConfiguration, (req, res, next) => {
-    let result = req.records;
+  api.put(
+    "/updateLisMachineConfiguration",
+    updateLisMachineConfiguration,
+    (req, res, next) => {
+      let result = req.records;
 
-    res.status(httpStatus.ok).json({
-      success: true,
-      records: result
-    });
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
 
-    next();
-  });
-
+      next();
+    }
+  );
 
   return api;
 };

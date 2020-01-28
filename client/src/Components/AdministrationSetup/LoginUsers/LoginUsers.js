@@ -26,30 +26,9 @@ import _ from "lodash";
 import { MainContext } from "algaeh-react-components/context";
 import { Button } from "algaeh-react-components";
 class LoginUsers extends Component {
+  _isMounted = false;
   constructor(props) {
     super(props);
-    // let Activated_Modueles = JSON.parse(
-    //   AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    // );
-
-    // let Activated_Modueles = this.context;
-
-    // const HIMS_Active = _.filter(Activated_Modueles, f => {
-    //   return f.module_code === "FTDSK";
-    // });
-    // const HRMS_Active = _.filter(Activated_Modueles, f => {
-    //   return f.module_code === "PAYROLL";
-    // });
-
-    // const USER_TYPE =
-    //   HIMS_Active.length > 0 && HRMS_Active.length > 0
-    //     ? HIMS_HR_USER_TYPE
-    //     : HIMS_Active.length > 0
-    //     ? HIMS_USER_TYPE
-    //     : HRMS_Active.length > 0
-    //     ? HR_USER_TYPE
-    //     : [];
-
     this.state = {
       algaeh_d_app_user_id: null,
       login_users: [],
@@ -66,13 +45,18 @@ class LoginUsers extends Component {
       load_verify_email: false,
       employee_id: ""
     };
+  }
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+  componentDidMount() {
+    // console.log("Activated_Modueles", this.context);
+
     this.getGroups();
     this.getLoginUsers();
     this.getOrganization();
     this.getBranchDetail();
-  }
-  componentDidMount() {
-    // console.log("Activated_Modueles", this.context);
+
     const userToken = this.context.userToken;
 
     const HIMS_Active =
@@ -167,11 +151,12 @@ class LoginUsers extends Component {
     });
   }
   getOrganization() {
+    this._isMounted = true;
     algaehApiCall({
       uri: "/organization/getOrganizationByUser",
       method: "GET",
       onSuccess: response => {
-        if (response.data.success) {
+        if (response.data.success === true && this._isMounted === true) {
           this.setState({
             hospitals: response.data.records,
             hospital_id: response.data.records[0].hims_d_hospital_id
@@ -192,11 +177,12 @@ class LoginUsers extends Component {
     });
   }
   getBranchDetail() {
+    this._isMounted = true;
     algaehApiCall({
       uri: "/organization/getOrganization",
       method: "GET",
       onSuccess: response => {
-        if (response.data.success) {
+        if (response.data.success === true && this._isMounted === true) {
           const data = response.data.records.map(item => {
             return {
               checked: false,
@@ -222,11 +208,12 @@ class LoginUsers extends Component {
     });
   }
   getLoginUsers() {
+    this._isMounted = true;
     algaehApiCall({
       uri: "/algaehappuser/getLoginUserMaster",
       method: "GET",
       onSuccess: response => {
-        if (response.data.success) {
+        if (response.data.success === true && this._isMounted === true) {
           let login_users = Enumerable.from(response.data.records)
             .groupBy("$.hims_d_employee_id", null, (k, g) => {
               let firstRecordSet = Enumerable.from(g).firstOrDefault();
@@ -264,11 +251,12 @@ class LoginUsers extends Component {
     });
   }
   getGroups() {
+    this._isMounted = true;
     algaehApiCall({
       uri: "/algaehappuser/selectAppGroup",
       method: "GET",
       onSuccess: response => {
-        if (response.data.success) {
+        if (response.data.success === true && this._isMounted === true) {
           this.setState({ groups: response.data.records });
         }
       },
@@ -282,6 +270,7 @@ class LoginUsers extends Component {
   }
 
   getRoles(group_id) {
+    this._isMounted = true;
     algaehApiCall({
       uri: "/algaehappuser/selectRoles",
       method: "GET",
@@ -289,7 +278,7 @@ class LoginUsers extends Component {
         algaeh_d_app_group_id: group_id
       },
       onSuccess: response => {
-        if (response.data.success) {
+        if (response.data.success === true && this._isMounted === true) {
           this.setState({ roles: response.data.records });
         }
       },
@@ -327,7 +316,7 @@ class LoginUsers extends Component {
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
-        debugger;
+        // debugger;
       }
     });
   }

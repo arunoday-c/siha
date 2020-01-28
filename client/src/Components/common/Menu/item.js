@@ -34,9 +34,7 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
   }
   function searchModuleText(e) {
     const value = e.target.value;
-    if (value === "") {
-      setModules(userMenu);
-    } else {
+    if (value !== "") {
       const result = userMenu.filter(f => {
         const screens = f.ScreenList.filter(
           s =>

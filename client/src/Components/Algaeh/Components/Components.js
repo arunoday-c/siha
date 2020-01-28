@@ -6,12 +6,13 @@ import {
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-
+import { AlgaehTreeSearch } from "algaeh-react-components";
 class Components extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      screens: []
+      screens: [],
+      selected_screen: null
     };
     this.getComponents();
     this.getScreens();
@@ -19,22 +20,43 @@ class Components extends Component {
 
   getScreens() {
     algaehApiCall({
-      uri: "/algaehMasters/getAlgaehScreens",
+      uri: "/algaehMasters/getAlgaehScreensWithModules",
       method: "GET",
       onSuccess: response => {
-        if (response.data.success) {
+        const { success, records } = response.data;
+        if (success) {
           this.setState({
-            screens: response.data.records
+            screens: records
           });
         }
       },
-      onError: error => {
+      onCatch: error => {
+        console.error(error);
+        const { message } = error.response.data;
         swalMessage({
-          title: error.message,
+          title: message,
           type: "error"
         });
       }
     });
+
+    // algaehApiCall({
+    //   uri: "/algaehMasters/getAlgaehScreens",
+    //   method: "GET",
+    //   onSuccess: response => {
+    //     if (response.data.success) {
+    //       this.setState({
+    //         screens: response.data.records
+    //       });
+    //     }
+    //   },
+    //   onError: error => {
+    //     swalMessage({
+    //       title: error.message,
+    //       type: "error"
+    //     });
+    //   }
+    // });
   }
   getComponents() {
     algaehApiCall({
@@ -47,7 +69,7 @@ class Components extends Component {
           });
         }
       },
-      onError: error => {
+      onCatch: error => {
         swalMessage({
           title: error.message,
           type: "error"
@@ -57,11 +79,12 @@ class Components extends Component {
   }
 
   addComponents() {
+    const screen_id = this.state.selected_screen.split("-");
     algaehApiCall({
       uri: "/algaehMasters/addAlgaehComponent",
       method: "POST",
       data: {
-        screen_id: this.state.screen_id,
+        screen_id: screen_id[1],
         component_code: this.state.component_code,
         component_name: this.state.component_name
       },
@@ -75,7 +98,7 @@ class Components extends Component {
           });
         }
       },
-      onError: error => {
+      onCatch: error => {
         swalMessage({
           title: error.message,
           type: "error"
@@ -114,7 +137,34 @@ class Components extends Component {
     return (
       <div className="components">
         <div className="row inner-top-search margin-bottom-15">
-          <AlagehAutoComplete
+          <AlgaehTreeSearch
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Screen",
+              isImp: true
+            }}
+            tree={{
+              treeDefaultExpandAll: true,
+              data: this.state.screens,
+              textField: "label",
+              showLine: true,
+              valueField: node => {
+                if (
+                  node["algaeh_app_screens_id"] !== null ||
+                  node["algaeh_app_screens_id"] !== undefined
+                ) {
+                  return `${node["algaeh_d_module_id"]}-${node["algaeh_app_screens_id"]}`;
+                }
+                return `${node["algaeh_d_module_id"]}`;
+              },
+              onChange: (value, lable) => {
+                // const seleted = value.split("-");
+                this.setState({ selected_screen: value });
+              },
+              value: this.state.selected_screen
+            }}
+          />
+          {/* <AlagehAutoComplete
             div={{ className: "col-2 mandatory form-group" }}
             label={{
               forceLabel: "Screen",
@@ -131,7 +181,7 @@ class Components extends Component {
               },
               onChange: this.dropDownHandle.bind(this)
             }}
-          />
+          /> */}
           <AlagehFormGroup
             div={{ className: "col-2 mandatory form-group" }}
             label={{
@@ -193,7 +243,7 @@ class Components extends Component {
                         datavalidate="data-validate='shiftDiv'"
                         columns={[
                           {
-                            fieldName: "screen_id",
+                            fieldName: "screen_name",
                             label: "Screen",
                             disabled: true
                           },
@@ -212,7 +262,7 @@ class Components extends Component {
                           data: this.state.components
                         }}
                         filter={true}
-                        isEditable={true}
+                        isEditable={false}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
                           onEdit: () => {},

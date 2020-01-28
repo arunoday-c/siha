@@ -6,13 +6,14 @@ import {
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-
+import { AlgaehTreeSearch } from "algaeh-react-components";
 class ScreenElements extends Component {
   constructor(props) {
     super(props);
     this.state = {
       components: [],
-      screen_elements: []
+      screen_elements: [],
+      selected_component: null
     };
     this.getComponents();
     this.getScreenElements();
@@ -40,7 +41,7 @@ class ScreenElements extends Component {
 
   getComponents() {
     algaehApiCall({
-      uri: "/algaehMasters/getAlgaehComponents",
+      uri: "/algaehMasters/getAlgaehComponentsWithScreens",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
@@ -59,13 +60,14 @@ class ScreenElements extends Component {
   }
 
   addScreenElements() {
+    const component_id = this.state.selected_component.split("-");
     algaehApiCall({
       uri: "/algaehMasters/addAlgaehScreenElement",
       method: "POST",
       data: {
         screen_element_code: this.state.screen_element_code,
         screen_element_name: this.state.screen_element_name,
-        component_id: this.state.component_id
+        component_id: component_id[2]
       },
       onSuccess: response => {
         if (response.data.success) {
@@ -116,7 +118,43 @@ class ScreenElements extends Component {
     return (
       <div className="screen_elements">
         <div className="row inner-top-search margin-bottom-15">
-          <AlagehAutoComplete
+          <AlgaehTreeSearch
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Component",
+              isImp: true
+            }}
+            tree={{
+              treeDefaultExpandAll: true,
+              data: this.state.components,
+              textField: "label",
+              showLine: true,
+              valueField: node => {
+                if (
+                  node.algaeh_d_app_component_id !== null &&
+                  node.algaeh_d_app_component_id !== undefined
+                ) {
+                  return `${node.algaeh_d_module_id}-${node.algaeh_app_screens_id}-${node.algaeh_d_app_component_id}`;
+                } else if (
+                  node.algaeh_d_module_id !== null &&
+                  node.algaeh_d_module_id !== undefined
+                ) {
+                  return `${node.algaeh_d_module_id}-${node.module_code}`;
+                } else if (
+                  node.algaeh_app_screens_id !== null &&
+                  node.algaeh_app_screens_id !== undefined
+                ) {
+                  return `${node.algaeh_app_screens_id}-${node.screen_code}`;
+                }
+              },
+              onChange: (value, lable) => {
+                // const seleted = value.split("-");
+                this.setState({ selected_component: value });
+              },
+              value: this.state.selected_component
+            }}
+          />
+          {/* <AlagehAutoComplete
             div={{ className: "col-2 mandatory form-group" }}
             label={{
               forceLabel: "Component",
@@ -133,7 +171,7 @@ class ScreenElements extends Component {
               },
               onChange: this.dropDownHandle.bind(this)
             }}
-          />
+          /> */}
 
           <AlagehFormGroup
             div={{ className: "col-2 mandatory form-group" }}
@@ -190,7 +228,11 @@ class ScreenElements extends Component {
 
               <div className="portlet-body">
                 <div className="row">
-                  <div data-validate="screenElementDiv" id="algaehGrid_Cntr">
+                  <div
+                    className="col-12"
+                    data-validate="screenElementDiv"
+                    id="algaehGrid_Cntr"
+                  >
                     <AlgaehDataGrid
                       id="shift-grid"
                       datavalidate="data-validate='screenElementDiv'"
@@ -204,7 +246,7 @@ class ScreenElements extends Component {
                           label: "Screen Element Name"
                         },
                         {
-                          fieldName: "component_id",
+                          fieldName: "component_name",
                           label: "Component"
                         }
                       ]}
@@ -213,7 +255,7 @@ class ScreenElements extends Component {
                         data: this.state.screen_elements
                       }}
                       filter={true}
-                      isEditable={true}
+                      isEditable={false}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onEdit: () => {},
