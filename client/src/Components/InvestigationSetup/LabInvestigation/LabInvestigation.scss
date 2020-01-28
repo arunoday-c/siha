@@ -1,39 +1,40 @@
 .hptl-phase1-add-lab-investigation-form {
-	background: #fff;
-	// border-radius: 5px;
-	padding: 0px;
-	mark {
-		background: none;
-		color: red;
-	}
-	.form-details {
-		padding-bottom: 0px;
-	}
-	.button {
-		padding: 10px;
-	}
+  background: #fff;
+  // border-radius: 5px;
+  padding: 0px;
+  mark {
+    background: none;
+    color: red;
+  }
+  .form-details {
+    padding-bottom: 0px;
+  }
+  .button {
+    padding: 10px;
+  }
 
-	.Paper {
-		background: #fff;
-		padding: 10px;
-		border: 1px solid #d3d3d3;
-		margin-top: 10px;
-	}
+  .Paper {
+    background: #fff;
+    padding: 10px;
+    border: 1px solid #d3d3d3;
+    margin-top: 10px;
+  }
 
-	.main_div {
-		height: 85vh;
-		overflow: auto;
-		padding-bottom: 0px;
-	}
+  .main_div {
+    height: 85vh;
+    overflow: auto;
+    padding-bottom: 0px;
+  }
 
-	.go-button {
-		cursor: pointer;
-		margin-bottom: -60px;
-		margin-top: -30px;
-	}
-	#analyte_grid_cntr {
-		.ReactTable {
-			max-height: 30vh !important;
-		}
-	}
+  .go-button {
+    cursor: pointer;
+    margin-bottom: -60px;
+    margin-top: -30px;
+  }
+}
+
+#analyte_grid {
+  .ReactTable {
+    max-height: 50vh !important;
+  }
 }
