@@ -4,6 +4,7 @@ import { swalMessage, algaehApiCall, getCookie } from "../utils/algaehApiCall";
 import crypto from "crypto";
 import Enumerable from "linq";
 import Mediate from "./meadiate";
+
 // import { MainContext } from "algaeh-react-components/context";
 export function successfulMessage(options) {
   options.icon = options.icon || "error";
@@ -486,7 +487,7 @@ export function numberFormater(value, options, CurrencyDetail) {
   // let CurrencyDetail = JSON.parse(
   //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
   // );
-  console.log("token", CurrencyDetail);
+
   const settings = {
     ...CurrencyDetail,
     ...{ appendSymbol: true },
