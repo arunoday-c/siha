@@ -253,7 +253,7 @@ const SaveLeaveSalary = $this => {
   let hrms_options = JSON.parse(
     AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
   );
-  debugger
+
   inputObj.salary_end_date = moment($this.state.leave_salary_detail[0].end_date)
     .endOf("month")
     .format("YYYY-MM-DD");

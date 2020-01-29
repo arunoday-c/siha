@@ -35,35 +35,35 @@ class InvConsumptionEntry extends Component {
     const hospital = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
     );
-    if (
-      this.props.inventoryitemlist === undefined ||
-      this.props.inventoryitemlist.length === 0
-    ) {
-      this.props.getItems({
-        uri: "/inventory/getItemMaster",
-        module: "inventory",
-        method: "GET",
-        data: { item_status: "A" },
-        redux: {
-          type: "ITEM_GET_DATA",
-          mappingName: "inventoryitemlist"
-        }
-      });
-    }
-    if (
-      this.props.inventoryreqlocations === undefined ||
-      this.props.inventoryreqlocations.length === 0
-    ) {
-      this.props.getLocation({
-        uri: "/inventory/getInventoryLocation",
-        module: "inventory",
-        method: "GET",
-        redux: {
-          type: "LOCATIOS_GET_DATA",
-          mappingName: "inventoryreqlocations"
-        }
-      });
-    }
+    // if (
+    //   this.props.inventoryitemlist === undefined ||
+    //   this.props.inventoryitemlist.length === 0
+    // ) {
+    this.props.getItems({
+      uri: "/inventory/getItemMaster",
+      module: "inventory",
+      method: "GET",
+      data: { item_status: "A" },
+      redux: {
+        type: "ITEM_GET_DATA",
+        mappingName: "inventoryitemlist"
+      }
+    });
+    // }
+    // if (
+    //   this.props.inventoryreqlocations === undefined ||
+    //   this.props.inventoryreqlocations.length === 0
+    // ) {
+    this.props.getLocation({
+      uri: "/inventory/getInventoryLocation",
+      module: "inventory",
+      method: "GET",
+      redux: {
+        type: "LOCATIOS_GET_DATA",
+        mappingName: "inventoryreqlocations"
+      }
+    });
+    // }
 
 
     this.props.getUserLocationPermission({

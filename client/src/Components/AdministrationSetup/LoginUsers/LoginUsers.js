@@ -21,7 +21,6 @@ import {
 } from "../../../utils/GlobalVariables.json";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import Enumerable from "linq";
-import swal from "sweetalert2";
 import _ from "lodash";
 
 class LoginUsers extends Component {
@@ -71,7 +70,13 @@ class LoginUsers extends Component {
     const _index = branch_detail.indexOf(selecte_branch)
     selecte_branch.checked = true
     branch_detail[_index] = selecte_branch
-
+    if (data.work_email === null) {
+      swalMessage({
+        title: "Please enter work mail id for the employee to create user details.",
+        type: "warning"
+      });
+      return
+    }
     this.setState({
       employee_id: data.hims_d_employee_id,
       sub_department_id: data.sub_department_id,

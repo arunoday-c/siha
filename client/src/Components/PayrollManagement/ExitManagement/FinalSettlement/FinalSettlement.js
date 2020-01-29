@@ -80,7 +80,7 @@ class FinalSettlement extends Component {
               res.data.result.flag !== undefined &&
               res.data.result.flag === "Settled"
             ) {
-              debugger
+
               this.setState(
                 {
                   ...res.data.result
@@ -146,7 +146,7 @@ class FinalSettlement extends Component {
   }
 
   setNetDeductions() {
-    debugger
+
     let net_deduction =
       parseFloat(this.state.data.total_deductions) + parseFloat(this.state.data.total_loan_amount);
 
