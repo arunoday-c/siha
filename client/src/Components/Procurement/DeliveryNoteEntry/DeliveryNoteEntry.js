@@ -20,7 +20,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import DNEntry from "../../../Models/DNEntry";
 import MyContext from "../../../utils/MyContext";
 import _ from "lodash";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 
 // vendortexthandle,
 //   loctexthandle,
@@ -31,9 +31,7 @@ class DeliveryNoteEntry extends Component {
     super(props);
     this.state = {
       fromPurList: false,
-      decimal_places: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).decimal_places,
+      decimal_places: ""
     };
   }
 
@@ -42,7 +40,12 @@ class DeliveryNoteEntry extends Component {
     this.setState(IOputs);
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      decimal_places: userToken.decimal_places
+    });
     this.props.getVendorMaster({
       uri: "/vendor/getVendorMaster",
       module: "masterSettings",
@@ -70,9 +73,7 @@ class DeliveryNoteEntry extends Component {
   }
 
   render() {
-    const class_finder = this.state.dataFinder === true
-      ? " disableFinder"
-      : ""
+    const class_finder = this.state.dataFinder === true ? " disableFinder" : "";
 
     return (
       <div>
@@ -138,17 +139,17 @@ class DeliveryNoteEntry extends Component {
           printArea={
             this.state.hims_f_inventory_consumption_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Receipt",
-                    events: {
-                      onClick: () => {
-                        generateDeliveryNoteReceipt(this.state);
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generateDeliveryNoteReceipt(this.state);
+                        }
                       }
                     }
-                  }
-                ]
-              }
+                  ]
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -160,8 +161,10 @@ class DeliveryNoteEntry extends Component {
           >
             <div className="col-lg-12">
               <div className="row">
-                <div className={"col-2 globalSearchCntr" + class_finder} >
-                  <AlgaehLabel label={{ forceLabel: "Search Purchase Order No." }} />
+                <div className={"col-2 globalSearchCntr" + class_finder}>
+                  <AlgaehLabel
+                    label={{ forceLabel: "Search Purchase Order No." }}
+                  />
                   <h6 onClick={PurchaseOrderSearch.bind(this, this)}>
                     {this.state.purchase_number
                       ? this.state.purchase_number
@@ -320,8 +323,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(DeliveryNoteEntry)
+  connect(mapStateToProps, mapDispatchToProps)(DeliveryNoteEntry)
 );
