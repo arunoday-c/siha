@@ -35,7 +35,7 @@ import {
 import "./InvInitialStock.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
@@ -73,10 +73,9 @@ class InvInitialStock extends Component {
     };
   }
 
+  static contextType = MainContext;
   componentDidMount() {
-    const hospital = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    );
+    const userToken = this.context.userToken;
 
     this.props.getItems({
       uri: "/inventory/getItemMasterWithSalesPrice",
@@ -94,7 +93,7 @@ class InvInitialStock extends Component {
       data: {
         git_location: "N",
         location_status: "A",
-        hospital_id: hospital.hims_d_hospital_id
+        hospital_id: userToken.hims_d_hospital_id
       },
       method: "GET",
       redux: {

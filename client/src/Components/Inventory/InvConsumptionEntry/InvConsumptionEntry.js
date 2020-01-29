@@ -15,9 +15,8 @@ import ConsumptionItems from "./ConsumptionItems/ConsumptionItems";
 import MyContext from "../../../utils/MyContext";
 import ConsumptionIOputs from "../../../Models/InventoryConsumption";
 import Options from "../../../Options.json";
-import AlgaehReport from "../../Wrapper/printReports";
 import _ from "lodash";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 
 class InvConsumptionEntry extends Component {
   constructor(props) {
@@ -30,11 +29,9 @@ class InvConsumptionEntry extends Component {
     let IOputs = ConsumptionIOputs.inputParam();
     this.setState(IOputs);
   }
-
+  static contextType = MainContext;
   componentDidMount() {
-    const hospital = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    );
+    const userToken = this.context.userToken;
     if (
       this.props.inventoryitemlist === undefined ||
       this.props.inventoryitemlist.length === 0
@@ -72,7 +69,7 @@ class InvConsumptionEntry extends Component {
       method: "GET",
       data: {
         location_status: "A",
-        hospital_id: hospital.hims_d_hospital_id
+        hospital_id: userToken.hims_d_hospital_id
       },
       redux: {
         type: "LOCATIOS_GET_DATA",
