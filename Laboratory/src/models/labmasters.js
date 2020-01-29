@@ -1376,42 +1376,111 @@ export default {
     let input = req.body;
     const _mysql = new algaehMysql();
     try {
-      const insurtColumns = [
-        "analyte_id",
-        "gender",
-        "age_type",
-        "from_age",
-        "to_age",
-        "critical_low",
-        "critical_high",
-        "normal_low",
-        "normal_high",
-        "normal_qualitative_value"
-      ];
+      if (input.length > 0) {
+        _mysql
+          .executeQuery({
+            query:
+              "select hims_d_lab_analytes_range_id,analyte_id,analyte_type,gender,age_type,\
+              case age_type when 'Y' then 'Years' when 'M' then 'Months' when 'D'\
+               then 'days' end as age_desc,from_age,to_age,\
+            critical_low,critical_high,normal_low,normal_qualitative_value,normal_high\
+            from hims_d_lab_analytes A inner join hims_d_lab_analytes_range R on\
+             A.hims_d_lab_analytes_id=R.analyte_id where analyte_id=? ",
+            values: [input[0].analyte_id],
+            printQuery: true
+          })
+          .then(result => {
+            let errorStr = "";
 
-      _mysql
-        .executeQuery({
-          query: " INSERT INTO hims_d_lab_analytes_range(??) values ?;",
-          values: input,
-          includeValues: insurtColumns,
-          extraValues: {
-            created_date: new Date(),
-            created_by: req.userIdentity.algaeh_d_app_user_id,
-            updated_date: new Date(),
-            updated_by: req.userIdentity.algaeh_d_app_user_id
-          },
-          bulkInsertOrUpdate: true,
-          printQuery: true
-        })
-        .then(Result => {
-          _mysql.releaseConnection();
-          req.records = Result;
-          next();
-        })
-        .catch(e => {
-          _mysql.releaseConnection();
-          next(e);
-        });
+            //ST-VALIDATION FOR AGE RANGE
+            if (result.length > 0 && result[0].analyte_type == "QN") {
+              input.forEach(item => {
+                const existData = result.filter(f => {
+                  return (
+                    f.age_type == item.age_type &&
+                    f.gender == item.gender.toUpperCase()
+                  );
+                });
+
+                if (existData) {
+                  let err = existData.find(data => {
+                    return (
+                      (data.from_age <= item.from_age &&
+                        item.from_age <= data.to_age) ||
+                      (data.from_age <= item.to_age &&
+                        item.to_age <= data.to_age) ||
+                      (item.from_age <= data.from_age &&
+                        data.from_age <= item.to_age)
+                    );
+                  });
+
+                  if (err) {
+                    errorStr = err;
+                    return;
+                  }
+                }
+              });
+            }
+
+            //EN-VALIDATION FOR AGE RANGE
+            if (errorStr != "") {
+              //error
+              let message = `Analytes Range Exist For: ${errorStr.gender} between ${errorStr.from_age}-${errorStr.to_age} ${errorStr.age_desc}`;
+              req.records = {
+                invalid_input: true,
+                message: message
+              };
+              next();
+            } else {
+              const insurtColumns = [
+                "analyte_id",
+                "gender",
+                "age_type",
+                "from_age",
+                "to_age",
+                "critical_low",
+                "critical_high",
+                "normal_low",
+                "normal_high",
+                "normal_qualitative_value"
+              ];
+
+              _mysql
+                .executeQuery({
+                  query: " INSERT INTO hims_d_lab_analytes_range(??) values ?;",
+                  values: input,
+                  includeValues: insurtColumns,
+                  extraValues: {
+                    created_date: new Date(),
+                    created_by: req.userIdentity.algaeh_d_app_user_id,
+                    updated_date: new Date(),
+                    updated_by: req.userIdentity.algaeh_d_app_user_id
+                  },
+                  bulkInsertOrUpdate: true,
+                  printQuery: true
+                })
+                .then(Result => {
+                  _mysql.releaseConnection();
+                  req.records = Result;
+                  next();
+                })
+                .catch(e => {
+                  _mysql.releaseConnection();
+                  next(e);
+                });
+            }
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "Please Provide Valid Input"
+        };
+        next();
+      }
     } catch (e) {
       _mysql.releaseConnection();
       next(e);
