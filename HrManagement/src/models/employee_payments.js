@@ -504,11 +504,11 @@ export default {
                     let result = {
                       payment_application_code: payment_application_code
                     };
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = result;
-                      next();
-                    });
+                    // _mysql.commitTransaction(() => {
+                    //   _mysql.releaseConnection();
+                    req.records = result;
+                    next();
+                    // });
                   })
                   .catch(error => {
                     next(error);
@@ -993,11 +993,11 @@ export default {
                 ]
               })
               .then(FinalSettleResult => {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = FinalSettleResult;
-                  next();
-                });
+                // _mysql.commitTransaction(() => {
+                //   _mysql.releaseConnection();
+                req.records = FinalSettleResult;
+                next();
+                // });
               })
               .catch(error => {
                 next(error);
@@ -1386,7 +1386,7 @@ export default {
           query:
             "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
             select account, head_id, child_id from finance_accounts_maping \
-              where account in ('SAL_PYBLS', 'LV_SAL_PYBL', 'AIRFR_PYBL', 'GRAT_PYBL');" + str_bank_qry,
+              where account in ('SAL_PYBLS', 'LV_SAL_PYBL', 'AIRFR_PYBL', 'GRAT_PYBL','FIN_STL_PYBL');" + str_bank_qry,
           printQuery: true
         })
         .then(result => {
@@ -1394,6 +1394,7 @@ export default {
           const lv_salary_pay_acc = result[1].find(f => f.account === "LV_SAL_PYBL");
           const airfair_pay_acc = result[1].find(f => f.account === "AIRFR_PYBL");
           const gratuity_pay_acc = result[1].find(f => f.account === "GRAT_PYBL");
+          const fs_pay_acc = result[1].find(f => f.account === "FIN_STL_PYBL");
 
           const org_data = result[0]
           const bank_acc = result[2][0]
@@ -1444,6 +1445,14 @@ export default {
                 where hims_f_leave_encash_header_id=?;",
                 [inputParam.employee_leave_encash_id]
               );
+            } else if (inputParam.payment_type === "FS") {
+              strQuery += _mysql.mysqlQueryFormat(
+                "SELECT total_amount as pay_amount,employee_code, full_name, E.hospital_id\
+                FROM hims_f_final_settlement_header EH \
+                inner join hims_d_employee E on E.hims_d_employee_id = EH.employee_id \
+                where hims_f_final_settlement_header_id=?;",
+                [inputParam.employee_final_settlement_id]
+              );
             }
 
             // console.log("strQuery", strQuery)
@@ -1482,6 +1491,9 @@ export default {
                   }
                   // console.log("commit")
                   _header_narattion = "Encashment For" + headerResult[0].employee_code
+                    + "/" + headerResult[0].full_name;
+                } else if (inputParam.payment_type === "FS") {
+                  _header_narattion = "Final Settlement For" + headerResult[0].employee_code
                     + "/" + headerResult[0].full_name;
                 }
 
@@ -1687,6 +1699,35 @@ export default {
                             payment_date: new Date(),
                             head_id: lv_salary_pay_acc.head_id,
                             child_id: lv_salary_pay_acc.child_id,
+                            debit_amount: headerResult[0].pay_amount,
+                            payment_type: "DR",
+                            credit_amount: 0,
+                            hospital_id: headerResult[0].hospital_id
+                          });
+                        }
+                      }
+                    } else if (inputParam.payment_type === "FS") {
+                      //Laibility Entry Final Settlement
+                      if (inputParam.payment_cancel === "Y") {
+                        if (parseFloat(headerResult[0].pay_amount) > 0) {
+                          //Final Settlement
+                          insertSubDetail.push({
+                            payment_date: new Date(),
+                            head_id: fs_pay_acc.head_id,
+                            child_id: fs_pay_acc.child_id,
+                            debit_amount: 0,
+                            payment_type: "CR",
+                            credit_amount: headerResult[0].pay_amount,
+                            hospital_id: headerResult[0].hospital_id
+                          });
+                        }
+                      } else {
+                        if (parseFloat(headerResult[0].pay_amount) > 0) {
+                          //Final Settlement
+                          insertSubDetail.push({
+                            payment_date: new Date(),
+                            head_id: fs_pay_acc.head_id,
+                            child_id: fs_pay_acc.child_id,
                             debit_amount: headerResult[0].pay_amount,
                             payment_type: "DR",
                             credit_amount: 0,
