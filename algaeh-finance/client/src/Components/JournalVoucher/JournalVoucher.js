@@ -324,7 +324,7 @@ export default function JournalVoucher() {
 
               value: invoiceNo,
               onChange: e => {
-                setInvoiceNo(e.target.value);
+                setInvoiceNo(e.target.value === "" ? null : e.target.value);
               }
             }}
           /> : voucherType === "payment" || voucherType === "receipt" ||
