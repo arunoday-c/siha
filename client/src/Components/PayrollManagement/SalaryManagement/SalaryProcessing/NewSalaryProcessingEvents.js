@@ -1,5 +1,5 @@
 import Enumerable from "linq";
-import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
+import { swalMessage, algaehApiCall, getCookie } from "../../../../utils/algaehApiCall.js";
 import {
   AlgaehValidation,
   AlgaehOpenContainer
@@ -220,7 +220,8 @@ const FinalizeSalary = $this => {
         hospital_id: $this.state.inputs.hospital_id,
         net_salary: net_salary,
         _leave_salary_acc: _leave_salary_acc,
-        annual_leave_calculation: annual_leave_calculation
+        annual_leave_calculation: annual_leave_calculation,
+        ScreenCode: getCookie("ScreenCode")
       };
 
       algaehApiCall({

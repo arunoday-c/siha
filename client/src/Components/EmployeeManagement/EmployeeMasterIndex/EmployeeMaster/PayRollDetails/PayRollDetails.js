@@ -226,7 +226,7 @@ class PayRollDetails extends Component {
                 data-validate="EarnComponent"
               >
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Earnings Type",
                     isImp: true
@@ -245,7 +245,7 @@ class PayRollDetails extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-3" }}
+                  div={{ className: "col-3 mandatory" }}
                   label={{
                     forceLabel: "Amount",
                     isImp:
@@ -296,10 +296,10 @@ class PayRollDetails extends Component {
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                f =>
-                                  f.hims_d_earning_deduction_id ===
-                                  row.earnings_id
-                              );
+                                  f =>
+                                    f.hims_d_earning_deduction_id ===
+                                    row.earnings_id
+                                );
 
                           return (
                             <span>
@@ -314,10 +314,10 @@ class PayRollDetails extends Component {
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                f =>
-                                  f.hims_d_earning_deduction_id ===
-                                  row.earnings_id
-                              );
+                                  f =>
+                                    f.hims_d_earning_deduction_id ===
+                                    row.earnings_id
+                                );
 
                           return (
                             <span>
@@ -337,7 +337,9 @@ class PayRollDetails extends Component {
                         fieldName: "amount",
                         label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
                         editorTemplate: row => {
-                          return row.calculation_method === "FO" ? row.amount : (
+                          return row.calculation_method === "FO" ? (
+                            row.amount
+                          ) : (
                             <AlagehFormGroup
                               div={{}}
                               textBox={{
@@ -407,7 +409,7 @@ class PayRollDetails extends Component {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: deleteEarningComponent.bind(this, this),
-                      onEdit: row => { },
+                      onEdit: row => {},
                       onDone: updateEarningComponent.bind(this, this)
                     }}
                   />
@@ -423,7 +425,7 @@ class PayRollDetails extends Component {
                 data-validate="DeductionComponent"
               >
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Deduction Type",
                     isImp: true
@@ -442,7 +444,7 @@ class PayRollDetails extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-3" }}
+                  div={{ className: "col-3 mandatory" }}
                   label={{
                     forceLabel: "Amount",
                     isImp:
@@ -498,10 +500,10 @@ class PayRollDetails extends Component {
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                f =>
-                                  f.hims_d_earning_deduction_id ===
-                                  row.deductions_id
-                              );
+                                  f =>
+                                    f.hims_d_earning_deduction_id ===
+                                    row.deductions_id
+                                );
 
                           return (
                             <span>
@@ -516,10 +518,10 @@ class PayRollDetails extends Component {
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                f =>
-                                  f.hims_d_earning_deduction_id ===
-                                  row.deductions_id
-                              );
+                                  f =>
+                                    f.hims_d_earning_deduction_id ===
+                                    row.deductions_id
+                                );
 
                           return (
                             <span>
@@ -539,7 +541,9 @@ class PayRollDetails extends Component {
                         fieldName: "amount",
                         label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
                         editorTemplate: row => {
-                          return row.calculation_method === "FO" ? row.amount : (
+                          return row.calculation_method === "FO" ? (
+                            row.amount
+                          ) : (
                             <AlagehFormGroup
                               div={{}}
                               textBox={{
@@ -575,7 +579,7 @@ class PayRollDetails extends Component {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: deleteDeductionComponent.bind(this, this),
-                      onEdit: row => { },
+                      onEdit: row => {},
                       onDone: updateDeductionComponent.bind(this, this)
                     }}
                   />
@@ -591,7 +595,7 @@ class PayRollDetails extends Component {
                 data-validate="ContributeComponent"
               >
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Contribution Type",
                     isImp: true
@@ -610,7 +614,7 @@ class PayRollDetails extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-3" }}
+                  div={{ className: "col-3 mandatory" }}
                   label={{
                     forceLabel: "Amount",
                     isImp:
@@ -669,10 +673,10 @@ class PayRollDetails extends Component {
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                f =>
-                                  f.hims_d_earning_deduction_id ===
-                                  row.contributions_id
-                              );
+                                  f =>
+                                    f.hims_d_earning_deduction_id ===
+                                    row.contributions_id
+                                );
 
                           return (
                             <span>
@@ -687,10 +691,10 @@ class PayRollDetails extends Component {
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                f =>
-                                  f.hims_d_earning_deduction_id ===
-                                  row.contributions_id
-                              );
+                                  f =>
+                                    f.hims_d_earning_deduction_id ===
+                                    row.contributions_id
+                                );
 
                           return (
                             <span>
@@ -710,7 +714,9 @@ class PayRollDetails extends Component {
                         fieldName: "amount",
                         label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
                         editorTemplate: row => {
-                          return row.calculation_method === "FO" ? row.amount : (
+                          return row.calculation_method === "FO" ? (
+                            row.amount
+                          ) : (
                             <AlagehFormGroup
                               div={{}}
                               textBox={{
@@ -746,7 +752,7 @@ class PayRollDetails extends Component {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: deleteContibuteComponent.bind(this, this),
-                      onEdit: row => { },
+                      onEdit: row => {},
                       onDone: updateContibuteComponent.bind(this, this)
                     }}
                   />
@@ -776,8 +782,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PayRollDetails)
+  connect(mapStateToProps, mapDispatchToProps)(PayRollDetails)
 );

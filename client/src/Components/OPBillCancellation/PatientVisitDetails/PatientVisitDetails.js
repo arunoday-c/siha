@@ -81,45 +81,29 @@ class PatientVisitDetails extends Component {
                 style={{ paddingTop: 10, paddingBottom: 10 }}
               >
                 {/* Patient code */}
-                <div className="col-lg-3">
-                  <div
-                    className="row"
-                    style={{
-                      border: " 1px solid #ced4d9",
-                      borderRadius: 5,
-                      marginLeft: 0
-                    }}
-                  >
-                    <div className="col">
-                      <AlgaehLabel label={{ fieldName: "bill_number" }} />
-                      <h6>
-                        {this.state.bill_number
-                          ? this.state.bill_number
-                          : "----------"}
-                      </h6>
-                    </div>
-                    <div
-                      className="col-lg-3"
-                      style={{ borderLeft: "1px solid #ced4d8" }}
-                    >
-                      <i
-                        className="fas fa-search fa-lg"
-                        style={{
-                          paddingTop: 17,
-                          paddingLeft: 3,
-                          cursor: "pointer",
-                          pointerEvents:
-                            this.state.Billexists === true
-                              ? "none"
-                              : this.state.patient_code
-                              ? "none"
-                              : ""
-                        }}
-                        onClick={BillSearch.bind(this, this, context)}
-                      />
-                    </div>
-                  </div>
+
+
+                <div
+                  className="col-3 globalSearchCntr"
+                  style={{
+                    cursor: "pointer",
+                    pointerEvents:
+                      this.state.Billexists === true
+                        ? "none"
+                        : this.state.patient_code
+                          ? "none"
+                          : ""
+                  }}
+                >
+                  <AlgaehLabel label={{ fieldName: "bill_number" }} />
+                  <h6 onClick={BillSearch.bind(this, this, context)}>
+                    {this.state.bill_number
+                      ? this.state.bill_number
+                      : <AlgaehLabel label={{ fieldName: "bill_number" }} />}
+                    <i className="fas fa-search fa-lg"></i>
+                  </h6>
                 </div>
+
                 <div className="col-lg-9">
                   <div className="row">
                     <div className="col">

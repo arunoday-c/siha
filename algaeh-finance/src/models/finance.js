@@ -716,13 +716,19 @@ export default {
     const _mysql = new algaehMysql();
     // const utilities = new algaehUtilities();
 
+    const input = req.query;
+    let str = "";
+
+    if (input.accounts != undefined && input.accounts.length > 0) {
+      str = ` where account in (${input.accounts})`;
+    }
+
     _mysql
       .executeQuery({
-        query:
-          "select account,child_id,M.head_id,H.account_name,C.child_name from \
+        query: `select account,child_id,M.head_id,H.account_name,C.child_name from \
           finance_accounts_maping M left join finance_account_head H\
           on M.head_id=H.finance_account_head_id left join finance_account_child C \
-          on M.child_id=C.finance_account_child_id ;",
+          on M.child_id=C.finance_account_child_id  ${str};`,
 
         printQuery: false
       })
@@ -739,11 +745,23 @@ export default {
   //created by irfan: to
   getDayEndData: (req, res, next) => {
     const _mysql = new algaehMysql();
-    // const utilities = new algaehUtilities();
+    const decimal_places = req.userIdentity.decimal_places;
     let input = req.query;
 
     let strQry = "";
 
+    if (input.posted == "Y") {
+      strQry += " posted='Y' ";
+    } else {
+      strQry += " posted='N' ";
+    }
+
+    if (input.module_id > 0) {
+      strQry += ` and  S.module_id=${input.module_id}`;
+    }
+    if (input.screen_code !== undefined && input.screen_code != null) {
+      strQry += ` and H.from_screen=${input.screen_code}`;
+    }
     if (
       moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD") > 0 &&
       moment(input.to_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
@@ -751,15 +769,15 @@ export default {
       strQry += ` and H.transaction_date between date('${input.from_date}') and  date('${input.to_date}') `;
     }
 
-    if (input.document_number !== undefined && input.document_number == null) {
-      strQry += ` and  H.document_number='${input.document_number}'`;
+    if (input.document_number !== undefined && input.document_number != null) {
+      strQry += ` and  H.document_number like '%${input.document_number}%' `;
     }
-    if (
-      input.transaction_type !== undefined &&
-      input.transaction_type == null
-    ) {
-      strQry += ` and H.transaction_type='${input.transaction_type}'`;
-    }
+    // if (
+    //   input.transaction_type !== undefined &&
+    //   input.transaction_type == null
+    // ) {
+    //   strQry += ` and H.transaction_type='${input.transaction_type}'`;
+    // }
 
     // `select SD.finance_day_end_sub_detail_id,D.finance_day_end_detail_id ,H.transaction_date,case D.payment_mode when 'CA' then\
     // 'CASH' when 'CH' then 'CHEQUE' when 'CD' then 'CARD'  end as payment_mode ,D.amount,SD.narration,\
@@ -770,18 +788,27 @@ export default {
     // left join  algaeh_d_app_screens S on H.from_screen=S.screen_code\
     // where  SD.posted='N'  ${strQry}  group by finance_day_end_detail_id;`
 
+    // select finance_day_end_header_id,transaction_date,amount,
+    // document_number,from_screen,case H.transaction_type when 'AD' then 'ADVANCE'
+    // when 'RF' then 'REFUND' when 'BILL' then 'OPBILL' when  'CREDIT' then
+    // 'PATIENT CREDIT'  when  'ADJUST' then 'ADVANCE ADJUST'  when 'CREDIT_ST' then 'CREDIT SETTLEMENT'
+    // when 'OP_BIL_CAN' then 'OP BILL CANCEL'  when 'JV' then 'JOURNAL VOUCHER'
+    // end as transaction_type,S.screen_name
+    // from finance_day_end_header H inner join finance_day_end_sub_detail SD on
+    //  H.finance_day_end_header_id=SD.day_end_header_id
+    // left join  algaeh_d_app_screens S on H.from_screen=S.screen_code  where  SD.posted='N'  ${strQry}
+    // group by  finance_day_end_header_id;
+
     _mysql
       .executeQuery({
-        query: ` select finance_day_end_header_id,transaction_date,amount,
-        document_number,from_screen,case H.transaction_type when 'AD' then 'ADVANCE' 
-        when 'RF' then 'REFUND' when 'BILL' then 'OPBILL' when  'CREDIT' then 
-        'PATIENT CREDIT'  when  'ADJUST' then 'ADVANCE ADJUST'  when 'CREDIT_ST' then 'CREDIT SETTLEMENT'
-        when 'OP_BIL_CAN' then 'OP BILL CANCEL'  when 'JV' then 'JOURNAL VOUCHER'
-        end as transaction_type,S.screen_name
-        from finance_day_end_header H inner join finance_day_end_sub_detail SD on
-         H.finance_day_end_header_id=SD.day_end_header_id
-        left join  algaeh_d_app_screens S on H.from_screen=S.screen_code  where  SD.posted='N'  ${strQry}
-        group by  finance_day_end_header_id; `,
+        query: `select finance_day_end_header_id, transaction_date,    
+        ROUND( amount , ${decimal_places}) as amount, voucher_type, document_number,  
+        invoice_no, screen_name, ref_no as cheque_no,cheque_date, 
+         ROUND( cheque_amount , ${decimal_places}) as  cheque_amount, narration, 
+        U.username as entered_by, entered_date from finance_day_end_header H 
+        left join  algaeh_d_app_screens S on H.from_screen=S.screen_code
+        left join algaeh_d_app_user U on H.entered_by=U.algaeh_d_app_user_id
+        where ${strQry}; `,
 
         printQuery: false
       })
@@ -937,7 +964,7 @@ export default {
                     .executeQueryWithTransaction({
                       query:
                         "update finance_day_end_sub_detail set posted='Y' ,posted_date=now(),\
-                 posted_by=? where   finance_day_end_sub_detail_id in (?) ",
+                          posted_by=? where   finance_day_end_sub_detail_id in (?) ",
                       values: [
                         req.userIdentity.algaeh_d_app_user_id,
                         updateFinanceDayEndSubDetailIds
@@ -985,7 +1012,7 @@ export default {
   },
 
   //created by irfan: to
-  postDayEndData: (req, res, next) => {
+  postDayEndData_BKP_24_JAN_2020: (req, res, next) => {
     const _mysql = new algaehMysql();
     // const utilities = new algaehUtilities();
     let input = req.body;
@@ -1009,7 +1036,7 @@ export default {
             where  D.day_end_header_id in (SELECT day_end_header_id
             FROM cte_ where is_equal='true');`,
         values: [input.finance_day_end_header_ids],
-        printQuery: true
+        printQuery: false
       })
       .then(result => {
         // _mysql.releaseConnection();
@@ -1176,6 +1203,581 @@ export default {
         });
       });
   },
+  //created by irfan: to
+  postDayEndData_BKP_27_JAN_202: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query: ` select day_end_header_id from (
+          select day_end_header_id,if (sum(debit_amount) =sum(credit_amount) ,'Y','N') as equal 
+          from finance_day_end_header H inner join finance_day_end_sub_detail D on
+          H.finance_day_end_header_id=D.day_end_header_id and H.posted='N'
+          where day_end_header_id in (?)
+          group by day_end_header_id) as A where equal='Y';`,
+        values: [input.finance_day_end_header_ids],
+        printQuery: true
+      })
+      .then(result => {
+        if (result.length > 0) {
+          let total_income = 0;
+          let total_expense = 0;
+          let balance = 0;
+          const validDayEndHeaderIds = [];
+          result.forEach(item => {
+            validDayEndHeaderIds.push(item.day_end_header_id);
+          });
+
+          _mysql
+            .executeQuery({
+              query:
+                "select D.finance_day_end_sub_detail_id,D.day_end_header_id,D.payment_date,\
+              head_id,child_id,debit_amount,payment_type,credit_amount,year,month,\
+              hospital_id,H.root_id,D.project_id,D.sub_department_id\
+              from finance_day_end_sub_detail D  \
+              left join finance_account_head H  on D.head_id=H.finance_account_head_id\
+              where  D.day_end_header_id in (?)",
+              values: [validDayEndHeaderIds],
+              printQuery: true
+            })
+            .then(details => {
+              details.forEach(m => {
+                if (m.root_id == 4) {
+                  if (m.payment_type == "CR") {
+                    total_income =
+                      parseFloat(total_income) + parseFloat(m.credit_amount);
+                  } else if (m.payment_type == "DR") {
+                    total_income =
+                      parseFloat(total_income) - parseFloat(m.debit_amount);
+                  }
+                } else if (m.root_id == 5) {
+                  if (m.payment_type == "DR") {
+                    total_expense =
+                      parseFloat(total_expense) + parseFloat(m.debit_amount);
+                  } else if (m.payment_type == "CR") {
+                    total_expense =
+                      parseFloat(total_expense) - parseFloat(m.credit_amount);
+                  }
+                }
+              });
+              balance = parseFloat(total_income) - parseFloat(total_expense);
+
+              if (balance > 0) {
+                details.push({
+                  payment_date: new Date(),
+                  head_account_code: 3.1,
+                  root_id: 3,
+                  head_id: 3,
+                  child_id: 1,
+                  debit_amount: 0,
+                  credit_amount: balance,
+                  payment_type: "CR",
+                  hospital_id: details[0]["hospital_id"],
+                  year: moment().format("YYYY"),
+                  month: moment().format("M"),
+                  voucher_no: null
+                });
+              } else if (balance < 0) {
+                details.push({
+                  payment_date: new Date(),
+                  head_account_code: 3.1,
+                  root_id: 3,
+                  head_id: 3,
+                  child_id: 1,
+                  debit_amount: Math.abs(balance),
+                  credit_amount: 0,
+                  payment_type: "DR",
+                  hospital_id: details[0]["hospital_id"],
+                  year: moment().format("YYYY"),
+                  month: moment().format("M"),
+                  voucher_no: null
+                });
+              }
+
+              _mysql
+                .executeQueryWithTransaction({
+                  query:
+                    "insert into finance_voucher_header (voucher_type,voucher_no,day_end_header_id,amount,\
+                        payment_date,narration,from_screen,posted_from,year,month,invoice_no,ref_no,cheque_date,cheque_amount)\
+                        select voucher_type,document_number,finance_day_end_header_id,amount,transaction_date,\
+                        narration,from_screen,'D',year(transaction_date),month(transaction_date), \
+                        invoice_no,ref_no,cheque_date,cheque_amount\
+                        from finance_day_end_header where finance_day_end_header_id in(?) ",
+                  values: [validDayEndHeaderIds],
+                  printQuery: true
+                })
+                .then(headRes => {
+                  const insertColumns = [
+                    "payment_date",
+                    "head_id",
+                    "child_id",
+                    "debit_amount",
+                    "credit_amount",
+                    "payment_type",
+                    "hospital_id",
+                    "year",
+                    "month",
+                    "project_id",
+                    "sub_department_id"
+                  ];
+                  _mysql
+                    .executeQueryWithTransaction({
+                      query:
+                        "insert into finance_voucher_details (??) values ?;",
+                      values: details,
+                      includeValues: insertColumns,
+                      bulkInsertOrUpdate: true,
+                      extraValues: {
+                        voucher_header_id: headRes.insertId,
+                        auth_status: "A"
+                      },
+                      printQuery: false
+                    })
+                    .then(result2 => {
+                      _mysql
+                        .executeQueryWithTransaction({
+                          query:
+                            " update finance_day_end_header set posted='Y' ,posted_date=CURDATE(),posted_by=? where \
+                            finance_day_end_header_id in(?);",
+                          values: [
+                            req.userIdentity.algaeh_d_app_user_id,
+                            validDayEndHeaderIds
+                          ],
+                          printQuery: false
+                        })
+                        .then(result3 => {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = result3;
+                            next();
+                          });
+                        })
+                        .catch(e => {
+                          _mysql.rollBackTransaction(() => {
+                            next(e);
+                          });
+                        });
+                    })
+                    .catch(e => {
+                      _mysql.rollBackTransaction(() => {
+                        next(e);
+                      });
+                    });
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: "Credit and Debit are not equal"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
+  },
+//created by irfan: to
+postDayEndData: (req, res, next) => {
+  const _mysql = new algaehMysql();
+
+  let input = req.body;
+
+  _mysql
+    .executeQuery({
+      query: ` select day_end_header_id,voucher_type,invoice_no,amount,cancel_transaction from (
+          select day_end_header_id,voucher_type,amount,invoice_no,cancel_transaction,
+          if (sum(debit_amount) =sum(credit_amount) ,'Y','N') as equal 
+          from finance_day_end_header H inner join finance_day_end_sub_detail D on
+          H.finance_day_end_header_id=D.day_end_header_id and H.posted='N'
+          where day_end_header_id in (?)
+          group by day_end_header_id) as A where equal='Y';`,
+      values: [input.finance_day_end_header_ids],
+      printQuery: true
+    })
+    .then(headRes => {
+      if (headRes.length > 0) {
+        let total_income = 0;
+        let total_expense = 0;
+        let balance = 0;
+        // const validDayEndHeaderIds = [];
+        // result.forEach(item => {
+        //   validDayEndHeaderIds.push(item.day_end_header_id);
+        // });
+
+        _mysql
+          .executeQuery({
+            query:
+              "select D.finance_day_end_sub_detail_id,D.day_end_header_id,D.payment_date,\
+              D.head_id,D.child_id,debit_amount,payment_type,credit_amount,year,month,\
+              hospital_id,H.root_id,D.project_id,D.sub_department_id,C.child_name\
+              from finance_day_end_sub_detail D  \
+              left join finance_account_head H  on D.head_id=H.finance_account_head_id\
+              inner join finance_account_child C on D.child_id=C.finance_account_child_id\
+              where  D.day_end_header_id in (?)",
+            values: [input.finance_day_end_header_ids],
+            printQuery: true
+          })
+          .then(result => {
+            const child_ids = [];
+            result.forEach(child => {
+              child_ids.push(child.child_id);
+            });
+
+            //------------------------------------
+
+            new Promise((resolve, reject) => {
+              _mysql
+                .executeQuery({
+                  query:
+                    "select child_id,coalesce(sum(credit_amount)- sum(debit_amount),0) as cred_minus_deb,\
+                    coalesce(sum(debit_amount)-sum(credit_amount),0) as deb_minus_cred\
+                  from finance_voucher_details \
+                  where auth_status='A' and child_id in (?) group by child_id;",
+                  values: [child_ids],
+                  printQuery: false
+                })
+                .then(closeBalance => {
+                  let internal_eror = false;
+                  //ST-closing balance CHECK
+                  result.forEach(entry => {
+                    //checking debit balance for asset and expence
+                    if (
+                      (entry.root_id == 1 || entry.root_id == 5) &&
+                      entry.payment_type == "CR"
+                    ) {
+                      let ledger = closeBalance.find(f => {
+                        return f.child_id == entry.child_id;
+                      });
+
+                      if (ledger != undefined) {
+                        const temp =
+                          parseFloat(ledger.deb_minus_cred) -
+                          parseFloat(entry.credit_amount);
+
+                        if (temp < 0) {
+                          internal_eror = true;
+                          req.records = {
+                            invalid_input: true,
+                            message: `${entry.child_name} doesn't have debit balance`
+                          };
+                          next();
+                          return;
+                        } else {
+                          ledger.deb_minus_cred = temp;
+                        }
+                      } else {
+                        internal_eror = true;
+                        req.records = {
+                          invalid_input: true,
+                          message: `${entry.child_name} doesn't have debit balance`
+                        };
+                        next();
+                        return;
+                      }
+                    }
+                    //checking credit balance for liabilty,capital and income
+                    else if (
+                      (entry.root_id == 2 ||
+                        entry.root_id == 3 ||
+                        entry.root_id == 4) &&
+                      entry.payment_type == "DR"
+                    ) {
+                      let ledger = closeBalance.find(f => {
+                        return f.child_id == entry.child_id;
+                      });
+
+                      if (ledger != undefined) {
+                        const temp =
+                          parseFloat(ledger.cred_minus_deb) -
+                          parseFloat(entry.debit_amount);
+
+                        if (temp < 0) {
+                          internal_eror = true;
+                          req.records = {
+                            invalid_input: true,
+                            message: `${entry.child_name} doesn't have credit balance`
+                          };
+                          next();
+                          return;
+                        } else {
+                          ledger.deb_minus_cred = temp;
+                        }
+                      } else {
+                        internal_eror = true;
+                        req.records = {
+                          invalid_input: true,
+                          message: `${entry.child_name} doesn't have credit balance`
+                        };
+                        next();
+                        return;
+                      }
+                    }
+                  });
+
+                  //END-closing balance CHECK
+                  if (internal_eror == false) {
+                    resolve({});
+                  } else {
+                    next();
+                  }
+                })
+                .catch(error => {
+                  _mysql.releaseConnection();
+                  next(error);
+                });
+            }).then(res => {
+              console.log("res:", res);
+              //ST-profit and loss calculation
+              result.forEach(m => {
+                if (m.root_id == 4) {
+                  if (m.payment_type == "CR") {
+                    total_income =
+                      parseFloat(total_income) + parseFloat(m.credit_amount);
+                  } else if (m.payment_type == "DR") {
+                    total_income =
+                      parseFloat(total_income) - parseFloat(m.debit_amount);
+                  }
+                } else if (m.root_id == 5) {
+                  if (m.payment_type == "DR") {
+                    total_expense =
+                      parseFloat(total_expense) + parseFloat(m.debit_amount);
+                  } else if (m.payment_type == "CR") {
+                    total_expense =
+                      parseFloat(total_expense) - parseFloat(m.credit_amount);
+                  }
+                }
+              });
+              //END-profit and loss calculation
+              balance = parseFloat(total_income) - parseFloat(total_expense);
+
+              let pl_account = "";
+              if (balance > 0) {
+                pl_account = {
+                  payment_date: new Date(),
+                  head_id: 3,
+                  child_id: 1,
+                  debit_amount: 0,
+                  credit_amount: balance,
+                  payment_type: "CR",
+                  hospital_id: result[0]["hospital_id"],
+                  year: moment().format("YYYY"),
+                  month: moment().format("M")
+                };
+              } else if (balance < 0) {
+                pl_account = {
+                  payment_date: new Date(),
+                  head_id: 3,
+                  child_id: 1,
+                  debit_amount: Math.abs(balance),
+                  credit_amount: 0,
+                  payment_type: "DR",
+                  hospital_id: result[0]["hospital_id"],
+                  year: moment().format("YYYY"),
+                  month: moment().format("M")
+                };
+              }
+
+              let strQry = "";
+              let updateQry = "";
+
+              if (pl_account != "") {
+                strQry += _mysql.mysqlQueryFormat(
+                  "INSERT INTO finance_voucher_details (payment_date,head_id,child_id,debit_amount,credit_amount,\
+                    payment_type,hospital_id,year,month,pl_entry,entered_by,auth_status)  VALUE(?,?,?,?,?,?,?,?,?,?,?,?);",
+                  [
+                    pl_account.payment_date,
+                    pl_account.head_id,
+                    pl_account.child_id,
+                    pl_account.debit_amount,
+                    pl_account.credit_amount,
+                    pl_account.payment_type,
+                    pl_account.hospital_id,
+                    pl_account.year,
+                    pl_account.month,
+                    "Y",
+                    req.userIdentity.algaeh_d_app_user_id,
+                    "A"
+                  ]
+                );
+              }
+
+              new Promise((resolve, reject) => {
+                // PAYMENT AGAINST OLD PENDING VOUCHER
+                if (
+               
+                  headRes[0]["invoice_no"] != null
+                ) {
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "select finance_voucher_header_id, voucher_type,amount,settlement_status,settled_amount\
+                      from finance_voucher_header where invoice_no=? and voucher_type in ('purchase' ,'sales') and settlement_status='P';",
+                      values: [headRes[0]["invoice_no"]],
+                      printQuery: false
+                    })
+                    .then(BalanceInvoice => {
+                      // if (headRes[0]["cancel_transaction"] == "Y") {
+                      //   updateQry = `update finance_voucher_header set settlement_status='C' where finance_voucher_header_id=${BalanceInvoice[0]["finance_voucher_header_id"]};`;
+                      // } else 
+                      if (headRes[0]["voucher_type"] == "credit_note"||headRes[0]["voucher_type"] == "debit_note"|| headRes[0]["voucher_type"] == "payment"||headRes[0]["voucher_type"] == "receipt") {
+                        const total_paid_amount =
+                          parseFloat(BalanceInvoice[0]["settled_amount"]) +
+                          parseFloat(headRes[0]["amount"]);
+
+                        if (
+                          parseFloat(BalanceInvoice[0]["amount"]) ==
+                          total_paid_amount
+                        ) {
+                          updateQry = `update finance_voucher_header set settlement_status='S',settled_amount=settled_amount+${parseFloat(
+                            headRes[0]["amount"]
+                          )} where finance_voucher_header_id=${
+                            BalanceInvoice[0]["finance_voucher_header_id"]
+                          };`;
+                        } else {
+                          updateQry = `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
+                            headRes[0]["amount"]
+                          )} where finance_voucher_header_id=${
+                            BalanceInvoice[0]["finance_voucher_header_id"]
+                          };`;
+                        }
+                      }
+
+
+
+      
+
+                      resolve({});
+                    })
+                    .catch(error => {
+                      _mysql.releaseConnection();
+                      next(error);
+                    });
+                }
+                          
+                
+                else {
+                  resolve({});
+                }
+              }).then(Invoc => {
+                _mysql
+                  .executeQueryWithTransaction({
+                    query:
+                      "insert into finance_voucher_header (voucher_type,voucher_no,day_end_header_id,amount,\
+                        payment_date,narration,from_screen,posted_from,year,month,invoice_no,ref_no,cheque_date,cheque_amount)\
+                        select voucher_type,document_number,finance_day_end_header_id,amount,transaction_date,\
+                        narration,from_screen,'D',year(transaction_date),month(transaction_date), \
+                        invoice_no,ref_no,cheque_date,cheque_amount\
+                        from finance_day_end_header where finance_day_end_header_id in(?) ",
+                    values: [input.finance_day_end_header_ids],
+                    printQuery: true
+                  })
+                  .then(headRes => {
+                    const insertColumns = [
+                      "payment_date",
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "credit_amount",
+                      "payment_type",
+                      "hospital_id",
+                      "year",
+                      "month",
+                      "project_id",
+                      "sub_department_id"
+                    ];
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "insert into finance_voucher_details (??) values ?;",
+                        values: result,
+                        includeValues: insertColumns,
+                        bulkInsertOrUpdate: true,
+                        extraValues: {
+                          voucher_header_id: headRes.insertId,
+                          auth_status: "A"
+                        },
+                        printQuery: false
+                      })
+                      .then(result2 => {
+                        _mysql
+                          .executeQueryWithTransaction({
+                            query:
+                              " update finance_day_end_header set posted='Y' ,posted_date=CURDATE(),posted_by=? where \
+                            finance_day_end_header_id in(?);" +
+                              strQry +
+                              "" +
+                              updateQry,
+                            values: [
+                              req.userIdentity.algaeh_d_app_user_id,
+                              input. finance_day_end_header_ids
+                            ],
+                            printQuery: false
+                          })
+                          .then(result3 => {
+                            _mysql.commitTransaction(() => {
+                              _mysql.releaseConnection();
+                              req.records = result3;
+                              next();
+                            });
+                          })
+                          .catch(e => {
+                            _mysql.rollBackTransaction(() => {
+                              next(e);
+                            });
+                          });
+                      })
+                      .catch(e => {
+                        _mysql.rollBackTransaction(() => {
+                          next(e);
+                        });
+                      });
+                  })
+                  .catch(e => {
+                    _mysql.rollBackTransaction(() => {
+                      next(e);
+                    });
+                  });
+              });
+            });
+
+            //------------------------------------------------
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+      } else {
+        _mysql.releaseConnection();
+        req.records = {
+          invalid_input: true,
+          message: "Credit and Debit are not equal"
+        };
+        next();
+      }
+    })
+    .catch(e => {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    });
+},
 
   //created by irfan: before removing child maping
   removeAccountHead_BKP_24_dec: (req, res, next) => {
@@ -1477,30 +2079,35 @@ export default {
   //created by irfan: to
   previewDayEndEntries: (req, res, next) => {
     const _mysql = new algaehMysql();
-    const utilities = new algaehUtilities();
 
+    // select finance_day_end_sub_detail_id ,payment_date,SD.head_id,
+    //     child_id,concat(account_name,'-->',child_name ) as to_account,debit_amount,
+    //     case payment_type when 'CR' then 'Credit' else 'Debit' end
+    //      as payment_type,credit_amount
+    //     from finance_day_end_sub_detail SD left join finance_account_head H on SD.head_id=H.finance_account_head_id
+    //     left join finance_account_child C on SD.child_id=C.finance_account_child_id where day_end_header_id=?;
+    //     select coalesce(sum(cash),0)as cash,coalesce(sum(card),0)as card,coalesce(sum(cheque),0)as cheque
+    //     from (select  case when payment_mode = "CA" then amount end as cash,
+    //     case when payment_mode = "CD" then amount end as card,
+    //     case when payment_mode = "CH" then amount end as cheque
+    //     from finance_day_end_detail where day_end_header_id=?) as A ;
+    const decimal_places = req.userIdentity.decimal_places;
     _mysql
       .executeQuery({
         query: `select finance_day_end_sub_detail_id ,payment_date,SD.head_id,
-        child_id,concat(account_name,'-->',child_name ) as to_account,debit_amount,
+        child_id,concat(account_name,'-->',child_name ) as to_account,  ROUND( debit_amount , ${decimal_places}) as debit_amount,
         case payment_type when 'CR' then 'Credit' else 'Debit' end
-         as payment_type,credit_amount
+         as payment_type, ROUND( credit_amount , ${decimal_places}) as credit_amount
         from finance_day_end_sub_detail SD left join finance_account_head H on SD.head_id=H.finance_account_head_id
-        left join finance_account_child C on SD.child_id=C.finance_account_child_id where day_end_header_id=?;
-        select coalesce(sum(cash),0)as cash,coalesce(sum(card),0)as card,coalesce(sum(cheque),0)as cheque
-        from (select  case when payment_mode = "CA" then amount end as cash,
-        case when payment_mode = "CD" then amount end as card,
-        case when payment_mode = "CH" then amount end as cheque
-        from finance_day_end_detail where day_end_header_id=?) as A ;`,
-        values: [req.query.day_end_header_id, req.query.day_end_header_id],
+        left join finance_account_child C on SD.child_id=C.finance_account_child_id where day_end_header_id=?;`,
+        values: [req.query.day_end_header_id],
         printQuery: false
       })
       .then(result => {
         _mysql.releaseConnection();
 
         req.records = {
-          ...result[1][0],
-          entries: result[0]
+          entries: result
         };
         next();
       })
@@ -1520,13 +2127,19 @@ export default {
       input.finance_account_head_id > 0 &&
       input.finance_account_head_id < 6
     ) {
+      let str = "";
+
+      if (input.finance_account_head_id == 3) {
+        str = " and  finance_account_child_id <> 1";
+      }
+
       _mysql
         .executeQuery({
           query: `select finance_account_head_id,account_code,account_name,account_parent,account_level,
           H.created_from as created_status ,sort_order,parent_acc_id,root_id,
           finance_account_child_id,child_name,head_id,C.created_from as child_created_from
           from finance_account_head H left join 
-          finance_account_child C on C.head_id=H.finance_account_head_id
+          finance_account_child C on C.head_id=H.finance_account_head_id  ${str}
            where (root_id=? or finance_account_head_id=?) order by account_level,sort_order;     `,
 
           printQuery: false,
@@ -1576,9 +2189,15 @@ export default {
           break;
         case "sales":
           selectStr = " ,parent_acc_id ";
-          whereStr = ` where account_type  not in ('B','C') `;
-          unionStr = ` where account_type  not in ('B','C') `;
+          // whereStr = ` where account_type  not in ('B','C') `;
+          // unionStr = ` where account_type  not in ('B','C') `;
           break;
+
+
+          case "CIH":
+            selectStr = ` ,  case  account_type   when 'C' then null else parent_acc_id end as parent_acc_id `;
+            whereStr = ` where account_type  ='C' `;
+            break;
         default:
           selectStr = " ,parent_acc_id ";
       }
@@ -1604,7 +2223,7 @@ export default {
             ,root_id,
             finance_account_child_id,child_name,head_id,C.created_from as child_created_from
             from finance_account_head H left join
-            finance_account_child C on C.head_id=H.finance_account_head_id ${whereStr}
+            finance_account_child C on C.head_id=H.finance_account_head_id and  finance_account_child_id <> 1 ${whereStr}
            
             union                  
             select H.finance_account_head_id,H.account_code,H.account_name,H.account_parent,H.account_level,
@@ -2227,45 +2846,44 @@ function calcAmount(account_heads, levels, decimal_places) {
       });
 
       for (let i = max_account_level - 1; i >= 0; i--) {
-        for (let k = 0; k < levels_group[i].length; k++) {
-          levels_group[i].map(item => {
-            let immediate_childs = levels_group[i + 1].filter(child => {
-              if (item.finance_account_head_id == child.parent_acc_id) {
-                return item;
-              }
-            });
-
-            const total_debit_amount = _.chain(immediate_childs)
-              .sumBy(s => parseFloat(s.total_debit_amount))
-              .value()
-              .toFixed(decimal_places);
-
-            const total_credit_amount = _.chain(immediate_childs)
-              .sumBy(s => parseFloat(s.total_credit_amount))
-              .value()
-              .toFixed(decimal_places);
-
-            item["total_debit_amount"] = parseFloat(
-              parseFloat(item["debit_amount"]) + parseFloat(total_debit_amount)
-            ).toFixed(decimal_places);
-
-            item["total_credit_amount"] = parseFloat(
-              parseFloat(item["credit_amount"]) +
-                parseFloat(total_credit_amount)
-            ).toFixed(decimal_places);
-
-            item["cred_minus_deb"] = parseFloat(
-              parseFloat(item["total_credit_amount"]) -
-                parseFloat(item["total_debit_amount"])
-            ).toFixed(decimal_places);
-            item["deb_minus_cred"] = parseFloat(
-              parseFloat(item["total_debit_amount"]) -
-                parseFloat(item["total_credit_amount"])
-            ).toFixed(decimal_places);
-
-            return item;
+        // for (let k = 0; k < levels_group[i].length; k++) {
+        levels_group[i].map(item => {
+          let immediate_childs = levels_group[i + 1].filter(child => {
+            if (item.finance_account_head_id == child.parent_acc_id) {
+              return item;
+            }
           });
-        }
+
+          const total_debit_amount = _.chain(immediate_childs)
+            .sumBy(s => parseFloat(s.total_debit_amount))
+            .value()
+            .toFixed(decimal_places);
+
+          const total_credit_amount = _.chain(immediate_childs)
+            .sumBy(s => parseFloat(s.total_credit_amount))
+            .value()
+            .toFixed(decimal_places);
+
+          item["total_debit_amount"] = parseFloat(
+            parseFloat(item["debit_amount"]) + parseFloat(total_debit_amount)
+          ).toFixed(decimal_places);
+
+          item["total_credit_amount"] = parseFloat(
+            parseFloat(item["credit_amount"]) + parseFloat(total_credit_amount)
+          ).toFixed(decimal_places);
+
+          item["cred_minus_deb"] = parseFloat(
+            parseFloat(item["total_credit_amount"]) -
+              parseFloat(item["total_debit_amount"])
+          ).toFixed(decimal_places);
+          item["deb_minus_cred"] = parseFloat(
+            parseFloat(item["total_debit_amount"]) -
+              parseFloat(item["total_credit_amount"])
+          ).toFixed(decimal_places);
+
+          return item;
+        });
+        // }
       }
       const final_res = [];
 

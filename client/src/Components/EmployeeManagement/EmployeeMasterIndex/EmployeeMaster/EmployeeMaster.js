@@ -17,7 +17,10 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import Enumerable from "linq";
 import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
 import { getCookie } from "../../../../utils/algaehApiCall";
-import { InsertUpdateEmployee } from "./EmployeeMasterEvents";
+import {
+  InsertUpdateEmployee,
+  generateEmployeeContract
+} from "./EmployeeMasterEvents";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import {
   AlgaehValidation
@@ -545,11 +548,8 @@ class EmployeeMaster extends Component {
             <div className="popupFooter">
               <div className="col-lg-12">
                 <div className="row">
-                  <div className="col-lg-4"> &nbsp;</div>
-
-                  <div className="col-lg-8">
+                  <div className="col-12">
                     <button
-                      // onClick={() => {}}
                       onClick={InsertUpdateEmployee.bind(this, this)}
                       type="button"
                       className="btn btn-primary"
@@ -573,13 +573,15 @@ class EmployeeMaster extends Component {
                     >
                       <AlgaehLabel label={{ fieldName: "btnCancel" }} />
                     </button>
-                    {/* <button
-                        onClick={ClearEmployee.bind(this, this)}
-                        type="button"
-                        className="btn btn-other"
-                      >
-                        <AlgaehLabel label={{ fieldName: "btn_clear" }} />
-                      </button> */}
+
+                    <button
+                      onClick={generateEmployeeContract.bind(this, this)}
+                      type="button"
+                      className="btn btn-other"
+                      style={{ float: "left", margin: 0 }}
+                    >
+                      <AlgaehLabel label={{ forceLabel: "Print Contract" }} />
+                    </button>
                   </div>
                 </div>
               </div>

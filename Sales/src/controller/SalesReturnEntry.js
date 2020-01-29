@@ -4,7 +4,8 @@ import {
     getSalesReturn,
     getInvoiceEntryItems,
     addSalesReturn,
-    postSalesReturnEntry
+    postSalesReturnEntry,
+    generateAccountingEntry
 } from "../models/SalesReturnEntry";
 import inventoryModel from "algaeh-inventory/src/models/commonFunction";
 
@@ -39,6 +40,7 @@ export default function SalesQuotation() {
 
     api.put("/postSalesReturnEntry",
         postSalesReturnEntry,
+        generateAccountingEntry,
         updateIntoInvItemLocation,
         (req, res, next) => {
             res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

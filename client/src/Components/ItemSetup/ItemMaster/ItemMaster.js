@@ -332,11 +332,9 @@ class ItemMaster extends Component {
 
                     <div className="col-12">
                       <div className="row">
-                        <div className="col-6">
-                          <AlgaehLabel
-                            label={{ fieldName: "vat_applicable" }}
-                          />
-                          <div className=" customCheckbox ">
+                        <div className="col-3">
+                          <label>Vat Applicable</label>
+                          <div className="customCheckbox">
                             <label className="checkbox inline">
                               <input
                                 type="checkbox"
@@ -353,10 +351,18 @@ class ItemMaster extends Component {
                             </label>
                           </div>
                         </div>
+
                         <AlagehFormGroup
-                          div={{ className: "col-6 form-group" }}
+                          div={{
+                            className:
+                              this.state.vat_applicable === "Y"
+                                ? "col-3 mandatory form-group"
+                                : "col-3 form-group"
+                          }}
                           label={{
-                            fieldName: "vat_percent"
+                            fieldName: "vat_percent",
+                            isImp:
+                              this.state.vat_applicable === "Y" ? true : false
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
@@ -506,9 +512,9 @@ class ItemMaster extends Component {
                                 this.props.itemuom === undefined
                                   ? []
                                   : this.props.itemuom.filter(
-                                    f =>
-                                      f.hims_d_pharmacy_uom_id === row.uom_id
-                                  );
+                                      f =>
+                                        f.hims_d_pharmacy_uom_id === row.uom_id
+                                    );
 
                               return (
                                 <span>
@@ -637,7 +643,7 @@ class ItemMaster extends Component {
                         paging={{ page: 0, rowsPerPage: 5 }}
                         events={{
                           onDelete: deleteUOM.bind(this, this),
-                          onEdit: row => { },
+                          onEdit: row => {},
                           onDone: updateUOM.bind(this, this)
                         }}
                       />
@@ -667,7 +673,7 @@ class ItemMaster extends Component {
                         },
                         onChange: texthandle.bind(this, this)
                       }}
-                    //forceUpdate={true}
+                      //forceUpdate={true}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-4 mandatory form-group" }}
@@ -842,8 +848,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ItemMaster)
+  connect(mapStateToProps, mapDispatchToProps)(ItemMaster)
 );

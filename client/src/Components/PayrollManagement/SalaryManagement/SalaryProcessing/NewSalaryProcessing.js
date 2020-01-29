@@ -130,10 +130,10 @@ class NewSalaryProcessing extends Component {
                                       Not Finalized
                                     </span>
                                   ) : (
-                                    <span className="badge badge-success">
-                                      Finalized
+                                      <span className="badge badge-success">
+                                        Finalized
                                     </span>
-                                  );
+                                    );
                                 },
                                 others: {
                                   minWidth: 100
@@ -155,10 +155,10 @@ class NewSalaryProcessing extends Component {
                                       Unpaid
                                     </span>
                                   ) : (
-                                    <span className="badge badge-success">
-                                      Paid
+                                      <span className="badge badge-success">
+                                        Paid
                                     </span>
-                                  );
+                                    );
                                 },
                                 others: {
                                   minWidth: 100
@@ -291,9 +291,9 @@ class NewSalaryProcessing extends Component {
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 20 }}
                             events={{
-                              onEdit: () => {},
-                              onDelete: () => {},
-                              onDone: () => {}
+                              onEdit: () => { },
+                              onDelete: () => { },
+                              onDone: () => { }
                             }}
                           />
                         </div>
@@ -330,6 +330,7 @@ class NewSalaryProcessing extends Component {
                     label={{ forceLabel: "Clear", returnText: true }}
                   />
                 </button>
+
               </div>
             </div>
           </div>

@@ -48,7 +48,7 @@ const deleteInvoiceItemDetail = ($this, row, context) => {
 
 
 const getDeliveryItemDetails = ($this, row) => {
-  debugger
+
   algaehApiCall({
     uri: "/SalesInvoice/getDispatchItemDetails",
     module: "sales",

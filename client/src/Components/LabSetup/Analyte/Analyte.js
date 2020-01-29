@@ -17,10 +17,12 @@ import {
   onchangegridcol,
   insertLabAnalytes,
   updateLabAnalytes,
-  deleteLabAnalytes
+  deleteLabAnalytes,
+  EditInvestigationTest
 } from "./AnalyteEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
+import AnalytesRange from "./AnalytesRange";
 
 class LabAnalyte extends Component {
   constructor(props) {
@@ -66,6 +68,25 @@ class LabAnalyte extends Component {
     }
   }
 
+  ShowModel(e) {
+    debugger;
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  }
+
+  CloseModel(e) {
+    this.setState(
+      {
+        isOpen: !this.state.isOpen
+      },
+      () => {
+        if (e === true) {
+          //     getInvestigations(this, this);
+        }
+      }
+    );
+  }
   render() {
     return (
       <div className="lab_section">
@@ -129,6 +150,13 @@ class LabAnalyte extends Component {
           </div>
         </div>
 
+        <AnalytesRange
+          HeaderCaption="Range"
+          open={this.state.isOpen}
+          onClose={this.CloseModel.bind(this)}
+          // InvestigationPop={this.state.InvestigationPop}
+        />
+
         <div className="portlet portlet-bordered margin-bottom-15">
           <div className="portlet-body">
             <div className="row" data-validate="analyteDiv">
@@ -137,6 +165,38 @@ class LabAnalyte extends Component {
                   datavalidate="data-validate='analyteDiv'"
                   id="labAnalyteGrid"
                   columns={[
+                    {
+                      fieldName: "analyteRange",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Analyte Range" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            <i
+                              className="fas fa-plus"
+                              onClick={this.ShowModel.bind(this)}
+                            />
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <span>
+                            <i
+                              className="fas fa-plus"
+                              onClick={this.ShowModel.bind(this)}
+                            />
+                          </span>
+                        );
+                      },
+                      others: {
+                        maxWidth: 120,
+                        resizable: false,
+                        filterable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
                     {
                       fieldName: "description",
                       label: (
@@ -327,7 +387,7 @@ class LabAnalyte extends Component {
                   }}
                   isEditable={true}
                   actions={{
-                    allowEdit: false
+                    allowDelete: false
                   }}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
@@ -364,8 +424,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(LabAnalyte)
+  connect(mapStateToProps, mapDispatchToProps)(LabAnalyte)
 );

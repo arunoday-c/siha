@@ -965,7 +965,7 @@ class DeptMaster extends Component {
           />
           {this.state.HIMS_Active === true ? (
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col form-group mandatory" }}
               label={{
                 fieldName: "department_type"
               }}
@@ -1058,6 +1058,9 @@ class DeptMaster extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "department_code" }} />
                       ),
+                      editorTemplate: row => {
+                        return <span>{row.department_code}</span>;
+                      },
                       disabled: true
                     },
                     {
@@ -1118,7 +1121,28 @@ class DeptMaster extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "department_type" }} />
                       ),
-                      disabled: true
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            div={{ className: "col" }}
+                            selector={{
+                              name: "department_type",
+                              className: "select-fld",
+                              value: this.state.department_type,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.DEPT_TYPE
+                              },
+                              onChange: this.dropDownHandle.bind(this)
+                            }}
+                          />
+                        );
+                      },
+                      disabled: true,
+                      others: {
+                        show: this.state.HIMS_Active
+                      }
                     },
                     {
                       fieldName: "effective_start_date",

@@ -96,7 +96,7 @@ export default {
     }
   },
 
-  addItemCategoryBakp_14_JAN_2020: (req, res, next) => {
+  addItemCategory: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       let input = { ...req.body };
@@ -130,7 +130,7 @@ export default {
   },
 
   //modified by:irfan to add Item Category
-  addItemCategory: (req, res, next) => {
+  addItemCategoryNEW: (req, res, next) => {
     const _mysql = new algaehMysql();
 
     try {
@@ -336,7 +336,7 @@ export default {
     }
   },
 
-  addPharmacyLocation: (req, res, next) => {
+  addPharmacyLocationBAKP_15_JAN_2020: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       let input = { ...req.body };
@@ -364,6 +364,122 @@ export default {
           _mysql.releaseConnection();
           req.records = result;
           next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  //modified by:irfan
+  addPharmacyLocation: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = req.body;
+
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+        })
+        .then(result => {
+          if (
+            result[0]["product_type"] == "HIMS_ERP" ||
+            result[0]["product_type"] == "FINANCE_ERP"
+          ) {
+            const head_id = 55;
+
+            _mysql
+              .executeQueryWithTransaction({
+                query:
+                  "INSERT INTO `finance_account_child` (child_name,head_id,created_from\
+                ,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?)",
+                values: [
+                  input.location_description,
+                  head_id,
+                  "U",
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id
+                ],
+                printQuery: false
+              })
+              .then(childRes => {
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO `hims_d_pharmacy_location` (`location_description`,  `location_type`, `allow_pos`, \
+                  `git_location`,`hospital_id`,\
+                  `created_date`, `created_by`, `updated_date`, `updated_by`,head_id,child_id)\
+                VALUE(?,?,?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      input.location_description,
+                      input.location_type,
+                      input.allow_pos,
+                      input.git_location,
+                      input.hospital_id,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      head_id,
+                      childRes.insertId
+                    ],
+                    printQuery: false
+                  })
+                  .then(locResult => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = locResult;
+                      next();
+                    });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO `hims_d_pharmacy_location` (`location_description`,  `location_type`, `allow_pos`, \
+              `git_location`,`hospital_id`,\
+              `created_date`, `created_by`, `updated_date`, `updated_by`)\
+            VALUE(?,?,?,?,?,?,?,?,?)",
+                values: [
+                  input.location_description,
+                  input.location_type,
+                  input.allow_pos,
+                  input.git_location,
+                  input.hospital_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id
+                ],
+                printQuery: false
+              })
+              .then(result => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              })
+              .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          }
         })
         .catch(error => {
           _mysql.releaseConnection();

@@ -400,36 +400,48 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
+            select head_id, child_id from finance_accounts_maping where account in ('INPUT_TAX');"
         })
         .then(result => {
           // console.log("result", result)
+          const input_tax_acc = result[1][0]
+          const org_data = result[0]
+
           if (
-            result[0]["product_type"] == "HIMS_ERP" ||
-            result[0]["product_type"] == "FINANCE_ERP"
+            org_data[0]["product_type"] == "HIMS_ERP" ||
+            org_data[0]["product_type"] == "FINANCE_ERP"
           ) {
             let strQuery = ""
             if (inputParam.po_return_from === "PHR") {
-              strQuery = "select RH.hims_f_procurement_return_po_header_id, RH.purchase_return_number, GH.grn_number, RH.return_total, \
-              RH.discount_amount, RH.tax_amount, IC.head_id, IC.child_id, V.head_id as v_head_id, \
-              V.child_id as v_child_id,  sum(RD.net_extended_cost) as net_extended_cost, sum(RD.total_amount) as total_amount \
+              strQuery = "select RH.hims_f_procurement_return_po_header_id, RH.purchase_return_number, GH.grn_number, \
+              GH.inovice_number, RH.net_total, RH.tax_amount,RH.return_total, PL.head_id, PL.child_id, PL.hospital_id,V.head_id as v_head_id, \
+              V.child_id as v_child_id\
               from hims_f_procurement_po_return_header RH \
-              inner join hims_f_procurement_po_return_detail RD on RH.hims_f_procurement_return_po_header_id = RD.po_return_header_id \
               inner join hims_f_procurement_grn_header GH on GH.hims_f_procurement_grn_header_id = RH.grn_header_id \
-              inner join hims_d_item_category IC on IC.hims_d_item_category_id = RD.phar_item_category \
+              inner join hims_d_pharmacy_location PL on PL.hims_d_pharmacy_location_id = RH.pharmcy_location_id\
               inner join hims_d_vendor V on V.hims_d_vendor_id = RH.vendor_id \
-              where hims_f_procurement_return_po_header_id=? group by RD.phar_item_category;"
+              where hims_f_procurement_return_po_header_id=?;"
             }
             else {
-              strQuery = "select RH.hims_f_procurement_return_po_header_id, RH.purchase_return_number, GH.grn_number, RH.return_total, \
-              RH.discount_amount, RH.tax_amount, IC.head_id, IC.child_id, V.head_id as v_head_id, \
-              V.child_id as v_child_id,  sum(RD.net_extended_cost) as net_extended_cost, sum(RD.total_amount) as total_amount \
+              // strQuery = "select RH.hims_f_procurement_return_po_header_id, RH.purchase_return_number, GH.grn_number, RH.return_total, \
+              // RH.discount_amount, RH.tax_amount, IC.head_id, IC.child_id, V.head_id as v_head_id, \
+              // V.child_id as v_child_id,  sum(RD.net_extended_cost) as net_extended_cost, sum(RD.total_amount) as total_amount \
+              // from hims_f_procurement_po_return_header RH \
+              // inner join hims_f_procurement_po_return_detail RD on RH.hims_f_procurement_return_po_header_id = RD.po_return_header_id \
+              // inner join hims_f_procurement_grn_header GH on GH.hims_f_procurement_grn_header_id = RH.grn_header_id \
+              // inner join hims_d_inventory_tem_category IC on IC.hims_d_inventory_tem_category_id = RD.inv_item_category_id\
+              // inner join hims_d_vendor V on V.hims_d_vendor_id = RH.vendor_id\
+              // where hims_f_procurement_return_po_header_id=? group by RD.inv_item_category_id;"
+
+              strQuery = "select RH.hims_f_procurement_return_po_header_id, RH.purchase_return_number, GH.grn_number, \
+              RH.net_total, RH.tax_amount,RH.return_total, PL.head_id, PL.child_id,PL.hospital_id, V.head_id as v_head_id, \
+              V.child_id as v_child_id\
               from hims_f_procurement_po_return_header RH \
-              inner join hims_f_procurement_po_return_detail RD on RH.hims_f_procurement_return_po_header_id = RD.po_return_header_id \
               inner join hims_f_procurement_grn_header GH on GH.hims_f_procurement_grn_header_id = RH.grn_header_id \
-              inner join hims_d_inventory_tem_category IC on IC.hims_d_inventory_tem_category_id = RD.inv_item_category_id\
-              inner join hims_d_vendor V on V.hims_d_vendor_id = RH.vendor_id\
-              where hims_f_procurement_return_po_header_id=? group by RD.inv_item_category_id;"
+              inner join hims_d_inventory_location PL on PL.hims_d_inventory_location_id = GH.inventory_location_id\
+              inner join hims_d_vendor V on V.hims_d_vendor_id = RH.vendor_id \
+              where hims_f_procurement_return_po_header_id=?;"
             }
             _mysql
               .executeQuery({
@@ -442,18 +454,20 @@ export default {
                 _mysql
                   .executeQuery({
                     query: "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
-                        document_number, from_screen, transaction_type, narration, hospital_id) \
-                        VALUES (?,?,?,?,?,?,?,?,?)",
+                        document_number, from_screen, narration, cancel_transaction, invoice_no, entered_date, entered_by) \
+                        VALUES (?,?,?,?,?,?,?,?,?,?)",
                     values: [
                       new Date(),
                       headerResult[0].return_total,
-                      "journal",
+                      "debit_note",
                       headerResult[0].hims_f_procurement_return_po_header_id,
                       headerResult[0].purchase_return_number,
                       inputParam.ScreenCode,
-                      "BILL",
                       headerResult[0].grn_number,
-                      req.userIdentity.hospital_id
+                      "Y",
+                      headerResult[0].inovice_number,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id
                     ],
                     printQuery: true
                   })
@@ -467,9 +481,11 @@ export default {
                       "child_id",
                       "debit_amount",
                       "payment_type",
-                      "credit_amount"
+                      "credit_amount",
+                      "hospital_id"
                     ];
 
+                    //Vendor Entry
                     insertSubDetail.push({
                       payment_date: new Date(),
                       head_id: headerResult[0].v_head_id,
@@ -477,30 +493,32 @@ export default {
                       debit_amount: headerResult[0].return_total,
                       payment_type: "DR",
                       credit_amount: 0,
+                      hospital_id: req.userIdentity.hospital_id
                     });
 
+                    //Tax Entry
                     if (parseFloat(headerResult[0].tax_amount) > 0) {
                       insertSubDetail.push({
                         payment_date: new Date(),
-                        head_id: "46",
-                        child_id: "38",
+                        head_id: input_tax_acc.head_id,
+                        child_id: input_tax_acc.child_id,
                         debit_amount: 0,
                         payment_type: "CR",
                         credit_amount: headerResult[0].tax_amount,
+                        hospital_id: req.userIdentity.hospital_id
                       });
                     }
 
-                    for (let i = 0; i < headerResult.length; i++) {
-                      insertSubDetail.push({
-                        payment_date: new Date(),
-                        head_id: headerResult[i].head_id,
-                        child_id: headerResult[i].child_id,
-                        debit_amount: 0,
-                        payment_type: "CR",
-                        credit_amount: headerResult[i].net_extended_cost,
-                      });
-                    }
-
+                    //Location Level Entry
+                    insertSubDetail.push({
+                      payment_date: new Date(),
+                      head_id: headerResult[0].head_id,
+                      child_id: headerResult[0].child_id,
+                      debit_amount: 0,
+                      payment_type: "CR",
+                      credit_amount: headerResult[0].net_total,
+                      hospital_id: headerResult[0].hospital_id
+                    });
 
                     // console.log("insertSubDetail", insertSubDetail)
                     _mysql
@@ -513,10 +531,7 @@ export default {
                         extraValues: {
                           day_end_header_id: day_end_header.insertId,
                           year: year,
-                          month: month,
-                          entered_date: new Date(),
-                          entered_by: req.userIdentity.algaeh_d_app_user_id,
-                          hospital_id: req.userIdentity.hospital_id
+                          month: month
                         },
                         printQuery: false
                       })
@@ -545,11 +560,11 @@ export default {
                 });
               });
           } else {
-            _mysql.commitTransaction(() => {
-              _mysql.releaseConnection();
-              req.records = result;
-              next();
-            });
+            // _mysql.commitTransaction(() => {
+            // _mysql.releaseConnection();
+            // req.records = result;
+            next();
+            // });
           }
         })
         .catch(error => {
@@ -560,7 +575,7 @@ export default {
 
     } catch (e) {
       _mysql.rollBackTransaction(() => {
-        next(error);
+        next(e);
       });
     }
   }

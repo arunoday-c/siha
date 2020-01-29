@@ -64,27 +64,27 @@ class BusinessSetup extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"BranchMaster"}
+                algaehtabs={"DeptMaster"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Branch"
+                      fieldName: "departments"
                     }}
                   />
                 }
               </li>
               <li
-                algaehtabs={"DeptMaster"}
-                className={"nav-item tab-button"}
+                algaehtabs={"BranchMaster"}
+                className={"nav-item tab-button "}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "departments"
+                      forceLabel: "Branch"
                     }}
                   />
                 }
@@ -149,21 +149,6 @@ class BusinessSetup extends Component {
               </li>
               {this.state.HIMS_Active === true ? (
                 <li
-                  algaehtabs={"Counter"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "counter"
-                      }}
-                    />
-                  }
-                </li>
-              ) : null}
-              {this.state.HIMS_Active === true ? (
-                <li
                   algaehtabs={"UserShiftMapping"}
                   className={"nav-item tab-button"}
                   onClick={this.openTab.bind(this)}
@@ -172,6 +157,21 @@ class BusinessSetup extends Component {
                     <AlgaehLabel
                       label={{
                         fieldName: "users_shift"
+                      }}
+                    />
+                  }
+                </li>
+              ) : null}
+              {this.state.HIMS_Active === true ? (
+                <li
+                  algaehtabs={"Counter"}
+                  className={"nav-item tab-button"}
+                  onClick={this.openTab.bind(this)}
+                >
+                  {
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "counter"
                       }}
                     />
                   }
@@ -190,21 +190,21 @@ class BusinessSetup extends Component {
                   />
                 }
               </li>
-              <CheckElement permission={"businesssetup-bankmaster"}>
-                <li
-                  algaehtabs={"BankMaster"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Bank Master"
-                      }}
-                    />
-                  }
-                </li>
-              </CheckElement>
+              {/* <CheckElement permission={"businesssetup-bankmaster"}> */}
+              <li
+                algaehtabs={"BankMaster"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Bank Master"
+                    }}
+                  />
+                }
+              </li>
+              {/* </CheckElement> */}
               <li
                 algaehtabs={"CompanyAccount"}
                 className={"nav-item tab-button"}

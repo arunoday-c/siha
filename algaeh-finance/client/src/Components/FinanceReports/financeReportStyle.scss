@@ -71,6 +71,7 @@
           color: black;
           float: right;
           width: 130px;
+          min-height: 15px;
           text-align: right;
           border-left: 1px solid #ebebeb;
           padding-right: 10px;
@@ -83,6 +84,7 @@
           color: black;
           float: right;
           width: 136px;
+          min-height: 15px;
           text-align: right;
           border-left: 1px solid #ebebeb;
           padding-right: 10px;
@@ -125,12 +127,6 @@
             padding-left: 12px;
             border-left: 1px solid #b1b2b3;
             border-top: 1px dotted #ebebeb;
-            // &:last-child {
-            //   border-bottom: none;
-            // }
-            // &:nth-child(even) {
-            //   background-color: #f9f9f9;
-            // }
           }
         }
         div.expand {
@@ -143,6 +139,13 @@
             display: none;
             width: 30px;
             height: 20px;
+          }
+          span {
+            &:nth-child(3) {
+              b {
+                display: none;
+              }
+            }
           }
         }
         div.collapsed {
@@ -239,13 +242,66 @@
   width: 100%;
   th {
     text-align: center;
-    /* width: 50px; */
-    padding: 0;
-    /* display: table-cell; */
+    padding: 2px 10px;
+    display: table-cell;
     border: 1px solid #d3d3d3;
+    color: #000 !important;
+    background: #c1fff9 !important;
+  }
+
+  tr {
+    &:nth-child(odd) {
+      background: #f9f9f9;
+    }
+
+    td {
+      vertical-align: top;
+      border: 1px solid #d3d3d3;
+
+      div.expand {
+        span {
+          &:nth-child(3) {
+            b {
+              display: none !important;
+            }
+          }
+          &:nth-child(4) {
+            b {
+              display: none !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.ar_ap_ReportStyle {
+  padding: 0;
+  margin: 20px 0 0;
+  table-layout: fixed;
+  width: 100%;
+  text-align: center;
+  th {
+    text-align: center;
+    padding: 2px 10px;
+    display: table-cell;
+    border: 1px solid #d3d3d3;
+    color: #000 !important;
+    background: #c1fff9 !important;
   }
   td {
     vertical-align: top;
     border: 1px solid #d3d3d3;
+    padding: 2px 10px;
+  }
+  .textFld {
+    text-align: left;
+  }
+  .numberFld {
+    text-align: right;
+  }
+  .footerTotal {
+    background: #f3f3f3;
   }
 }

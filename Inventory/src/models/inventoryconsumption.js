@@ -1,5 +1,8 @@
 import algaehMysql from "algaeh-mysql";
 import moment from "moment";
+import _ from "lodash";
+import algaehUtilities from "algaeh-utilities/utilities";
+
 export default {
   getInventoryConsumption: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -99,6 +102,9 @@ export default {
               printQuery: true
             })
             .then(headerResult => {
+              req.body.consumption_number = document_number
+              req.body.hims_f_inventory_consumption_header_id = headerResult.insertId
+
               let IncludeValues = [
                 "item_id",
                 "item_category_id",
@@ -165,47 +171,156 @@ export default {
         next(e);
       });
     }
+  },
+
+  generateAccountingEntry: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      let inputParam = req.body;
+      const decimal_places = req.userIdentity.decimal_places;
+      const utilities = new algaehUtilities();
+
+      const _all_item_id = _.map(inputParam.inventory_stock_detail, o => {
+        return o.item_id;
+      });
+
+      // console.log("generateAccountingEntry")
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
+              select * from finance_accounts_maping;\
+              SELECT hims_d_inventory_item_master_id, waited_avg_cost FROM hims_d_inventory_item_master \
+              where hims_d_inventory_item_master_id in (?); \
+              SELECT location_description, head_id, child_id, hospital_id FROM hims_d_inventory_location where hims_d_inventory_location_id=?;",
+          values: [_all_item_id, inputParam.location_id],
+          printQuery: true
+        })
+        .then(result => {
+          const org_data = result[0]
+
+          if (
+            org_data[0]["product_type"] == "HIMS_ERP" ||
+            org_data[0]["product_type"] == "FINANCE_ERP"
+          ) {
+            const cogs_acc_data = result[1].find(f => f.account === "INVNT_COGS")
+            const item_waited_avg_cost = result[2];
+            const location_acc = result[3];
+
+            // console.log("item_waited_avg_cost", item_waited_avg_cost)
+            // const 
+            const net_payable = _.sumBy(inputParam.inventory_stock_detail, s => parseFloat(s.extended_cost));
+            _mysql
+              .executeQuery({
+                query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
+                  voucher_type, document_id, document_number, from_screen, \
+                  narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?)",
+                values: [
+                  new Date(),
+                  net_payable,
+                  "journal",
+                  inputParam.hims_f_inventory_consumption_header_id,
+                  inputParam.consumption_number,
+                  inputParam.ScreenCode,
+                  "Consumption done for " + location_acc[0].location_description + "/" + net_payable,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id
+                ],
+                printQuery: true
+              })
+              .then(day_end_header => {
+                let insertSubDetail = []
+                const month = moment().format("M");
+                const year = moment().format("YYYY");
+                const IncludeValuess = [
+                  "payment_date",
+                  "head_id",
+                  "child_id",
+                  "debit_amount",
+                  "payment_type",
+                  "credit_amount",
+                  "hospital_id"
+                ];
+                for (let i = 0; i < inputParam.inventory_stock_detail.length; i++) {
+                  const item_avg_cost = item_waited_avg_cost.find(f =>
+                    parseInt(f.hims_d_inventory_item_master_id) === parseInt(inputParam.inventory_stock_detail[i].item_id))
+
+                  let waited_avg_cost =
+                    utilities.decimalPoints(
+                      (parseFloat(inputParam.inventory_stock_detail[i].quantity) *
+                        parseFloat(item_avg_cost.waited_avg_cost)),
+                      decimal_places
+                    )
+
+                  //COGS Entry
+                  insertSubDetail.push({
+                    payment_date: new Date(),
+                    head_id: cogs_acc_data.head_id,
+                    child_id: cogs_acc_data.child_id,
+                    debit_amount: waited_avg_cost,
+                    payment_type: "DR",
+                    credit_amount: 0,
+                    hospital_id: location_acc[0].hospital_id
+                  });
+
+                  //Location Wise
+                  insertSubDetail.push({
+                    payment_date: new Date(),
+                    head_id: location_acc[0].head_id,
+                    child_id: location_acc[0].child_id,
+                    debit_amount: 0,
+                    payment_type: "CR",
+                    credit_amount: waited_avg_cost,
+                    hospital_id: location_acc[0].hospital_id
+                  });
+
+                }
+
+                // console.log("insertSubDetail", insertSubDetail)
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                    values: insertSubDetail,
+                    includeValues: IncludeValuess,
+                    bulkInsertOrUpdate: true,
+                    extraValues: {
+                      day_end_header_id: day_end_header.insertId,
+                      year: year,
+                      month: month
+                    },
+                    printQuery: false
+                  })
+                  .then(subResult => {
+                    next();
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+
+          } else {
+            next();
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+
+    } catch (error) {
+      _mysql.rollBackTransaction(() => {
+        next(error);
+      });
+    }
   }
-
-  //   updateInventoryInitialStock: (req, res, next) => {
-  //     const _mysql = new algaehMysql();
-
-  //     try {
-  //       req.mySQl = _mysql;
-  //       let inputParam = { ...req.body };
-
-  //       _mysql
-  //         .executeQueryWithTransaction({
-  //           query:
-  //             "UPDATE `hims_f_inventory_consumption_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
-  //             WHERE `record_status`='A' and `hims_f_inventory_stock_header_id`=?",
-  //           values: [
-  //             inputParam.posted,
-  //             req.userIdentity.algaeh_d_app_user_id,
-  //             new Date(),
-  //             inputParam.hims_f_inventory_stock_header_id
-  //           ],
-  //           printQuery: true
-  //         })
-  //         .then(headerResult => {
-  //           req.connection = {
-  //             connection: _mysql.connection,
-  //             isTransactionConnection: _mysql.isTransactionConnection,
-  //             pool: _mysql.pool
-  //           };
-  //           // _mysql.releaseConnection();
-  //           // req.records = headerResult;
-  //           next();
-  //         })
-  //         .catch(e => {
-  //           _mysql.rollBackTransaction(() => {
-  //             next(e);
-  //           });
-  //         });
-  //     } catch (e) {
-  //       _mysql.rollBackTransaction(() => {
-  //         next(e);
-  //       });
-  //     }
-  //   }
 };

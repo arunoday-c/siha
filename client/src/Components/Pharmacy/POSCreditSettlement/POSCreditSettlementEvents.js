@@ -160,15 +160,16 @@ const Validations = $this => {
     });
 
     return isError;
-  } else if ($this.state.counter_id === null) {
-    isError = true;
-    swalMessage({
-      type: "warning",
-      title: "Counter is Mandatory."
-    });
-
-    return isError;
   }
+  // else if ($this.state.counter_id === null) {
+  //   isError = true;
+  //   swalMessage({
+  //     type: "warning",
+  //     title: "Counter is Mandatory."
+  //   });
+
+  //   return isError;
+  // }
 };
 
 const getCashiersAndShiftMAP = $this => {
@@ -321,6 +322,8 @@ const SavePosCreidt = $this => {
           .toArray();
 
         Inputobj.criedtdetails = listOfinclude;
+        Inputobj.reciept_amount = Inputobj.receipt_amount
+        Inputobj.ScreenCode = getCookie("ScreenCode")
         AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/POSCreditSettlement/addPOSCreidtSettlement",

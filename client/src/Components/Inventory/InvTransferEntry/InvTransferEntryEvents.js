@@ -3,7 +3,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import TransferIOputs from "../../../Models/InventoryTransferEntry";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage, getCookie } from "../../../utils/algaehApiCall";
 import _ from "lodash";
 import moment from "moment"
 
@@ -167,7 +167,6 @@ const SaveTransferEntry = $this => {
   InputObj.transaction_date = moment(InputObj.transfer_date, "YYYY-MM-DD").format("YYYY-MM-DD");
   InputObj.git_location_type = gitLoaction_Exists.location_type;
   InputObj.git_location_id = gitLoaction_Exists.hims_d_inventory_location_id;
-
   for (let i = 0; i < InputObj.inventory_stock_detail.length; i++) {
     InputObj.inventory_stock_detail[i].location_id =
       InputObj.from_location_id;
@@ -568,6 +567,8 @@ const AcknowledgeTransferEntry = $this => {
     InputObj.inventory_stock_detail[i].git_qty =
       InputObj.inventory_stock_detail[i].ack_quantity;
   }
+
+  InputObj.ScreenCode = getCookie("ScreenCode")
 
   algaehApiCall({
     uri: "/inventorytransferEntry/updatetransferEntry",

@@ -1949,6 +1949,9 @@ th {
   }
 }
 .globalSearchCntr {
+  .mandatory {
+    border: 1px solid #d9ae58 !important;
+  }
   h6 {
     width: 100%;
     overflow: hidden;
@@ -1972,7 +1975,7 @@ th {
     }
   }
 }
-.disableFinder{
+.disableFinder {
   opacity: 0.4;
   pointer-events: none;
 }

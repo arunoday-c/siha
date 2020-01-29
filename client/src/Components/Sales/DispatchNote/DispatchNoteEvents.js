@@ -50,7 +50,7 @@ const SalesOrderSearch = ($this, e) => {
                 },
                 onSuccess: response => {
                     if (response.data.success) {
-                        debugger
+
                         let data = response.data.records;
 
                         data.sales_order_id = data.hims_f_sales_order_id;
@@ -147,8 +147,6 @@ const SaveDispatchNote = $this => {
             "YYYY-MM-DD"
         ).format("YYYY-MM-DD") : null;
     }
-
-    debugger
     delete InputObj.item_details;
 
     for (let j = 0; j < InputObj.stock_detail.length; j++) {

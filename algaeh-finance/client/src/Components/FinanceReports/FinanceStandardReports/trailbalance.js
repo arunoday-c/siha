@@ -1,8 +1,12 @@
 import React, { useRef } from "react";
 import ReactToPrint from "react-to-print";
 import { PlotUI } from "./trailbalancePlotUI";
-export default function TrailBalaceReport(props) {
-  const { style, data, nonZero = true } = props;
+export default function TrailBalaceReport({
+  style,
+  data,
+  nonZero = true,
+  layout
+}) {
   const createPrintObject = useRef(undefined);
   const { asset, expense, liability, capital, income } = data;
 
@@ -13,7 +17,18 @@ export default function TrailBalaceReport(props) {
         content={() => createPrintObject.current}
         removeAfterPrint={true}
         bodyClass="reportPreviewSecLeft"
-        pageStyle="printing"
+        pageStyle="@media print {
+          html, body {
+            height: initial !important;
+            overflow: initial !important;
+            -webkit-print-color-adjust: exact;
+          }
+        }
+        
+        @page {
+          size: auto;
+          margin: 20mm;
+        }"
       />
       <div ref={createPrintObject}>
         <div className="financeReportHeader">
@@ -45,35 +60,35 @@ export default function TrailBalaceReport(props) {
               <tr>
                 <td colSpan="3">
                   <ul className="treeListUL">
-                    {PlotUI(capital, style, [0], nonZero)}
+                    {PlotUI(capital, style, [0], nonZero, layout.expand)}
                   </ul>
                 </td>
               </tr>
               <tr>
                 <td colSpan="3">
                   <ul className="treeListUL">
-                    {PlotUI(liability, style, [0], nonZero)}
+                    {PlotUI(liability, style, [0], nonZero, layout.expand)}
                   </ul>
                 </td>
               </tr>
               <tr>
                 <td colSpan="3">
                   <ul className="treeListUL">
-                    {PlotUI(asset, style, [0], nonZero)}
+                    {PlotUI(asset, style, [0], nonZero, layout.expand)}
                   </ul>
                 </td>
               </tr>
               <tr>
                 <td colSpan="3">
                   <ul className="treeListUL">
-                    {PlotUI(income, style, [0], nonZero)}
+                    {PlotUI(income, style, [0], nonZero, layout.expand)}
                   </ul>
                 </td>
               </tr>
               <tr>
                 <td colSpan="3">
                   <ul className="treeListUL">
-                    {PlotUI(expense, style, [0], nonZero)}
+                    {PlotUI(expense, style, [0], nonZero, layout.expand)}
                   </ul>
                 </td>
               </tr>

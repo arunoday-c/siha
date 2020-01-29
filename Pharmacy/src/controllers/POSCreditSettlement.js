@@ -8,7 +8,8 @@ const {
   addPOSCreidtSettlement,
   getPOSCreidtSettlement,
   updatePOSBilling,
-  getPatientPOSCriedt
+  getPatientPOSCriedt,
+  generateAccountingEntry
 } = posCreditModels;
 const { addReceiptEntry, getReceiptEntry } = receiptModels;
 const { addCashHandover } = billModels;
@@ -53,7 +54,19 @@ export default () => {
         next();
       }
     },
+    generateAccountingEntry,
     updatePOSBilling,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.post(
+    "/generateAccountingEntry",
+    generateAccountingEntry,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

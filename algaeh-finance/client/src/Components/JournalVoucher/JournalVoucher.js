@@ -14,7 +14,7 @@ import {
   AlgaehButton
 } from "algaeh-react-components";
 import { AllAccounts } from "../FinanceAccounts";
-import { getHeaders, addJurnorLedger } from "./JournalVoucher.events";
+import { getHeaders, addJurnorLedger, getInvoiceDetail } from "./JournalVoucher.events";
 import PaymentComponent from "./PaymentComponent";
 import AccountsDrawer from "./AccountDrawer";
 
@@ -38,7 +38,11 @@ export default function JournalVoucher() {
   // const [voucher_no, setVoucherNo] = useState("");
   const [voucherType, setVoucherType] = useState(undefined);
   const [accounts, setAccounts] = useState([{}]);
+  const [invoiceData, setInvoiceData] = useState([]);
   const [narration, setNarration] = useState("");
+  const [invoiceNo, setInvoiceNo] = useState("");
+  const [selInvoice, setSelInvoice] = useState("");
+
   // const [prefix, setPrefix] = useState("");
   const basePayment = {
     payment_mode: "",
@@ -73,6 +77,15 @@ export default function JournalVoucher() {
           setAccounts(result);
         })
         .catch(e => console.log(e));
+
+      if (voucherType === "payment" || voucherType === "receipt" ||
+        voucherType === "credit_note" || voucherType === "debit_note") {
+        getInvoiceDetail({ voucher_type: voucherType })
+          .then(result => {
+            setInvoiceData(result);
+          })
+          .catch(e => console.log(e));
+      }
     }
   }, [voucherType, drawer]);
 
@@ -104,33 +117,35 @@ export default function JournalVoucher() {
       return;
     }
 
-    if (payment.payment_mode) {
-      if (payment.payment_mode === "CHEQUE") {
-        if (!payment.ref_no || !payment.cheque_date) {
-          AlgaehMessagePop({
-            type: "error",
-            display: "Reference No and Cheque Date is mandatory"
-          });
-          setLoading(false);
-          return;
+    if (voucherType === "receipt" || voucherType === "payment") {
+      if (payment.payment_mode) {
+        if (payment.payment_mode === "CHEQUE") {
+          if (!payment.ref_no || !payment.cheque_date) {
+            AlgaehMessagePop({
+              type: "error",
+              display: "Reference No and Cheque Date is mandatory"
+            });
+            setLoading(false);
+            return;
+          }
+        } else {
+          if (payment.payment_mode !== "CASH" && !payment.ref_no) {
+            AlgaehMessagePop({
+              type: "error",
+              display: "Reference Number is mandatory"
+            });
+            setLoading(false);
+            return;
+          }
         }
       } else {
-        if (payment.payment_mode !== "CASH" && !payment.ref_no) {
-          AlgaehMessagePop({
-            type: "error",
-            display: "Reference Number is mandatory"
-          });
-          setLoading(false);
-          return;
-        }
+        AlgaehMessagePop({
+          type: "error",
+          display: "Please Select Any one of the payment mode"
+        });
+        setLoading(false);
+        return;
       }
-    } else {
-      AlgaehMessagePop({
-        type: "error",
-        display: "Please Select Any one of the payment mode"
-      });
-      setLoading(false);
-      return;
     }
 
     let costcenter = {};
@@ -184,6 +199,9 @@ export default function JournalVoucher() {
     addJurnorLedger({
       transaction_date: voucherDate,
       voucher_type: voucherType,
+      invoice_no: voucherType === "payment" || voucherType === "receipt" ||
+        voucherType === "credit_note" || voucherType === "debit_note" ? selInvoice :
+        voucherType === "purchase" || voucherType === "sales" ? invoiceNo : null,
       // voucher_no: `${voucher_no}`,
       ...costcenter,
       ...payment,
@@ -261,7 +279,7 @@ export default function JournalVoucher() {
               setVoucherDate(momentDate._d);
             }
           }}
-        />{" "}
+        />
         <AlgaehAutoComplete
           div={{ className: "col-2" }}
           label={{
@@ -276,34 +294,66 @@ export default function JournalVoucher() {
               textField: "label"
             },
             onChange: selected => {
-              // const type = selected["seltype"];
-              // if (type === undefined) {
-              //   getVoucherNumber({ voucher_type: selected.value })
-              //     .then(result => {
-              //       setVoucherNo(result.voucher_no);
-              //       selected["seltype"] = result.voucher_no;
-              //     })
-              //     .catch(error => {
-              //       AlgaehMessagePop({
-              //         type: "error",
-              //         display: error
-              //       });
-              //     });
-              // } else {
-              // setVoucherNo(type);
-              // }
+              debugger
               setPayment(basePayment);
               setVoucherType(selected.value);
               // setPrefix(selected.shortHand + "-");
             },
             onClear: () => {
               setVoucherType("");
-              // setVoucherNo("");
               setAccounts([]);
               setPayment(basePayment);
             }
           }}
         />
+
+        {voucherType === "purchase" || voucherType === "sales" ?
+          <AlgaehFormGroup
+            div={{
+              className: "col form-group"
+            }}
+            label={{
+              forceLabel: "Invoice No.",
+              isImp: voucherType === "purchase" || voucherType === "sales" ? true : false
+            }}
+            no_of_lines={3}
+            textBox={{
+              type: "text",
+              className: "form-control",
+              placeholder: "Enter Invoice No.",
+
+              value: invoiceNo,
+              onChange: e => {
+                setInvoiceNo(e.target.value);
+              }
+            }}
+          /> : voucherType === "payment" || voucherType === "receipt" ||
+            voucherType === "credit_note" || voucherType === "debit_note" ?
+            <AlgaehAutoComplete
+              div={{ className: "col-2" }}
+              label={{
+                forceLabel: "Select Invoice No.",
+                isImp: true
+              }}
+              selector={{
+                value: selInvoice,
+                dataSource: {
+                  data: invoiceData,
+                  valueField: "invoice_no",
+                  textField: "invoice_no"
+                },
+                onChange: selected => {
+                  debugger
+                  setSelInvoice(selected.invoice_no);
+                },
+                onClear: () => {
+                  setSelInvoice("")
+                }
+              }}
+            /> : null}
+
+
+
         <PaymentComponent
           show={show}
           {...payment}
@@ -500,7 +550,7 @@ export default function JournalVoucher() {
             }
           }}
         />
-      </div>{" "}
+      </div>
       <div className="hptl-phase1-footer">
         <div className="row">
           <div className="col-12">

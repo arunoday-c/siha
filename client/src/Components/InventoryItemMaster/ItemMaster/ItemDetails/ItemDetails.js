@@ -61,7 +61,7 @@ class ItemDetails extends Component {
 
   UNSAFE_componentWillReceiveProps(newProps) {
     let InputOutput = newProps.itemPop;
-    this.setState({ ...this.state, ...InputOutput }, () => { });
+    this.setState({ ...this.state, ...InputOutput }, () => {});
   }
 
   render() {
@@ -190,9 +190,7 @@ class ItemDetails extends Component {
                           type="checkbox"
                           name="exp_date_required"
                           checked={
-                            this.state.exp_date_required === "Y"
-                              ? true
-                              : false
+                            this.state.exp_date_required === "Y" ? true : false
                           }
                           onChange={BatchExpRequired.bind(this, this, context)}
                         />
@@ -201,60 +199,56 @@ class ItemDetails extends Component {
                     </div>
                   </div>{" "}
                   {this.state.hims_d_inventory_item_master_id === null ? (
-                    <div className="col-12">
-                      <div className="row">
-                        <div className="col-6">
-                          <AlgaehLabel
-                            label={{ fieldName: "vat_applicable" }}
-                          />
-                          <div className=" customCheckbox ">
-                            <label className="checkbox inline">
-                              <input
-                                type="checkbox"
-                                name="vat_applicable"
-                                value="Y"
-                                checked={
-                                  this.state.vat_applicable === "Y"
-                                    ? true
-                                    : false
-                                }
-                                onChange={VatAppilicable.bind(
-                                  this,
-                                  this,
-                                  context
-                                )}
-                              />
-                              <span>Yes</span>
-                            </label>
-                          </div>
-                        </div>
-                        <AlagehFormGroup
-                          div={{ className: "col-6 form-group" }}
-                          label={{
-                            fieldName: "vat_percent"
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "vat_percent",
-                            value: this.state.vat_percent,
-                            events: {
-                              onChange: numberEventHandaler.bind(
+                    <>
+                      <div className="col-3">
+                        <AlgaehLabel label={{ fieldName: "vat_applicable" }} />
+                        <div className=" customCheckbox ">
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              name="vat_applicable"
+                              value="Y"
+                              checked={
+                                this.state.vat_applicable === "Y" ? true : false
+                              }
+                              onChange={VatAppilicable.bind(
                                 this,
                                 this,
                                 context
-                              )
-                            },
-                            others: {
-                              disabled:
-                                this.state.vat_applicable === "Y"
-                                  ? false
-                                  : true,
-                              type: "number"
-                            }
-                          }}
-                        />
+                              )}
+                            />
+                            <span>Yes</span>
+                          </label>
+                        </div>
                       </div>
-                    </div>
+                      <AlagehFormGroup
+                        div={{
+                          className: this.state.vat_applicable
+                            ? "col-3 mandatory"
+                            : "col-3"
+                        }}
+                        label={{
+                          fieldName: "vat_percent",
+                          isImp: this.state.vat_applicable
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "vat_percent",
+                          value: this.state.vat_percent,
+                          events: {
+                            onChange: numberEventHandaler.bind(
+                              this,
+                              this,
+                              context
+                            )
+                          },
+                          others: {
+                            disabled: !this.state.vat_applicable,
+                            type: "number"
+                          }
+                        }}
+                      />
+                    </>
                   ) : null}
                   <div className="col-12">
                     <AlgaehLabel
@@ -385,9 +379,9 @@ class ItemDetails extends Component {
                               this.props.inventoryitemuom === undefined
                                 ? []
                                 : this.props.inventoryitemuom.filter(
-                                  f =>
-                                    f.hims_d_inventory_uom_id === row.uom_id
-                                );
+                                    f =>
+                                      f.hims_d_inventory_uom_id === row.uom_id
+                                  );
 
                             return (
                               <span>
@@ -516,7 +510,7 @@ class ItemDetails extends Component {
                       paging={{ page: 0, rowsPerPage: 5 }}
                       events={{
                         onDelete: deleteUOM.bind(this, this, context),
-                        onEdit: row => { },
+                        onEdit: row => {},
                         onDone: updateUOM.bind(this, this, context)
                       }}
                     />
@@ -644,8 +638,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ItemDetails)
+  connect(mapStateToProps, mapDispatchToProps)(ItemDetails)
 );

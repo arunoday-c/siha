@@ -2,7 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import algaehUtilities from "algaeh-utilities/utilities";
 import moment from "moment";
-// import mysql from "mysql";
+import mysql from "mysql";
 import attendance from "./attendance";
 import salary from "./salary";
 
@@ -645,13 +645,13 @@ export default {
   InsertLeaveSalary: (req, res, next) => {
     try {
       const _mysql = new algaehMysql();
-      let inputParam = { ...req.body };
+      let inputParam = req.body;
       let leave_salary_number = "",
         leave_salary_acc_number = "";
+      const decimal_places = req.userIdentity.decimal_places
+      // const utilities = new algaehUtilities();
 
-      const utilities = new algaehUtilities();
-
-      utilities.logger().log("InsertLeaveSalary: ");
+      // utilities.logger().log("InsertLeaveSalary: ");
 
       _mysql
         .generateRunningNumber({
@@ -660,8 +660,17 @@ export default {
           table_name: "hims_f_hrpayroll_numgen"
         })
         .then(generatedNumbers => {
+
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection: _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
+
           leave_salary_number = generatedNumbers.LEAVE_SALARY;
           leave_salary_acc_number = generatedNumbers.LEAVE_ACCRUAL;
+
+
 
           _mysql
             .executeQuery({
@@ -692,6 +701,8 @@ export default {
               printQuery: true
             })
             .then(leave_header => {
+              req.body.leave_salary_number = leave_salary_number;
+              req.body.hims_f_leave_salary_header_id = leave_header.insertId;
               let IncludeValues = [
                 "year",
                 "month",
@@ -737,152 +748,199 @@ export default {
                       printQuery: true
                     })
                     .then(leave_application => {
-                      const _salaryHeader_id = _.map(
-                        inputParam.leave_salary_detail,
-                        o => {
-                          return o.salary_header_id;
-                        }
-                      );
+                      req.body.salary_header_id = inputParam.leave_salary_detail[0].salary_header_id;
+                      let bulk_year = []
+                      let bulk_month = []
 
-                      let strQuery = "";
-                      if (inputParam.annual_leave_calculation === "A") {
-                        strQuery =
-                          "UPDATE hims_f_salary SET salary_processed = 'Y' where hims_f_salary_id in (?);\
+                      for (let i = 0; i < inputParam.leave_salary_detail.length; i++) {
+
+                        const leave_end_date = moment(inputParam.leave_salary_detail[i].leave_end_date, "YYYYMMDD").format("YYYYMMDD")
+                        const sal_end_date = moment(inputParam.leave_salary_detail[i].end_date, "YYYYMMDD").format("YYYYMMDD")
+
+                        console.log("leave_end_date", leave_end_date)
+                        console.log("sal_end_date", sal_end_date)
+                        if (parseInt(leave_end_date) >= parseInt(sal_end_date)) {
+                          bulk_year.push(inputParam.leave_salary_detail[i].year)
+                          bulk_month.push(inputParam.leave_salary_detail[i].month)
+                          // const _salaryHeader_id = _.map(
+                          //   inputParam.leave_salary_detail,
+                          //   o => {
+                          //     return o.salary_header_id;
+                          //   }
+                          // );
+
+
+
+                          let strQuery = "";
+                          if (inputParam.annual_leave_calculation === "A") {
+                            strQuery =
+                              "UPDATE hims_f_salary SET salary_processed = 'Y', salary_processed_date=?, salary_processed_by=? \
+                            where hims_f_salary_id in (?);\
                             select E.hims_d_employee_id as employee_id,EG.monthly_accrual_days as leave_days, " +
-                          inputParam.year +
-                          " as year," +
-                          inputParam.month +
-                          " as month, \
-                            CASE when airfare_factor = 'PB' then ((amount / 100)*airfare_percentage) else (airfare_amount/airfare_eligibility) end airfare_amount,\
-                            sum((EE.amount *12)/365)* EG.monthly_accrual_days as leave_salary\
+                              inputParam.leave_salary_detail[i].year +
+                              " as year," +
+                              inputParam.leave_salary_detail[i].month +
+                              " as month, \
+                            CASE when airfare_process = 'N' then 0 when airfare_factor = 'PB' then ROUND(((amount / 100)*airfare_percentage), "+ decimal_places + ") \
+                            else ROUND((airfare_amount/airfare_eligibility), "+ decimal_places + ") end as airfare_amount,\
+                            ROUND(sum((EE.amount *12)/365)* EG.monthly_accrual_days, "+ decimal_places + ") as leave_salary \
                             from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, hims_d_employee_earnings EE ,hims_d_earning_deduction ED\
                             where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
                             EE.earnings_id=ED.hims_d_earning_deduction_id and \
-                            ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';";
-                      } else if (
-                        inputParam.annual_leave_calculation === "M"
-                      ) {
-                        strQuery =
-                          "UPDATE hims_f_salary SET salary_processed = 'Y' where hims_f_salary_id in (?);\
-                            select E.hims_d_employee_id as employee_id,EG.monthly_accrual_days as leave_days, " +
-                          inputParam.year +
-                          " as year," +
-                          inputParam.month +
-                          " as month, \
-                            CASE when airfare_factor = 'PB' then ((amount / 100)*airfare_percentage) else (airfare_amount/airfare_eligibility) end airfare_amount,\
-                            sum(EE.amount /365)* EG.monthly_accrual_days as leave_salary\
+                            ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; \
+                            SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';";
+                          } else if (
+                            inputParam.annual_leave_calculation === "M"
+                          ) {
+                            strQuery =
+                              "UPDATE hims_f_salary SET salary_processed = 'Y', salary_processed_date=?, salary_processed_by=? \
+                            where hims_f_salary_id in (?);\
+                              select E.hims_d_employee_id as employee_id,EG.monthly_accrual_days as leave_days, " +
+                              inputParam.leave_salary_detail[i].year +
+                              " as year," +
+                              inputParam.leave_salary_detail[i].month +
+                              " as month, \
+                            CASE when airfare_process = 'N' then 0 when airfare_factor = 'PB' then ROUND(((amount / 100)*airfare_percentage), "+ decimal_places + ") \
+                            else ROUND((airfare_amount/airfare_eligibility), "+ decimal_places + ") end as airfare_amount,\
+                            ROUND(sum(EE.amount /30)* EG.monthly_accrual_days, "+ decimal_places + ") as leave_salary\
                             from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, hims_d_employee_earnings EE ,hims_d_earning_deduction ED\
                             where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
                             EE.earnings_id=ED.hims_d_earning_deduction_id and \
-                            ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';";
-                      }
-
-                      _mysql
-                        .executeQuery({
-                          query: strQuery,
-                          values: [
-                            _salaryHeader_id,
-                            inputParam.employee_id
-                          ],
-                          printQuery: true
-                        })
-                        .then(leave_application => {
-                          let leave_accrual_detail = leave_application[1];
-                          let annual_leave_data = leave_application[2];
-
-                          let leave_salary_accrual_detail = leave_accrual_detail;
-
-                          utilities
-                            .logger()
-                            .log(
-                              "leave_salary_accrual_detail: ",
-                              leave_salary_accrual_detail
-                            );
-
-                          utilities
-                            .logger()
-                            .log("annual_leave_data: ", annual_leave_data);
-
-                          const total_leave_salary = _.sumBy(
-                            leave_salary_accrual_detail,
-                            s => {
-                              return s.leave_salary;
-                            }
-                          );
-
-                          const total_airfare_amount = _.sumBy(
-                            leave_salary_accrual_detail,
-                            s => {
-                              return s.airfare_amount;
-                            }
-                          );
+                            ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; \
+                            SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';";
+                          }
 
                           _mysql
                             .executeQuery({
-                              query:
-                                "INSERT INTO `hims_f_leave_salary_accrual_header` (leave_salary_number,year, month,  \
-                                  total_leave_salary, total_airfare_amount, hospital_id, leave_salary_date , \
-                                  created_date, created_by)\
-                                VALUE(?,?,?,?,?,?,?,?,?);",
+                              query: strQuery,
                               values: [
-                                leave_salary_acc_number,
-                                inputParam.year,
-                                inputParam.month,
-                                total_leave_salary,
-                                total_airfare_amount,
-                                req.userIdentity.hospital_id,
-                                moment(new Date()).format("YYYY-MM-DD"),
                                 new Date(),
-                                req.userIdentity.algaeh_d_app_user_id
+                                req.userIdentity.algaeh_d_app_user_id,
+                                inputParam.leave_salary_detail[i].salary_header_id,
+                                inputParam.employee_id
                               ],
                               printQuery: true
                             })
-                            .then(accrual_header => {
-                              let leave_salary_header_id =
-                                accrual_header.insertId;
+                            .then(leave_application => {
+                              let leave_salary_accrual_detail = leave_application[1];
+                              let annual_leave_data = leave_application[2];
 
-                              let IncludeValues = [
-                                "employee_id",
-                                "year",
-                                "month",
-                                "leave_days",
-                                "leave_salary",
-                                "airfare_amount"
-                              ];
+                              // const total_leave_salary = _.sumBy(
+                              //   leave_salary_accrual_detail,
+                              //   s => {
+                              //     return parseFloat(s.leave_salary);
+                              //   }
+                              // );
+
+                              // const total_airfare_amount = _.sumBy(
+                              //   leave_salary_accrual_detail,
+                              //   s => {
+                              //     return parseFloat(s.airfare_amount);
+                              //   }
+                              // );
 
                               _mysql
                                 .executeQuery({
                                   query:
-                                    "INSERT INTO hims_f_leave_salary_accrual_detail(??) VALUES ?",
-                                  values: leave_salary_accrual_detail,
-                                  includeValues: IncludeValues,
-                                  extraValues: {
-                                    leave_salary_header_id: leave_salary_header_id
-                                  },
-                                  bulkInsertOrUpdate: true,
+                                    "INSERT INTO `hims_f_leave_salary_accrual_header` (leave_salary_number,year, month,  \
+                                    total_leave_salary, total_airfare_amount, hospital_id, leave_salary_date , \
+                                    created_date, created_by)\
+                                  VALUE(?,?,?,?,?,?,?,?,?);",
+                                  values: [
+                                    leave_salary_acc_number,
+                                    inputParam.leave_salary_detail[i].year,
+                                    inputParam.leave_salary_detail[i].month,
+                                    leave_salary_accrual_detail.leave_salary,
+                                    leave_salary_accrual_detail.airfare_amount,
+                                    req.userIdentity.hospital_id,
+                                    moment(new Date()).format("YYYY-MM-DD"),
+                                    new Date(),
+                                    req.userIdentity.algaeh_d_app_user_id
+                                  ],
                                   printQuery: true
                                 })
-                                .then(leave_detail => {
-                                  InsertEmployeeLeaveSalary({
-                                    leave_salary_accrual_detail: leave_salary_accrual_detail,
-                                    annual_leave_data: annual_leave_data,
-                                    _mysql: _mysql,
-                                    next: next,
-                                    decimal_places:
-                                      req.userIdentity.decimal_places
-                                  })
-                                    .then(Employee_Leave_Salary => {
-                                      _mysql.commitTransaction(() => {
-                                        _mysql.releaseConnection();
-                                        req.records = {
-                                          leave_salary_number: leave_salary_number
-                                        };
-                                        next();
-                                      });
+                                .then(accrual_header => {
+                                  let leave_salary_header_id =
+                                    accrual_header.insertId;
+
+                                  let IncludeValues = [
+                                    "employee_id",
+                                    "year",
+                                    "month",
+                                    "leave_days",
+                                    "leave_salary",
+                                    "airfare_amount"
+                                  ];
+
+                                  let str_employee_qry = "select employee_code, full_name, hospital_id from hims_d_employee where hims_d_employee_id= " + inputParam.employee_id + ";"
+
+                                  _mysql
+                                    .executeQuery({
+                                      query:
+                                        "INSERT INTO hims_f_leave_salary_accrual_detail(??) VALUES ? ; " + str_employee_qry,
+                                      values: leave_salary_accrual_detail,
+                                      includeValues: IncludeValues,
+                                      extraValues: {
+                                        leave_salary_header_id: leave_salary_header_id
+                                      },
+                                      bulkInsertOrUpdate: true,
+                                      printQuery: true
                                     })
-                                    .catch(e => {
+                                    .then(leave_detail => {
+                                      req.body.employee_code = leave_detail[1][0].employee_code;
+                                      req.body.employee_name = leave_detail[1][0].full_name;
+                                      req.body.hospital_id = leave_detail[1][0].hospital_id;
+
+
+                                      InsertEmployeeLeaveSalary({
+                                        leave_salary_accrual_detail: leave_salary_accrual_detail,
+                                        annual_leave_data: annual_leave_data,
+                                        _mysql: _mysql,
+                                        next: next,
+                                        decimal_places:
+                                          req.userIdentity.decimal_places
+                                      })
+                                        .then(Employee_Leave_Salary => {
+                                          InsertGratuityProvision({
+                                            salary_end_date: inputParam.leave_salary_detail[i].end_date,
+                                            inputParam: inputParam,
+                                            _mysql: _mysql,
+                                            next: next,
+                                            decimal_places:
+                                              req.userIdentity.decimal_places
+                                          })
+                                            .then(gratuity_provision => {
+                                              // _mysql.commitTransaction(() => {
+                                              //   _mysql.releaseConnection();
+                                              if (i == inputParam.leave_salary_detail.length - 1) {
+                                                console.log("bulk_year", bulk_year)
+
+                                                req.body.bulk_year = bulk_year
+                                                req.body.bulk_month = bulk_month
+                                                req.records = {
+                                                  leave_salary_number: leave_salary_number
+                                                };
+                                                console.log("bulk_month", bulk_month)
+                                                next();
+                                              }
+                                              // });
+                                            })
+                                            .catch(e => {
+                                              _mysql.rollBackTransaction(() => {
+                                                next(e);
+                                              });
+                                            });
+
+                                        })
+                                        .catch(e => {
+                                          _mysql.rollBackTransaction(() => {
+                                            next(e);
+                                          });
+                                        });
+                                    })
+                                    .catch(error => {
                                       _mysql.rollBackTransaction(() => {
-                                        next(e);
+                                        next(error);
                                       });
                                     });
                                 })
@@ -892,17 +950,41 @@ export default {
                                   });
                                 });
                             })
+                            .catch(e => {
+                              _mysql.rollBackTransaction(() => {
+                                next(e);
+                              });
+                            });
+                        } else {
+                          _mysql
+                            .executeQuery({
+                              query: "select employee_code, full_name, hospital_id from hims_d_employee where hims_d_employee_id= ?;",
+                              values: [inputParam.employee_id],
+                              printQuery: true
+                            })
+                            .then(employee_detail => {
+                              req.body.employee_code = employee_detail[0].employee_code;
+                              req.body.employee_name = employee_detail[0].full_name;
+                              req.body.hospital_id = employee_detail[0].hospital_id;
+
+                              if (i == inputParam.leave_salary_detail.length - 1) {
+                                req.body.bulk_year = bulk_year
+                                req.body.bulk_month = bulk_month
+                                req.records = {
+                                  leave_salary_number: leave_salary_number
+                                };
+                                next();
+                              }
+
+                            })
                             .catch(error => {
                               _mysql.rollBackTransaction(() => {
                                 next(error);
                               });
                             });
-                        })
-                        .catch(e => {
-                          _mysql.rollBackTransaction(() => {
-                            next(e);
-                          });
-                        });
+                        }
+                      }
+
                     })
                     .catch(e => {
                       _mysql.rollBackTransaction(() => {
@@ -1018,7 +1100,7 @@ export default {
                   "select E.hims_d_employee_id, E.employee_code, E.full_name from hims_f_leave_application LA \
                   inner join hims_d_employee E on LA.employee_id = E.hims_d_employee_id\
                   inner join hims_f_employee_annual_leave EAL on EAL.leave_application_id = LA.hims_f_leave_application_id \
-                  where LA.hospital_id=? and LA.leave_id = 4 and LA.processed='N' and LA.status='APR' and \
+                  where LA.hospital_id=? and LA.leave_id = ? and LA.processed='N' and LA.status='APR' and \
                   EAL.from_normal_salary = 'N' and EAL.cancelled='N';",
                 values: [inputParam.hospital_id, leave_id],
                 printQuery: true
@@ -1042,6 +1124,299 @@ export default {
         });
     } catch (e) {
       next(e);
+    }
+  },
+  generateAccountingEntry: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+
+
+      let inputParam = req.body;
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
+              select account, head_id, child_id from finance_accounts_maping \
+              where account in ('SAL_PYBLS', 'LV_SAL_PYBL', 'AIRFR_PYBL', 'GRAT_PYBL');\
+              select head_id, child_id from hims_d_earning_deduction where component_category='E' and component_type='LS';\
+              select head_id, child_id from hims_d_earning_deduction where component_category='E' and component_type='AR';\
+              select head_id, child_id from hims_d_earning_deduction where component_category='E' and component_type='EOS';"
+        })
+        .then(result => {
+          const org_data = result[0]
+
+          if (
+            org_data[0]["product_type"] == "HIMS_ERP" ||
+            org_data[0]["product_type"] == "FINANCE_ERP"
+          ) {
+            const salary_pay_acc = result[1].find(f => f.account === "SAL_PYBLS");
+            const lv_salary_pay_acc = result[1].find(f => f.account === "LV_SAL_PYBL");
+            const airfair_pay_acc = result[1].find(f => f.account === "AIRFR_PYBL");
+            const gratuity_pay_acc = result[1].find(f => f.account === "GRAT_PYBL");
+
+            const leave_sal_expence_acc = result[2][0];
+            const airfare_expence_acc = result[3][0];
+            const gratuity_expence_acc = result[4][0];
+
+            _mysql
+              .executeQueryWithTransaction({
+                query: `select hims_f_salary_id, curDate() payment_date,SE.amount as debit_amount, ED.head_id, ED.child_id,\
+                  'DR' as payment_type, 0 as credit_amount, S.hospital_id from hims_f_salary s 
+                  left join hims_f_salary_earnings SE on SE.salary_header_id = S.hims_f_salary_id
+                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id
+                  where hims_f_salary_id in(?); 
+                  select hims_f_salary_id, curDate() payment_date, SD.amount as credit_amount, ED.head_id, ED.child_id, \
+                  'CR' as payment_type, 0 as debit_amount ,S.hospital_id
+                  from hims_f_salary s 
+                  left join hims_f_salary_deductions SD on SD.salary_header_id = S.hims_f_salary_id 
+                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SD.deductions_id
+                  where hims_f_salary_id in(?); 
+                  select hims_f_salary_id, curDate() payment_date, SC.amount as debit_amount, ED.head_id, ED.child_id, \
+                  'DR' as payment_type,0 as credit_amount ,S.hospital_id from hims_f_salary s 
+                  left join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id
+                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id 
+                  where hims_f_salary_id in(?);
+                  select hims_f_salary_id, curDate() payment_date, SC.amount as credit_amount, ED.li_head_id as  head_id, 
+                  ED.li_child_id as child_id, 'CR' as payment_type,0 as debit_amount, S.hospital_id from hims_f_salary s 
+                  left join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id
+                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id 
+                  where hims_f_salary_id in(?);
+                  select hims_f_salary_id, curDate() payment_date, SL.loan_due_amount as credit_amount, L.head_id, 
+                  L.child_id, 'CR' as payment_type, 0 as debit_amount,S.hospital_id from hims_f_salary s 
+                  left join hims_f_salary_loans SL on SL.salary_header_id = S.hims_f_salary_id
+                  left join hims_f_loan_application LA on LA.hims_f_loan_application_id = SL.loan_application_id
+                  inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id 
+                  where hims_f_salary_id in(?);
+                  select employee_id, leave_salary, airfare_amount, hospital_id from hims_f_leave_salary_accrual_detail D 
+                  inner join hims_d_employee E on E.hims_d_employee_id =D.employee_id 
+                  where year in (?) and month in (?) and employee_id in (?);
+                  select employee_id, gratuity_amount, hospital_id from hims_f_gratuity_provision G
+                  inner join hims_d_employee E on E.hims_d_employee_id =G.employee_id 
+                  where year in (?) and month in (?) and employee_id in (?);
+                  select employee_id, head_id, child_id, hospital_id, approved_amount from hims_f_loan_application LA
+                  inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id where loan_authorized='APR' 
+                  and loan_closed='N' and loan_dispatch_from='SAL' and employee_id in (?);`,
+                values: [
+                  inputParam.salary_header_id,
+                  inputParam.salary_header_id,
+                  inputParam.salary_header_id,
+                  inputParam.salary_header_id,
+                  inputParam.salary_header_id,
+                  inputParam.bulk_year,
+                  inputParam.bulk_month,
+                  inputParam.employee_id,
+                  inputParam.bulk_year,
+                  inputParam.bulk_month,
+                  inputParam.employee_id,
+                  inputParam.employee_id
+                ],
+                printQuery: true
+              })
+              .then(headerResult => {
+                const leave_salary_booking = headerResult[5]
+                const gratuity_provision_booking = headerResult[6]
+                const loan_payable_amount = headerResult[7]
+
+
+                _mysql
+                  .executeQueryWithTransaction({
+                    query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
+                        voucher_type, document_id, document_number, from_screen, \
+                        narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      new Date(),
+                      inputParam.salary_amount,
+                      "journal",
+                      inputParam.hims_f_leave_salary_header_id,
+                      inputParam.leave_salary_number,
+                      inputParam.ScreenCode,
+                      "Salary for Employee " + inputParam.employee_code + "/" + inputParam.employee_name + " Amount " + inputParam.salary_amount,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id
+                    ],
+                    printQuery: true
+                  })
+                  .then(day_end_header => {
+                    const insert_finance_detail = []
+
+                    insert_finance_detail.push(
+                      ...headerResult[0],
+                      ...headerResult[1],
+                      ...headerResult[2],
+                      ...headerResult[3],
+                      ...headerResult[4],
+                      {
+                        payment_date: new Date(),
+                        head_id: salary_pay_acc.head_id,
+                        child_id: salary_pay_acc.child_id,
+                        debit_amount: 0,
+                        payment_type: "CR",
+                        credit_amount: inputParam.salary_amount,
+                        hospital_id: inputParam.hospital_id
+                      })
+
+
+                    leave_salary_booking.forEach(per_employee => {
+                      //Booking Leave salary to Laibility account
+                      insert_finance_detail.push({
+                        payment_date: new Date(),
+                        head_id: lv_salary_pay_acc.head_id,
+                        child_id: lv_salary_pay_acc.child_id,
+                        debit_amount: 0,
+                        payment_type: "CR",
+                        credit_amount: per_employee.leave_salary,
+                        hospital_id: per_employee.hospital_id
+                      });
+
+                      //Booking Leave salary to Expence account
+                      insert_finance_detail.push({
+                        payment_date: new Date(),
+                        head_id: leave_sal_expence_acc.head_id,
+                        child_id: leave_sal_expence_acc.child_id,
+                        debit_amount: per_employee.leave_salary,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: per_employee.hospital_id
+                      });
+
+                      if (parseFloat(per_employee.airfare_amount) > 0) {
+                        //Booking Airfaie to Laibility account
+                        insert_finance_detail.push({
+                          payment_date: new Date(),
+                          head_id: airfair_pay_acc.head_id,
+                          child_id: airfair_pay_acc.child_id,
+                          debit_amount: 0,
+                          payment_type: "CR",
+                          credit_amount: per_employee.airfare_amount,
+                          hospital_id: per_employee.hospital_id
+                        });
+
+                        //Booking Airfaie to Expence account
+                        insert_finance_detail.push({
+                          payment_date: new Date(),
+                          head_id: airfare_expence_acc.head_id,
+                          child_id: airfare_expence_acc.child_id,
+                          debit_amount: per_employee.airfare_amount,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          hospital_id: per_employee.hospital_id
+                        });
+                      }
+                    })
+
+                    gratuity_provision_booking.forEach(per_employee => {
+                      if (parseFloat(per_employee.gratuity_amount) > 0) {
+                        //Booking Gratuity Provision to Laibility account
+                        insert_finance_detail.push({
+                          payment_date: new Date(),
+                          head_id: gratuity_pay_acc.head_id,
+                          child_id: gratuity_pay_acc.child_id,
+                          debit_amount: 0,
+                          payment_type: "CR",
+                          credit_amount: per_employee.gratuity_amount,
+                          hospital_id: per_employee.hospital_id
+                        });
+
+                        //Booking Gratuity Provision to Expence account
+                        insert_finance_detail.push({
+                          payment_date: new Date(),
+                          head_id: gratuity_expence_acc.head_id,
+                          child_id: gratuity_expence_acc.child_id,
+                          debit_amount: per_employee.gratuity_amount,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          hospital_id: per_employee.hospital_id
+                        });
+                      }
+                    })
+
+                    loan_payable_amount.forEach(per_employee => {
+                      if (parseFloat(per_employee.approved_amount) > 0) {
+                        //Booking Gratuity Provision to Laibility account
+                        insert_finance_detail.push({
+                          payment_date: new Date(),
+                          head_id: per_employee.head_id,
+                          child_id: per_employee.child_id,
+                          debit_amount: per_employee.approved_amount,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          hospital_id: per_employee.hospital_id
+                        });
+                      }
+                    })
+
+
+
+                    const IncludeValuess = [
+                      "payment_date",
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "payment_type",
+                      "credit_amount",
+                      "hospital_id"
+                    ];
+
+                    const month = moment().format("M");
+                    const year = moment().format("YYYY");
+
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                        values: insert_finance_detail,
+                        includeValues: IncludeValuess,
+                        bulkInsertOrUpdate: true,
+                        extraValues: {
+                          day_end_header_id: day_end_header.insertId,
+                          year: year,
+                          month: month
+                        },
+                        printQuery: true
+                      })
+                      .then(subResult => {
+                        _mysql.commitTransaction(() => {
+                          _mysql.releaseConnection();
+                          // req.records = subResult;
+                          next();
+                        });
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              // req.records = org_data;
+              next();
+            });
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
     }
   }
 };
@@ -1368,6 +1743,284 @@ function InsertEmployeeLeaveSalary(options) {
               .catch(e => {
                 reject(e);
               });
+          }
+        })
+        .catch(e => {
+          reject(e);
+        });
+    } catch (e) {
+      reject(e);
+    }
+  }).catch(e => {
+    options.next(e);
+  });
+}
+
+function InsertGratuityProvision(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      let _mysql = options._mysql;
+      const inputParam = options.inputParam;
+      const salary_end_date = options.salary_end_date
+      const decimal_places = options.decimal_places;
+
+      const utilities = new algaehUtilities();
+
+      _mysql
+        .executeQuery({
+          query:
+            "select date_of_joining, hims_d_employee_id, date_of_resignation, employee_status, employe_exit_type, \
+            datediff(date(?),date(date_of_joining))/365 endOfServiceYears, employee_code, exit_date,\
+            full_name, arabic_name, sex, employee_type, employee_designation_id, date_of_birth \
+            from hims_d_employee where gratuity_applicable = 'Y' and hims_d_employee_id in(?);\
+            select * from hims_d_end_of_service_options;",
+          values: [salary_end_date, inputParam.employee_id],
+          printQuery: true
+        })
+        .then(result => {
+          const _employee = result[0];
+          const _options = result[1];
+
+          if (_employee.length == 0) {
+            resolve();
+            return;
+          }
+          if (_options.length == 0) {
+            resolve();
+            return;
+          }
+          const _optionsDetals = _options[0];
+          if (_optionsDetals.gratuity_provision == 1) {
+
+            let _eligibleDays = 0;
+
+            let strQry = "";
+            for (let k = 0; k < _employee.length; k++) {
+              new Promise((resolve, reject) => {
+                try {
+                  if (_optionsDetals.end_of_service_type == "S") {
+                    if (
+                      _employee[k].endOfServiceYears >= 0 &&
+                      _employee[k].endOfServiceYears <=
+                      _optionsDetals.from_service_range1
+                    ) {
+                      _eligibleDays =
+                        _employee[k].endOfServiceYears *
+                        _optionsDetals.eligible_days1;
+                    } else if (
+                      _employee[k].endOfServiceYears >=
+                      _optionsDetals.from_service_range1 &&
+                      _employee[k].endOfServiceYears <=
+                      _optionsDetals.from_service_range2
+                    ) {
+                      _eligibleDays =
+                        _employee[k].endOfServiceYears *
+                        _optionsDetals.eligible_days2;
+                    } else if (
+                      _employee[k].endOfServiceYears >=
+                      _optionsDetals.from_service_range2 &&
+                      _employee[k].endOfServiceYears <=
+                      _optionsDetals.from_service_range3
+                    ) {
+                      _eligibleDays =
+                        _employee[k].endOfServiceYears *
+                        _optionsDetals.eligible_days3;
+                    } else if (
+                      _employee[k].endOfServiceYears >=
+                      _optionsDetals.from_service_range3 &&
+                      _employee[k].endOfServiceYears <=
+                      _optionsDetals.from_service_range4
+                    ) {
+                      _eligibleDays =
+                        _employee[k].endOfServiceYears *
+                        _optionsDetals.eligible_days4;
+                    } else if (
+                      _employee[k].endOfServiceYears >=
+                      _optionsDetals.from_service_range4 &&
+                      _employee[k].endOfServiceYears <=
+                      _optionsDetals.from_service_range5
+                    ) {
+                      _eligibleDays =
+                        _employee[k].endOfServiceYears *
+                        _optionsDetals.eligible_days5;
+                    } else if (
+                      _employee[k].endOfServiceYears >=
+                      _optionsDetals.from_service_range5
+                    ) {
+                      _eligibleDays =
+                        _employee[k].endOfServiceYears *
+                        _optionsDetals.eligible_days5;
+                    }
+                  } else if (_optionsDetals.end_of_service_type == "H") {
+                    let by =
+                      _employee[k].endOfServiceYears -
+                      _optionsDetals.from_service_range1;
+                    let ted = 0;
+                    if (by > 0) {
+                      ted =
+                        _optionsDetals.from_service_range1 *
+                        _optionsDetals.eligible_days1;
+                      by =
+                        _employee[k].endOfServiceYears -
+                        _optionsDetals.from_service_range2;
+                      if (by > 0) {
+                        ted =
+                          (ted +
+                            (_optionsDetals.from_service_range2 -
+                              _optionsDetals.from_service_range1)) *
+                          by;
+                        by =
+                          _employee[k].endOfServiceYears -
+                          _optionsDetals.from_service_range3;
+                        if (by > 0) {
+                          ted =
+                            (ted +
+                              (_optionsDetals.from_service_range3 -
+                                _optionsDetals.from_service_range2)) *
+                            by;
+                          by =
+                            _employee[k].endOfServiceYears -
+                            _optionsDetals.from_service_range3;
+                          if (by > 0) {
+                            ted =
+                              (ted +
+                                (_optionsDetals.from_service_range4 -
+                                  _optionsDetals.from_service_range3)) *
+                              by;
+                            by =
+                              _employee[k].endOfServiceYears -
+                              _optionsDetals.from_service_range4;
+                            if (by > 0) {
+                              ted =
+                                (ted +
+                                  (_optionsDetals.from_service_range5 -
+                                    _optionsDetals.from_service_range4)) *
+                                by;
+                            } else {
+                              _eligibleDays =
+                                ted + by * _optionsDetals.eligible_days4;
+                            }
+                          } else {
+                            _eligibleDays =
+                              ted + by * _optionsDetals.eligible_days3;
+                          }
+                        }
+                      } else {
+                        _eligibleDays =
+                          ted + by * _optionsDetals.eligible_days2;
+                      }
+                    } else {
+                      ted =
+                        _employee[k].endOfServiceYears *
+                        _optionsDetals.eligible_days1;
+                    }
+                    ted = _eligibleDays;
+                  }
+
+                  let _componentsList_total = [];
+                  if (_optionsDetals.end_of_service_component1 != null) {
+                    _componentsList_total.push(
+                      _optionsDetals.end_of_service_component1
+                    );
+                  }
+                  if (_optionsDetals.end_of_service_component2 != null) {
+                    _componentsList_total.push(
+                      _optionsDetals.end_of_service_component2
+                    );
+                  }
+                  if (_optionsDetals.end_of_service_component3 != null) {
+                    _componentsList_total.push(
+                      _optionsDetals.end_of_service_component3
+                    );
+                  }
+                  if (_optionsDetals.end_of_service_component4 != null) {
+                    _componentsList_total.push(
+                      _optionsDetals.end_of_service_component4
+                    );
+                  }
+
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "select hims_d_employee_earnings_id,employee_id, earnings_id,earning_deduction_description,\
+                  EE.short_desc, amount from hims_d_employee_earnings EE, hims_d_earning_deduction ED where \
+                  ED.hims_d_earning_deduction_id = EE.earnings_id \
+                  and EE.employee_id=? and ED.hims_d_earning_deduction_id in(?) and ED.record_status='A'",
+                      values: [
+                        _employee[k].hims_d_employee_id,
+                        _componentsList_total
+                      ],
+                      printQuery: true
+                    })
+                    .then(earnings => {
+                      // _mysql.releaseConnection();
+                      let _computatedAmout = [];
+                      if (_optionsDetals.end_of_service_calculation == "AN") {
+                        _computatedAmout = _.chain(earnings).map(items => {
+                          return (items.amount * 12) / 365;
+                        });
+                      } else if (
+                        _optionsDetals.end_of_service_calculation == "FI"
+                      ) {
+                        _computatedAmout = _.chain(earnings).map(items => {
+                          return (
+                            items.amount / _optionsDetals.end_of_service_days
+                          );
+                        });
+                      }
+
+                      let _computatedAmoutSum =
+                        _computatedAmout.reduce((a, b) => {
+                          return a + b;
+                        }, 0) * _eligibleDays;
+
+                      _computatedAmoutSum = utilities.decimalPoints(
+                        _computatedAmoutSum,
+                        decimal_places
+                      );
+
+                      strQry += mysql.format(
+                        "INSERT IGNORE INTO `hims_f_gratuity_provision`(`employee_id`,`year`,\
+                      `month`,`gratuity_amount`) VALUE(?,?,?,?);",
+                        [
+                          _employee[k].hims_d_employee_id,
+                          inputParam.year,
+                          inputParam.month,
+                          _computatedAmoutSum
+                        ]
+                      );
+
+                      if (k == _employee.length - 1) {
+                        resolve();
+                      }
+                    })
+                    .catch(e => {
+                      reject(e);
+                    });
+                } catch (e) {
+                  reject(e);
+                }
+              })
+                .then(result => {
+
+                  _mysql
+                    .executeQuery({
+                      query: strQry,
+                      printQuery: true
+                    })
+                    .then(result => {
+                      resolve();
+                    })
+                    .catch(e => {
+                      reject(e);
+                    });
+                })
+                .catch(e => {
+                  reject(e);
+                });
+            }
+          } else {
+            resolve();
           }
         })
         .catch(e => {

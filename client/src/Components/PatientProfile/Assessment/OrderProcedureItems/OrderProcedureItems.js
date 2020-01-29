@@ -154,7 +154,7 @@ class OrderProcedureItems extends Component {
             title="Procedure Items"
             openPopup={this.props.show}
           >
-            <div className="row">
+            <div className="row procedureClinicalDesk">
               <div className="col-lg-12 popupInner">
                 <div className="popRightDiv">
                   <div className="row">
@@ -248,7 +248,7 @@ class OrderProcedureItems extends Component {
 
                         <div className="col-4  margin-top-15">
                           <div className="row spotlightSearchBox">
-                            <div className="col-lg-9">
+                            <div className="col">
                               <AlgaehLabel
                                 label={{ forceLabel: "Search Items" }}
                               />
@@ -451,8 +451,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OrderProcedureItems)
+  connect(mapStateToProps, mapDispatchToProps)(OrderProcedureItems)
 );

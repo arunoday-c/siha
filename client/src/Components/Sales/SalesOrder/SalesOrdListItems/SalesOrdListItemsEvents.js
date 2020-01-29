@@ -346,10 +346,12 @@ const deleteSalesDetail = ($this, context, row) => {
 const calculateAmount = ($this, context, row, _index) => {
     let sales_order_items = $this.state.sales_order_items;
     let quantity = row.quantity === "" ? 0 : parseFloat(row.quantity)
+    let discount_percentage = row.discount_percentage === undefined ? 0 : parseFloat(row.discount_percentage)
+
     row.extended_cost = (parseFloat(row.unit_cost) * quantity).toFixed(
         $this.state.decimal_place
     )
-    row.discount_amount = ((parseFloat(row.extended_cost) * parseFloat(row.discount_percentage)) / 100).toFixed(
+    row.discount_amount = ((parseFloat(row.extended_cost) * discount_percentage) / 100).toFixed(
         $this.state.decimal_place
     );
     row.net_extended_cost = (parseFloat(row.extended_cost) - parseFloat(row.discount_amount)).toFixed(
@@ -475,7 +477,7 @@ const onchangegridcol = ($this, context, row, e) => {
 };
 
 const qtyonchangegridcol = ($this, context, row, e) => {
-    debugger
+
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     let _index = $this.state.sales_order_items.indexOf(row);
@@ -491,7 +493,7 @@ const qtyonchangegridcol = ($this, context, row, e) => {
             type: "warning"
         });
     } else {
-        debugger
+
         if (
             $this.props.sales_order_number !== undefined &&
             $this.props.sales_order_number.length !== 0

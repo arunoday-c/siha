@@ -7,24 +7,20 @@ import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
   newProcessSalary: (req, res, next) => {
-    // console.log("req.connection: ", req.connection);
+
     const _options = req.connection == null ? {} : req.connection;
 
     const _mysql = new algaehMysql(_options);
     return new Promise((resolve, reject) => {
       try {
-        const utilities = new algaehUtilities();
+        // const utilities = new algaehUtilities();
 
-        // console.log("newProcessSalary: ");
+
         const input = req.query;
         const month_number = parseFloat(input.month);
         const year = input.year;
         let inputValues = [input.year, input.month];
         let _stringData = "";
-
-        console.log("_stringData: ", input.leave_salary);
-        console.log("month_number: ", month_number);
-        console.log("leave_salary: ", input.leave_salary);
 
         let strQuery = "";
 
@@ -45,8 +41,6 @@ export default {
             _stringData += " and SD.department_id=?";
             inputValues.push(input.department_id);
           }
-
-          // utilities.logger().log("group_id: ", input.group_id);
 
           if (input.group_id != null) {
             _stringData += " and E.employee_group_id=?";
@@ -107,7 +101,6 @@ export default {
           }
         }
 
-        // utilities.logger().log("strQuery: ", strQuery);
         _mysql
           .executeQuery({
             query: strQuery,
@@ -115,17 +108,15 @@ export default {
             printQuery: true
           })
           .then(empResult => {
-            console.log("empResult: ", empResult.length);
+
             if (empResult.length == 0) {
-              console.log("empResult reslove: ", empResult.length);
+
 
               if (req.connection == null) {
-                // utilities.logger().log("req.connection : ");
                 _mysql.releaseConnection();
                 req.records = empResult;
                 next();
               } else {
-                // utilities.logger().log("req.connection Else : ");
                 resolve();
               }
               return;
@@ -138,7 +129,7 @@ export default {
               _myemp.push(o.employee_id);
             });
 
-            // utilities.logger().log("_myemp : ", _myemp);
+
 
             if (_myemp.length == 0) {
               _mysql.releaseConnection();
@@ -157,9 +148,8 @@ export default {
                 avail_till_date += "+" + "COALESCE(" + months + ", 0)";
               }
             } else {
-              // utilities.logger().log("else: ");
+
               avail_till_date = moment(input.month, "MM").format("MMMM");
-              // utilities.logger().log("avail_till_date: ", avail_till_date);
               avail_till_date = "COALESCE(" + avail_till_date + ", 0)";
             }
             const month_name = moment(input.month, "MM").format("MMMM");
@@ -223,7 +213,7 @@ export default {
             select hims_f_loan_application_id, loan_application_number, employee_id, loan_id,\
               loan_application_date, approved_amount\
               from  hims_f_loan_application where loan_authorized='APR' and loan_dispatch_from='SAL' and employee_id in (?);\
-            select hims_d_earning_deduction_id from hims_d_earning_deduction where component_category = 'D' and component_type='AD';\
+            select hims_d_earning_deduction_id from hims_d_earning_deduction where component_category = 'A';\
             select hims_d_hrms_options_id,standard_working_hours,standard_break_hours,salary_calendar,salary_calendar_fixed_days, ot_calculation from hims_d_hrms_options;\
             select hims_d_earning_deduction_id from hims_d_earning_deduction where component_type='OV';\
             select E.hims_d_employee_id as employee_id, OT.payment_type, OT.working_day_hour, OT. weekoff_day_hour, \
@@ -275,7 +265,6 @@ export default {
                 new Promise((resolve, reject) => {
                   try {
                     for (let i = 0; i < empResult.length; i++) {
-                      // utilities.logger().log("empResult ", empResult[i]);
                       let results = Salaryresults;
                       let leave_salary_accrual_amount = 0;
                       let final_earning_amount = 0;
@@ -301,20 +290,7 @@ export default {
                         return f.employee_id == empResult[i]["employee_id"];
                       });
 
-                      // utilities
-                      //   .logger()
-                      //   .log(
-                      //     "hrms_option.salary_calendar: ",
-                      //     results[8][0].salary_calendar
-                      //   );
                       if (results[8][0].salary_calendar == "F") {
-                        // utilities
-                        //   .logger()
-                        //   .log(
-                        //     "in_salary_calendar: ",
-                        //     results[8][0].salary_calendar
-                        //   );
-
                         empResult[i]["total_days"] =
                           results[8][0].salary_calendar_fixed_days;
 
@@ -341,9 +317,6 @@ export default {
                             earningOutput.final_earning_amount;
                           leave_salary_accrual_amount =
                             earningOutput.accrual_amount;
-                          // utilities
-                          //   .logger()
-                          //   .log("_earning_amount : ", final_earning_amount);
 
                           const _deduction = _.filter(results[1], f => {
                             return f.employee_id == empResult[i]["employee_id"];
@@ -361,12 +334,13 @@ export default {
                             final_deduction_amount =
                               deductionOutput.final_deduction_amount;
 
-                            //Contribution -- Start
+                            //Contribution -- Start                            
                             const _contrubutions = _.filter(results[2], f => {
                               return (
                                 f.employee_id == empResult[i]["employee_id"]
                               );
                             });
+
                             getContrubutionsComponents({
                               contribution: _contrubutions,
                               empResult: empResult[i],
@@ -429,12 +403,7 @@ export default {
                                   current_deduction_amt_array = current_deduction_amt_array.concat(
                                     advanceOutput.current_deduct_compoment
                                   );
-                                  // utilities
-                                  //   .logger()
-                                  //   .log(
-                                  //     "employee_id: ",
-                                  //     empResult[i]["employee_id"]
-                                  //   );
+
                                   //OT
                                   const _over_time = _.filter(
                                     results[10],
@@ -445,9 +414,6 @@ export default {
                                       );
                                     }
                                   );
-                                  // utilities
-                                  //   .logger()
-                                  //   .log("_over_time: ", _over_time);
                                   getOtManagement({
                                     earnings: _earnings,
                                     current_earning_amt_array: current_earning_amt_array,
@@ -515,9 +481,11 @@ export default {
                                         final_deduction_amount =
                                           final_deduction_amount +
                                           miscellaneousOutput.final_deduction_amount;
+                                        // console.log("empResult[i].gross_salary", empResult[i]["gross_salary"])
+                                        // console.log("empResult[i].total_days", empResult[i]["total_days"])
                                         let per_day_sal =
-                                          empResult[i]["gross_salary"] /
-                                          empResult[i]["total_days"];
+                                          parseFloat(empResult[i]["total_days"]) === 0 ? 0 :
+                                            empResult[i]["gross_salary"] / empResult[i]["total_days"];
 
                                         let _salary_number = empResult[i][
                                           "employee_code"
@@ -529,25 +497,6 @@ export default {
                                             : "-LS-";
                                         _salary_number +=
                                           month_number + "-" + year;
-
-                                        // utilities
-                                        //   .logger()
-                                        //   .log(
-                                        //     "final_earning_amount : ",
-                                        //     final_earning_amount
-                                        //   );
-                                        // utilities
-                                        //   .logger()
-                                        //   .log(
-                                        //     "final_deduction_amount : ",
-                                        //     final_deduction_amount
-                                        //   );
-                                        // utilities
-                                        //   .logger()
-                                        //   .log(
-                                        //     "total_loan_due_amount : ",
-                                        //     total_loan_due_amount
-                                        //   );
 
                                         let _net_salary =
                                           final_earning_amount -
@@ -655,28 +604,7 @@ export default {
                   }
                 })
                   .then(result => {
-                    // utilities.logger().log("_headerQuery: ", _headerQuery);
-                    // utilities
-                    //   .logger()
-                    //   .log(
-                    //     "final_earning_amt_array: ",
-                    //     final_earning_amt_array
-                    //   );
-                    // utilities
-                    //   .logger()
-                    //   .log(
-                    //     "final_deduction_amt_array: ",
-                    //     final_deduction_amt_array
-                    //   );
-                    // utilities
-                    //   .logger()
-                    //   .log(
-                    //     "final_contribution_amt_array: ",
-                    //     final_contribution_amt_array
-                    //   );
-                    // utilities
-                    //   .logger()
-                    //   .log("final_loan_array: ", final_loan_array);
+
                     if (_headerQuery == "") {
                       _mysql.releaseConnection();
                       req.records = empResult;
@@ -690,9 +618,7 @@ export default {
                         printQuery: true
                       })
                       .then(inserted_header => {
-                        // utilities
-                        //   .logger()
-                        //   .log("inserted_header: ", inserted_header);
+
                         let inserted_salary = [];
                         if (Array.isArray(inserted_header)) {
                           inserted_salary = inserted_header;
@@ -700,32 +626,19 @@ export default {
                           inserted_salary = [inserted_header];
                         }
 
-                        // utilities
-                        //   .logger()
-                        //   .log("inserted_salary: ", inserted_salary);
+                        // console.log("inserted_salary", inserted_salary)
                         if (inserted_salary.length > 0) {
                           let execute_query = "";
 
                           for (let k = 0; k < inserted_salary.length; k++) {
                             salary_header_id = inserted_salary[k].insertId;
-                            // utilities
-                            //   .logger()
-                            //   .log(
-                            //     "final_earning_amt_array: ",
-                            //     final_earning_amt_array[k]
-                            //   );
+
                             if (final_earning_amt_array[k].length > 0) {
                               for (
                                 let l = 0;
                                 l < final_earning_amt_array[k].length;
                                 l++
                               ) {
-                                // utilities
-                                //   .logger()
-                                //   .log(
-                                //     "final_earning_amt_array: ",
-                                //     final_earning_amt_array[k][l].earnings_id
-                                //   );
                                 execute_query += _mysql.mysqlQueryFormat(
                                   "INSERT INTO `hims_f_salary_earnings` (salary_header_id, earnings_id, amount, \
                                 per_day_salary) VALUE(?,?,?,?); ",
@@ -798,9 +711,6 @@ export default {
                             }
 
                             if (k == inserted_salary.length - 1) {
-                              // utilities
-                              //   .logger()
-                              //   .log("execute_query: ", execute_query);
                               _mysql
                                 .executeQuery({
                                   query: execute_query,
@@ -815,12 +725,6 @@ export default {
                                       resolve(detailresult);
                                     });
                                   } else {
-                                    // utilities
-                                    //   .logger()
-                                    //   .log(
-                                    //     "salary_header_id: ",
-                                    //     salary_header_id
-                                    //   );
                                     resolve(salary_header_id);
                                   }
                                 })
@@ -835,7 +739,6 @@ export default {
                         }
                       })
                       .catch(error => {
-                        // utilities.logger().log("error: ", error);
                         _mysql.rollBackTransaction(() => {
                           next(error);
                           reject(error);
@@ -855,7 +758,6 @@ export default {
               });
           })
           .catch(error => {
-            // utilities.logger().log("error: ", error);
             _mysql.releaseConnection();
             next(error);
             reject(error);
@@ -875,9 +777,7 @@ export default {
     return new Promise((resolve, reject) => {
       try {
         const utilities = new algaehUtilities();
-        // if (req.mySQl == null) {
-        //   req.mySQl = _mysql;
-        // }
+
         const input = req.query;
         const month_number = input.month;
         const year = input.year;
@@ -905,7 +805,6 @@ export default {
           salary_input.push(input.sub_department_id);
         }
 
-        // utilities.logger().log("input: ", input);
 
         _mysql
           .executeQuery({
@@ -921,8 +820,6 @@ export default {
             printQuery: true
           })
           .then(attandenceResult => {
-            // let empResult = empOutput;
-            // utilities.logger().log("attandenceResult: ", attandenceResult);
             if (attandenceResult.length > 0) {
               let _allEmployees = _.map(attandenceResult, o => {
                 return o.employee_id;
@@ -937,9 +834,6 @@ export default {
                   printQuery: true
                 })
                 .then(existing => {
-                  // utilities.logger().log("Existing Block", existing);
-                  // console.log("Existing Block", existing);
-
                   let _salary_processed = _.chain(existing)
                     .filter(f => {
                       return f.salary_processed == "Y";
@@ -986,8 +880,6 @@ export default {
                     _myemp = _allEmployees;
                   }
 
-                  // utilities.logger().log("_myemp: ", _myemp);
-
                   if (_myemp.length > 0) {
                     _allEmployees = _myemp;
                   } else {
@@ -1008,7 +900,7 @@ export default {
                   }
 
                   const utilities = new algaehUtilities();
-                  // utilities.logger().log("input.month: ", input.month);
+
                   let avail_till_date = "";
                   if (input.month != 1) {
                     let months = "";
@@ -1018,15 +910,9 @@ export default {
                       avail_till_date += "+" + "COALESCE(" + months + ", 0)";
                     }
                   } else {
-                    // utilities.logger().log("else: ");
                     avail_till_date = moment(input.month, "MM").format("MMMM");
-                    // utilities
-                    // .logger()
-                    // .log("avail_till_date: ", avail_till_date);
                     avail_till_date = "COALESCE(" + avail_till_date + ", 0)";
                   }
-
-                  // utilities.logger().log("avail_till_date: ", avail_till_date);
 
                   const month_name = moment(input.month, "MM").format("MMMM");
 
@@ -1060,7 +946,6 @@ export default {
                     month_name +
                     " > 0 and  employee_id in (?) and year=? ;";
 
-                  // utilities.logger().log("strQuery: ", strQuery);
                   _salaryHeader_id =
                     _salaryHeader_id.length == 0 ? null : _salaryHeader_id;
                   _mysql
@@ -1135,7 +1020,7 @@ export default {
                       printQuery: true
                     })
                     .then(Salaryresults => {
-                      // utilities.logger().log("Salaryresults", Salaryresults[0]);
+
 
                       let _requestCollector = [];
 
@@ -1143,21 +1028,14 @@ export default {
                         return _.find(_myemp, d => d == n.employee_id);
                       });
 
-                      // utilities.logger().log("empResult", empResult);
 
                       if (empResult.length > 0) {
                         for (let i = 0; i < empResult.length; i++) {
-                          // utilities
-                          //   .logger()
-                          //   .log("employee_id", empResult[i]["employee_id"]);
+
 
                           const employee_exit = _.filter(_myemp, f => {
                             return f.employee_id == empResult[i]["employee_id"];
                           });
-
-                          // utilities
-                          //   .logger()
-                          //   .log("employee_exit", employee_exit);
                           let results = Salaryresults;
                           let salary_header_id = 0;
                           let final_earning_amount = 0;
@@ -1341,12 +1219,7 @@ export default {
                                                     next: next
                                                   })
                                                     .then(ShortAge => {
-                                                      // utilities
-                                                      //   .logger()
-                                                      //   .log(
-                                                      //     "ShortAge",
-                                                      //     ShortAge
-                                                      //   );
+
                                                       final_deduction_amount =
                                                         final_deduction_amount +
                                                         ShortAge.final_deduction_amount;
@@ -1423,12 +1296,7 @@ export default {
                                                             _net_salary =
                                                               _net_salary +
                                                               total_loan_payable_amount;
-                                                            // utilities
-                                                            //   .logger()
-                                                            //   .log(
-                                                            //     "final_deduction_amount",
-                                                            //     final_deduction_amount
-                                                            //   );
+
                                                             _mysql
                                                               .executeQueryWithTransaction(
                                                                 {
@@ -1527,12 +1395,7 @@ export default {
                                                               )
                                                               .then(
                                                                 inserted_salary => {
-                                                                  // utilities
-                                                                  //   .logger()
-                                                                  //   .log(
-                                                                  //     "inserted_salary",
-                                                                  //     inserted_salary
-                                                                  //   );
+
                                                                   _requestCollector.push(
                                                                     inserted_salary
                                                                   );
@@ -1572,12 +1435,7 @@ export default {
                                                                     )
                                                                     .then(
                                                                       resultEarnings => {
-                                                                        // utilities
-                                                                        //   .logger()
-                                                                        //   .log(
-                                                                        //     "resultEarnings",
-                                                                        //     resultEarnings
-                                                                        //   );
+
                                                                         if (
                                                                           current_deduction_amt_array.length >
                                                                           0
@@ -1603,24 +1461,14 @@ export default {
                                                                               "select 1"
                                                                           };
                                                                         }
-                                                                        // utilities
-                                                                        //   .logger()
-                                                                        //   .log(
-                                                                        //     "execute_query",
-                                                                        //     execute_query
-                                                                        //   );
+
                                                                         _mysql
                                                                           .executeQuery(
                                                                             execute_query
                                                                           )
                                                                           .then(
                                                                             resultDeductions => {
-                                                                              // utilities
-                                                                              //   .logger()
-                                                                              //   .log(
-                                                                              //     "resultDeductions",
-                                                                              //     resultDeductions
-                                                                              //   );
+
                                                                               if (
                                                                                 current_contribution_amt_array.length >
                                                                                 0
@@ -1651,12 +1499,6 @@ export default {
                                                                                 )
                                                                                 .then(
                                                                                   resultContribute => {
-                                                                                    // utilities
-                                                                                    //   .logger()
-                                                                                    //   .log(
-                                                                                    //     "resultContribute",
-                                                                                    //     resultContribute
-                                                                                    //   );
                                                                                     if (
                                                                                       current_loan_array.length >
                                                                                       0
@@ -1689,12 +1531,6 @@ export default {
                                                                                       )
                                                                                       .then(
                                                                                         resultLoan => {
-                                                                                          // utilities
-                                                                                          //   .logger()
-                                                                                          //   .log(
-                                                                                          //     "resultLoan",
-                                                                                          //     resultLoan
-                                                                                          //   );
                                                                                           if (
                                                                                             i ==
                                                                                             empResult.length -
@@ -1927,8 +1763,6 @@ export default {
         inputParam.salary_type != null
           ? " and salary_type = '" + inputParam.salary_type + "'"
           : " and salary_type='NS'";
-
-      console.log("inputParam", inputParam);
       _mysql
         .executeQuery({
           query:
@@ -2086,14 +1920,8 @@ export default {
     try {
       const _mysql = new algaehMysql();
       const inputParam = { ...req.body };
+      const decimal_places = req.userIdentity.decimal_places
 
-      const utilities = new algaehUtilities();
-      // const decimal_places = req.userIdentity.decimal_places;
-
-      // utilities.logger().log("employee_id: ", inputParam.employee_id);
-      // utilities
-      //   .logger()
-      //   .log("_leave_salary_acc: ", inputParam._leave_salary_acc.length);
       let strQuery = "";
       if (inputParam.annual_leave_calculation === "A") {
         strQuery =
@@ -2102,12 +1930,15 @@ export default {
           " as year," +
           inputParam.month +
           " as month, \
-        CASE when airfare_factor = 'PB' then ((amount / 100)*airfare_percentage) else (airfare_amount/airfare_eligibility) end airfare_amount,\
-        sum((EE.amount *12)/365)* EG.monthly_accrual_days as leave_salary\
-        from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, hims_d_employee_earnings EE ,hims_d_earning_deduction ED\
-        where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
-        EE.earnings_id=ED.hims_d_earning_deduction_id and \
-        ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';";
+          CASE when airfare_process = 'N' then 0 when airfare_factor = 'PB' then ROUND(((amount / 100)*airfare_percentage), "+ decimal_places + ") \
+          else ROUND((airfare_amount/airfare_eligibility), "+ decimal_places + ") end as airfare_amount,\
+          ROUND(sum((EE.amount *12)/365)* EG.monthly_accrual_days, "+ decimal_places + ") as leave_salary \
+          from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, \
+          hims_d_employee_earnings EE ,hims_d_earning_deduction ED \
+          where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
+          EE.earnings_id=ED.hims_d_earning_deduction_id and \
+          ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) \
+          group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';";
       } else if (inputParam.annual_leave_calculation === "M") {
         strQuery =
           "select E.hims_d_employee_id as employee_id,EG.monthly_accrual_days as leave_days, " +
@@ -2115,8 +1946,9 @@ export default {
           " as year," +
           inputParam.month +
           " as month, \
-          CASE when airfare_factor = 'PB' then ((amount / 100)*airfare_percentage) else (airfare_amount/airfare_eligibility) end airfare_amount,\
-          sum(EE.amount /30)* EG.monthly_accrual_days as leave_salary\
+          CASE when airfare_process = 'N' then 0 when airfare_factor = 'PB' then ROUND(((amount / 100)*airfare_percentage), "+ decimal_places + ") \
+          else ROUND((airfare_amount/airfare_eligibility), "+ decimal_places + ") end as airfare_amount,\
+          ROUND(sum(EE.amount /30)* EG.monthly_accrual_days, "+ decimal_places + ") as leave_salary\
           from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, hims_d_employee_earnings EE ,hims_d_earning_deduction ED\
           where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
           EE.earnings_id=ED.hims_d_earning_deduction_id and \
@@ -2129,11 +1961,16 @@ export default {
           printQuery: true
         })
         .then(leave_accrual_data => {
-          // utilities.logger().log("leave_accrual_data: ", leave_accrual_data[0]);
+
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection: _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
           let leave_accrual_detail = leave_accrual_data[0];
           let annual_leave_data = leave_accrual_data[1];
 
-          // utilities.logger().log("annual_leave_data: ", annual_leave_data);
+
           if (leave_accrual_detail.length > 0) {
             _mysql
               .generateRunningNumber({
@@ -2143,10 +1980,6 @@ export default {
               })
               .then(generatedNumbers => {
                 let leave_salary_number = generatedNumbers.LEAVE_ACCRUAL;
-
-                // utilities
-                //   .logger()
-                //   .log("leave_accrual_detail: ", leave_accrual_detail);
 
                 let leave_salary_accrual_detail = leave_accrual_detail;
 
@@ -2211,9 +2044,15 @@ export default {
                       .then(leave_detail => {
                         _mysql
                           .executeQuery({
+
                             query:
-                              "UPDATE hims_f_salary SET salary_processed = 'Y' where hims_f_salary_id in (?)",
-                            values: [inputParam.salary_header_id],
+                              "UPDATE hims_f_salary SET salary_processed = 'Y', salary_processed_date=?, salary_processed_by=?\
+                                where hims_f_salary_id in (?)",
+                            values: [
+                              new Date(),
+                              req.userIdentity.algaeh_d_app_user_id,
+                              inputParam.salary_header_id
+                            ],
                             printQuery: true
                           })
                           .then(salary_process => {
@@ -2225,9 +2064,6 @@ export default {
                               decimal_places: req.userIdentity.decimal_places
                             })
                               .then(Employee_Leave_Salary => {
-                                // utilities
-                                //   .logger()
-                                //   .log("InsertEmployeeLeaveSalary: ");
                                 _mysql
                                   .executeQuery({
                                     query:
@@ -2239,20 +2075,10 @@ export default {
                                       inputParam.month,
                                       inputParam.hospital_id,
                                       inputParam.employee_id
-                                      // inputParam.year,
-                                      // inputParam.month,
-                                      // inputParam.hospital_id,
-                                      // inputParam.employee_id
                                     ],
                                     printQuery: true
                                   })
                                   .then(project_wise_payroll => {
-                                    // utilities
-                                    //   .logger()
-                                    //   .log(
-                                    //     "project_wise_payroll: ",
-                                    //     project_wise_payroll
-                                    //   );
                                     if (project_wise_payroll.length > 0) {
                                       UpdateProjectWisePayroll({
                                         project_wise_payroll: project_wise_payroll,
@@ -2263,9 +2089,6 @@ export default {
                                           req.userIdentity.decimal_places
                                       })
                                         .then(Employee_Leave_Salary => {
-                                          // utilities
-                                          //   .logger()
-                                          //   .log("Employee_Leave_Salary: ");
                                           InsertGratuityProvision({
                                             inputParam: inputParam,
                                             _mysql: _mysql,
@@ -2274,11 +2097,6 @@ export default {
                                               req.userIdentity.decimal_places
                                           })
                                             .then(gratuity_provision => {
-                                              // utilities
-                                              //   .logger()
-                                              //   .log(
-                                              //     "Employee_Leave_Salary gratuity_provision: "
-                                              //   );
                                               if (
                                                 inputParam._leave_salary_acc
                                                   .length > 0
@@ -2293,15 +2111,14 @@ export default {
                                                 })
                                                   .then(
                                                     Leave_Salary_Provission => {
-                                                      _mysql.commitTransaction(
-                                                        () => {
-                                                          _mysql.releaseConnection();
-                                                          req.records = {
-                                                            leave_salary_number: leave_salary_number
-                                                          };
-                                                          next();
-                                                        }
-                                                      );
+                                                      // _mysql.commitTransaction(
+                                                      //   () => {
+                                                      //     _mysql.releaseConnection();
+                                                      req.records = {
+                                                        leave_salary_number: leave_salary_number
+                                                      };
+                                                      next();
+                                                      // });
                                                     }
                                                   )
                                                   .catch(e => {
@@ -2312,13 +2129,13 @@ export default {
                                                     );
                                                   });
                                               } else {
-                                                _mysql.commitTransaction(() => {
-                                                  _mysql.releaseConnection();
-                                                  req.records = {
-                                                    leave_salary_number: leave_salary_number
-                                                  };
-                                                  next();
-                                                });
+                                                // _mysql.commitTransaction(() => {
+                                                //   _mysql.releaseConnection();
+                                                req.records = {
+                                                  leave_salary_number: leave_salary_number
+                                                };
+                                                next();
+                                                // });
                                               }
                                             })
                                             .catch(e => {
@@ -2333,7 +2150,6 @@ export default {
                                           });
                                         });
                                     } else {
-                                      // utilities.logger().log("else: ");
                                       InsertGratuityProvision({
                                         inputParam: inputParam,
                                         _mysql: _mysql,
@@ -2342,9 +2158,7 @@ export default {
                                           req.userIdentity.decimal_places
                                       })
                                         .then(gratuity_provision => {
-                                          // utilities
-                                          //   .logger()
-                                          //   .log("else gratuity_provision: ");
+
                                           if (
                                             inputParam._leave_salary_acc
                                               .length > 0
@@ -2357,13 +2171,13 @@ export default {
                                                 req.userIdentity.decimal_places
                                             })
                                               .then(Leave_Salary_Provission => {
-                                                _mysql.commitTransaction(() => {
-                                                  _mysql.releaseConnection();
-                                                  req.records = {
-                                                    leave_salary_number: leave_salary_number
-                                                  };
-                                                  next();
-                                                });
+                                                // _mysql.commitTransaction(() => {
+                                                //   _mysql.releaseConnection();
+                                                req.records = {
+                                                  leave_salary_number: leave_salary_number
+                                                };
+                                                next();
+                                                // });
                                               })
                                               .catch(e => {
                                                 _mysql.rollBackTransaction(
@@ -2373,13 +2187,13 @@ export default {
                                                 );
                                               });
                                           } else {
-                                            _mysql.commitTransaction(() => {
-                                              _mysql.releaseConnection();
-                                              req.records = {
-                                                leave_salary_number: leave_salary_number
-                                              };
-                                              next();
-                                            });
+                                            // _mysql.commitTransaction(() => {
+                                            //   _mysql.releaseConnection();
+                                            req.records = {
+                                              leave_salary_number: leave_salary_number
+                                            };
+                                            next();
+                                            // });
                                           }
                                         })
                                         .catch(e => {
@@ -2425,16 +2239,19 @@ export default {
                 });
               });
           } else {
-            // utilities.logger().log("else: ", leave_accrual_detail);
             _mysql
               .executeQuery({
                 query:
-                  "UPDATE hims_f_salary SET salary_processed = 'Y' where hims_f_salary_id in (?)",
-                values: [inputParam.salary_header_id],
+                  "UPDATE hims_f_salary SET salary_processed = 'Y', salary_processed_date=?, salary_processed_by=?\
+                   where hims_f_salary_id in (?)",
+                values: [
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  inputParam.salary_header_id
+                ],
                 printQuery: true
               })
               .then(salary_process => {
-                // utilities.logger().log("salary_process: ");
                 _mysql
                   .executeQuery({
                     query:
@@ -2446,17 +2263,10 @@ export default {
                       inputParam.month,
                       inputParam.hospital_id,
                       inputParam.employee_id
-                      // inputParam.year,
-                      // inputParam.month,
-                      // inputParam.hospital_id,
-                      // inputParam.employee_id
                     ],
                     printQuery: true
                   })
                   .then(project_wise_payroll => {
-                    // utilities
-                    //   .logger()
-                    //   .log("project_wise_payroll: ", project_wise_payroll);
                     if (project_wise_payroll.length > 0) {
                       UpdateProjectWisePayroll({
                         project_wise_payroll: project_wise_payroll,
@@ -2482,11 +2292,13 @@ export default {
                                     req.userIdentity.decimal_places
                                 })
                                   .then(Leave_Salary_Provission => {
-                                    _mysql.commitTransaction(() => {
-                                      _mysql.releaseConnection();
-                                      req.records = gratuity_provision;
-                                      next();
-                                    });
+                                    // _mysql.commitTransaction(() => {
+                                    //   _mysql.releaseConnection();
+                                    //   req.records = gratuity_provision;
+                                    //   next();
+                                    // });
+                                    req.records = gratuity_provision;
+                                    next();
                                   })
                                   .catch(e => {
                                     _mysql.rollBackTransaction(() => {
@@ -2494,11 +2306,13 @@ export default {
                                     });
                                   });
                               } else {
-                                _mysql.commitTransaction(() => {
-                                  _mysql.releaseConnection();
-                                  req.records = gratuity_provision;
-                                  next();
-                                });
+                                // _mysql.commitTransaction(() => {
+                                //   _mysql.releaseConnection();
+                                //   req.records = gratuity_provision;
+                                //   next();
+                                // });
+                                req.records = gratuity_provision;
+                                next();
                               }
                             })
                             .catch(e => {
@@ -2528,11 +2342,13 @@ export default {
                               decimal_places: req.userIdentity.decimal_places
                             })
                               .then(Leave_Salary_Provission => {
-                                _mysql.commitTransaction(() => {
-                                  _mysql.releaseConnection();
-                                  req.records = gratuity_provision;
-                                  next();
-                                });
+                                // _mysql.commitTransaction(() => {
+                                //   _mysql.releaseConnection();
+                                //   req.records = gratuity_provision;
+                                //   next();
+                                // });
+                                req.records = gratuity_provision;
+                                next();
                               })
                               .catch(e => {
                                 _mysql.rollBackTransaction(() => {
@@ -2540,11 +2356,13 @@ export default {
                                 });
                               });
                           } else {
-                            _mysql.commitTransaction(() => {
-                              _mysql.releaseConnection();
-                              req.records = gratuity_provision;
-                              next();
-                            });
+                            // _mysql.commitTransaction(() => {
+                            //   _mysql.releaseConnection();
+                            //   req.records = gratuity_provision;
+                            //   next();
+                            // });
+                            req.records = gratuity_provision;
+                            next();
                           }
                         })
                         .catch(e => {
@@ -2587,6 +2405,7 @@ export default {
       req.on("end", () => {
         const _mysql = new algaehMysql();
         const inputParam = JSON.parse(buffer);
+        req.body = inputParam
 
         const _salaryHeader_id = _.map(inputParam.salary_payment, o => {
           return o.hims_f_salary_id;
@@ -2625,6 +2444,11 @@ export default {
                 printQuery: true
               })
               .then(miscellaneous_earning_deduction => {
+                req.connection = {
+                  connection: _mysql.connection,
+                  isTransactionConnection: _mysql.isTransactionConnection,
+                  pool: _mysql.pool
+                };
                 //Employee Payments Advance
                 _mysql
                   .executeQuery({
@@ -2710,11 +2534,11 @@ export default {
                                     printQuery: true
                                   })
                                   .then(update_loan_application => {
-                                    _mysql.commitTransaction(() => {
-                                      _mysql.releaseConnection();
-                                      req.records = update_loan_application;
-                                      next();
-                                    });
+                                    // _mysql.commitTransaction(() => {
+                                    //   _mysql.releaseConnection();
+                                    req.records = update_loan_application;
+                                    next();
+                                    // });
                                   })
                                   .catch(e => {
                                     next(e);
@@ -2727,11 +2551,11 @@ export default {
                               });
                             });
                         } else {
-                          _mysql.commitTransaction(() => {
-                            _mysql.releaseConnection();
-                            req.records = salary_loans;
-                            next();
-                          });
+                          // _mysql.commitTransaction(() => {
+                          //   _mysql.releaseConnection();
+                          req.records = salary_loans;
+                          next();
+                          // });
                         }
                       })
                       .catch(error => {
@@ -2866,7 +2690,7 @@ export default {
 
           const utilities = new algaehUtilities();
 
-          // utilities.logger().log("default_nationality: ", default_nationality);
+
           if (salary.length > 0) {
             total_earnings = new LINQ(salary).Sum(s =>
               parseFloat(s.total_earnings)
@@ -2885,7 +2709,7 @@ export default {
               .Select(s => s.hims_f_salary_id)
               .ToArray();
 
-            // utilities.logger().log("salary_header_ids: ", salary_header_ids);
+
 
             _mysql
               .executeQuery({
@@ -2914,7 +2738,7 @@ export default {
 
                 let total_basic = 0;
 
-                // utilities.logger().log("salary: ", salary.length);
+
                 for (let i = 0; i < salary.length; i++) {
                   //ST-complete OVER-Time (ot,wot,hot all togather sum)  calculation
                   let ot_hours = 0;
@@ -3014,17 +2838,10 @@ export default {
                     .Select(s => parseFloat(s.amount))
                     .FirstOrDefault(0);
 
-                  // utilities
-                  //   .logger()
-                  //   .log("nationality: ", salary[i].nationality);
                   let emp_id_type = "P";
                   if (default_nationality == salary[i].nationality) {
                     emp_id_type = "C";
                   }
-
-                  // utilities
-                  //   .logger()
-                  //   .log("employee_earning: ", employee_earning);
 
                   let social_security_deductions = new LINQ(employee_deduction)
                     .Where(w => w.nationality_id == default_nationality)
@@ -3180,7 +2997,6 @@ export default {
                 let gratuity = results[3];
                 let accrual = results[4];
                 let contributions = results[5];
-                //   console.log("accrual:",accrual);
 
                 let total_basic = 0;
 
@@ -3408,6 +3224,548 @@ export default {
     } catch (e) {
       next(e);
     }
+  },
+
+  generateAccountingEntry: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      if (req.flag != 1) {
+
+        let inputParam = req.body;
+        _mysql
+          .executeQueryWithTransaction({
+            query:
+              "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
+              select account, head_id, child_id from finance_accounts_maping \
+              where account in ('SAL_PYBLS', 'LV_SAL_PYBL', 'AIRFR_PYBL', 'GRAT_PYBL');\
+              select head_id, child_id from hims_d_earning_deduction where component_category='E' and component_type='LS';\
+              select head_id, child_id from hims_d_earning_deduction where component_category='E' and component_type='AR';\
+              select head_id, child_id from hims_d_earning_deduction where component_category='E' and component_type='EOS';"
+          })
+          .then(result => {
+            const org_data = result[0]
+
+            if (
+              org_data[0]["product_type"] == "HIMS_ERP" ||
+              org_data[0]["product_type"] == "FINANCE_ERP"
+            ) {
+              const salary_pay_acc = result[1].find(f => f.account === "SAL_PYBLS");
+              const lv_salary_pay_acc = result[1].find(f => f.account === "LV_SAL_PYBL");
+              const airfair_pay_acc = result[1].find(f => f.account === "AIRFR_PYBL");
+              const gratuity_pay_acc = result[1].find(f => f.account === "GRAT_PYBL");
+
+              const leave_sal_expence_acc = result[2][0];
+              const airfare_expence_acc = result[3][0];
+              const gratuity_expence_acc = result[4][0];
+
+              _mysql
+                .executeQueryWithTransaction({
+                  query: `select hims_f_salary_id, hims_f_salary_id as document_id, '${inputParam.ScreenCode}' as from_screen,
+                  salary_number as document_number, salary_date as transaction_date,
+                  S.net_salary as amount, 'journal' as voucher_type,S.hospital_id, 
+                  concat('Salary for Employee: ', E.employee_code , '/' , E.full_name , ' in ' , year , '/' , monthname(concat('1999-',month,'-01'))) as narration
+                  from hims_f_salary s 
+                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
+                  where hims_f_salary_id in (?);
+                  select hims_f_salary_id, curDate() payment_date,SE.amount as debit_amount, ED.head_id, ED.child_id,\
+                  'DR' as payment_type, 0 as credit_amount, S.hospital_id from hims_f_salary s 
+                  left join hims_f_salary_earnings SE on SE.salary_header_id = S.hims_f_salary_id
+                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id
+                  where hims_f_salary_id in(?); 
+                  select hims_f_salary_id, curDate() payment_date, SD.amount as credit_amount, ED.head_id, ED.child_id, \
+                  'CR' as payment_type, 0 as debit_amount ,S.hospital_id
+                  from hims_f_salary s 
+                  left join hims_f_salary_deductions SD on SD.salary_header_id = S.hims_f_salary_id 
+                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SD.deductions_id
+                  where hims_f_salary_id in(?); 
+                  select hims_f_salary_id, curDate() payment_date, SC.amount as debit_amount, ED.head_id, ED.child_id, \
+                  'DR' as payment_type,0 as credit_amount ,S.hospital_id from hims_f_salary s 
+                  left join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id
+                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id 
+                  where hims_f_salary_id in(?);
+                  select hims_f_salary_id, curDate() payment_date, SC.amount as credit_amount, ED.li_head_id as  head_id, 
+                  ED.li_child_id as child_id, 'CR' as payment_type,0 as debit_amount, S.hospital_id from hims_f_salary s 
+                  left join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id
+                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id 
+                  where hims_f_salary_id in(?);
+                  select hims_f_salary_id, curDate() payment_date, SL.loan_due_amount as credit_amount, L.head_id, 
+                  L.child_id, 'CR' as payment_type, 0 as debit_amount,S.hospital_id from hims_f_salary s 
+                  left join hims_f_salary_loans SL on SL.salary_header_id = S.hims_f_salary_id
+                  left join hims_f_loan_application LA on LA.hims_f_loan_application_id = SL.loan_application_id
+                  inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id 
+                  where hims_f_salary_id in(?);
+                  select employee_id, leave_salary, airfare_amount, hospital_id from hims_f_leave_salary_accrual_detail D 
+                  inner join hims_d_employee E on E.hims_d_employee_id =D.employee_id 
+                  where year=? and month = ? and employee_id in (?);
+                  select employee_id, gratuity_amount, hospital_id from hims_f_gratuity_provision G
+                  inner join hims_d_employee E on E.hims_d_employee_id =G.employee_id 
+                  where year=? and month = ? and employee_id in (?);
+                  select employee_id, head_id, child_id, hospital_id, approved_amount from hims_f_loan_application LA
+                  inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id where loan_authorized='APR' 
+                  and loan_closed='N' and loan_dispatch_from='SAL' and employee_id in (?);`,
+                  values: [
+                    inputParam.salary_header_id,
+                    inputParam.salary_header_id,
+                    inputParam.salary_header_id,
+                    inputParam.salary_header_id,
+                    inputParam.salary_header_id,
+                    inputParam.salary_header_id,
+                    inputParam.year,
+                    inputParam.month,
+                    inputParam.employee_id,
+                    inputParam.year,
+                    inputParam.month,
+                    inputParam.employee_id,
+                    inputParam.employee_id
+                  ],
+                  printQuery: true
+                })
+                .then(headerResult => {
+                  const leave_salary_booking = headerResult[6]
+                  const gratuity_provision_booking = headerResult[7]
+                  const loan_payable_amount = headerResult[8]
+
+                  const Header_IncludeValuess = [
+                    "document_id",
+                    "from_screen",
+                    "document_number",
+                    "transaction_date",
+                    "amount",
+                    "voucher_type",
+                    "narration"
+                  ];
+
+                  _mysql
+                    .executeQueryWithTransaction({
+                      query:
+                        "INSERT INTO finance_day_end_header (??) VALUES ? ;",
+                      values: headerResult[0],
+                      includeValues: Header_IncludeValuess,
+                      extraValues: {
+                        entered_date: new Date(),
+                        entered_by: req.userIdentity.algaeh_d_app_user_id
+                      },
+                      bulkInsertOrUpdate: true,
+                      printQuery: true
+                    })
+                    .then(finance_header => {
+                      _mysql
+                        .executeQueryWithTransaction({
+                          query:
+                            "SELECT finance_day_end_header_id, document_id, amount, S.employee_id FROM finance_day_end_header EH\
+                            inner join hims_f_salary S on S.hims_f_salary_id= EH.document_id \
+                            where from_screen = ? and document_id in (?)",
+                          values: [inputParam.ScreenCode, inputParam.salary_header_id],
+                          printQuery: true
+                        })
+                        .then(insert_result => {
+                          const insert_finance_detail = []
+
+                          insert_result.forEach(per_salary => {
+                            const employee_barnch = headerResult[0].find(f => f.hims_f_salary_id === per_salary.document_id)
+
+                            const earnings = headerResult[1].filter(f => f.hims_f_salary_id === per_salary.document_id).map(m => {
+                              return { ...m, day_end_header_id: per_salary.finance_day_end_header_id }
+                            });
+                            const deduction = headerResult[2].filter(f => f.hims_f_salary_id === per_salary.document_id).map(m => {
+                              return { ...m, day_end_header_id: per_salary.finance_day_end_header_id }
+                            });
+                            const contribution = headerResult[3].filter(f => f.hims_f_salary_id === per_salary.document_id).map(m => {
+                              return { ...m, day_end_header_id: per_salary.finance_day_end_header_id }
+                            });
+
+                            const lib_acc_contribution = headerResult[4].filter(f => f.hims_f_salary_id === per_salary.document_id).map(m => {
+                              return { ...m, day_end_header_id: per_salary.finance_day_end_header_id }
+                            });
+
+                            const loan_data = headerResult[5].filter(f => f.hims_f_salary_id === per_salary.document_id).map(m => {
+                              return { ...m, day_end_header_id: per_salary.finance_day_end_header_id }
+                            });
+
+                            insert_finance_detail.push(
+                              ...earnings,
+                              ...deduction,
+                              ...contribution,
+                              ...lib_acc_contribution,
+                              ...loan_data,
+                              {
+                                day_end_header_id: per_salary.finance_day_end_header_id,
+                                payment_date: new Date(),
+                                head_id: salary_pay_acc.head_id,
+                                child_id: salary_pay_acc.child_id,
+                                debit_amount: 0,
+                                payment_type: "CR",
+                                credit_amount: per_salary.amount,
+                                hospital_id: employee_barnch.hospital_id
+                              })
+                          })
+
+                          leave_salary_booking.forEach(per_employee => {
+                            const finance_header = insert_result.find(f => f.employee_id === per_employee.employee_id)
+
+                            //Booking Leave salary to Laibility account
+                            insert_finance_detail.push({
+                              day_end_header_id: finance_header.finance_day_end_header_id,
+                              payment_date: new Date(),
+                              head_id: lv_salary_pay_acc.head_id,
+                              child_id: lv_salary_pay_acc.child_id,
+                              debit_amount: 0,
+                              payment_type: "CR",
+                              credit_amount: per_employee.leave_salary,
+                              hospital_id: per_employee.hospital_id
+                            });
+
+                            //Booking Leave salary to Expence account
+                            insert_finance_detail.push({
+                              day_end_header_id: finance_header.finance_day_end_header_id,
+                              payment_date: new Date(),
+                              head_id: leave_sal_expence_acc.head_id,
+                              child_id: leave_sal_expence_acc.child_id,
+                              debit_amount: per_employee.leave_salary,
+                              payment_type: "DR",
+                              credit_amount: 0,
+                              hospital_id: per_employee.hospital_id
+                            });
+
+                            if (parseFloat(per_employee.airfare_amount) > 0) {
+                              //Booking Airfaie to Laibility account
+                              insert_finance_detail.push({
+                                day_end_header_id: finance_header.finance_day_end_header_id,
+                                payment_date: new Date(),
+                                head_id: airfair_pay_acc.head_id,
+                                child_id: airfair_pay_acc.child_id,
+                                debit_amount: 0,
+                                payment_type: "CR",
+                                credit_amount: per_employee.airfare_amount,
+                                hospital_id: per_employee.hospital_id
+                              });
+
+                              //Booking Airfaie to Expence account
+                              insert_finance_detail.push({
+                                day_end_header_id: finance_header.finance_day_end_header_id,
+                                payment_date: new Date(),
+                                head_id: airfare_expence_acc.head_id,
+                                child_id: airfare_expence_acc.child_id,
+                                debit_amount: per_employee.airfare_amount,
+                                payment_type: "DR",
+                                credit_amount: 0,
+                                hospital_id: per_employee.hospital_id
+                              });
+                            }
+                          })
+
+                          gratuity_provision_booking.forEach(per_employee => {
+                            const gra_finance_header = insert_result.find(f => f.employee_id === per_employee.employee_id)
+
+                            if (parseFloat(per_employee.gratuity_amount) > 0) {
+                              //Booking Gratuity Provision to Laibility account
+                              insert_finance_detail.push({
+                                day_end_header_id: gra_finance_header.finance_day_end_header_id,
+                                payment_date: new Date(),
+                                head_id: gratuity_pay_acc.head_id,
+                                child_id: gratuity_pay_acc.child_id,
+                                debit_amount: 0,
+                                payment_type: "CR",
+                                credit_amount: per_employee.gratuity_amount,
+                                hospital_id: per_employee.hospital_id
+                              });
+
+                              //Booking Gratuity Provision to Expence account
+                              insert_finance_detail.push({
+                                day_end_header_id: gra_finance_header.finance_day_end_header_id,
+                                payment_date: new Date(),
+                                head_id: gratuity_expence_acc.head_id,
+                                child_id: gratuity_expence_acc.child_id,
+                                debit_amount: per_employee.gratuity_amount,
+                                payment_type: "DR",
+                                credit_amount: 0,
+                                hospital_id: per_employee.hospital_id
+                              });
+                            }
+                          })
+
+                          loan_payable_amount.forEach(per_employee => {
+                            const loan_finance_header = insert_result.find(f => f.employee_id === per_employee.employee_id)
+
+                            if (parseFloat(per_employee.approved_amount) > 0) {
+                              //Booking Gratuity Provision to Laibility account
+                              insert_finance_detail.push({
+                                day_end_header_id: loan_finance_header.finance_day_end_header_id,
+                                payment_date: new Date(),
+                                head_id: per_employee.head_id,
+                                child_id: per_employee.child_id,
+                                debit_amount: per_employee.approved_amount,
+                                payment_type: "DR",
+                                credit_amount: 0,
+                                hospital_id: per_employee.hospital_id
+                              });
+                            }
+                          })
+
+
+                          const IncludeValuess = [
+                            "day_end_header_id",
+                            "payment_date",
+                            "head_id",
+                            "child_id",
+                            "debit_amount",
+                            "payment_type",
+                            "credit_amount",
+                            "hospital_id"
+                          ];
+
+                          const month = moment().format("M");
+                          const year = moment().format("YYYY");
+
+                          _mysql
+                            .executeQueryWithTransaction({
+                              query:
+                                "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                              values: insert_finance_detail,
+                              includeValues: IncludeValuess,
+                              bulkInsertOrUpdate: true,
+                              extraValues: {
+                                year: year,
+                                month: month
+                              },
+                              printQuery: true
+                            })
+                            .then(subResult => {
+                              _mysql.commitTransaction(() => {
+                                _mysql.releaseConnection();
+                                // req.records = subResult;
+                                next();
+                              });
+                            })
+                            .catch(error => {
+                              _mysql.rollBackTransaction(() => {
+                                next(error);
+                              });
+                            });
+                        })
+                        .catch(error => {
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
+                        });
+                    })
+                    .catch(error => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                      });
+                    });
+                })
+                .catch(error => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            } else {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                // req.records = org_data;
+                next();
+              });
+            }
+          })
+          .catch(error => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      } else {
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          next();
+        });
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  generateAccountingEntrySalaryPayment: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      if (req.flag != 1) {
+        let inputParam = req.body;
+
+        const _salaryHeader_id = _.map(inputParam.salary_payment, o => {
+          return o.hims_f_salary_id;
+        });
+
+        _mysql
+          .generateRunningNumber({
+            user_id: req.userIdentity.algaeh_d_app_user_id,
+            numgen_codes: ["PAYMENT"],
+            table_name: "finance_numgen"
+          })
+          .then(generatedNumbers => {
+            _mysql
+              .executeQueryWithTransaction({
+                query:
+                  "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
+                  select head_id, child_id from finance_accounts_maping where account in ('SAL_PYBLS');"
+              })
+              .then(result => {
+
+                // const salary_pay_acc = result[1].find(f => f.account === "SAL_PYBLS");                
+                const salary_pay_acc = result[1][0];
+                const org_data = result[0]
+
+                if (
+                  org_data[0]["product_type"] == "HIMS_ERP" ||
+                  org_data[0]["product_type"] == "FINANCE_ERP"
+                ) {
+                  _mysql
+                    .executeQueryWithTransaction({
+                      query: `SELECT hims_f_salary_id, salary_number, sum(net_salary) as salary_payable,
+                  concat('Salary Payment for: ', year , '/' , monthname(concat('1999-',month,'-01'))) as narration, 
+                  hospital_id FROM hims_f_salary where hims_f_salary_id in (?);
+                  SELECT sum(S.net_salary) as salary_payable, E.company_bank_id, head_id, child_id, 
+                  S.hospital_id FROM hims_f_salary s 
+                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
+                  inner join hims_d_bank B on B.hims_d_bank_id = E.company_bank_id 
+                  where hims_f_salary_id in (?) group by E.company_bank_id;`,
+                      values: [_salaryHeader_id, _salaryHeader_id],
+                      printQuery: true
+                    })
+                    .then(headerResult => {
+                      const laibility_amount = headerResult[0][0];
+                      const bank_booking = headerResult[1];
+
+                      _mysql
+                        .executeQueryWithTransaction({
+                          query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
+                        voucher_type, document_id, document_number, from_screen, \
+                        narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?)",
+                          values: [
+                            new Date(),
+                            laibility_amount.salary_payable,
+                            "payment",
+                            laibility_amount.hims_f_salary_id,
+                            generatedNumbers.PAYMENT,
+                            inputParam.ScreenCode,
+                            "Salary Payment for " + laibility_amount.narration + laibility_amount.salary_payable,
+                            new Date(),
+                            req.userIdentity.algaeh_d_app_user_id
+                          ],
+                          printQuery: true
+                        })
+                        .then(day_end_header => {
+                          const insertSubDetail = []
+
+                          //Salary Payable Laibility Account
+                          insertSubDetail.push({
+                            payment_date: new Date(),
+                            head_id: salary_pay_acc.head_id,
+                            child_id: salary_pay_acc.child_id,
+                            debit_amount: laibility_amount.salary_payable,
+                            payment_type: "DR",
+                            credit_amount: 0,
+                            hospital_id: laibility_amount.hospital_id
+                          });
+
+                          bank_booking.forEach(per_salary => {
+                            //Booking salary To the bank
+                            insertSubDetail.push({
+                              payment_date: new Date(),
+                              head_id: per_salary.head_id,
+                              child_id: per_salary.child_id,
+                              debit_amount: 0,
+                              payment_type: "CR",
+                              credit_amount: per_salary.salary_payable,
+                              hospital_id: per_salary.hospital_id
+                            });
+                          })
+
+
+                          const IncludeValuess = [
+                            "payment_date",
+                            "head_id",
+                            "child_id",
+                            "debit_amount",
+                            "payment_type",
+                            "credit_amount",
+                            "hospital_id"
+                          ];
+
+                          const month = moment().format("M");
+                          const year = moment().format("YYYY");
+
+                          _mysql
+                            .executeQueryWithTransaction({
+                              query:
+                                "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                              values: insertSubDetail,
+                              includeValues: IncludeValuess,
+                              bulkInsertOrUpdate: true,
+                              extraValues: {
+                                day_end_header_id: day_end_header.insertId,
+                                year: year,
+                                month: month
+                              },
+                              printQuery: true
+                            })
+                            .then(subResult => {
+                              _mysql.commitTransaction(() => {
+                                _mysql.releaseConnection();
+                                // req.records = subResult;
+                                next();
+                              });
+                            })
+                            .catch(error => {
+                              _mysql.rollBackTransaction(() => {
+                                next(error);
+                              });
+                            });
+
+                        })
+                        .catch(error => {
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
+                        });
+                    })
+                    .catch(error => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                      });
+                    });
+                } else {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    // req.records = org_data;
+                    next();
+                  });
+                }
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+      } else {
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          next();
+        });
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
   }
 };
 
@@ -3422,6 +3780,7 @@ function InsertEmployeeLeaveSalary(options) {
       const utilities = new algaehUtilities();
 
       let promiseAll = [];
+
       for (let i = 0; i < leave_salary_accrual_detail.length; i++) {
         promiseAll.push(
           new Promise((resolve, reject) => {
@@ -3618,14 +3977,14 @@ function InsertEmployeeLeaveSalary(options) {
                           values: inputValues,
                           includeValues: IncludeValues,
                           extraValues: {
-                            year: leave_salary_accrual_detail.year,
-                            month: leave_salary_accrual_detail.month
+                            year: leave_salary_accrual_detail[0].year,
+                            month: leave_salary_accrual_detail[0].month
                           },
                           bulkInsertOrUpdate: true,
                           printQuery: true
                         })
                         .then(leave_detail => {
-                          let monthly_close_balance = parseFloat(
+                          let monthly_close_balance = monthly_leave.close_balance === null ? 0 : parseFloat(
                             monthly_leave.close_balance
                           );
 
@@ -3718,8 +4077,6 @@ function getOtManagement(options) {
   return new Promise((resolve, reject) => {
     try {
       const utilities = new algaehUtilities();
-
-      // utilities.logger().log("getOtManagement: ");
       const _earnings = options.earnings;
       const empResult = options.empResult;
 
@@ -3732,10 +4089,6 @@ function getOtManagement(options) {
       let final_earning_amount = 0;
       let current_ot_amt_array = [];
 
-      console.log("over_time: ", options.over_time.length);
-      console.log("ot_work_hours: ", empResult["ot_work_hours"]);
-      console.log("ot_weekoff_hours: ", empResult["ot_weekoff_hours"]);
-      console.log("ot_holiday_hours: ", empResult["ot_holiday_hours"]);
       if (options.over_time.length > 0) {
         let ot_hours =
           parseFloat(empResult["ot_work_hours"]) +
@@ -3807,10 +4160,6 @@ function getOtManagement(options) {
               let _per_day_salary = 0;
               let per_hour_salary = 0;
 
-              console.log(
-                "hrms_option[0].ot_calculation",
-                hrms_option[0].ot_calculation
-              );
               if (hrms_option[0].ot_calculation == "F") {
                 _per_day_salary = parseFloat(
                   parseFloat(earn_amount[0].amount) /
@@ -3887,14 +4236,11 @@ function getShortAge(options) {
       let final_deduction_amount = 0;
       let current_shortage_amt_array = [];
 
-      // utilities.logger().log("getShortAge: ", shortage_comp);
-
       if (empResult.shortage_hours != null && shortage_comp.length > 0) {
         let Noof_Working_Hours =
           parseFloat(hrms_option[0].standard_working_hours) -
           parseFloat(hrms_option[0].standard_break_hours);
 
-        // utilities.logger().log("Noof_Working_Hours: ", Noof_Working_Hours);
 
         _earnings.map(obj => {
           //ShortAge Calculation
@@ -3907,8 +4253,6 @@ function getShortAge(options) {
               })
               .value();
 
-            // utilities.logger().log("earn_amount: ", earn_amount);
-
             let _per_day_salary = parseFloat(
               parseFloat(earn_amount[0].amount) /
               parseFloat(empResult["total_days"])
@@ -3916,12 +4260,8 @@ function getShortAge(options) {
 
             let per_hour_salary = _per_day_salary / Noof_Working_Hours;
 
-            // utilities.logger().log("per_hour_salary: ", per_hour_salary);
 
             per_hour_salary = per_hour_salary * empResult.shortage_hours;
-
-            // utilities.logger().log("per_hour_salary: ", per_hour_salary);
-
             if (per_hour_salary > 0) {
               current_shortage_amt_array.push({
                 deductions_id: shortage_comp[0].hims_d_earning_deduction_id,
@@ -3951,7 +4291,7 @@ function getEarningComponents(options) {
   return new Promise((resolve, reject) => {
     try {
       const utilities = new algaehUtilities();
-      // utilities.logger().log("getEarningComponents: ");
+
 
       const _earnings = options.earnings;
       const empResult = options.empResult;
@@ -4037,18 +4377,6 @@ function getEarningComponents(options) {
                 parseFloat(hrms_option[0].salary_calendar_fixed_days)
               );
 
-              // utilities
-              //   .logger()
-              //   .log(
-              //     "current_earning_per_day_salary: ",
-              //     current_earning_per_day_salary
-              //   );
-
-              // utilities
-              //   .logger()
-              //   .log("unpaid_leave: ", empResult["unpaid_leave"]);
-              // utilities.logger().log("absent_days: ", empResult["absent_days"]);
-
               if (
                 empResult["from_normal_salary"] === "Y" &&
                 obj.annual_salary_comp === "Y"
@@ -4060,10 +4388,9 @@ function getEarningComponents(options) {
                 parseFloat(empResult["unpaid_leave"]) +
                 parseFloat(empResult["absent_days"]) +
                 leave_period;
-              // utilities.logger().log("days: ", days);
+
 
               let amount = current_earning_per_day_salary * days;
-              // utilities.logger().log("amount: ", amount);
               current_earning_amt = obj["amount"] - amount;
               current_earning_amt = current_earning_amt + annual_per_day_sal;
             } else {
@@ -4124,13 +4451,12 @@ function getEarningComponents(options) {
             current_earning_amt,
             decimal_places
           );
-          // utilities.logger().log("current_earning_amt: ", current_earning_amt);
           //Apply Leave Rule
           accrual_amount = accrual_amount + annual_per_day_sal;
           if (leave_salary != "Y") {
-            // utilities.logger().log("total_days: ", total_days);
+
             let perday_salary = current_earning_amt / total_days;
-            // utilities.logger().log("perday_salary: ", perday_salary);
+
 
             let balance_days = 0;
             let x = 0,
@@ -4167,41 +4493,28 @@ function getEarningComponents(options) {
 
                       // x=previous_leave<0?
 
-                      // utilities.logger().log("x: ", x);
+
                       if (leave_rule_days > 0) {
                         balance_days = leave_rule_days;
                       } else {
-                        // utilities.logger().log("else: ", x);
+
                         balance_days = x;
                       }
                       leaves_till_date = x;
 
                       if (leaves_till_date > current_leave) {
-                        // utilities.logger().log("if: ");
+
                         balance_days = 0;
                       } else {
-                        // utilities.logger().log("else: ", y);
+
                         if (y > current_leave) {
                           y = y - current_leave;
                           balance_days = balance_days - y;
-                          // utilities
-                          //   .logger()
-                          //   .log("balance_days: ", balance_days);
                         }
                       }
                     }
-
-                    // utilities
-                    //   .logger()
-                    //   .log("leaves_till_date: ", leaves_till_date);
-
                     if (balance_days > 0) {
-                      // utilities
-                      //   .logger()
-                      //   .log("current_earning_amt: ", current_earning_amt);
                       let split_sal = 0;
-
-                      // utilities.logger().log("paytype: ", paytype);
                       if (paytype == "NO") {
                       } else if (paytype == "FD") {
                         current_earning_amt = current_earning_amt;
@@ -4233,9 +4546,7 @@ function getEarningComponents(options) {
                       current_earning_amt,
                       decimal_places
                     );
-                    // utilities
-                    //   .logger()
-                    //   .log("current_earning_amt: ", current_earning_amt);
+
                   }
                 }
               }
@@ -4572,9 +4883,6 @@ function getLoanDueandPayable(options) {
       let total_loan_payable_amount = 0;
       let current_loan_array = [];
 
-      // loan_skip_months > 0
-
-      console.log("_loan", _loan);
       if (_loan.length == 0) {
         if (_loanPayable.length == 0) {
           resolve({
@@ -4586,8 +4894,6 @@ function getLoanDueandPayable(options) {
           total_loan_payable_amount = _.sumBy(_loanPayable, s => {
             return parseFloat(s.approved_amount);
           });
-
-          console.log("total_loan_payable_amount", total_loan_payable_amount);
 
           resolve({
             total_loan_due_amount,
@@ -4605,7 +4911,6 @@ function getLoanDueandPayable(options) {
         };
       });
 
-      console.log("current_loan_array", current_loan_array);
       total_loan_due_amount = _.sumBy(current_loan_array, s => {
         return parseFloat(s.loan_due_amount);
       });
@@ -4739,7 +5044,6 @@ function UpdateProjectWisePayroll(options) {
 
       const utilities = new algaehUtilities();
 
-      // utilities.logger().log("UpdateProjectWisePayroll: ");
 
       let finalData = {};
       _.chain(project_wise_payroll)
@@ -4767,8 +5071,6 @@ function UpdateProjectWisePayroll(options) {
           return f.employee_id == project_wise_payroll[z]["employee_id"];
         });
 
-        console.log("total_complete_hours: ", total_complete_hours);
-        console.log("complete_hours: ", complete_hours);
 
         if (parseFloat(total_complete_hours) > 0) {
           cost =
@@ -4815,46 +5117,31 @@ function InsertGratuityProvision(options) {
 
       const utilities = new algaehUtilities();
 
-      // console.log("_mysql: ", _mysql);
-      // utilities.logger().log("InsertGratuityProvision: ");
-
       _mysql
         .executeQuery({
           query:
-            "select E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status, E.employe_exit_type, \
-            datediff(date(?),date(date_of_joining))/365 endOfServiceYears,E.employee_code,E.exit_date,\
-            E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
-            E.sub_department_id,E.employee_designation_id,E.date_of_birth,\
-            SD.sub_department_name,SD.arabic_sub_department_name \
-            from hims_d_employee E Left join hims_d_sub_department SD \
-            on SD.hims_d_sub_department_id = E.sub_department_id \
-            left join hims_d_title T on T.his_d_title_id = E.title_id \
-            where hims_d_employee_id in(?);select * from hims_d_end_of_service_options;",
+            "select date_of_joining, hims_d_employee_id, date_of_resignation, employee_status, employe_exit_type, \
+            datediff(date(?),date(date_of_joining))/365 endOfServiceYears, employee_code, exit_date,\
+            full_name, arabic_name, sex, employee_type, employee_designation_id, date_of_birth \
+            from hims_d_employee where gratuity_applicable = 'Y' and hims_d_employee_id in(?);\
+            select * from hims_d_end_of_service_options;",
           values: [inputParam.salary_end_date, inputParam.employee_id],
           printQuery: true
         })
         .then(result => {
-          console.log("Gratuity Provision result: ", result);
-          // utilities.logger().log("Gratuity Provision result: ", result);
           const _employee = result[0];
           const _options = result[1];
-
-          // utilities.logger().log("_employee: ", _employee);
 
           if (_employee.length == 0) {
             resolve();
             return;
           }
-
-          // utilities.logger().log("_options: ", _options);
-
           if (_options.length == 0) {
             resolve();
             return;
           }
           const _optionsDetals = _options[0];
           if (_optionsDetals.gratuity_provision == 1) {
-            // utilities.logger().log("gratuity_provision: ");
 
             let _eligibleDays = 0;
 
@@ -4862,7 +5149,6 @@ function InsertGratuityProvision(options) {
             for (let k = 0; k < _employee.length; k++) {
               new Promise((resolve, reject) => {
                 try {
-                  // utilities.logger().log("_employee: ", _employee[k]);
                   if (_optionsDetals.end_of_service_type == "S") {
                     if (
                       _employee[k].endOfServiceYears >= 0 &&
@@ -5033,9 +5319,7 @@ function InsertGratuityProvision(options) {
                           );
                         });
                       }
-                      // const _sumOfTotalEarningComponents = _.sumBy(earnings, s => {
-                      //   return s.amount;
-                      // });
+
                       let _computatedAmoutSum =
                         _computatedAmout.reduce((a, b) => {
                           return a + b;
@@ -5059,7 +5343,6 @@ function InsertGratuityProvision(options) {
 
                       if (k == _employee.length - 1) {
                         resolve();
-                        // utilities.logger().log("strQry: ", strQry);
                       }
                     })
                     .catch(e => {
@@ -5070,7 +5353,6 @@ function InsertGratuityProvision(options) {
                 }
               })
                 .then(result => {
-                  // utilities.logger().log("strQry: ", strQry);
 
                   _mysql
                     .executeQuery({
@@ -5078,11 +5360,9 @@ function InsertGratuityProvision(options) {
                       printQuery: true
                     })
                     .then(result => {
-                      // utilities.logger().log("reslove: ");
                       resolve();
                     })
                     .catch(e => {
-                      // utilities.logger().log("Error: ");
                       reject(e);
                     });
                 })
@@ -5095,7 +5375,6 @@ function InsertGratuityProvision(options) {
           }
         })
         .catch(e => {
-          // utilities.logger().log("Gratuity Provision Error: ");
           reject(e);
         });
     } catch (e) {
@@ -5111,12 +5390,9 @@ function UpdateLeaveSalaryProvission(options) {
       let inputParam = options.inputParam;
       let _mysql = options._mysql;
 
-      // let total_hours_project = options.total_hours_project;
       let strQry = "";
 
       const utilities = new algaehUtilities();
-
-      // utilities.logger().log("UpdateLeaveSalaryProvission: ");
 
       for (let i = 0; i < inputParam._leave_salary_acc.length; i++) {
         _mysql
@@ -5127,9 +5403,6 @@ function UpdateLeaveSalaryProvission(options) {
             printQuery: true
           })
           .then(leave_salary_header => {
-            // utilities
-            //   .logger()
-            //   .log("leave_salary_header: ", leave_salary_header);
 
             let balance_leave_days =
               parseFloat(leave_salary_header[0].balance_leave_days) -
@@ -5139,14 +5412,6 @@ function UpdateLeaveSalaryProvission(options) {
               parseFloat(
                 inputParam._leave_salary_acc[i].leave_salary_accrual_amount
               );
-
-            // utilities.logger().log("balance_leave_days: ", balance_leave_days);
-            // utilities
-            //   .logger()
-            //   .log(
-            //     "balance_leave_salary_amount: ",
-            //     balance_leave_salary_amount
-            //   );
 
             strQry += _mysql.mysqlQueryFormat(
               "UPDATE `hims_f_employee_leave_salary_header` SET `balance_leave_days`=?, \
@@ -5159,7 +5424,6 @@ function UpdateLeaveSalaryProvission(options) {
             );
 
             if (i === inputParam._leave_salary_acc.length - 1) {
-              // utilities.logger().log("strQry: ", strQry);
               _mysql
                 .executeQuery({
                   query: strQry,

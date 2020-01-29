@@ -152,7 +152,7 @@ class TransferEntryItems extends Component {
                         <AlgaehAutoSearch
                           div={{ className: "col-3" }}
                           label={{ forceLabel: "Item Name (Ctrl + i)" }}
-                          title="Search Items"
+                          title="Type Item Name Here"
                           id="item_id_search"
                           template={result => {
                             return (
@@ -1296,8 +1296,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(TransferEntryItems)
+  connect(mapStateToProps, mapDispatchToProps)(TransferEntryItems)
 );

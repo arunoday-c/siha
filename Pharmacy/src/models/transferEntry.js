@@ -126,25 +126,22 @@ export default {
         _mysql
           .executeQuery({
             query: `SELECT * from  hims_f_pharmacy_transfer_header \
-          where hospital_id=? and from_location_id=? and to_location_id=? ${strQty};
+          where from_location_id=? and to_location_id=? ${strQty};
           select D.*,IM.item_description, IU.uom_description from hims_f_pharmacy_transfer_header H \
           inner join  hims_f_pharmacy_transfer_detail D on H.hims_f_pharmacy_transfer_header_id=D.transfer_header_id\
           inner join hims_d_item_master IM on D.item_id=IM.hims_d_item_master_id \
-          inner join hims_d_pharmacy_uom IU on D.uom_transferred_id=IU.hims_d_pharmacy_uom_id where hospital_id=?
-          and H.from_location_id=? and H.to_location_id=? ${strQty};
+          inner join hims_d_pharmacy_uom IU on D.uom_transferred_id=IU.hims_d_pharmacy_uom_id where  
+          H.from_location_id=? and H.to_location_id=? ${strQty};
           select S.* from  hims_f_pharmacy_transfer_header H
           inner join  hims_f_pharmacy_transfer_detail D on H.hims_f_pharmacy_transfer_header_id=D.transfer_header_id
           inner join hims_f_pharmacy_transfer_batches S on D.hims_f_pharmacy_transfer_detail_id=S.transfer_detail_id
-          where hospital_id=? and H.from_location_id=? and H.to_location_id=? ${strQty};
+          where H.from_location_id=? and H.to_location_id=? ${strQty};
            `,
             values: [
-              req.userIdentity.hospital_id,
               input.from_location_id,
               input.to_location_id,
-              req.userIdentity.hospital_id,
               input.from_location_id,
               input.to_location_id,
-              req.userIdentity.hospital_id,
               input.from_location_id,
               input.to_location_id
             ],
@@ -593,10 +590,10 @@ export default {
             isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool
           };
-          const utilities = new algaehUtilities();
-          utilities
-            .logger()
-            .log("updatetransferEntry: ", inputParam.pharmacy_stock_detail);
+          // const utilities = new algaehUtilities();
+          // utilities
+          //   .logger()
+          //   .log("updatetransferEntry: ", inputParam.pharmacy_stock_detail);
 
           let qry = "";
           for (let i = 0; i < inputParam.pharmacy_stock_detail.length; i++) {
@@ -611,7 +608,7 @@ export default {
             );
           }
 
-          utilities.logger().log("qry: ", qry);
+          // utilities.logger().log("qry: ", qry);
           _mysql
             .executeQuery({
               query: qry,
@@ -841,6 +838,194 @@ export default {
     } catch (e) {
       _mysql.releaseConnection();
       next(e);
+    }
+  },
+
+  generateAccountingEntry: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      const utilities = new algaehUtilities();
+      let inputParam = { ...req.body };
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+        })
+        .then(result => {
+          // console.log("result", result)
+          if (
+            result[0]["product_type"] == "HIMS_ERP" ||
+            result[0]["product_type"] == "FINANCE_ERP"
+          ) {
+            _mysql
+              .executeQuery({
+                query: "select TH.hims_f_pharmacy_transfer_header_id, TH.transfer_number, \
+                FPL.head_id, FPL.child_id, FPL.hospital_id, TPL.hospital_id as to_hospital_id, TPL.head_id as to_head_id, TPL.child_id as to_child_id, \
+                TB.ack_quantity, TB.quantity_transfer,TB.unit_cost, (TB.unit_cost * TB.ack_quantity) as ack_cost, \
+                (TB.unit_cost * TB.quantity_transfer) as transfered_cost, \
+                (TB.quantity_transfer - TB.ack_quantity) as not_recived, \
+                ((TB.unit_cost) * (TB.quantity_transfer - TB.ack_quantity)) as non_reviced_transfer_cost\
+                from hims_f_pharmacy_transfer_header TH \
+                inner join hims_f_pharmacy_transfer_detail TD on TD.transfer_header_id = TH.hims_f_pharmacy_transfer_header_id \
+                inner join hims_f_pharmacy_transfer_batches TB on TB.transfer_detail_id = TD.hims_f_pharmacy_transfer_detail_id \
+                inner join hims_d_pharmacy_location FPL on FPL.hims_d_pharmacy_location_id = TH.from_location_id \
+                inner join hims_d_pharmacy_location TPL on TPL.hims_d_pharmacy_location_id = TH.to_location_id \
+                where hims_f_pharmacy_transfer_header_id=?;",
+                values: [inputParam.hims_f_pharmacy_transfer_header_id],
+                printQuery: true
+              })
+              .then(headerResult => {
+
+                const decimal_places = req.userIdentity.decimal_places;
+                // console.log("headerResult", headerResult)
+                let transfered_cost = _.sumBy(headerResult, s =>
+                  parseFloat(s.transfered_cost)
+                );
+
+                let ack_cost = _.sumBy(headerResult, s =>
+                  parseFloat(s.ack_cost)
+                );
+
+                let non_reviced_transfer_cost = _.sumBy(headerResult, s =>
+                  parseFloat(s.non_reviced_transfer_cost)
+                );
+
+                transfered_cost = utilities.decimalPoints(
+                  transfered_cost,
+                  decimal_places
+                )
+
+                ack_cost = utilities.decimalPoints(
+                  ack_cost,
+                  decimal_places
+                )
+
+                // console.log("transfered_cost", transfered_cost)
+                // console.log("ack_cost", ack_cost)
+                // console.log("non_reviced_transfer_cost", non_reviced_transfer_cost)
+
+                _mysql
+                  .executeQuery({
+                    query: "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
+                        document_number, from_screen, narration,  entered_date, entered_by) \
+                        VALUES (?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      new Date(),
+                      transfered_cost,
+                      "journal",
+                      headerResult[0].hims_f_pharmacy_transfer_header_id,
+                      headerResult[0].transfer_number,
+                      inputParam.ScreenCode,
+                      "Transfer Done",
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id
+                    ],
+                    printQuery: true
+                  })
+                  .then(day_end_header => {
+                    let insertSubDetail = []
+                    const month = moment().format("M");
+                    const year = moment().format("YYYY");
+                    const IncludeValuess = [
+                      "payment_date",
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "payment_type",
+                      "credit_amount",
+                      "hospital_id"
+                    ];
+
+                    //From Location Entry
+                    insertSubDetail.push({
+                      payment_date: new Date(),
+                      head_id: headerResult[0].head_id,
+                      child_id: headerResult[0].child_id,
+                      debit_amount: 0,
+                      payment_type: "CR",
+                      credit_amount: transfered_cost,
+                      hospital_id: headerResult[0].hospital_id
+                    });
+
+                    //Non Recived Entry
+                    if (non_reviced_transfer_cost > 0) {
+                      non_reviced_transfer_cost = utilities.decimalPoints(
+                        non_reviced_transfer_cost,
+                        decimal_places
+                      )
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: "46",
+                        child_id: "38",
+                        debit_amount: non_reviced_transfer_cost,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    }
+
+                    //To Location Entry
+                    insertSubDetail.push({
+                      payment_date: new Date(),
+                      head_id: headerResult[0].to_head_id,
+                      child_id: headerResult[0].to_child_id,
+                      debit_amount: ack_cost,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                      hospital_id: headerResult[0].to_hospital_id
+                    });
+
+
+                    // console.log("insertSubDetail", insertSubDetail)
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                        values: insertSubDetail,
+                        includeValues: IncludeValuess,
+                        bulkInsertOrUpdate: true,
+                        extraValues: {
+                          day_end_header_id: day_end_header.insertId,
+                          year: year,
+                          month: month
+                        },
+                        printQuery: false
+                      })
+                      .then(subResult => {
+                        next();
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            next();
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
     }
   }
 };

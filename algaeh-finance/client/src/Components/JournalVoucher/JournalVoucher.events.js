@@ -18,7 +18,7 @@ export function getVoucherNumber(input) {
           reject(error);
         }
       });
-    } catch (e) {}
+    } catch (e) { }
   });
 }
 export function getHeaders(input) {
@@ -44,9 +44,35 @@ export function getHeaders(input) {
     }
   });
 }
+
+export function getInvoiceDetail(input) {
+  input = input || {};
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/voucher/getUnSettledInvoices",
+        data: input,
+        method: "GET",
+        module: "finance",
+        onSuccess: response => {
+          if (response.data.success === true) {
+            resolve(response.data.result);
+          }
+        },
+        onCatch: error => {
+          reject(error);
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
 export function addJurnorLedger(input) {
   return new Promise((resolve, reject) => {
     try {
+      debugger
       algaehApiCall({
         uri: "/voucher/addVoucher",
         data: input,

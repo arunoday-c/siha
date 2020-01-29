@@ -171,6 +171,28 @@ class SalesListItems extends Component {
                                                     tabIndex: "2"
                                                 }
                                             }}
+                                        /> <AlagehFormGroup
+                                            div={{ className: "col-6 form-group mandatory" }}
+                                            label={{
+                                                forceLabel: "Unit Cost",
+                                                isImp: false
+                                            }}
+                                            textBox={{
+                                                decimal: { allowNegative: false },
+                                                className: "txt-fld",
+                                                name: "unit_cost",
+                                                value: this.state.unit_cost,
+                                                events: {
+                                                    onChange: numberchangeTexts.bind(
+                                                        this,
+                                                        this,
+                                                        context
+                                                    )
+                                                },
+                                                others: {
+                                                    tabIndex: "4"
+                                                }
+                                            }}
                                         />
                                         <AlagehFormGroup
                                             div={{ className: "col-6 form-group mandatory" }}
@@ -225,29 +247,7 @@ class SalesListItems extends Component {
                                         />
 
 
-                                        <AlagehFormGroup
-                                            div={{ className: "col-6 form-group mandatory" }}
-                                            label={{
-                                                forceLabel: "Unit Cost",
-                                                isImp: false
-                                            }}
-                                            textBox={{
-                                                decimal: { allowNegative: false },
-                                                className: "txt-fld",
-                                                name: "unit_cost",
-                                                value: this.state.unit_cost,
-                                                events: {
-                                                    onChange: numberchangeTexts.bind(
-                                                        this,
-                                                        this,
-                                                        context
-                                                    )
-                                                },
-                                                others: {
-                                                    tabIndex: "4"
-                                                }
-                                            }}
-                                        />
+                                       
                                         <div className="col-6 form-group mandatory">
                                             <AlgaehLabel
                                                 label={{
@@ -428,8 +428,8 @@ class SalesListItems extends Component {
                                                                         },
                                                                         others: {
                                                                             onFocus: e => {
-                                                                                e.target.oldvalue =
-                                                                                    e.target.value;
+                                                                                e.target.value =
+                                                                                    e.target.value === undefined ? 0 : e.target.value;
                                                                             }
                                                                         }
                                                                     }}

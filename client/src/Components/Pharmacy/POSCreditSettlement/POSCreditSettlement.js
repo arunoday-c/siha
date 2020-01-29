@@ -161,17 +161,17 @@ class POSCreditSettlement extends Component {
           printArea={
             this.state.hims_f_credit_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generatePOSCreditSettlementReceipt(this.state);
-                        }
+                menuitems: [
+                  {
+                    label: "Print Receipt",
+                    events: {
+                      onClick: () => {
+                        generatePOSCreditSettlementReceipt(this.state);
                       }
                     }
-                  ]
-                }
+                  }
+                ]
+              }
               : ""
           }
           // printArea={
@@ -245,8 +245,8 @@ class POSCreditSettlement extends Component {
                         this.state.Billexists === true
                           ? "none"
                           : this.state.patient_code
-                          ? "none"
-                          : ""
+                            ? "none"
+                            : ""
                     }}
                     onClick={PatientSearch.bind(this, this)}
                   />

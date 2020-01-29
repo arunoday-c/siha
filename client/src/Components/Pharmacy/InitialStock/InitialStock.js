@@ -720,7 +720,7 @@ class InitialStock extends Component {
                       //     : "";
                       // },
                       displayTemplate: row => {
-                        return this.state.posted === "N" ? (
+                        return this.state.dataExitst === false ? (
                           <AlagehFormGroup
                             div={{}}
                             textBox={{
@@ -747,7 +747,7 @@ class InitialStock extends Component {
                               }
                             }}
                           />
-                        ) : row.quantity;
+                        ) : parseFloat(row.quantity);
                       },
                       others: {
                         filterable: false

@@ -12,7 +12,9 @@ const {
   newProcessSalary,
   detailSalaryStatement,
   getEmployeeMiscellaneous,
-  deleteMiscEarningsDeductions
+  deleteMiscEarningsDeductions,
+  generateAccountingEntry,
+  generateAccountingEntrySalaryPayment
 } = salaryModels;
 
 export default () => {
@@ -62,6 +64,7 @@ export default () => {
   api.put(
     "/finalizedSalaryProcess",
     finalizedSalaryProcess,
+    generateAccountingEntry,
     (req, res, next) => {
       let result = "";
       if (req.flag == 1) {
@@ -69,6 +72,7 @@ export default () => {
       } else {
         result = req.records;
       }
+
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: req.flag == 1 ? false : true,
         result: result
@@ -76,12 +80,26 @@ export default () => {
     }
   );
 
-  api.put("/SaveSalaryPayment", SaveSalaryPayment, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      result: req.records
+  api.put(
+    "/generateAccountingEntrySalaryPayment",
+    generateAccountingEntrySalaryPayment,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
+  );
+
+  api.put("/SaveSalaryPayment",
+    SaveSalaryPayment,
+    generateAccountingEntrySalaryPayment,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
     });
-  });
   api.get("/detailSalaryStatement", detailSalaryStatement, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,

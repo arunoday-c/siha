@@ -29,7 +29,7 @@ class SalesOrderSwitch extends Component {
   }
 
   new_routeComponents(obj) {
-    debugger
+
     this.setState(
       {
         ...obj

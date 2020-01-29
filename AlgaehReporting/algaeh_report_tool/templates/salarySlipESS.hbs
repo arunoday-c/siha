@@ -1,0 +1,96 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+{{#each result}}
+
+<body>
+    <div class="print-body">
+
+
+        <section>
+            <table class="tableForLabel labelBlock" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Branch: </label><span class="valueText">{{hospital_name}}</span></td>
+                    <td><label class="textEnLft">Department: </label><span class="valueText">{{department_name}}</span>
+                    </td>
+                    <td><label class="textEnLft">Sub Department: </label><span class="valueText">
+                            {{sub_department_name}}</span></td>
+                    <td><label class="textEnLft">Designation:</label><span class="valueText">{{designation}}</span></td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Employee Code:</label><span class="valueText">{{employee_code}}</span>
+                    </td>
+                    <td><label class="textEnLft">Employee Name:</label><span class="valueText">{{full_name}}</span></td>
+                    <td><label class="textEnLft">Year:</label><span class="valueText">{{year}}</span></td>
+                    <td><label class="textEnLft">Month:</label><span class="valueText">{{month}}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><label class="textEnLft">Working Days:</label><span
+                            class="valueText">{{total_days}}</span></td>
+                    <td colspan="2"><label class="textEnLft">Present Days:</label><span
+                            class="valueText">{{display_present_days}}</span></td>
+                </tr>
+            </table>
+
+        </section>
+        <section style="border:1px solid #ccc;border-bottom:2px dashed #ccc; height:calc(100% - 154px);">
+            <table class="tableForData" cell-padding="0" style="width:49.8%;margin-right:0.2%;float:left;">
+                <thead>
+                    <tr>
+                        <th style="width: 60%">Earnigns</th>
+                        <th style="width: 40%">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each emp_earnings}}
+                    <tr>
+                        <td valign="top">{{earning_description}}</td>
+                        <td valign="top" class="numberFld">{{earning_amount}}</td>
+                    </tr>
+                    {{/each}}
+
+                    <tr class="footerTotalDown">
+                        <td>Total</td>
+                        <td class="numberFld">{{total_earnings}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="tableForData" cell-padding="0" style="width:49.8%;margin-left:0.2%;float:right;">
+                <thead>
+                    <tr>
+                        <th style="width: 60%">Deductions</th>
+                        <th style="width: 40%">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {{#each emp_deductions}}
+                    <tr>
+                        <td>{{deduction_description}}</td>
+                        <td class="numberFld">{{deduction_amount}}</td>
+                    </tr>
+                    {{/each}}
+
+
+                    <tr class="footerTotalDown">
+                        <td>Total</td>
+                        <td class="numberFld">{{total_deductions}}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <table class="tableForData">
+                <tr class="footerTotalUp">
+                    <td>Net Pay</td>
+                    <td class="numberFld" colspan="3">{{net_salary}}</td>
+                </tr>
+                <tr>
+                    <td>In Words</td>
+                    <td class="numberFld salaryWord" colspan="3">{{salary_in_words}}
+                    </td>
+                </tr>
+            </table>
+        </section>
+
+        <p style="text-align: center">This is a computer generated Payslip. Hence signature doesn't require.</p>
+    </div>
+</body>
+{{/each }}

@@ -672,7 +672,7 @@ class SalesOrder extends Component {
                     </button>
                   ) : null}
 
-                  <button
+                  {this.state.cancelled === "N" ? <button
                     type="button"
                     className="btn btn-other"
                     disabled={
@@ -702,7 +702,8 @@ class SalesOrder extends Component {
                         returnText: true
                       }}
                     />
-                  </button>
+                  </button> : null}
+
                 </div>
               ) : null}
             </div>

@@ -1,0 +1,60 @@
+.apply_leave {
+  h5 {
+    margin: 0 0 10px;
+    padding-bottom: 2px;
+    border-bottom: 1px dashed #d3d3d3;
+    span {
+      border-bottom: 2px solid #8c8c8c;
+
+      text-transform: uppercase;
+      line-height: 0;
+    }
+  }
+  #leaveRequestList_cntr {
+    .ReactTable {
+      max-height: 62vh !important;
+    }
+  }
+}
+
+.leaveBalanceCntr {
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 68vh;
+  max-height: 68vh;
+  margin-top: -15px;
+  margin-bottom: -15px;
+  text-align: center;
+
+  div {
+    border-bottom: 1px dashed #ddd;
+    label {
+      width: 100%;
+      font-size: 0.7rem;
+      margin: 0;
+      padding: 0;
+      font-weight: bold !important;
+    }
+    h6 {
+      span {
+        display: inline-block;
+        width: 50%;
+        padding: 0 3px;
+        small {
+          display: block;
+          font-size: 0.55rem;
+          text-transform: uppercase;
+          margin-top: 2px;
+          margin-bottom: 2px;
+        }
+      }
+    }
+    &:nth-child(odd) {
+      background: #eee;
+    }
+  }
+  .noResult {
+    padding-top: 30vh;
+    width: 100%;
+  }
+}

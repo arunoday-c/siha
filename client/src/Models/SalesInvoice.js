@@ -7,6 +7,8 @@ export default {
             invoice_number: null,
             sales_quotation_id: null,
             sales_invoice_mode: "I",
+            loaction_id: null,
+            location_name: null,
             invoice_date: new Date(),
             dataExitst: false,
             project_name: null,
@@ -20,6 +22,7 @@ export default {
             invoice_entry_detail_item: [],
             invoice_entry_detail_services: [],
             saveEnable: true,
+            postEnable: true,
 
             sub_total: null,
             discount_amount: null,

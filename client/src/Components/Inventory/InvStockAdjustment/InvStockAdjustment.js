@@ -563,7 +563,7 @@ class InvStockAdjustment extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="portlet portlet-bordered margin-bottom-15">
+                                    <div className="portlet portlet-bordered margin-bottom-15" style={{marginBottom:60}}>
                                         <div className="portlet-body">
                                             <div className="row">
                                                 <AlagehFormGroup

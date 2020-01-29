@@ -143,27 +143,48 @@ class OPCreditSettlement extends Component {
           printArea={
             this.state.hims_f_credit_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateOPCreditReceipt(this.state);
-                        }
+                menuitems: [
+                  {
+                    label: "Print Receipt",
+                    events: {
+                      onClick: () => {
+                        generateOPCreditReceipt(this.state);
                       }
                     }
-                  ]
-                }
+                  }
+                ]
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
         />
         <div style={{ marginTop: 75 }}>
+
+
+
           <div
             className="row inner-top-search"
             style={{ paddingTop: 10, paddingBottom: 10 }}
           >
-            <div className="col-lg-3">
+            <div
+              className="col-3 globalSearchCntr"
+              style={{
+                cursor: "pointer",
+                pointerEvents:
+                  this.state.Billexists === true
+                    ? "none"
+                    : ""
+              }}
+            >
+              <AlgaehLabel label={{ fieldName: "s_patient_code" }} />
+              <h6 onClick={PatientSearch.bind(this, this)}>
+                {this.state.patient_code
+                  ? this.state.patient_code
+                  : <AlgaehLabel label={{ fieldName: "patient_code" }} />}
+                <i className="fas fa-search fa-lg"></i>
+              </h6>
+            </div>
+            {/* <div className="col-lg-3">
               <div
                 className="row"
                 style={{
@@ -201,7 +222,7 @@ class OPCreditSettlement extends Component {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="col-lg-9">
               <div className="row">
                 <div className="col-lg-3">

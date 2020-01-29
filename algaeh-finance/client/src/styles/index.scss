@@ -705,25 +705,45 @@ ul.ul-legend {
   border: 0;
 }
 /* Btn Circle */
-.actions .btn.btn-circle {
-  width: 28px;
-  height: 28px;
-  padding: 3px 7px;
-  text-align: center;
-}
-.actions .btn.btn-circle i {
-  line-height: 22px;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+.actions {
+  .btn-circle {
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    padding: 3px 7px;
+    text-align: center;
+    border-color: lighten($color-black, 10%);
+    i {
+      color: lighten($color-black, 10%);
+      line-height: 22px;
+    }
+    &:hover {
+      color: #fff;
+      box-shadow: none;
+      background: lighten($primary-color, 10%);
+      border-color: #01968c;
+      i {
+        color: #fff;
+      }
+    }
+  }
+  .btn-primary .btn-circle {
+    i {
+      color: $color-white;
+      line-height: 22px;
+    }
+  }
+  .btn-green {
+    cursor: pointer;
+    .active {
+      color: #fff;
+      box-shadow: none;
+      background: lighten($primary-color, 10%);
+      border-color: #01968c;
+    }
+  }
 }
 
-/* Btn Green */
-.actions .btn.btn-green.active,
-.actions .btn.btn-green:hover {
-  color: #fff;
-  box-shadow: none;
-  background: lighten($primary-color, 10%);
-  border-color: #01968c;
-}
 .customRadio {
   border-bottom: 1px solid #eee;
   padding-bottom: 9px;
@@ -1003,6 +1023,9 @@ ul.ul-legend {
       i {
         text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
       }
+      label {
+        cursor: pointer;
+      }
     }
     .btn:disabled {
       cursor: not-allowed !important;
@@ -1045,8 +1068,8 @@ ul.ul-legend {
     }
     .btn-other {
       background: none;
-      color: lighten($color-black, 90%);
-      border: 1px solid lighten($color-black, 90%);
+      color: lighten($color-black, 10%);
+      border: 1px solid lighten($color-black, 10%);
       &:hover,
       &:focus {
         background-color: darken($primary-color, 10%);

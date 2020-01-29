@@ -3,7 +3,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import SalesReturnputs from "../../../Models/SalesReturn";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage, getCookie } from "../../../utils/algaehApiCall";
 import _ from "lodash";
 
 const changeTexts = ($this, ctrl, e) => {
@@ -206,6 +206,8 @@ const SaveSalesReturn = $this => {
 
       inputObj.pharmacy_stock_detail[i].operation = "+";
     }
+
+    inputObj.ScreenCode = getCookie("ScreenCode")
     algaehApiCall({
       uri: "/salesReturn/addsalesReturn",
       module: "pharmacy",
@@ -317,7 +319,7 @@ const getPOSEntry = $this => {
         data.from_bill_id = data.hims_f_billing_header_id;
         data.counter_id = $this.state.counter_id || null;
         data.shift_id = $this.state.shift_id || null;
-
+        data.credit_amount = parseFloat(data.balance_credit);
         data.insured = data.insurance_provider_id !== null ? "Y" : "N";
 
         for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {

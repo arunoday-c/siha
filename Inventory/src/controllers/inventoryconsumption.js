@@ -3,7 +3,7 @@ import utlities from "algaeh-utilities";
 import invModels from "../models/inventoryconsumption";
 import comModels from "../models/commonFunction";
 
-const { getInventoryConsumption, addInventoryConsumption } = invModels;
+const { getInventoryConsumption, addInventoryConsumption, generateAccountingEntry } = invModels;
 const { updateIntoInvItemLocation } = comModels;
 
 export default () => {
@@ -22,6 +22,7 @@ export default () => {
   api.post(
     "/addInventoryConsumption",
     addInventoryConsumption,
+    generateAccountingEntry,
     updateIntoInvItemLocation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

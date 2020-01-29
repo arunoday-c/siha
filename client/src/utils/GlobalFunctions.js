@@ -50,6 +50,19 @@ export function getYears() {
   return allYears;
 }
 
+export function getYearswithMinMax(min, max) {
+  if (min < max) {
+    min = min - 20;
+    let allYears = [];
+    for (let x = min; x <= max; x++) {
+      allYears.push({ name: x, value: x });
+    }
+    return allYears;
+  } else {
+    return [{ name: "No selection available", value: "" }];
+  }
+}
+
 export function getDays() {
   let monthDays = [];
   for (let i = 1; i <= 31; i++) {

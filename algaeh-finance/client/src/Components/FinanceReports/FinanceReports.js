@@ -4,6 +4,8 @@ import { AlgaehMessagePop } from "algaeh-react-components";
 import { Spin, Button, Tooltip } from "antd";
 import Balance from "./FinanceStandardReports/balancesheet";
 import TrailBalance from "./FinanceStandardReports/trailbalance";
+import ArAging from "./FinanceStandardReports/arAgingReport";
+import ApAging from "./FinanceStandardReports/apAgingReport";
 import CostCenter from "../costCenterComponent";
 import { getBalanceSheet } from "./FinanceReportEvents";
 import { newAlgaehApi } from "../../hooks";
@@ -17,6 +19,10 @@ function layoutReducer(state, action) {
       return { ...state, col: 12 };
     case "switchCol":
       return { ...state, col: state.col === 12 ? 24 : 12 };
+    case "expand":
+      return { ...state, expand: true };
+    case "collapse":
+      return { ...state, expand: false };
     default:
       return state;
   }
@@ -28,7 +34,8 @@ export default function FinanceReports() {
   const [selected, setSelected] = useState("");
   const [data, setData] = useState({});
   const [layout, layoutDispatch] = useReducer(layoutReducer, {
-    cols: 24
+    cols: 24,
+    expand: false
   });
   const [trailBanlance, setTrailBalance] = useState({});
 
@@ -156,6 +163,30 @@ export default function FinanceReports() {
               }}
             >
               Trail Balance
+            </li>{" "}
+            <li
+              className={selectedClass("AR")}
+              onClick={() => {
+                if (checkExists()) {
+                  //loadReport({ url: "getArAging", reportName: "AR" });
+                  //  setLoading(true);
+                  setSelected("AR");
+                }
+              }}
+            >
+              AR Aging
+            </li>
+            <li
+              className={selectedClass("AP")}
+              onClick={() => {
+                if (checkExists()) {
+                  // loadReport({ url: "getApAging", reportName: "AP" });
+                  // setLoading(true);
+                  setSelected("AP");
+                }
+              }}
+            >
+              AP Aging
             </li>
           </ul>
         </div>
@@ -180,6 +211,10 @@ export default function FinanceReports() {
               />
             ) : selected === "TB" ? (
               <TrailBalance layout={layout} data={trailBanlance} />
+            ) : selected === "AR" ? (
+              <ArAging layout={layout} />
+            ) : selected === "AP" ? (
+              <ApAging layout={layout} />
             ) : null}
           </Spin>
         </div>
@@ -190,60 +225,34 @@ export default function FinanceReports() {
                 <Button
                   icon="layout"
                   size="large"
+                  disabled={!selected}
                   onClick={() => layoutDispatch({ type: "switchCol" })}
                 />
               </Tooltip>
             </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
-            <li>
-              <span>
-                <i className="fas fa-eye"></i>
-              </span>
-            </li>
+            {!layout.expand ? (
+              <li>
+                <Tooltip title="Expand" placement="left">
+                  <Button
+                    icon="arrows-alt"
+                    size="large"
+                    disabled={!selected}
+                    onClick={() => layoutDispatch({ type: "expand" })}
+                  />
+                </Tooltip>
+              </li>
+            ) : (
+              <li>
+                <Tooltip title="Shrink" placement="left">
+                  <Button
+                    icon="shrink"
+                    size="large"
+                    disabled={!selected}
+                    onClick={() => layoutDispatch({ type: "collapse" })}
+                  />
+                </Tooltip>
+              </li>
+            )}
           </ul>
         </div>
       </div>

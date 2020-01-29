@@ -494,7 +494,7 @@ const SavePosEnrty = $this => {
     delete posdata.patInsuranceFrontImg;
     delete posdata.patInsuranceBackImg;
 
-    debugger
+
     algaehApiCall({
       uri: callUri,
       module: "pharmacy",
@@ -659,10 +659,13 @@ const PostPosEntry = $this => {
           } else {
             posdata = $this.state;
           }
+
+          posdata.ScreenCode = getCookie("ScreenCode")
           const _patInsuranceFrontImg = $this.state.patInsuranceFrontImg;
           const _patInsuranceBackImg = $this.state.patInsuranceBackImg;
           delete posdata.patInsuranceFrontImg;
           delete posdata.patInsuranceBackImg;
+
           algaehApiCall({
             uri: callUri,
             data: posdata,
@@ -979,6 +982,7 @@ const nationalityhandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
+  debugger
   const hospitaldetails = JSON.parse(
     AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
   );

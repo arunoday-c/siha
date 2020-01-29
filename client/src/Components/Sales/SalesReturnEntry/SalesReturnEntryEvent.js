@@ -1,13 +1,8 @@
-import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
+import { swalMessage, algaehApiCall, getCookie } from "../../../utils/algaehApiCall";
 import moment from "moment";
-import Enumerable from "linq";
-
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-import POReturnEntry from "../../../Models/POReturnEntry";
-
-let texthandlerInterval = null;
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -91,15 +86,12 @@ const numberchangeTexts = ($this, context, e) => {
   } else {
     $this.setState({ [name]: value });
 
-    clearInterval(texthandlerInterval);
-    texthandlerInterval = setInterval(() => {
-      if (context !== undefined) {
-        context.updateState({
-          [name]: value
-        });
-      }
-      clearInterval(texthandlerInterval);
-    }, 500);
+    if (context !== undefined) {
+      context.updateState({
+        [name]: value
+      });
+    }
+
   }
 };
 
@@ -130,7 +122,7 @@ const InvoiceSearch = ($this, e) => {
         method: "GET",
         onSuccess: response => {
           if (response.data.success) {
-            debugger
+
             let data = response.data.records;
 
             data.saveEnable = false;
@@ -341,6 +333,8 @@ const PostSalesReturnEntry = $this => {
 
     InputObj.sales_return_detail[i].operation = "+";
   }
+
+  InputObj.ScreenCode = getCookie("ScreenCode")
 
   algaehApiCall({
     uri: "/SalesReturnEntry/postSalesReturnEntry",

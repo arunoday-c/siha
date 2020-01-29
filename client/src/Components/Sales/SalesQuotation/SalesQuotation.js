@@ -321,31 +321,42 @@ class SalesQuotation extends Component {
                     }
                   }}
                 />
-                <AlagehAutoComplete
-                  div={{ className: "col mandatory" }}
-                  label={{ forceLabel: "Payment Terms", isImp: true }}
-                  selector={{
-                    sort: "off",
-                    name: "payment_terms",
-                    className: "select-fld",
-                    value: this.state.payment_terms,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.PAYMENT_TERMS
-                    },
-                    others: {
-                      disabled: this.state.dataExists
-                    },
-                    onChange: changeTexts.bind(this, this),
-                    onClear: () => {
-                      this.setState({
-                        payment_terms: null
-                      });
-                    }
-                  }}
-                />
 
+                {this.HRMNGMT_Active ? (
+                  <div className={"col globalSearchCntr" + class_finder}>
+                    <AlgaehLabel
+                      label={{ forceLabel: "Sales Person", isImp: true }}
+                    />
+                    <h6
+                      className="mandatory"
+                      onClick={employeeSearch.bind(this, this)}
+                    >
+                      {this.state.employee_name
+                        ? this.state.employee_name
+                        : "Search Employee"}
+                      <i className="fas fa-search fa-lg" />
+                    </h6>
+                  </div>
+                ) : (
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Name of Sales Person",
+                      isImp: false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "sales_man",
+                      value: this.state.sales_man,
+                      events: {
+                        onChange: changeTexts.bind(this, this)
+                      },
+                      others: {
+                        disabled: this.state.dataExists
+                      }
+                    }}
+                  />
+                )}
                 <AlgaehDateHandler
                   div={{ className: "col mandatory" }}
                   label={{ forceLabel: "quote validity", isImp: true }}
@@ -378,39 +389,6 @@ class SalesQuotation extends Component {
                   value={this.state.delivery_date}
                 />
 
-                {this.HRMNGMT_Active ? (
-                  <div className={"col globalSearchCntr" + class_finder}>
-                    <AlgaehLabel
-                      label={{ forceLabel: "Sales Person", isImp: true }}
-                    />
-                    <h6 onClick={employeeSearch.bind(this, this)}>
-                      {this.state.employee_name
-                        ? this.state.employee_name
-                        : "Search Employee"}
-                      <i className="fas fa-search fa-lg" />
-                    </h6>
-                  </div>
-                ) : (
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      forceLabel: "Name of Sales Person",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "sales_man",
-                      value: this.state.sales_man,
-                      events: {
-                        onChange: changeTexts.bind(this, this)
-                      },
-                      others: {
-                        disabled: this.state.dataExists
-                      }
-                    }}
-                  />
-                )}
-
                 <AlagehFormGroup
                   div={{ className: "col form-group" }}
                   label={{
@@ -434,6 +412,30 @@ class SalesQuotation extends Component {
                   }}
                 />
 
+                <AlagehAutoComplete
+                  div={{ className: "col mandatory" }}
+                  label={{ forceLabel: "Payment Terms", isImp: true }}
+                  selector={{
+                    sort: "off",
+                    name: "payment_terms",
+                    className: "select-fld",
+                    value: this.state.payment_terms,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.PAYMENT_TERMS
+                    },
+                    others: {
+                      disabled: this.state.dataExists
+                    },
+                    onChange: changeTexts.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        payment_terms: null
+                      });
+                    }
+                  }}
+                />
                 <AlagehFormGroup
                   div={{ className: "col" }}
                   label={{
