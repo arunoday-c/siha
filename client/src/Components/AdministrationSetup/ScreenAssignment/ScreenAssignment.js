@@ -236,7 +236,7 @@ class ScreenAssignment extends Component {
                         onClick={this.assignScreens.bind(this)}
                       >
                         <AlgaehLabel label={{ forceLabel: ">>" }} />
-                      </button>{" "}
+                      </button>
                       <button
                         type="button"
                         className="btn btn-primary"

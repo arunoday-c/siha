@@ -24,6 +24,25 @@ export default function ScreenAssignmentEvents() {
     },
     assignSelectedModules: that => {
       console.log("This", that.state.selectedModules);
+      const module = Object.keys(that.state.selectedModules).map(item => {
+        const selected = that.state.modules.find(f => f.module_code === item);
+        if (selected !== undefined) {
+          const screens = Object.keys(that.state.selectedModules[item]).map(
+            screen => {
+              return selected.ScreenList.find(s => s.screen_code === screen);
+            }
+          );
+          return {
+            module_code: selected.module_code,
+            module_id: selected.module_id,
+            module_name: selected.module_name,
+            other_language: selected.other_language,
+            order: selected.order,
+            ScreenList: screens
+          };
+        }
+      });
+      console.log("module", module);
     },
     assignScreens: $this => {
       //To build delete inputs
