@@ -18,37 +18,17 @@ import {
   getSalesOptions,
   checkBoxEvent
 } from "./ERPSettingsEvents";
-import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 
+import { MainContext } from "algaeh-react-components/context";
 export default class ERPSettings extends Component {
   constructor(props) {
     super(props);
-    let Activated_Modueles = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    );
 
-    const PROC_Active = Activated_Modueles.filter(f => {
-      return f.module_code === "PROC";
-    });
+    this.PROC_Active = false;
+    this.PHCY_Active = false;
+    this.INVTRY_Active = false;
+    this.SALES_Active = false;
 
-    const PHCY_Active = Activated_Modueles.filter(f => {
-      return f.module_code === "PHCY";
-    });
-
-    const INVTRY_Active = Activated_Modueles.filter(f => {
-      return f.module_code === "INVTRY";
-    });
-
-    const SALES_Active = Activated_Modueles.filter(f => {
-      return f.module_code === "SALES";
-    });
-
-    this.PROC_Active = PROC_Active.length > 0 ? true : false;
-    this.PHCY_Active = PHCY_Active.length > 0 ? true : false;
-    this.INVTRY_Active = INVTRY_Active.length > 0 ? true : false;
-    this.SALES_Active = SALES_Active.length > 0 ? true : false;
-
-    debugger;
     this.state = {
       hims_d_pharmacy_options_id: null,
       notification_before: 0,
@@ -65,6 +45,36 @@ export default class ERPSettings extends Component {
       sales_order_auth_level: "1",
       services_required: "N"
     };
+  }
+  static contextType = MainContext;
+
+  componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.PHCY_Active =
+      userToken.product_type === "HIMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "ONLY_PHARMACY"
+        ? true
+        : false;
+    this.PROC_Active =
+      userToken.product_type === "HIMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "ONLY_PHARMACY"
+        ? true
+        : false;
+    this.INVTRY_Active =
+      userToken.product_type === "HIMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "ONLY_PHARMACY"
+        ? true
+        : false;
+    this.SALES_Active =
+      userToken.product_type === "HIMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "ONLY_PHARMACY"
+        ? true
+        : false;
 
     if (this.PHCY_Active) {
       getPharmacyOptions(this, this);
@@ -177,7 +187,10 @@ export default class ERPSettings extends Component {
                       onClick={savePharmacyOptions.bind(this, this)}
                     >
                       <AlgaehLabel
-                        label={{ forceLabel: "Save", returnText: true }}
+                        label={{
+                          forceLabel: "Save",
+                          returnText: true
+                        }}
                       />
                     </button>
                   </div>
@@ -234,7 +247,10 @@ export default class ERPSettings extends Component {
                       onClick={saveInventoryOptions.bind(this, this)}
                     >
                       <AlgaehLabel
-                        label={{ forceLabel: "Save", returnText: true }}
+                        label={{
+                          forceLabel: "Save",
+                          returnText: true
+                        }}
                       />
                     </button>
                   </div>
@@ -284,7 +300,10 @@ export default class ERPSettings extends Component {
                       onClick={savePOOptions.bind(this, this)}
                     >
                       <AlgaehLabel
-                        label={{ forceLabel: "Save", returnText: true }}
+                        label={{
+                          forceLabel: "Save",
+                          returnText: true
+                        }}
                       />
                     </button>
                   </div>
@@ -344,7 +363,9 @@ export default class ERPSettings extends Component {
                       />
                       <span>
                         <AlgaehLabel
-                          label={{ forceLabel: "Sales Services Required" }}
+                          label={{
+                            forceLabel: "Sales Services Required"
+                          }}
                         />
                       </span>
                     </label>
@@ -356,7 +377,10 @@ export default class ERPSettings extends Component {
                       onClick={saveSalesOptions.bind(this, this)}
                     >
                       <AlgaehLabel
-                        label={{ forceLabel: "Save", returnText: true }}
+                        label={{
+                          forceLabel: "Save",
+                          returnText: true
+                        }}
                       />
                     </button>
                   </div>
