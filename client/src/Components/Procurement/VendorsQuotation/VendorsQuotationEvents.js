@@ -3,7 +3,6 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import _ from "lodash";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 const texthandle = ($this, e) => {
     let name = e.name || e.target.name;
@@ -171,10 +170,7 @@ const getCtrlCode = ($this, docNumber) => {
         quotation_detail: [],
         dataExitst: false,
         ReqData: true,
-        saveEnable: true,
-        decimal_places: JSON.parse(
-            AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        ).decimal_places,
+        saveEnable: true
     };
 
     IOputs.dataExitst = false;

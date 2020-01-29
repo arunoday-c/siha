@@ -30,15 +30,13 @@ import {
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POEntry from "../../../Models/POEntry";
 import Enumerable from "linq";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 
 class PurchaseOrderEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      decimal_places: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).decimal_places
+      decimal_places: null
       // po_auth_level: "1"
     };
     getVendorMaster(this, this);
@@ -50,7 +48,12 @@ class PurchaseOrderEntry extends Component {
     this.setState(IOputs);
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      decimal_places: userToken.decimal_places
+    });
     if (
       this.props.purchase_number !== undefined &&
       this.props.purchase_number.length !== 0
@@ -64,15 +67,15 @@ class PurchaseOrderEntry extends Component {
       this.state.po_from === null
         ? []
         : Enumerable.from(this.props.polocations)
-            .where(w => w.location_type === "WH")
-            .toArray();
+          .where(w => w.location_type === "WH")
+          .toArray();
 
     const class_finder =
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === true
-        ? " disableFinder"
-        : "";
+          ? " disableFinder"
+          : "";
     return (
       <div>
         <BreadCrumb
@@ -141,17 +144,17 @@ class PurchaseOrderEntry extends Component {
                   />
                   <h6>
                     {this.state.authorize1 === "Y" &&
-                    this.state.authorize2 === "Y" ? (
-                      <span className="badge badge-success">Authorized</span>
-                    ) : this.state.authorize1 === "Y" &&
-                      this.state.authorize2 === "N" ? (
-                      <span className="badge badge-danger">Pending</span>
-                    ) : this.state.authorize1 === "N" &&
-                      this.state.authorize2 === "N" ? (
-                      <span className="badge badge-danger">Pending</span>
-                    ) : (
-                      "-------"
-                    )}
+                      this.state.authorize2 === "Y" ? (
+                        <span className="badge badge-success">Authorized</span>
+                      ) : this.state.authorize1 === "Y" &&
+                        this.state.authorize2 === "N" ? (
+                          <span className="badge badge-danger">Pending</span>
+                        ) : this.state.authorize1 === "N" &&
+                          this.state.authorize2 === "N" ? (
+                            <span className="badge badge-danger">Pending</span>
+                          ) : (
+                            "-------"
+                          )}
                   </h6>
                 </div>
               ) : null}
@@ -160,25 +163,25 @@ class PurchaseOrderEntry extends Component {
           printArea={
             this.state.purchase_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Receipt for Internal",
-                      events: {
-                        onClick: () => {
-                          generatePOReceipt(this.state);
-                        }
-                      }
-                    },
-                    {
-                      label: "Receipt for Vendor",
-                      events: {
-                        onClick: () => {
-                          generatePOReceiptNoPrice(this.state);
-                        }
+                menuitems: [
+                  {
+                    label: "Receipt for Internal",
+                    events: {
+                      onClick: () => {
+                        generatePOReceipt(this.state);
                       }
                     }
-                  ]
-                }
+                  },
+                  {
+                    label: "Receipt for Vendor",
+                    events: {
+                      onClick: () => {
+                        generatePOReceiptNoPrice(this.state);
+                      }
+                    }
+                  }
+                ]
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -437,8 +440,8 @@ class PurchaseOrderEntry extends Component {
                       ? true
                       : this.state.authorize1 === "Y" &&
                         this.state.authorize2 === "Y"
-                      ? true
-                      : false
+                        ? true
+                        : false
                   }
                   onClick={AuthorizePOEntry.bind(
                     this,
@@ -452,30 +455,30 @@ class PurchaseOrderEntry extends Component {
                         this.state.authorize1 === "N"
                           ? "Authorize 1"
                           : this.state.po_auth_level === "2"
-                          ? "Authorize 2"
-                          : "Authorize 1",
+                            ? "Authorize 2"
+                            : "Authorize 1",
                       returnText: true
                     }}
                   />
                 </button>
               ) : // <button
-              //   type="button"
-              //   className="btn btn-other"
-              //   disabled={
-              //     this.state.authorize1 === "Y"
-              //       ? true
-              //       : this.state.authorizeBtn
-              //   }
-              //   onClick={AuthorizePOEntry.bind(this, this)}
-              // >
-              //   <AlgaehLabel
-              //     label={{
-              //       forceLabel: "Authorize",
-              //       returnText: true
-              //     }}
-              //   />
-              // </button>
-              null}
+                //   type="button"
+                //   className="btn btn-other"
+                //   disabled={
+                //     this.state.authorize1 === "Y"
+                //       ? true
+                //       : this.state.authorizeBtn
+                //   }
+                //   onClick={AuthorizePOEntry.bind(this, this)}
+                // >
+                //   <AlgaehLabel
+                //     label={{
+                //       forceLabel: "Authorize",
+                //       returnText: true
+                //     }}
+                //   />
+                // </button>
+                null}
             </div>
           </div>
         </div>

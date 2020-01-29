@@ -25,7 +25,7 @@ import {
   generateVendorQuotation,
   getVendorMaster
 } from "./VendorsQuotationEvents";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 
 class VendorsQuotation extends Component {
   constructor(props) {
@@ -46,10 +46,7 @@ class VendorsQuotation extends Component {
       quotation_detail: [],
       dataExitst: false,
       ReqData: true,
-      saveEnable: true,
-      decimal_places: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).decimal_places
+      saveEnable: true
     };
     this.baseState = this.state;
     getVendorMaster(this, this);
@@ -60,8 +57,8 @@ class VendorsQuotation extends Component {
       this.state.dataExitst === true
         ? " disableFinder"
         : this.state.ReqData === true
-        ? " disableFinder"
-        : "";
+          ? " disableFinder"
+          : "";
     return (
       <div>
         <BreadCrumb
@@ -121,8 +118,8 @@ class VendorsQuotation extends Component {
                 <h6>
                   {this.state.vendor_quotation_date
                     ? moment(this.state.vendor_quotation_date).format(
-                        Options.dateFormat
-                      )
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -131,17 +128,17 @@ class VendorsQuotation extends Component {
           printArea={
             this.state.hims_f_procurement_vendor_quotation_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Vendor Quotation",
-                      events: {
-                        onClick: () => {
-                          generateVendorQuotation(this.state);
-                        }
+                menuitems: [
+                  {
+                    label: "Print Vendor Quotation",
+                    events: {
+                      onClick: () => {
+                        generateVendorQuotation(this.state);
                       }
                     }
-                  ]
-                }
+                  }
+                ]
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
