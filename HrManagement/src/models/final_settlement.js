@@ -1,6 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import algaehUtilities from "algaeh-utilities/utilities";
+import moment from "moment"
 
 export default {
   finalSettlement: (req, res, next) => {
@@ -11,16 +12,16 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT hims_f_final_settlement_header_id,total_amount,total_earnings,total_deductions,total_loans,total_salary,total_leave_encash as total_leave_encash_amount,\
-            total_eos as gratuity_amount,forfiet,remarks \
-  FROM hims_f_final_settlement_header where employee_id=?; select  E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status,\
-  E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
-    E.sub_department_id,E.employee_designation_id,E.date_of_birth,SD.sub_department_name,SD.arabic_sub_department_name \
-    from hims_d_employee E Left join hims_d_sub_department SD \
-   on SD.hims_d_sub_department_id = E.sub_department_id \
-   left join hims_d_title T \
-   on T.his_d_title_id = E.title_id \
-   where E.hims_d_employee_id=?",
+            "SELECT hims_f_final_settlement_header_id,total_amount,total_earnings,total_deductions,total_loans as total_loan_amount,\
+              total_salary,total_leave_encash as total_leave_encash_amount, total_eos as gratuity_amount,\
+              forfiet,remarks FROM hims_f_final_settlement_header where employee_id=?; \
+              select  E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status,\
+              E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
+              E.sub_department_id,E.employee_designation_id,E.date_of_birth,SD.sub_department_name,\
+              SD.arabic_sub_department_name from hims_d_employee E \
+              Left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id \
+              left join hims_d_title T on T.his_d_title_id = E.title_id \
+              where E.hims_d_employee_id=?",
           values: [_input.employee_id, _input.employee_id]
         })
         .then(headerresult => {
@@ -31,23 +32,23 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select employee_id,loan_id,application_reason,hims_f_loan_application_id,approved_amount, loan_amount,\
-      installment_amount,pending_loan,loan_tenure,start_month,start_year,loan_application_date,L.loan_description \
-      from hims_f_loan_application,hims_d_loan L where loan_authorized = 'APR' and loan_closed='N' and loan_amount >0 \
-      and employee_id=? and L.hims_d_loan_id=hims_f_loan_application.loan_id; \
-      select gratuity_in_final_settle from hims_d_end_of_service_options;\
-      select hims_f_salary_id, sum(net_salary)total_salary from hims_f_salary where employee_id=? \
-      and salary_settled='N' and salary_paid='N' group by employee_id; \
-      SELECT hims_f_leave_encash_header_id, sum(total_amount)total_leave_amount FROM hims_f_leave_encash_header \
-      where employee_id =? and authorized='APR' group by employee_id; \
-      select  E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status,\
-E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
-E.sub_department_id,E.employee_designation_id,E.date_of_birth,SD.sub_department_name,SD.arabic_sub_department_name \
-from hims_d_employee E Left join hims_d_sub_department SD \
-on SD.hims_d_sub_department_id = E.sub_department_id \
-left join hims_d_title T \
-on T.his_d_title_id = E.title_id \
-where E.hims_d_employee_id=? ",
+                  "select employee_id,loan_id,application_reason,hims_f_loan_application_id,approved_amount, \
+                  loan_amount, installment_amount,pending_loan,loan_tenure,start_month,start_year, \
+                  loan_application_date,L.loan_description from hims_f_loan_application, hims_d_loan L \
+                  where loan_authorized = 'APR' and loan_closed='N' and loan_amount >0 and employee_id=? \
+                  and L.hims_d_loan_id=hims_f_loan_application.loan_id; \
+                  select gratuity_in_final_settle from hims_d_end_of_service_options;\
+                  select hims_f_salary_id, sum(net_salary)total_salary from hims_f_salary where employee_id=? \
+                  and salary_settled='N' and salary_paid='N' group by employee_id; \
+                  SELECT hims_f_leave_encash_header_id, sum(total_amount)total_leave_amount FROM hims_f_leave_encash_header \
+                  where employee_id =? and authorized='APR' group by employee_id; \
+                  select  E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status,\
+                  E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
+                  E.sub_department_id,E.employee_designation_id,E.date_of_birth,SD.sub_department_name,\
+                  SD.arabic_sub_department_name from hims_d_employee E \
+                  Left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id \
+                  left join hims_d_title T on T.his_d_title_id = E.title_id \
+                  where E.hims_d_employee_id=? ",
                 values: [
                   _input.employee_id,
                   _input.employee_id,
@@ -80,9 +81,9 @@ where E.hims_d_employee_id=? ",
                 })
                   .then(data => {
                     utilities.logger().log("data Y: ", data);
-                    const _total_loan_amount = _.chain(_loanList).sumBy(
-                      s => s.pending_loan
-                    );
+                    const _total_loan_amount = _loanList.length > 0 ? _.chain(_loanList).sumBy(
+                      s => parseFloat(s.pending_loan)
+                    ) : 0;
                     let _gratuity = 0;
                     let _hims_f_end_of_service_id = null;
                     if (data !== null && data.length > 0) {
@@ -123,12 +124,15 @@ where E.hims_d_employee_id=? ",
               .executeQuery({
                 query:
                   "SELECT LM.loan_description,L.balance_amount as pending_loan FROM hims_f_final_settle_loan_details L, hims_d_loan LM \
-              where L.loan_application_id=LM.hims_d_loan_id and L.final_settlement_header_id=?; \
-              SELECT earnings_id, D.earning_deduction_description as earning_name, amount FROM hims_f_final_settle_earnings_detail \
-              ,hims_d_earning_deduction D where D.hims_d_earning_deduction_id = hims_f_final_settle_earnings_detail.earnings_id and \
-              final_settlement_header=?; \
-              SELECT D.earning_deduction_description as deduction_name,amount FROM hims_f_final_settle_deductions_detail,hims_d_earning_deduction D where \
-              D.hims_d_earning_deduction_id = hims_f_final_settle_deductions_detail.deductions_id and final_settlement_header_id=?;",
+                  where L.loan_application_id=LM.hims_d_loan_id and L.final_settlement_header_id=?; \
+                  SELECT earnings_id, D.earning_deduction_description as earning_name, amount \
+                  FROM hims_f_final_settle_earnings_detail ,hims_d_earning_deduction D \
+                  where D.hims_d_earning_deduction_id = hims_f_final_settle_earnings_detail.earnings_id and \
+                  final_settlement_header=?; \
+                  SELECT D.earning_deduction_description as deduction_name,amount FROM \
+                  hims_f_final_settle_deductions_detail, hims_d_earning_deduction D where \
+                  D.hims_d_earning_deduction_id = hims_f_final_settle_deductions_detail.deductions_id and \
+                  final_settlement_header_id=?;",
                 values: [
                   _header[0]["hims_f_final_settlement_header_id"],
                   _header[0]["hims_f_final_settlement_header_id"],
@@ -178,19 +182,11 @@ where E.hims_d_employee_id=? ",
           table_name: "hims_f_hrpayroll_numgen"
         })
         .then(generatedNumbers => {
-          // if (newNumber.length === 0) {
-          //   _mysql.rollBackTransaction(() => {
-          //     next(
-          //       utlities
-          //         .httpStatus()
-          //         .generateError(
-          //           utlities.httpStatus().forbidden,
-          //           "Please add options for final settlement"
-          //         )
-          //     );
-          //     return;
-          //   });
-          // }
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection: _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
 
           _mysql
             .executeQuery({
@@ -205,7 +201,7 @@ where E.hims_d_employee_id=? ",
                 generatedNumbers.FINAL_SETTLEMENT,
                 _input.employee_id,
                 new Date(),
-                "SET",
+                "AUT",
                 _input.total_amount,
                 _input.total_earnings,
                 _input.total_deductions,
@@ -237,6 +233,9 @@ where E.hims_d_employee_id=? ",
               ]
             })
             .then(header_result => {
+              req.body.final_settlement = generatedNumbers.FINAL_SETTLEMENT
+              req.body.hims_f_final_settlement_header_id = header_result.insertId
+
               let query = "";
               for (let i = 0; i < _input.loans.length; i++) {
                 query += _mysql.mysqlQueryFormat(
@@ -307,16 +306,18 @@ where E.hims_d_employee_id=? ",
                   query: query
                 })
                 .then(rest => {
-                  _mysql.commitTransaction((error, resu) => {
-                    if (error) {
-                      _mysql.rollBackTransaction(() => {
-                        next(error);
-                      });
-                    } else {
-                      req.records = rest;
-                      next();
-                    }
-                  });
+                  req.records = rest;
+                  next();
+                  // _mysql.commitTransaction((error, resu) => {
+                  //   if (error) {
+                  //     _mysql.rollBackTransaction(() => {
+                  //       next(error);
+                  //     });
+                  //   } else {
+                  //     req.records = rest;
+                  //     next();
+                  //   }
+                  // });
                 })
                 .catch(e => {
                   console.log("REsult", e);
@@ -338,6 +339,215 @@ where E.hims_d_employee_id=? ",
         });
     } catch (e) {
       next(e);
+    }
+  },
+
+  generateAccountingEntry: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+
+      let inputParam = req.body;
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
+              select account, head_id, child_id from finance_accounts_maping \
+              where account in ('SAL_PYBLS', 'LV_SAL_PYBL', 'GRAT_PYBL', 'FIN_STL_PYBL');",
+        })
+        .then(result => {
+          const org_data = result[0]
+
+          if (
+            org_data[0]["product_type"] == "HIMS_ERP" ||
+            org_data[0]["product_type"] == "FINANCE_ERP"
+          ) {
+            const salary_pay_acc = result[1].find(f => f.account === "SAL_PYBLS");
+            const lv_salary_pay_acc = result[1].find(f => f.account === "LV_SAL_PYBL");
+            const gratuity_pay_acc = result[1].find(f => f.account === "GRAT_PYBL");
+            const final_settle_pay_acc = result[1].find(f => f.account === "FIN_STL_PYBL");
+
+            _mysql
+              .executeQueryWithTransaction({
+                query: `SELECT hims_f_final_settlement_header_id, final_settlement_number, total_salary, total_amount, total_eos, \
+                        total_leave_encash, employee_code, full_name, E.hospital_id FROM hims_f_final_settlement_header SH
+                        inner join hims_d_employee E on E.hims_d_employee_id = SH.employee_id 
+                        where hims_f_final_settlement_header_id=?;
+                        select hims_f_final_settlement_header_id, curDate() payment_date,SE.amount as debit_amount, \
+                        ED.head_id, ED.child_id, 'DR' as payment_type, 0 as credit_amount, S.hospital_id \
+                        from hims_f_final_settlement_header s 
+                        left join hims_f_final_settle_earnings_detail SE on SE.final_settlement_header = S.hims_f_final_settlement_header_id
+                        inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id \
+                        where hims_f_final_settlement_header_id=?;
+                        select hims_f_final_settlement_header_id, curDate() payment_date, SD.amount as credit_amount, \
+                        ED.head_id, ED.child_id, 'CR' as payment_type, 0 as debit_amount ,S.hospital_id
+                        from hims_f_final_settlement_header s 
+                        left join hims_f_final_settle_deductions_detail SD on SD.final_settlement_header_id = S.hims_f_final_settlement_header_id 
+                        inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SD.deductions_id
+                        where hims_f_final_settlement_header_id=?;
+                        select hims_f_final_settlement_header_id, curDate() payment_date, \
+                        SL.balance_amount as credit_amount, L.head_id, L.child_id, 'CR' as payment_type, \
+                        0 as debit_amount,S.hospital_id from hims_f_final_settlement_header s 
+                        left join hims_f_final_settle_loan_details SL on SL.final_settlement_header_id = S.hims_f_final_settlement_header_id
+                        left join hims_f_loan_application LA on LA.hims_f_loan_application_id = SL.loan_application_id
+                        inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id 
+                        where hims_f_final_settlement_header_id = ?;`,
+                values: [
+                  inputParam.hims_f_final_settlement_header_id,
+                  inputParam.hims_f_final_settlement_header_id,
+                  inputParam.hims_f_final_settlement_header_id,
+                  inputParam.hims_f_final_settlement_header_id
+                ],
+                printQuery: true
+              })
+              .then(headerResult => {
+                const final_settlement_data = headerResult[0];
+                _mysql
+                  .executeQueryWithTransaction({
+                    query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
+                    voucher_type, document_id, document_number, from_screen, \
+                    narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      new Date(),
+                      final_settlement_data[0].total_amount,
+                      "payment",
+                      final_settlement_data[0].hims_f_final_settlement_header_id,
+                      final_settlement_data[0].final_settlement_number,
+                      inputParam.ScreenCode,
+                      "Final Settlement Process for " + final_settlement_data[0].employee_code
+                      + "/" + final_settlement_data[0].full_name,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id
+                    ],
+                    printQuery: true
+                  })
+                  .then(day_end_header => {
+                    const insertSubDetail = []
+                    //Earning, Deduction and loan and Salary Payable Laibility Account
+                    insertSubDetail.push(
+                      ...headerResult[1], //Earnings
+                      ...headerResult[2], //Deductions
+                      ...headerResult[3], //Loan
+                      {
+                        //Salary Payable Laibility Account                        
+                        payment_date: new Date(),
+                        head_id: salary_pay_acc.head_id,
+                        child_id: salary_pay_acc.child_id,
+                        debit_amount: final_settlement_data[0].total_salary,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: final_settlement_data[0].hospital_id
+                      })
+
+                    if (parseFloat(final_settlement_data[0].total_eos) > 0) {
+                      //Gratuity
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: gratuity_pay_acc.head_id,
+                        child_id: gratuity_pay_acc.child_id,
+                        debit_amount: final_settlement_data[0].total_eos,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: final_settlement_data[0].hospital_id
+                      });
+                    }
+                    if (parseFloat(final_settlement_data[0].total_leave_encash) > 0) {
+                      //Encashment
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: lv_salary_pay_acc.head_id,
+                        child_id: lv_salary_pay_acc.child_id,
+                        debit_amount: final_settlement_data[0].total_leave_encash,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: final_settlement_data[0].hospital_id
+                      });
+                    }
+
+                    if (parseFloat(final_settlement_data[0].total_amount) > 0) {
+                      //Final Settlement account
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: final_settle_pay_acc.head_id,
+                        child_id: final_settle_pay_acc.child_id,
+                        debit_amount: 0,
+                        payment_type: "CR",
+                        credit_amount: final_settlement_data[0].total_amount,
+                        hospital_id: final_settlement_data[0].hospital_id
+                      });
+                    }
+
+
+                    const IncludeValuess = [
+                      "payment_date",
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "payment_type",
+                      "credit_amount",
+                      "hospital_id"
+                    ];
+
+                    const month = moment().format("M");
+                    const year = moment().format("YYYY");
+
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                        values: insertSubDetail,
+                        includeValues: IncludeValuess,
+                        bulkInsertOrUpdate: true,
+                        extraValues: {
+                          day_end_header_id: day_end_header.insertId,
+                          year: year,
+                          month: month
+                        },
+                        printQuery: true
+                      })
+                      .then(subResult => {
+                        _mysql.commitTransaction(() => {
+                          _mysql.releaseConnection();
+                          // req.records = subResult;
+                          next();
+                        });
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              // req.records = org_data;
+              next();
+            });
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
     }
   }
 };
