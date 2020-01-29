@@ -39,7 +39,9 @@ const {
 
   addGroupComments,
   updateGroupComments,
-  getGroupComments
+  getGroupComments,
+  addAnalyteRages,
+  getAnalyteRages
 } = labModels;
 
 export default () => {
@@ -263,29 +265,39 @@ export default () => {
     });
   });
 
-
   //Group Antibiotic Map
-  api.get("/selectMachineAnalytesMap", selectMachineAnalytesMap, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      records: req.records
-    });
-  });
+  api.get(
+    "/selectMachineAnalytesMap",
+    selectMachineAnalytesMap,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
 
-  api.post("/insertMachineAnalytesMap", insertMachineAnalytesMap, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      records: req.records
-    });
-  });
+  api.post(
+    "/insertMachineAnalytesMap",
+    insertMachineAnalytesMap,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
 
-  api.put("/updateMachineAnalytesMap", updateMachineAnalytesMap, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      records: req.records
-    });
-  });
-
+  api.put(
+    "/updateMachineAnalytesMap",
+    updateMachineAnalytesMap,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
 
   api.get("/getGroupComments", getGroupComments, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -301,14 +313,31 @@ export default () => {
     });
   });
 
-  api.put(
-    "/updateGroupComments", updateGroupComments, (req, res, next) => {
+  api.put("/updateGroupComments", updateGroupComments, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+  api.post("/addAnalyteRages", addAnalyteRages, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().internalServer).json({
+        success: false,
+        records: req.records
+      });
+    } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
         records: req.records
       });
     }
-  );
+  });
+  api.get("/getAnalyteRages", getAnalyteRages, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
 
   return api;
 };

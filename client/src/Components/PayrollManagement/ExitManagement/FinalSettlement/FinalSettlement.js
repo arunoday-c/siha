@@ -8,13 +8,14 @@ import {
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import "./FinalSettlement.scss";
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage, getCookie } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import {
   AlgaehValidation,
   getAmountFormart
 } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 class FinalSettlement extends Component {
   constructor(props) {
@@ -33,7 +34,8 @@ class FinalSettlement extends Component {
       net_earnings: 0,
       net_deductions: 0,
       net_amount: 0,
-      isEnable: true
+      isEnable: true,
+      flag: undefined
     };
     this.getEarningsDeductions();
   }
@@ -64,7 +66,7 @@ class FinalSettlement extends Component {
       this.setState({
         loading: true
       });
-
+      AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/finalsettlement",
         method: "GET",
@@ -78,6 +80,7 @@ class FinalSettlement extends Component {
               res.data.result.flag !== undefined &&
               res.data.result.flag === "Settled"
             ) {
+              debugger
               this.setState(
                 {
                   ...res.data.result
@@ -85,6 +88,8 @@ class FinalSettlement extends Component {
                 () => {
                   this.setNetEarnings();
                   this.setNetDeductions();
+                  this.setTotalEarnings();
+                  this.setTotalDeductions();
                 }
               );
             } else {
@@ -100,6 +105,7 @@ class FinalSettlement extends Component {
                 }
               );
             }
+            AlgaehLoader({ show: false });
           }
         },
         onFailure: err => {
@@ -116,7 +122,7 @@ class FinalSettlement extends Component {
   }
 
   setNetAmount() {
-    let net_amount = this.state.net_earnings - this.state.net_deductions;
+    let net_amount = parseFloat(this.state.net_earnings) - parseFloat(this.state.net_deductions);
     this.setState({
       net_amount: net_amount
     });
@@ -124,10 +130,10 @@ class FinalSettlement extends Component {
 
   setNetEarnings() {
     let net_earnings =
-      this.state.total_earnings +
-      this.state.data.total_leave_encash_amount +
-      this.state.data.gratuity_amount +
-      this.state.data.total_salary;
+      parseFloat(this.state.data.total_earnings) +
+      parseFloat(this.state.data.total_leave_encash_amount) +
+      parseFloat(this.state.data.gratuity_amount) +
+      parseFloat(this.state.data.total_salary);
 
     this.setState(
       {
@@ -140,8 +146,9 @@ class FinalSettlement extends Component {
   }
 
   setNetDeductions() {
+    debugger
     let net_deduction =
-      this.state.total_deductions + this.state.data.total_loan_amount;
+      parseFloat(this.state.data.total_deductions) + parseFloat(this.state.data.total_loan_amount);
 
     this.setState(
       {
@@ -205,11 +212,12 @@ class FinalSettlement extends Component {
       cancelled: null,
       loans: data.loans,
       earnings: this.state.earningList,
-      deductions: this.state.deductingList
+      deductions: this.state.deductingList,
+      ScreenCode: getCookie("ScreenCode")
     };
 
     //  console.log("Send Data:", JSON.stringify(send_data));
-
+    AlgaehLoader({ show: true });
     algaehApiCall({
       uri: "/finalsettlement/save",
       method: "POST",
@@ -225,6 +233,7 @@ class FinalSettlement extends Component {
             disableSave: true
           });
         }
+        AlgaehLoader({ show: false });
       },
       onFailure: err => {
         swalMessage({
@@ -239,18 +248,22 @@ class FinalSettlement extends Component {
     this.setState({
       hims_d_employee_id: null,
       employee_name: null,
+      earnings: [],
+      deductions: [],
       deductingList: [],
       earningList: [],
       data: {
         loans: []
       },
       disableSave: true,
-      forfiet: false,
       total_earnings: 0,
       total_deductions: 0,
       net_earnings: 0,
       net_deductions: 0,
-      net_amount: 0
+      net_amount: 0,
+      isEnable: true,
+      flag: undefined
+
     });
   }
 
@@ -467,7 +480,9 @@ class FinalSettlement extends Component {
             employee_name: row.full_name,
             hims_d_employee_id: row.hims_d_employee_id
           },
-          () => {}
+          () => {
+            this.loadFinalSettlement(this)
+          }
         );
       }
     });
@@ -478,7 +493,7 @@ class FinalSettlement extends Component {
 
     return (
       <div className="FinalSettlementScreen">
-        <div className="row  inner-top-search">
+        <div className="row  inner-top-search" style={{ paddingBottom: 5 }}>
           <div className="col-2 globalSearchCntr">
             <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
             <h6 onClick={this.employeeSearch.bind(this)}>
@@ -522,21 +537,24 @@ class FinalSettlement extends Component {
           </div> */}
 
           <div className="col form-group">
-            <button
+            {/* <button
               onClick={this.clearState.bind(this)}
               style={{ marginTop: 19 }}
               className="btn btn-default"
             >
               CLEAR
-            </button>{" "}
+            </button>
             <button
               onClick={this.loadFinalSettlement.bind(this)}
               style={{ marginTop: 19, marginLeft: 5 }}
               className="btn btn-primary"
             >
               Load
-            </button>
-            {this.state.flag !== undefined ? <h4>{this.state.flag}</h4> : null}
+            </button> */}
+            {/* {this.state.flag !== undefined ? <h4>{this.state.flag}</h4> : null} */}
+            <h3 style={{ paddingTop: "19px" }}>
+              <font color="green">{this.state.flag}</font>
+            </h3>
           </div>
 
           <div className="col">
@@ -710,7 +728,7 @@ class FinalSettlement extends Component {
                           isEditable={this.state.isEnable}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onEdit: () => {},
+                            onEdit: () => { },
                             onDelete: this.deleteEarnings.bind(this),
                             onDone: this.updateEarnings.bind(this)
                           }}
@@ -719,7 +737,7 @@ class FinalSettlement extends Component {
                       <div className="col">
                         <label className="style_Label ">Total Earnings</label>
                         <h6>
-                          {" "}
+
                           {FsData.total_salary
                             ? getAmountFormart(this.state.total_earnings)
                             : getAmountFormart(0)}
@@ -869,7 +887,7 @@ class FinalSettlement extends Component {
                           isEditable={this.state.isEnable}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onEdit: () => {},
+                            onEdit: () => { },
                             onDelete: this.deleteDeductions.bind(this),
                             onDone: this.updateDeductions.bind(this)
                           }}
@@ -879,7 +897,7 @@ class FinalSettlement extends Component {
                       <div className="col">
                         <label className="style_Label ">Total Deductions</label>
                         <h6>
-                          {" "}
+
                           {FsData.total_salary
                             ? getAmountFormart(this.state.total_deductions)
                             : getAmountFormart(0)}
@@ -942,16 +960,16 @@ class FinalSettlement extends Component {
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onEdit: () => {},
-                            onDelete: () => {},
-                            onDone: () => {}
+                            onEdit: () => { },
+                            onDelete: () => { },
+                            onDone: () => { }
                           }}
                         />
-                      </div>{" "}
+                      </div>
                       <div className="col">
                         <label className="style_Label ">Total Loan</label>
                         <h6>
-                          {" "}
+
                           {FsData.total_loan_amount
                             ? getAmountFormart(FsData.total_loan_amount)
                             : getAmountFormart(0)}
@@ -971,7 +989,7 @@ class FinalSettlement extends Component {
                   <div className="col-12">
                     <label className="style_Label ">Total Salary</label>
                     <h6>
-                      {" "}
+
                       {FsData.total_salary
                         ? getAmountFormart(FsData.total_salary)
                         : getAmountFormart(0)}
@@ -981,7 +999,7 @@ class FinalSettlement extends Component {
                   <div className="col-12">
                     <label className="style_Label ">Gratuity Amount</label>
                     <h6>
-                      {" "}
+
                       {FsData.gratuity_amount
                         ? getAmountFormart(FsData.gratuity_amount)
                         : getAmountFormart(0)}
@@ -991,7 +1009,7 @@ class FinalSettlement extends Component {
                   <div className="col-12">
                     <label className="style_Label ">Leave Encashment</label>
                     <h6>
-                      {" "}
+
                       {FsData.total_leave_encash_amount
                         ? getAmountFormart(FsData.total_leave_encash_amount)
                         : getAmountFormart(0)}
@@ -1020,7 +1038,7 @@ class FinalSettlement extends Component {
                       <div className="col-12">
                         <label className="style_Label ">Net Deduction</label>
                         <h6>
-                          {" "}
+
                           {getAmountFormart(this.state.net_deductions)
                             ? getAmountFormart(this.state.net_deductions)
                             : getAmountFormart(0)}
@@ -1029,7 +1047,7 @@ class FinalSettlement extends Component {
                       <div className="col-12">
                         <label className="style_Label ">Net Amount</label>
                         <h6 style={{ fontSize: "2em" }}>
-                          {" "}
+
                           {getAmountFormart(this.state.net_amount)
                             ? getAmountFormart(this.state.net_amount)
                             : getAmountFormart(0)}
