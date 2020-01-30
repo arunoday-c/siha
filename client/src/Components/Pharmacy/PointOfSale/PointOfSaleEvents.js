@@ -9,10 +9,7 @@ import {
   swalMessage,
   getCookie
 } from "../../../utils/algaehApiCall";
-import {
-  AlgaehOpenContainer,
-  imageToByteArray
-} from "../../../utils/GlobalFunctions";
+import { imageToByteArray } from "../../../utils/GlobalFunctions";
 import _ from "lodash";
 import extend from "extend";
 
@@ -67,14 +64,10 @@ const getPosEntry = ($this, pos_number) => {
       if (response.data.success === true) {
         let data = response.data.records;
 
-        const hospitaldetails = JSON.parse(
-          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        );
-
         if (
-          hospitaldetails !== undefined &&
-          hospitaldetails.local_vat_applicable === "N" &&
-          hospitaldetails.default_nationality === data.nationality_id
+          $this.state.userToken !== undefined &&
+          $this.state.userToken.local_vat_applicable === "N" &&
+          $this.state.userToken.default_nationality === data.nationality_id
         ) {
           data.vat_applicable = "N";
         } else {
@@ -774,16 +767,12 @@ const VisitSearch = ($this, e) => {
       onRowSelect: row => {
         AlgaehLoader({ show: true });
 
-        const hospitaldetails = JSON.parse(
-          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        );
-
         let vat_applicable = "Y";
 
         if (
-          hospitaldetails !== undefined &&
-          hospitaldetails.local_vat_applicable === "N" &&
-          hospitaldetails.default_nationality === row.nationality_id
+          $this.state.userToken !== undefined &&
+          $this.state.userToken.local_vat_applicable === "N" &&
+          $this.state.userToken.default_nationality === row.nationality_id
         ) {
           vat_applicable = "N";
         }
@@ -983,16 +972,13 @@ const nationalityhandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   debugger
-  const hospitaldetails = JSON.parse(
-    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-  );
 
   let vat_applicable = "Y";
 
   if (
-    hospitaldetails !== undefined &&
-    hospitaldetails.local_vat_applicable === "N" &&
-    hospitaldetails.default_nationality === value
+    $this.state.userToken !== undefined &&
+    $this.state.userToken.local_vat_applicable === "N" &&
+    $this.state.userToken.default_nationality === value
   ) {
     vat_applicable = "N";
   }

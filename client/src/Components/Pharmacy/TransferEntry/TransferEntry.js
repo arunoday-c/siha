@@ -29,17 +29,15 @@ import Options from "../../../Options.json";
 import TransferEntryItems from "./TransferEntryItems/TransferEntryItems";
 import MyContext from "../../../utils/MyContext";
 import TransferIOputs from "../../../Models/TransferEntry";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 
 class TransferEntry extends Component {
   constructor(props) {
     super(props);
-    const hospital = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    );
+
     this.state = {
       from_location_id: null,
-      decimal_places: hospital.decimal_places
+      decimal_places: null
     };
   }
 
@@ -48,11 +46,13 @@ class TransferEntry extends Component {
     this.setState(IOputs);
   }
 
+  static contextType = MainContext;
   componentDidMount() {
-    const hospital = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    );
+    const userToken = this.context.userToken;
 
+    this.setState({
+      decimal_places: userToken.decimal_places
+    })
     this.props.getItems({
       uri: "/pharmacy/getItemMaster",
       data: { item_status: "A" },
@@ -92,7 +92,7 @@ class TransferEntry extends Component {
       method: "GET",
       data: {
         location_status: "A",
-        hospital_id: hospital.hims_d_hospital_id,
+        hospital_id: userToken.hims_d_hospital_id,
         git_location: "N"
       },
       redux: {

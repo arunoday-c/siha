@@ -42,6 +42,7 @@ import {
   getCookie
 } from "../../../utils/algaehApiCall";
 import PrescribedItemList from "./PrescribedItemList";
+import { MainContext } from "algaeh-react-components/context";
 
 class PointOfSale extends Component {
   constructor(props) {
@@ -61,7 +62,8 @@ class PointOfSale extends Component {
       cheque_amount: 0,
       advance: 0,
       popUpGenereted: false,
-      dataFinder: false
+      dataFinder: false,
+      userToken: {}
     };
     this.onKeyPress = this.onKeyPress.bind(this);
   }
@@ -71,7 +73,11 @@ class PointOfSale extends Component {
     this.setState(IOputs);
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    this.setState({
+      userToken: this.context.userToken
+    })
     document.addEventListener("keypress", this.onKeyPress, false);
 
     this.props.getItems({
