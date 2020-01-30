@@ -5,6 +5,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import SalesReturnputs from "../../../Models/SalesReturn";
 import { algaehApiCall, swalMessage, getCookie } from "../../../utils/algaehApiCall";
 import _ from "lodash";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -321,6 +322,21 @@ const getPOSEntry = $this => {
         data.shift_id = $this.state.shift_id || null;
         data.credit_amount = parseFloat(data.balance_credit);
         data.insured = data.insurance_provider_id !== null ? "Y" : "N";
+
+        const hospitaldetails = JSON.parse(
+          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+        );
+
+        debugger
+        if (
+          hospitaldetails !== undefined &&
+          hospitaldetails.local_vat_applicable === "N" &&
+          hospitaldetails.default_nationality === data.nationality_id
+        ) {
+          data.vat_applicable = "N";
+        } else {
+          data.vat_applicable = "Y";
+        }
 
         for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
           // if (data.pharmacy_stock_detail[i].return_done === "Y") {
