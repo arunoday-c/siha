@@ -38,7 +38,9 @@ const {
   getLisMachineConfiguration,
   updateLisMachineConfiguration,
   getAlgaehScreensWithModules,
-  getAlgaehComponentsWithScreens
+  getAlgaehComponentsWithScreens,
+  moduleScreenAssignment,
+  getComponentsForScreen
 } = masterModels;
 const { releaseConnection } = utils;
 
@@ -265,6 +267,15 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  api.get("/getComponentsForScreen", getComponentsForScreen, (req, res) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result
+    });
+    delete req.records;
+  });
+
   // created by irfan :
   api.get(
     "/getAlgaehScreens",
@@ -354,6 +365,20 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  api.post(
+    "/moduleScreenAssignment",
+    moduleScreenAssignment,
+    (req, res, next) => {
+      res.status(httpStatus.ok).json({
+        success: true,
+        message: "Successfully updated"
+      });
+
+      next();
+    }
+  );
+
   // created by irfan :
   api.post(
     "/addAlgaehScreenElement",

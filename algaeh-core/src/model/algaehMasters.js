@@ -1854,6 +1854,118 @@ let assignScreensBAckup = (req, res, next) => {
   }
 };
 
+const moduleScreenAssignment = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    const { module_screen, app_group_id, role_id } = req.body;
+    if (app_group_id === "" || app_group_id === undefined) {
+      next(new Error("No group is defined..."));
+      return;
+    }
+    if (role_id === "" || role_id === undefined) {
+      next(new Error("No role is defined..."));
+      return;
+    }
+    const { role_type, algaeh_d_app_user_id } = req.userIdentity;
+    if (role_type === "AD" || role_type === "SU") {
+      _mysql
+        .executeQueryWithTransaction({
+          query: `select algaeh_m_module_role_privilage_mapping_id from algaeh_m_module_role_privilage_mapping
+        where role_id =?`,
+          values: [role_id]
+        })
+        .then(result => {
+          console.log("result", result);
+          const module_privilage_map = result.map(
+            item => item.algaeh_m_module_role_privilage_mapping_id
+          );
+          _mysql
+            .executeQuery({
+              query: `delete from algaeh_m_screen_role_privilage_mapping where module_role_map_id in (?);
+              delete from algaeh_m_module_role_privilage_mapping where algaeh_m_module_role_privilage_mapping_id in (?);`,
+              values: [
+                module_privilage_map.length === 0 ? null : module_privilage_map,
+                module_privilage_map.length === 0 ? null : module_privilage_map
+              ]
+            })
+            .then(deleted => {
+              let query_module_insertion = "";
+              module_screen.forEach(element => {
+                query_module_insertion += _mysql.mysqlQueryFormat(
+                  `insert into algaeh_m_module_role_privilage_mapping 
+            (module_id,role_id,created_by,updated_by) value(?,?,?,?);`,
+                  [
+                    element.module_id,
+                    role_id,
+                    algaeh_d_app_user_id,
+                    algaeh_d_app_user_id
+                  ]
+                );
+              });
+              _mysql
+                .executeQuery({
+                  query: query_module_insertion
+                })
+                .then(modulesInserted => {
+                  let query_insert = "";
+                  for (let m = 0; m < modulesInserted.length; m++) {
+                    const module = module_screen[m];
+                    for (let s = 0; s < module.ScreenList.length; s++) {
+                      query_insert += _mysql.mysqlQueryFormat(
+                        `insert into algaeh_m_screen_role_privilage_mapping
+                (module_role_map_id,screen_id,created_by,updated_by) value(?,?,?,?);`,
+                        [
+                          modulesInserted[m]["insertId"],
+                          module.ScreenList[s]["screen_id"],
+                          algaeh_d_app_user_id,
+                          algaeh_d_app_user_id
+                        ]
+                      );
+                    }
+                  }
+                  _mysql
+                    .executeQuery({
+                      query: query_insert
+                    })
+                    .then(detailInsert => {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        next();
+                      });
+                    })
+                    .catch(error => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                      });
+                    });
+                })
+                .catch(error => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            })
+            .catch(error => {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            });
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+    } else {
+      _mysql.releaseConnection();
+      next(new Error("No Permission to add or modify data"));
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
 //created by irfan:
 let assignScreens = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
@@ -2444,6 +2556,30 @@ const moduleScreensAssigToRoles = (req, res, next) => {
   }
 };
 
+let getComponentsForScreen = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  const { screen_id } = req.query;
+  try {
+    _mysql
+      .executeQuery({
+        query: `select component_name,algaeh_d_app_component_id from algaeh_d_app_component where screen_id=? and record_status='A';`,
+        values: [screen_id]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
 export default {
   getAlgaehScreensWithModules,
   addAlgaehGroupMAster,
@@ -2479,5 +2615,7 @@ export default {
   getHrmsAuthLevels,
   addLisMachineConfiguration,
   getLisMachineConfiguration,
-  updateLisMachineConfiguration
+  updateLisMachineConfiguration,
+  moduleScreenAssignment,
+  getComponentsForScreen
 };

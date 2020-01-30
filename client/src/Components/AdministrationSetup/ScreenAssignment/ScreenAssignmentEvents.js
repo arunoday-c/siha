@@ -1,12 +1,12 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import _ from "lodash";
 
-export default function ScreenAssignmentEvents() {
+export function ScreenAssignmentEvents() {
   return {
     dropDownHandler: ($this, value) => {
       switch (value.name) {
         case "app_group_id":
-          getRoleBaseActive($this);
+          // getRoleBaseActive($this);
           getRoles($this, value.value);
           $this.setState({
             [value.name]: value.value,
@@ -14,35 +14,64 @@ export default function ScreenAssignmentEvents() {
           });
           break;
         default:
-          getRoleBaseActive($this);
-          getRoleActiveModules($this, value.value);
-          $this.setState({
-            [value.name]: value.value
-          });
+          //getRoleBaseActive($this);
+          // getRoleActiveModules($this, value.value);
+          // $this.setState({
+          //   [value.name]: value.value
+          // });
           break;
       }
     },
     assignSelectedModules: that => {
-      console.log("This", that.state.selectedModules);
-      const module = Object.keys(that.state.selectedModules).map(item => {
-        const selected = that.state.modules.find(f => f.module_code === item);
-        if (selected !== undefined) {
-          const screens = Object.keys(that.state.selectedModules[item]).map(
-            screen => {
-              return selected.ScreenList.find(s => s.screen_code === screen);
-            }
-          );
-          return {
-            module_code: selected.module_code,
-            module_id: selected.module_id,
-            module_name: selected.module_name,
-            other_language: selected.other_language,
-            order: selected.order,
-            ScreenList: screens
-          };
-        }
+      return new Promise((resolve, reject) => {
+        const module = Object.keys(that.state.selectedModules).map(item => {
+          const selected = that.state.modules.find(f => f.module_code === item);
+          if (selected !== undefined) {
+            const screens = Object.keys(that.state.selectedModules[item]).map(
+              screen => {
+                return selected.ScreenList.find(s => s.screen_code === screen);
+              }
+            );
+            return {
+              module_code: selected.module_code,
+              module_id: selected.module_id,
+              module_name: selected.module_name,
+              other_language: selected.other_language,
+              icons: selected.icons,
+              order: selected.order,
+              ScreenList: screens
+            };
+          }
+        });
+        algaehApiCall({
+          uri: "/algaehMasters/moduleScreenAssignment",
+          method: "POST",
+          data: {
+            module_screen: module,
+            app_group_id: that.state.app_group_id,
+            role_id: that.state.role_id
+          },
+          onSuccess: res => {
+            // const { success, message } = res.data;
+            resolve(res.data);
+            // swalMessage({
+            //   title: message,
+            //   type: success === true ? "success" : "error"
+            // });
+          },
+          onCatch: err => {
+            const { message } = err.response.data;
+            reject(message);
+            // swalMessage({
+            //   title: message,
+            //   type: "error"
+            // });
+          }
+        });
       });
-      console.log("module", module);
+
+      // that.setState({ assignedModules: module });
+      // console.log("module", module);
     },
     assignScreens: $this => {
       //To build delete inputs
@@ -327,55 +356,48 @@ function getRoles($this, group_id) {
   });
 }
 
-function getRoleActiveModules($this, role_id) {
-  let inputObj = { role_id: role_id, from_assignment: "Y" };
-
-  algaehApiCall({
-    uri: "/algaehMasters/getRoleBaseActiveModules",
-    method: "GET",
-    data: inputObj,
-    onSuccess: res => {
-      if (res.data.success) {
-        let data = res.data.records;
-        let modules = $this.state.modules;
-        data.map(item => {
-          let _findModule = _.find(
-            modules,
-            m => m.module_id === item.module_id
-          );
-          const index = modules.indexOf(_findModule);
-          modules[index] = {
-            ...modules[index],
-            checked: true,
-            algaeh_m_module_role_privilage_mapping_id:
-              item.algaeh_m_module_role_privilage_mapping_id
-          };
-
-          item.ScreenList.map(screen => {
-            let _findScreen = _.find(
-              modules[index]["ScreenList"],
-              s => s.screen_id === screen.screen_id
-            );
-            const indexS = modules[index]["ScreenList"].indexOf(_findScreen);
-            modules[index]["ScreenList"][indexS] = {
-              ...modules[index]["ScreenList"][indexS],
-              checked: true,
-              algaeh_m_screen_role_privilage_mapping_id:
-                screen.algaeh_m_screen_role_privilage_mapping_id
-            };
-          });
-        });
-
-        $this.setState({
-          modules: modules
-        });
+export function getRoleActiveModules(role_id) {
+  return new Promise((resolve, reject) => {
+    let inputObj = { role_id: role_id, from_assignment: "Y" };
+    algaehApiCall({
+      uri: "/algaehMasters/getRoleBaseActiveModules",
+      method: "GET",
+      data: inputObj,
+      onSuccess: res => {
+        const { success, records, message } = res.data;
+        if (success) {
+          resolve(records);
+        } else {
+          reject(message);
+        }
+      },
+      onCatch: err => {
+        const { message } = err.response.data;
+        reject(message);
       }
-    },
-    onFailure: err => {
-      swalMessage({
-        title: err.message,
-        type: "error"
-      });
-    }
+    });
+  });
+}
+
+export function getComponentsForScreen(sceen_id) {
+  return new Promise((resolve, reject) => {
+    let inputObj = { screen_id: sceen_id };
+    algaehApiCall({
+      uri: "/algaehMasters/getComponentsForScreen",
+      method: "GET",
+      data: inputObj,
+      onSuccess: res => {
+        const { success, records, message } = res.data;
+        if (success) {
+          resolve(records);
+        } else {
+          reject(message);
+        }
+      },
+      onCatch: err => {
+        const { message } = err.response.data;
+        reject(message);
+      }
+    });
   });
 }

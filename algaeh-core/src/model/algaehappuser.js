@@ -306,9 +306,9 @@ let selectRoles = (req, res, next) => {
     if (req.userIdentity.role_type != "GN") {
       let adminUSer = "";
 
-      if (req.userIdentity.role_type == "AD") {
-        adminUSer = " and   role_type <> 'AD' ";
-      }
+      // if (req.userIdentity.role_type == "AD") {
+      //   adminUSer = " and   role_type <> 'AD' ";
+      // }
 
       let group_id = "";
       if (req.query.algaeh_d_app_group_id > 0) {
