@@ -15,7 +15,10 @@ export default function Layout({ children }) {
       if (counter === 5) {
         setPageLoading(true);
         setText("There is problem in authentication please go to login page");
+        clearInterval(interval);
+        return;
       }
+      counter = counter + 1;
       if (Object.keys(userToken).length > 0) {
         setPageLoading(true);
         clearInterval(interval);
