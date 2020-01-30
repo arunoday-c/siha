@@ -24,6 +24,7 @@ class CommonSetup extends Component {
     const HIMS_Active = _.filter(Activated_Modueles, f => {
       return f.module_code === "FTDSK";
     });
+
     this.state = {
       pageDisplay: HIMS_Active.length > 0 ? "VisitType" : "VisaType",
       HIMS_Active: HIMS_Active.length > 0 ? true : false
@@ -59,24 +60,10 @@ class CommonSetup extends Component {
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
-              {" "}
-              <li
-                algaehtabs={"VisaType"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "visa_type"
-                    }}
-                  />
-                }
-              </li>
               {this.state.HIMS_Active === true ? (
                 <li
                   algaehtabs={"VisitType"}
-                  className={"nav-item tab-button "}
+                  className={"nav-item tab-button active"}
                   onClick={this.openTab.bind(this)}
                 >
                   {
@@ -88,6 +75,20 @@ class CommonSetup extends Component {
                   }
                 </li>
               ) : null}
+              <li
+                algaehtabs={"VisaType"}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "visa_type"
+                    }}
+                  />
+                }
+              </li>
+
               <li
                 algaehtabs={"IDType"}
                 className={"nav-item tab-button"}

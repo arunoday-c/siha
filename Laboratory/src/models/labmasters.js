@@ -1382,8 +1382,7 @@ export default {
             query:
               "select hims_d_lab_analytes_range_id,analyte_id,analyte_type,gender,age_type,\
               case age_type when 'Y' then 'Years' when 'M' then 'Months' when 'D'\
-               then 'days' end as age_desc,from_age,to_age,\
-            critical_low,critical_high,normal_low,normal_qualitative_value,normal_high\
+               then 'days' end as age_desc,from_age,to_age, normal_qualitative_value\
             from hims_d_lab_analytes A inner join hims_d_lab_analytes_range R on\
              A.hims_d_lab_analytes_id=R.analyte_id where analyte_id=? ",
             values: [input[0].analyte_id],
@@ -1509,6 +1508,115 @@ export default {
           _mysql.releaseConnection();
           next(error);
         });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  //created by :Irfan
+  updateAnalyteRage: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      const item = req.body;
+
+      if (item.analyte_id > 0 && item.hims_d_lab_analytes_range_id > 0) {
+        _mysql
+          .executeQuery({
+            query:
+              "select hims_d_lab_analytes_range_id,analyte_id,analyte_type,gender,age_type,\
+               case age_type when 'Y' then 'Years' when 'M' then 'Months' when 'D'\
+               then 'days' end as age_desc,from_age,to_age,normal_qualitative_value\
+               from hims_d_lab_analytes A inner join hims_d_lab_analytes_range R on\
+               A.hims_d_lab_analytes_id=R.analyte_id where analyte_id=? and  hims_d_lab_analytes_range_id<>?; ",
+            values: [item.analyte_id, item.hims_d_lab_analytes_range_id],
+            printQuery: true
+          })
+          .then(result => {
+            let errorStr = "";
+
+            //ST-VALIDATION FOR AGE RANGE
+            if (result.length > 0 && result[0].analyte_type == "QN") {
+              const existData = result.filter(f => {
+                return (
+                  f.age_type == item.age_type &&
+                  f.gender == item.gender.toUpperCase()
+                );
+              });
+
+              if (existData) {
+                let err = existData.find(data => {
+                  return (
+                    (data.from_age <= item.from_age &&
+                      item.from_age <= data.to_age) ||
+                    (data.from_age <= item.to_age &&
+                      item.to_age <= data.to_age) ||
+                    (item.from_age <= data.from_age &&
+                      data.from_age <= item.to_age)
+                  );
+                });
+
+                if (err) {
+                  errorStr = err;
+                }
+              }
+            }
+
+            //EN-VALIDATION FOR AGE RANGE
+            if (errorStr != "") {
+              //error
+              let message = `Analytes Range Exist For: ${errorStr.gender} between ${errorStr.from_age}-${errorStr.to_age} ${errorStr.age_desc}`;
+              req.records = {
+                invalid_input: true,
+                message: message
+              };
+              next();
+            } else {
+              _mysql
+                .executeQuery({
+                  query:
+                    " update hims_d_lab_analytes_range \
+                    set gender=?, age_type=?,from_age=?,to_age=?, critical_low=?,critical_high=?,\
+                    normal_low=?,normal_high=?,normal_qualitative_value=?, updated_by=?,updated_date=? \
+                    where hims_d_lab_analytes_range_id=? ",
+                  values: [
+                    item.gender,
+                    item.age_type,
+                    item.from_age,
+                    item.to_age,
+                    item.critical_low,
+                    item.critical_high,
+                    item.normal_low,
+                    item.normal_high,
+                    item.normal_qualitative_value,
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                    item.hims_d_lab_analytes_range_id
+                  ],
+                  printQuery: true
+                })
+                .then(result => {
+                  _mysql.releaseConnection();
+                  req.records = result;
+                  next();
+                })
+                .catch(error => {
+                  _mysql.releaseConnection();
+                  next(error);
+                });
+            }
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "Please Provide Valid Input"
+        };
+        next();
+      }
     } catch (e) {
       _mysql.releaseConnection();
       next(e);

@@ -294,7 +294,7 @@ export default function JournalVoucher() {
               textField: "label"
             },
             onChange: selected => {
-              debugger
+
               setPayment(basePayment);
               setVoucherType(selected.value);
               // setPrefix(selected.shortHand + "-");
@@ -324,7 +324,7 @@ export default function JournalVoucher() {
 
               value: invoiceNo,
               onChange: e => {
-                setInvoiceNo(e.target.value);
+                setInvoiceNo(e.target.value === "" ? null : e.target.value);
               }
             }}
           /> : voucherType === "payment" || voucherType === "receipt" ||
@@ -343,7 +343,7 @@ export default function JournalVoucher() {
                   textField: "invoice_no"
                 },
                 onChange: selected => {
-                  debugger
+
                   setSelInvoice(selected.invoice_no);
                 },
                 onClear: () => {
