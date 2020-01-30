@@ -15,10 +15,7 @@ import EmployeeMaster from "./EmployeeMaster/EmployeeMaster";
 import moment from "moment";
 import Options from "../../../Options.json";
 import { getCookie } from "../../../utils/algaehApiCall";
-import {
-  setGlobal
-  //AlgaehOpenContainer
-} from "../../../utils/GlobalFunctions";
+import { setGlobal } from "../../../utils/GlobalFunctions";
 import {
   getEmployeeDetails,
   EditEmployeeMaster,
@@ -37,9 +34,6 @@ class EmployeeMasterIndex extends Component {
       editEmployee: false,
       forceRender: false,
       hospital_id: ""
-      //   JSON.parse(
-      //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      // ).hims_d_hospital_id
     };
   }
   static contextType = MainContext;
@@ -51,7 +45,7 @@ class EmployeeMasterIndex extends Component {
     this.setState({
       selectedLang: prevLang,
       hospital_id: userToken.hims_d_hospital_id
-    });
+    }, () => getEmployeeDetails(this, this));
 
     if (
       this.props.designations === undefined ||
@@ -82,7 +76,7 @@ class EmployeeMasterIndex extends Component {
       });
     }
 
-    getEmployeeDetails(this, this);
+
 
     if (
       this.props.subdepartment === undefined ||

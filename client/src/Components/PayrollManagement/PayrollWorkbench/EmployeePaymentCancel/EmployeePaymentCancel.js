@@ -17,7 +17,7 @@ import {
   Paymenttexthandle,
   PaymentOnClear
 } from "./EmployeePaymentCancelEvent.js";
-import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
 import EmployeePaymentIOputs from "../../../../Models/EmployeePayment";
@@ -31,12 +31,16 @@ class EmployeePaymentCancel extends Component {
   }
   UNSAFE_componentWillMount() {
     let IOputs = EmployeePaymentIOputs.inputParam();
-    IOputs.hospital_id = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    ).hims_d_hospital_id;
     this.setState(IOputs);
   }
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    })
+
     if (
       this.props.organizations === undefined ||
       this.props.organizations.length === 0
@@ -204,8 +208,8 @@ class EmployeePaymentCancel extends Component {
                               return row.cancel === "N" ? (
                                 <span className="badge badge-warning">No</span>
                               ) : (
-                                <span className="badge badge-success">Yes</span>
-                              );
+                                  <span className="badge badge-success">Yes</span>
+                                );
                             }
                           },
                           // {
@@ -309,8 +313,8 @@ class EmployeePaymentCancel extends Component {
                                 this.props.banks === undefined
                                   ? []
                                   : this.props.banks.filter(
-                                      f => f.hims_d_bank_id === row.bank_id
-                                    );
+                                    f => f.hims_d_bank_id === row.bank_id
+                                  );
 
                               return (
                                 <span>

@@ -15,9 +15,9 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import {
   getYears,
-  GetAmountFormart,
-  AlgaehOpenContainer
+  GetAmountFormart
 } from "../../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import swal from "sweetalert2";
 
@@ -35,9 +35,7 @@ export default class MiscEarningsDeductions extends Component {
       isBulk: false,
       month: moment(new Date()).format("M"),
       yearAndMonth: new Date(),
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: null,
       lockEarnings: false,
       emp_name: null,
       employee_group_id: null,
@@ -52,7 +50,13 @@ export default class MiscEarningsDeductions extends Component {
     this.getHospitals();
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    })
     getEmpGroups(data => this.setState({ empGroups: data }));
     getBranchWiseDepartments({ hospital_id: this.state.hospital_id }, data =>
       this.setState({
@@ -123,9 +127,6 @@ export default class MiscEarningsDeductions extends Component {
       isBulk: false,
       month: moment(new Date()).format("M"),
       yearAndMonth: new Date(),
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
       lockEarnings: false,
       emp_name: null,
       addBtnEnable: true,

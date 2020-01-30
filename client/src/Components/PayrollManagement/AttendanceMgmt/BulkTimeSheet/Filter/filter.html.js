@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./filter.html.scss";
 import { AlagehAutoComplete } from "../../../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../../../Wrapper/autoSearch";
 import { swalMessage } from "../../../../../utils/algaehApiCall";
-import {
-  AlgaehOpenContainer,
-  getYears
-} from "../../../../../utils/GlobalFunctions";
+import { getYears } from "../../../../../utils/GlobalFunctions";
 import {
   getHospitals,
   getAttendanceDates,
@@ -18,14 +15,14 @@ import {
 } from "./filter.events";
 import moment from "moment";
 import spotlightSearch from "../../../../../Search/spotlightSearch.json";
+import { MainContext } from "algaeh-react-components/context";
 
 export default function Filter(props) {
   let fileInput = React.createRef();
+  const userTocken = useContext(MainContext)
+
   const [hospitals, setHospitals] = useState([]);
-  const [hospitalID, setHospitalID] = useState(
-    JSON.parse(AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail")))
-      .hims_d_hospital_id
-  );
+  const [hospitalID, setHospitalID] = useState(userTocken.hims_d_hospital_id);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [projectID, setProjectID] = useState("");
@@ -64,8 +61,8 @@ export default function Filter(props) {
     const searchYear =
       month === "01"
         ? moment(`01-01-${year}`, "DD-MM-YYYY")
-            .add(-1, "year")
-            .format("YYYY")
+          .add(-1, "year")
+          .format("YYYY")
         : year;
     const maxDate = `${year}-${month}-${enddtDt}`;
     let prevMonths = moment(maxDate, "YYYY-MM-DD")
@@ -462,8 +459,8 @@ export default function Filter(props) {
               <i className="fas fa-file-download"></i> Download
             </span>
           ) : (
-            <i className="fas fa-spinner fa-spin" />
-          )}
+              <i className="fas fa-spinner fa-spin" />
+            )}
         </button>
         <button
           onClick={() => {
@@ -493,8 +490,8 @@ export default function Filter(props) {
               <i className="fas fa-eye"></i> Preview
             </span>
           ) : (
-            <i className="fas fa-spinner fa-spin" />
-          )}
+              <i className="fas fa-spinner fa-spin" />
+            )}
         </button>
 
         <button

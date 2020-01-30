@@ -1,14 +1,7 @@
 import Enumerable from "linq";
 // import extend from "extend";
-import {
-  getCookie,
-  algaehApiCall,
-  swalMessage
-} from "../../../../../utils/algaehApiCall";
-import {
-  AlgaehValidation,
-  AlgaehOpenContainer
-} from "../../../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
+import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import _ from "lodash";
 
@@ -232,13 +225,10 @@ const AddDeductionComponent = ($this, e) => {
         return;
       }
 
-      const basic_earning_component = JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
-      ).basic_earning_component;
 
       let basic_exists = _.find(
         $this.state.earningComponents,
-        f => f.earnings_id == basic_earning_component
+        f => parseInt(f.earnings_id) === parseInt($this.state.basic_earning_component)
       );
 
       if (basic_exists === undefined) {
@@ -346,13 +336,9 @@ const AddContributionComponent = ($this, e) => {
         return;
       }
 
-      const basic_earning_component = JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
-      ).basic_earning_component;
-
       let basic_exists = _.find(
         $this.state.earningComponents,
-        f => f.earnings_id == basic_earning_component
+        f => parseInt(f.earnings_id) === parseInt($this.state.basic_earning_component)
       );
 
       if (basic_exists === undefined) {
@@ -1057,6 +1043,25 @@ const CalculateBasedonFormula = ($this, from) => {
   );
 };
 
+const getOptions = $this => {
+  algaehApiCall({
+    uri: "/payrollOptions/getHrmsOptions",
+    method: "GET",
+    module: "hrManagement",
+    onSuccess: res => {
+      if (res.data.success) {
+        $this.setState({ basic_earning_component: res.data.result[0].basic_earning_component });
+      }
+    },
+    onFailure: err => {
+      swalMessage({
+        title: err.message,
+        type: "error"
+      });
+    }
+  });
+};
+
 export {
   earntexthandle,
   deducttexthandle,
@@ -1075,5 +1080,6 @@ export {
   getEmpEarningComponents,
   getEmpDeductionComponents,
   getEmpContibuteComponents,
-  CalculateBasedonFormula
+  CalculateBasedonFormula,
+  getOptions
 };

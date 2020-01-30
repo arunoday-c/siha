@@ -26,7 +26,6 @@ import PatientPackages from "./Components/PatientPackages/PatientPackages";
 import AcknowledgeList from "./Components/Pharmacy/AcknowledgeList/AcknowledgeSwitch";
 import ExpiringItemList from "./Components/Pharmacy/ExpiringItemList/ExpiringItemList";
 import InvAcknowledgeList from "./Components/Inventory/InvAcknowledgeList/InvAcknowledgeSwitch";
-import DynamicDashboard from "./Components/Dashboard/dynamicDashboard";
 import FinanceFragment from "./Components/FinanceFragment";
 
 // Capital, Expense, Income, Liabili;
@@ -42,7 +41,6 @@ const JournalAuthorization = () => (
 );
 const PageToPlot = {
   Dashboard: CommonDashboard,
-  //Dashboard: DynamicDashboard,
   1: React.lazy(() => retry(() => import("./Components/Dashboard/Dashboard"))),
   6: React.lazy(() => retry(() => import("./Components/Dashboard/Dashboard"))),
   7: React.lazy(() =>

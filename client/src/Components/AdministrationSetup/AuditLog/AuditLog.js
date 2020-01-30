@@ -1,28 +1,15 @@
 import React, { Component } from "react";
 import "./AuditLog.scss";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { AlgaehActions } from "../../../actions/algaehActions";
 
 import {
   AlgaehDateHandler,
-  AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../Wrapper/algaehWrapper";
-import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import moment from "moment";
-import {
-  AlgaehValidation
-  // AlgaehOpenContainer
-} from "../../../utils/GlobalFunctions";
-import Enumerable from "linq";
-import swal from "sweetalert2";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
+
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import { MainContext } from "algaeh-react-components/context";
 export default class AuditLog extends Component {
@@ -30,9 +17,6 @@ export default class AuditLog extends Component {
     super(props);
     this.state = {
       hospital_id: "",
-      // hospital_id: JSON.parse(
-      //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      // ).hims_d_hospital_id,
       hospitalList: []
     };
   }
@@ -121,7 +105,7 @@ export default class AuditLog extends Component {
               others: {}
             }}
             value=""
-            //minDate={this.state.from_date}
+          //minDate={this.state.from_date}
           />
           <AlgaehDateHandler
             div={{ className: "col-2 form-group" }}
@@ -135,7 +119,7 @@ export default class AuditLog extends Component {
               others: {}
             }}
             value=""
-            //minDate={this.state.from_date}
+          //minDate={this.state.from_date}
           />
           <div className="col-3 globalSearchCntr form-group mandatory">
             <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
@@ -222,9 +206,9 @@ export default class AuditLog extends Component {
                       isEditable={false}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
-                        onEdit: () => {},
-                        onDelete: () => {},
-                        onDone: () => {}
+                        onEdit: () => { },
+                        onDelete: () => { },
+                        onDone: () => { }
                       }}
                     />
                   </div>

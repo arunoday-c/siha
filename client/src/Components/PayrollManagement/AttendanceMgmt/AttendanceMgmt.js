@@ -1,15 +1,11 @@
 import React, { Component } from "react";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
-// import MonthlyAttendance from "./MonthlyAttendance/MonthlyAttendance";
 import NewMonthlyAttendence from "./MonthlyAttendance/NewMonthlyAttendance";
 import WeeklyAttendance from "./WeeklyAttendance/WeeklyAttendance";
 import AbsenceManagement from "./AbsenceManagement/AbsenceManagement";
 import OverTimeMgmt from "./OvertimeManagement/OvertimeManagement";
-// import ManualAttendance from "./ManualAttendance/ManualAttendance";
 import BulkTimeSheet from "./BulkTimeSheet";
 import "./AttendanceMgmt.scss";
-// import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-// import { AlgaehCloseContainer } from "../../../utils/GlobalFunctions";
 
 export default class AttendanceMgmt extends Component {
   constructor(props) {
@@ -17,31 +13,8 @@ export default class AttendanceMgmt extends Component {
     this.state = {
       pageDisplay: "NewMonthlyAttendance"
     };
-    // this.getOptions();
   }
 
-  // getOptions() {
-  //   algaehApiCall({
-  //     uri: "/payrollOptions/getHrmsOptions",
-  //     method: "GET",
-  //     module: "hrManagement",
-  //     onSuccess: res => {
-  //       if (res.data.success) {
-  //         sessionStorage.removeItem("hrOptions");
-  //         sessionStorage.setItem(
-  //           "hrOptions",
-  //           AlgaehCloseContainer(JSON.stringify(res.data.result[0]))
-  //         );
-  //       }
-  //     },
-  //     onFailure: err => {
-  //       swalMessage({
-  //         title: err.message,
-  //         type: "error"
-  //       });
-  //     }
-  //   });
-  // }
 
   openTab(e) {
     var element = document.querySelectorAll("[algaehtabs]");

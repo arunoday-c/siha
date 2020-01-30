@@ -12,7 +12,7 @@ import {
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 import Enumerable from "linq";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { AlgaehTreeSearch } from "algaeh-react-components";
@@ -40,15 +40,7 @@ import {
 class EarningsDeductions extends Component {
   constructor(props) {
     super(props);
-    let Activated_Modueles = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    );
-
-    const FIN_Active = Activated_Modueles.filter(f => {
-      return f.module_code === "FIN";
-    });
-
-    this.FIN_Active = FIN_Active.length > 0 ? true : false;
+    this.FIN_Active = false;
 
     this.state = {
       earning_deductions: [],
@@ -87,7 +79,16 @@ class EarningsDeductions extends Component {
     }
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.FIN_Active =
+      userToken.product_type === "HIMS_ERP" ||
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "HRMS_ERP"
+        ? true
+        : false;
     if (
       this.props.nationalities === undefined ||
       this.props.nationalities.length === 0

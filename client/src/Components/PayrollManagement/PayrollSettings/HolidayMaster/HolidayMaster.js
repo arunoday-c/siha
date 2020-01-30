@@ -8,12 +8,10 @@ import {
   AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import {
-  AlgaehValidation,
-  AlgaehOpenContainer
-} from "../../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import swal from "sweetalert2";
+import { MainContext } from "algaeh-react-components/context";
 
 export default class HolidayMaster extends Component {
   constructor(props) {
@@ -30,14 +28,20 @@ export default class HolidayMaster extends Component {
       sunday: false,
       disableButton: false,
       year: moment().format("YYYY"),
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id
+      hospital_id: null
     };
 
     this.getHolidayMaster(this.state.hospital_id);
     this.getReligionsMaster();
     this.getHospitals();
+  }
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    })
   }
 
   getHospitals() {
@@ -50,9 +54,7 @@ export default class HolidayMaster extends Component {
             hospitals: res.data.records
           });
         }
-      },
-
-      onFailure: err => {}
+      }
     });
   }
   getReligionsMaster() {
@@ -67,7 +69,7 @@ export default class HolidayMaster extends Component {
         }
       },
 
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -142,7 +144,7 @@ export default class HolidayMaster extends Component {
             });
           }
         });
-      } 
+      }
     });
   }
 
@@ -187,7 +189,7 @@ export default class HolidayMaster extends Component {
           );
         }
       },
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -257,7 +259,7 @@ export default class HolidayMaster extends Component {
               });
             }
           },
-          onFailure: err => {}
+          onFailure: err => { }
         });
       }
     });
@@ -299,7 +301,7 @@ export default class HolidayMaster extends Component {
               });
             }
           },
-          onFailure: err => {}
+          onFailure: err => { }
         });
       }
     });
@@ -638,8 +640,8 @@ export default class HolidayMaster extends Component {
                               {row.holiday === "Y"
                                 ? "Holiday"
                                 : row.weekoff === "Y"
-                                ? "Week Off"
-                                : "------"}
+                                  ? "Week Off"
+                                  : "------"}
                             </span>
                           );
                         }
@@ -655,8 +657,8 @@ export default class HolidayMaster extends Component {
                               {row.holiday_type === "RE"
                                 ? "Regular"
                                 : row.holiday_type === "RS"
-                                ? "Restricted"
-                                : "------"}
+                                  ? "Restricted"
+                                  : "------"}
                             </span>
                           );
                         }

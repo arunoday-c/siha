@@ -1,24 +1,7 @@
 import React, { Component } from "react";
-// import { withRouter } from "react-router-dom";
-// import { connect } from "react-redux";
-// import { bindActionCreators } from "redux";
 
-import { AlgaehActions } from "../../../../actions/algaehActions";
 import "./OpeningBalance.scss";
-import {
-  AlagehAutoComplete,
-  AlgaehLabel,
-  AlgaehDataGrid,
-  AlagehFormGroup
-} from "../../../Wrapper/algaehWrapper";
-import AlgaehSearch from "../../../Wrapper/globalSearch";
-import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import {
-  AlgaehOpenContainer,
-  getYears
-} from "../../../../utils/GlobalFunctions";
+import { AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
 import OpeningBalanceEvent from "./OpeningBalanceEvent";
 import moment from "moment";
 import AddEmployeeOpenBalance from "./SubModals/AddEmployeeOpenBalance";
@@ -104,7 +87,7 @@ export default class EmployeeGratuityOpenBal extends Component {
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 20 }}
                   events={{
-                    onEdit: () => {},
+                    onEdit: () => { },
                     onDone: this.updateEmployeeOpeningBalance.bind(this)
                   }}
                   actions={{

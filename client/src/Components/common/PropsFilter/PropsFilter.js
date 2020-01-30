@@ -1,5 +1,4 @@
 import React, { useEffect, useState, createContext } from "react";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 import { FilterComponent } from ".";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import spotlightSearch from "../../../Search/spotlightSearch.json";

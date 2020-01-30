@@ -19,10 +19,9 @@ import {
   AlagehAutoComplete
 } from "../../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../../utils/GlobalVariables.json";
-import Enumarable from "linq";
 import AlgaehFile from "../../../../Wrapper/algaehFileUpload";
 import { getCookie } from "../../../../../utils/algaehApiCall";
-import { AlgaehOpenContainer } from "../../../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 import { algaehApiCall } from "../../../../../utils/algaehApiCall";
 // import Enumerable from "linq";
 
@@ -30,13 +29,11 @@ class PersonalDetails extends Component {
   constructor(props) {
     super(props);
     this.initCall();
-    const _activeModel = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    );
+
     this.state = {
       samechecked: "N",
       selectedLang: getCookie("Language"),
-      activeModel: _activeModel
+      HIMS_Active: false
     };
   }
 
@@ -61,9 +58,17 @@ class PersonalDetails extends Component {
       }
     });
   }
-
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    const HIMS_Active =
+      userToken.product_type === "HIMS_ERP" ||
+        userToken.product_type === "HIMS_CLINICAL"
+        ? true
+        : false;
+
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
+    InputOutput.HIMS_Active = HIMS_Active
     this.setState({ ...this.state, ...InputOutput });
     if (this.props.titles === undefined || this.props.titles.length === 0) {
       this.props.getTitles({
@@ -133,11 +138,7 @@ class PersonalDetails extends Component {
   }
 
   render() {
-    // let FrontDeskActive =
 
-    const FrontDeskActive = Enumarable.from(this.state.activeModel)
-      .where(w => w.module_code === "FTDSK")
-      .toArray();
     return (
       <React.Fragment>
         {/* <MyContext.Consumer>
@@ -756,8 +757,8 @@ class PersonalDetails extends Component {
                               ? false
                               : this.state.employee_code === null ||
                                 this.state.employee_code === ""
-                              ? false
-                              : true
+                                ? false
+                                : true
                           }
                           textAltMessage="Employee Image"
                           serviceParameters={{
@@ -774,7 +775,7 @@ class PersonalDetails extends Component {
                       </div>
                     </div>
                   </div>
-                  {FrontDeskActive.length > 0 ? (
+                  {this.state.HIMS_Active === true ? (
                     <div>
                       <h5 style={{ marginTop: 20 }}>
                         <span>If its a Doctor</span>

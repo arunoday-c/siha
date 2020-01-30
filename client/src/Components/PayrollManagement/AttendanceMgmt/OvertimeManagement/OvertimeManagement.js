@@ -26,6 +26,8 @@ import {
   DisplayDateFormat,
   InsertOTManagement
 } from "./OvertimeManagementEvent";
+import { MainContext } from "algaeh-react-components/context";
+
 class OvertimeManagement extends Component {
   constructor(props) {
     super(props);
@@ -36,7 +38,13 @@ class OvertimeManagement extends Component {
     this.setState(IOputs);
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    })
     getHolidayMaster(this, this);
     getOptions(this, this);
   }
@@ -246,7 +254,7 @@ class OvertimeManagement extends Component {
                         {this.state.holiday_calc_value === null
                           ? "* 0.00"
                           : "* " +
-                            String(this.state.holiday_calc_value).toString()}
+                          String(this.state.holiday_calc_value).toString()}
                       </h6>
                     </div>
                     <div className="col">
@@ -469,7 +477,7 @@ class OvertimeManagement extends Component {
                         {this.state.holiday_calc_value === null
                           ? "* 0.00"
                           : "* " +
-                            String(this.state.holiday_calc_value).toString()}
+                          String(this.state.holiday_calc_value).toString()}
                       </h6>
                     </div>
                     <div className="col">

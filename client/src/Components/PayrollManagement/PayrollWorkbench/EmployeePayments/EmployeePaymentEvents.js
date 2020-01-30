@@ -2,10 +2,7 @@
 import { swalMessage, algaehApiCall, getCookie } from "../../../../utils/algaehApiCall.js";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import {
-  AlgaehValidation,
-  AlgaehOpenContainer
-} from "../../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import EmployeePaymentIOputs from "../../../../Models/EmployeePayment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 // import swal from "sweetalert2";
@@ -516,9 +513,7 @@ const getEmployeePayments = $this => {
 
 const ClearData = $this => {
   let IOputs = EmployeePaymentIOputs.inputParam();
-  IOputs.hospital_id = JSON.parse(
-    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-  ).hims_d_hospital_id;
+  IOputs.hospital_id = $this.state.hospital_id;
   IOputs.cash_finance_account = $this.state.cash_finance_account
   $this.setState(IOputs);
 };

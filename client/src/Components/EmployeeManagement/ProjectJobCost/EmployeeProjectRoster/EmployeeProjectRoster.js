@@ -7,11 +7,9 @@ import {
 import ProjectAssign from "./ProjectAssign";
 import ProjectEmpAssign from "./ProjectEmpAssign";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
-import {
-  getYears,
-  AlgaehOpenContainer
-} from "../../../../utils/GlobalFunctions";
-import { MONTHS } from "../../../../utils/GlobalVariables.json";
+import { getYears } from "../../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
+
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
@@ -28,9 +26,7 @@ class EmployeeProjectRoster extends Component {
       hospitals: [],
       projects: [],
       designations: [],
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: null,
       year: moment().year(),
       month: moment(new Date()).format("M"),
       formatingString: this.monthFormatorString(moment().startOf("month")),
@@ -43,11 +39,15 @@ class EmployeeProjectRoster extends Component {
     // this.getDesignations();
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    });
     this.getBranchDetails();
     this.getHospitals();
     this.getProjects();
-    console.log(React.version);
   }
 
   getDesignations(sub_department_id) {
@@ -79,10 +79,6 @@ class EmployeeProjectRoster extends Component {
       employees: [],
       sub_department_id: null,
       department_id: null,
-
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
       year: moment().year(),
       month: moment(new Date()).format("M"),
       hims_d_employee_id: null,
@@ -153,7 +149,7 @@ class EmployeeProjectRoster extends Component {
         }
       },
 
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -170,36 +166,36 @@ class EmployeeProjectRoster extends Component {
   pasteProject(data) {
     this.state.copyData === null
       ? swalMessage({
-          title: "Please copy the Project first",
-          type: "warning"
-        })
+        title: "Please copy the Project first",
+        type: "warning"
+      })
       : algaehApiCall({
-          uri: "/projectjobcosting/pasteProjectRoster",
-          method: "POST",
-          module: "hrManagement",
-          data: {
-            employee_id: data.id,
-            attendance_date: data.date,
-            shift_id: this.state.copyData.shift_id,
-            project_id: this.state.copyData.project_id,
-            hospital_id: this.state.hospital_id
-          },
-          onSuccess: res => {
-            if (res.data.success) {
-              swalMessage({
-                title: "Pasted Successfully . . ",
-                type: "success"
-              });
-              this.getEmployeesForProjectRoster();
-            }
-          },
-          onFailure: err => {
+        uri: "/projectjobcosting/pasteProjectRoster",
+        method: "POST",
+        module: "hrManagement",
+        data: {
+          employee_id: data.id,
+          attendance_date: data.date,
+          shift_id: this.state.copyData.shift_id,
+          project_id: this.state.copyData.project_id,
+          hospital_id: this.state.hospital_id
+        },
+        onSuccess: res => {
+          if (res.data.success) {
             swalMessage({
-              title: err.message,
-              type: "error"
+              title: "Pasted Successfully . . ",
+              type: "success"
             });
+            this.getEmployeesForProjectRoster();
           }
-        });
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err.message,
+            type: "error"
+          });
+        }
+      });
   }
 
   deleteProject(data) {
@@ -403,112 +399,112 @@ class EmployeeProjectRoster extends Component {
             </span>
           </td>
         ) : // holiday !== undefined && holiday.weekoff === "Y" ? (
-        //   <td className="week_off_cell" key={now}>
-        //     {/* {holiday.holiday_description} */}
-        //     WO
-        //   </td>
-        // ) : holiday !== undefined && holiday.holiday === "Y" ? (
-        //   <td className="holiday_cell" key={now}>
-        //     {/* {holiday.holiday_description} */}
-        //     HO
-        //   </td>
-        // ) :
-        project !== undefined && project !== null ? (
-          <td
-            // onClick={this.showModal.bind(this, id)}
-            key={now}
-            className="time_cell editAction"
-            employee_id={row.hims_d_employee_id}
-            date={now.format("YYYY-MM-DD")}
-          >
-            <i className="fas fa-ellipsis-v" />
-            <ul>
-              <li onClick={this.copyProject.bind(this, project)}>Copy</li>
-              <li
-                onClick={this.pasteProject.bind(this, {
-                  id: row.hims_d_employee_id,
-                  date: now.format("YYYY-MM-DD")
-                })}
+          //   <td className="week_off_cell" key={now}>
+          //     {/* {holiday.holiday_description} */}
+          //     WO
+          //   </td>
+          // ) : holiday !== undefined && holiday.holiday === "Y" ? (
+          //   <td className="holiday_cell" key={now}>
+          //     {/* {holiday.holiday_description} */}
+          //     HO
+          //   </td>
+          // ) :
+          project !== undefined && project !== null ? (
+            <td
+              // onClick={this.showModal.bind(this, id)}
+              key={now}
+              className="time_cell editAction"
+              employee_id={row.hims_d_employee_id}
+              date={now.format("YYYY-MM-DD")}
+            >
+              <i className="fas fa-ellipsis-v" />
+              <ul>
+                <li onClick={this.copyProject.bind(this, project)}>Copy</li>
+                <li
+                  onClick={this.pasteProject.bind(this, {
+                    id: row.hims_d_employee_id,
+                    date: now.format("YYYY-MM-DD")
+                  })}
+                >
+                  Paste
+              </li>
+                <li onClick={this.deleteProject.bind(this, project)}>
+                  Delete Project
+              </li>
+              </ul>
+              <span>{project.abbreviation}</span>
+            </td>
+          ) : // HOLIDAY / WEEKOFF FROM MASTER
+            holiday !== undefined ? (
+              <td
+                className={
+                  holiday.weekoff === "Y"
+                    ? "editAction week_off_cell"
+                    : holiday.holiday === "Y"
+                      ? "editAction holiday_cell"
+                      : null
+                }
+                key={now}
               >
-                Paste
-              </li>
-              <li onClick={this.deleteProject.bind(this, project)}>
-                Delete Project
-              </li>
-            </ul>
-            <span>{project.abbreviation}</span>
-          </td>
-        ) : // HOLIDAY / WEEKOFF FROM MASTER
-        holiday !== undefined ? (
-          <td
-            className={
-              holiday.weekoff === "Y"
-                ? "editAction week_off_cell"
-                : holiday.holiday === "Y"
-                ? "editAction holiday_cell"
-                : null
-            }
-            key={now}
-          >
-            <span>
-              {holiday.weekoff === "Y"
-                ? "WO"
-                : holiday.holiday === "Y"
-                ? "HO"
-                : holiday.holiday_description}
-            </span>
+                <span>
+                  {holiday.weekoff === "Y"
+                    ? "WO"
+                    : holiday.holiday === "Y"
+                      ? "HO"
+                      : holiday.holiday_description}
+                </span>
 
-            <i className="fas fa-ellipsis-v" />
-            <ul>
-              <li
-                onClick={this.pasteWeekoffShift.bind(this, {
-                  id: row.hims_d_employee_id,
-                  date: now.format("YYYY-MM-DD"),
-                  project_id: row.project_id,
-                  holiday: holiday.holiday,
-                  weekoff: holiday.weekoff
-                })}
-                style={{
-                  zIndex: 9999
-                }}
-              >
-                Paste As Week Off
+                <i className="fas fa-ellipsis-v" />
+                <ul>
+                  <li
+                    onClick={this.pasteWeekoffShift.bind(this, {
+                      id: row.hims_d_employee_id,
+                      date: now.format("YYYY-MM-DD"),
+                      project_id: row.project_id,
+                      holiday: holiday.holiday,
+                      weekoff: holiday.weekoff
+                    })}
+                    style={{
+                      zIndex: 9999
+                    }}
+                  >
+                    Paste As Week Off
               </li>
-              <li
-                // onClick={this.pasteShift.bind(this, {
-                //   id: row.hims_d_employee_id,
-                //   date: now.format("YYYY-MM-DD"),
-                //   sub_id: row.sub_department_id
-                // })}
-                style={{
-                  zIndex: 9999
-                }}
-              >
-                Paste As Normal
+                  <li
+                    // onClick={this.pasteShift.bind(this, {
+                    //   id: row.hims_d_employee_id,
+                    //   date: now.format("YYYY-MM-DD"),
+                    //   sub_id: row.sub_department_id
+                    // })}
+                    style={{
+                      zIndex: 9999
+                    }}
+                  >
+                    Paste As Normal
               </li>
-            </ul>
-          </td>
-        ) : (
-          <td
-            onClick={this.showModal.bind(this, row)}
-            key={now}
-            className="time_cell editAction"
-            employee_id={row.hims_d_employee_id}
-            date={now.format("YYYY-MM-DD")}
-          >
-            <i className="fas fa-ellipsis-v" />
-            <ul>
-              <li
-                onClick={this.pasteProject.bind(this, {
-                  id: row.hims_d_employee_id,
-                  date: now.format("YYYY-MM-DD")
-                })}
-              >
-                Paste
+                </ul>
+              </td>
+            ) : (
+                <td
+                  onClick={this.showModal.bind(this, row)}
+                  key={now}
+                  className="time_cell editAction"
+                  employee_id={row.hims_d_employee_id}
+                  date={now.format("YYYY-MM-DD")}
+                >
+                  <i className="fas fa-ellipsis-v" />
+                  <ul>
+                    <li
+                      onClick={this.pasteProject.bind(this, {
+                        id: row.hims_d_employee_id,
+                        date: now.format("YYYY-MM-DD")
+                      })}
+                    >
+                      Paste
               </li>
-            </ul>
-          </td>
-        );
+                  </ul>
+                </td>
+              );
 
       Emp_Dates.push(data);
       now.add(1, "days");
@@ -941,8 +937,8 @@ class EmployeeProjectRoster extends Component {
               {!this.state.loading ? (
                 <span>Load</span>
               ) : (
-                <i className="fas fa-spinner fa-spin" />
-              )}
+                  <i className="fas fa-spinner fa-spin" />
+                )}
             </button>
           </div>
         </div>
@@ -1017,51 +1013,51 @@ class EmployeeProjectRoster extends Component {
                         <i className="fas fa-user-clock" />
                       </div>
                     ) : (
-                      <table className="rosterTableStyle">
-                        <thead id="tHdRstr">
-                          <tr>
-                            {/* <th>Employee Code</th> */}
-                            <th>Employee Name</th>
-                            {this.getDaysOfMonth()}
-                            <th>Joining Date</th>
-                            <th>Exit Date</th>
-                          </tr>
-                        </thead>
-                        {/* <div className="tbodyScrollCntr"> */}
-                        <tbody>
-                          {this.state.employees.map((row, index) => (
-                            <tr key={row.hims_d_employee_id}>
-                              {/* <td>{row.employee_code}</td> */}
-                              <td>
-                                <b> {row.employee_name}</b>
-                                <br />
-                                {row.employee_code}
-                                <br />
-                                <small> {row.designation}</small>
-                              </td>
-
-                              {this.plotEmployeeDates(
-                                row,
-                                row.holidays,
-                                row.employeeLeaves,
-                                row.empProject
-                              )}
-                              <td>
-                                {moment(row.date_of_joining).format(
-                                  "DD-MM-YYYY"
-                                )}
-                              </td>
-                              <td>
-                                {row.exit_date
-                                  ? moment(row.exit_date).format("DD-MM-YYYY")
-                                  : "------"}
-                              </td>
+                        <table className="rosterTableStyle">
+                          <thead id="tHdRstr">
+                            <tr>
+                              {/* <th>Employee Code</th> */}
+                              <th>Employee Name</th>
+                              {this.getDaysOfMonth()}
+                              <th>Joining Date</th>
+                              <th>Exit Date</th>
                             </tr>
-                          ))}
-                        </tbody>
-                        {/* </div> */}
-                      </table>
-                    )}
+                          </thead>
+                          {/* <div className="tbodyScrollCntr"> */}
+                          <tbody>
+                            {this.state.employees.map((row, index) => (
+                              <tr key={row.hims_d_employee_id}>
+                                {/* <td>{row.employee_code}</td> */}
+                                <td>
+                                  <b> {row.employee_name}</b>
+                                  <br />
+                                  {row.employee_code}
+                                  <br />
+                                  <small> {row.designation}</small>
+                                </td>
+
+                                {this.plotEmployeeDates(
+                                  row,
+                                  row.holidays,
+                                  row.employeeLeaves,
+                                  row.empProject
+                                )}
+                                <td>
+                                  {moment(row.date_of_joining).format(
+                                    "DD-MM-YYYY"
+                                  )}
+                                </td>
+                                <td>
+                                  {row.exit_date
+                                    ? moment(row.exit_date).format("DD-MM-YYYY")
+                                    : "------"}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                          {/* </div> */}
+                        </table>
+                      )}
                   </div>
                 </div>
               </div>

@@ -16,7 +16,7 @@ import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
-import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 
 class LoanAdjustment extends Component {
   constructor(props) {
@@ -25,13 +25,17 @@ class LoanAdjustment extends Component {
       employee_loans: [],
       loading: false,
 
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id
+      hospital_id: null
     };
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    })
     if (
       this.props.organizations === undefined ||
       this.props.organizations.length === 0
@@ -208,8 +212,8 @@ class LoanAdjustment extends Component {
               {!this.state.loading ? (
                 <span>Load</span>
               ) : (
-                <i className="fas fa-spinner fa-spin" />
-              )}
+                  <i className="fas fa-spinner fa-spin" />
+                )}
             </button>
           </div>
         </div>
@@ -400,7 +404,7 @@ class LoanAdjustment extends Component {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       loading={this.state.loading}
                       events={{
-                        onEdit: () => {},
+                        onEdit: () => { },
                         onDone: this.adjustLoan.bind(this)
                         //onDelete: () => { }
                       }}

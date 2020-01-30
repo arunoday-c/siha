@@ -32,8 +32,8 @@ import {
   updateContibuteComponent,
   getEmpEarningComponents,
   getEmpDeductionComponents,
-  getEmpContibuteComponents
-  // CalculateBasedonFormula
+  getEmpContibuteComponents,
+  getOptions
 } from "./PayRollDetailsEvent.js";
 import Enumerable from "linq";
 
@@ -62,8 +62,10 @@ class PayRollDetails extends Component {
       contribut_limit_applicable: null,
       contribut_limit_amount: null,
       deduct_limit_applicable: null,
-      deduct_limit_amount: null
+      deduct_limit_amount: null,
+      basic_earning_component: null
     };
+    getOptions(this)
   }
 
   componentDidMount() {
@@ -296,10 +298,10 @@ class PayRollDetails extends Component {
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                  f =>
-                                    f.hims_d_earning_deduction_id ===
-                                    row.earnings_id
-                                );
+                                f =>
+                                  f.hims_d_earning_deduction_id ===
+                                  row.earnings_id
+                              );
 
                           return (
                             <span>
@@ -314,10 +316,10 @@ class PayRollDetails extends Component {
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                  f =>
-                                    f.hims_d_earning_deduction_id ===
-                                    row.earnings_id
-                                );
+                                f =>
+                                  f.hims_d_earning_deduction_id ===
+                                  row.earnings_id
+                              );
 
                           return (
                             <span>
@@ -340,29 +342,29 @@ class PayRollDetails extends Component {
                           return row.calculation_method === "FO" ? (
                             row.amount
                           ) : (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                number: {
-                                  allowNegative: false,
-                                  thousandSeparator: ","
-                                },
-                                value: row.amount,
-                                className: "txt-fld",
-                                name: "amount",
-                                events: {
-                                  onChange: onchangegridcol.bind(
-                                    this,
-                                    this,
-                                    row
-                                  )
-                                },
-                                others: {
-                                  placeholder: "0.00"
-                                }
-                              }}
-                            />
-                          );
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  number: {
+                                    allowNegative: false,
+                                    thousandSeparator: ","
+                                  },
+                                  value: row.amount,
+                                  className: "txt-fld",
+                                  name: "amount",
+                                  events: {
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    placeholder: "0.00"
+                                  }
+                                }}
+                              />
+                            );
                         },
                         others: {
                           maxWidth: 90,
@@ -409,7 +411,7 @@ class PayRollDetails extends Component {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: deleteEarningComponent.bind(this, this),
-                      onEdit: row => {},
+                      onEdit: row => { },
                       onDone: updateEarningComponent.bind(this, this)
                     }}
                   />
@@ -500,10 +502,10 @@ class PayRollDetails extends Component {
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                  f =>
-                                    f.hims_d_earning_deduction_id ===
-                                    row.deductions_id
-                                );
+                                f =>
+                                  f.hims_d_earning_deduction_id ===
+                                  row.deductions_id
+                              );
 
                           return (
                             <span>
@@ -518,10 +520,10 @@ class PayRollDetails extends Component {
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                  f =>
-                                    f.hims_d_earning_deduction_id ===
-                                    row.deductions_id
-                                );
+                                f =>
+                                  f.hims_d_earning_deduction_id ===
+                                  row.deductions_id
+                              );
 
                           return (
                             <span>
@@ -544,26 +546,26 @@ class PayRollDetails extends Component {
                           return row.calculation_method === "FO" ? (
                             row.amount
                           ) : (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                number: {
-                                  allowNegative: false,
-                                  thousandSeparator: ","
-                                },
-                                value: row.amount,
-                                className: "txt-fld",
-                                name: "amount",
-                                events: {
-                                  onChange: onchangegridcol.bind(
-                                    this,
-                                    this,
-                                    row
-                                  )
-                                }
-                              }}
-                            />
-                          );
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  number: {
+                                    allowNegative: false,
+                                    thousandSeparator: ","
+                                  },
+                                  value: row.amount,
+                                  className: "txt-fld",
+                                  name: "amount",
+                                  events: {
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )
+                                  }
+                                }}
+                              />
+                            );
                         },
                         others: {
                           maxWidth: 90,
@@ -579,7 +581,7 @@ class PayRollDetails extends Component {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: deleteDeductionComponent.bind(this, this),
-                      onEdit: row => {},
+                      onEdit: row => { },
                       onDone: updateDeductionComponent.bind(this, this)
                     }}
                   />
@@ -673,10 +675,10 @@ class PayRollDetails extends Component {
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                  f =>
-                                    f.hims_d_earning_deduction_id ===
-                                    row.contributions_id
-                                );
+                                f =>
+                                  f.hims_d_earning_deduction_id ===
+                                  row.contributions_id
+                              );
 
                           return (
                             <span>
@@ -691,10 +693,10 @@ class PayRollDetails extends Component {
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                  f =>
-                                    f.hims_d_earning_deduction_id ===
-                                    row.contributions_id
-                                );
+                                f =>
+                                  f.hims_d_earning_deduction_id ===
+                                  row.contributions_id
+                              );
 
                           return (
                             <span>
@@ -717,26 +719,26 @@ class PayRollDetails extends Component {
                           return row.calculation_method === "FO" ? (
                             row.amount
                           ) : (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                number: {
-                                  allowNegative: false,
-                                  thousandSeparator: ","
-                                },
-                                value: row.amount,
-                                className: "txt-fld",
-                                name: "amount",
-                                events: {
-                                  onChange: onchangegridcol.bind(
-                                    this,
-                                    this,
-                                    row
-                                  )
-                                }
-                              }}
-                            />
-                          );
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  number: {
+                                    allowNegative: false,
+                                    thousandSeparator: ","
+                                  },
+                                  value: row.amount,
+                                  className: "txt-fld",
+                                  name: "amount",
+                                  events: {
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )
+                                  }
+                                }}
+                              />
+                            );
                         },
                         others: {
                           maxWidth: 90,
@@ -752,7 +754,7 @@ class PayRollDetails extends Component {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: deleteContibuteComponent.bind(this, this),
-                      onEdit: row => {},
+                      onEdit: row => { },
                       onDone: updateContibuteComponent.bind(this, this)
                     }}
                   />

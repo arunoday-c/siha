@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./loan-auth.scss";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
@@ -19,21 +19,11 @@ class LoanAuthorization extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // from_date: "",
-      // to_date: "",
-      // selRow: {},
-      // loading: false,
-      // hospital_id: JSON.parse(
-      //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      // ).hims_d_hospital_id,
-      // openAuth: false
 
       open: false,
       leave_levels: [],
       leave_applns: [],
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: null,
       loan_status: "PEN"
       //currLeavAppln: {}
     };
@@ -52,8 +42,8 @@ class LoanAuthorization extends Component {
           let auth_level =
             res.data.records.auth_levels.length > 0
               ? Enumerable.from(res.data.records.auth_levels).maxBy(
-                  w => w.value
-                )
+                w => w.value
+              )
               : null;
 
           this.setState({
@@ -88,7 +78,7 @@ class LoanAuthorization extends Component {
             employee_name: row.full_name,
             employee_id: row.hims_d_employee_id
           },
-          () => {}
+          () => { }
         );
       }
     });
@@ -146,7 +136,7 @@ class LoanAuthorization extends Component {
         }
       },
 
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -162,7 +152,7 @@ class LoanAuthorization extends Component {
         }
       },
 
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -201,6 +191,14 @@ class LoanAuthorization extends Component {
       openAuth: false
     });
     this.getLoanApplications();
+  }
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    })
   }
 
   render() {
@@ -339,8 +337,8 @@ class LoanAuthorization extends Component {
                 {!this.state.loading ? (
                   <span>Load</span>
                 ) : (
-                  <i className="fas fa-spinner fa-spin" />
-                )}
+                    <i className="fas fa-spinner fa-spin" />
+                  )}
               </button>{" "}
             </div>
           </div>
@@ -374,17 +372,17 @@ class LoanAuthorization extends Component {
                           return row.loan_authorized === "APR" ? (
                             <i className="fas fa-thumbs-up" />
                           ) : (
-                            <a
-                              onClick={() => {
-                                this.setState({
-                                  selRow: row,
-                                  openAuth: true
-                                });
-                              }}
-                            >
-                              <i className="fas fa-file-signature" />
-                            </a>
-                          );
+                              <a
+                                onClick={() => {
+                                  this.setState({
+                                    selRow: row,
+                                    openAuth: true
+                                  });
+                                }}
+                              >
+                                <i className="fas fa-file-signature" />
+                              </a>
+                            );
                         },
                         others: {
                           filterable: false,
@@ -414,8 +412,8 @@ class LoanAuthorization extends Component {
                                   Issued
                                 </span>
                               ) : (
-                                "------"
-                              )}
+                                        "------"
+                                      )}
                             </span>
                           );
                         }

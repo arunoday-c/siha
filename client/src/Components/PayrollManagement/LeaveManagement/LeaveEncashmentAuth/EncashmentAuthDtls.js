@@ -1,13 +1,10 @@
 import React, { Component } from "react";
 
 import "./LeaveEncashmentAuth.scss";
-import { AuthorizeLEaveEncash } from "./LeaveEncashmentAuthEvents.js";
+import { AuthorizeLEaveEncash, getHrmsOptions } from "./LeaveEncashmentAuthEvents.js";
 
 import { AlgaehLabel, AlgaehModalPopUp } from "../../../Wrapper/algaehWrapper";
-import {
-  GetAmountFormart,
-  AlgaehOpenContainer
-} from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 
 export default class EncashmentAuthDtls extends Component {
   constructor(props) {
@@ -20,12 +17,13 @@ export default class EncashmentAuthDtls extends Component {
       leave_description: null,
       leave_days: null,
       total_amount: null,
-      leave_encash_level: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
-      ).leave_encash_level,
+      leave_encash_level: null,
       hims_f_leave_encash_header_id: null
     };
+    getHrmsOptions(this)
   }
+
+
 
   UNSAFE_componentWillReceiveProps(newProps) {
 
