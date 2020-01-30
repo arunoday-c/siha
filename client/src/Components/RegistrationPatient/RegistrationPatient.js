@@ -70,7 +70,7 @@ class RegistrationPatient extends Component {
       isPackUtOpen: false,
       UpdatepatientDetail: false,
       employee_id_required: "N",
-      hsopital_id: ""
+      hospital_id: ""
     };
   }
   static contextType = MainContext;
@@ -85,7 +85,7 @@ class RegistrationPatient extends Component {
     // this.employee_id_required = userToken.requied_emp_id;
     this.setState({
       employee_id_required: userToken.requied_emp_id,
-      hsopital_id: userToken.hims_d_hospital_id
+      hospital_id: userToken.hims_d_hospital_id
     });
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
