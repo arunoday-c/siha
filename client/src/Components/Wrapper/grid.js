@@ -7,7 +7,6 @@ import moment from "moment";
 import { AlgaehDateHandler, AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
-import "../Wrapper/wrapper.scss";
 const CreateCsv = React.lazy(() => import("./csvGenerator"));
 
 let ReactTableFixedColumns = withFixedColumns(ReactTable);

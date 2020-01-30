@@ -1,6 +1,5 @@
 import React, { PureComponent } from "react";
 import Label from "../Wrapper/label";
-import "../Wrapper/wrapper.scss";
 import { getCookie, swalMessage } from "../../utils/algaehApiCall.js";
 import moment from "moment";
 import config from "../../utils/config.json";
