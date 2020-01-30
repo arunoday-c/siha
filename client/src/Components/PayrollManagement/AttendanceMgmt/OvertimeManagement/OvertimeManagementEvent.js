@@ -1,7 +1,6 @@
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import Enumerable from "linq";
 import Options from "../../../../Options.json";
@@ -211,12 +210,12 @@ const CalculateAdd = $this => {
           $this.state.d_weekoff_ot_hours === null
             ? 0
             : parseFloat($this.state.d_weekoff_ot_hours) *
-              $this.state.weekoff_calc_value,
+            $this.state.weekoff_calc_value,
         holiday_ot_hours:
           $this.state.d_holiday_ot_hours === null
             ? 0
             : parseFloat($this.state.d_holiday_ot_hours) *
-              $this.state.holiday_calc_value
+            $this.state.holiday_calc_value
       });
 
       let d_ot_hours = Enumerable.from(monthlyOverTime).sum(w =>
@@ -276,9 +275,7 @@ const getHolidayMaster = $this => {
     method: "GET",
 
     data: {
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id
+      hospital_id: $this.state.hospital_id
     },
     onSuccess: res => {
       if (res.data.success) {
@@ -287,7 +284,7 @@ const getHolidayMaster = $this => {
         });
       }
     },
-    onFailure: err => {}
+    onFailure: err => { }
   });
 };
 

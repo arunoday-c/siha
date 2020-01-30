@@ -6,23 +6,17 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 
 import "./IssueCertificate.scss";
 import {
-  AlgaehDateHandler,
-  AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
 // import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
-import {
-  AlgaehValidation,
-  AlgaehOpenContainer
-} from "../../../../utils/GlobalFunctions";
-import Enumerable from "linq";
-import swal from "sweetalert2";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
+
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
@@ -31,9 +25,7 @@ class IssueCertificate extends Component {
     super(props);
     this.state = {
       extra: {},
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: null,
       loading_Process: false,
       certificate_type: null
     };
@@ -58,7 +50,12 @@ class IssueCertificate extends Component {
     return dates;
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    });
     if (
       this.props.organizations === undefined ||
       this.props.organizations.length === 0
@@ -172,7 +169,7 @@ class IssueCertificate extends Component {
           {
             employee: res.data.records[0]
           },
-          () => {}
+          () => { }
         );
       },
       onFailure: err => {

@@ -28,7 +28,6 @@ import {
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import {
   getYears,
-  AlgaehOpenContainer,
   GetAmountFormart
 } from "../../../../utils/GlobalFunctions";
 import EncashmentAuthDtls from "./EncashmentAuthDtls";
@@ -56,14 +55,27 @@ class LeaveEncashmentAuth extends Component {
       authorized: "PEN",
       to_date: new Date(),
       from_date: moment("01" + month + year, "DDMMYYYY")._d,
-      leave_encash_level: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
-      ).leave_encash_level,
+      leave_encash_level: null,
       encash_authorized: null
     };
 
     this.getHospitals();
+    this.getHrmsOptions(this)
   }
+
+  getHrmsOptions() {
+    algaehApiCall({
+      uri: "/payrollOptions/getHrmsOptions",
+      method: "GET",
+      module: "hrManagement",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({ leave_encash_level: res.data.result[0].leave_encash_level });
+        }
+      }
+    });
+  };
+
   getHospitals() {
     algaehApiCall({
       uri: "/organization/getOrganizationByUser",
@@ -187,7 +199,7 @@ class LeaveEncashmentAuth extends Component {
             employee_name: row.full_name,
             employee_id: row.hims_d_employee_id
           },
-          () => {}
+          () => { }
         );
       }
     });
@@ -328,8 +340,8 @@ class LeaveEncashmentAuth extends Component {
                 {!this.state.loading ? (
                   <span>Load</span>
                 ) : (
-                  <i className="fas fa-spinner fa-spin" />
-                )}
+                    <i className="fas fa-spinner fa-spin" />
+                  )}
               </button>
             </div>
           </div>
@@ -400,8 +412,8 @@ class LeaveEncashmentAuth extends Component {
                                   Cancelled
                                 </span>
                               ) : (
-                                "------"
-                              )}
+                                        "------"
+                                      )}
                             </span>
                           );
                         }

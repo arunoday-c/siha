@@ -1,9 +1,6 @@
 import Enumerable from "linq";
 import { swalMessage, algaehApiCall, getCookie } from "../../../../utils/algaehApiCall.js";
-import {
-  AlgaehValidation,
-  AlgaehOpenContainer
-} from "../../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import _ from "lodash";
@@ -183,18 +180,15 @@ const FinalizeSalary = $this => {
         return f.leave_salary_accrual_amount > 0;
       });
 
-      let hrms_options = JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
-      );
 
       let salary_date =
         "01-" + $this.state.inputs.month + "-" + $this.state.inputs.year;
       let salary_end_date = moment(salary_date)
         .endOf("month")
         .format("YYYY-MM-DD");
-      if (hrms_options.attendance_starts === "PM") {
+      if ($this.state.hrms_options.attendance_starts === "PM") {
         salary_date =
-          hrms_options.at_st_date +
+          $this.state.hrms_options.at_st_date +
           "-" +
           $this.state.inputs.month +
           "-" +
@@ -204,12 +198,8 @@ const FinalizeSalary = $this => {
           "-" +
           $this.state.inputs.month +
           "-" +
-          hrms_options.at_end_date;
+          $this.state.hrms_options.at_end_date;
       }
-
-      let annual_leave_calculation = JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
-      ).annual_leave_calculation;
       let inputObj = {
         fron_salary: "Y",
         salary_end_date: salary_end_date,
@@ -220,7 +210,7 @@ const FinalizeSalary = $this => {
         hospital_id: $this.state.inputs.hospital_id,
         net_salary: net_salary,
         _leave_salary_acc: _leave_salary_acc,
-        annual_leave_calculation: annual_leave_calculation,
+        annual_leave_calculation: $this.state.hrms_options.annual_leave_calculation,
         ScreenCode: getCookie("ScreenCode")
       };
 
@@ -311,10 +301,30 @@ const closeSalaryComponents = ($this, e) => {
   });
 };
 
+const getOptions = $this => {
+  algaehApiCall({
+    uri: "/payrollOptions/getHrmsOptions",
+    method: "GET",
+    module: "hrManagement",
+    onSuccess: res => {
+      if (res.data.success) {
+        $this.setState({ hrms_options: res.data.result[0] });
+      }
+    },
+    onFailure: err => {
+      swalMessage({
+        title: err.message,
+        type: "error"
+      });
+    }
+  });
+};
+
 export {
   SalaryProcess,
   FinalizeSalary,
   ClearData,
   openSalaryComponents,
-  closeSalaryComponents
+  closeSalaryComponents,
+  getOptions
 };

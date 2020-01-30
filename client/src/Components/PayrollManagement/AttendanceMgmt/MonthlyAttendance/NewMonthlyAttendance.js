@@ -3,11 +3,9 @@ import "./MonthlyAttendance.scss";
 import { AlgaehLabel, AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
-import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 import MonthlyDetail from "./MonthlyDetail/MonthlyDetail";
 import MonthModify from "./MonthlyModify/MonthlyModify";
 import { EmployeeFilter } from "../../../common/EmployeeFilter";
-const _options = AlgaehOpenContainer(sessionStorage.getItem("hrOptions"));
 
 export default class NewMonthlyAttendance extends Component {
   constructor(props) {
@@ -26,18 +24,30 @@ export default class NewMonthlyAttendance extends Component {
       inputs: {},
 
       formatingString: "",
-      attendance_type: JSON.parse(_options).attendance_type,
+      attendance_type: null,
       currMt: {}
     };
+    this.getHrmsOptions()
   }
 
-  componentDidMount() {
-    this.setState({
-      attendance_type: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
-      ).attendance_type
+  getHrmsOptions() {
+    algaehApiCall({
+      uri: "/payrollOptions/getHrmsOptions",
+      method: "GET",
+      module: "hrManagement",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({ attendance_type: res.data.result[0].attendance_type });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
     });
-  }
+  };
 
   loadAttendance(inputs) {
     this.setState(
@@ -121,7 +131,7 @@ export default class NewMonthlyAttendance extends Component {
     const that = this;
     const _empdtl =
       that.state.inputs.hims_d_employee_id !== null &&
-      that.state.inputs.hims_d_employee_id !== ""
+        that.state.inputs.hims_d_employee_id !== ""
         ? { hims_d_employee_id: that.state.inputs.hims_d_employee_id }
         : {};
 

@@ -18,12 +18,11 @@ import {
   getPaymentDetails,
   Paymenttexthandle,
   ProessEmpPayment,
-  employeeSearch,
   ClearData,
   PaymentOnClear,
   getFinanceHeaders
 } from "./EmployeePaymentEvents.js";
-import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Enumerable from "linq";
 import EmployeePaymentIOputs from "../../../../Models/EmployeePayment";
@@ -35,28 +34,32 @@ class EmployeePayment extends Component {
   constructor(props) {
     super(props);
 
-    let Activated_Modueles = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    );
-
-    const FIN_Active = Activated_Modueles.filter(f => {
-      return f.module_code === "FIN";
-    });
-
-    this.FIN_Active = FIN_Active.length > 0 ? true : false;
+    this.FIN_Active = false;
     this.state = {};
     getFinanceHeaders(this)
   }
 
   UNSAFE_componentWillMount() {
     let IOputs = EmployeePaymentIOputs.inputParam();
-    IOputs.hospital_id = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    ).hims_d_hospital_id;
+
     this.setState(IOputs);
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.FIN_Active =
+      userToken.product_type === "HIMS_ERP" ||
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "HRMS_ERP"
+        ? true
+        : false;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    })
+
     if (
       this.props.organizations === undefined ||
       this.props.organizations.length === 0

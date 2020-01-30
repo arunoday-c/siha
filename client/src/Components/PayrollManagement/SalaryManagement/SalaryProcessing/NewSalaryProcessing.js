@@ -9,7 +9,8 @@ import {
   FinalizeSalary,
   ClearData,
   openSalaryComponents,
-  closeSalaryComponents
+  closeSalaryComponents,
+  getOptions
 } from "./NewSalaryProcessingEvents.js";
 import SalariesComponents from "./SalariesComponents";
 
@@ -47,8 +48,11 @@ class NewSalaryProcessing extends Component {
       net_salary: null,
       salary_dates: null,
       isOpen: false,
-      dis_employee_name: null
+      dis_employee_name: null,
+      hrms_options: {}
     };
+
+    getOptions(this)
   }
 
   render() {

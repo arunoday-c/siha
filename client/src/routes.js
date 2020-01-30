@@ -34,9 +34,6 @@ const HrDashboard = React.lazy(() =>
 // const CommonDashboard = React.lazy(() =>
 //   retry(() => import("./Components/Dashboard/Dashboard"))
 // );
-// const DynamicDashboard = React.lazy(() =>
-//   retry(() => import("./Components/Dashboard/dynamicDashboard"))
-// );
 const PatientRegistration = React.lazy(() =>
   retry(() => import("./Components/RegistrationPatient/RegistrationPatient"))
 );

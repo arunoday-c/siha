@@ -1,9 +1,6 @@
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import {
-  AlgaehValidation,
-  AlgaehOpenContainer
-} from "../../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
 import Enumerable from "linq";
 import moment from "moment";
@@ -193,14 +190,11 @@ const AuthorizeLEaveEncash = ($this, data) => {
 };
 
 const getLeaveLevels = $this => {
-  let leave_encash_level = JSON.parse(
-    AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
-  ).leave_encash_level;
   algaehApiCall({
     uri: "/encashmentprocess/getLeaveEncashLevels",
     module: "hrManagement",
     method: "GET",
-    data: { leave_encash_level: leave_encash_level },
+    data: { leave_encash_level: $this.state.leave_encash_level },
     onSuccess: res => {
       if (res.data.success) {
         let auth_level =
@@ -229,6 +223,25 @@ const dateFormater = value => {
   }
 };
 
+const getHrmsOptions = ($this) => {
+  algaehApiCall({
+    uri: "/payrollOptions/getHrmsOptions",
+    method: "GET",
+    module: "hrManagement",
+    onSuccess: res => {
+      if (res.data.success) {
+        $this.setState({ leave_encash_level: res.data.result[0].leave_encash_level });
+      }
+    },
+    onFailure: err => {
+      swalMessage({
+        title: err.message,
+        type: "error"
+      });
+    }
+  });
+};
+
 export {
   texthandler,
   employeeSearch,
@@ -236,5 +249,6 @@ export {
   getLeaveEncashDetails,
   AuthorizeLEaveEncash,
   getLeaveLevels,
-  dateFormater
+  dateFormater,
+  getHrmsOptions
 };

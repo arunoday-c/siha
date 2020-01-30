@@ -1,10 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 // import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
-import {
-  AlgaehValidation,
-  AlgaehOpenContainer,
-  imageToByteArray
-} from "../../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
 import _ from "lodash";
@@ -253,10 +249,6 @@ const InsertUpdateEmployee = $this => {
           $this.state.personalDetails.employee_designation_id =
             activeDept[0].employee_designation_id;
         }
-
-        const hospital = JSON.parse(
-          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        );
         let inputObj = $this.state.personalDetails;
 
         inputObj.inactive_date =
@@ -273,7 +265,7 @@ const InsertUpdateEmployee = $this => {
         delete inputObj.employeeImage;
 
         const _payload = {
-          hospital_id: hospital.hims_d_hospital_id,
+          hospital_id: $this.state.hospital_id,
           ...inputObj
         };
 

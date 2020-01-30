@@ -326,7 +326,7 @@ const loadJSON = (file, callback) => {
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
   xobj.open("GET", file, true);
-  xobj.onreadystatechange = function() {
+  xobj.onreadystatechange = function () {
     if (xobj.readyState === 4 && xobj.status === 200) {
       callback(JSON.parse(xobj.responseText));
     }
@@ -437,11 +437,11 @@ export function AlgaehValidation(options) {
           _title =
             _langua === "en"
               ? _lable
-                  .replace("*", "")
-                  .toLowerCase()
-                  .replace(/^\w/, c => {
-                    return c.toUpperCase();
-                  }) + "- Cannot be empty"
+                .replace("*", "")
+                .toLowerCase()
+                .replace(/^\w/, c => {
+                  return c.toUpperCase();
+                }) + "- Cannot be empty"
               : _lable.replace("*", "") + "- لا يمكن أن يكون فارغا";
         }
         swalMessage({
@@ -484,9 +484,6 @@ export function GetAmountFormart(value, options) {
 }
 
 export function numberFormater(value, options, CurrencyDetail) {
-  // let CurrencyDetail = JSON.parse(
-  //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-  // );
 
   const settings = {
     ...CurrencyDetail,
@@ -516,8 +513,8 @@ export function numberFormater(value, options, CurrencyDetail) {
   let s = prec
     ? toFixedFix(n, prec)
     : Math.round(n)
-        .toString()
-        .split(".");
+      .toString()
+      .split(".");
   if (s instanceof Array) {
     if (s[0].length > 3) {
       s[0] = s[0].replace(
@@ -626,7 +623,6 @@ export function AlgaehCloseContainer(string) {
   return crypted;
 }
 export function AlgaehOpenContainer(string) {
-  debugger;
   var decipher = crypto.createDecipher(algorithm, containerId);
   var dec = decipher.update(string, "hex", "utf8");
   dec += decipher.final("utf8");
@@ -636,8 +632,8 @@ export function checkSecurity(options) {
   let currentSecurity =
     sessionStorage.getItem("AlgaehScreener") !== null
       ? JSON.parse(
-          AlgaehOpenContainer(sessionStorage.getItem("AlgaehScreener"))
-        )
+        AlgaehOpenContainer(sessionStorage.getItem("AlgaehScreener"))
+      )
       : undefined;
   if (currentSecurity !== undefined) {
     if (options.securityType === "componet") {

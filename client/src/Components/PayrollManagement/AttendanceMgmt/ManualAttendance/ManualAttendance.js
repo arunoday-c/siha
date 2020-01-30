@@ -16,13 +16,10 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import ManualAttendanceEvents from "./ManualAttendanceEvents.js";
 import moment from "moment";
 import Options from "../../../../Options.json";
-import {
-  AlgaehValidation,
-  AlgaehOpenContainer
-  // getYears
-} from "../../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import { MainContext } from "algaeh-react-components/context";
 
 const handlers = ManualAttendanceEvents();
 
@@ -37,9 +34,7 @@ class ManualAttendance extends Component {
       project_id: null,
       sub_department_id: null,
 
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: null,
       projects: [],
       employee_details: [],
       subdepartment: [],
@@ -48,9 +43,7 @@ class ManualAttendance extends Component {
       out_time: null,
       process_attend: true,
       apply_all: true,
-      manual_timesheet_entry: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
-      ).manual_timesheet_entry,
+      manual_timesheet_entry: null,
       month_wise: true,
       select_wise: "M",
       employee_id: null,
@@ -86,7 +79,13 @@ class ManualAttendance extends Component {
       });
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    })
     if (
       this.props.organizations === undefined ||
       this.props.organizations.length === 0
@@ -173,10 +172,6 @@ class ManualAttendance extends Component {
       selectedLang: this.props.SelectLanguage,
       employee_group_id: null,
       project_id: null,
-
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
       employee_details: [],
       worked_hours: null,
       in_time: null,

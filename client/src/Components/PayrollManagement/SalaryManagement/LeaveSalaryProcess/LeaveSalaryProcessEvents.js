@@ -6,10 +6,7 @@ import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import Options from "../../../../Options.json";
-import {
-  GetAmountFormart,
-  AlgaehOpenContainer
-} from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import LeaveSalaryProcessIOputs from "../../../../Models/LeaveSalaryProcess";
 
 const texthandle = ($this, e) => {
@@ -72,9 +69,7 @@ const ClearData = $this => {
 
 const MainClearData = $this => {
   let IOputs = LeaveSalaryProcessIOputs.inputParam();
-  IOputs.hospital_id = JSON.parse(
-    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-  ).hims_d_hospital_id;
+  IOputs.hospital_id = $this.state.hospital_id;
 
   $this.setState(IOputs, () => {
     getEmployeeAnnualLeaveToProcess($this);
@@ -244,22 +239,15 @@ const LeaveSalProcess = $this => {
 
 const SaveLeaveSalary = $this => {
   AlgaehLoader({ show: true });
-  let annual_leave_calculation = JSON.parse(
-    AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
-  ).annual_leave_calculation;
   let inputObj = $this.state;
-  inputObj.annual_leave_calculation = annual_leave_calculation;
+  inputObj.annual_leave_calculation = $this.state.hrms_options.annual_leave_calculation;
 
-  let hrms_options = JSON.parse(
-    AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
-  );
-  debugger
   inputObj.salary_end_date = moment($this.state.leave_salary_detail[0].end_date)
     .endOf("month")
     .format("YYYY-MM-DD");
-  if (hrms_options.attendance_starts === "PM") {
+  if ($this.state.hrms_options.attendance_starts === "PM") {
     inputObj.salary_date =
-      hrms_options.at_st_date +
+      $this.state.hrms_options.at_st_date +
       "-" +
       $this.state.month +
       "-" +
@@ -269,7 +257,7 @@ const SaveLeaveSalary = $this => {
       "-" +
       $this.state.month +
       "-" +
-      hrms_options.at_end_date;
+      $this.state.hrms_options.at_end_date;
   }
 
   inputObj.ScreenCode = getCookie("ScreenCode")
@@ -493,6 +481,26 @@ const eventHandaler = ($this, e) => {
   );
 };
 
+
+const getHrmsOptions = ($this) => {
+  algaehApiCall({
+    uri: "/payrollOptions/getHrmsOptions",
+    method: "GET",
+    module: "hrManagement",
+    onSuccess: res => {
+      if (res.data.success) {
+        $this.setState({ hrms_options: res.data.result[0] });
+      }
+    },
+    onFailure: err => {
+      swalMessage({
+        title: err.message,
+        type: "error"
+      });
+    }
+  });
+};
+
 export {
   texthandle,
   ClearData,
@@ -506,5 +514,6 @@ export {
   closeSalaryComponents,
   getEmployeeAnnualLeaveToProcess,
   eventHandaler,
-  selectEmployee
+  selectEmployee,
+  getHrmsOptions
 };

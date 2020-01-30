@@ -8,11 +8,7 @@ import Agent from "agentkeepalive";
 import config from "../utils/config.json";
 import axiosCancel from "axios-cancel";
 import AlgaehLoader from "../Components/Wrapper/fullPageLoader.js";
-import {
-  encrypter,
-  AlgaehCloseContainer,
-  AlgaehOpenContainer
-} from "./GlobalFunctions";
+import { encrypter } from "./GlobalFunctions";
 import { GetContextForm } from "./identity";
 const dateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
 let showOtherPopup = true;
@@ -112,7 +108,7 @@ export function algaehApiCall(options) {
 
       if (settings.skipParse === false) {
         settings.data = JSON.parse(
-          JSON.stringify(settings.data, function(k, v) {
+          JSON.stringify(settings.data, function (k, v) {
             return v === undefined ? null : v;
           }),
           valueReviver
@@ -155,8 +151,8 @@ export function algaehApiCall(options) {
       const timmer =
         settings.timerNotRequired === undefined
           ? {
-              timeout: settings.timeout !== undefined ? settings.timeout : 60000
-            }
+            timeout: settings.timeout !== undefined ? settings.timeout : 60000
+          }
           : {};
       axios({
         method: settings.method,
@@ -214,15 +210,15 @@ export function algaehApiCall(options) {
             if (process.env.NODE_ENV === "development") {
               console.error(
                 "Error Message : \n" +
-                  err.message +
-                  " \n Detail Info : \n" +
-                  JSON.stringify(err)
+                err.message +
+                " \n Detail Info : \n" +
+                JSON.stringify(err)
               );
             }
           } else {
             if (settings.module === "documentManagement") {
               const reader = new FileReader();
-              reader.onload = function() {
+              reader.onload = function () {
                 if (settings.onFileFailure === "function") {
                   settings.onFileFailure(reader.result);
                   return;
@@ -252,7 +248,7 @@ export function algaehApiCall(options) {
               err.response.headers["content-type"] === "text/plain"
             ) {
               const reader = new FileReader();
-              reader.onload = function() {
+              reader.onload = function () {
                 swalMessage({
                   title: reader.result,
                   type: "error",
@@ -278,7 +274,7 @@ export function algaehApiCall(options) {
             } else if (
               err.response !== undefined &&
               err.response.headers["content-type"] ===
-                "application/json; charset=utf-8"
+              "application/json; charset=utf-8"
             ) {
               if (
                 err.response.data !== undefined &&
@@ -812,7 +808,7 @@ export function collectIP() {
       a = new (w.RTCPeerConnection ||
         w.mozRTCPeerConnection ||
         w.webkitRTCPeerConnection)({ iceServers: [] }),
-      b = () => {};
+      b = () => { };
     const autoIP = new IDGenerator().generate();
     a.createDataChannel("");
     a.createOffer(c => a.setLocalDescription(c, b, b), b);
@@ -844,74 +840,17 @@ export function getLocalIP(callback) {
   collectIP().then(IP => {
     callback(IP);
   });
-  // const identity = window.localStorage.getItem("identity");
-  // if (identity === null) {
-  //   const generator = new IDGenerator();
-  //   const _IdGen = generator.generate();
-  //   window.localStorage.setItem("identity", AlgaehCloseContainer(_IdGen));
-  //   callback(_IdGen);
-  // } else {
-  //   callback(AlgaehOpenContainer(identity));
-  // }
-
-  // if (window.myIP !== undefined && window.myIP !== "") {
-  //   callback(window.myIP);
-  //   return;
-  // }
-  // return new Promise((resolve, reject) => {
-  //   window.RTCPeerConnection =
-  //     /*window.RTCPeerConnection ||*/ window.webkitRTCPeerConnection ||
-  //     window.mozRTCPeerConnection;
-  //
-  //   if (!window.RTCPeerConnection) {
-  //     reject("Your browser does not support this API");
-  //   }
-  //
-  //   let pc = new RTCPeerConnection({ iceServers: [] }),
-  //     noop = function(myIP) {
-  //       if (myIP !== undefined) {
-  //         window.myIP = myIP;
-  //         resolve(myIP);
-  //       }
-  //     };
-  //   pc.createDataChannel(""); //create a bogus data channel
-  //   pc.createOffer(pc.setLocalDescription.bind(pc), noop); // create offer and set local description
-  //   pc.onicecandidate = function(ice) {
-  //     if (ice && ice.candidate && ice.candidate.candidate) {
-  //       let myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(
-  //         ice.candidate.candidate
-  //       );
-  //       if (myIP === null) {
-  //         const generator = new IDGenerator();
-  //         const _IdGen = generator.generate();
-  //         window.myIP = _IdGen;
-  //         callback(_IdGen);
-  //       } else {
-  //         pc.onicecandidate = noop(myIP[1]);
-  //       }
-  //     }
-  //   };
-  // })
-  //   .then(myIP => {
-  //     callback(myIP);
-  //   })
-  //   .catch(e => {
-  //     const generator = new IDGenerator();
-  //     const _IdGen = generator.generate();
-  //     window.myIP = _IdGen;
-  //     callback(_IdGen);
-  //   });
 }
 
 function IDGenerator() {
   this.length = 9;
   this.timestamp = +new Date();
 
-  var _getRandomInt = function(min, max) {
+  var _getRandomInt = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
-  this.generate = function() {
+  this.generate = function () {
     var ts = this.timestamp.toString();
     var parts = ts.split("").reverse();
     var id = "";

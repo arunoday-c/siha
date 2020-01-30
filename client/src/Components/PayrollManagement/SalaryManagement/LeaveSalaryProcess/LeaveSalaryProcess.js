@@ -15,7 +15,6 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import {
   LeaveSalProcess,
-  employeeSearch,
   dateFormater,
   SaveLeaveSalary,
   LoadLeaveSalary,
@@ -24,22 +23,23 @@ import {
   closeSalaryComponents,
   getEmployeeAnnualLeaveToProcess,
   eventHandaler,
-  selectEmployee
+  selectEmployee,
+  getHrmsOptions
 } from "./LeaveSalaryProcessEvents.js";
 import Options from "../../../../Options.json";
 import LeaveSalaryProcessIOputs from "../../../../Models/LeaveSalaryProcess";
 import SalariesComponents from "../../SalaryManagement/SalaryProcessing/SalariesComponents";
-import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 
 class LeaveSalaryProcess extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id
+      hospital_id: null,
+      hrms_options: {}
     };
     getEmployeeAnnualLeaveToProcess(this, this);
+    getHrmsOptions(this)
   }
 
   UNSAFE_componentWillMount() {
@@ -47,7 +47,14 @@ class LeaveSalaryProcess extends Component {
     this.setState(IOputs);
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    });
+
     if (
       this.props.organizations === undefined ||
       this.props.organizations.length === 0
@@ -156,8 +163,8 @@ class LeaveSalaryProcess extends Component {
               <h6>
                 {this.state.leave_salary_date
                   ? moment(this.state.leave_salary_date).format(
-                      Options.dateFormat
-                    )
+                    Options.dateFormat
+                  )
                   : Options.dateFormat}
               </h6>
             </div>
@@ -241,8 +248,8 @@ class LeaveSalaryProcess extends Component {
                     ) : this.state.status === "CAN" ? (
                       <span className="badge badge-danger">Cancelled</span>
                     ) : (
-                      ""
-                    )}{" "}
+                            ""
+                          )}{" "}
                   </>
                 ) : null}
               </div>
