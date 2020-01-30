@@ -42,7 +42,8 @@ const {
   getGroupComments,
   addAnalyteRages,
   getAnalyteRages,
-  updateAnalyteRage
+  updateAnalyteRage,
+  deleteAnalyteRage
 } = labModels;
 
 export default () => {
@@ -324,7 +325,7 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().internalServer).json({
         success: false,
-        records: req.records
+        message: req.records.message
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -337,7 +338,7 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().internalServer).json({
         success: false,
-        records: req.records
+        message: req.records.message
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -351,6 +352,20 @@ export default () => {
       success: true,
       records: req.records
     });
+  });
+
+  api.delete("/deleteAnalyteRage", deleteAnalyteRage, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().internalServer).json({
+        success: false,
+        message: req.records.message
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
   });
 
   return api;

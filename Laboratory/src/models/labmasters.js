@@ -1380,11 +1380,10 @@ export default {
         _mysql
           .executeQuery({
             query:
-              "select hims_d_lab_analytes_range_id,analyte_id,analyte_type,gender,age_type,\
+              "select hims_d_lab_analytes_range_id,analyte_id,gender,age_type,\
               case age_type when 'Y' then 'Years' when 'M' then 'Months' when 'D'\
                then 'days' end as age_desc,from_age,to_age, normal_qualitative_value\
-            from hims_d_lab_analytes A inner join hims_d_lab_analytes_range R on\
-             A.hims_d_lab_analytes_id=R.analyte_id where analyte_id=? ",
+            from hims_d_lab_analytes_range where analyte_id=? ",
             values: [input[0].analyte_id],
             printQuery: true
           })
@@ -1392,7 +1391,7 @@ export default {
             let errorStr = "";
 
             //ST-VALIDATION FOR AGE RANGE
-            if (result.length > 0 && result[0].analyte_type == "QN") {
+            if (result.length > 0) {
               input.forEach(item => {
                 const existData = result.filter(f => {
                   return (
@@ -1524,11 +1523,10 @@ export default {
         _mysql
           .executeQuery({
             query:
-              "select hims_d_lab_analytes_range_id,analyte_id,analyte_type,gender,age_type,\
-               case age_type when 'Y' then 'Years' when 'M' then 'Months' when 'D'\
-               then 'days' end as age_desc,from_age,to_age,normal_qualitative_value\
-               from hims_d_lab_analytes A inner join hims_d_lab_analytes_range R on\
-               A.hims_d_lab_analytes_id=R.analyte_id where analyte_id=? and  hims_d_lab_analytes_range_id<>?; ",
+              "select hims_d_lab_analytes_range_id,analyte_id,gender,age_type,\
+              case age_type when 'Y' then 'Years' when 'M' then 'Months' when 'D'\
+               then 'days' end as age_desc,from_age,to_age, normal_qualitative_value\
+            from hims_d_lab_analytes_range where analyte_id=? and  hims_d_lab_analytes_range_id<>?; ",
             values: [item.analyte_id, item.hims_d_lab_analytes_range_id],
             printQuery: true
           })
@@ -1536,7 +1534,7 @@ export default {
             let errorStr = "";
 
             //ST-VALIDATION FOR AGE RANGE
-            if (result.length > 0 && result[0].analyte_type == "QN") {
+            if (result.length > 0) {
               const existData = result.filter(f => {
                 return (
                   f.age_type == item.age_type &&
@@ -1617,6 +1615,42 @@ export default {
         };
         next();
       }
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  //created by :Irfan
+  deleteAnalyteRage: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "  delete  from hims_d_lab_analytes_range where hims_d_lab_analytes_range_id=?; ",
+          values: [req.body.hims_d_lab_analytes_range_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          if (result.affectedRows > 0) {
+            req.records = result;
+            next();
+          } else {
+            req.records = {
+              invalid_input: true,
+              message: "Please Provide Valid Input"
+            };
+            next();
+          }
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
     } catch (e) {
       _mysql.releaseConnection();
       next(e);
