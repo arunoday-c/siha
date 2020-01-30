@@ -15,7 +15,9 @@ class AnalytesRange extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      analyteDetail: []
+      analyteDetail: [],
+      loading: false,
+      refresh: false
     };
   }
 
@@ -28,10 +30,16 @@ class AnalytesRange extends PureComponent {
     ) {
       const { hims_d_lab_analytes_id } = this.props.active;
       try {
-        const result = await this.getAnalyteDetail(hims_d_lab_analytes_id);
-        this.setState({ analyteDetail: result.data.records, refresh: false });
+        if (hims_d_lab_analytes_id) {
+          const result = await this.getAnalyteDetail(hims_d_lab_analytes_id);
+          this.setState({
+            analyteDetail: result.data.records,
+            refresh: false,
+            loading: false
+          });
+        }
       } catch (e) {
-        this.setState({ refresh: false });
+        this.setState({ refresh: false, loading: false });
         swalMessage({
           type: "error",
           title: e.message
@@ -41,6 +49,7 @@ class AnalytesRange extends PureComponent {
   }
 
   getAnalyteDetail = analyte_id => {
+    this.setState({ loading: true });
     return newAlgaehApi({
       uri: "/labmasters/getAnalyteRages",
       module: "laboratory",
@@ -52,6 +61,7 @@ class AnalytesRange extends PureComponent {
   };
 
   addAnalyte = async input => {
+    this.setState({ loading: true });
     const { hims_d_lab_analytes_id } = this.props.active;
     input.analyte_id = hims_d_lab_analytes_id;
     try {
@@ -62,9 +72,10 @@ class AnalytesRange extends PureComponent {
         data: [input]
       });
       if (res.data.success) {
-        this.setState({ refresh: true });
+        this.setState({ refresh: true, loading: false });
       }
     } catch (e) {
+      this.setState({ loading: false });
       swalMessage({
         type: "error",
         title: e.message
@@ -91,12 +102,39 @@ class AnalytesRange extends PureComponent {
     }
   };
 
+  deleteAnalyte = async row => {
+    try {
+      this.setState({ loading: true });
+      const { hims_d_lab_analytes_range_id } = row;
+      const res = await newAlgaehApi({
+        uri: "/labmasters/deleteAnalyteRage",
+        module: "laboratory",
+        method: "DELETE",
+        data: { hims_d_lab_analytes_range_id }
+      });
+      if (res.data.success) {
+        this.setState({
+          refresh: true,
+          loading: false
+        });
+      }
+      swalMessage({ type: "Success", title: "Deleted Successfully" });
+    } catch (e) {
+      this.setState({
+        loading: false
+      });
+      swalMessage({
+        type: "error",
+        title: e.message
+      });
+    }
+  };
+
   onClose = e => {
     this.props.onClose && this.props.onClose(true);
   };
 
   handleChange = (row, e) => {
-    console.log(row, "inputs");
     const name = e.name || e.target.name;
     const value = e.value || e.target.value;
     row[name] = value;
@@ -105,6 +143,9 @@ class AnalytesRange extends PureComponent {
 
   render() {
     const { active } = this.props;
+    const isQuality = active.analyte_type === "QU";
+    const isQuantity = active.analyte_type === "QN";
+    const isText = active.analyte_type === "T";
     return (
       <div className="hptl-phase1-add-investigation-form">
         <AlgaehModalPopUp
@@ -126,7 +167,11 @@ class AnalytesRange extends PureComponent {
                   <h6>{active.description}</h6>
                 </div>
               </div>
-              <RangeInput addAnalyte={this.addAnalyte} />
+              {/* Range Input */}
+              <RangeInput
+                addAnalyte={this.addAnalyte}
+                analyteType={active.analyte_type}
+              />
               <div className="row">
                 <div className="col-12" id="analyteRangeGridCntr">
                   {" "}
@@ -155,45 +200,7 @@ class AnalytesRange extends PureComponent {
                           );
                         }
                       },
-                      {
-                        fieldName: "age_type",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "From Age Type" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          let display = variableJson.LAB_AGE_TYPE.filter(
-                            f => f.value === row.age_type
-                          );
 
-                          return (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? display[0].name
-                                : ""}
-                            </span>
-                          );
-                        },
-                        editorTemplate: row => {
-                          return (
-                            <AlagehAutoComplete
-                              div={{}}
-                              selector={{
-                                name: "age_type",
-                                className: "select-fld",
-                                value: row.age_type,
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: variableJson.LAB_AGE_TYPE
-                                },
-                                onChange: e => this.handleChange(row, e)
-                              }}
-                            />
-                          );
-                        }
-                      },
                       {
                         fieldName: "from_age",
                         label: (
@@ -214,43 +221,6 @@ class AnalytesRange extends PureComponent {
                                   onChangeonChange: e =>
                                     this.handleChange(row, e)
                                 }
-                              }}
-                            />
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "age_type",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "To Age Type" }} />
-                        ),
-                        displayTemplate: row => {
-                          let display = variableJson.LAB_AGE_TYPE.filter(
-                            f => f.value === row.age_type
-                          );
-
-                          return (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? display[0].name
-                                : ""}
-                            </span>
-                          );
-                        },
-                        editorTemplate: row => {
-                          return (
-                            <AlagehAutoComplete
-                              div={{}}
-                              selector={{
-                                name: "age_type",
-                                className: "select-fld",
-                                value: row.age_type,
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: variableJson.LAB_AGE_TYPE
-                                },
-                                onChange: e => this.handleChange(row, e)
                               }}
                             />
                           );
@@ -282,6 +252,43 @@ class AnalytesRange extends PureComponent {
                         }
                       },
                       {
+                        fieldName: "age_type",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Age Type" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display = variableJson.LAB_AGE_TYPE.filter(
+                            f => f.value === row.age_type
+                          );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? display[0].name
+                                : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "age_type",
+                                className: "select-fld",
+                                value: row.age_type,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: variableJson.LAB_AGE_TYPE
+                                },
+                                onChange: e => this.handleChange(row, e)
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
                         fieldName: "normal_low",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "normal_low" }} />
@@ -303,6 +310,9 @@ class AnalytesRange extends PureComponent {
                               }}
                             />
                           );
+                        },
+                        others: {
+                          show: isQuantity
                         }
                       },
                       {
@@ -324,6 +334,9 @@ class AnalytesRange extends PureComponent {
                               }}
                             />
                           );
+                        },
+                        others: {
+                          show: isQuantity
                         }
                       },
                       {
@@ -345,6 +358,9 @@ class AnalytesRange extends PureComponent {
                               }}
                             />
                           );
+                        },
+                        others: {
+                          show: isQuantity
                         }
                       },
                       {
@@ -368,6 +384,57 @@ class AnalytesRange extends PureComponent {
                               }}
                             />
                           );
+                        },
+                        others: {
+                          show: isQuantity
+                        }
+                      },
+                      {
+                        fieldName: "text_value",
+                        label: <AlgaehLabel label={{ forceLabel: "Text" }} />,
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                value: row.text_value,
+                                className: "txt-fld",
+                                name: "text_value",
+                                events: {
+                                  onChange: e => this.handleChange(row, e)
+                                }
+                              }}
+                            />
+                          );
+                        },
+                        others: {
+                          show: isText
+                        }
+                      },
+                      {
+                        fieldName: "normal_qualitative_value",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Qualitative Value" }}
+                          />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                value: row.normal_qualitative_value,
+                                className: "txt-fld",
+                                name: "normal_qualitative_value",
+                                events: {
+                                  onChange: e => this.handleChange(row, e)
+                                }
+                              }}
+                            />
+                          );
+                        },
+                        others: {
+                          show: isQuality
                         }
                       }
                     ]}
@@ -375,12 +442,12 @@ class AnalytesRange extends PureComponent {
                     dataSource={{
                       data: this.state.analyteDetail
                     }}
+                    loading={this.state.loading}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      // onDelete: deleteLabAnalyte.bind(this, this, context),
+                      onDelete: this.deleteAnalyte,
                       onEdit: row => {},
-
                       onDone: this.updateAnalyte
                     }}
                   />
@@ -402,7 +469,7 @@ class AnalytesRange extends PureComponent {
                     type="button"
                     className="btn btn-default"
                   >
-                    Cancel
+                    Close
                   </button>
                 </div>
               </div>
