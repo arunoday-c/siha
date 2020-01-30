@@ -30,6 +30,8 @@ export default function RangeInput({ addAnalyte, analyteType }) {
     }));
   }
 
+  const TYPES = { D: "Days", Y: "Years", M: "Months" };
+
   function onSubmit() {
     addAnalyte({ ...inputs });
     setinputs(baseInput);
@@ -77,7 +79,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
       <AlagehFormGroup
         div={{ className: "col" }}
         label={{
-          forceLabel: "Age From",
+          forceLabel: `From Age (in ${TYPES[inputs.age_type]})`,
           isImp: false
         }}
         textBox={{
@@ -96,7 +98,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
       <AlagehFormGroup
         div={{ className: "col" }}
         label={{
-          forceLabel: "Age To",
+          forceLabel: `To Age (in ${TYPES[inputs.age_type]})`,
           isImp: false
         }}
         textBox={{
@@ -117,7 +119,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           <AlagehFormGroup
             div={{ className: "col" }}
             label={{
-              forceLabel: "normal_low"
+              forceLabel: "Low"
             }}
             textBox={{
               decimal: { allowNegative: false },
@@ -132,7 +134,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           <AlagehFormGroup
             div={{ className: "col" }}
             label={{
-              forceLabel: "normal_high"
+              forceLabel: "High"
             }}
             textBox={{
               decimal: { allowNegative: false },
@@ -144,7 +146,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
               }
             }}
           />
-          <AlagehFormGroup
+          {/* <AlagehFormGroup
             div={{ className: "col" }}
             label={{
               forceLabel: "critical_low"
@@ -173,7 +175,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
                 onChange: handleChange
               }
             }}
-          />{" "}
+          />{" "} */}
         </>
       ) : analyteType === "QU" ? (
         <AlagehFormGroup

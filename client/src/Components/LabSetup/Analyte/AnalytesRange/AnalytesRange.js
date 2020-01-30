@@ -290,9 +290,7 @@ class AnalytesRange extends PureComponent {
                       },
                       {
                         fieldName: "normal_low",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "normal_low" }} />
-                        ),
+                        label: <AlgaehLabel label={{ forceLabel: "Low" }} />,
                         editorTemplate: row => {
                           return (
                             <AlagehFormGroup
@@ -317,9 +315,7 @@ class AnalytesRange extends PureComponent {
                       },
                       {
                         fieldName: "normal_high",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "normal_high" }} />
-                        ),
+                        label: <AlgaehLabel label={{ forceLabel: "High" }} />,
                         editorTemplate: row => {
                           return (
                             <AlagehFormGroup
@@ -339,56 +335,56 @@ class AnalytesRange extends PureComponent {
                           show: isQuantity
                         }
                       },
-                      {
-                        fieldName: "critical_low",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "critical_low" }} />
-                        ),
-                        editorTemplate: row => {
-                          return (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                value: row.critical_low,
-                                className: "txt-fld",
-                                name: "critical_low",
-                                events: {
-                                  onChange: e => this.handleChange(row, e)
-                                }
-                              }}
-                            />
-                          );
-                        },
-                        others: {
-                          show: isQuantity
-                        }
-                      },
-                      {
-                        fieldName: "critical_high",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "critical_high" }}
-                          />
-                        ),
-                        editorTemplate: row => {
-                          return (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                value: row.critical_high,
-                                className: "txt-fld",
-                                name: "critical_high",
-                                events: {
-                                  onChange: e => this.handleChange(row, e)
-                                }
-                              }}
-                            />
-                          );
-                        },
-                        others: {
-                          show: isQuantity
-                        }
-                      },
+                      // {
+                      //   fieldName: "critical_low",
+                      //   label: (
+                      //     <AlgaehLabel label={{ forceLabel: "critical_low" }} />
+                      //   ),
+                      //   editorTemplate: row => {
+                      //     return (
+                      //       <AlagehFormGroup
+                      //         div={{}}
+                      //         textBox={{
+                      //           value: row.critical_low,
+                      //           className: "txt-fld",
+                      //           name: "critical_low",
+                      //           events: {
+                      //             onChange: e => this.handleChange(row, e)
+                      //           }
+                      //         }}
+                      //       />
+                      //     );
+                      //   },
+                      //   others: {
+                      //     show: isQuantity
+                      //   }
+                      // },
+                      // {
+                      //   fieldName: "critical_high",
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{ forceLabel: "critical_high" }}
+                      //     />
+                      //   ),
+                      //   editorTemplate: row => {
+                      //     return (
+                      //       <AlagehFormGroup
+                      //         div={{}}
+                      //         textBox={{
+                      //           value: row.critical_high,
+                      //           className: "txt-fld",
+                      //           name: "critical_high",
+                      //           events: {
+                      //             onChange: e => this.handleChange(row, e)
+                      //           }
+                      //         }}
+                      //       />
+                      //     );
+                      //   },
+                      //   others: {
+                      //     show: isQuantity
+                      //   }
+                      // },
                       {
                         fieldName: "text_value",
                         label: <AlgaehLabel label={{ forceLabel: "Text" }} />,
