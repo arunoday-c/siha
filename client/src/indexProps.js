@@ -23,6 +23,7 @@ export default function(props) {
   function clearAll() {
     setLanguage("en");
     setToken("");
+    setMenu([]);
   }
 
   return (

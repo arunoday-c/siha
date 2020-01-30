@@ -401,3 +401,24 @@ export function getComponentsForScreen(sceen_id) {
     });
   });
 }
+export function assignComponentScreenPermissions(input) {
+  return new Promise((resolve, reject) => {
+    algaehApiCall({
+      uri: "/algaehMasters/assignComponentScreenPermissions",
+      method: "POST",
+      data: input,
+      onSuccess: res => {
+        const { success, message } = res.data;
+        if (success) {
+          resolve(message);
+        } else {
+          reject(message);
+        }
+      },
+      onCatch: err => {
+        const { message } = err.response.data;
+        reject(message);
+      }
+    });
+  });
+}

@@ -476,33 +476,33 @@ let getRoleBaseActiveModules = (req, res, next) => {
       from_assignment === "N"
     ) {
       strQuery = `select m.algaeh_d_module_id,m.module_code,m.module_name,m.icons,m.display_order,m.other_language,
-  s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
-  s.other_language as s_other_language,'' as algaeh_d_app_component_id,'' as component_code,
-  '' as component_name,'' as comp_view_previlage,'' as ele_view_previlage,'' as ele_extra_props,
-  '' as ele_props_type,'' as screen_element_code,'' as screen_element_name,algaeh_app_screens_id as screen_id
-  from algaeh_d_app_module as m inner join algaeh_d_app_screens as s
-  on s.module_id = m.algaeh_d_module_id  ${
-    role_type === "SU"
-      ? ""
-      : "where m.access_by <> 'SU' and m.record_status='A'"
-  }`;
+      s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
+      s.other_language as s_other_language,'' as algaeh_d_app_component_id,'' as component_code,
+      '' as component_name,'' as comp_view_previlage,'' as ele_view_previlage,'' as ele_extra_props,
+      '' as ele_props_type,'' as screen_element_code,'' as screen_element_name,algaeh_app_screens_id as screen_id
+      from algaeh_d_app_module as m inner join algaeh_d_app_screens as s
+      on s.module_id = m.algaeh_d_module_id  ${
+        role_type === "SU"
+          ? ""
+          : "where m.access_by <> 'SU' and m.record_status='A'"
+      }`;
     } else {
       strQuery = `select m.algaeh_d_module_id,m.module_code,m.module_name,m.icons,m.display_order,m.other_language,
-  s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
-  s.other_language as s_other_language,c.algaeh_d_app_component_id,c.component_code,c.component_name,
-  cs.view_privilege as comp_view_previlage,se.view_type as ele_view_previlage,se.extra_props as ele_extra_props,
-  se.props_type as ele_props_type,e.screen_element_code,e.screen_element_name,sr.screen_id
-   from algaeh_m_module_role_privilage_mapping as mr inner 
-   join algaeh_d_app_module as  m
-  on mr.module_id=m.algaeh_d_module_id inner join algaeh_m_screen_role_privilage_mapping as sr
-  on  sr.module_role_map_id = mr.algaeh_m_module_role_privilage_mapping_id inner join algaeh_d_app_screens as s
-  on s.algaeh_app_screens_id=sr.screen_id left join algaeh_m_component_screen_privilage_mapping as cs
-  on cs.algaeh_m_screen_role_privilage_mapping_id =sr.algaeh_m_screen_role_privilage_mapping_id
-  left join algaeh_d_app_component as c on c.algaeh_d_app_component_id =cs.component_id
-  left join screen_element_scren_module_mapping as se on 
-  se.algaeh_m_screen_role_privilage_mapping_id = cs.algaeh_m_screen_role_privilage_mapping_id
-  left join algaeh_d_app_scrn_elements as e on e.algaeh_d_app_scrn_elements_id = se.algaeh_d_app_scrn_elements_id
-  where mr.role_id=${_roleId} and mr.record_status ='A' and m.record_status = 'A' and m.access_by <> 'SU';`;
+      s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
+      s.other_language as s_other_language,c.algaeh_d_app_component_id,c.component_code,c.component_name,
+      cs.view_privilege as comp_view_previlage,se.view_type as ele_view_previlage,se.extra_props as ele_extra_props,
+      se.props_type as ele_props_type,e.screen_element_code,e.screen_element_name,sr.screen_id,sr.algaeh_m_screen_role_privilage_mapping_id
+      from algaeh_m_module_role_privilage_mapping as mr inner 
+      join algaeh_d_app_module as  m
+      on mr.module_id=m.algaeh_d_module_id inner join algaeh_m_screen_role_privilage_mapping as sr
+      on  sr.module_role_map_id = mr.algaeh_m_module_role_privilage_mapping_id inner join algaeh_d_app_screens as s
+      on s.algaeh_app_screens_id=sr.screen_id left join algaeh_m_component_screen_privilage_mapping as cs
+      on cs.algaeh_m_screen_role_privilage_mapping_id =sr.algaeh_m_screen_role_privilage_mapping_id
+      left join algaeh_d_app_component as c on c.algaeh_d_app_component_id =cs.component_id
+      left join screen_element_scren_module_mapping as se on 
+      se.algaeh_m_screen_role_privilage_mapping_id = cs.algaeh_m_screen_role_privilage_mapping_id
+      left join algaeh_d_app_scrn_elements as e on e.algaeh_d_app_scrn_elements_id = se.algaeh_d_app_scrn_elements_id
+      where mr.role_id=${_roleId} and mr.record_status ='A' and m.record_status = 'A' and m.access_by <> 'SU';`;
     }
 
     _mysql
@@ -2580,6 +2580,60 @@ let getComponentsForScreen = (req, res, next) => {
   }
 };
 
+const assignComponentScreenPermissions = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    const {
+      algaeh_m_screen_role_privilage_mapping_id,
+      compoment_list
+    } = req.body;
+    if (!Array.isArray(compoment_list)) {
+      next(new Error("Please provide proper components in list"));
+      return;
+    }
+    if (compoment_list.length === 0) {
+      next(new Error("No Components exists for process."));
+      return;
+    }
+    const { algaeh_d_app_user_id } = req.userIdentity;
+    let query = "";
+    for (let i = 0; i < compoment_list.length; i++) {
+      const { view_privilege, algaeh_d_app_component_id } = compoment_list[i];
+      query += _mysql.mysqlQueryFormat(
+        `insert into algaeh_m_component_screen_privilage_mapping
+      (component_id,algaeh_m_screen_role_privilage_mapping_id,
+        view_privilege,created_by,created_date,updated_by,updated_date) 
+        value(?,?,?,?,?,?,?);`,
+        [
+          algaeh_d_app_component_id,
+          algaeh_m_screen_role_privilage_mapping_id,
+          view_privilege,
+          algaeh_d_app_user_id,
+          new Date(),
+          algaeh_d_app_user_id,
+          new Date()
+        ]
+      );
+    }
+    _mysql
+      .executeQuery({
+        query: query,
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
 export default {
   getAlgaehScreensWithModules,
   addAlgaehGroupMAster,
@@ -2617,5 +2671,6 @@ export default {
   getLisMachineConfiguration,
   updateLisMachineConfiguration,
   moduleScreenAssignment,
-  getComponentsForScreen
+  getComponentsForScreen,
+  assignComponentScreenPermissions
 };

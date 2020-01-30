@@ -40,7 +40,8 @@ const {
   getAlgaehScreensWithModules,
   getAlgaehComponentsWithScreens,
   moduleScreenAssignment,
-  getComponentsForScreen
+  getComponentsForScreen,
+  assignComponentScreenPermissions
 } = masterModels;
 const { releaseConnection } = utils;
 
@@ -343,6 +344,18 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  api.post(
+    "/assignComponentScreenPermissions",
+    assignComponentScreenPermissions,
+    (req, res) => {
+      res.status(httpStatus.ok).json({
+        success: true,
+        message: "Successfully updated"
+      });
+    }
+  );
+
   // created by irfan :
   api.get(
     "/getAlgaehComponents",
