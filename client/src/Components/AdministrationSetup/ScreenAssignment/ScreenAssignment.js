@@ -10,10 +10,11 @@ import { swalMessage } from "../../../utils/algaehApiCall";
 import {
   ScreenAssignmentEvents,
   getRoleActiveModules,
-  getComponentsForScreen
+  getComponentsForScreen,
+  assignComponentScreenPermissions
 } from "./ScreenAssignmentEvents";
 import { MainContext } from "algaeh-react-components/context";
-import { Checkbox } from "algaeh-react-components";
+import { Checkbox, Radio, Button } from "algaeh-react-components";
 class ScreenAssignment extends Component {
   _isMounted = false;
   constructor(props) {
@@ -28,7 +29,9 @@ class ScreenAssignment extends Component {
       selectedModules: {},
       assignedModules: [],
       components: [],
-      selectedScreen: {}
+      selectedScreen: {},
+      dummy: false,
+      update_loading: false
     };
 
     // this.getGroups();
@@ -178,7 +181,40 @@ class ScreenAssignment extends Component {
         });
       });
   }
-
+  onClickUpdate() {
+    const checkFilter = this.state.components.filter(
+      f => f.view_privilege !== undefined
+    );
+    if (checkFilter.length === 0) {
+      swalMessage({
+        title: "There is no permission selected",
+        type: "error"
+      });
+      return;
+    }
+    this.setState({ update_loading: true }, () => {
+      assignComponentScreenPermissions({
+        algaeh_m_screen_role_privilage_mapping_id: this.state.selectedScreen
+          .algaeh_m_screen_role_privilage_mapping_id,
+        compoment_list: checkFilter
+      })
+        .then(() => {
+          this.setState({ update_loading: false });
+          swalMessage({
+            title: "Successfully done",
+            type: "success"
+          });
+        })
+        .catch(error => {
+          this.setState({ update_loading: false });
+          const { message } = error.response.data;
+          swalMessage({
+            title: message,
+            type: "error"
+          });
+        });
+    });
+  }
   render() {
     return (
       <div className="screen_assignment">
@@ -404,13 +440,29 @@ class ScreenAssignment extends Component {
                             <tr key={item.algaeh_d_app_component_id}>
                               <td>{item.component_name}</td>
                               <td colSpan="2">
-                                <Checkbox>Read</Checkbox>
-                                <Checkbox>Write</Checkbox>
+                                <Radio.Group
+                                  onChange={e => {
+                                    item.view_privilege = e.target.value;
+                                    this.setState({ dummy: !this.state.dummy });
+                                  }}
+                                  value={item.view_privilege}
+                                >
+                                  <Radio value="H">Hide</Radio>
+                                  <Radio value="D">Disabled</Radio>
+                                </Radio.Group>
                               </td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
+                      <Button
+                        type="primary"
+                        loading={this.state.update_loading}
+                        onClick={this.onClickUpdate.bind(this)}
+                      >
+                        {" "}
+                        Update{" "}
+                      </Button>
                     </div>
                   </div>
                 </div>

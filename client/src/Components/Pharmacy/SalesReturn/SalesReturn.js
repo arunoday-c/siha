@@ -22,6 +22,7 @@ import MyContext from "../../../utils/MyContext";
 import SALESRETURNIOputs from "../../../Models/SalesReturn";
 import DisplayInsuranceDetails from "./DisplayInsuranceDetails/DisplayInsuranceDetails";
 import Options from "../../../Options.json";
+import { MainContext } from "algaeh-react-components/context";
 
 class SalesReturn extends Component {
   constructor(props) {
@@ -49,7 +50,12 @@ class SalesReturn extends Component {
     this.setState(IOputs);
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    debugger
+    this.setState({
+      userToken: this.context.userToken
+    })
     if (
       this.props.salesitemlist === undefined ||
       this.props.salesitemlist.length === 0

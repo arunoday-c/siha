@@ -58,15 +58,15 @@ class LoginUsers extends Component {
 
     const HIMS_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HIMS_CLINICAL"
+      userToken.product_type === "HIMS_CLINICAL"
         ? true
         : false;
 
     const HRMS_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HRMS" ||
-        userToken.product_type === "HRMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP"
+      userToken.product_type === "HRMS" ||
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP"
         ? true
         : false;
 
@@ -74,10 +74,10 @@ class LoginUsers extends Component {
       HIMS_Active === true && HRMS_Active === true
         ? HIMS_HR_USER_TYPE
         : HIMS_Active === true
-          ? HIMS_USER_TYPE
-          : HRMS_Active
-            ? HR_USER_TYPE
-            : [];
+        ? HIMS_USER_TYPE
+        : HRMS_Active
+        ? HR_USER_TYPE
+        : [];
     if (userToken.user_type !== "SU") {
       USER_TYPE = USER_TYPE.filter(f => f.value !== "AD");
     }
@@ -100,8 +100,8 @@ class LoginUsers extends Component {
       data.work_email !== null && data.work_email !== ""
         ? data.work_email
         : data.email !== null && data.email !== ""
-          ? data.email
-          : "";
+        ? data.email
+        : "";
     this.setState({
       employee_id: data.hims_d_employee_id,
       sub_department_id: data.sub_department_id,
@@ -365,7 +365,7 @@ class LoginUsers extends Component {
                 });
               }
             },
-            onError: error => { }
+            onError: error => {}
           });
         } else {
           let branch_data = _.filter(
@@ -504,8 +504,8 @@ class LoginUsers extends Component {
       row.work_email !== null && row.work_email !== ""
         ? row.work_email
         : row.email !== null && row.email !== ""
-          ? row.email
-          : "";
+        ? row.email
+        : "";
     this.setState({
       algaeh_d_app_user_id: row.algaeh_d_app_user_id,
       username: row.username,
@@ -723,12 +723,12 @@ class LoginUsers extends Component {
                             valueField: "value",
                             data: this.state.PR_USER_TYPE
                           },
-                          others: {
-                            disabled:
-                              this.state.algaeh_d_app_user_id === null
-                                ? false
-                                : true
-                          },
+                          // others: {
+                          //   disabled:
+                          //     this.state.algaeh_d_app_user_id === null
+                          //       ? false
+                          //       : true
+                          // },
                           onChange: this.dropDownHandler.bind(this)
                         }}
                       />
@@ -747,12 +747,12 @@ class LoginUsers extends Component {
                             valueField: "algaeh_d_app_group_id",
                             data: this.state.groups
                           },
-                          others: {
-                            disabled:
-                              this.state.algaeh_d_app_user_id === null
-                                ? false
-                                : true
-                          },
+                          // others: {
+                          //   disabled:
+                          //     this.state.algaeh_d_app_user_id === null
+                          //       ? false
+                          //       : true
+                          // },
                           onChange: this.dropDownHandler.bind(this)
                         }}
                       />
@@ -771,12 +771,12 @@ class LoginUsers extends Component {
                             valueField: "app_d_app_roles_id",
                             data: this.state.roles
                           },
-                          others: {
-                            disabled:
-                              this.state.algaeh_d_app_user_id === null
-                                ? false
-                                : true
-                          },
+                          // others: {
+                          //   disabled:
+                          //     this.state.algaeh_d_app_user_id === null
+                          //       ? false
+                          //       : true
+                          // },
                           onChange: this.dropDownHandler.bind(this)
                         }}
                       />
@@ -819,15 +819,15 @@ class LoginUsers extends Component {
                                     name="modules"
                                     checked={
                                       this.state.hospital_id ===
-                                        data.hims_d_hospital_id
+                                      data.hims_d_hospital_id
                                         ? true
                                         : data.checked === undefined
-                                          ? false
-                                          : data.checked
+                                        ? false
+                                        : data.checked
                                     }
                                     disabled={
                                       this.state.hospital_id ===
-                                        data.hims_d_hospital_id
+                                      data.hims_d_hospital_id
                                         ? true
                                         : false
                                     }
@@ -865,28 +865,28 @@ class LoginUsers extends Component {
                               }}
                             />
                           ) : (
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Update"
-                                }}
-                              />
-                            )}
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Update"
+                              }}
+                            />
+                          )}
                         </button>
                       </div>
                     </>
                   ) : (
-                      <div className="col-12">
-                        <Button
-                          type="primary"
-                          icon="check-circle"
-                          block
-                          className="btn btn-primary"
-                          onClick={this.onVerifyEmailID.bind(this)}
-                        >
-                          Verify Email
+                    <div className="col-12">
+                      <Button
+                        type="primary"
+                        icon="check-circle"
+                        block
+                        className="btn btn-primary"
+                        onClick={this.onVerifyEmailID.bind(this)}
+                      >
+                        Verify Email
                       </Button>
-                      </div>
-                    )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -1014,8 +1014,8 @@ class LoginUsers extends Component {
                             return row.user_status === "A"
                               ? "Active"
                               : row.user_status === "I"
-                                ? "Inactive"
-                                : "----------";
+                              ? "Inactive"
+                              : "----------";
                           }
                         }
                       ]}

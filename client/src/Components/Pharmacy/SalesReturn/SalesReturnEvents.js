@@ -322,6 +322,16 @@ const getPOSEntry = $this => {
         data.credit_amount = parseFloat(data.balance_credit);
         data.insured = data.insurance_provider_id !== null ? "Y" : "N";
 
+        if (
+          $this.state.userToken !== undefined &&
+          $this.state.userToken.local_vat_applicable === "N" &&
+          $this.state.userToken.default_nationality === data.nationality_id
+        ) {
+          data.vat_applicable = "N";
+        } else {
+          data.vat_applicable = "Y";
+        }
+
         for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
           // if (data.pharmacy_stock_detail[i].return_done === "Y") {
           //   data.pharmacy_stock_detail[i].quantity =
