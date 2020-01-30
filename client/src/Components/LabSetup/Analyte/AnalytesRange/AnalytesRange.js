@@ -72,7 +72,7 @@ class AnalytesRange extends PureComponent {
     }
   };
 
-  updateAnalyte = async (row, another, hello) => {
+  updateAnalyte = async row => {
     try {
       const res = await newAlgaehApi({
         uri: "/labmasters/updateAnalyteRage",
