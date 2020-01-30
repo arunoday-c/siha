@@ -87,52 +87,48 @@ function CostCenter({
     setHims_d_hospital_id(null);
   }
 
+  /* {noborder === undefined ? "col-12 costCenterFilter" : "col-12"} */
+
   return (
-    <div
-      className={noborder === undefined ? "col-12 costCenterFilter" : "col-12"}
-    >
-      <div className="row">
-        <div className="col">
-          <AlgaehAutoComplete
-            div={{ ...div }}
-            label={{ forceLabel: "Select a Branch" }}
-            selector={{
-              dataSource: {
-                data: branch,
-                valueField: "hims_d_hospital_id",
-                textField: "hospital_name"
-              },
-              value: hims_d_hospital_id,
-              onChange: HandleHospital,
-              others: {
-                loading: loadBranch
-              }
-            }}
-          />
-        </div>
-        <div className="col">
-          <AlgaehAutoComplete
-            div={{ ...div }}
-            label={{ forceLabel: "Select a Cost Center" }}
-            selector={{
-              dataSource: {
-                data: data,
-                valueField: "cost_center_id",
-                textField: "cost_center"
-              },
-              value: costCenter,
-              onChange: HandleCostCenter,
-              others: {
-                loading: loading
-              }
-            }}
-          />
-        </div>
-        {render
-          ? render({ costCenter, hims_d_hospital_id, clearValues })
-          : null}
+    <>
+      <div className="col">
+        <AlgaehAutoComplete
+          div={{ ...div }}
+          label={{ forceLabel: "Select a Branch" }}
+          selector={{
+            dataSource: {
+              data: branch,
+              valueField: "hims_d_hospital_id",
+              textField: "hospital_name"
+            },
+            value: hims_d_hospital_id,
+            onChange: HandleHospital,
+            others: {
+              loading: loadBranch
+            }
+          }}
+        />
       </div>
-    </div>
+      <div className="col">
+        <AlgaehAutoComplete
+          div={{ ...div }}
+          label={{ forceLabel: "Select a Cost Center" }}
+          selector={{
+            dataSource: {
+              data: data,
+              valueField: "cost_center_id",
+              textField: "cost_center"
+            },
+            value: costCenter,
+            onChange: HandleCostCenter,
+            others: {
+              loading: loading
+            }
+          }}
+        />
+      </div>
+      {render ? render({ costCenter, hims_d_hospital_id, clearValues }) : null}
+    </>
   );
 }
 
