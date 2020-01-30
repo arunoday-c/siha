@@ -28,18 +28,11 @@ import {
 } from "./DeptUserDetailsEvents";
 import Enumerable from "linq";
 import GlobalVariables from "../../../../../utils/GlobalVariables.json";
-import { AlgaehOpenContainer } from "../../../../../utils/GlobalFunctions";
 import _ from "lodash";
 
 class DeptUserDetails extends Component {
   constructor(props) {
     super(props);
-    let Activated_Modueles = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    );
-    const HIMS_Active = _.filter(Activated_Modueles, f => {
-      return f.module_code === "FTDSK";
-    });
     this.state = {
       selectedLang: getCookie("Language"),
       hims_d_employee_group_id: null,
@@ -51,11 +44,22 @@ class DeptUserDetails extends Component {
       from_date: new Date(),
       designation_id: null,
       reporting_to: null,
-      HIMS_Active: HIMS_Active.length > 0 ? true : false
+      HIMS_Active: false
     };
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    const active =
+      userToken.product_type === "HIMS_ERP" ||
+        userToken.product_type === "HIMS_CLINICAL"
+        ? true
+        : false;
+    this.setState({
+      HIMS_Active: active
+    });
+
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     InputOutput.designation_id = null;
     InputOutput.reporting_to = null;
@@ -63,7 +67,7 @@ class DeptUserDetails extends Component {
       if (this.state.hims_d_employee_id !== null) {
         if (
           this.state.deptDetails.length === 0 &&
-          this.state.HIMS_Active === true
+          active === true
         ) {
           getEmployeeDepartments(this);
         }

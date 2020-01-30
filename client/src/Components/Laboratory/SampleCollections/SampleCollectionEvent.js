@@ -1,8 +1,6 @@
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
-import AlgaehReport from "../../Wrapper/printReports";
 import Options from "../../../Options.json";
 import moment from "moment";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 const CollectSample = ($this, context, row) => {
   let inputobj = {
@@ -12,9 +10,7 @@ const CollectSample = ($this, context, row) => {
     sample_id: row.sample_id,
     collected: "Y",
     status: "N",
-    hims_d_hospital_id: JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    ).hims_d_hospital_id,
+    hims_d_hospital_id: $this.state.hospital_id,
     service_id: row.service_id,
     service_code: row.service_code
   };

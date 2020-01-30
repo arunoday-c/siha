@@ -1,9 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import _ from "lodash";
-import {
-  AlgaehValidation,
-  AlgaehOpenContainer
-} from "../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 export default function ProceduresEvent() {
   return {
@@ -131,9 +128,6 @@ export default function ProceduresEvent() {
             $this.state.service_name = $this.state.procedure_desc;
             $this.state.service_status = "A";
             $this.state.standard_fee = $this.state.procedure_amount;
-            $this.state.hospital_id = JSON.parse(
-              AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-            ).hims_d_hospital_id;
             algaehApiCall({
               uri: "/serviceType/addProcedure",
               module: "masterSettings",

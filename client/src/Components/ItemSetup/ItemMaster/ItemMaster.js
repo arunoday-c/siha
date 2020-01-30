@@ -22,7 +22,6 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 import {
   radioChange,
   BatchExpRequired,
-  CptCodesSearch,
   VatAppilicable,
   texthandle,
   AddUom,
@@ -36,6 +35,7 @@ import {
   numberEventHandaler
 } from "./ItemDetailsEvents";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import { MainContext } from "algaeh-react-components/context";
 
 class ItemMaster extends Component {
   constructor(props) {
@@ -91,6 +91,15 @@ class ItemMaster extends Component {
       let IOputs = newProps.itemPop;
       this.setState({ ...this.state, ...IOputs });
     }
+  }
+
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    })
   }
 
   render() {
@@ -512,9 +521,9 @@ class ItemMaster extends Component {
                                 this.props.itemuom === undefined
                                   ? []
                                   : this.props.itemuom.filter(
-                                      f =>
-                                        f.hims_d_pharmacy_uom_id === row.uom_id
-                                    );
+                                    f =>
+                                      f.hims_d_pharmacy_uom_id === row.uom_id
+                                  );
 
                               return (
                                 <span>
@@ -643,7 +652,7 @@ class ItemMaster extends Component {
                         paging={{ page: 0, rowsPerPage: 5 }}
                         events={{
                           onDelete: deleteUOM.bind(this, this),
-                          onEdit: row => {},
+                          onEdit: row => { },
                           onDone: updateUOM.bind(this, this)
                         }}
                       />
@@ -673,7 +682,7 @@ class ItemMaster extends Component {
                         },
                         onChange: texthandle.bind(this, this)
                       }}
-                      //forceUpdate={true}
+                    //forceUpdate={true}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-4 mandatory form-group" }}

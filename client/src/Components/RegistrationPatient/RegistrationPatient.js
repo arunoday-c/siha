@@ -25,8 +25,7 @@ import {
 import AddAdvanceModal from "../Advance/AdvanceModal";
 import {
   imageToByteArray,
-  AlgaehValidation,
-  AlgaehOpenContainer
+  AlgaehValidation
 } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
@@ -73,10 +72,6 @@ class RegistrationPatient extends Component {
       employee_id_required: "N",
       hsopital_id: ""
     };
-
-    // JSON.parse(
-    //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    // ).requied_emp_id;
   }
   static contextType = MainContext;
   UNSAFE_componentWillMount() {
@@ -791,8 +786,8 @@ class RegistrationPatient extends Component {
                 <h6>
                   {this.state.registration_date
                     ? moment(this.state.registration_date).format(
-                        Options.dateFormat
-                      )
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>

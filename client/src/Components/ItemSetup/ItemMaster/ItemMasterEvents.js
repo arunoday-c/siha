@@ -1,8 +1,5 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import {
-  SetBulkState,
-  AlgaehOpenContainer
-} from "../../../utils/GlobalFunctions";
+import { SetBulkState } from "../../../utils/GlobalFunctions";
 import ItemSetup from "../../../Models/ItemSetup";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import _ from "lodash";
@@ -122,10 +119,6 @@ const InsertUpdateItems = $this => {
               $this.state.service_type_id = "12";
               $this.state.service_name = $this.state.item_description;
               $this.state.service_status = "A";
-              // $this.state.standard_fee = parseFloat($this.state.standard_fee);
-              $this.state.hospital_id = JSON.parse(
-                AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-              ).hims_d_hospital_id;
               algaehApiCall({
                 uri: "/pharmacy/addItemMaster",
                 module: "pharmacy",

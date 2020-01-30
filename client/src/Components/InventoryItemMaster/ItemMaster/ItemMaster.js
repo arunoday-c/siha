@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import ItemDetails from "./ItemDetails/ItemDetails";
-import UOMAdditionalInfo from "./UOMAdditionalInfo/UOMAdditionalInfo";
+// import ItemDetails from "./ItemDetails/ItemDetails";
+// import UOMAdditionalInfo from "./UOMAdditionalInfo/UOMAdditionalInfo";
 
 import "./../../../styles/site.scss";
 import "./ItemMaster.scss";
@@ -22,7 +22,6 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   radioChange,
   BatchExpRequired,
-  CptCodesSearch,
   VatAppilicable,
   texthandle,
   AddUom,
@@ -36,6 +35,7 @@ import {
   numberEventHandaler
 } from "./ItemDetailsEvents";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import { MainContext } from "algaeh-react-components/context";
 
 class InvItemMaster extends Component {
   constructor(props) {
@@ -46,6 +46,15 @@ class InvItemMaster extends Component {
       conversion_factor: 0,
       convertEnable: false
     };
+  }
+
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    })
   }
   onClose = e => {
     this.props.onClose && this.props.onClose(false);
@@ -436,9 +445,9 @@ class InvItemMaster extends Component {
                                 this.props.inventoryitemuom === undefined
                                   ? []
                                   : this.props.inventoryitemuom.filter(
-                                      f =>
-                                        f.hims_d_inventory_uom_id === row.uom_id
-                                    );
+                                    f =>
+                                      f.hims_d_inventory_uom_id === row.uom_id
+                                  );
 
                               return (
                                 <span>
@@ -566,7 +575,7 @@ class InvItemMaster extends Component {
                         paging={{ page: 0, rowsPerPage: 5 }}
                         events={{
                           onDelete: deleteUOM.bind(this, this),
-                          onEdit: row => {},
+                          onEdit: row => { },
                           onDone: updateUOM.bind(this, this)
                         }}
                       />
@@ -699,8 +708,8 @@ class InvItemMaster extends Component {
                     {this.state.hims_d_inventory_item_master_id === null ? (
                       <AlgaehLabel label={{ fieldName: "btnSave" }} />
                     ) : (
-                      <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                    )}
+                        <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                      )}
                   </button>
                   <button
                     onClick={e => {

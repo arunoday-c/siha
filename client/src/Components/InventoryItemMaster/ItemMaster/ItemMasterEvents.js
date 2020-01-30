@@ -2,8 +2,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { SetBulkState } from "../../../utils/GlobalFunctions";
 import InventoryItem from "../../../Models/InventoryItem";
 import {
-  AlgaehValidation,
-  AlgaehOpenContainer
+  AlgaehValidation
 } from "../../../utils/GlobalFunctions";
 import _ from "lodash";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
@@ -115,10 +114,6 @@ const InsertUpdateItems = $this => {
           $this.state.service_code = $this.state.item_code;
           $this.state.service_type_id = "4";
           $this.state.service_name = $this.state.item_description;
-          $this.state.hospital_id = JSON.parse(
-            AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-          ).hims_d_hospital_id;
-
 
           algaehApiCall({
             uri: "/inventory/addItemMaster",

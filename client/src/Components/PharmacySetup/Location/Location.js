@@ -25,8 +25,7 @@ import {
 } from "./LocationEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
-
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 
 class Location extends Component {
   constructor(props) {
@@ -37,9 +36,7 @@ class Location extends Component {
       location_description: "",
       location_type: null,
       allowpos: false,
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: null,
       allow_pos: "N",
       gitloaction: false,
       git_location: "N",
@@ -48,7 +45,13 @@ class Location extends Component {
     this.baseState = this.state;
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    })
     let prevLang = getCookie("Language");
 
     this.setState({

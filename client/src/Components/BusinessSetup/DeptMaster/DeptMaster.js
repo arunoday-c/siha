@@ -14,10 +14,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import {
-  AlgaehValidation
-  // AlgaehOpenContainer
-} from "../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import moment from "moment";
 import _ from "lodash";
@@ -27,16 +24,6 @@ class DeptMaster extends Component {
   constructor(props) {
     super(props);
 
-    // let Activated_Modueles = JSON.parse(
-    //   AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    // );
-    // const Inventory_Active = _.filter(Activated_Modueles, f => {
-    //   return f.module_code === "INVTRY";
-    // });
-
-    // const HIMS_Active = _.filter(Activated_Modueles, f => {
-    //   return f.module_code === "FTDSK";
-    // });
     this.state = {
       allDepartments: [],
       subDepartments: [],
@@ -44,8 +31,8 @@ class DeptMaster extends Component {
       effective_start_date: new Date(),
       showSubDeptModal: false,
       chart_type: null,
-      Inventory_Active: false, //Inventory_Active.length > 0 ? true : false,
-      HIMS_Active: false, //HIMS_Active.length > 0 ? true : false,
+      Inventory_Active: false,
+      HIMS_Active: false,
       hospital_id: ""
     };
 
@@ -57,13 +44,13 @@ class DeptMaster extends Component {
     const userToken = this.context.userToken;
     const active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HIMS_CLINICAL"
+        userToken.product_type === "HIMS_CLINICAL"
         ? true
         : false;
     const inventoryactive =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HIMS_CLINICAL" ||
-      userToken.product_type === "FINANCE_ERP"
+        userToken.product_type === "HIMS_CLINICAL" ||
+        userToken.product_type === "FINANCE_ERP"
         ? true
         : false;
     this.setState({
@@ -208,122 +195,122 @@ class DeptMaster extends Component {
   updateDepartment(data) {
     data.department_status === "I"
       ? algaehApiCall({
-          uri: "/department/makeDepartmentInActive",
-          module: "masterSettings",
-          data: {
-            hims_d_department_id: data.hims_d_department_id
-          },
-          method: "PUT",
-          onSuccess: response => {
-            if (response.data.records.success) {
-              swalMessage({
-                title: "Record updated successfully",
-                type: "success"
-              });
-              this.getAllDepartments();
-            } else if (!response.data.records.success) {
-              swalMessage({
-                title: response.data.records.message,
-                type: "error"
-              });
-            }
-          },
-          onFailure: error => {
+        uri: "/department/makeDepartmentInActive",
+        module: "masterSettings",
+        data: {
+          hims_d_department_id: data.hims_d_department_id
+        },
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.records.success) {
             swalMessage({
-              title: error.message,
+              title: "Record updated successfully",
+              type: "success"
+            });
+            this.getAllDepartments();
+          } else if (!response.data.records.success) {
+            swalMessage({
+              title: response.data.records.message,
               type: "error"
             });
           }
-        })
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      })
       : algaehApiCall({
-          uri: "/department/updateDepartment",
-          data: {
-            department_name: data.department_name,
-            department_desc: data.department_name,
-            department_type: data.department_type,
-            arabic_department_name: data.arabic_department_name,
-            effective_start_date: data.effective_start_date,
-            hims_d_department_id: data.hims_d_department_id
-          },
-          method: "PUT",
-          module: "masterSettings",
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record updated successfully",
-                type: "success"
-              });
-              this.getAllDepartments();
-            }
-          },
-          onFailure: error => {
+        uri: "/department/updateDepartment",
+        data: {
+          department_name: data.department_name,
+          department_desc: data.department_name,
+          department_type: data.department_type,
+          arabic_department_name: data.arabic_department_name,
+          effective_start_date: data.effective_start_date,
+          hims_d_department_id: data.hims_d_department_id
+        },
+        method: "PUT",
+        module: "masterSettings",
+        onSuccess: response => {
+          if (response.data.success) {
             swalMessage({
-              title: error.message,
-              type: "error"
+              title: "Record updated successfully",
+              type: "success"
             });
+            this.getAllDepartments();
           }
-        });
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
   }
 
   updateSubDepartment(data) {
     data.sub_department_status === "I"
       ? algaehApiCall({
-          uri: "/department/makeSubDepartmentInActive",
-          module: "masterSettings",
-          data: {
-            hims_d_sub_department_id: data.hims_d_sub_department_id
-          },
-          method: "PUT",
-          onSuccess: response => {
-            if (response.data.records.success) {
-              swalMessage({
-                title: "Record updated successfully",
-                type: "success"
-              });
-              this.getAllSubDepartments(data.department_id);
-            } else if (!response.data.records.success) {
-              swalMessage({
-                title: response.data.records.message,
-                type: "error"
-              });
-            }
-          },
-          onFailure: error => {
+        uri: "/department/makeSubDepartmentInActive",
+        module: "masterSettings",
+        data: {
+          hims_d_sub_department_id: data.hims_d_sub_department_id
+        },
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.records.success) {
             swalMessage({
-              title: error.message,
+              title: "Record updated successfully",
+              type: "success"
+            });
+            this.getAllSubDepartments(data.department_id);
+          } else if (!response.data.records.success) {
+            swalMessage({
+              title: response.data.records.message,
               type: "error"
             });
           }
-        })
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      })
       : algaehApiCall({
-          uri: "/department/updateSubDepartment",
-          data: {
-            sub_department_name: data.sub_department_name,
-            sub_department_desc: data.sub_department_name,
-            arabic_sub_department_name: data.arabic_sub_department_name,
-            effective_start_date: data.effective_start_date,
-            chart_type: data.chart_type,
-            hims_d_sub_department_id: data.hims_d_sub_department_id,
-            vitals_mandatory: data.vitals_mandatory
-          },
-          module: "masterSettings",
-          method: "PUT",
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record updated successfully",
-                type: "success"
-              });
-              this.getAllSubDepartments(data.department_id);
-            }
-          },
-          onFailure: error => {
+        uri: "/department/updateSubDepartment",
+        data: {
+          sub_department_name: data.sub_department_name,
+          sub_department_desc: data.sub_department_name,
+          arabic_sub_department_name: data.arabic_sub_department_name,
+          effective_start_date: data.effective_start_date,
+          chart_type: data.chart_type,
+          hims_d_sub_department_id: data.hims_d_sub_department_id,
+          vitals_mandatory: data.vitals_mandatory
+        },
+        module: "masterSettings",
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.success) {
             swalMessage({
-              title: error.message,
-              type: "error"
+              title: "Record updated successfully",
+              type: "success"
             });
+            this.getAllSubDepartments(data.department_id);
           }
-        });
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
   }
 
   getAllDepartments() {
@@ -382,10 +369,6 @@ class DeptMaster extends Component {
   }
 
   addSubDepartment(e) {
-    // const hospital = JSON.parse(
-    //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    // );
-
     e.preventDefault();
     AlgaehValidation({
       querySelector: "data-validate='subdepDiv'",
@@ -514,7 +497,7 @@ class DeptMaster extends Component {
                     name: "department_name",
                     value: this.state.depNametoAdd,
                     events: {
-                      onChange: () => {}
+                      onChange: () => { }
                     },
                     others: {
                       disabled: true
@@ -713,10 +696,10 @@ class DeptMaster extends Component {
                             this.props.inventorylocations === undefined
                               ? []
                               : this.props.inventorylocations.filter(
-                                  f =>
-                                    f.hims_d_inventory_location_id ===
-                                    row.inventory_location_id
-                                );
+                                f =>
+                                  f.hims_d_inventory_location_id ===
+                                  row.inventory_location_id
+                              );
 
                           return (
                             <span>
@@ -732,10 +715,10 @@ class DeptMaster extends Component {
                             this.props.inventorylocations === undefined
                               ? []
                               : this.props.inventorylocations.filter(
-                                  f =>
-                                    f.hims_d_inventory_location_id ===
-                                    row.inventory_location_id
-                                );
+                                f =>
+                                  f.hims_d_inventory_location_id ===
+                                  row.inventory_location_id
+                              );
 
                           return (
                             <span>
@@ -759,10 +742,10 @@ class DeptMaster extends Component {
                           return row.chart_type === "N"
                             ? "None"
                             : row.chart_type === "D"
-                            ? "Dentel"
-                            : row.chart_type === "O"
-                            ? "Optometry"
-                            : null;
+                              ? "Dentel"
+                              : row.chart_type === "O"
+                                ? "Optometry"
+                                : null;
                         },
 
                         editorTemplate: row => {
@@ -881,7 +864,7 @@ class DeptMaster extends Component {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: this.deleteSubDepartment.bind(this),
-                      onEdit: row => {},
+                      onEdit: row => { },
                       onDone: this.updateSubDepartment.bind(this)
                     }}
                   />
@@ -1217,7 +1200,7 @@ class DeptMaster extends Component {
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     onDelete: this.deleteDepartment.bind(this),
-                    onEdit: row => {},
+                    onEdit: row => { },
                     onDone: this.updateDepartment.bind(this)
                   }}
                 />

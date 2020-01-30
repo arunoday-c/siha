@@ -9,7 +9,6 @@ import {
 import _ from "lodash";
 import Enumerable from "linq";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
-import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 
 const ClearData = ($this, e) => {
   let _screenName = getCookie("ScreenName").replace("/", "");
@@ -401,13 +400,10 @@ const getPatientDetails = $this => {
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;
-        let hospital_id = JSON.parse(
-          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        );
 
         if (
-          hospital_id.local_vat_applicable === "N" &&
-          hospital_id.default_nationality ===
+          $this.context.userToken.local_vat_applicable === "N" &&
+          $this.context.userToken.default_nationality ===
           data.patientRegistration.nationality_id
         ) {
           data.patientRegistration.vat_applicable = "N";

@@ -1,9 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import _ from "lodash";
-import {
-  AlgaehValidation,
-  AlgaehOpenContainer
-} from "../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 export default function FavouriteOrderEvent() {
   return {

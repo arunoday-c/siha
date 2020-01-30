@@ -35,6 +35,7 @@ import moment from "moment";
 // import Options from "../../Options.json";
 import OrderingPackages from "../PatientProfile/Assessment/OrderingPackages/OrderingPackages";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
+import { MainContext } from "algaeh-react-components/context";
 
 class OPBilling extends Component {
   constructor(props) {
@@ -56,7 +57,8 @@ class OPBilling extends Component {
       cheque_amount: 0,
       advance: 0,
       addNewService: false,
-      isPackOpen: false
+      isPackOpen: false,
+      userToken: {}
     };
   }
 
@@ -65,7 +67,13 @@ class OPBilling extends Component {
     this.setState({ ...this.state, ...IOputs });
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+
+    this.setState({
+      userToken: this.context.userToken
+    })
+
     let prevLang = getCookie("Language");
     this.setState({
       selectedLang: prevLang

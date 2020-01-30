@@ -22,15 +22,9 @@ import { MainContext } from "algaeh-react-components/context";
 class BusinessSetup extends Component {
   constructor(props) {
     super(props);
-    // let Activated_Modueles = JSON.parse(
-    //   AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    // );
-    // const HIMS_Active = _.filter(Activated_Modueles, f => {
-    //   return f.module_code === "FTDSK";
-    // });
     this.state = {
       pageDisplay: "BranchMaster",
-      HIMS_Active: false //HIMS_Active.length > 0 ? true : false
+      HIMS_Active: false
     };
   }
   static contextType = MainContext;
@@ -38,7 +32,7 @@ class BusinessSetup extends Component {
     const userToken = this.context.userToken;
     const active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HIMS_CLINICAL"
+        userToken.product_type === "HIMS_CLINICAL"
         ? true
         : false;
     this.setState({

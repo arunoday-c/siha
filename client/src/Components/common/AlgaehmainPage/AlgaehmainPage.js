@@ -14,7 +14,6 @@ import DirectRoutes from "../../../Dynamicroutes";
 import { Notifications } from "../Notifications";
 import {
   AlgaehCloseContainer
-  // AlgaehOpenContainer
 } from "../../../utils/GlobalFunctions";
 import Enumarable from "linq";
 import swal from "sweetalert2";
@@ -23,43 +22,6 @@ import { MainContext } from "algaeh-react-components/context";
 class PersistentDrawer extends React.Component {
   constructor(props) {
     super(props);
-
-    // const Activated_Modueles =
-    //   sessionStorage.getItem("ModuleDetails") !== null
-    //     ? JSON.parse(
-    //         AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    //       )
-    //     : [];
-    // let Hims_active = false;
-    // let Hrms_active = false;
-    // let Pharma_active = false;
-    // let Invento_active = false;
-    // let Lab_active = false;
-    // let Rad_active = false;
-
-    // for (let i = 0; i < Activated_Modueles.length; i++) {
-    //   const item = Activated_Modueles[i];
-    //   switch (item.module_code) {
-    //     case "FTDSK":
-    //       Hims_active = true;
-    //       break;
-    //     case "PAYROLL":
-    //       Hrms_active = true;
-    //       break;
-    //     case "PHCY":
-    //       Pharma_active = true;
-    //       break;
-    //     case "INVTRY":
-    //       Invento_active = true;
-    //       break;
-    //     case "LAB":
-    //       Lab_active = true;
-    //       break;
-    //     case "RAD":
-    //       Rad_active = true;
-    //       break;
-    //   }
-    // }
     this.state = {
       sideopen: false,
       class: "",
@@ -89,17 +51,17 @@ class PersistentDrawer extends React.Component {
       scrollPosition: 0,
       lang_className: " english_component",
       Hims_active: false,//Hims_active,
-      Hrms_active:false,// Hrms_active,
-      Pharma_active:false,// Pharma_active,
-      Invento_active:false,// Invento_active,
-      Lab_active:false,// Lab_active,
-      Rad_active:false// Rad_active
+      Hrms_active: false,// Hrms_active,
+      Pharma_active: false,// Pharma_active,
+      Invento_active: false,// Invento_active,
+      Lab_active: false,// Lab_active,
+      Rad_active: false// Rad_active
     };
     // const _userName = getCookie("userName");
     // if (_userName === null || _userName === "") {
     //   window.location.hash = "";
     // }
-   
+
 
     // algaehApiCall({
     //   uri: "/algaehMasters/getRoleBaseActiveModules",
@@ -357,16 +319,16 @@ class PersistentDrawer extends React.Component {
   handleDrawerClose = () => {
     const _activeNodes =
       this.state.activeNode.menuselected === "" &&
-      this.state.activeNode.lastSelected !== ""
+        this.state.activeNode.lastSelected !== ""
         ? {
-            activeNode: {
-              ...this.state.activeNode,
-              ...{
-                menuselected: this.state.activeNode.lastSelected,
-                lastSelected: ""
-              }
+          activeNode: {
+            ...this.state.activeNode,
+            ...{
+              menuselected: this.state.activeNode.lastSelected,
+              lastSelected: ""
             }
           }
+        }
         : {};
 
     this.setState({
@@ -388,11 +350,11 @@ class PersistentDrawer extends React.Component {
     const isModfySelect =
       this.state.activeNode.menuselected === data.module_code
         ? {
-            activeNode: {
-              ...this.state.activeNode,
-              ...{ menuselected: "", lastSelected: data.module_code }
-            }
+          activeNode: {
+            ...this.state.activeNode,
+            ...{ menuselected: "", lastSelected: data.module_code }
           }
+        }
         : {};
     _putData = isModfySelect.activeNode !== undefined ? "" : _putData;
     this.setState({ onlyToggeleMenu: _putData, ...isModfySelect });
@@ -534,8 +496,8 @@ class PersistentDrawer extends React.Component {
               {_menuSelected === menu.module_code || _toggle ? (
                 <i className="fas fa-angle-up" />
               ) : (
-                <i className="fas fa-angle-down" />
-              )}
+                  <i className="fas fa-angle-down" />
+                )}
             </div>
           </div>
           {_menuSelected === menu.module_code || _toggle ? (

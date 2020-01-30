@@ -18,15 +18,24 @@ import {
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import { MainContext } from "algaeh-react-components/context";
 
 class SampleCollectionPatient extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      collected: true
+      collected: true,
+      hospital_id: null
     };
   }
+  
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    })
     if (
       this.props.deptanddoctors === undefined ||
       this.props.deptanddoctors.length === 0

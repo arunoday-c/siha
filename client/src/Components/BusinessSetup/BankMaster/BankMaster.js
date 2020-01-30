@@ -20,12 +20,6 @@ import { MainContext } from "algaeh-react-components/context";
 class BankMaster extends Component {
   constructor(props) {
     super(props);
-    // let Activated_Modueles = JSON.parse(
-    //   AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    // );
-    // const HIMS_Active = _.filter(Activated_Modueles, f => {
-    //   return f.module_code === "FTDSK";
-    // });
 
     this.state = {
       bank_name: null,
@@ -36,14 +30,11 @@ class BankMaster extends Component {
       contact_number: null,
       card_name: "",
       card_list: [],
-      HIMS_Active: false //HIMS_Active.length > 0 ? true : false
+      HIMS_Active: false
     };
     if (this.props.banks === undefined || this.props.banks.length === 0) {
       this.getBankMaster();
     }
-    // if (HIMS_Active.length > 0) {
-    //   this.getCardkMaster();
-    // }
   }
   static contextType = MainContext;
 
@@ -51,7 +42,7 @@ class BankMaster extends Component {
     const userToken = this.context.userToken;
     const active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HIMS_CLINICAL"
+        userToken.product_type === "HIMS_CLINICAL"
         ? true
         : false;
     if (active === true) {
@@ -626,7 +617,7 @@ class BankMaster extends Component {
                       }}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onEdit: () => {},
+                        onEdit: () => { },
                         onDelete: this.deleteBankMaster.bind(this),
                         onDone: this.updateBankMaster.bind(this)
                       }}
@@ -755,7 +746,7 @@ class BankMaster extends Component {
                         }}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
-                          onEdit: () => {},
+                          onEdit: () => { },
                           onDelete: this.deleteBankMaster.bind(this),
                           onDone: this.updateBankMaster.bind(this)
                         }}

@@ -24,7 +24,7 @@ import {
 import variableJson from "../../../utils/GlobalVariables.json";
 import AlgaehFileUploader from "../../Wrapper/algaehFileUpload";
 import Enumerable from "linq";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 
 class UpdatePatientForm extends Component {
   constructor(props) {
@@ -35,7 +35,8 @@ class UpdatePatientForm extends Component {
       DOBErrorMsg: "",
       DOBError: false,
       DOB: 0,
-      CurrentDate: new Date()
+      CurrentDate: new Date(),
+      requied_emp_id: null
       // patientImage: undefined
     };
     this.widthImg = "";
@@ -48,7 +49,14 @@ class UpdatePatientForm extends Component {
     this.setState({ ...this.state, ...InputOutput });
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      requied_emp_id: userToken.requied_emp_id
+    })
+
     if (this.props.titles === undefined || this.props.titles.length === 0) {
       this.props.getTitles({
         uri: "/masters/get/title",
@@ -211,9 +219,7 @@ class UpdatePatientForm extends Component {
     }
   }
   render() {
-    let requied_emp_id = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    ).requied_emp_id;
+
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -541,8 +547,8 @@ class UpdatePatientForm extends Component {
                             tabIndex: "13"
                           }
                         }}
-                      />{" "}
-                      {requied_emp_id === "Y" ? (
+                      />
+                      {this.state.requied_emp_id === "Y" ? (
                         <AlagehFormGroup
                           div={{ className: "col-3 form-group mandatory" }}
                           label={{

@@ -213,10 +213,7 @@ const getHospitalDetails = $this => {
     uri: "/organization/getOrganization",
     method: "GET",
     data: {
-      hims_d_hospital_id: $this.state.hims_d_hospital_id
-      // JSON.parse(
-      //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      // ).hims_d_hospital_id
+      hsopital_id: $this.state.hsopital_id
     },
     redux: {
       type: "HOSPITAL_DETAILS_GET_DATA",
@@ -425,17 +422,10 @@ const getCtrlCode = ($this, patcode, row) => {
       if (response.data.success) {
         let data = response.data.records;
 
-        let hospital_id = $this.state.hims_d_hospital_id;
-        // JSON.parse(
-        //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        // ).hims_d_hospital_id;
-        // let hospitaldetails = Enumerable.from($this.props.hospitaldetails)
-        //   .where(w => w.hims_d_hospital_id === hospital_id)
-        //   .firstOrDefault();
 
         let hospitaldetails = _.find(
           $this.props.hospitaldetails,
-          f => f.hims_d_hospital_id === hospital_id
+          f => f.hims_d_hospital_id === $this.state.hospital_id
         );
 
         data.patientRegistration.vat_applicable = "Y";
@@ -443,7 +433,7 @@ const getCtrlCode = ($this, patcode, row) => {
         if (
           hospitaldetails.local_vat_applicable === "N" &&
           hospitaldetails.default_nationality ===
-            data.patientRegistration.nationality_id
+          data.patientRegistration.nationality_id
         ) {
           data.patientRegistration.vat_applicable = "N";
         }

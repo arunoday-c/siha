@@ -18,6 +18,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 // import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
 import GlobalVariables from "../../../utils/GlobalVariables";
+import { MainContext } from "algaeh-react-components/context";
 
 class Procedures extends PureComponent {
   constructor(props) {
@@ -37,11 +38,18 @@ class Procedures extends PureComponent {
 
       s_service_type: null,
       s_service: null,
-      qty: 1
+      qty: 1,
+      hsopital_id: null
     };
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      hsopital_id: userToken.hims_d_hospital_id
+    });
+
     if (
       this.props.displayservices === undefined ||
       this.props.displayservices.length === 0
@@ -327,10 +335,10 @@ class Procedures extends PureComponent {
                                 this.props.inventoryitemlist === undefined
                                   ? []
                                   : this.props.inventoryitemlist.filter(
-                                      f =>
-                                        f.hims_d_inventory_item_master_id ===
-                                        row.item_id
-                                    );
+                                    f =>
+                                      f.hims_d_inventory_item_master_id ===
+                                      row.item_id
+                                  );
 
                               return (
                                 <span>
@@ -353,9 +361,9 @@ class Procedures extends PureComponent {
                                 this.props.displayservices === undefined
                                   ? []
                                   : this.props.displayservices.filter(
-                                      f =>
-                                        f.hims_d_services_id === row.service_id
-                                    );
+                                    f =>
+                                      f.hims_d_services_id === row.service_id
+                                  );
 
                               return (
                                 <span>
@@ -401,8 +409,8 @@ class Procedures extends PureComponent {
                       {this.state.hims_d_procedure_id === null ? (
                         <AlgaehLabel label={{ forceLabel: "Save" }} />
                       ) : (
-                        <AlgaehLabel label={{ forceLabel: "Update" }} />
-                      )}
+                          <AlgaehLabel label={{ forceLabel: "Update" }} />
+                        )}
                     </button>
                     <button
                       onClick={e => {
