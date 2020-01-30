@@ -13,7 +13,6 @@ import {
   getCtrlCode,
   ClearData,
   SaveTransferEntry,
-  PostTransferEntry,
   RequisitionSearch,
   LocationchangeTexts,
   checkBoxEvent,

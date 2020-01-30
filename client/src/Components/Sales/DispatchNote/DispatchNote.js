@@ -21,10 +21,9 @@ import {
   generateDispatchReport
 } from "./DispatchNoteEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import {
-  AlgaehOpenContainer,
-  GetAmountFormart
-} from "../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
+
+import { MainContext } from "algaeh-react-components/context";
 import DispatchNoteItems from "./DispatchNoteItems/DispatchNoteItems";
 
 class DispatchNote extends Component {
@@ -50,14 +49,10 @@ class DispatchNote extends Component {
       location_type: null,
 
       stock_detail: [],
-      decimal_place: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).decimal_places,
+      decimal_place: null,
       saveEnable: true,
       dataExists: false,
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: null,
       ReqData: true,
       customer_name: null,
       hospital_name: null,
@@ -73,7 +68,14 @@ class DispatchNote extends Component {
     this.baseState = this.state;
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      decimal_place: userToken.decimal_places,
+      hospital_id: userToken.hims_d_hospital_id
+    })
     this.props.getItemCategory({
       uri: "/inventory/getItemCategory",
       module: "inventory",

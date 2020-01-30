@@ -36,21 +36,13 @@ import {
 } from "./ContractManagementEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 
 class ContractManagement extends Component {
   constructor(props) {
     super(props);
 
-    let Activated_Modueles = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    );
-
-    const HRMNGMT_Active = Activated_Modueles.filter(f => {
-      return f.module_code === "HRMNGMT";
-    });
-
-    this.HRMNGMT_Active = HRMNGMT_Active.length > 0 ? true : false;
+    this.HRMNGMT_Active = false;
 
     this.state = {
       hims_f_contract_management_id: null,
@@ -76,9 +68,7 @@ class ContractManagement extends Component {
       comment_list: [],
 
       dataExists: false,
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: null,
 
       employee_name: null,
       incharge_employee_id: null,
@@ -87,7 +77,22 @@ class ContractManagement extends Component {
     };
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    })
+
+    this.HRMNGMT_Active =
+      userToken.product_type === "HIMS_ERP" ||
+        userToken.product_type === "HRMS" ||
+        userToken.product_type === "HRMS_ERP" ||
+        userToken.product_type === "FINANCE_ERP"
+        ? true
+        : false;
+
     this.props.getCustomerMaster({
       uri: "/customer/getCustomerMaster",
       module: "masterSettings",
@@ -167,8 +172,8 @@ class ContractManagement extends Component {
                 <h6>
                   {this.state.contract_date
                     ? moment(this.state.contract_date).format(
-                        Options.dateFormat
-                      )
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -177,17 +182,17 @@ class ContractManagement extends Component {
           printArea={
             this.state.contract_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Contract Report",
-                      events: {
-                        onClick: () => {
-                          generateContractReport(this.state);
-                        }
+                menuitems: [
+                  {
+                    label: "Contract Report",
+                    events: {
+                      onClick: () => {
+                        generateContractReport(this.state);
                       }
                     }
-                  ]
-                }
+                  }
+                ]
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -636,24 +641,24 @@ class ContractManagement extends Component {
                     <ol>
                       {this.state.comment_list.length > 0
                         ? this.state.comment_list.map((row, index) => {
-                            return (
-                              <React.Fragment key={index}>
-                                <li key={index}>
-                                  <span>{row}</span>
-                                  {this.state.dataExists ? null : (
-                                    <i
-                                      className="fas fa-times"
-                                      onClick={deleteComment.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )}
-                                    ></i>
-                                  )}
-                                </li>
-                              </React.Fragment>
-                            );
-                          })
+                          return (
+                            <React.Fragment key={index}>
+                              <li key={index}>
+                                <span>{row}</span>
+                                {this.state.dataExists ? null : (
+                                  <i
+                                    className="fas fa-times"
+                                    onClick={deleteComment.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )}
+                                  ></i>
+                                )}
+                              </li>
+                            </React.Fragment>
+                          );
+                        })
                         : null}
                     </ol>
                   </div>

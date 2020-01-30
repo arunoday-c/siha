@@ -30,25 +30,16 @@ import {
   CancelSalesServiceOrder
 } from "./SalesOrderEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import {
-  AlgaehOpenContainer,
-  GetAmountFormart
-} from "../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 import SalesOrdListItems from "./SalesOrdListItems/SalesOrdListItems";
 import SalesOrdListService from "./SalesOrdListService/SalesOrdListService";
 
 class SalesOrder extends Component {
   constructor(props) {
     super(props);
-    let Activated_Modueles = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    );
 
-    const HRMNGMT_Active = Activated_Modueles.filter(f => {
-      return f.module_code === "HRMNGMT";
-    });
-
-    this.HRMNGMT_Active = HRMNGMT_Active.length > 0 ? true : false;
+    this.HRMNGMT_Active = false;
 
     this.state = {
       hims_f_sales_order_id: null,
@@ -76,14 +67,10 @@ class SalesOrder extends Component {
       selectedData: false,
       sales_order_items: [],
       sales_order_services: [],
-      decimal_place: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).decimal_places,
+      decimal_place: null,
       saveEnable: true,
       dataExists: false,
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: null,
       services_required: "N",
       sales_person_id: null,
       employee_name: null,
@@ -95,7 +82,22 @@ class SalesOrder extends Component {
     getSalesOptions(this, this);
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      decimal_place: userToken.decimal_places,
+      hospital_id: userToken.hims_d_hospital_id
+    })
+
+    this.HRMNGMT_Active =
+      userToken.product_type === "HIMS_ERP" ||
+        userToken.product_type === "HRMS" ||
+        userToken.product_type === "HRMS_ERP" ||
+        userToken.product_type === "FINANCE_ERP"
+        ? true
+        : false;
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
       this.props.getItems({
         uri: "/inventory/getItemMaster",
@@ -144,9 +146,7 @@ class SalesOrder extends Component {
       module: "hrManagement",
       method: "GET",
       data: {
-        division_id: JSON.parse(
-          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        ).hims_d_hospital_id
+        division_id: userToken.hims_d_hospital_id
       },
       method: "GET",
       redux: {

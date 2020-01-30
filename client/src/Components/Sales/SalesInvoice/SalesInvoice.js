@@ -23,7 +23,8 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 // import SalesInvoiceInp from "../../../Models/SalesInvoice";
 import MyContext from "../../../utils/MyContext";
 import _ from "lodash";
-import { GetAmountFormart, AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 import InvoiceListService from "./InvoiceListService/InvoiceListService";
 import InvoiceItemList from "./InvoiceItemList/InvoiceItemList";
 import SalesInvoiceIO from "../../../Models/SalesInvoice";
@@ -39,7 +40,10 @@ class SalesInvoice extends Component {
         this.setState(IOputs);
     }
 
+    static contextType = MainContext;
     componentDidMount() {
+        const userToken = this.context.userToken;
+
 
         this.props.getOrganizations({
             uri: "/organization/getOrganizationByUser",
@@ -67,9 +71,7 @@ class SalesInvoice extends Component {
             module: "hrManagement",
             method: "GET",
             data: {
-                division_id: JSON.parse(
-                    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-                ).hims_d_hospital_id
+                division_id: userToken.hims_d_hospital_id
             },
             method: "GET",
             redux: {

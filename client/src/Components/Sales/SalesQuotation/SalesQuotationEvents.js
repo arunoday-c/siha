@@ -1,10 +1,7 @@
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import {
-  AlgaehOpenContainer,
-  AlgaehValidation
-} from "../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import Enumerable from "linq";
@@ -53,9 +50,6 @@ const ClearData = ($this, e) => {
 
     sales_quotation_items: [],
     sales_quotation_services: [],
-    decimal_place: JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    ).decimal_places,
     saveEnable: true,
     dataExists: false,
 
@@ -72,9 +66,6 @@ const ClearData = ($this, e) => {
     tax_percent: 0,
     sales_person_id: null,
     employee_name: null,
-    hospital_id: JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    ).hims_d_hospital_id,
     hims_f_terms_condition_id: null,
     selected_terms_conditions: "",
     comment_list: [],

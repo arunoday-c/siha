@@ -4,7 +4,6 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import _ from "lodash";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 const texthandle = ($this, ctrl, e) => {
     e = ctrl || e;
@@ -100,14 +99,8 @@ const ClearData = ($this, e) => {
         location_type: null,
 
         stock_detail: [],
-        decimal_place: JSON.parse(
-            AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        ).decimal_places,
         saveEnable: true,
         dataExists: false,
-        hospital_id: JSON.parse(
-            AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        ).hims_d_hospital_id,
         ReqData: true,
         customer_name: null,
         hospital_name: null,

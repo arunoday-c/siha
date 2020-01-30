@@ -1,9 +1,6 @@
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
-import {
-    AlgaehOpenContainer,
-    AlgaehValidation
-} from "../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
@@ -42,14 +39,8 @@ const texthandle = ($this, ctrl, e) => {
 
                 sales_order_items: [],
                 sales_order_services: [],
-                decimal_place: JSON.parse(
-                    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-                ).decimal_places,
                 saveEnable: true,
                 dataExists: false,
-                hospital_id: JSON.parse(
-                    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-                ).hims_d_hospital_id,
                 sales_person_id: null,
                 employee_name: null,
                 delivery_date: null,
@@ -248,14 +239,8 @@ const ClearData = ($this, e) => {
 
         sales_order_items: [],
         sales_order_services: [],
-        decimal_place: JSON.parse(
-            AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        ).decimal_places,
         saveEnable: true,
         dataExists: false,
-        hospital_id: JSON.parse(
-            AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        ).hims_d_hospital_id,
         sales_person_id: null,
         employee_name: null,
 
