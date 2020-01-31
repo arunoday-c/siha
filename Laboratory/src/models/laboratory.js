@@ -570,54 +570,65 @@ export default {
                           printQuery: true
                         })
                         .then(insert_lab_sample => {
-                          all_analytes.map(item => {
-                            const order_dtails = inserteLabSample.find(f => {
-                              return item.test_id == f.test_id;
-                            });
-
-                            item["order_id"] = order_dtails.order_id;
-                          });
-
-                          const analyts = [
-                            "order_id",
-                            "analyte_id",
-                            "analyte_type",
-                            "result_unit",
-                            "critical_low",
-                            "critical_high",
-                            "normal_low",
-                            "normal_high",
-                            "text_value",
-                            "normal_qualitative_value"
-                          ];
-                          _mysql
-                            .executeQuery({
-                              query:
-                                "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ?",
-                              values: all_analytes,
-                              includeValues: analyts,
-                              extraValues: {
-                                created_by:
-                                  req.userIdentity.algaeh_d_app_user_id,
-                                updated_by:
-                                  req.userIdentity.algaeh_d_app_user_id
-                              },
-                              bulkInsertOrUpdate: true,
-                              printQuery: true
-                            })
-                            .then(ord_analytes => {
-                              if (req.connection == null) {
-                                req.records = insert_lab_sample;
-                                next();
-                              } else {
-                                next();
-                              }
-                            })
-                            .catch(e => {
-                              _mysql.rollBackTransaction(() => {
-                                next(e);
+                          if (all_analytes.length > 0) {
+                            all_analytes.map(item => {
+                              const order_dtails = inserteLabSample.find(f => {
+                                return item.test_id == f.test_id;
                               });
+
+                              item["order_id"] = order_dtails.order_id;
                             });
+
+                            const analyts = [
+                              "order_id",
+                              "analyte_id",
+                              "analyte_type",
+                              "result_unit",
+                              "critical_low",
+                              "critical_high",
+                              "normal_low",
+                              "normal_high",
+                              "text_value",
+                              "normal_qualitative_value"
+                            ];
+                            _mysql
+                              .executeQuery({
+                                query:
+                                  "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ?",
+                                values: all_analytes,
+                                includeValues: analyts,
+                                extraValues: {
+                                  created_by:
+                                    req.userIdentity.algaeh_d_app_user_id,
+                                  updated_by:
+                                    req.userIdentity.algaeh_d_app_user_id
+                                },
+                                bulkInsertOrUpdate: true,
+                                printQuery: true
+                              })
+                              .then(ord_analytes => {
+                                if (req.connection == null) {
+                                  req.records = insert_lab_sample;
+                                  next();
+                                } else {
+                                  next();
+                                }
+                              })
+                              .catch(e => {
+                                _mysql.rollBackTransaction(() => {
+                                  next(e);
+                                });
+                              });
+                          } else {
+                            _mysql.rollBackTransaction(() => {
+                              next(
+                                httpStatus.generateError(
+                                  httpStatus.forbidden,
+                                  "Analytes not deifined for this test"
+                                )
+                              );
+                            });
+                          }
                         })
                         .catch(e => {
                           _mysql.rollBackTransaction(() => {
