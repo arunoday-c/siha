@@ -235,7 +235,8 @@ const AddItems = ($this, context) => {
             discount_amount: discount_amount,
             tax_percentage: $this.state.tax_percentage,
             tax_amount: tax_amount,
-            total_amount: total_amount
+            total_amount: total_amount,
+            quantity_outstanding: 0
         };
         sales_order_items.push(ItemInput);
 

@@ -417,33 +417,43 @@ export default {
                         printQuery: true
                       })
                       .then(leave_encash_header => {
+                        let strQuery = ""
+                        if (leave_encash_header.length === 0) {
+                          req.records = { payment_application_code: payment_application_code };
+                          next();
+                        }
                         for (let i = 0; i < leave_encash_header.length; i++) {
-                          _mysql
-                            .executeQuery({
-                              query:
-                                "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
-                          where employee_id=? and `year`=? and leave_id=?;",
-                              values: [
-                                leave_encash_header[i].close_balance,
-                                leave_encash_header[i].employee_id,
-                                leave_encash_header[i].year,
-                                leave_encash_header[i].leave_id
-                              ],
-                              printQuery: true
-                            })
-                            .then(monthly_leave => {
-                              let result = {
-                                payment_application_code: payment_application_code
-                              };
-                              _mysql.commitTransaction(() => {
-                                _mysql.releaseConnection();
+
+                          strQuery += _mysql.mysqlQueryFormat(
+                            "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
+                            where employee_id=? and `year`=? and leave_id=?;",
+                            [
+                              leave_encash_header[i].close_balance,
+                              leave_encash_header[i].employee_id,
+                              leave_encash_header[i].year,
+                              leave_encash_header[i].leave_id
+                            ]
+                          );
+                          if (i === leave_encash_header.length - 1) {
+                            _mysql
+                              .executeQuery({
+                                query: strQuery,
+                                printQuery: true
+                              })
+                              .then(monthly_leave => {
+                                let result = {
+                                  payment_application_code: payment_application_code
+                                };
+                                // _mysql.commitTransaction(() => {
+                                //   _mysql.releaseConnection();
                                 req.records = result;
                                 next();
+                                // });
+                              })
+                              .catch(error => {
+                                next(error);
                               });
-                            })
-                            .catch(error => {
-                              next(error);
-                            });
+                          }
                         }
                       })
                       .catch(error => {
@@ -494,11 +504,11 @@ export default {
                     let result = {
                       payment_application_code: payment_application_code
                     };
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = result;
-                      next();
-                    });
+                    // _mysql.commitTransaction(() => {
+                    //   _mysql.releaseConnection();
+                    req.records = result;
+                    next();
+                    // });
                   })
                   .catch(error => {
                     next(error);
@@ -545,8 +555,8 @@ export default {
                     let utilized_airticket_amount = 0;
                     let airfare_months = 0;
 
-                    console.log("start_year", start_year)
-                    console.log("end_year", end_year)
+                    // console.log("start_year", start_year)
+                    // console.log("end_year", end_year)
                     if (parseInt(start_year) == parseInt(end_year)) {
 
                       balance_leave_days =
@@ -581,7 +591,7 @@ export default {
                           leave_salary_header.utilized_airticket_amount
                         ) + parseFloat(leave_salary.airfare_amount);
 
-                      console.log("If cond")
+                      // console.log("If cond")
                       _mysql
                         .executeQuery({
                           query:
@@ -623,7 +633,7 @@ export default {
                           next(error);
                         });
                     } else if (parseInt(start_year) != parseInt(end_year)) {
-                      console.log("else Con")
+                      // console.log("else Con")
                       let Start_Date = moment(start_year)
                         .startOf("month")
                         .format("YYYY-MM-DD");
@@ -820,8 +830,8 @@ export default {
             isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool
           };
-          console.log("inputParam.payment_type", inputParam.payment_type)
-          console.log("inputParam.earnings_id", inputParam.earnings_id)
+          // console.log("inputParam.payment_type", inputParam.payment_type)
+          // console.log("inputParam.earnings_id", inputParam.earnings_id)
           if (inputParam.payment_type == "AD") {
             _mysql
               .executeQuery({
@@ -868,7 +878,8 @@ export default {
                 query:
                   "UPDATE `hims_f_leave_encash_header` SET `authorized`='APR'\
                 where hims_f_leave_encash_header_id=?",
-                values: [inputParam.employee_leave_encash_id]
+                values: [inputParam.employee_leave_encash_id],
+                printQuery: true
               })
               .then(EncashResult => {
                 _mysql
@@ -878,32 +889,66 @@ export default {
                 from hims_f_leave_encash_header H,hims_f_leave_encash_detail D,hims_f_employee_monthly_leave M\
                 where H.hims_f_leave_encash_header_id =D.leave_encash_header_id and M.employee_id=H.employee_id and M.`year`=H.`year`and \
                 M.leave_id = D.leave_id and H.hims_f_leave_encash_header_id=?;",
-                    values: [inputParam.employee_leave_encash_id]
+                    values: [inputParam.employee_leave_encash_id],
+
                   })
                   .then(leave_encash_header => {
+                    let strQuery = ""
+                    if (leave_encash_header.length === 0) {
+                      req.records = leave_encash_header;
+                      next();
+                    }
+
                     for (let i = 0; i < leave_encash_header.length; i++) {
-                      _mysql
-                        .executeQuery({
-                          query:
-                            "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
+                      strQuery += _mysql.mysqlQueryFormat(
+                        "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
                       where employee_id=? and `year`=? and leave_id=?;",
-                          values: [
-                            leave_encash_header[i].close_balance,
-                            leave_encash_header[i].employee_id,
-                            leave_encash_header[i].year,
-                            leave_encash_header[i].leave_id
-                          ]
-                        })
-                        .then(monthly_leave => {
-                          _mysql.commitTransaction(() => {
-                            _mysql.releaseConnection();
+                        [
+                          leave_encash_header[i].close_balance,
+                          leave_encash_header[i].employee_id,
+                          leave_encash_header[i].year,
+                          leave_encash_header[i].leave_id
+                        ]
+                      );
+                      if (i === leave_encash_header.length - 1) {
+                        _mysql
+                          .executeQuery({
+                            query: strQuery,
+                            printQuery: true
+                          })
+                          .then(monthly_leave => {
+                            // _mysql.commitTransaction(() => {
+                            //   _mysql.releaseConnection();
                             req.records = monthly_leave;
                             next();
+                            // });
+                          })
+                          .catch(error => {
+                            next(error);
                           });
-                        })
-                        .catch(error => {
-                          next(error);
-                        });
+                      }
+                      // _mysql
+                      //   .executeQuery({
+                      //     query:
+                      //       "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
+                      // where employee_id=? and `year`=? and leave_id=?;",
+                      //     values: [
+                      //       leave_encash_header[i].close_balance,
+                      //       leave_encash_header[i].employee_id,
+                      //       leave_encash_header[i].year,
+                      //       leave_encash_header[i].leave_id
+                      //     ]
+                      //   })
+                      //   .then(monthly_leave => {
+                      //     _mysql.commitTransaction(() => {
+                      //       _mysql.releaseConnection();
+                      //       req.records = monthly_leave;
+                      //       next();
+                      //     });
+                      //   })
+                      //   .catch(error => {
+                      //     next(error);
+                      //   });
                     }
                   })
                   .catch(error => {
@@ -948,11 +993,11 @@ export default {
                 ]
               })
               .then(FinalSettleResult => {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = FinalSettleResult;
-                  next();
-                });
+                // _mysql.commitTransaction(() => {
+                //   _mysql.releaseConnection();
+                req.records = FinalSettleResult;
+                next();
+                // });
               })
               .catch(error => {
                 next(error);
@@ -1327,7 +1372,7 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
-      console.log("generateAccountingEntry")
+      // console.log("generateAccountingEntry")
       let inputParam = req.body;
       let str_bank_qry = "select 1"
       if (inputParam.bank_id !== null) {
@@ -1341,7 +1386,7 @@ export default {
           query:
             "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
             select account, head_id, child_id from finance_accounts_maping \
-              where account in ('SAL_PYBLS', 'LV_SAL_PYBL', 'AIRFR_PYBL', 'GRAT_PYBL');" + str_bank_qry,
+              where account in ('SAL_PYBLS', 'LV_SAL_PYBL', 'AIRFR_PYBL', 'GRAT_PYBL','FIN_STL_PYBL');" + str_bank_qry,
           printQuery: true
         })
         .then(result => {
@@ -1349,6 +1394,7 @@ export default {
           const lv_salary_pay_acc = result[1].find(f => f.account === "LV_SAL_PYBL");
           const airfair_pay_acc = result[1].find(f => f.account === "AIRFR_PYBL");
           const gratuity_pay_acc = result[1].find(f => f.account === "GRAT_PYBL");
+          const fs_pay_acc = result[1].find(f => f.account === "FIN_STL_PYBL");
 
           const org_data = result[0]
           const bank_acc = result[2][0]
@@ -1390,9 +1436,26 @@ export default {
                 where hims_f_end_of_service_id = ?;",
                 [inputParam.employee_end_of_service_id]
               );
+            } else if (inputParam.payment_type === "EN") {
+              strQuery += _mysql.mysqlQueryFormat(
+                "SELECT total_amount as pay_amount,employee_code, full_name, E.hospital_id, L.leave_category \
+                FROM hims_f_leave_encash_header EH \
+                inner join hims_d_employee E on E.hims_d_employee_id = EH.employee_id \
+                inner join hims_d_leave L on L.hims_d_leave_id = EH.leave_id \
+                where hims_f_leave_encash_header_id=?;",
+                [inputParam.employee_leave_encash_id]
+              );
+            } else if (inputParam.payment_type === "FS") {
+              strQuery += _mysql.mysqlQueryFormat(
+                "SELECT total_amount as pay_amount,employee_code, full_name, E.hospital_id\
+                FROM hims_f_final_settlement_header EH \
+                inner join hims_d_employee E on E.hims_d_employee_id = EH.employee_id \
+                where hims_f_final_settlement_header_id=?;",
+                [inputParam.employee_final_settlement_id]
+              );
             }
 
-            console.log("strQuery", strQuery)
+            // console.log("strQuery", strQuery)
             _mysql
               .executeQueryWithTransaction({
                 query: strQuery,
@@ -1413,9 +1476,24 @@ export default {
                 } else if (inputParam.payment_type === "LS") {
                   _header_narattion = "Leave Salary Payment For" + headerResult[0].employee_code
                     + "/" + headerResult[0].full_name;
-                }
-                else if (inputParam.payment_type === "GR") {
+                } else if (inputParam.payment_type === "GR") {
                   _header_narattion = "Gratuity Payment For" + headerResult[0].employee_code
+                    + "/" + headerResult[0].full_name;
+                } else if (inputParam.payment_type === "EN") {
+                  // console.log("headerResult[0].leave_category", headerResult[0].leave_category)
+                  if (headerResult[0].leave_category !== "A") {
+                    // console.log("inside")
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      next();
+                    });
+                    return
+                  }
+                  // console.log("commit")
+                  _header_narattion = "Encashment For" + headerResult[0].employee_code
+                    + "/" + headerResult[0].full_name;
+                } else if (inputParam.payment_type === "FS") {
+                  _header_narattion = "Final Settlement For" + headerResult[0].employee_code
                     + "/" + headerResult[0].full_name;
                 }
 
@@ -1490,7 +1568,7 @@ export default {
                     }
 
                     if (inputParam.payment_type === "LS") {
-                      //Laibility Entry
+                      //Laibility Entry Leave Settlementß
                       if (inputParam.payment_cancel === "Y") {
                         if (parseFloat(headerResult[0].salary_amount) > 0) {
                           //Leave Salary
@@ -1571,7 +1649,7 @@ export default {
                         }
                       }
                     } else if (inputParam.payment_type === "GR") {
-                      //Laibility Entry
+                      //Laibility Entry for Gratuity
                       if (inputParam.payment_cancel === "Y") {
                         if (parseFloat(headerResult[0].pay_amount) > 0) {
                           //Gratuity
@@ -1592,6 +1670,64 @@ export default {
                             payment_date: new Date(),
                             head_id: gratuity_pay_acc.head_id,
                             child_id: gratuity_pay_acc.child_id,
+                            debit_amount: headerResult[0].pay_amount,
+                            payment_type: "DR",
+                            credit_amount: 0,
+                            hospital_id: headerResult[0].hospital_id
+                          });
+                        }
+                      }
+                    } else if (inputParam.payment_type === "EN") {
+                      //Laibility Entry Encashment
+                      if (inputParam.payment_cancel === "Y") {
+                        if (parseFloat(headerResult[0].pay_amount) > 0) {
+                          //Gratuity
+                          insertSubDetail.push({
+                            payment_date: new Date(),
+                            head_id: lv_salary_pay_acc.head_id,
+                            child_id: lv_salary_pay_acc.child_id,
+                            debit_amount: 0,
+                            payment_type: "CR",
+                            credit_amount: headerResult[0].pay_amount,
+                            hospital_id: headerResult[0].hospital_id
+                          });
+                        }
+                      } else {
+                        if (parseFloat(headerResult[0].pay_amount) > 0) {
+                          //Gratuity
+                          insertSubDetail.push({
+                            payment_date: new Date(),
+                            head_id: lv_salary_pay_acc.head_id,
+                            child_id: lv_salary_pay_acc.child_id,
+                            debit_amount: headerResult[0].pay_amount,
+                            payment_type: "DR",
+                            credit_amount: 0,
+                            hospital_id: headerResult[0].hospital_id
+                          });
+                        }
+                      }
+                    } else if (inputParam.payment_type === "FS") {
+                      //Laibility Entry Final Settlement
+                      if (inputParam.payment_cancel === "Y") {
+                        if (parseFloat(headerResult[0].pay_amount) > 0) {
+                          //Final Settlement
+                          insertSubDetail.push({
+                            payment_date: new Date(),
+                            head_id: fs_pay_acc.head_id,
+                            child_id: fs_pay_acc.child_id,
+                            debit_amount: 0,
+                            payment_type: "CR",
+                            credit_amount: headerResult[0].pay_amount,
+                            hospital_id: headerResult[0].hospital_id
+                          });
+                        }
+                      } else {
+                        if (parseFloat(headerResult[0].pay_amount) > 0) {
+                          //Final Settlement
+                          insertSubDetail.push({
+                            payment_date: new Date(),
+                            head_id: fs_pay_acc.head_id,
+                            child_id: fs_pay_acc.child_id,
                             debit_amount: headerResult[0].pay_amount,
                             payment_type: "DR",
                             credit_amount: 0,

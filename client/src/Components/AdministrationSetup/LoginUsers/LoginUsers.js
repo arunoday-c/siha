@@ -18,7 +18,6 @@ import {
 } from "../../../utils/GlobalVariables.json";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import Enumerable from "linq";
-import swal from "sweetalert2";
 import _ from "lodash";
 import { MainContext } from "algaeh-react-components/context";
 import { Button } from "algaeh-react-components";

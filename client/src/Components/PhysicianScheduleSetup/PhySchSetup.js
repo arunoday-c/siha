@@ -310,7 +310,7 @@ class PhySchSetup extends Component {
             });
           }
         });
-      } 
+      }
     });
   }
 
@@ -405,10 +405,17 @@ class PhySchSetup extends Component {
         },
         onSuccess: response => {
           if (response.data.success) {
-            swalMessage({
-              title: "Schedule added successfully . .",
-              type: "success"
-            });
+            if (response.data.records.schedule_exist) {
+              swalMessage({
+                title: response.data.records.message,
+                type: "info"
+              });
+            } else {
+              swalMessage({
+                title: "Schedule added successfully . .",
+                type: "success"
+              });
+            }
             this.getApptSchedule();
           } else if (response.data.success === false) {
             swalMessage({
@@ -738,7 +745,7 @@ class PhySchSetup extends Component {
 
     let header_id = e.currentTarget.getAttribute("header-id");
 
-    const doctors = Enumerable.from(this.state.scheduleListf);
+    // const doctors = Enumerable.from(this.state.scheduleListf);
 
     let docs = Enumerable.from(this.state.scheduleList)
       .where(
@@ -762,7 +769,7 @@ class PhySchSetup extends Component {
         from_break_hr2: docs.work_break2 === "Y" ? docs.from_break_hr2 : null,
         to_break_hr2: docs.work_break2 === "Y" ? docs.to_break_hr2 : null,
         from_work_hr: docs.from_work_hr,
-        sch_slot: docs.doctorsList[0].slot,
+        sch_slot: docs.doctorsList.length ? docs.doctorsList[0].slot : null,
         to_work_hr: docs.to_work_hr,
         work_break1: docs.work_break1,
         work_break2: docs.work_break2,
