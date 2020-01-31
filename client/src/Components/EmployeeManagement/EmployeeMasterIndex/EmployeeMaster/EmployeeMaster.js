@@ -79,92 +79,94 @@ class EmployeeMaster extends Component {
     let IOputs = EmpMasterIOputs.inputParam();
     IOputs.selectedLang = prevLang;
 
-
     const HIMS_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HIMS_CLINICAL"
+      userToken.product_type === "HIMS_CLINICAL"
         ? true
         : false;
     const HRMS_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HRMS" ||
-        userToken.product_type === "HRMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP"
+      userToken.product_type === "HRMS" ||
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP"
         ? true
         : false;
 
-    this.setState({
-      personalDetails: {
-        ...IOputs,
-        ...this.props.employeeDetailsPop
-      },
-      HIMS_Active: HIMS_Active,
-      HRMS_Active: HRMS_Active,
-      hospital_id: userToken.hims_d_hospital_id
-    });
-
-    if (
-      this.props.subdepartment === undefined ||
-      this.props.subdepartment.length === 0
-    ) {
-      this.props.getSubDepartment({
-        uri: "/department/get/subdepartment",
-        module: "masterSettings",
-        data: {
-          sub_department_status: "A"
+    this.setState(
+      {
+        personalDetails: {
+          ...IOputs,
+          ...this.props.employeeDetailsPop
         },
-        method: "GET",
-        redux: {
-          type: "SUB_DEPT_GET_DATA",
-          mappingName: "subdepartment"
+        HIMS_Active: HIMS_Active,
+        HRMS_Active: HRMS_Active,
+        hospital_id: userToken.hims_d_hospital_id
+      },
+      () => {
+        if (
+          this.props.subdepartment === undefined ||
+          this.props.subdepartment.length === 0
+        ) {
+          this.props.getSubDepartment({
+            uri: "/department/get/subdepartment",
+            module: "masterSettings",
+            data: {
+              sub_department_status: "A"
+            },
+            method: "GET",
+            redux: {
+              type: "SUB_DEPT_GET_DATA",
+              mappingName: "subdepartment"
+            }
+          });
         }
-      });
-    }
 
-    if (this.state.HIMS_Active === true) {
-      if (
-        this.props.empservicetype === undefined ||
-        this.props.empservicetype.length === 0
-      ) {
-        this.props.getServiceTypes({
-          uri: "/serviceType",
-          module: "masterSettings",
-          method: "GET",
-          redux: {
-            type: "SERVIES_TYPES_GET_DATA",
-            mappingName: "empservicetype"
+        if (this.state.HIMS_Active === true) {
+          if (
+            this.props.empservicetype === undefined ||
+            this.props.empservicetype.length === 0
+          ) {
+            this.props.getServiceTypes({
+              uri: "/serviceType",
+              module: "masterSettings",
+              method: "GET",
+              redux: {
+                type: "SERVIES_TYPES_GET_DATA",
+                mappingName: "empservicetype"
+              }
+            });
           }
-        });
-      }
-      if (
-        this.props.empservices === undefined ||
-        this.props.empservices.length === 0
-      ) {
-        this.props.getServices({
-          uri: "/serviceType/getService",
-          module: "masterSettings",
-          method: "GET",
-          redux: {
-            type: "SERVICES_GET_DATA",
-            mappingName: "empservices"
+          if (
+            this.props.empservices === undefined ||
+            this.props.empservices.length === 0
+          ) {
+            this.props.getServices({
+              uri: "/serviceType/getService",
+              module: "masterSettings",
+              method: "GET",
+              redux: {
+                type: "SERVICES_GET_DATA",
+                mappingName: "empservices"
+              }
+            });
           }
-        });
-      }
-    }
-
-    if (
-      this.props.countries === undefined ||
-      this.props.countries.length === 0
-    ) {
-      this.props.getCountries({
-        uri: "/masters/get/countryStateCity",
-        method: "GET",
-        redux: {
-          type: "CTRY_GET_DATA",
-          mappingName: "countries"
         }
-      });
-    }
+
+        if (
+          this.props.countries === undefined ||
+          this.props.countries.length === 0
+        ) {
+          this.props.getCountries({
+            uri: "/masters/get/countryStateCity",
+            method: "GET",
+            redux: {
+              type: "CTRY_GET_DATA",
+              mappingName: "countries"
+            }
+          });
+        }
+      }
+    );
   }
 
   UNSAFE_componentWillReceiveProps(newProps) {
@@ -397,36 +399,36 @@ class EmployeeMaster extends Component {
                     ) : null}
                   </ul>
                 ) : (
-                    <ul className="nav">
-                      <li
-                        algaehtabs={"PersonalDetails"}
-                        className={"nav-item tab-button active"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "personal_details"
-                            }}
-                          />
-                        }
-                      </li>
+                  <ul className="nav">
+                    <li
+                      algaehtabs={"PersonalDetails"}
+                      className={"nav-item tab-button active"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "personal_details"
+                          }}
+                        />
+                      }
+                    </li>
 
-                      <li
-                        algaehtabs={"OfficalDetails"}
-                        className={"nav-item tab-button"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Official Details"
-                            }}
-                          />
-                        }
-                      </li>
+                    <li
+                      algaehtabs={"OfficalDetails"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Official Details"
+                          }}
+                        />
+                      }
+                    </li>
 
-                      {/*<li
+                    {/*<li
                       algaehtabs={"DeptUserDetails"}
                       className={"nav-item tab-button disableLi"}
                       onClick={this.openTab.bind(this)}
@@ -439,69 +441,69 @@ class EmployeeMaster extends Component {
                         />
                       }
                     </li>*/}
-                      {this.state.HRMS_Active === true ? (
-                        <li
-                          algaehtabs={"PayRollDetails"}
-                          className={"nav-item tab-button disableLi"}
-                          onClick={this.openTab.bind(this)}
-                        >
-                          {
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Payroll Details"
-                              }}
-                            />
-                          }
-                        </li>
-                      ) : null}
-                      {this.state.isdoctor === "Y" ? (
-                        <li
-                          algaehtabs={"CommissionSetup"}
-                          className={"nav-item tab-button disableLi"}
-                          onClick={this.openTab.bind(this)}
-                        >
-                          {
-                            <AlgaehLabel
-                              label={{
-                                fieldName: "commission_setup"
-                              }}
-                            />
-                          }
-                        </li>
-                      ) : null}
-                      {this.state.HRMS_Active === true ? (
-                        <li
-                          algaehtabs={"FamilyAndIdentification"}
-                          className={"nav-item tab-button disableLi"}
-                          onClick={this.openTab.bind(this)}
-                        >
-                          {
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Family & Identification Details"
-                              }}
-                            />
-                          }
-                        </li>
-                      ) : null}
+                    {this.state.HRMS_Active === true ? (
+                      <li
+                        algaehtabs={"PayRollDetails"}
+                        className={"nav-item tab-button disableLi"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Payroll Details"
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
+                    {this.state.isdoctor === "Y" ? (
+                      <li
+                        algaehtabs={"CommissionSetup"}
+                        className={"nav-item tab-button disableLi"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "commission_setup"
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
+                    {this.state.HRMS_Active === true ? (
+                      <li
+                        algaehtabs={"FamilyAndIdentification"}
+                        className={"nav-item tab-button disableLi"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Family & Identification Details"
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
 
-                      {this.state.HRMS_Active === true ? (
-                        <li
-                          algaehtabs={"RulesDetails"}
-                          className={"nav-item tab-button disableLi"}
-                          onClick={this.openTab.bind(this)}
-                        >
-                          {
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Rules Details"
-                              }}
-                            />
-                          }
-                        </li>
-                      ) : null}
-                    </ul>
-                  )}
+                    {this.state.HRMS_Active === true ? (
+                      <li
+                        algaehtabs={"RulesDetails"}
+                        className={"nav-item tab-button disableLi"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Rules Details"
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
+                  </ul>
+                )}
               </div>
               {/* <MyContext.Provider
                   value={{
@@ -546,11 +548,11 @@ class EmployeeMaster extends Component {
                       }
                     >
                       {this.state.personalDetails.hims_d_employee_id ===
-                        null ? (
-                          <AlgaehLabel label={{ fieldName: "btnSave" }} />
-                        ) : (
-                          <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                        )}
+                      null ? (
+                        <AlgaehLabel label={{ fieldName: "btnSave" }} />
+                      ) : (
+                        <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                      )}
                     </button>
                     <button
                       onClick={e => {
