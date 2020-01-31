@@ -94,10 +94,10 @@ class ConsumptionEntry extends Component {
     const from_location_name =
       this.state.from_location_id !== null
         ? _.filter(this.props.userwiselocations, f => {
-          return (
-            f.hims_d_pharmacy_location_id === this.state.from_location_id
-          );
-        })
+            return (
+              f.hims_d_pharmacy_location_id === this.state.from_location_id
+            );
+          })
         : [];
 
     return (
@@ -157,8 +157,8 @@ class ConsumptionEntry extends Component {
                   <h6>
                     {this.state.consumption_date
                       ? moment(this.state.consumption_date).format(
-                        Options.dateFormat
-                      )
+                          Options.dateFormat
+                        )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -204,8 +204,8 @@ class ConsumptionEntry extends Component {
                       ? this.state.location_type === "WH"
                         ? "Warehouse"
                         : this.state.location_type === "MS"
-                          ? "Main Store"
-                          : "Sub Store"
+                        ? "Main Store"
+                        : "Sub Store"
                       : "Location Type"}
                   </h6>
                 </div>
@@ -277,8 +277,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ConsumptionEntry)
+  connect(mapStateToProps, mapDispatchToProps)(ConsumptionEntry)
 );

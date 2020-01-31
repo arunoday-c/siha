@@ -32,12 +32,10 @@ class NewInvestigation extends PureComponent {
       InvestigationtypeEnable: false
     };
   }
-  UNSAFE_componentWillMount() {
-    let IOputs = InvestigationIOputs.inputParam();
-    this.setState({ ...this.state, ...IOputs });
-  }
 
   componentDidMount() {
+    let IOputs = InvestigationIOputs.inputParam();
+    this.setState({ ...this.state, ...IOputs });
     if (
       this.props.ingservices === undefined ||
       this.props.ingservices.length === 0
@@ -54,17 +52,39 @@ class NewInvestigation extends PureComponent {
     }
   }
 
-  UNSAFE_componentWillReceiveProps(newProps) {
-    if (newProps.InvestigationPop.hims_d_investigation_test_id !== undefined) {
-      let IOputs = newProps.InvestigationPop;
-      IOputs.InvestigationtypeEnable = true;
-      this.setState({ ...this.state, ...IOputs });
+  static getDerivedStateFromProps(props, state) {
+    if (
+      props.InvestigationPop.hims_d_investigation_test_id ==
+      state.hims_d_investigation_test_id
+    ) {
+      return null;
     } else {
-      let IOputs = InvestigationIOputs.inputParam();
-      IOputs.InvestigationtypeEnable = false;
-      this.setState({ ...this.state, ...IOputs });
+      if (
+        props.InvestigationPop.hims_d_investigation_test_id != undefined &&
+        props.open
+      ) {
+        let IOputs = props.InvestigationPop;
+        IOputs.InvestigationtypeEnable = true;
+        return { ...state, ...IOputs };
+      } else {
+        let IOputs = InvestigationIOputs.inputParam();
+        IOputs.InvestigationtypeEnable = false;
+        return { ...state, ...IOputs };
+      }
     }
   }
+
+  // UNSAFE_componentWillReceiveProps(newProps) {
+  //   if (newProps.InvestigationPop.hims_d_investigation_test_id !== undefined) {
+  //     let IOputs = newProps.InvestigationPop;
+  //     IOputs.InvestigationtypeEnable = true;
+  //     this.setState({ ...this.state, ...IOputs });
+  //   } else {
+  //     let IOputs = InvestigationIOputs.inputParam();
+  //     IOputs.InvestigationtypeEnable = false;
+  //     this.setState({ ...this.state, ...IOputs });
+  //   }
+  // }
 
   onClose = e => {
     let IOputs = InvestigationIOputs.inputParam();
@@ -281,7 +301,6 @@ class NewInvestigation extends PureComponent {
                     {/* <LabInvestigation /> */}
                   </div>
                   <div className="col-8 popRightDiv">
-                    {" "}
                     <MyContext.Provider
                       value={{
                         state: this.state,

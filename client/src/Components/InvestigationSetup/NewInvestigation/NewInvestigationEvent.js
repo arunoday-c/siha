@@ -20,15 +20,17 @@ const texthandle = ($this, ctrl, e) => {
     });
   }
   if (name === "investigation_type") {
-    $this.props.getTestCategory({
-      uri: "/labmasters/selectTestCategory",
-      module: "laboratory",
-      method: "GET",
-      data: { investigation_type: value },
-      redux: {
-        type: "TESTCATEGORY_GET_DATA",
-        mappingName: "testcategory"
-      }
+    $this.setState({ [name]: value }, () => {
+      $this.props.getTestCategory({
+        uri: "/labmasters/selectTestCategory",
+        module: "laboratory",
+        method: "GET",
+        data: { investigation_type: value },
+        redux: {
+          type: "TESTCATEGORY_GET_DATA",
+          mappingName: "testcategory"
+        }
+      });
     });
   }
 };

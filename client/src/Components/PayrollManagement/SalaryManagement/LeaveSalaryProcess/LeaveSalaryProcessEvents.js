@@ -1,5 +1,9 @@
 import Enumerable from "linq";
-import { swalMessage, algaehApiCall, getCookie } from "../../../../utils/algaehApiCall.js";
+import {
+  swalMessage,
+  algaehApiCall,
+  getCookie
+} from "../../../../utils/algaehApiCall.js";
 // import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
@@ -240,7 +244,8 @@ const LeaveSalProcess = $this => {
 const SaveLeaveSalary = $this => {
   AlgaehLoader({ show: true });
   let inputObj = $this.state;
-  inputObj.annual_leave_calculation = $this.state.hrms_options.annual_leave_calculation;
+  inputObj.annual_leave_calculation =
+    $this.state.hrms_options.annual_leave_calculation;
 
   inputObj.salary_end_date = moment($this.state.leave_salary_detail[0].end_date)
     .endOf("month")
@@ -260,7 +265,7 @@ const SaveLeaveSalary = $this => {
       $this.state.hrms_options.at_end_date;
   }
 
-  inputObj.ScreenCode = getCookie("ScreenCode")
+  inputObj.ScreenCode = getCookie("ScreenCode");
 
   algaehApiCall({
     uri: "/leavesalaryprocess/InsertLeaveSalary",
@@ -481,8 +486,7 @@ const eventHandaler = ($this, e) => {
   );
 };
 
-
-const getHrmsOptions = ($this) => {
+const getHrmsOptions = $this => {
   algaehApiCall({
     uri: "/payrollOptions/getHrmsOptions",
     method: "GET",

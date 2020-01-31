@@ -97,8 +97,8 @@ class ItemListsReturn extends Component {
                             this.props.salesitemlist === undefined
                               ? []
                               : this.props.salesitemlist.filter(
-                                f => f.hims_d_item_master_id === row.item_id
-                              );
+                                  f => f.hims_d_item_master_id === row.item_id
+                                );
 
                           return (
                             <span>
@@ -113,8 +113,8 @@ class ItemListsReturn extends Component {
                             this.props.salesitemlist === undefined
                               ? []
                               : this.props.salesitemlist.filter(
-                                f => f.hims_d_item_master_id === row.item_id
-                              );
+                                  f => f.hims_d_item_master_id === row.item_id
+                                );
 
                           return (
                             <span>
@@ -212,7 +212,7 @@ class ItemListsReturn extends Component {
                                   disabled:
                                     this.state
                                       .hims_f_pharmcy_sales_return_header_id !==
-                                      null
+                                    null
                                       ? true
                                       : false,
                                   onBlur: makeZeroIngrid.bind(
@@ -238,8 +238,8 @@ class ItemListsReturn extends Component {
                             this.props.itemuom === undefined
                               ? []
                               : this.props.itemuom.filter(
-                                f => f.hims_d_pharmacy_uom_id === row.uom_id
-                              );
+                                  f => f.hims_d_pharmacy_uom_id === row.uom_id
+                                );
 
                           return (
                             <span>
@@ -254,8 +254,8 @@ class ItemListsReturn extends Component {
                             this.props.itemuom === undefined
                               ? []
                               : this.props.itemuom.filter(
-                                f => f.hims_d_pharmacy_uom_id === row.uom_id
-                              );
+                                  f => f.hims_d_pharmacy_uom_id === row.uom_id
+                                );
 
                           return (
                             <span>
@@ -662,8 +662,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ItemListsReturn)
+  connect(mapStateToProps, mapDispatchToProps)(ItemListsReturn)
 );

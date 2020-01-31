@@ -62,7 +62,6 @@ class InvConsumptionEntry extends Component {
       });
     }
 
-
     this.props.getUserLocationPermission({
       uri: "/inventoryGlobal/getUserLocationPermission",
       module: "inventory",
@@ -76,7 +75,6 @@ class InvConsumptionEntry extends Component {
         mappingName: "invuserwiselocations"
       }
     });
-
 
     if (
       this.props.consumption_number !== undefined &&
@@ -107,10 +105,10 @@ class InvConsumptionEntry extends Component {
     const from_location_name =
       this.state.from_location_id !== null
         ? _.filter(this.props.invuserwiselocations, f => {
-          return (
-            f.hims_d_inventory_location_id === this.state.from_location_id
-          );
-        })
+            return (
+              f.hims_d_inventory_location_id === this.state.from_location_id
+            );
+          })
         : [];
 
     return (
@@ -170,8 +168,8 @@ class InvConsumptionEntry extends Component {
                   <h6>
                     {this.state.consumption_date
                       ? moment(this.state.consumption_date).format(
-                        Options.dateFormat
-                      )
+                          Options.dateFormat
+                        )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -180,19 +178,19 @@ class InvConsumptionEntry extends Component {
             printArea={
               this.state.hims_f_inventory_consumption_header_id !== null
                 ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          ConsumptionItemsEvents().generateConsumptionRecpt(
-                            this.state.consumption_number
-                          );
+                    menuitems: [
+                      {
+                        label: "Print Receipt",
+                        events: {
+                          onClick: () => {
+                            ConsumptionItemsEvents().generateConsumptionRecpt(
+                              this.state.consumption_number
+                            );
+                          }
                         }
                       }
-                    }
-                  ]
-                }
+                    ]
+                  }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -235,8 +233,8 @@ class InvConsumptionEntry extends Component {
                       ? this.state.location_type === "WH"
                         ? "Warehouse"
                         : this.state.location_type === "MS"
-                          ? "Main Store"
-                          : "Sub Store"
+                        ? "Main Store"
+                        : "Sub Store"
                       : "Location Type"}
                   </h6>
                 </div>
@@ -312,8 +310,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(InvConsumptionEntry)
+  connect(mapStateToProps, mapDispatchToProps)(InvConsumptionEntry)
 );

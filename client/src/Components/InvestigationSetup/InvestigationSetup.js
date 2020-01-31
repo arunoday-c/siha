@@ -131,14 +131,15 @@ class InvestigationSetup extends Component {
   }
 
   OpenComments(row) {
-
     algaehApiCall({
       uri: "/investigation/getTestComments",
       module: "laboratory",
-      data: { investigation_test_id: row.hims_d_investigation_test_id, comment_status: "A" },
+      data: {
+        investigation_test_id: row.hims_d_investigation_test_id,
+        comment_status: "A"
+      },
       method: "GET",
       onSuccess: response => {
-
         if (response.data.success === true) {
           this.setState({
             isCommentsOpen: !this.state.isCommentsOpen,
@@ -226,19 +227,22 @@ class InvestigationSetup extends Component {
               >
                 <i className="fas fa-plus" />
               </a>
-              <NewInvestigation
-                HeaderCaption={
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "investigation_setup",
-                      align: "ltr"
-                    }}
-                  />
-                }
-                open={this.state.isOpen}
-                onClose={this.CloseModel.bind(this)}
-                InvestigationPop={this.state.InvestigationPop}
-              />
+              {this.state.isOpen ? (
+                <NewInvestigation
+                  key={"unique"}
+                  HeaderCaption={
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "investigation_setup",
+                        align: "ltr"
+                      }}
+                    />
+                  }
+                  open={this.state.isOpen}
+                  onClose={this.CloseModel.bind(this)}
+                  InvestigationPop={this.state.InvestigationPop}
+                />
+              ) : null}
 
               <InvestigationComments
                 HeaderCaption={
@@ -325,9 +329,9 @@ class InvestigationSetup extends Component {
                           this.props.invtestcategory === undefined
                             ? []
                             : this.props.invtestcategory.filter(
-                              f =>
-                                f.hims_d_test_category_id === row.category_id
-                            );
+                                f =>
+                                  f.hims_d_test_category_id === row.category_id
+                              );
 
                         return (
                           <span>
@@ -350,9 +354,9 @@ class InvestigationSetup extends Component {
                           this.props.labspecimen === undefined
                             ? []
                             : this.props.labspecimen.filter(
-                              f =>
-                                f.hims_d_lab_specimen_id === row.specimen_id
-                            );
+                                f =>
+                                  f.hims_d_lab_specimen_id === row.specimen_id
+                              );
 
                         return (
                           <span>
