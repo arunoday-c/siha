@@ -25,7 +25,7 @@ class AnalytesRange extends PureComponent {
     if (
       (this.props.active &&
         this.props.active.hims_d_lab_analytes_id !==
-          prevProps.active.hims_d_lab_analytes_id) ||
+        prevProps.active.hims_d_lab_analytes_id) ||
       this.state.refresh
     ) {
       const { hims_d_lab_analytes_id } = this.props.active;
@@ -192,7 +192,7 @@ class AnalytesRange extends PureComponent {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: variableJson.EMP_FORMAT_GENDER
+                                  data: variableJson.LEAVE_GENDER
                                 },
                                 onChange: e => this.handleChange(row, e)
                               }}
@@ -443,7 +443,7 @@ class AnalytesRange extends PureComponent {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: this.deleteAnalyte,
-                      onEdit: row => {},
+                      onEdit: row => { },
                       onDone: this.updateAnalyte
                     }}
                   />

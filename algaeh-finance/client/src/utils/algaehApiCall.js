@@ -5,7 +5,7 @@ import swal from "sweetalert2";
 import Agent from "agentkeepalive";
 import config from "../utils/config.json";
 import axiosCancel from "axios-cancel";
-// import AlgaehLoader from "../Components/Wrapper/fullPageLoader.js";
+import AlgaehLoader from "../Wrappers/fullPageLoader.js";
 import {
   encrypter,
   AlgaehCloseContainer,
@@ -61,7 +61,8 @@ export function algaehApiCall(options) {
         printInput: false,
         isfetch: false,
         cancelRequestId: null,
-        module: null
+        module: null,
+        skipParse: false
       },
       options
     );
@@ -105,31 +106,30 @@ export function algaehApiCall(options) {
 
     let queryParametres = "";
 
-    settings.data = JSON.parse(
-      JSON.stringify(settings.data, function(k, v) {
-        return v === undefined ? null : v;
-      }),
-      valueReviver
-    );
+    if (settings.skipParse === false) {
+      settings.data = JSON.parse(
+        JSON.stringify(settings.data, function(k, v) {
+          return v === undefined ? null : v;
+        }),
+        valueReviver
+      );
+    }
 
     if (String(settings.method).toUpperCase() === "GET") {
       let str = [];
-      if (settings.data !== undefined && settings.data !== null) {
-        Object.keys(settings.data).forEach(p => {
-          if (settings.data.hasOwnProperty(p)) {
-            if (settings.data[p] !== undefined) {
-              let _newData = settings.data[p];
-              if (typeof _newData === "object") {
-                _newData = JSON.stringify(_newData);
-              }
-              str.push(
-                encodeURIComponent(p) + "=" + encodeURIComponent(_newData)
-              );
+      for (let p in settings.data) {
+        if (settings.data.hasOwnProperty(p)) {
+          if (settings.data[p] !== undefined) {
+            let _newData = settings.data[p];
+            if (typeof _newData === "object") {
+              _newData = JSON.stringify(_newData);
             }
+            str.push(
+              encodeURIComponent(p) + "=" + encodeURIComponent(_newData)
+            );
           }
-        });
+        }
       }
-
       settings.data = {};
       queryParametres = "?" + str.join("&");
       if (settings.printInput) {
@@ -201,7 +201,6 @@ export function algaehApiCall(options) {
               timeout: settings.timeout !== undefined ? settings.timeout : 60000
             }
           : {};
-
       axios({
         method: settings.method,
         url: settings.baseUrl + settings.uri + queryParametres,
@@ -227,11 +226,7 @@ export function algaehApiCall(options) {
             settings.onSuccess(response);
         })
         .catch(err => {
-          // AlgaehLoader({ show: false });
-          if (typeof settings.onCatch === "function") {
-            settings.onCatch(err);
-            return;
-          }
+          AlgaehLoader({ show: false });
           if (!showOtherPopup) {
             return;
           }
@@ -343,6 +338,10 @@ export function algaehApiCall(options) {
               }
             }
           }
+
+          if (typeof settings.onCatch === "function") {
+            settings.onCatch(err);
+          }
         });
     }
   });
@@ -397,7 +396,8 @@ export function reLoginPopup({ message, username }) {
               const { success, records, message } = response.data;
               if (success === true) {
                 setCookie("userName", records.user_display_name);
-                setCookie("keyResources", records.keyResources, 30);
+                // setCookie("keyResources", records.keyResources, 30);
+                setCookie("authToken", records.token);
                 sessionStorage.setItem(
                   "keyData",
                   AlgaehCloseContainer(JSON.stringify(records.keyData))
@@ -445,7 +445,7 @@ export function swalMessage(options) {
     }
   }
 
-  toast.fire({ type: settings.type, title: title });
+  toast({ type: settings.type, title: title });
 }
 
 export function cancelRequest(requestId) {
@@ -530,8 +530,7 @@ export function valueReviver(key, value) {
 
   return value;
 }
-
-function getLocalIP(callback) {
+export function getLocalIP(callback) {
   const identity = window.localStorage.getItem("identity");
   if (identity === null) {
     const generator = new IDGenerator();
@@ -543,6 +542,17 @@ function getLocalIP(callback) {
   }
 }
 
+export function getNewLocalIp() {
+  const identity = window.localStorage.getItem("identity");
+  if (identity === null) {
+    const generator = new IDGenerator();
+    const _IdGen = generator.generate();
+    window.localStorage.setItem("identity", AlgaehCloseContainer(_IdGen));
+    return _IdGen;
+  } else {
+    return AlgaehOpenContainer(identity);
+  }
+}
 // if (window.myIP !== undefined && window.myIP !== "") {
 //   callback(window.myIP);
 //   return;
@@ -591,17 +601,7 @@ function getLocalIP(callback) {
 //     callback(_IdGen);
 //   });
 
-export function getIdentity() {
-  const identity = window.localStorage.getItem("identity");
-  if (identity) {
-    const result = AlgaehOpenContainer(identity);
-    return result;
-  } else {
-    return "";
-  }
-}
-
-export function IDGenerator() {
+function IDGenerator() {
   this.length = 9;
   this.timestamp = +new Date();
 
