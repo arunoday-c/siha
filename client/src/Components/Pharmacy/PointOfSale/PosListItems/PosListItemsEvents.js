@@ -743,6 +743,11 @@ const AddItems = ($this, context) => {
                   sum_data.saveEnable = true;
                   sum_data.postEnable = false;
                   sum_data.hims_f_pharmacy_pos_detail_id = null;
+                  if ($this.state.default_pay_type === "CD") {
+                    sum_data.card_amount = sum_data.receiveable_amount
+                    sum_data.cash_amount = 0
+                  }
+
                   if (context !== null) {
                     context.updateState({ ...sum_data });
                   }
@@ -903,6 +908,11 @@ const deletePosDetail = ($this, context, row) => {
           data.saveEnable = false;
           data.postEnable = false;
 
+          if ($this.state.default_pay_type === "CD") {
+            data.card_amount = data.receiveable_amount
+            data.cash_amount = 0
+          }
+
           if (context !== null) {
             context.updateState({ ...data });
           }
@@ -955,6 +965,11 @@ const updatePosDetail = ($this, context) => {
           data.sec_copay_amount || $this.state.sec_copay_amount;
         data.addItemButton = false;
         data.saveEnable = false;
+
+        if ($this.state.default_pay_type === "CD") {
+          data.card_amount = data.receiveable_amount
+          data.cash_amount = 0
+        }
 
         if (context !== null) {
           context.updateState({ ...data });
@@ -1092,6 +1107,12 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
               data_billing.copay_amount = data_billing.copay_amount;
               data_billing.sec_copay_amount = data_billing.sec_copay_amount;
               data_billing.addItemButton = false;
+
+              if ($this.state.default_pay_type === "CD") {
+                data_billing.card_amount = data_billing.receiveable_amount
+                data_billing.cash_amount = 0
+              }
+
               // data_billing.saveEnable = false;
               if (context !== null) {
                 context.updateState({
@@ -1200,6 +1221,11 @@ const PosheaderCalculation = ($this, context) => {
           data.sec_copay_amount || $this.state.sec_copay_amount;
         data.addItemButton = false;
         data.saveEnable = false;
+
+        if ($this.state.default_pay_type === "CD") {
+          data.card_amount = data.receiveable_amount
+          data.cash_amount = 0
+        }
 
         // data.credit_amount = ItemInput.credit_amount;
         // data.advance_adjust = ItemInput.advance_adjust;

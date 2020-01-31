@@ -470,6 +470,7 @@ const generateBillDetails = ($this, context) => {
 
   AlgaehLoader({ show: true });
 
+  debugger
   algaehApiCall({
     uri: "/billing/getBillDetails",
     module: "billing",
@@ -477,8 +478,11 @@ const generateBillDetails = ($this, context) => {
     data: serviceInput,
     onSuccess: response => {
       if (response.data.success) {
+        debugger
         response.data.records.follow_up = FollowUp;
         response.data.records.existing_treat = zeroBill;
+
+
         if (context !== null) {
           context.updateState({ ...response.data.records });
         }
@@ -490,6 +494,14 @@ const generateBillDetails = ($this, context) => {
           data: response.data.records,
           onSuccess: response => {
             if (response.data.success) {
+              if ($this.state.default_pay_type === "CD") {
+                response.data.records.card_amount = response.data.records.receiveable_amount
+                response.data.records.cash_amount = 0
+              }
+              // response.data.records.Cashchecked =
+              //   $this.state.default_pay_type.default_pay_type === "CH" ? true : false
+              // response.data.records.Cardchecked =
+              //   $this.state.default_pay_type.default_pay_type === "CD" ? true : false
               if (context !== null) {
                 context.updateState({ ...response.data.records });
               }

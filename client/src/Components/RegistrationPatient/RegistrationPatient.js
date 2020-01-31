@@ -75,18 +75,28 @@ class RegistrationPatient extends Component {
   }
   static contextType = MainContext;
   UNSAFE_componentWillMount() {
+    debugger
+    const userToken = this.context.userToken;
     let IOputs = emptyObject;
+    IOputs.employee_id_required = userToken.requied_emp_id
+    IOputs.hospital_id = userToken.hims_d_hospital_id
+    IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false
+    IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false
+    IOputs.default_pay_type = userToken.default_pay_type
+
     this.setState(IOputs);
     setGlobal({ selectedLang: "en" });
   }
 
   componentDidMount() {
-    const userToken = this.context.userToken;
-    // this.employee_id_required = userToken.requied_emp_id;
-    this.setState({
-      employee_id_required: userToken.requied_emp_id,
-      hospital_id: userToken.hims_d_hospital_id
-    });
+    // const userToken = this.context.userToken;
+    // debugger
+    // this.setState({
+    //   employee_id_required: userToken.requied_emp_id,
+    //   hospital_id: userToken.hims_d_hospital_id,
+    //   Cashchecked: userToken.default_pay_type === "CH" ? true : false,
+    //   Cardchecked: userToken.default_pay_type === "CD" ? true : false
+    // });
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
 
@@ -826,6 +836,7 @@ class RegistrationPatient extends Component {
             value={{
               state: this.state,
               updateState: obj => {
+                debugger
                 this.setState({ ...obj });
               }
             }}

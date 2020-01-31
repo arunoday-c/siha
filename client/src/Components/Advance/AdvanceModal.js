@@ -40,26 +40,52 @@ import {
 } from "../../utils/algaehApiCall.js";
 import { AlgaehActions } from "../../actions/algaehActions";
 import MyContext from "../../utils/MyContext";
+import { MainContext } from "algaeh-react-components/context";
 
 class AddAdvanceModal extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
   }
+  static contextType = MainContext;
+
   UNSAFE_componentWillMount() {
     let IOputs = AdvRefunIOputs.inputParam();
+
+    const userToken = this.context.userToken;
+
+    IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false
+    IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false
+    IOputs.default_pay_type = userToken.default_pay_type
+
     this.setState(IOputs);
   }
 
   UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.PackageAdvance === undefined) {
+      debugger
+      let Cashchecked = false
+      let Cardchecked = false
+      let cash_amount = 0
+      if (newProps.inputsparameters.transaction_type === "RF") {
+        Cashchecked = true;
+        Cardchecked = false;
+        cash_amount = newProps.inputsparameters.advance_amount;
+      } else {
+        Cashchecked = this.state.default_pay_type === "CH" ? true : false
+        Cardchecked = this.state.default_pay_type === "CD" ? true : false
+      }
       let lang_sets = "en_comp";
       if (Window.global.selectedLang === "ar") {
         lang_sets = "ar_comp";
       }
       this.setState({
         selectedLang: Window.global.selectedLang,
-        lang_sets: lang_sets
+        lang_sets: lang_sets,
+        Cashchecked: Cashchecked,
+        Cardchecked: Cardchecked,
+        cash_amount: cash_amount,
+        total_amount: cash_amount
       });
     }
   }
@@ -361,8 +387,8 @@ class AddAdvanceModal extends PureComponent {
                         <h6>
                           {this.props.inputsparameters.collect_advance
                             ? GetAmountFormart(
-                                this.props.inputsparameters.collect_advance
-                              )
+                              this.props.inputsparameters.collect_advance
+                            )
                             : GetAmountFormart("0")}
                         </h6>
                       </div>
@@ -404,6 +430,7 @@ class AddAdvanceModal extends PureComponent {
                           name="Pay by Cash"
                           checked={this.state.Cashchecked}
                           onChange={checkcashhandaler.bind(this, this)}
+                          disabled={this.props.inputsparameters.transaction_type === "RF" ? true : false}
                         />
 
                         <span style={{ fontSize: "0.8rem" }}>
@@ -642,8 +669,8 @@ class AddAdvanceModal extends PureComponent {
                       <h6>
                         {this.props.inputsparameters.advance_amount
                           ? GetAmountFormart(
-                              this.props.inputsparameters.advance_amount
-                            )
+                            this.props.inputsparameters.advance_amount
+                          )
                           : GetAmountFormart("0")}
                       </h6>
                     </div>

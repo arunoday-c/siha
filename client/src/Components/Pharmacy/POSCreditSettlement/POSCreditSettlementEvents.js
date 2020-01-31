@@ -22,16 +22,28 @@ const PatientSearch = ($this, e) => {
     },
 
     onRowSelect: row => {
-      $this.setState(
-        {
-          patient_code: row.patient_code,
-          patient_id: row.hims_d_patient_id,
-          full_name: row.full_name
-        },
-        () => {
-          getPatientDetails($this);
-        }
-      );
+      let IOputs = extend(SettlementIOputs.inputParam());
+      IOputs.patient_code = row.patient_code
+      IOputs.patient_id = row.hims_d_patient_id
+      IOputs.full_name = row.full_name
+      IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false
+      IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false
+
+      $this.setState({ ...$this.state, ...IOputs }, () => {
+        getCashiersAndShiftMAP($this);
+        getPatientDetails($this);
+      });
+
+      // $this.setState(
+      //   {
+      //     patient_code: row.patient_code,
+      //     patient_id: row.hims_d_patient_id,
+      //     full_name: row.full_name
+      //   },
+      //   () => {
+      //     getPatientDetails($this);
+      //   }
+      // );
     }
   });
 };
@@ -86,7 +98,9 @@ const ClearData = ($this, e) => {
 
       let IOputs = extend(SettlementIOputs.inputParam());
 
-      IOputs.counter_id = counter_id;
+      // IOputs.counter_id = counter_id;
+      IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false
+      IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false
       $this.setState({ ...$this.state, ...IOputs }, () => {
         getCashiersAndShiftMAP($this);
       });
@@ -97,54 +111,55 @@ const ClearData = ($this, e) => {
 const Validations = $this => {
   let isError = false;
 
-  if ($this.state.card_amount > 0) {
-    if ($this.state.card_number === null || $this.state.card_number === "") {
-      isError = true;
-      swalMessage({
-        type: "warning",
-        title: "Invalid. Card Number cannot be blank."
-      });
+  // if ($this.state.card_amount > 0) {
+  //   if ($this.state.card_number === null || $this.state.card_number === "") {
+  //     isError = true;
+  //     swalMessage({
+  //       type: "warning",
+  //       title: "Invalid. Card Number cannot be blank."
+  //     });
 
-      document.querySelector("[name='card_check_number']").focus();
-      return isError;
-    }
+  //     document.querySelector("[name='card_check_number']").focus();
+  //     return isError;
+  //   }
 
-    if ($this.state.card_date === null || $this.state.card_date === "") {
-      isError = true;
-      swalMessage({
-        type: "warning",
-        title: "Invalid. Card Date Cannot be blank."
-      });
+  //   if ($this.state.card_date === null || $this.state.card_date === "") {
+  //     isError = true;
+  //     swalMessage({
+  //       type: "warning",
+  //       title: "Invalid. Card Date Cannot be blank."
+  //     });
 
-      document.querySelector("[name='card_date']").focus();
-      return isError;
-    }
-  } else if ($this.state.cheque_amount > 0) {
-    if (
-      $this.state.cheque_number === null ||
-      $this.state.cheque_number === ""
-    ) {
-      isError = true;
-      swalMessage({
-        type: "warning",
-        title: "Check Number cannot be blank."
-      });
+  //     document.querySelector("[name='card_date']").focus();
+  //     return isError;
+  //   }
+  // } else if ($this.state.cheque_amount > 0) {
+  //   if (
+  //     $this.state.cheque_number === null ||
+  //     $this.state.cheque_number === ""
+  //   ) {
+  //     isError = true;
+  //     swalMessage({
+  //       type: "warning",
+  //       title: "Check Number cannot be blank."
+  //     });
 
-      document.querySelector("[name='cheque_number']").focus();
-      return isError;
-    }
+  //     document.querySelector("[name='cheque_number']").focus();
+  //     return isError;
+  //   }
 
-    if ($this.state.cheque_date === null || $this.state.cheque_date === "") {
-      isError = true;
-      swalMessage({
-        type: "warning",
-        title: "Cheque Date Cannot be blank."
-      });
+  //   if ($this.state.cheque_date === null || $this.state.cheque_date === "") {
+  //     isError = true;
+  //     swalMessage({
+  //       type: "warning",
+  //       title: "Cheque Date Cannot be blank."
+  //     });
 
-      document.querySelector("[name='cheque_date']").focus();
-      return isError;
-    }
-  } else if ($this.state.unbalanced_amount > 0) {
+  //     document.querySelector("[name='cheque_date']").focus();
+  //     return isError;
+  //   }
+  // } 
+  if ($this.state.unbalanced_amount > 0) {
     isError = true;
     swalMessage({
       type: "warning",
@@ -338,7 +353,8 @@ const SavePosCreidt = $this => {
                 hims_f_pos_credit_header_id:
                   response.data.records.hims_f_pos_credit_header_id,
                 receipt_number: response.data.records.receipt_number,
-                saveEnable: true
+                saveEnable: true,
+                Billexists: true
               });
               swalMessage({
                 title: "Done Successfully",

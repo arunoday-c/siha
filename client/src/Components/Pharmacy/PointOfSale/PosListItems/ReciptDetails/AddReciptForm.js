@@ -98,8 +98,8 @@ class AddReciptForm extends Component {
                           this.state.postEnable === true
                             ? true
                             : this.state.posCancelled === true
-                            ? true
-                            : false
+                              ? true
+                              : false
                       },
                       onChange: texthandle.bind(this, this, context),
                       onClear: () => {
@@ -193,7 +193,9 @@ class AddReciptForm extends Component {
                         onChange: cardtexthandle.bind(this, this, context)
                       },
                       others: {
-                        disabled: !this.state.Cardchecked,
+                        disabled: this.state.postEnable === true
+                          ? true
+                          : !this.state.Cardchecked,
                         placeholder: "0.00"
                       }
                     }}
@@ -212,7 +214,9 @@ class AddReciptForm extends Component {
                         onChange: texthandle.bind(this, this, context)
                       },
                       others: {
-                        disabled: !this.state.Cardchecked
+                        disabled: this.state.postEnable === true
+                          ? true
+                          : !this.state.Cardchecked
                       }
                     }}
                   />
@@ -226,7 +230,9 @@ class AddReciptForm extends Component {
                       className: "txt-fld",
                       name: "card_date"
                     }}
-                    disabled={!this.state.Cardchecked}
+                    disabled={this.state.postEnable === true
+                      ? true
+                      : !this.state.Cardchecked}
                     minDate={new Date()}
                     events={{
                       onChange: datehandle.bind(this, this, context)

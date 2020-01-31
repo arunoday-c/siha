@@ -171,6 +171,11 @@ class AddOPBillingForm extends Component {
                             $this.state.patient_payable;
 
                           response.data.records.billDetails = false;
+                          if (this.state.default_pay_type === "CD") {
+                            response.data.records.card_amount = response.data.records.receiveable_amount
+                            response.data.records.cash_amount = 0
+                          }
+
                           context.updateState({ ...response.data.records });
                         }
                       }
@@ -227,6 +232,11 @@ class AddOPBillingForm extends Component {
             response.data.records.patient_payable || this.state.patient_payable;
           response.data.records.saveEnable = false;
           response.data.records.addNewService = false;
+          if (this.state.default_pay_type === "CD") {
+            response.data.records.card_amount = response.data.records.receiveable_amount
+            response.data.records.cash_amount = 0
+          }
+
           if (context !== null) {
             context.updateState({ ...response.data.records });
           }
@@ -303,6 +313,10 @@ class AddOPBillingForm extends Component {
               response.data.records.patient_payable ||
               this.state.patient_payable;
 
+            if (this.state.default_pay_type === "CD") {
+              response.data.records.card_amount = response.data.records.receiveable_amount
+              response.data.records.cash_amount = 0
+            }
             if (context !== null) {
               context.updateState({ ...response.data.records });
             }
@@ -502,10 +516,10 @@ class AddOPBillingForm extends Component {
                                 this.props.servicetype === undefined
                                   ? []
                                   : this.props.servicetype.filter(
-                                      f =>
-                                        f.hims_d_service_type_id ===
-                                        row.service_type_id
-                                    );
+                                    f =>
+                                      f.hims_d_service_type_id ===
+                                      row.service_type_id
+                                  );
 
                               return (
                                 <span>
@@ -522,10 +536,10 @@ class AddOPBillingForm extends Component {
                                 this.props.servicetype === undefined
                                   ? []
                                   : this.props.servicetype.filter(
-                                      f =>
-                                        f.hims_d_service_type_id ===
-                                        row.service_type_id
-                                    );
+                                    f =>
+                                      f.hims_d_service_type_id ===
+                                      row.service_type_id
+                                  );
 
                               return (
                                 <span>
@@ -555,9 +569,9 @@ class AddOPBillingForm extends Component {
                                 this.props.serviceslist === undefined
                                   ? []
                                   : this.props.serviceslist.filter(
-                                      f =>
-                                        f.hims_d_services_id === row.services_id
-                                    );
+                                    f =>
+                                      f.hims_d_services_id === row.services_id
+                                  );
 
                               return (
                                 <span>
@@ -577,9 +591,9 @@ class AddOPBillingForm extends Component {
                                 this.props.serviceslist === undefined
                                   ? []
                                   : this.props.serviceslist.filter(
-                                      f =>
-                                        f.hims_d_services_id === row.services_id
-                                    );
+                                    f =>
+                                      f.hims_d_services_id === row.services_id
+                                  );
 
                               return (
                                 <span>
@@ -672,8 +686,8 @@ class AddOPBillingForm extends Component {
                                         this.state.insurance_yesno === "Y"
                                           ? true
                                           : row.trans_package_detail_id > 0
-                                          ? true
-                                          : this.state.Billexists,
+                                            ? true
+                                            : this.state.Billexists,
                                       onBlur: makeZeroIngrid.bind(
                                         this,
                                         this,
@@ -720,8 +734,8 @@ class AddOPBillingForm extends Component {
                                         this.state.insurance_yesno === "Y"
                                           ? true
                                           : row.trans_package_detail_id > 0
-                                          ? true
-                                          : this.state.Billexists,
+                                            ? true
+                                            : this.state.Billexists,
                                       onBlur: makeZeroIngrid.bind(
                                         this,
                                         this,

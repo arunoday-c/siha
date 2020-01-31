@@ -15,18 +15,17 @@ import {
   discounthandle,
   cashtexthandle,
   cardtexthandle,
-  chequetexthandle,
+  // chequetexthandle,
   adjustadvance,
   // ProcessInsurance,
   checkcashhandaler,
   checkcardhandler,
-  checkcheckhandaler,
+  // checkcheckhandaler,
   credittexthandle,
-  advanceAdjustCal,
   discountCal,
   cashtexthCal,
   cardtexthCal,
-  chequetexthCal,
+  // chequetexthCal,
   makeZero,
   makeDiscountZero
 } from "./AddBillingDetails";
@@ -215,8 +214,8 @@ class AddBillingForm extends Component {
                           {this.state.bill_number
                             ? this.state.bill_number
                             : this.state.selectedLang === "en"
-                            ? "Not Generated"
-                            : "غير مولدة"}
+                              ? "Not Generated"
+                              : "غير مولدة"}
                         </h6>
                       </div>
 
@@ -412,8 +411,8 @@ class AddBillingForm extends Component {
                             {this.state.receipt_number
                               ? this.state.receipt_number
                               : this.state.selectedLang === "en"
-                              ? "Not Generated"
-                              : "غير مولدة"}
+                                ? "Not Generated"
+                                : "غير مولدة"}
                           </h6>
                         </div>
                         <div className="col-lg-3">
@@ -425,8 +424,8 @@ class AddBillingForm extends Component {
                           <h6>
                             {this.state.receipt_date
                               ? moment(this.state.receipt_date).format(
-                                  "DD-MM-YYYY"
-                                )
+                                "DD-MM-YYYY"
+                              )
                               : "DD/MM/YYYY"}
                           </h6>
                         </div>
@@ -576,10 +575,9 @@ class AddBillingForm extends Component {
                         </div>
                         {this.state.Cardchecked === true ? (
                           <AlagehAutoComplete
-                            div={{ className: "col-lg-2 mandatory" }}
+                            div={{ className: "col-lg-2" }}
                             label={{
                               fieldName: "select_card",
-                              isImp: this.state.Cardchecked
                             }}
                             selector={{
                               name: "bank_card_id",
@@ -630,10 +628,9 @@ class AddBillingForm extends Component {
                           div={{ className: "col no-padding-left-right" }}
                           label={{
                             fieldName: "card_check_number",
-                            isImp: this.state.Cardchecked
                           }}
                           textBox={{
-                            card: { creditCard: true },
+                            // card: { creditCard: true },
                             disabled:
                               this.state.savedData === true
                                 ? true
@@ -649,7 +646,7 @@ class AddBillingForm extends Component {
                                 this.state.savedData === true
                                   ? true
                                   : !this.state.Cardchecked,
-                              placeholder: "0000-0000-0000-0000"
+                              // placeholder: "0000-0000-0000-0000"
                             }
                           }}
                         />

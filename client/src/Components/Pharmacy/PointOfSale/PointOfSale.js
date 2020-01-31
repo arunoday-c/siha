@@ -68,16 +68,20 @@ class PointOfSale extends Component {
     this.onKeyPress = this.onKeyPress.bind(this);
   }
 
+  static contextType = MainContext;
   UNSAFE_componentWillMount() {
     let IOputs = POSIOputs.inputParam();
+
+    const userToken = this.context.userToken;
+    IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false;
+    IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false;
+    IOputs.default_pay_type = userToken.default_pay_type;
+    IOputs.userToken = this.context.userToken;
+
     this.setState(IOputs);
   }
 
-  static contextType = MainContext;
   componentDidMount() {
-    this.setState({
-      userToken: this.context.userToken
-    })
     document.addEventListener("keypress", this.onKeyPress, false);
 
     this.props.getItems({

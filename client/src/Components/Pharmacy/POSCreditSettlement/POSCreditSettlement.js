@@ -24,11 +24,8 @@ import {
 import { AlgaehActions } from "../../../actions/algaehActions";
 
 import { algaehApiCall } from "../../../utils/algaehApiCall.js";
-
-import AlgaehReport from "../../Wrapper/printReports";
-
+import { MainContext } from "algaeh-react-components/context";
 import moment from "moment";
-import Options from "../../../Options.json";
 
 class POSCreditSettlement extends Component {
   constructor(props) {
@@ -52,8 +49,17 @@ class POSCreditSettlement extends Component {
     };
   }
 
+  static contextType = MainContext;
+
   UNSAFE_componentWillMount() {
     let IOputs = SettlementIOputs.inputParam();
+
+    const userToken = this.context.userToken;
+
+    IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false
+    IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false
+    IOputs.default_pay_type = userToken.default_pay_type
+
     this.setState({ ...this.state, ...IOputs });
   }
 

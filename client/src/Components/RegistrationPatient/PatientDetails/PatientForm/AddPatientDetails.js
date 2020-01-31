@@ -264,6 +264,11 @@ const generateBillDetails = ($this, context) => {
               data: response.data.records,
               onSuccess: response => {
                 if (response.data.success) {
+                  if ($this.state.default_pay_type === "CD") {
+                    response.data.records.card_amount = response.data.records.receiveable_amount
+                    response.data.records.cash_amount = 0
+                  }
+
                   if (context !== null) {
                     context.updateState({ ...response.data.records });
                   }

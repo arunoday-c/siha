@@ -190,27 +190,28 @@ export function Validations(state) {
   }
 
   if (state.state.Cardchecked === true) {
-    if (state.state.card_number === null || state.state.card_number === "") {
-      isError = true;
+    // if (state.state.card_number === null || state.state.card_number === "") {
+    //   isError = true;
 
-      swalMessage({
-        type: "warning",
-        title: "Card Number cannot be blank."
-      });
+    //   swalMessage({
+    //     type: "warning",
+    //     title: "Card Number cannot be blank."
+    //   });
 
-      document.querySelector("[name='card_number']").focus();
-      return isError;
-    } else if (state.state.bank_card_id === null) {
-      isError = true;
+    //   document.querySelector("[name='card_number']").focus();
+    //   return isError;
+    // } else if (state.state.bank_card_id === null) {
+    //   isError = true;
 
-      swalMessage({
-        type: "warning",
-        title: "Select Card."
-      });
+    //   swalMessage({
+    //     type: "warning",
+    //     title: "Select Card."
+    //   });
 
-      document.querySelector("[name='bank_card_id']").focus();
-      return isError;
-    } else if (parseFloat(state.state.card_amount) === 0) {
+    //   document.querySelector("[name='bank_card_id']").focus();
+    //   return isError;
+    // } else 
+    if (parseFloat(state.state.card_amount) === 0) {
       isError = true;
 
       swalMessage({
@@ -222,32 +223,32 @@ export function Validations(state) {
       return isError;
     }
   }
-  if (state.state.Checkchecked === true) {
-    if (
-      state.state.cheque_number === null ||
-      state.state.cheque_number === ""
-    ) {
-      isError = true;
+  // if (state.state.Checkchecked === true) {
+  //   if (
+  //     state.state.cheque_number === null ||
+  //     state.state.cheque_number === ""
+  //   ) {
+  //     isError = true;
 
-      swalMessage({
-        type: "warning",
-        title: "Check Number cannot be blank."
-      });
+  //     swalMessage({
+  //       type: "warning",
+  //       title: "Check Number cannot be blank."
+  //     });
 
-      document.querySelector("[name='cheque_number']").focus();
-      return isError;
-    } else if (state.state.cheque_amount === 0) {
-      isError = true;
+  //     document.querySelector("[name='cheque_number']").focus();
+  //     return isError;
+  //   } else if (state.state.cheque_amount === 0) {
+  //     isError = true;
 
-      swalMessage({
-        type: "warning",
-        title: "Enter Check Amount."
-      });
+  //     swalMessage({
+  //       type: "warning",
+  //       title: "Enter Check Amount."
+  //     });
 
-      document.querySelector("[name='cheque_amount']").focus();
-      return isError;
-    }
-  }
+  //     document.querySelector("[name='cheque_amount']").focus();
+  //     return isError;
+  //   }
+  // }
 
   if (parseFloat(state.state.pack_balance_amount) < 0) {
     isError = true;

@@ -61,18 +61,24 @@ class OPBilling extends Component {
       userToken: {}
     };
   }
+  static contextType = MainContext;
 
   UNSAFE_componentWillMount() {
     let IOputs = extend(PatRegIOputs.inputParam(), BillingIOputs.inputParam());
+
+    const userToken = this.context.userToken;
+    IOputs.hospital_id = userToken.hims_d_hospital_id
+    IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false
+    IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false
+    IOputs.default_pay_type = userToken.default_pay_type
+    IOputs.userToken = this.context.userToken
+
     this.setState({ ...this.state, ...IOputs });
   }
 
-  static contextType = MainContext;
+
   componentDidMount() {
 
-    this.setState({
-      userToken: this.context.userToken
-    })
 
     let prevLang = getCookie("Language");
     this.setState({
@@ -215,6 +221,8 @@ class OPBilling extends Component {
           // data.visit_id = data.hims_f_patient_visit_id;
           if (data.receiptdetails.length !== 0) {
             for (let i = 0; i < data.receiptdetails.length; i++) {
+              data.Cashchecked = false;
+              data.Cardchecked = false;
               if (data.receiptdetails[i].pay_type === "CA") {
                 data.Cashchecked = true;
                 data.cash_amount = data.receiptdetails[i].amount;

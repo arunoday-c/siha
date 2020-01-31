@@ -89,7 +89,7 @@ export default {
       secondary_sub_insurance_provider_name: null,
       secondary_network_office_id: null,
 
-      Cashchecked: true,
+      Cashchecked: false,
       Cardchecked: false,
       Checkchecked: false,
       billdetail: true,
