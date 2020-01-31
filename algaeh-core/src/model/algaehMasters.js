@@ -531,12 +531,64 @@ let getRoleBaseActiveModules = (req, res, next) => {
               icons: first.icons,
               other_language: first.other_language,
               module_plan: first.module_plan,
-              ScreenList: detail.map(m => {
-                return {
-                  ...m,
-                  other_language: m.s_other_language
-                };
-              })
+              ScreenList: _.chain(detail)
+                .groupBy(sg => sg.algaeh_app_screens_id)
+                .map(screens => {
+                  const sec = _.head(screens);
+                  const {
+                    algaeh_d_module_id,
+                    algaeh_m_screen_role_privilage_mapping_id,
+                    algaeh_app_screens_id,
+                    module_code,
+                    page_to_redirect,
+                    s_other_language,
+                    screen_code,
+                    screen_name,
+                    screen_id
+                  } = sec;
+                  return {
+                    algaeh_d_module_id,
+                    algaeh_m_screen_role_privilage_mapping_id,
+                    algaeh_app_screens_id,
+                    module_code,
+                    page_to_redirect,
+                    s_other_language,
+                    screen_code,
+                    screen_name,
+                    screen_id,
+                    other_language: sec.s_other_language,
+                    components: _.chain(screens)
+                      .filter(f => f.algaeh_d_app_component_id !== null)
+                      .groupBy(c => c.algaeh_d_app_component_id)
+                      .map(comp => {
+                        const third = _.head(comp);
+                        const {
+                          algaeh_d_app_component_id,
+                          component_code,
+                          component_name,
+                          comp_view_previlage,
+                          algaeh_app_screens_id,
+                          algaeh_d_module_id,
+                          algaeh_m_screen_role_privilage_mapping_id
+                        } = third;
+                        return {
+                          algaeh_d_app_component_id,
+                          component_code,
+                          component_name,
+                          comp_view_previlage,
+                          algaeh_app_screens_id,
+                          algaeh_d_module_id,
+                          algaeh_m_screen_role_privilage_mapping_id
+                        };
+                      })
+                  };
+                })
+              //   detail.map(m => {
+              //   return {
+              //     ...m,
+              //     other_language: m.s_other_language
+              //   };
+              // })
             };
           })
           .value()

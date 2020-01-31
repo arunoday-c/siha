@@ -17,7 +17,7 @@ import BankMaster from "./BankMaster/BankMaster";
 import CompanyAccount from "./CompanyAccount/CompanyAccount";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import _ from "lodash";
-import { CheckElement } from "../Wrapper";
+
 import { MainContext } from "algaeh-react-components/context";
 class BusinessSetup extends Component {
   constructor(props) {
@@ -32,7 +32,7 @@ class BusinessSetup extends Component {
     const userToken = this.context.userToken;
     const active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HIMS_CLINICAL"
+      userToken.product_type === "HIMS_CLINICAL"
         ? true
         : false;
     this.setState({
@@ -184,7 +184,7 @@ class BusinessSetup extends Component {
                   />
                 }
               </li>
-              {/* <CheckElement permission={"businesssetup-bankmaster"}> */}
+
               <li
                 algaehtabs={"BankMaster"}
                 className={"nav-item tab-button"}
@@ -198,7 +198,7 @@ class BusinessSetup extends Component {
                   />
                 }
               </li>
-              {/* </CheckElement> */}
+
               <li
                 algaehtabs={"CompanyAccount"}
                 className={"nav-item tab-button"}

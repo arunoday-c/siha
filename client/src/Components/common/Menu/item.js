@@ -113,7 +113,7 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
                         }
                         onClick={() => {
                           const { screen_name, s_other_language } = screen;
-                          redirectToScreen(item, screen.page_to_redirect, {
+                          redirectToScreen(screen, screen.page_to_redirect, {
                             screen_name,
                             s_other_language
                           });
