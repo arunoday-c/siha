@@ -1,0 +1,32 @@
+@import "../../styles/algaehCssVariables.scss";
+
+.noLandingPage {
+  margin-top: 20vh;
+  b {
+    color: $primary-color;
+  }
+  .menuBarHere {
+    background: url(../../assets/images/arrowTopRight.png) no-repeat top left;
+    width: 100px;
+    height: 100px;
+    display: block;
+    background-size: 100%;
+    position: absolute;
+    top: 5px;
+    padding-top: 110px;
+    text-align: center;
+    left: 5px;
+  }
+  .userPreferenceHere {
+    background: url(../../assets/images/arrowTopLeft.png) no-repeat top right;
+    width: 100px;
+    height: 100px;
+    display: block;
+    background-size: 100%;
+    position: absolute;
+    top: 5px;
+    padding-top: 110px;
+    text-align: center;
+    right: 5px;
+  }
+}
