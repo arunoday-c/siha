@@ -50,7 +50,7 @@ function CostCenterPage() {
   }
 
   return (
-    <div className="row">
+    <div className="row costCenterScreen">
       <div className="col-12 topBarCostCenter">
         {" "}
         <div className="row">
