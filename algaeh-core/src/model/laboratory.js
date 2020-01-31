@@ -396,7 +396,7 @@ let insertLadOrderedServices_BKP_JAN_30_2020 = (req, res, next) => {
 };
 
 //Recreated by Irfan:
-let insertLadOrderedServices = (req, res, next) => {
+let insertLadOrderedServicesBKP_31_JAN_2020 = (req, res, next) => {
   // console.log("Connection", req.connection);
   const _options = req.connection == null ? {} : req.connection;
   const _mysql = new algaehMysql(_options);
@@ -516,6 +516,258 @@ let insertLadOrderedServices = (req, res, next) => {
                         } else {
                           next();
                         }
+                      })
+                      .catch(e => {
+                        _mysql.rollBackTransaction(() => {
+                          next(e);
+                        });
+                      });
+                  } else {
+                    _mysql.rollBackTransaction(() => {
+                      next(
+                        httpStatus.generateError(
+                          httpStatus.forbidden,
+                          "No Specimen Avilable"
+                        )
+                      );
+                    });
+                  }
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } else {
+      next();
+    }
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+};
+
+//Recreated by Irfan:
+let insertLadOrderedServices = (req, res, next) => {
+  const _options = req.connection == null ? {} : req.connection;
+  const _mysql = new algaehMysql(_options);
+  try {
+    let Services =
+      req.records.ResultOfFetchOrderIds == null
+        ? req.body.billdetails
+        : req.records.ResultOfFetchOrderIds;
+
+    const labServices = Services.filter(
+      f =>
+        f.service_type_id == appsettings.hims_d_service_type.service_type_id.Lab
+    ).map(s => {
+      return {
+        ordered_services_id: s.hims_f_ordered_services_id || null,
+        patient_id: req.body.patient_id,
+        provider_id: req.body.incharge_or_provider,
+        visit_id: req.body.visit_id,
+        service_id: s.services_id,
+        billed: req.body.billed,
+        ordered_date: s.created_date,
+        test_type: s.test_type
+      };
+    });
+
+    if (labServices.length > 0) {
+      const IncludeValues = [
+        "ordered_services_id",
+        "patient_id",
+        "visit_id",
+        "provider_id",
+        "service_id",
+        "billed",
+        "ordered_date",
+        "test_type"
+      ];
+
+      _mysql
+        .executeQuery({
+          query: "INSERT IGNORE INTO hims_f_lab_order(??) VALUES ?",
+          values: labServices,
+          includeValues: IncludeValues,
+          extraValues: {
+            created_by: req.userIdentity.algaeh_d_app_user_id,
+            updated_by: req.userIdentity.algaeh_d_app_user_id,
+            hospital_id: req.userIdentity.hospital_id
+          },
+          bulkInsertOrUpdate: true,
+          printQuery: true
+        })
+        .then(insert_lab_order => {
+          const get_services_id = labServices.map(s => {
+            return s.service_id;
+          });
+          _mysql
+            .executeQuery({
+              query:
+                "select  hims_d_investigation_test_id from hims_d_investigation_test where record_status='A' and services_id in (?);\
+                  select case when days<31 then 'D' when days<365 then 'M' else 'Y' end as age_type,\
+                TIMESTAMPDIFF(day, ?, curdate()) as days,\
+                TIMESTAMPDIFF(month, ?, curdate()) as months,\
+                TIMESTAMPDIFF(year, ?, curdate()) as years from \
+                (select  TIMESTAMPDIFF(day, ?, curdate()) as days) as a;  ",
+              values: [
+                get_services_id,
+
+                req.body.date_of_birth,
+                req.body.date_of_birth,
+                req.body.date_of_birth,
+                req.body.date_of_birth
+              ],
+              printQuery: true
+            })
+            .then(investigation_test => {
+              const test_id = investigation_test[0].map(s => {
+                return s.hims_d_investigation_test_id;
+              });
+
+              const age_data = investigation_test[1][0];
+              const age_type = age_data["age_type"];
+              let age = "";
+              switch (age_type) {
+                case "D":
+                  age = age_data["days"];
+
+                  break;
+                case "M":
+                  age = age_data["months"];
+                  break;
+                case "Y":
+                  age = age_data["years"];
+                  break;
+              }
+
+              _mysql
+                .executeQuery({
+                  query:
+                    "select services_id,specimen_id,test_id FROM  hims_m_lab_specimen,hims_d_investigation_test \
+                  where hims_d_investigation_test_id=hims_m_lab_specimen.test_id and \
+                  hims_m_lab_specimen.record_status='A' and test_id in (?); \
+                  select hims_f_lab_order_id,service_id from hims_f_lab_order where record_status='A' \
+                  and visit_id =? and service_id in (?);\
+                  select hims_m_lab_analyte_id,test_id,M.analyte_id, R.gender, R.age_type, R.from_age,\
+                  R.to_age, R.critical_low,  R.critical_high, R.normal_low, R.normal_high ,\
+                  R.normal_qualitative_value,R.text_value ,A.analyte_type,A.result_unit from hims_m_lab_analyte  M \
+                  left join hims_d_lab_analytes A on M.analyte_id=A.hims_d_lab_analytes_id\
+                  left join  hims_d_lab_analytes_range R on  M.analyte_id=R.analyte_id\
+                  and R.gender=? and R.age_type=? and ? between R.from_age and R.to_age\
+                  where M.test_id in(?);",
+                  values: [
+                    test_id,
+                    req.body.visit_id,
+                    get_services_id,
+
+                    req.body.gender,
+                    age_type,
+                    age,
+                    test_id
+                  ],
+                  printQuery: true
+                })
+                .then(specimentRecords => {
+                  if (specimentRecords[0].length > 0) {
+                    const specimen_list = specimentRecords[0];
+                    const lab_orders = specimentRecords[1];
+                    const all_analytes = specimentRecords[2];
+                    const inserteLabSample = [];
+
+                    lab_orders.forEach(ord => {
+                      let temp = specimen_list
+                        .filter(f => {
+                          return f.services_id == ord.service_id;
+                        })
+                        .map(m => {
+                          return {
+                            sample_id: m.specimen_id,
+                            test_id: m.test_id,
+                            order_id: ord.hims_f_lab_order_id
+                          };
+                        });
+                      inserteLabSample.push(...temp);
+                    });
+
+                    const sample = ["order_id", "sample_id"];
+
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "INSERT IGNORE INTO hims_f_lab_sample(??) VALUES ?",
+                        values: inserteLabSample,
+                        includeValues: sample,
+                        extraValues: {
+                          created_by: req.userIdentity.algaeh_d_app_user_id,
+                          updated_by: req.userIdentity.algaeh_d_app_user_id
+                        },
+                        bulkInsertOrUpdate: true,
+                        printQuery: true
+                      })
+                      .then(insert_lab_sample => {
+                        
+                        all_analytes.map(item => {
+                          const order_dtails = inserteLabSample.find(f => {
+                            return item.test_id == f.test_id;
+                          });
+
+                          item["order_id"] = order_dtails.order_id;
+                        });
+
+                         
+                        const analyts = [
+                          "order_id",
+                          "analyte_id",
+                          "analyte_type",
+                          "result_unit",
+                          "critical_low",
+                          "critical_high",
+                          "normal_low",
+                          "normal_high",
+                          "text_value",
+                          "normal_qualitative_value"
+                        ];
+                        _mysql
+                          .executeQuery({
+                            query:
+                              "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ?",
+                            values: all_analytes,
+                            includeValues: analyts,
+                            extraValues: {
+                              created_by: req.userIdentity.algaeh_d_app_user_id,
+                              updated_by: req.userIdentity.algaeh_d_app_user_id
+                            },
+                            bulkInsertOrUpdate: true,
+                            printQuery: true
+                          })
+                          .then(ord_analytes => {
+                            if (req.connection == null) {
+                              req.records = insert_lab_sample;
+                              next();
+                            } else {
+                              next();
+                            }
+                          })
+                          .catch(e => {
+                            _mysql.rollBackTransaction(() => {
+                              next(e);
+                            });
+                          });
                       })
                       .catch(e => {
                         _mysql.rollBackTransaction(() => {
