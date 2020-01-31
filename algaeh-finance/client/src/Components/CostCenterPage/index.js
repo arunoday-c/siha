@@ -50,26 +50,34 @@ function CostCenterPage() {
   }
 
   return (
-    <>
-      <CostCenterComponent
-        orgUrl="/organization/getOrganization"
-        render={result => (
-          <div className="col" style={{ paddingTop: 16 }}>
-            <button className="btn btn-default" onClick={result.clearValues}>
-              Clear
-            </button>
-            <button
-              className="btn btn-primary"
-              style={{ marginLeft: 10 }}
-              onClick={() => handleResult(result)}
-            >
-              Add to List
-            </button>
-          </div>
-        )}
-      />
+    <div className="row">
+      <div className="col-12 topBarCostCenter">
+        {" "}
+        <div className="row">
+          <CostCenterComponent
+            orgUrl="/organization/getOrganization"
+            render={result => (
+              <div className="col" style={{ paddingTop: 16 }}>
+                <button
+                  className="btn btn-default"
+                  onClick={result.clearValues}
+                >
+                  Clear
+                </button>
+                <button
+                  className="btn btn-primary"
+                  style={{ marginLeft: 10 }}
+                  onClick={() => handleResult(result)}
+                >
+                  Add to List
+                </button>
+              </div>
+            )}
+          />
+        </div>
+      </div>
       <CenterComponent data={data} />
-    </>
+    </div>
   );
 }
 
