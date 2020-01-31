@@ -207,15 +207,13 @@ class AddAdvanceModal extends PureComponent {
                   receipt_number: data.receipt_number
                 });
 
-
-
                 swalMessage({
                   title: "Advance Collected Successfully.",
                   type: "success"
                 });
 
                 context.updateState({
-                  advance_amount: data.total_advance_amount,
+                  advance_amount: data.total_advance_amount
                   // AdvanceOpen: false,
                   // RefundOpen: false
                 });
@@ -230,7 +228,7 @@ class AddAdvanceModal extends PureComponent {
             }
           });
         } else {
-          $this.state.ScreenCode = getCookie("ScreenCode")
+          $this.state.ScreenCode = getCookie("ScreenCode");
           algaehApiCall({
             uri: "/billing/patientAdvanceRefund",
             module: "billing",
@@ -250,7 +248,7 @@ class AddAdvanceModal extends PureComponent {
                 //   this.props.onClose && this.props.onClose(e);
                 // });
                 context.updateState({
-                  advance_amount: data.total_advance_amount,
+                  advance_amount: data.total_advance_amount
                   // AdvanceOpen: false,
                   // RefundOpen: false
                 });
@@ -363,8 +361,8 @@ class AddAdvanceModal extends PureComponent {
                         <h6>
                           {this.props.inputsparameters.collect_advance
                             ? GetAmountFormart(
-                              this.props.inputsparameters.collect_advance
-                            )
+                                this.props.inputsparameters.collect_advance
+                              )
                             : GetAmountFormart("0")}
                         </h6>
                       </div>
@@ -464,28 +462,29 @@ class AddAdvanceModal extends PureComponent {
                           </label>
                         </div>
 
-                        {this.state.Cardchecked === true ? <AlagehAutoComplete
-                          div={{ className: "col-lg-2 mandatory" }}
-                          label={{
-                            fieldName: "select_card",
-                            isImp: this.state.Cardchecked
-                          }}
-                          selector={{
-                            name: "bank_card_id",
-                            className: "select-fld",
-                            value: this.state.bank_card_id,
-                            dataSource: {
-                              textField: "card_name",
-                              valueField: "hims_d_bank_card_id",
-                              data: this.props.bankscards
-                            },
-                            onChange: texthandle.bind(this, this, context),
-                            onClear: () => {
-                              context.updateState({ bank_card_id: null });
-                            }
-
-                          }}
-                        /> : null}
+                        {this.state.Cardchecked === true ? (
+                          <AlagehAutoComplete
+                            div={{ className: "col-lg-2 mandatory" }}
+                            label={{
+                              fieldName: "select_card",
+                              isImp: this.state.Cardchecked
+                            }}
+                            selector={{
+                              name: "bank_card_id",
+                              className: "select-fld",
+                              value: this.state.bank_card_id,
+                              dataSource: {
+                                textField: "card_name",
+                                valueField: "hims_d_bank_card_id",
+                                data: this.props.bankscards
+                              },
+                              onChange: texthandle.bind(this, this, context),
+                              onClear: () => {
+                                context.updateState({ bank_card_id: null });
+                              }
+                            }}
+                          />
+                        ) : null}
 
                         <AlagehFormGroup
                           div={{ className: "col-lg-2" }}
@@ -548,7 +547,7 @@ class AddAdvanceModal extends PureComponent {
                       </div>
 
                       {/* Check */}
-                      <div className="row secondary-box-container">
+                      {/* <div className="row secondary-box-container">
                         <div
                           className="customCheckbox col-lg-3"
                           style={{ border: "none", marginTop: "28px" }}
@@ -629,7 +628,7 @@ class AddAdvanceModal extends PureComponent {
                           }}
                           value={this.state.cheque_date}
                         />
-                      </div>
+                      </div> */}
                     </div>
                   ) : null}
                   <hr />
@@ -643,8 +642,8 @@ class AddAdvanceModal extends PureComponent {
                       <h6>
                         {this.props.inputsparameters.advance_amount
                           ? GetAmountFormart(
-                            this.props.inputsparameters.advance_amount
-                          )
+                              this.props.inputsparameters.advance_amount
+                            )
                           : GetAmountFormart("0")}
                       </h6>
                     </div>
@@ -736,8 +735,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AddAdvanceModal)
+  connect(mapStateToProps, mapDispatchToProps)(AddAdvanceModal)
 );
