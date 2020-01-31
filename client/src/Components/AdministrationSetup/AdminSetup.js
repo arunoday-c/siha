@@ -8,7 +8,7 @@ import AuditLog from "./AuditLog/AuditLog";
 import ComponentElementAssignment from "./ComponentElementAssignment/ComponentElementAssignment";
 // import ApiConfig from "./APIConfig";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
-
+import { AlgaehTabs } from "algaeh-react-components";
 class AdminSetup extends Component {
   constructor(props) {
     super(props);
@@ -98,98 +98,6 @@ class AdminSetup extends Component {
                   />
                 }
               </li>
-              {/* <li
-                  algaehtabs={"apiconfig"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                      label={{
-                        forceLabel:"API CONFIG"
-                      }}
-                  />
-                }
-              </li> */}
-              {/* <li
-                algaehtabs={"ComponentElementAssignment"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Component & Element Assignment"
-                    }}
-                  />
-                }
-              </li> */}
-              {/* <li
-                algaehtabs={"CategorySpeciality"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "category_speciality_map"
-                    }}
-                  />
-                }
-              </li>
-
-              <li
-                algaehtabs={"Shift"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "shift"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"Counter"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "counter"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"UserShiftMapping"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "users_shift"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"Currency"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "currency"
-                    }}
-                  />
-                }
-              </li> */}
             </ul>
           </div>
         </div>
