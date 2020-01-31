@@ -3,7 +3,11 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import SalesReturnputs from "../../../Models/SalesReturn";
-import { algaehApiCall, swalMessage, getCookie } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../../utils/algaehApiCall";
 import _ from "lodash";
 
 const changeTexts = ($this, ctrl, e) => {
@@ -207,7 +211,7 @@ const SaveSalesReturn = $this => {
       inputObj.pharmacy_stock_detail[i].operation = "+";
     }
 
-    inputObj.ScreenCode = getCookie("ScreenCode")
+    inputObj.ScreenCode = getCookie("ScreenCode");
     algaehApiCall({
       uri: "/salesReturn/addsalesReturn",
       module: "pharmacy",

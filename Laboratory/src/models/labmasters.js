@@ -1063,7 +1063,6 @@ export default {
     }
   },
 
-
   selectMachineAnalytesMap: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
@@ -1137,8 +1136,7 @@ export default {
 
           _mysql
             .executeQuery({
-              query:
-                "INSERT INTO hims_m_machine_analytes_detail(??) VALUES ?",
+              query: "INSERT INTO hims_m_machine_analytes_detail(??) VALUES ?",
               values: inputParam.analytes_data,
               includeValues: analyts_data,
               extraValues: {
@@ -1216,48 +1214,46 @@ export default {
             } else {
               resolve({});
             }
-          })
-            .then(result => {
-              console.log("DeleteQry", inputParam.delete_analytes_data.length)
-              if (inputParam.delete_analytes_data.length > 0) {
-
-
-                let DeleteQry = "";
-                for (let i = 0; i < inputParam.delete_analytes_data.length; i++) {
-                  DeleteQry += _mysql.mysqlQueryFormat(
-                    "DELETE from `hims_m_machine_analytes_detail`  where hims_m_machine_analytes_detail_id=?;",
-                    [
-                      inputParam.delete_analytes_data[i].hims_m_machine_analytes_detail_id
-                    ]
-                  );
-                }
-                console.log("DeleteQry", DeleteQry)
-                _mysql
-                  .executeQuery({
-                    query: DeleteQry,
-                    printQuery: true
-                  })
-                  .then(result => {
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = result;
-                      next();
-                    });
-                  })
-                  .catch(e => {
-                    _mysql.rollBackTransaction(() => {
-                      next(e);
-                    });
-                  });
-              } else {
-                console.log("DeleteQry", inputParam.delete_analytes_data.length)
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = result;
-                  next();
-                });
+          }).then(result => {
+            console.log("DeleteQry", inputParam.delete_analytes_data.length);
+            if (inputParam.delete_analytes_data.length > 0) {
+              let DeleteQry = "";
+              for (let i = 0; i < inputParam.delete_analytes_data.length; i++) {
+                DeleteQry += _mysql.mysqlQueryFormat(
+                  "DELETE from `hims_m_machine_analytes_detail`  where hims_m_machine_analytes_detail_id=?;",
+                  [
+                    inputParam.delete_analytes_data[i]
+                      .hims_m_machine_analytes_detail_id
+                  ]
+                );
               }
-            });
+              console.log("DeleteQry", DeleteQry);
+              _mysql
+                .executeQuery({
+                  query: DeleteQry,
+                  printQuery: true
+                })
+                .then(result => {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = result;
+                    next();
+                  });
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            } else {
+              console.log("DeleteQry", inputParam.delete_analytes_data.length);
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              });
+            }
+          });
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {
@@ -1270,7 +1266,6 @@ export default {
       });
     }
   },
-
 
   addGroupComments: (req, res, next) => {
     let inputParam = req.body;
@@ -1343,10 +1338,13 @@ export default {
 
   getGroupComments: (req, res, next) => {
     const _mysql = new algaehMysql();
-    let strQuery = ""
+    let strQuery = "";
 
-    if (req.query.comment_status !== null && req.query.comment_status !== undefined) {
-      strQuery = ` and comment_status = '${req.query.comment_status}'`
+    if (
+      req.query.comment_status !== null &&
+      req.query.comment_status !== undefined
+    ) {
+      strQuery = ` and comment_status = '${req.query.comment_status}'`;
     }
     try {
       _mysql
@@ -1362,6 +1360,294 @@ export default {
           _mysql.releaseConnection();
           req.records = result;
           next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  //created by :Irfan
+  addAnalyteRages: (req, res, next) => {
+    let input = req.body;
+    const _mysql = new algaehMysql();
+    try {
+      if (input.length > 0) {
+        _mysql
+          .executeQuery({
+            query:
+              "select hims_d_lab_analytes_range_id,analyte_id,gender,age_type,\
+              case age_type when 'Y' then 'Years' when 'M' then 'Months' when 'D'\
+               then 'days' end as age_desc,from_age,to_age\
+            from hims_d_lab_analytes_range where analyte_id=? ",
+            values: [input[0].analyte_id],
+            printQuery: true
+          })
+          .then(result => {
+            let errorStr = "";
+
+            //ST-VALIDATION FOR AGE RANGE
+            if (result.length > 0) {
+              input.forEach(item => {
+                const existData = result.filter(f => {
+                  return (
+                    f.age_type == item.age_type &&
+                    f.gender == item.gender.toUpperCase()
+                  );
+                });
+
+                if (existData) {
+                  let err = existData.find(data => {
+                    return (
+                      (data.from_age <= item.from_age &&
+                        item.from_age <= data.to_age) ||
+                      (data.from_age <= item.to_age &&
+                        item.to_age <= data.to_age) ||
+                      (item.from_age <= data.from_age &&
+                        data.from_age <= item.to_age)
+                    );
+                  });
+
+                  if (err) {
+                    errorStr = err;
+                    return;
+                  }
+                }
+              });
+            }
+
+            //EN-VALIDATION FOR AGE RANGE
+            if (errorStr != "") {
+              //error
+              let message = `Analytes Range Exist For: ${errorStr.gender} between ${errorStr.from_age}-${errorStr.to_age} ${errorStr.age_desc}`;
+              req.records = {
+                invalid_input: true,
+                message: message
+              };
+              next();
+            } else {
+              const insurtColumns = [
+                "analyte_id",
+                "gender",
+                "age_type",
+                "from_age",
+                "to_age",
+                "critical_low",
+                "critical_high",
+                "normal_low",
+                "normal_high",
+                "normal_qualitative_value",
+                "text_value"
+              ];
+
+              _mysql
+                .executeQuery({
+                  query: " INSERT INTO hims_d_lab_analytes_range(??) values ?;",
+                  values: input,
+                  includeValues: insurtColumns,
+                  extraValues: {
+                    created_date: new Date(),
+                    created_by: req.userIdentity.algaeh_d_app_user_id,
+                    updated_date: new Date(),
+                    updated_by: req.userIdentity.algaeh_d_app_user_id
+                  },
+                  bulkInsertOrUpdate: true,
+                  printQuery: true
+                })
+                .then(Result => {
+                  _mysql.releaseConnection();
+                  req.records = Result;
+                  next();
+                })
+                .catch(e => {
+                  _mysql.releaseConnection();
+                  next(e);
+                });
+            }
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "Please Provide Valid Input"
+        };
+        next();
+      }
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  //created by :Irfan
+  getAnalyteRages: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_d_lab_analytes_range_id,analyte_id,gender,age_type,from_age,to_age,\
+            critical_low,critical_high,normal_low,normal_qualitative_value,text_value,normal_high\
+            from hims_d_lab_analytes_range where analyte_id=? ",
+          values: [req.query.analyte_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  //created by :Irfan
+  updateAnalyteRage: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      const item = req.body;
+
+      if (item.analyte_id > 0 && item.hims_d_lab_analytes_range_id > 0) {
+        _mysql
+          .executeQuery({
+            query:
+              "select hims_d_lab_analytes_range_id,analyte_id,gender,age_type,\
+              case age_type when 'Y' then 'Years' when 'M' then 'Months' when 'D'\
+               then 'days' end as age_desc,from_age,to_age\
+            from hims_d_lab_analytes_range where analyte_id=? and  hims_d_lab_analytes_range_id<>?; ",
+            values: [item.analyte_id, item.hims_d_lab_analytes_range_id],
+            printQuery: true
+          })
+          .then(result => {
+            let errorStr = "";
+
+            //ST-VALIDATION FOR AGE RANGE
+            if (result.length > 0) {
+              const existData = result.filter(f => {
+                return (
+                  f.age_type == item.age_type &&
+                  f.gender == item.gender.toUpperCase()
+                );
+              });
+
+              if (existData) {
+                let err = existData.find(data => {
+                  return (
+                    (data.from_age <= item.from_age &&
+                      item.from_age <= data.to_age) ||
+                    (data.from_age <= item.to_age &&
+                      item.to_age <= data.to_age) ||
+                    (item.from_age <= data.from_age &&
+                      data.from_age <= item.to_age)
+                  );
+                });
+
+                if (err) {
+                  errorStr = err;
+                }
+              }
+            }
+
+            //EN-VALIDATION FOR AGE RANGE
+            if (errorStr != "") {
+              //error
+              let message = `Analytes Range Exist For: ${errorStr.gender} between ${errorStr.from_age}-${errorStr.to_age} ${errorStr.age_desc}`;
+              req.records = {
+                invalid_input: true,
+                message: message
+              };
+              next();
+            } else {
+              _mysql
+                .executeQuery({
+                  query:
+                    " update hims_d_lab_analytes_range \
+                    set gender=?, age_type=?,from_age=?,to_age=?, critical_low=?,critical_high=?,\
+                    normal_low=?,normal_high=?,normal_qualitative_value=?,text_value=?, updated_by=?,updated_date=? \
+                    where hims_d_lab_analytes_range_id=? ",
+                  values: [
+                    item.gender,
+                    item.age_type,
+                    item.from_age,
+                    item.to_age,
+                    item.critical_low,
+                    item.critical_high,
+                    item.normal_low,
+                    item.normal_high,
+                    item.normal_qualitative_value,
+                    item.text_value,
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                    item.hims_d_lab_analytes_range_id
+                  ],
+                  printQuery: true
+                })
+                .then(result => {
+                  _mysql.releaseConnection();
+                  req.records = result;
+                  next();
+                })
+                .catch(error => {
+                  _mysql.releaseConnection();
+                  next(error);
+                });
+            }
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "Please Provide Valid Input"
+        };
+        next();
+      }
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  //created by :Irfan
+  deleteAnalyteRage: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "  delete  from hims_d_lab_analytes_range where hims_d_lab_analytes_range_id=?; ",
+          values: [req.body.hims_d_lab_analytes_range_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          if (result.affectedRows > 0) {
+            req.records = result;
+            next();
+          } else {
+            req.records = {
+              invalid_input: true,
+              message: "Please Provide Valid Input"
+            };
+            next();
+          }
         })
         .catch(error => {
           _mysql.releaseConnection();

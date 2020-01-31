@@ -971,8 +971,6 @@ const nationalityhandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  debugger
-
   let vat_applicable = "Y";
 
   if (
