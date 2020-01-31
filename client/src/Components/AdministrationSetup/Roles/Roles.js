@@ -457,7 +457,7 @@ class Roles extends Component {
                         editorTemplate: row => {
                           return (
                             <AlagehAutoComplete
-                              div={{ className: "col-2 mandatory form-group" }}
+                              div={{ className: "col mandatory form-group" }}
                               selector={{
                                 className: "txt-fld",
                                 name: "role_type",
@@ -519,7 +519,7 @@ class Roles extends Component {
                         editorTemplate: row => {
                           return (
                             <AlagehFormGroup
-                              div={{ className: "col-2 mandatory form-group" }}
+                              div={{ className: "col mandatory form-group" }}
                               textBox={{
                                 className: "txt-fld",
                                 name: "role_name",
@@ -595,7 +595,7 @@ class Roles extends Component {
                         editorTemplate: row => {
                           return (
                             <AlagehAutoComplete
-                              div={{ className: "col-2 mandatory form-group" }}
+                              div={{ className: "col mandatory form-group" }}
                               selector={{
                                 className: "txt-fld",
                                 name: "loan_authorize_privilege",
@@ -642,7 +642,7 @@ class Roles extends Component {
                         editorTemplate: row => {
                           return (
                             <AlagehAutoComplete
-                              div={{ className: "col-2 mandatory form-group" }}
+                              div={{ className: "col mandatory form-group" }}
                               selector={{
                                 className: "txt-fld",
                                 name: "leave_authorize_privilege",
@@ -692,7 +692,7 @@ class Roles extends Component {
                         editorTemplate: row => {
                           return (
                             <AlagehAutoComplete
-                              div={{ className: "col-2 mandatory form-group" }}
+                              div={{ className: "col mandatory form-group" }}
                               selector={{
                                 className: "txt-fld",
                                 name: "edit_monthly_attendance",
