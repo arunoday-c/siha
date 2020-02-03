@@ -5,7 +5,7 @@ import { setItem, getItem } from "algaeh-react-components/storage";
 import { setCookie } from "../../../utils/algaehApiCall";
 
 function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
-  const { userMenu, userToken, userLanguage, selectedMenu } = useContext(
+  const { userMenu, userToken, userLanguage, setSelectedMenuItem } = useContext(
     MainContext
   );
   const history = useHistory();
@@ -28,7 +28,9 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
   }
   function redirectToScreen(item, display, others) {
     const screenName = display.replace(/ /g, "");
-    setItem("userSelectedMenu", { ...item, ...others });
+    const selMenu = { ...item, ...others };
+    setItem("userSelectedMenu", selMenu);
+    setSelectedMenuItem(selMenu);
     setCookie("ScreenName", screenName);
     history.push(`/${screenName}`);
   }

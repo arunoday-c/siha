@@ -14,7 +14,8 @@ function NavBars(props) {
     userToken,
     setUserLanguage,
     setUserMenu,
-    setUserToken
+    setUserToken,
+    setSelectedMenuItem
   } = useContext(MainContext);
   const history = useHistory();
   // const [title, setTitle] = useState("");
@@ -39,6 +40,7 @@ function NavBars(props) {
     }
     getItem("userSelectedMenu").then(item => {
       if (item === null) return;
+      setSelectedMenuItem(item);
       setSelectedMenu(() => {
         return item;
       });
@@ -79,7 +81,11 @@ function NavBars(props) {
           <p className="appLogoHIMSOnly" />
         </div>
         <h5 className="topNavbar-title mr-auto">
-          <BreadCrum selectedMenu={selectedMenu} userLanguage={userLanguage} />
+          <BreadCrum
+            selectedMenu={selectedMenu}
+            userLanguage={userLanguage}
+            setSelectedMenuItem={setSelectedMenuItem}
+          />
         </h5>
         <div className="navTopBarRight">
           <div className="loginProfileInfo">

@@ -1248,26 +1248,27 @@ const appRoutes = [
   }
 ];
 
-const routes = (
-  <BrowserRouter>
-    <Switch>
-      {appRoutes.map((routeItem, idx) => {
-        return (
-          <Route
-            key={routeItem.path}
-            path={routeItem.path}
-            exact={routeItem.isExactPath}
-            render={params => {
-              if (routeItem.path === "/") return routeItem.component;
-              else {
-                return <LoadComponent>{routeItem.component}</LoadComponent>;
-              }
-            }}
-          />
-        );
-      })}
-    </Switch>
-  </BrowserRouter>
-);
-
-export default routes;
+function Routes() {
+  return (
+    <BrowserRouter>
+      <Switch>
+        {appRoutes.map((routeItem, idx) => {
+          return (
+            <Route
+              key={routeItem.path}
+              path={routeItem.path}
+              exact={routeItem.isExactPath}
+              render={params => {
+                if (routeItem.path === "/") return routeItem.component;
+                else {
+                  return <LoadComponent>{routeItem.component}</LoadComponent>;
+                }
+              }}
+            />
+          );
+        })}
+      </Switch>
+    </BrowserRouter>
+  );
+}
+export default Routes;
