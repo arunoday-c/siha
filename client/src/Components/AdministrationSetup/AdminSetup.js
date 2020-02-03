@@ -30,7 +30,85 @@ class AdminSetup extends Component {
   render() {
     return (
       <div className="admin_setup">
-        <div className="row">
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Group"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <Groups />
+                </ChildrenItem>
+              )
+              // componentCode: "AD_USER_GROUP"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Roles"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <Roles />
+                </ChildrenItem>
+              )
+              // componentCode: "AD_USER_ROLES"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Login Users"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <LoginUsers />
+                </ChildrenItem>
+              )
+              // componentCode: "AD_USER_LOGIN"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Screen Assignment"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <ScreenAssignment />
+                </ChildrenItem>
+              )
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Audit Log"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <AuditLog />
+                </ChildrenItem>
+              )
+            }
+          ]}
+        />
+        {/* <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
@@ -101,8 +179,8 @@ class AdminSetup extends Component {
             </ul>
           </div>
         </div>
-        <div className="admin-section">
-          {this.state.pageDisplay === "LoginUsers" ? (
+        <div className="admin-section"> */}
+        {/* {this.state.pageDisplay === "LoginUsers" ? (
             <LoginUsers />
           ) : this.state.pageDisplay === "Groups" ? (
             <Groups />
@@ -114,14 +192,14 @@ class AdminSetup extends Component {
             <AuditLog />
           ) : this.state.pageDisplay === "ComponentElementAssignment" ? (
             <ComponentElementAssignment />
-          ) : //  this.state.pageDisplay === "apiconfig" ? (
-          //   <ApiConfig />
-          // ) :
+          ) :
           null}
-        </div>
+        </div> */}
       </div>
     );
   }
 }
-
+function ChildrenItem({ children }) {
+  return <div className="admin-section">{children}</div>;
+}
 export default AdminSetup;

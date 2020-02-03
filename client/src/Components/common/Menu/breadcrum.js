@@ -1,8 +1,13 @@
-import React, { memo, useState } from "react";
+import React, { memo, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { setItem } from "algaeh-react-components/storage";
 import { setCookie } from "../../../utils/algaehApiCall";
-export default memo(function({ selectedMenu, userLanguage }) {
+
+export default memo(function({
+  selectedMenu,
+  userLanguage,
+  setSelectedMenuItem
+}) {
   if (selectedMenu === undefined) return null;
   const {
     module_name,
@@ -22,7 +27,9 @@ export default memo(function({ selectedMenu, userLanguage }) {
   }
   function onClickScreen(item, display, others) {
     const screenName = display.replace(/ /g, "");
-    setItem("userSelectedMenu", { ...item, ...others });
+    const selMenu = { ...item, ...others };
+    setItem("userSelectedMenu", selMenu);
+    setSelectedMenuItem(selMenu);
     setCookie("ScreenName", screenName);
     history.push(`/${screenName}`);
   }
@@ -53,7 +60,7 @@ export default memo(function({ selectedMenu, userLanguage }) {
                 <li
                   key={idx}
                   onClick={() => {
-                    onClickScreen(selectedMenu, item.page_to_redirect, {
+                    onClickScreen(item, item.page_to_redirect, {
                       screen_name: item.screen_name,
                       s_other_language: item.s_other_language
                     });
