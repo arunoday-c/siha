@@ -26,7 +26,7 @@ class Subjective extends Component {
   }
 
   getPatientEncounterDetails() {
-    const { encounter_id } = this.props.location.state.content;
+    const { encounter_id } = Window.global;
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientEncounter",
       method: "GET",
@@ -51,7 +51,7 @@ class Subjective extends Component {
   }
 
   componentWillUnmount() {
-    const { encounter_id } = this.props.location.state.content;
+    const { encounter_id } = Window.global;
     if (this.state.significant_signs !== null) {
       algaehApiCall({
         uri: "/doctorsWorkBench/updatePatientEncounter",

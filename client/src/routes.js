@@ -73,7 +73,7 @@ const NurseWorkbench = React.lazy(() =>
 );
 
 const PatientProfile = React.lazy(() =>
-  retry(() => import("./Components/PatientProfile/PatientProfile"))
+  retry(() => import("./Components/PatientProfile/ProfileContainer"))
 );
 
 const PatientPackages = React.lazy(() =>

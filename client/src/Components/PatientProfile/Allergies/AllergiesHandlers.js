@@ -21,7 +21,7 @@ const getAllAllergies = ($this, callBack) => {
 };
 
 const getPatientAllergies = ($this, callBack) => {
-  const { current_patient } = $this.props.location.state.content;
+  const { current_patient } = Window.global;
   $this.props.getPatientAllergies({
     uri: "/doctorsWorkBench/getPatientAllergies",
     method: "GET",
@@ -99,7 +99,7 @@ const texthandle = ($this, data, ctrl, e) => {
 };
 
 const updatePatientAllergy = ($this, row) => {
-  const { current_patient } = $this.props.location.state.content;
+  const { current_patient } = Window.global;
   algaehApiCall({
     uri: "/doctorsWorkbench/updatePatientAllergy",
     method: "PUT",

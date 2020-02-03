@@ -104,7 +104,7 @@ class Examination extends Component {
         const {
           current_patient,
           episode_id
-        } = this.props.location.state.content;
+        } = Window.global;
         algaehApiCall({
           uri: "/doctorsWorkBench/updatePatientPhysicalExam",
           method: "PUT",
@@ -146,7 +146,7 @@ class Examination extends Component {
   }
 
   addExaminationToPatient() {
-    const { current_patient, episode_id } = this.props.location.state.content;
+    const { current_patient, episode_id } = Window.global;
     algaehApiCall({
       uri: "/doctorsWorkBench/addPatientPhysicalExamination",
       method: "POST",

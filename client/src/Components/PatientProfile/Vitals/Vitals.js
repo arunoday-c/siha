@@ -152,11 +152,7 @@ class Vitals extends Component {
           const elementName = inputElement.getAttribute("name");
           resetElements[elementName] = "";
           if (_elements[i].value !== "") {
-            const {
-              visit_id,
-              current_patient,
-              case_type
-            } = that.props.location.state.content;
+            const { visit_id, current_patient, case_type } = Window.global;
             const _isDepended = _elements[i].getAttribute("dependent");
             bodyArray.push({
               patient_id: current_patient, //Window.global["current_patient"],

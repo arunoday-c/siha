@@ -38,7 +38,7 @@ import { Dimmer, Loader } from "semantic-ui-react";
 class BasicSubjective extends Component {
   constructor(props) {
     super(props);
-    const { gender } = props.location.state.content;
+    const { gender } = Window.global;
     this.state = {
       pageDisplay: "Orders",
       openMedication: false,
@@ -162,7 +162,7 @@ class BasicSubjective extends Component {
   }
 
   getPatientMedications() {
-    const { current_patient } = this.props.location.state.content;
+    const { current_patient } = Window.global;
     this.setState(
       {
         loadingUnderMedication: true
@@ -196,7 +196,7 @@ class BasicSubjective extends Component {
   }
 
   getPatientEncounterDetails() {
-    const { encounter_id } = this.props.location.state.content;
+    const { encounter_id } = Window.global;
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientEncounter",
       method: "GET",
@@ -212,10 +212,10 @@ class BasicSubjective extends Component {
               other_signs: data.other_signs
             },
             () => {
-              this.props.location.state.content[
+              Window.global[
                 "significant_signs"
               ] = this.state.significant_signs;
-              this.props.location.state.content[
+              Window.global[
                 "other_signs"
               ] = this.state.other_signs;
             }
@@ -322,7 +322,7 @@ class BasicSubjective extends Component {
       } else {
         SubjectiveHandler().updatePatientChiefComplaints(this);
       }
-      const { current_patient, episode_id } = this.props.location.state.content;
+      const { current_patient, episode_id } = Window.global;
       this.setState(
         {
           openDiet: !this.state.openDiet
@@ -387,7 +387,7 @@ class BasicSubjective extends Component {
     this.setState({
       [name]: value
     });
-    this.props.location.state.content[name] = value;
+    Window.global[name] = value;
     // if (name === "chief_complaint") {
 
     // setGlobal({
