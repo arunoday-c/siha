@@ -50,8 +50,12 @@ export default {
         .executeQuery({
           query:
             " select hims_f_lab_order_id, LO.patient_id, entered_by, confirmed_by, validated_by, visit_id, critical_status,\
-            group_id, organism_type, bacteria_name, bacteria_type, V.visit_code, provider_id, concat(T.title,' ',E.full_name)  as doctor_name, billed, service_id,  S.service_code, S.service_name, LO.status, cancelled, provider_id, ordered_date, test_type,\
-            lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender, LS.sample_id,  LS.collected, LS.collected_by, LS.remarks, LS.collected_date, LS.hims_d_lab_sample_id, \
+            group_id, organism_type, bacteria_name, bacteria_type, V.visit_code, provider_id, \
+            concat(T.title,' ',E.full_name)  as doctor_name, billed, service_id,  S.service_code, S.service_name, \
+            LO.status, cancelled, provider_id, ordered_date, test_type, concat(V.age_in_years,'Y')years, \
+            concat(V.age_in_months,'M')months, concat(V.age_in_days,'D')days, \
+            lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender, LS.sample_id,  \
+            LS.collected, LS.collected_by, LS.remarks, LS.collected_date, LS.hims_d_lab_sample_id, \
             LS.status as sample_status, TC.test_section,DLS.urine_specimen, IT.hims_d_investigation_test_id from hims_f_lab_order LO \
             inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
             inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id \
@@ -1321,7 +1325,7 @@ export default {
           w =>
             w.hims_f_ordered_services_id > 0 &&
             w.service_type_id ==
-              appsettings.hims_d_service_type.service_type_id.Lab
+            appsettings.hims_d_service_type.service_type_id.Lab
         )
         .Select(s => {
           return {
