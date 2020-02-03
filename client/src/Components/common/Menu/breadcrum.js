@@ -1,10 +1,12 @@
-import React, { memo, useState, useContext } from "react";
+import React, { memo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { setItem } from "algaeh-react-components/storage";
+import { MainContext } from "algaeh-react-components/context";
 import { setCookie } from "../../../utils/algaehApiCall";
 
 export default memo(function({
   selectedMenu,
+  userMenu,
   userLanguage,
   setSelectedMenuItem
 }) {
@@ -16,6 +18,18 @@ export default memo(function({
     s_other_language,
     ScreenList
   } = selectedMenu;
+
+  const selMenuDetails = userMenu.find(
+    f => f.module_code === selectedMenu.module_code
+  );
+
+  // const {
+  //   module_name,
+  //   screen_name,
+  //   other_language,
+  //   s_other_language,
+  //   ScreenList
+  // } = userMenu.find(f => f.module_code === selectedMenu.module_code);
   const [show, setShow] = useState(false);
   const [pos, setPos] = useState(0);
   const history = useHistory();
@@ -35,7 +49,6 @@ export default memo(function({
   }
   return (
     <div className="breadCrumpMenu">
-      {" "}
       <ul className="appMenuNavigation">
         <li>
           <span> {userLanguage === "en" ? module_name : other_language}</span>
@@ -51,10 +64,11 @@ export default memo(function({
           ></i>
         </li>
       </ul>
+
       {show === true ? (
         <div className="dropDownList" style={{ left: `${pos}px` }}>
           <ul>
-            {ScreenList.map((item, idx) => {
+            {selMenuDetails.ScreenList.map((item, idx) => {
               if (screen_name === item.screen_name) return null;
               return (
                 <li
