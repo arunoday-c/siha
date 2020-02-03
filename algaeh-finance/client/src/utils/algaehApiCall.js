@@ -445,7 +445,7 @@ export function swalMessage(options) {
     }
   }
 
-  toast({ type: settings.type, title: title });
+  toast.fire({ type: settings.type, title: title });
 }
 
 export function cancelRequest(requestId) {
