@@ -23,7 +23,7 @@ import {
 } from "./OPCreditSettlementEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { algaehApiCall, getCookie } from "../../utils/algaehApiCall.js";
-
+import { MainContext } from "algaeh-react-components/context";
 import moment from "moment";
 
 class OPCreditSettlement extends Component {
@@ -48,8 +48,17 @@ class OPCreditSettlement extends Component {
     };
   }
 
+  static contextType = MainContext;
+
   UNSAFE_componentWillMount() {
     let IOputs = SettlementIOputs.inputParam();
+
+    const userToken = this.context.userToken;
+
+    IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false
+    IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false
+    IOputs.default_pay_type = userToken.default_pay_type
+
     this.setState({ ...this.state, ...IOputs });
   }
 
@@ -184,45 +193,6 @@ class OPCreditSettlement extends Component {
                 <i className="fas fa-search fa-lg"></i>
               </h6>
             </div>
-            {/* <div className="col-lg-3">
-              <div
-                className="row"
-                style={{
-                  border: " 1px solid #ced4d9",
-                  borderRadius: 5,
-                  marginLeft: 0
-                }}
-              >
-                <div className="col">
-                  <AlgaehLabel label={{ fieldName: "patient_code" }} />
-                  <h6>
-                    {this.state.patient_code
-                      ? this.state.patient_code
-                      : "----------"}
-                  </h6>
-                </div>
-                <div
-                  className="col-lg-3"
-                  style={{ borderLeft: "1px solid #ced4d8" }}
-                >
-                  <i
-                    className="fas fa-search fa-lg"
-                    style={{
-                      paddingTop: 17,
-                      paddingLeft: 3,
-                      cursor: "pointer",
-                      pointerEvents:
-                        this.state.Billexists === true
-                          ? "none"
-                          : this.state.patient_code
-                          ? "none"
-                          : ""
-                    }}
-                    onClick={PatientSearch.bind(this, this)}
-                  />
-                </div>
-              </div>
-            </div> */}
             <div className="col-lg-9">
               <div className="row">
                 <div className="col-lg-3">

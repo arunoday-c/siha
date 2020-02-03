@@ -72,7 +72,6 @@ export function getInvoiceDetail(input) {
 export function addJurnorLedger(input) {
   return new Promise((resolve, reject) => {
     try {
-      debugger
       algaehApiCall({
         uri: "/voucher/addVoucher",
         data: input,

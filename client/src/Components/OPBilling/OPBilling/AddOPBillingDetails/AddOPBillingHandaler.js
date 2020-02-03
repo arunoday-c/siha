@@ -212,6 +212,10 @@ const billheaderCalculation = ($this, context, e) => {
           response.data.records.patient_payable_h =
             response.data.records.patient_payable ||
             $this.state.patient_payable;
+          if ($this.state.default_pay_type === "CD") {
+            response.data.records.card_amount = response.data.records.receiveable_amount
+            response.data.records.cash_amount = 0
+          }
           context.updateState({ ...response.data.records });
         }
       }
@@ -459,6 +463,11 @@ const calculateAmount = ($this, context, row, e) => {
                   this.state.patient_payable;
                 response.data.records.saveEnable = false;
                 response.data.records.addNewService = false;
+
+                if ($this.state.default_pay_type === "CD") {
+                  response.data.records.card_amount = response.data.records.receiveable_amount
+                  response.data.records.cash_amount = 0
+                }
                 if (context !== null) {
                   context.updateState({ ...response.data.records });
                 }

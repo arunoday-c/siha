@@ -1,4 +1,5 @@
-import { getIdentity, getCookie, getToken } from "../utils/algaehApiCall";
+import { getNewLocalIp, getCookie, getToken } from "../utils/algaehApiCall";
+
 import axios from "axios";
 import config from "../utils/config.json";
 
@@ -24,11 +25,11 @@ function createUrl(inputs) {
 export default async function newAlgaehApi(
   inputs = { uri: "", method: "", module: "", data: {} }
 ) {
-  const identity = getIdentity();
   const headers = {
     "x-api-key": getToken(),
-    "x-client-ip": identity,
-    "x-app-user-identity": getCookie("keyRources")
+    "x-client-ip": getNewLocalIp(),
+    "x-app-user-identity": getCookie("keyResources"),
+    "x-branch": getCookie("HospitalId")
   };
   try {
     let response;

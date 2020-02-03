@@ -1,19 +1,16 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import moment from "moment";
 import {
   texthandle,
   datehandle,
   cashtexthandle,
   cardtexthandle,
-  chequetexthandle,
+  // chequetexthandle,
   checkcashhandaler,
   checkcardhandaler,
-  checkcheckhandaler,
+  // checkcheckhandaler,
   // calculateRecipt,
-  countertexthandle
+  // countertexthandle
 } from "./AddReciptFormHandaler";
 import {
   AlgaehDateHandler,
@@ -25,11 +22,9 @@ import {
 import MyContext from "../../../utils/MyContext";
 import "./AddReciptForm.scss";
 import "../../../styles/site.scss";
-
-import { AlgaehActions } from "../../../actions/algaehActions";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
-class AddReciptForm extends Component {
+export default class AddReciptForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -45,21 +40,8 @@ class AddReciptForm extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
+    debugger
     this.setState(nextProps.SettlementIOputs);
-  }
-
-  componentDidMount() {
-    if (this.props.counters === undefined || this.props.counters.length === 0) {
-      this.props.getCounters({
-        uri: "/shiftAndCounter/getCounterMaster",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "CTRY_GET_DATA",
-          mappingName: "counters"
-        }
-      });
-    }
   }
 
   render() {
@@ -230,7 +212,9 @@ class AddReciptForm extends Component {
                         onChange: cardtexthandle.bind(this, this, context)
                       },
                       others: {
-                        disabled: !this.state.Cardchecked,
+                        disabled: this.state.Billexists === true
+                          ? true
+                          : !this.state.Cardchecked,
                         placeholder: "0.00"
                         // onBlur: calculateRecipt.bind(this, this, context),
                         // onFocus: e => {
@@ -253,7 +237,9 @@ class AddReciptForm extends Component {
                         onChange: texthandle.bind(this, this, context)
                       },
                       others: {
-                        disabled: !this.state.Cardchecked
+                        disabled: this.state.Billexists === true
+                          ? true
+                          : !this.state.Cardchecked
                       }
                     }}
                   />
@@ -267,7 +253,9 @@ class AddReciptForm extends Component {
                       className: "txt-fld",
                       name: "card_date"
                     }}
-                    disabled={!this.state.Cardchecked}
+                    disabled={this.state.Billexists === true
+                      ? true
+                      : !this.state.Cardchecked}
                     minDate={new Date()}
                     events={{
                       onChange: datehandle.bind(this, this, context)
@@ -276,7 +264,7 @@ class AddReciptForm extends Component {
                   />
                 </div>
                 {/* Check */}
-                <div className="row secondary-box-container">
+                {/* <div className="row secondary-box-container">
                   <div
                     className="customCheckbox col-lg-3"
                     style={{ border: "none", marginTop: "28px" }}
@@ -355,7 +343,7 @@ class AddReciptForm extends Component {
                     }}
                     value={this.state.cheque_date}
                   />
-                </div>
+                </div> */}
                 <div className="row secondary-box-container">
                   <div className="col-lg-3" />
                   <div className="col-lg-5">
@@ -378,24 +366,3 @@ class AddReciptForm extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    counters: state.counters
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getCounters: AlgaehActions
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AddReciptForm)
-);

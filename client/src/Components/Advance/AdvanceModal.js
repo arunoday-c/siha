@@ -40,26 +40,52 @@ import {
 } from "../../utils/algaehApiCall.js";
 import { AlgaehActions } from "../../actions/algaehActions";
 import MyContext from "../../utils/MyContext";
+import { MainContext } from "algaeh-react-components/context";
 
 class AddAdvanceModal extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
   }
+  static contextType = MainContext;
+
   UNSAFE_componentWillMount() {
     let IOputs = AdvRefunIOputs.inputParam();
+
+    const userToken = this.context.userToken;
+
+    IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false
+    IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false
+    IOputs.default_pay_type = userToken.default_pay_type
+
     this.setState(IOputs);
   }
 
   UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.PackageAdvance === undefined) {
+      debugger
+      let Cashchecked = false
+      let Cardchecked = false
+      let cash_amount = 0
+      if (newProps.inputsparameters.transaction_type === "RF") {
+        Cashchecked = true;
+        Cardchecked = false;
+        cash_amount = newProps.inputsparameters.advance_amount;
+      } else {
+        Cashchecked = this.state.default_pay_type === "CH" ? true : false
+        Cardchecked = this.state.default_pay_type === "CD" ? true : false
+      }
       let lang_sets = "en_comp";
       if (Window.global.selectedLang === "ar") {
         lang_sets = "ar_comp";
       }
       this.setState({
         selectedLang: Window.global.selectedLang,
-        lang_sets: lang_sets
+        lang_sets: lang_sets,
+        Cashchecked: Cashchecked,
+        Cardchecked: Cardchecked,
+        cash_amount: cash_amount,
+        total_amount: cash_amount
       });
     }
   }
@@ -207,15 +233,13 @@ class AddAdvanceModal extends PureComponent {
                   receipt_number: data.receipt_number
                 });
 
-
-
                 swalMessage({
                   title: "Advance Collected Successfully.",
                   type: "success"
                 });
 
                 context.updateState({
-                  advance_amount: data.total_advance_amount,
+                  advance_amount: data.total_advance_amount
                   // AdvanceOpen: false,
                   // RefundOpen: false
                 });
@@ -230,7 +254,7 @@ class AddAdvanceModal extends PureComponent {
             }
           });
         } else {
-          $this.state.ScreenCode = getCookie("ScreenCode")
+          $this.state.ScreenCode = getCookie("ScreenCode");
           algaehApiCall({
             uri: "/billing/patientAdvanceRefund",
             module: "billing",
@@ -250,7 +274,7 @@ class AddAdvanceModal extends PureComponent {
                 //   this.props.onClose && this.props.onClose(e);
                 // });
                 context.updateState({
-                  advance_amount: data.total_advance_amount,
+                  advance_amount: data.total_advance_amount
                   // AdvanceOpen: false,
                   // RefundOpen: false
                 });
@@ -406,6 +430,7 @@ class AddAdvanceModal extends PureComponent {
                           name="Pay by Cash"
                           checked={this.state.Cashchecked}
                           onChange={checkcashhandaler.bind(this, this)}
+                          disabled={this.props.inputsparameters.transaction_type === "RF" ? true : false}
                         />
 
                         <span style={{ fontSize: "0.8rem" }}>
@@ -464,28 +489,29 @@ class AddAdvanceModal extends PureComponent {
                           </label>
                         </div>
 
-                        {this.state.Cardchecked === true ? <AlagehAutoComplete
-                          div={{ className: "col-lg-2 mandatory" }}
-                          label={{
-                            fieldName: "select_card",
-                            isImp: this.state.Cardchecked
-                          }}
-                          selector={{
-                            name: "bank_card_id",
-                            className: "select-fld",
-                            value: this.state.bank_card_id,
-                            dataSource: {
-                              textField: "card_name",
-                              valueField: "hims_d_bank_card_id",
-                              data: this.props.bankscards
-                            },
-                            onChange: texthandle.bind(this, this, context),
-                            onClear: () => {
-                              context.updateState({ bank_card_id: null });
-                            }
-
-                          }}
-                        /> : null}
+                        {this.state.Cardchecked === true ? (
+                          <AlagehAutoComplete
+                            div={{ className: "col-lg-2 mandatory" }}
+                            label={{
+                              fieldName: "select_card",
+                              isImp: this.state.Cardchecked
+                            }}
+                            selector={{
+                              name: "bank_card_id",
+                              className: "select-fld",
+                              value: this.state.bank_card_id,
+                              dataSource: {
+                                textField: "card_name",
+                                valueField: "hims_d_bank_card_id",
+                                data: this.props.bankscards
+                              },
+                              onChange: texthandle.bind(this, this, context),
+                              onClear: () => {
+                                context.updateState({ bank_card_id: null });
+                              }
+                            }}
+                          />
+                        ) : null}
 
                         <AlagehFormGroup
                           div={{ className: "col-lg-2" }}
@@ -548,7 +574,7 @@ class AddAdvanceModal extends PureComponent {
                       </div>
 
                       {/* Check */}
-                      <div className="row secondary-box-container">
+                      {/* <div className="row secondary-box-container">
                         <div
                           className="customCheckbox col-lg-3"
                           style={{ border: "none", marginTop: "28px" }}
@@ -629,7 +655,7 @@ class AddAdvanceModal extends PureComponent {
                           }}
                           value={this.state.cheque_date}
                         />
-                      </div>
+                      </div> */}
                     </div>
                   ) : null}
                   <hr />
@@ -736,8 +762,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AddAdvanceModal)
+  connect(mapStateToProps, mapDispatchToProps)(AddAdvanceModal)
 );

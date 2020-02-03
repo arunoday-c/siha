@@ -258,6 +258,9 @@ const ClearData = ($this, e) => {
           if (response.data.records.selectedValue !== undefined) {
             IOputs.location_type = response.data.records.selectedValue;
           }
+          IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false;
+          IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false;
+
           $this.setState(IOputs, () => {
             const element = ReactDOM.findDOMNode(
               document.getElementById("root")
@@ -345,62 +348,62 @@ const GenerateReciept = ($this, callBack) => {
 const Validations = $this => {
   let isError = false;
 
-  if ($this.state.card_amount > 0) {
-    if (
-      $this.state.card_check_number === null ||
-      $this.state.card_check_number === ""
-    ) {
-      isError = true;
+  // if ($this.state.card_amount > 0) {
+  //   if (
+  //     $this.state.card_check_number === null ||
+  //     $this.state.card_check_number === ""
+  //   ) {
+  //     isError = true;
 
-      swalMessage({
-        type: "warning",
-        title: "Invalid. Card Number cannot be blank."
-      });
+  //     swalMessage({
+  //       type: "warning",
+  //       title: "Invalid. Card Number cannot be blank."
+  //     });
 
-      document.querySelector("[name='card_check_number']").focus();
-      return isError;
-    }
+  //     document.querySelector("[name='card_check_number']").focus();
+  //     return isError;
+  //   }
 
-    if ($this.state.card_date === null || $this.state.card_date === "") {
-      isError = true;
+  //   if ($this.state.card_date === null || $this.state.card_date === "") {
+  //     isError = true;
 
-      swalMessage({
-        type: "warning",
-        title: "Invalid. Card Date Cannot be blank."
-      });
+  //     swalMessage({
+  //       type: "warning",
+  //       title: "Invalid. Card Date Cannot be blank."
+  //     });
 
-      document.querySelector("[name='card_date']").focus();
-      return isError;
-    }
-  }
-  if ($this.state.cheque_amount > 0) {
-    if (
-      $this.state.cheque_number === null ||
-      $this.state.cheque_number === ""
-    ) {
-      isError = true;
+  //     document.querySelector("[name='card_date']").focus();
+  //     return isError;
+  //   }
+  // }
+  // if ($this.state.cheque_amount > 0) {
+  //   if (
+  //     $this.state.cheque_number === null ||
+  //     $this.state.cheque_number === ""
+  //   ) {
+  //     isError = true;
 
-      swalMessage({
-        type: "warning",
-        title: "Check Number cannot be blank."
-      });
+  //     swalMessage({
+  //       type: "warning",
+  //       title: "Check Number cannot be blank."
+  //     });
 
-      document.querySelector("[name='cheque_number']").focus();
-      return isError;
-    }
+  //     document.querySelector("[name='cheque_number']").focus();
+  //     return isError;
+  //   }
 
-    if ($this.state.cheque_date === null || $this.state.cheque_date === "") {
-      isError = true;
+  //   if ($this.state.cheque_date === null || $this.state.cheque_date === "") {
+  //     isError = true;
 
-      swalMessage({
-        type: "warning",
-        title: "Cheque Date Cannot be blank."
-      });
+  //     swalMessage({
+  //       type: "warning",
+  //       title: "Cheque Date Cannot be blank."
+  //     });
 
-      document.querySelector("[name='cheque_date']").focus();
-      return isError;
-    }
-  }
+  //     document.querySelector("[name='cheque_date']").focus();
+  //     return isError;
+  //   }
+  // }
   if ($this.state.unbalanced_amount > 0) {
     isError = true;
 
@@ -971,8 +974,6 @@ const nationalityhandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  debugger
-
   let vat_applicable = "Y";
 
   if (
@@ -1134,6 +1135,11 @@ const ClosePrescribedItem = ($this, e) => {
           sum_data.saveEnable = true;
           sum_data.postEnable = false;
           sum_data.hims_f_pharmacy_pos_detail_id = null;
+
+          if ($this.state.default_pay_type === "CD") {
+            sum_data.card_amount = sum_data.receiveable_amount
+            sum_data.cash_amount = 0
+          }
 
           $this.setState({
             ...sum_data,

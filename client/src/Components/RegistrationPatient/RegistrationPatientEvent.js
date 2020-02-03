@@ -81,6 +81,10 @@ const generateBillDetails = $this => {
               // if (context !==null) {
               //   context.updateState({ ...response.data.records });
               // }
+              if ($this.state.default_pay_type === "CD") {
+                response.data.records.card_amount = response.data.records.receiveable_amount
+                response.data.records.cash_amount = 0
+              }
               $this.setState({ ...response.data.records });
             }
             AlgaehLoader({ show: false });
@@ -165,6 +169,9 @@ const ClearData = ($this, from, patcode) => {
 
       IOputs.forceRefresh = true;
       IOputs.doctors = $this.props.frontproviders;
+      IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false
+      IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false
+
       $this.setState(IOputs, () => {
         $this.props.setSelectedInsurance({
           redux: {

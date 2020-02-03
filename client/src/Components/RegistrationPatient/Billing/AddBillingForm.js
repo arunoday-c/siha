@@ -15,18 +15,17 @@ import {
   discounthandle,
   cashtexthandle,
   cardtexthandle,
-  chequetexthandle,
+  // chequetexthandle,
   adjustadvance,
   // ProcessInsurance,
   checkcashhandaler,
   checkcardhandler,
-  checkcheckhandaler,
+  // checkcheckhandaler,
   credittexthandle,
-  advanceAdjustCal,
   discountCal,
   cashtexthCal,
   cardtexthCal,
-  chequetexthCal,
+  // chequetexthCal,
   makeZero,
   makeDiscountZero
 } from "./AddBillingDetails";
@@ -111,7 +110,6 @@ class AddBillingForm extends Component {
                           Process Insurance
                         </button>
                       </div> */}
-
                       <div className="col-6">
                         <button
                           className="btn btn-default btn-sm"
@@ -144,21 +142,35 @@ class AddBillingForm extends Component {
                           show={this.state.isOpen}
                           onClose={this.ShowBillDetails.bind(this)}
                         />
-                      </div> <div className="col-6" style={{
-                        textAlign: "right",
-                        paddingTop: 4
-                      }}>
-                        {this.state.from_package === true
-                          ? <span className="alert alert-warning animated flash slow infinite utalizeStatus"
-                            role="alert">Utilized From Package</span>
-                          : null}
-                        {this.state.follow_up === true
-                          ? <span className="alert alert-warning animated flash slow infinite utalizeStatus"
-                            role="alert">Follow Up Visit</span>
-                          : null}
-                        {this.state.existing_treat === true
-                          ? <span className="alert alert-warning animated flash slow infinite utalizeStatus">Utilized From Existing Treatment</span>
-                          : null}
+                      </div>{" "}
+                      <div
+                        className="col-6"
+                        style={{
+                          textAlign: "right",
+                          paddingTop: 4
+                        }}
+                      >
+                        {this.state.from_package === true ? (
+                          <span
+                            className="alert alert-warning animated flash slow infinite utalizeStatus"
+                            role="alert"
+                          >
+                            Utilized From Package
+                          </span>
+                        ) : null}
+                        {this.state.follow_up === true ? (
+                          <span
+                            className="alert alert-warning animated flash slow infinite utalizeStatus"
+                            role="alert"
+                          >
+                            Follow Up Visit
+                          </span>
+                        ) : null}
+                        {this.state.existing_treat === true ? (
+                          <span className="alert alert-warning animated flash slow infinite utalizeStatus">
+                            Utilized From Existing Treatment
+                          </span>
+                        ) : null}
                       </div>
                       {this.state.due_amount > 0 ? (
                         <div className="col">
@@ -559,32 +571,30 @@ class AddBillingForm extends Component {
                             <span style={{ fontSize: "0.8rem" }}>
                               Pay by Card
                             </span>
-
-
                           </label>
                         </div>
-                        {this.state.Cardchecked === true ? <AlagehAutoComplete
-                          div={{ className: "col-lg-2 mandatory" }}
-                          label={{
-                            fieldName: "select_card",
-                            isImp: this.state.Cardchecked
-                          }}
-                          selector={{
-                            name: "bank_card_id",
-                            className: "select-fld",
-                            value: this.state.bank_card_id,
-                            dataSource: {
-                              textField: "card_name",
-                              valueField: "hims_d_bank_card_id",
-                              data: this.props.bankscards
-                            },
-                            onChange: texthandle.bind(this, this, context),
-                            onClear: () => {
-                              context.updateState({ bank_card_id: null });
-                            }
-
-                          }}
-                        /> : null}
+                        {this.state.Cardchecked === true ? (
+                          <AlagehAutoComplete
+                            div={{ className: "col-lg-2" }}
+                            label={{
+                              fieldName: "select_card",
+                            }}
+                            selector={{
+                              name: "bank_card_id",
+                              className: "select-fld",
+                              value: this.state.bank_card_id,
+                              dataSource: {
+                                textField: "card_name",
+                                valueField: "hims_d_bank_card_id",
+                                data: this.props.bankscards
+                              },
+                              onChange: texthandle.bind(this, this, context),
+                              onClear: () => {
+                                context.updateState({ bank_card_id: null });
+                              }
+                            }}
+                          />
+                        ) : null}
 
                         <AlagehFormGroup
                           div={{ className: "col-lg-2" }}
@@ -618,10 +628,9 @@ class AddBillingForm extends Component {
                           div={{ className: "col no-padding-left-right" }}
                           label={{
                             fieldName: "card_check_number",
-                            isImp: this.state.Cardchecked
                           }}
                           textBox={{
-                            card: { creditCard: true },
+                            // card: { creditCard: true },
                             disabled:
                               this.state.savedData === true
                                 ? true
@@ -637,7 +646,7 @@ class AddBillingForm extends Component {
                                 this.state.savedData === true
                                   ? true
                                   : !this.state.Cardchecked,
-                              placeholder: "0000-0000-0000-0000"
+                              // placeholder: "0000-0000-0000-0000"
                             }
                           }}
                         />
@@ -664,7 +673,7 @@ class AddBillingForm extends Component {
                         />
                       </div>
                       {/* Check */}
-                      <div className="row secondary-box-container">
+                      {/* <div className="row secondary-box-container">
                         <div
                           className="customCheckbox col-lg-2"
                           style={{ border: "none", marginTop: "28px" }}
@@ -773,7 +782,7 @@ class AddBillingForm extends Component {
                           }}
                           value={this.state.cheque_date}
                         />
-                      </div>
+                      </div> */}
                       <hr style={{ margin: "0.3rem 0rem" }} />
                       <div className="row secondary-box-container">
                         <div className="col-lg-3" />
@@ -828,8 +837,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AddBillingForm)
+  connect(mapStateToProps, mapDispatchToProps)(AddBillingForm)
 );

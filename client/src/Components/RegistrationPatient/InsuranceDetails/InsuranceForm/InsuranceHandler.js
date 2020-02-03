@@ -452,6 +452,11 @@ const ProcessInsurance = ($this, context) => {
               if (response.data.success) {
                 response.data.records.saveEnable = false;
                 response.data.records.ProcessInsure = true;
+                if ($this.state.default_pay_type === "CD") {
+                  response.data.records.card_amount = response.data.records.receiveable_amount
+                  response.data.records.cash_amount = 0
+                }
+
                 $this.setState({ ...response.data.records });
                 if (context !== null) {
                   context.updateState({ ...response.data.records });

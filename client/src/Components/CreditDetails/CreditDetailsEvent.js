@@ -31,7 +31,8 @@ const writeOffhandle = ($this, context, ctrl, e) => {
       [name]: value,
       recievable_amount: recievable_amount,
       unbalanced_amount: recievable_amount,
-      cash_amount: recievable_amount,
+      cash_amount: $this.state.default_pay_type === "CH" ? recievable_amount : 0,
+      card_amount: $this.state.default_pay_type === "CD" ? recievable_amount : 0,
       unbalanced_amount: 0
     });
   }
@@ -61,8 +62,8 @@ const updateCridetSettlement = ($this, context) => {
       write_off_amount: 0,
       recievable_amount: receipt_amount,
       unbalanced_amount: receipt_amount,
-      cash_amount: receipt_amount,
-      card_amount: 0,
+      cash_amount: $this.state.default_pay_type === "CH" ? receipt_amount : 0,
+      card_amount: $this.state.default_pay_type === "CD" ? receipt_amount : 0,
       cheque_amount: 0,
       unbalanced_amount: 0
     });

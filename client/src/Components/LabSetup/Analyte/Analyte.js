@@ -33,7 +33,7 @@ class LabAnalyte extends Component {
       description: "",
       analyte_type: null,
       result_unit: null,
-
+      active: {},
       description_error: false,
       description_error_txt: ""
     };
@@ -68,24 +68,18 @@ class LabAnalyte extends Component {
     }
   }
 
-  ShowModel(e) {
-    debugger;
+  ShowModel = row => {
     this.setState({
-      isOpen: !this.state.isOpen
+      isOpen: !this.state.isOpen,
+      active: row
     });
-  }
+  };
 
   CloseModel(e) {
-    this.setState(
-      {
-        isOpen: !this.state.isOpen
-      },
-      () => {
-        if (e === true) {
-          //     getInvestigations(this, this);
-        }
-      }
-    );
+    this.setState({
+      isOpen: !this.state.isOpen,
+      active: {}
+    });
   }
   render() {
     return (
@@ -153,6 +147,7 @@ class LabAnalyte extends Component {
         <AnalytesRange
           HeaderCaption="Range"
           open={this.state.isOpen}
+          active={this.state.active}
           onClose={this.CloseModel.bind(this)}
           // InvestigationPop={this.state.InvestigationPop}
         />
@@ -175,7 +170,7 @@ class LabAnalyte extends Component {
                           <span>
                             <i
                               className="fas fa-plus"
-                              onClick={this.ShowModel.bind(this)}
+                              onClick={() => this.ShowModel(row)}
                             />
                           </span>
                         );

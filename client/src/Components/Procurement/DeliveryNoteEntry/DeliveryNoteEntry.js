@@ -76,7 +76,7 @@ class DeliveryNoteEntry extends Component {
     const class_finder = this.state.dataFinder === true ? " disableFinder" : "";
 
     return (
-      <div>
+      <div className="deliveryNoteEntryScreen">
         <BreadCrumb
           title={
             <AlgaehLabel
