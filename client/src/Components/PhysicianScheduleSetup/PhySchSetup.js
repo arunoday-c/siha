@@ -1354,7 +1354,7 @@ class PhySchSetup extends Component {
 
         {/* Schedule Modal End */}
         <AddDoctorModal
-          title="Select Doctors to add"
+          title="Select Doctors"
           isOpen={this.state.openAddDoctor}
           availDoctors={this.state.availDoctors}
           handleClose={this.handleClose.bind(this)}
