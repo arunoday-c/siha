@@ -720,7 +720,7 @@ let insertLadOrderedServices = (req, res, next) => {
                         printQuery: true
                       })
                       .then(insert_lab_sample => {
-                        
+                        if (all_analytes.length > 0) {
                         all_analytes.map(item => {
                           const order_dtails = inserteLabSample.find(f => {
                             return item.test_id == f.test_id;
@@ -768,6 +768,17 @@ let insertLadOrderedServices = (req, res, next) => {
                               next(e);
                             });
                           });
+
+                        } else {
+                          _mysql.rollBackTransaction(() => {
+                            next(
+                              httpStatus.generateError(
+                                httpStatus.forbidden,
+                                "Analytes not deifined for this test"
+                              )
+                            );
+                          });
+                        }
                       })
                       .catch(e => {
                         _mysql.rollBackTransaction(() => {
