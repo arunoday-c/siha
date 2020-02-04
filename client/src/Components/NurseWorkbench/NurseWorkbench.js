@@ -89,11 +89,28 @@ class NurseWorkbench extends Component {
     //   getAllChiefComplaints(this);
     // }
     this.isMale = false;
+    
+    this.complaintType = [];
+  }
+
+
+  componentDidMount() {
+    this.loadListofData();
     getAllChiefComplaints(this);
     getDepartmentVitals(this);
     this.getDoctorsAndDepts();
-    this.complaintType = [];
+    if (
+      this.props.allallergies === undefined ||
+      this.props.allallergies.length === 0
+    ) {
+      getAllAllergies(this, data => {
+        this.setState({
+          allSpecificAllergies: this.getPerticularAllergyList(data)
+        });
+      });
+    }
   }
+
 
   openTab(e) {
     var element = document.querySelectorAll("[algaehtabs]");
@@ -493,20 +510,6 @@ class NurseWorkbench extends Component {
         });
       }
     });
-  }
-
-  componentDidMount() {
-    this.loadListofData();
-    if (
-      this.props.allallergies === undefined ||
-      this.props.allallergies.length === 0
-    ) {
-      getAllAllergies(this, data => {
-        this.setState({
-          allSpecificAllergies: this.getPerticularAllergyList(data)
-        });
-      });
-    }
   }
 
   // addChiefComplainToPatient() {

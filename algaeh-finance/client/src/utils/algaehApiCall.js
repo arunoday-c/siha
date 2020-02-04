@@ -7,7 +7,7 @@ import swal from "sweetalert2";
 import Agent from "agentkeepalive";
 import config from "../utils/config.json";
 import axiosCancel from "axios-cancel";
-import AlgaehLoader from "../Components/Wrapper/fullPageLoader.js";
+import AlgaehLoader from "../Wrappers/fullPageLoader.js";
 import { encrypter } from "./GlobalFunctions";
 import { GetContextForm } from "./identity";
 const dateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;

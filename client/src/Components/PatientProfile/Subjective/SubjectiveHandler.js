@@ -168,7 +168,7 @@ export default function SubjectiveHandler() {
       const {
         current_patient,
         episode_id
-      } = $this.props.location.state.content;
+      } = Window.global;
       let _screenName = getCookie("ScreenName").replace("/", "");
       if (_screenName === "Login") {
         return;
@@ -205,7 +205,7 @@ export default function SubjectiveHandler() {
         $this.state.significant_signs !== null ||
         $this.state.other_signs !== null
       ) {
-        const { encounter_id } = $this.props.location.state.content;
+        const { encounter_id } = Window.global;
         algaehApiCall({
           uri: "/doctorsWorkBench/updatePatientEncounter",
           method: "PUT",
@@ -222,7 +222,7 @@ export default function SubjectiveHandler() {
       const {
         current_patient,
         episode_id
-      } = $this.props.location.state.content;
+      } = Window.global;
       let _screenName = getCookie("ScreenName").replace("/", "");
       if (_screenName === "Login") {
         return;
@@ -263,7 +263,7 @@ export default function SubjectiveHandler() {
         $this.state.significant_signs !== null ||
         $this.state.other_signs !== null
       ) {
-        const { encounter_id } = $this.props.location.state.content;
+        const { encounter_id } = Window.global;
         algaehApiCall({
           uri: "/doctorsWorkBench/updatePatientEncounter",
           method: "PUT",
@@ -283,7 +283,7 @@ export default function SubjectiveHandler() {
 }
 
 function getPatientChiefComplaints($this) {
-  const { current_patient, episode_id } = $this.props.location.state.content;
+  const { current_patient, episode_id } = Window.global;
   algaehApiCall({
     uri: "/doctorsWorkBench/getPatientBasicChiefComplaints",
     data: {
@@ -324,7 +324,7 @@ function insertFinalICDS($this, row) {
     current_patient,
     episode_id,
     visit_id
-  } = $this.props.location.state.content;
+  } = Window.global;
   const finalICDS = Enumerable.from($this.props.patient_diagnosis)
     .where(w => w.final_daignosis === "Y")
     .toArray();
@@ -410,7 +410,7 @@ function getPatientDiagnosis($this) {
     current_patient,
     episode_id,
     visit_id
-  } = $this.props.location.state.content;
+  } = Window.global;
   $this.props.getPatientDiagnosis({
     uri: "/doctorsWorkBench/getPatientDiagnosis",
     cancelRequestId: "getPatientDiagnosis",

@@ -45,7 +45,7 @@ class OrderingServices extends PureComponent {
   constructor(props) {
     super(props);
     this.serviceSocket = sockets;
-    const { current_patient, visit_id } = props.location.state.content;
+    const { current_patient, visit_id } = Window.global;
     this.state = {
       s_service_type: null,
       s_service: null,
@@ -233,7 +233,7 @@ class OrderingServices extends PureComponent {
   }
 
   onClose = e => {
-    const {current_patient,visit_id} = this.props.location.state.content;
+    const {current_patient,visit_id} = Window.global;
     getFavouriteServices(this);
     this.setState(
       {
@@ -282,7 +282,7 @@ class OrderingServices extends PureComponent {
   };
   render() {
     const insurance_id = this.state.insurance_provider_id;
-const {current_patient,visit_id,provider_id} = this.props.location.state.content;
+const {current_patient,visit_id,provider_id} = Window.global;
     return (
       <div className="hptl-phase1-ordering-services-form">
         <AlgaehModalPopUp

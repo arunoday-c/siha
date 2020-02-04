@@ -22,7 +22,7 @@ class SickLeave extends Component {
       episode_id,
       current_patient,
       visit_id
-    } = this.props.location.state.content;
+    } = Window.global;
     this.state = {
       from_date: null,
       to_date: null,
@@ -144,7 +144,7 @@ class SickLeave extends Component {
       episode_id,
       current_patient,
       visit_id
-    } = this.props.location.state.content;
+    } = Window.global;
     algaehApiCall({
       uri: "/doctorsWorkBench/addSickLeave",
       data: this.state,

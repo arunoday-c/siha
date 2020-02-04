@@ -859,7 +859,7 @@ const closeViewFavouriteOrder = ($this, e) => {
   }
 };
 const getFavouriteServices = $this => {
-  const { provider_id } = $this.props.location.state.content;
+  const { provider_id } = Window.global;
   algaehApiCall({
     uri: "/favouriteOrders/getFavouriteServices",
     module: "masterSettings",

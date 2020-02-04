@@ -2690,6 +2690,59 @@ const assignComponentScreenPermissions = (req, res, next) => {
     next(e);
   }
 };
+//created by:IRFAN
+const getScreensWithComponents = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "select algaeh_app_screens_id,screen_name ,\
+        algaeh_d_app_component_id,screen_id,component_name from algaeh_d_app_screens S left join \
+        algaeh_d_app_component C on S.algaeh_app_screens_id=C.screen_id and C.record_status='A'\
+        where S.module_id=? and  S.record_status='A'; ",
+        values: [req.query.module_id],
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+
+        const createGroup = _.chain(result)
+          .groupBy(g => g.algaeh_app_screens_id)
+          .map(screen => {
+            const { algaeh_app_screens_id, screen_name } = screen[0];
+
+            const compo = screen
+              .filter(f => f.algaeh_d_app_component_id > 0)
+              .map(m => {
+                return {
+                  algaeh_d_app_component_id: m.algaeh_d_app_component_id,
+                  screen_id: m.screen_id,
+                  component_name: m.component_name
+                };
+              });
+
+            return {
+              algaeh_app_screens_id: algaeh_app_screens_id,
+              screen_name: screen_name,
+              componentList: compo
+            };
+          })
+          .value();
+
+        req.records = createGroup;
+
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 
 export default {
   getAlgaehScreensWithModules,
@@ -2729,5 +2782,6 @@ export default {
   updateLisMachineConfiguration,
   moduleScreenAssignment,
   getComponentsForScreen,
-  assignComponentScreenPermissions
+  assignComponentScreenPermissions,
+  getScreensWithComponents
 };

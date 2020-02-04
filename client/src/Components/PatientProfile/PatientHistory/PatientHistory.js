@@ -87,7 +87,7 @@ class PatientHistory extends Component {
       });
       return;
     }
-    const { current_patient, provider_id } = this.props.location.state.content;
+    const { current_patient, provider_id } = Window.global;
     let send_obj = {
       patient_id: current_patient, //Window.global['current_patient'],
       provider_id: provider_id, //Window.global['provider_id'],

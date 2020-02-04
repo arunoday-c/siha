@@ -8,7 +8,7 @@ import {
   swalMessage,
   setCookie
 } from "../../utils/algaehApiCall";
-// import { setGlobal } from "../../utils/GlobalFunctions";
+import { setGlobal } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
 import algaehLoader from "../Wrapper/fullPageLoader";
@@ -119,18 +119,18 @@ class DoctorsWorkbench extends Component {
         if (response.data.success) {
           this.loadListofData();
 
-          // setGlobal({
-          //   vitals_mandatory: data.vitals_mandatory,
-          //   "EHR-STD": "PatientProfile",
-          //   current_patient: data.patient_id,
-          //   episode_id: data.episode_id,
-          //   visit_id: data.visit_id,
-          //   encounter_id: response.data.records.encounter_id,
-          //   provider_id: data.provider_id,
-          //   chart_type: data.chart_type,
-          //   gender: data.gender,
-          //   sub_department_id: data.sub_department_id
-          // });
+          setGlobal({
+            vitals_mandatory: data.vitals_mandatory,
+            "EHR-STD": "PatientProfile",
+            current_patient: data.patient_id,
+            episode_id: data.episode_id,
+            visit_id: data.visit_id,
+            encounter_id: response.data.records.encounter_id,
+            provider_id: data.provider_id,
+            chart_type: data.chart_type,
+            gender: data.gender,
+            sub_department_id: data.sub_department_id
+          });
           setCookie("ScreenName", "PatientProfile");
           history.push({
             pathname: "/PatientProfile",
@@ -362,18 +362,18 @@ class DoctorsWorkbench extends Component {
       return;
     }
 
-    // setGlobal({
-    //   vitals_mandatory: data.vitals_mandatory,
-    //   "EHR-STD": "PatientProfile",
-    //   current_patient: data.patient_id,
-    //   episode_id: data.episode_id,
-    //   visit_id: data.visit_id,
-    //   encounter_id: data.encounter_id,
-    //   provider_id: data.provider_id,
-    //   chart_type: data.chart_type,
-    //   gender: data.gender,
-    //   sub_department_id: data.sub_department_id
-    // });
+    setGlobal({
+      vitals_mandatory: data.vitals_mandatory,
+      "EHR-STD": "PatientProfile",
+      current_patient: data.patient_id,
+      episode_id: data.episode_id,
+      visit_id: data.visit_id,
+      encounter_id: data.encounter_id,
+      provider_id: data.provider_id,
+      chart_type: data.chart_type,
+      gender: data.gender,
+      sub_department_id: data.sub_department_id
+    });
     const history = this.props.history;
     setCookie("ScreenName", "PatientProfile");
     history.push({
