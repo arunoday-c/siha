@@ -41,7 +41,8 @@ const {
   getAlgaehComponentsWithScreens,
   moduleScreenAssignment,
   getComponentsForScreen,
-  assignComponentScreenPermissions
+  assignComponentScreenPermissions,
+  getScreensWithComponents
 } = masterModels;
 const { releaseConnection } = utils;
 
@@ -705,6 +706,20 @@ export default ({ config, db }) => {
   api.put(
     "/updateLisMachineConfiguration",
     updateLisMachineConfiguration,
+    (req, res, next) => {
+      let result = req.records;
+
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+
+      next();
+    }
+  );
+  api.get(
+    "/getScreensWithComponents",
+    getScreensWithComponents,
     (req, res, next) => {
       let result = req.records;
 
