@@ -545,7 +545,8 @@ let getRoleBaseActiveModules = (req, res, next) => {
                     s_other_language,
                     screen_code,
                     screen_name,
-                    screen_id
+                    screen_id,
+                    redirect_url
                   } = sec;
                   return {
                     algaeh_d_module_id,
@@ -558,6 +559,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
                     screen_code,
                     screen_name,
                     screen_id,
+                    redirect_url,
                     other_language: sec.s_other_language,
                     components: _.chain(screens)
                       .filter(f => f.algaeh_d_app_component_id !== null)
@@ -1432,7 +1434,7 @@ let getAlgaehComponentsWithScreens = (req, res, next) => {
     if (req.userIdentity.role_type != "GN") {
       _mysql
         .executeQuery({
-          query: ` select M.algaeh_d_module_id,M.module_code,M.module_name,
+          query: ` select M.algaeh_d_module_id,M.module_code,M.module_name,S.redirect_url
           S.algaeh_app_screens_id,S.screen_code,S.screen_name,C.component_code,C.algaeh_d_app_component_id,C.component_name as label
           from algaeh_d_app_module as M inner join algaeh_d_app_screens as S
           on M.algaeh_d_module_id = S.module_id inner join algaeh_d_app_component as C
@@ -1455,7 +1457,8 @@ let getAlgaehComponentsWithScreens = (req, res, next) => {
                   const {
                     screen_name,
                     algaeh_app_screens_id,
-                    screen_code
+                    screen_code,
+                    redirect_url
                   } = scr[0];
                   return {
                     label: screen_name,

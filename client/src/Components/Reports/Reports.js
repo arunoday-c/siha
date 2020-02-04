@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./reports.scss";
-import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
+// import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 import loadActiveReports from "./reports_data";
 import AlgaehReport from "../Wrapper/printReports";
 import { MainContext } from "algaeh-react-components/context";
@@ -26,12 +26,22 @@ class Reports extends Component {
   handleClose() {
     this.setState({ showSelector: false });
   }
-
+  componentDidMount() {
+    const { userToken, selectedMenu } = this.context;
+    loadActiveReports(userToken, selectedMenu).then(result => {
+      console.log("result", result);
+      this.setState({
+        // [value.name]: value.value,
+        itemList: result.submenu,
+        excel: result.excel
+      });
+    });
+  }
   render() {
-    const userToken = this.context.userToken;
+    const { userToken, selectedMenu } = this.context;
     return (
       <div className="reports">
-        <div className="row inner-top-search">
+        {/* <div className="row inner-top-search">
           <form action="none" style={{ width: "100%" }}>
             <div className="row padding-10">
               <AlagehAutoComplete
@@ -54,7 +64,7 @@ class Reports extends Component {
               />
             </div>
           </form>
-        </div>
+        </div> */}
 
         <div className="portlet portlet-bordered ">
           <div
