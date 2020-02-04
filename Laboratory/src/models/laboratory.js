@@ -522,7 +522,7 @@ export default {
                     R.normal_qualitative_value,R.text_value ,A.analyte_type,A.result_unit from hims_m_lab_analyte  M \
                     left join hims_d_lab_analytes A on M.analyte_id=A.hims_d_lab_analytes_id\
                     left join  hims_d_lab_analytes_range R on  M.analyte_id=R.analyte_id\
-                    and R.gender=? and R.age_type=? and ? between R.from_age and R.to_age\
+                    and (R.gender=? or R.gender='BOTH') and R.age_type=? and ? between R.from_age and R.to_age\
                     where M.test_id in(?);",
                     values: [
                       test_id,
@@ -1336,7 +1336,7 @@ export default {
           w =>
             w.hims_f_ordered_services_id > 0 &&
             w.service_type_id ==
-            appsettings.hims_d_service_type.service_type_id.Lab
+              appsettings.hims_d_service_type.service_type_id.Lab
         )
         .Select(s => {
           return {
