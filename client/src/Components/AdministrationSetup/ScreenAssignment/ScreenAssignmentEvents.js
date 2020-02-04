@@ -13,65 +13,61 @@ export function ScreenAssignmentEvents() {
             roles: []
           });
           break;
+        case "module_id":
+          // getRoleBaseActive($this);
+          getModuleScreenComponent($this, value.value);
+          $this.setState({
+            [value.name]: value.value
+          });
+          break;
         default:
           //getRoleBaseActive($this);
           // getRoleActiveModules($this, value.value);
-          // $this.setState({
-          //   [value.name]: value.value
-          // });
+          $this.setState({
+            [value.name]: value.value
+          });
           break;
       }
     },
-    assignSelectedModules: that => {
+    assignSelectedScreen: that => {
       return new Promise((resolve, reject) => {
-        const module = Object.keys(that.state.selectedModules).map(item => {
-          const selected = that.state.modules.find(f => f.module_code === item);
-          if (selected !== undefined) {
-            const screens = Object.keys(that.state.selectedModules[item]).map(
-              screen => {
-                return selected.ScreenList.find(s => s.screen_code === screen);
-              }
-            );
-            return {
-              module_code: selected.module_code,
-              module_id: selected.module_id,
-              module_name: selected.module_name,
-              other_language: selected.other_language,
-              icons: selected.icons,
-              order: selected.order,
-              ScreenList: screens
-            };
-          }
-        });
+        // const module = Object.keys(that.state.selectedScreen).map(item => {
+        //   const selected = that.state.ScreenList.find(f => f.screen_code === item);
+        //   if (selected !== undefined) {
+        //     const screens = Object.keys(that.state.selectedScreen[item]).map(
+        //       screen => {
+        //         return selected.componentList.find(s => s.component_code === screen);
+        //       }
+        //     );
+        //     return {
+        //       role_id: that.state.role_id,
+        //       screen_id: selected.algaeh_app_screens_id,
+        //       module_id: that.state.module_id,
+        //       componentList: screens
+        //     };
+        //   }
+        // });
+
+        debugger
         algaehApiCall({
           uri: "/algaehMasters/moduleScreenAssignment",
           method: "POST",
           data: {
-            module_screen: module,
+            screen_list: that.state.ScreenList,
             app_group_id: that.state.app_group_id,
+            module_id: that.state.module_id,
             role_id: that.state.role_id
           },
           onSuccess: res => {
-            // const { success, message } = res.data;
             resolve(res.data);
-            // swalMessage({
-            //   title: message,
-            //   type: success === true ? "success" : "error"
-            // });
           },
           onCatch: err => {
             const { message } = err.response.data;
             reject(message);
-            // swalMessage({
-            //   title: message,
-            //   type: "error"
-            // });
           }
         });
       });
 
-      // that.setState({ assignedModules: module });
-      // console.log("module", module);
     },
     assignScreens: $this => {
       //To build delete inputs
@@ -237,10 +233,10 @@ export function ScreenAssignmentEvents() {
       const _status = e.target.checked;
       let val = parseInt(e.target.value, 10);
 
-      let main_modules = $this.state.modules;
+      let main_modules = $this.state.ScreenList;
 
-      const _screens = data.ScreenList.map(item => {
-        if (item.screen_id === val) {
+      const _screens = data.componentList.map(item => {
+        if (item.algaeh_d_app_component_id === val) {
           item.checked = _status ? true : false;
         }
         return {
@@ -253,66 +249,68 @@ export function ScreenAssignmentEvents() {
       });
 
       let newModule = _.map(main_modules, f => {
-        let _sList = f.ScreenList;
-        if (f.module_id === data.module_id) {
+        let _sList = f.componentList;
+        if (f.algaeh_app_screens_id === data.algaeh_app_screens_id) {
           _sList = _screens;
           f.checked = _check.length > 0 ? true : false;
         }
         return {
           ...f,
-          ScreenList: _sList
+          componentList: _sList
         };
       });
 
-      $this.setState({ modules: newModule });
+      $this.setState({ ScreenList: newModule });
     },
     changeModules: ($this, data, e) => {
       const _status = e.target.checked;
       let val = parseInt(e.target.value, 10);
 
-      let main_modules = $this.state.modules;
+      let main_modules = $this.state.ScreenList;
 
-      const _screens = data.ScreenList.map(item => {
+      const _screens = data.componentList.map(item => {
         return {
           ...item,
           checked: _status ? true : false
         };
       });
       let newModule = _.map(main_modules, f => {
-        let _sList = f.ScreenList;
+        let _sList = f.componentList;
         let _checked = { checked: f.checked ? true : false };
-        if (parseInt(f.module_id) === val) {
+        if (parseInt(f.algaeh_app_screens_id) === val) {
           _sList = _screens;
           _checked = { checked: _status ? true : false };
         }
         return {
           ...f,
           ..._checked,
-          ScreenList: _sList
+          componentList: _sList
         };
       });
-      $this.setState({ modules: newModule });
+      $this.setState({ ScreenList: newModule });
+    },
+
+    getModules: ($this) => {
+      algaehApiCall({
+        uri: "/algaehMasters/getAlgaehModules",
+        method: "GET",
+        onSuccess: response => {
+          if (response.data.success) {
+            $this.setState({
+              algaeh_modules: response.data.records
+            });
+          }
+        },
+        onError: error => {
+          swalMessage({
+            title: error.message,
+            type: "success"
+          });
+        }
+      });
     }
   };
 }
-
-// function getGroupData($this) {
-//   algaehApiCall({
-//     uri: "/algaehappuser/selectAppGroup",
-//     method: "GET",
-//     onSuccess: response => {
-//       if (response.data.success) {
-//         $this.setState({ groups: response.data.records });
-//       }
-//     },
-//     onFailure: error => {
-//       swalMessage({
-//         title: error.message,
-//         type: "error"
-//       });
-//     }
-//   });
-// }
 
 function getRoleBaseActive($this) {
   $this._isMounted = true;
@@ -345,6 +343,28 @@ function getRoles($this, group_id) {
     onSuccess: response => {
       if (response.data.success) {
         $this.setState({ roles: response.data.records });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+}
+
+function getModuleScreenComponent($this, module_id) {
+  algaehApiCall({
+    uri: "/algaehMasters/getScreensWithComponents",
+    method: "GET",
+    data: {
+      module_id: module_id
+    },
+    onSuccess: response => {
+      debugger
+      if (response.data.success) {
+        $this.setState({ ScreenList: response.data.records });
       }
     },
     onFailure: error => {
