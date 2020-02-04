@@ -16,7 +16,8 @@ import { getYears, AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import _ from "lodash";
 import moment from "moment";
-
+import Insurance from "./reportBag/insurance";
+import Income from "./reportBag/income";
 let allYears = getYears();
 
 let hospital_id = null;
@@ -24,7 +25,6 @@ let hospital_id = null;
 const Hims_Reports = [
   {
     name: "Appointment",
-
     submenu: [
       {
         subitem: "Doctor and Status wise report",
@@ -127,390 +127,7 @@ const Hims_Reports = [
       }
     ]
   },
-  {
-    name: "Income",
-    submenu: [
-      {
-        subitem: "Department Wise Income",
-        reportName: "departmentWiseIncome",
-        // reportQuery: "subDepartmentIncome",
-        requireIframe: true,
-        reportParameters: [
-          {
-            className: "col-2 form-group mandatory",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            className: "col-2 form-group mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          }
-        ]
-      },
-      {
-        subitem: "OP Billing Summary",
-        reportName: "opBillSummary",
-        //reportQuery: "OPBillSummary",
-        requireIframe: true,
-        reportParameters: [
-          {
-            className: "col-2 form-group mandatory",
-            type: "dropdown",
-            name: "hospital_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Branch",
-            link: {
-              uri: "/organization/getOrganizationByUser"
-            },
-            value: hospital_id,
-            dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
-            }
-          },
-          {
-            className: "col-2 form-group mandatory",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            className: "col-2 form-group mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          }
-        ]
-      },
-      {
-        subitem: "OP Billing Detail",
-        reportName: "opBillDetails",
-        requireIframe: true,
-        reportParameters: [
-          {
-            className: "col-2 form-group mandatory",
-            type: "dropdown",
-
-            initialLoad: true,
-            isImp: true,
-            label: "Branch",
-            link: {
-              uri: "/organization/getOrganizationByUser"
-            },
-            value: hospital_id,
-            dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
-            }
-          },
-          {
-            className: "col-2 form-group mandatory",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            className: "col-2 form-group mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            className: "col-2 form-group",
-            type: "dropdown",
-            name: "service_type_id",
-            initialLoad: true,
-            isImp: false,
-            link: {
-              uri: "/serviceType",
-              module: "masterSettings"
-            },
-            dataSource: {
-              textField: "service_type",
-              valueField: "hims_d_service_type_id",
-              data: undefined
-            }
-          }
-        ]
-      },
-      {
-        subitem: "Daily Cash Collection Consolidated",
-        //template_name: "Income/dailyCashCollection",
-        reportName: "dailyCashCollection",
-        //reportQuery: "staffCashCollection",
-        requireIframe: true,
-        reportParameters: [
-          {
-            className: "col-2 form-group mandatory",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            className: "col-2 form-group mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          }
-        ]
-      },
-      {
-        subitem: "List of Receipt",
-        reportName: "opBillIncomeReceipt",
-        requireIframe: true,
-        pageSize: "A4",
-        pageOrentation: "landscape", //"portrait",
-        reportParameters: [
-          {
-            className: "col-2 form-group mandatory",
-            type: "dropdown",
-            name: "receipt_type",
-            initialLoad: true,
-            isImp: true,
-            label: "Receipt Type",
-
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: RECEIPT_TYPE
-            },
-            events: {
-              onChange: (reportState, currentValue, callback) => {
-                let reportQuery =
-                  currentValue.value === "OP"
-                    ? "opBillReceipt"
-                    : // : currentValue.value === "POS"
-                    // ? "posReceipt"
-                    currentValue.value === "AD"
-                    ? "advanceReceipt"
-                    : currentValue.value === "OPC"
-                    ? "opCreditReceipt"
-                    : // : currentValue.value === "POSC"
-                      // ? "posCreditReceipt"
-                      "";
-                callback({ reportQuery: reportQuery });
-              }
-            }
-          },
-          {
-            className: "col-2 form-group mandatory",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            className: "col-2 form-group mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            className: "col-2 form-group mandatory",
-            type: "dropdown",
-            name: "hospital_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Branch",
-            link: {
-              uri: "/organization/getOrganizationByUser"
-            },
-            value: hospital_id,
-            dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
-            }
-          },
-          {
-            type: "dropdown",
-            name: "sub_department_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Department",
-            link: {
-              uri: "/department/get/get_All_Doctors_DepartmentWise",
-              module: "masterSettings"
-            },
-            manupulation: (response, reportState, stateProperty) => {
-              reportState.setState({
-                [stateProperty]: response.records.departmets
-              });
-            },
-            dataSource: {
-              textField: "sub_department_name",
-              valueField: "sub_department_id",
-              data: undefined
-            },
-            events: {
-              onChange: (reportState, currentEvent) => {
-                reportState.setState({
-                  sub_department_id: currentEvent.value,
-                  provider_id_list: currentEvent.selected.doctors
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  provider_id_list: []
-                });
-              }
-            }
-          },
-          {
-            type: "dropdown",
-            name: "provider_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Filter by Doctor",
-            dataSource: {
-              textField: "full_name",
-              valueField: "employee_id",
-              data: undefined
-            }
-          }
-        ]
-      },
-      {
-        subitem: "Daily Transaction",
-        reportName: "dailyTransactionIncomeReceipt",
-        requireIframe: true,
-        pageSize: "A4",
-        pageOrentation: "landscape", //"portrait",
-        reportParameters: [
-          {
-            className: "col-2 form-group mandatory",
-            type: "dropdown",
-            name: "hospital_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Branch",
-            link: {
-              uri: "/organization/getOrganizationByUser"
-            },
-            value: hospital_id,
-            dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
-            }
-          },
-          {
-            className: "col-2 form-group mandatory",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            className: "col-2 form-group mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            type: "dropdown",
-            name: "sub_department_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Department",
-            link: {
-              uri: "/department/get/get_All_Doctors_DepartmentWise",
-              module: "masterSettings"
-            },
-            manupulation: (response, reportState, stateProperty) => {
-              reportState.setState({
-                [stateProperty]: response.records.departmets
-              });
-            },
-            dataSource: {
-              textField: "sub_department_name",
-              valueField: "sub_department_id",
-              data: undefined
-            },
-            events: {
-              onChange: (reportState, currentEvent) => {
-                reportState.setState({
-                  sub_department_id: currentEvent.value,
-                  provider_id_list: currentEvent.selected.doctors
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  provider_id_list: []
-                });
-              }
-            }
-          },
-          {
-            type: "dropdown",
-            name: "provider_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Filter by Doctor",
-            dataSource: {
-              textField: "full_name",
-              valueField: "employee_id",
-              data: undefined
-            }
-          }
-        ]
-      }
-    ]
-  },
+  ,
   {
     name: "Patient Reports",
     submenu: [
@@ -5769,92 +5386,6 @@ const Pharmacy_Reports = [
   }
 ];
 
-const insurance_reports = [
-  {
-    name: "Insurance",
-    submenu: [
-      {
-        subitem: "All Claim Statement",
-        template_name: "allClaimStatementInsurance",
-        reportParameters: [
-          {
-            className: "col-2 form-group mandatory",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            className: "col-2 form-group mandatory",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            className: "col-2 form-group mandatory",
-            type: "dropdown",
-            name: "",
-            initialLoad: true,
-            isImp: true,
-            label: "Company",
-            link: {
-              uri: "/insurance/getInsuranceProviders"
-            },
-            events: {
-              onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/pharmacy/getPharmacyLocation",
-                  module: "pharmacy",
-                  method: "GET",
-                  data: { hospital_id: currentEvent.value },
-
-                  onSuccess: result => {
-                    reportState.setState({
-                      location_id_list: result.data.records
-                    });
-                  }
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  location_id_list: []
-                });
-              }
-            },
-            dataSource: {
-              textField: "insurance_provider_name",
-              valueField: "hims_d_insurance_provider_id"
-            }
-          },
-          {
-            className: "col-2 form-group mandatory",
-            type: "dropdown",
-            name: "",
-            initialLoad: true,
-            isImp: false,
-            label: "Sub Company",
-            dataSource: {
-              // textField: "full_name",
-              // valueField: "employee_id",
-              // data: undefined
-            }
-          }
-        ]
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      }
-    ]
-  }
-];
-
 // case "LAB":
 //   result = pushData(result, HR_Payroll_Reports);
 //   break;
@@ -5866,62 +5397,54 @@ const pushData = (result, current) => {
   }
   return result;
 };
-export default function loadActiveReports(userToken) {
-  // if (sessionStorage.getItem("CurrencyDetail") !== null) {
-  //   hospital_id = JSON.parse(
-  //     AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-  //   ).hims_d_hospital_id;
-  // }
-  const {hims_d_hospital_id,product_type} = userToken;
-  hospital_id = hims_d_hospital_id;
-  return {
-    data: () => {
+export default function loadActiveReports(userToken, selectedMenu) {
+  return new Promise((resolve, reject) => {
+    try {
+      const {
+        hims_d_hospital_id
+        //  product_type
+      } = userToken;
+      const { screen_code } = selectedMenu;
+      hospital_id = hims_d_hospital_id;
       let result = [];
-     if(product_type
-      ==="HIMS_ERP")  {
-        result = pushData(result, Hims_Reports);
-        result = pushData(result, HR_Payroll_Reports);
-        result = pushData(result, insurance_reports);
-        result = pushData(result, Pharmacy_Reports);
-        result = pushData(result, Inventory_Reports);
-      } else if(product_type ==="HIMS_CLINICAL"){
-        result = pushData(result, Hims_Reports);
-        result = pushData(result, insurance_reports);
-        result = pushData(result, Pharmacy_Reports);
-        result = pushData(result, Inventory_Reports);
-      } else if(product_type==="HRMS"){
-        result = pushData(result, HR_Payroll_Reports);
-      } else if(product_type === "ONLY_PHARMACY"){
-        result = pushData(result, Pharmacy_Reports);
-      } else if(product_type === "FINANCE_ERP"){
-        result = pushData(result, HR_Payroll_Reports);
-        result = pushData(result, Inventory_Reports);
-        result = pushData(result, Pharmacy_Reports);
+      switch (screen_code) {
+        case "RPT_INS":
+          result = Insurance({algaehApiCall});
+          break;
+        case "RPT_INC":
+          result = Income({ hospital_id: hims_d_hospital_id, algaehApiCall });
+          break;
       }
-
-    
-     
-      // for (let i = 0; i < Activated_Modueles.length; i++) {
-      //   const item = Activated_Modueles[i];
-      //   switch (item.module_code) {
-      //     case "FTDSK":
-      //       result = pushData(result, Hims_Reports);
-      //       break;
-      //     case "PAYROLL":
-      //       result = pushData(result, HR_Payroll_Reports);
-      //       break;
-      //     case "INS":
-      //       result = pushData(result, insurance_reports);
-      //       break;
-      //     case "PHCY":
-      //       result = pushData(result, Pharmacy_Reports);
-      //       break;
-      //     case "INVTRY":
-      //       result = pushData(result, Inventory_Reports);
-      //       break;
-      //   }
-      // }
-      return result;
+      resolve(result);
+    } catch (e) {
+      reject(e);
     }
-  };
+  });
+
+  // return {
+  //   data: () => {
+  //     let result = [];
+  //     if (product_type === "HIMS_ERP") {
+  //       result = pushData(result, Hims_Reports);
+  //       result = pushData(result, HR_Payroll_Reports);
+  //       result = pushData(result, insurance_reports);
+  //       result = pushData(result, Pharmacy_Reports);
+  //       result = pushData(result, Inventory_Reports);
+  //     } else if (product_type === "HIMS_CLINICAL") {
+  //       result = pushData(result, Hims_Reports);
+  //       result = pushData(result, insurance_reports);
+  //       result = pushData(result, Pharmacy_Reports);
+  //       result = pushData(result, Inventory_Reports);
+  //     } else if (product_type === "HRMS") {
+  //       result = pushData(result, HR_Payroll_Reports);
+  //     } else if (product_type === "ONLY_PHARMACY") {
+  //       result = pushData(result, Pharmacy_Reports);
+  //     } else if (product_type === "FINANCE_ERP") {
+  //       result = pushData(result, HR_Payroll_Reports);
+  //       result = pushData(result, Inventory_Reports);
+  //       result = pushData(result, Pharmacy_Reports);
+  //     }
+  //     return result;
+  //   }
+  //};
 }
