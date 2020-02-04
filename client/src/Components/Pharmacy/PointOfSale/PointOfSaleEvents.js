@@ -25,29 +25,29 @@ const changeTexts = ($this, ctrl, e) => {
     case "pos_customer_type":
       value === "OT"
         ? $this.setState({
-          [name]: value,
-          mode_of_pay: "1",
-          OTItemAddDis: false
-        })
+            [name]: value,
+            mode_of_pay: "1",
+            OTItemAddDis: false
+          })
         : $this.setState({
-          [name]: value,
-          mode_of_pay: "",
-          OTItemAddDis: false
-        });
+            [name]: value,
+            mode_of_pay: "",
+            OTItemAddDis: false
+          });
       break;
 
     case "mode_of_pay":
       value === "1"
         ? $this.setState({
-          [name]: value,
-          insurance_yesno: "N",
-          insured: "N"
-        })
+            [name]: value,
+            insurance_yesno: "N",
+            insured: "N"
+          })
         : $this.setState({
-          [name]: value,
-          insurance_yesno: "Y",
-          insured: "Y"
-        });
+            [name]: value,
+            insurance_yesno: "Y",
+            insured: "Y"
+          });
       break;
 
     default:
@@ -494,7 +494,6 @@ const SavePosEnrty = $this => {
     delete posdata.patInsuranceFrontImg;
     delete posdata.patInsuranceBackImg;
 
-
     algaehApiCall({
       uri: callUri,
       module: "pharmacy",
@@ -660,7 +659,7 @@ const PostPosEntry = $this => {
             posdata = $this.state;
           }
 
-          posdata.ScreenCode = getCookie("ScreenCode")
+          posdata.ScreenCode = getCookie("ScreenCode");
           const _patInsuranceFrontImg = $this.state.patInsuranceFrontImg;
           const _patInsuranceBackImg = $this.state.patInsuranceBackImg;
           delete posdata.patInsuranceFrontImg;
@@ -766,7 +765,7 @@ const VisitSearch = ($this, e) => {
       searchGrid: {
         columns: spotlightSearch.VisitDetails.VisitList
       },
-      searchName: "visit",
+      searchName: "prescription_visit",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
@@ -947,7 +946,11 @@ const LocationchangeTexts = ($this, ctrl, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   $this.setState(
-    { [name]: value, location_type: e.selected.location_type, dataFinder: true },
+    {
+      [name]: value,
+      location_type: e.selected.location_type,
+      dataFinder: true
+    },
     () => {
       let _screenName = getCookie("ScreenName").replace("/", "");
       algaehApiCall({

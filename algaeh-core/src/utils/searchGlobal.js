@@ -871,7 +871,6 @@ let algaehSearchConfig = (searchName, req) => {
           where IH.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_sales_invoice_header_id desc"
-
       },
       {
         searchName: "InvSalesReturn",
@@ -884,7 +883,6 @@ let algaehSearchConfig = (searchName, req) => {
           where IH.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_sales_return_header_id desc"
-
       },
       {
         searchName: "ContractMang",
@@ -894,12 +892,19 @@ let algaehSearchConfig = (searchName, req) => {
           inner join hims_d_customer C on CM.customer_id = C.hims_d_customer_id where hospital_id=" +
           hospitalId,
         orderBy: "hims_f_contract_management_id desc"
-
+      },
+      {
+        searchName: "prescription_visit",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS  distinct hims_f_patient_visit_id, full_name, patient_code, contact_number, \
+          nationality_id, V.visit_code, V.visit_date, V.patient_id, V.hims_f_patient_visit_id, V.insured, \
+          V.episode_id FROM hims_f_prescription PRE inner join hims_f_patient_visit V on  \
+          PRE.episode_id=V.episode_id inner join hims_f_patient P on V.patient_id=P.hims_d_patient_id  \
+          where date(V.visit_expiery_date) > date(now())  and V.hospital_id=" +
+          hospitalId,
+        orderBy: "V.hims_f_patient_visit_id desc"
       }
-
     ]
-
-
   };
 
   let row = new LINQ(queries.algaehSeach)
