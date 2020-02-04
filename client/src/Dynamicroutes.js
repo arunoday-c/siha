@@ -37,6 +37,7 @@ const JournalVoucher = () => <FinanceFragment path="JournalVoucher" />;
 const FinanceReports = () => <FinanceFragment path="FinanceReports" />;
 const FinanceOptions = () => <FinanceFragment path="FinanceOptions" />;
 const CostCenter = () => <FinanceFragment path="CostCenter" />;
+const CostCenterMaster = () => <FinanceFragment path="CostCenterMaster" />;
 const JournalAuthorization = () => (
   <FinanceFragment path="JournalAuthorization" />
 );
@@ -585,7 +586,8 @@ const PageToPlot = {
   FinanceReports,
   FinanceOptions,
   JournalAuthorization,
-  CostCenter
+  CostCenter,
+  CostCenterMaster
 };
 
 const DirectRoutes = React.memo(props => {
