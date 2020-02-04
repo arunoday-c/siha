@@ -30,7 +30,7 @@ export default {
       });
   },
   //created by irfan:
-  addCostCenter: (req, res, next) => {
+  addCostCenter_BAKUP_FEB_3_2020: (req, res, next) => {
     const _mysql = new algaehMysql();
 
     const input = req.body;
@@ -135,7 +135,204 @@ export default {
       });
   },
   //created by irfan:
+  addCostCenterGroup: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    const input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT finance_options_id,cost_center_required  from finance_options limit 1; "
+      })
+      .then(result => {
+        if (result.length == 1 && result[0]["cost_center_required"] == "Y") {
+          _mysql
+            .executeQuery({
+              query:
+                "insert into finance_cost_center_group (group_code,group_name,created_by,created_date,\
+                  updated_by,updated_date)  VALUE(?,?,?,?,?,?);",
+              values: [
+                input.group_code,
+                input.group_name,
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date()
+              ],
+              printQuery: false
+            })
+            .then(groupRes => {
+              _mysql.releaseConnection();
+              req.records = groupRes;
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: "Cost center is disabled"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+  //created by irfan:
+  addCostCenter: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    const input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT finance_options_id,cost_center_required from finance_options limit 1; "
+      })
+      .then(result => {
+        if (result.length == 1 && result[0]["cost_center_required"] == "Y") {
+          _mysql
+            .executeQuery({
+              query:
+                "insert into finance_cost_center (cost_center_code,group_id,cost_center_name,created_by,created_date,\
+                  updated_by,updated_date)  VALUE(?,?,?,?,?,?,?);",
+              values: [
+                input.cost_center_code,
+                input.group_id,
+                input.cost_center_name,
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date()
+              ],
+              printQuery: false
+            })
+            .then(groupRes => {
+              _mysql.releaseConnection();
+              req.records = groupRes;
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: "Cost center is disabled"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  //created by irfan:
+  getCostCenterGroups: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const input = req.query;
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT finance_options_id,cost_center_required from finance_options limit 1; "
+      })
+      .then(result => {
+        if (result.length == 1 && result[0]["cost_center_required"] == "Y") {
+          let str = "";
+
+          if (input.finance_cost_center_group_id > 0) {
+            str = ` where finance_cost_center_group_id=${input.finance_cost_center_group_id}`;
+          }
+          _mysql
+            .executeQuery({
+              query: `SELECT finance_cost_center_group_id, group_code, group_name\
+              from finance_cost_center_group ${str};`,
+
+              printQuery: false
+            })
+            .then(groupRes => {
+              _mysql.releaseConnection();
+              req.records = groupRes;
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: "Cost center is disabled"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+  //created by irfan:
   getCostCenters: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const input = req.query;
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT finance_options_id,cost_center_required from finance_options limit 1; "
+      })
+      .then(result => {
+        if (result.length == 1 && result[0]["cost_center_required"] == "Y") {
+          let str = "";
+
+          if (input.group_id > 0) {
+            str = ` where group_id=${input.group_id}`;
+          }
+          _mysql
+            .executeQuery({
+              query: `SELECT finance_cost_center_id, cost_center_code, group_id, cost_center_name\
+                from finance_cost_center  ${str};`,
+
+              printQuery: false
+            })
+            .then(groupRes => {
+              _mysql.releaseConnection();
+              req.records = groupRes;
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: "Cost center is disabled"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  //created by irfan:
+  getCostCenters_bkp_4_feb_2020: (req, res, next) => {
     const _mysql = new algaehMysql();
     const input = req.query;
     _mysql
