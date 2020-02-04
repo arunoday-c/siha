@@ -15,7 +15,8 @@ function NavBars(props) {
     setUserLanguage,
     setUserMenu,
     setUserToken,
-    setSelectedMenuItem
+    setSelectedMenuItem,
+    userMenu
   } = useContext(MainContext);
   const history = useHistory();
   // const [title, setTitle] = useState("");
@@ -83,6 +84,7 @@ function NavBars(props) {
         <h5 className="topNavbar-title mr-auto">
           <BreadCrum
             selectedMenu={selectedMenu}
+            userMenu={userMenu}
             userLanguage={userLanguage}
             setSelectedMenuItem={setSelectedMenuItem}
           />

@@ -3,6 +3,7 @@ import "./reports.scss";
 import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 import loadActiveReports from "./reports_data";
 import AlgaehReport from "../Wrapper/printReports";
+import { MainContext } from "algaeh-react-components/context";
 class Reports extends Component {
   constructor(props) {
     super(props);
@@ -13,19 +14,7 @@ class Reports extends Component {
       excel: "false"
     };
   }
-
-  // loadItemList(e) {
-  //   e.preventDefault();
-
-  //   if (this.state.module.length === 0) {
-  //     swalMessage({
-  //       title: "Please Select a Category",
-  //       type: "warning "
-  //     });
-  //   } else {
-  //   }
-  // }
-
+  static contextType = MainContext;
   dropDownHandler(value) {
     this.setState({
       [value.name]: value.value,
@@ -39,6 +28,7 @@ class Reports extends Component {
   }
 
   render() {
+    const userToken = this.context.userToken;
     return (
       <div className="reports">
         <div className="row inner-top-search">
@@ -56,76 +46,17 @@ class Reports extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "name",
-                    data: loadActiveReports().data()
+                    data: loadActiveReports(userToken).data()
                   },
                   others: {},
                   onChange: this.dropDownHandler.bind(this)
                 }}
               />
-
-              {/* <AlagehAutoComplete
-                div={{ className: "col form-group" }}
-                label={{ forceLabel: "Report Category", isImp: false }}
-                selector={{
-                  name: "module",
-                  className: "select-fld",
-                  value: this.state.module,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "name",
-                    data: data
-                  },
-                  others: {},
-                  onChange: this.dropDownHandler.bind(this)
-                }}
-              /> */}
-
-              {/* <AlagehFormGroup
-                div={{ className: "col form-group" }}
-                label={{
-                  forceLabel: "Filter by Reports",
-                  isImp: false
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "",
-                  value: "",
-                  events: {},
-                  others: {
-                    type: "text",
-                    placeholder: "Search for reports"
-                  },
-                  events: {
-                    onChange: () => {}
-                  }
-                }}
-              /> */}
-
-              {/* <AlagehFormGroup
-                div={{ className: "col" }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "",
-                  value: "",
-                  others: {
-                    style: { padding: 10 },
-                    placeholder: "Search for reports"
-                  },
-                  events: {
-                    onChange: () => {}
-                  }
-                }}
-              /> */}
             </div>
           </form>
         </div>
 
         <div className="portlet portlet-bordered ">
-          {/* <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">Report List</h3>
-            </div>
-          </div> */}
           <div
             className="portlet-body"
             style={{ height: "75vh", overflow: "auto" }}

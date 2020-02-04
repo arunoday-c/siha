@@ -5866,41 +5866,61 @@ const pushData = (result, current) => {
   }
   return result;
 };
-export default function loadActiveReports() {
-  if (sessionStorage.getItem("CurrencyDetail") !== null) {
-    hospital_id = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    ).hims_d_hospital_id;
-  }
+export default function loadActiveReports(userToken) {
+  // if (sessionStorage.getItem("CurrencyDetail") !== null) {
+  //   hospital_id = JSON.parse(
+  //     AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+  //   ).hims_d_hospital_id;
+  // }
+  const {hims_d_hospital_id,product_type} = userToken;
+  hospital_id = hims_d_hospital_id;
   return {
     data: () => {
-      const Activated_Modueles =
-        sessionStorage.getItem("ModuleDetails") !== null
-          ? JSON.parse(
-              AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-            )
-          : [];
       let result = [];
-      for (let i = 0; i < Activated_Modueles.length; i++) {
-        const item = Activated_Modueles[i];
-        switch (item.module_code) {
-          case "FTDSK":
-            result = pushData(result, Hims_Reports);
-            break;
-          case "PAYROLL":
-            result = pushData(result, HR_Payroll_Reports);
-            break;
-          case "INS":
-            result = pushData(result, insurance_reports);
-            break;
-          case "PHCY":
-            result = pushData(result, Pharmacy_Reports);
-            break;
-          case "INVTRY":
-            result = pushData(result, Inventory_Reports);
-            break;
-        }
+     if(product_type
+      ==="HIMS_ERP")  {
+        result = pushData(result, Hims_Reports);
+        result = pushData(result, HR_Payroll_Reports);
+        result = pushData(result, insurance_reports);
+        result = pushData(result, Pharmacy_Reports);
+        result = pushData(result, Inventory_Reports);
+      } else if(product_type ==="HIMS_CLINICAL"){
+        result = pushData(result, Hims_Reports);
+        result = pushData(result, insurance_reports);
+        result = pushData(result, Pharmacy_Reports);
+        result = pushData(result, Inventory_Reports);
+      } else if(product_type==="HRMS"){
+        result = pushData(result, HR_Payroll_Reports);
+      } else if(product_type === "ONLY_PHARMACY"){
+        result = pushData(result, Pharmacy_Reports);
+      } else if(product_type === "FINANCE_ERP"){
+        result = pushData(result, HR_Payroll_Reports);
+        result = pushData(result, Inventory_Reports);
+        result = pushData(result, Pharmacy_Reports);
       }
+
+    
+     
+      // for (let i = 0; i < Activated_Modueles.length; i++) {
+      //   const item = Activated_Modueles[i];
+      //   switch (item.module_code) {
+      //     case "FTDSK":
+      //       result = pushData(result, Hims_Reports);
+      //       break;
+      //     case "PAYROLL":
+      //       result = pushData(result, HR_Payroll_Reports);
+      //       break;
+      //     case "INS":
+      //       result = pushData(result, insurance_reports);
+      //       break;
+      //     case "PHCY":
+      //       result = pushData(result, Pharmacy_Reports);
+      //       break;
+      //     case "INVTRY":
+      //       result = pushData(result, Inventory_Reports);
+      //       break;
+      //   }
+      // }
       return result;
     }
   };
