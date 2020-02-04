@@ -664,7 +664,7 @@ class LoginUsers extends Component {
                   <AlagehFormGroup
                     div={{ className: "col-12 form-group" }}
                     label={{
-                      forceLabel: "Email ID to send password",
+                      forceLabel: "Enter Email Address",
                       isImp: true
                     }}
                     textBox={{
@@ -675,7 +675,8 @@ class LoginUsers extends Component {
                         onChange: this.changeTexts.bind(this)
                       },
                       others: {
-                        disabled: !this.state.verify_password
+                        disabled: !this.state.verify_password,
+                        placeholder: "For sending auto generated password"
                       }
                     }}
                   />
