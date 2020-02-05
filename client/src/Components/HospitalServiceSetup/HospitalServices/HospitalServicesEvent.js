@@ -62,21 +62,28 @@ const InsertServices = $this => {
 
   if (!err) {
     if ($this.FIN_Active) {
-      if ($this.state.selected_gl_account === null || $this.state.selected_gl_account === undefined) {
+      if (
+        $this.state.selected_gl_account === null ||
+        $this.state.selected_gl_account === undefined
+      ) {
         swalMessage({
           title: "Please Select G/L Account",
           type: "warning"
         });
-        return
+        return;
       }
     }
-    let inputObj = $this.state
+    let inputObj = $this.state;
 
-    let gl_selected_account = $this.state.selected_account !== null ?
-      $this.state.selected_account.split("-") : []
+    let gl_selected_account =
+      $this.state.selected_gl_account !== null
+        ? $this.state.selected_gl_account.split("-")
+        : [];
 
-    inputObj.child_id = gl_selected_account.length > 0 ? gl_selected_account[1] : undefined
-    inputObj.head_id = gl_selected_account.length > 0 ? gl_selected_account[0] : undefined
+    inputObj.child_id =
+      gl_selected_account.length > 0 ? gl_selected_account[1] : undefined;
+    inputObj.head_id =
+      gl_selected_account.length > 0 ? gl_selected_account[0] : undefined;
 
     if ($this.state.hims_d_services_id === null) {
       algaehApiCall({
@@ -206,7 +213,6 @@ const getFinanceHeaders = ($this, head_id) => {
     method: "GET",
     module: "finance",
     onSuccess: response => {
-
       if (response.data.success === true) {
         $this.setState({
           finance_account: response.data.result
@@ -214,7 +220,7 @@ const getFinanceHeaders = ($this, head_id) => {
       }
     }
   });
-}
+};
 
 export {
   texthandle,
