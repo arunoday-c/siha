@@ -61,11 +61,28 @@ const InsertServices = $this => {
   const err = Validations($this);
 
   if (!err) {
+    if ($this.FIN_Active) {
+      if ($this.state.selected_gl_account === null || $this.state.selected_gl_account === undefined) {
+        swalMessage({
+          title: "Please Select G/L Account",
+          type: "warning"
+        });
+        return
+      }
+    }
+    let inputObj = $this.state
+
+    let gl_selected_account = $this.state.selected_gl_account !== null ?
+      $this.state.selected_gl_account.split("-") : []
+
+    inputObj.child_id = gl_selected_account.length > 0 ? gl_selected_account[1] : undefined
+    inputObj.head_id = gl_selected_account.length > 0 ? gl_selected_account[0] : undefined
+
     if ($this.state.hims_d_services_id === null) {
       algaehApiCall({
         uri: "/serviceType/addServices",
         module: "masterSettings",
-        data: $this.state,
+        data: inputObj,
         onSuccess: response => {
           if (response.data.success === true) {
             clearData($this);
@@ -81,7 +98,7 @@ const InsertServices = $this => {
       algaehApiCall({
         uri: "/serviceType/updateServices",
         module: "masterSettings",
-        data: $this.state,
+        data: inputObj,
         method: "PUT",
         onSuccess: response => {
           if (response.data.success === true) {
@@ -117,8 +134,8 @@ const CptCodesSearch = $this => {
 };
 
 const clearData = $this => {
-  $this.cashPatientMap ={};
-  $this.insurancePatientMap={};
+  $this.cashPatientMap = {};
+  $this.insurancePatientMap = {};
   $this.setState({
     open: false,
 
@@ -137,12 +154,12 @@ const clearData = $this => {
     vat_percent: 0,
     cpt_code_data: null,
     sub_department_id: null,
-    cashPatientAccount:"",
-    insurancePatientAccount:"",
-    head_id:null,
-    child_id:null,
-    insurance_head_id:null,
-    insurance_child_id:null
+    cashPatientAccount: "",
+    insurancePatientAccount: "",
+    head_id: null,
+    child_id: null,
+    insurance_head_id: null,
+    insurance_child_id: null
   });
 };
 
@@ -182,6 +199,23 @@ const PhyThryAppilicable = ($this, e) => {
   });
 };
 
+const getFinanceHeaders = ($this, head_id) => {
+  algaehApiCall({
+    uri: "/finance/getAccountHeadsForDropdown",
+    data: { finance_account_head_id: head_id },
+    method: "GET",
+    module: "finance",
+    onSuccess: response => {
+
+      if (response.data.success === true) {
+        $this.setState({
+          finance_account: response.data.result
+        });
+      }
+    }
+  });
+}
+
 export {
   texthandle,
   VatAppilicable,
@@ -189,5 +223,6 @@ export {
   clearData,
   CptCodesSearch,
   numberEventHandaler,
-  PhyThryAppilicable
+  PhyThryAppilicable,
+  getFinanceHeaders
 };

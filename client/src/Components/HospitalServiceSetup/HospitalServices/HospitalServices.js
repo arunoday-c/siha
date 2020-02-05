@@ -18,20 +18,30 @@ import {
   CptCodesSearch,
   clearData,
   numberEventHandaler,
-  PhyThryAppilicable
+  getFinanceHeaders
 } from "./HospitalServicesEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
 // import { successfulMessage } from "../../../utils/GlobalFunctions";
 import { getCookie, algaehApiCall } from "../../../utils/algaehApiCall";
-import { setGlobal } from "../../../utils/GlobalFunctions";
-
-import AccountDropDown from "../accountsDropdown";
+import { setGlobal, AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { AlgaehTreeSearch } from "algaeh-react-components";
 
 class HospitalServices extends PureComponent {
   constructor(props) {
     super(props);
     this.initCall();
+
+    let Activated_Modueles = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+    );
+
+    const FIN_Active = Activated_Modueles.filter(f => {
+      return f.module_code === "FIN";
+    });
+
+    this.FIN_Active = FIN_Active.length > 0 ? true : false;
+
     this.state = {
       open: false,
 
@@ -59,8 +69,14 @@ class HospitalServices extends PureComponent {
       head_id: null,
       child_id: null,
       insurance_head_id: null,
-      insurance_child_id: null
+      insurance_child_id: null,
+      selected_gl_account: null,
+      finance_account: []
     };
+
+    if (this.FIN_Active === true) {
+      getFinanceHeaders(this, 4)
+    }
   }
 
   initCall() {
@@ -108,6 +124,9 @@ class HospitalServices extends PureComponent {
       } else {
         IOputs.PhyService = false;
       }
+
+      IOputs.selected_gl_account = newProps.servicePop.child_id !== null ?
+        newProps.servicePop.head_id + "-" + newProps.servicePop.child_id : null;
 
       this.setState({
         ...this.state,
@@ -339,8 +358,43 @@ class HospitalServices extends PureComponent {
                     }
                   }}
                 />
-                <div className="col-12 form-group">
-                  <div className="row">
+
+                {this.FIN_Active ?
+                  <div className="col-12 form-group">
+                    <div className="row">
+                      <AlgaehTreeSearch
+                        div={{ className: "col-6 form-group" }}
+                        label={{
+                          forceLabel: "G/L Account",
+                          isImp: true,
+                          align: "ltr"
+                        }}
+                        tree={{
+                          treeDefaultExpandAll: true,
+                          onChange: value => {
+                            this.setState({
+                              selected_gl_account: value
+                            })
+                          },
+                          data: this.state.finance_account || [],
+                          textField: "label",
+                          valueField: node => {
+                            if (node["leafnode"] === "Y") {
+                              return (
+                                node["head_id"] +
+                                "-" +
+                                node["finance_account_child_id"]
+                              );
+                            } else {
+                              return node["finance_account_head_id"];
+                            }
+                          },
+                          value: this.state.selected_gl_account
+                        }}
+                      />
+                    </div>
+                  </div> : null}
+                {/* <div className="row">
                     <AccountDropDown
                       labelText="Account mapping cash patient"
                       accountHeadeId={4}
@@ -394,8 +448,7 @@ class HospitalServices extends PureComponent {
                         mode: "radioSelect"
                       }}
                     />
-                  </div>
-                </div>
+                  </div> */}
               </div>
             </div>
             {/* </div> */}
@@ -415,8 +468,8 @@ class HospitalServices extends PureComponent {
                       {this.state.hims_d_services_id === null ? (
                         <AlgaehLabel label={{ fieldName: "btnSave" }} />
                       ) : (
-                        <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                      )}
+                          <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                        )}
                     </button>
                     <button
                       onClick={e => {
@@ -437,8 +490,8 @@ class HospitalServices extends PureComponent {
                         <AlgaehLabel label={{ fieldName: "btn_clear" }} />
                       </button>
                     ) : (
-                      ""
-                    )}
+                        ""
+                      )}
                   </div>
                 </div>
               </div>
