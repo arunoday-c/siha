@@ -235,7 +235,7 @@ class UpdatePatientDetails extends Component {
         <BreadCrumb
           title={
             <AlgaehLabel
-              label={{ fieldName: "form_patregister", align: "ltr" }}
+              label={{ forceLabel: "Update Patient Details", align: "ltr" }}
             />
           }
           breadStyle={this.props.breadStyle}
@@ -399,8 +399,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(UpdatePatientDetails)
+  connect(mapStateToProps, mapDispatchToProps)(UpdatePatientDetails)
 );
