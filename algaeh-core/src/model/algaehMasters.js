@@ -2760,8 +2760,7 @@ const addScreensAndComponents = (req, res, next) => {
     const screenList = [];
     const componentList = [];
 
-
-    let module_role_map_id= req.body.module_role_map_id;
+    let module_role_map_id = req.body.module_role_map_id;
     _mysql
       .executeQueryWithTransaction({
         query:
@@ -2778,10 +2777,10 @@ const addScreensAndComponents = (req, res, next) => {
         printQuery: true
       })
       .then(result => {
-        if(result.insertId>0){
-          module_role_map_id=result.insertId;
+        if (result.insertId > 0) {
+          module_role_map_id = result.insertId;
         }
-              
+
         input.screen_list.forEach(f => {
           if (f.checked == true) {
             screenList.push({
@@ -2909,6 +2908,89 @@ const addScreensAndComponents = (req, res, next) => {
   }
 };
 
+//created by:IRFAN
+const getCurrentAssignedScreenAndComponent = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    if (req.query.role_id > 0 && req.query.module_id > 0) {
+      _mysql
+        .executeQuery({
+          query: `select M.algaeh_m_module_role_privilage_mapping_id,M.module_id,M.role_id,
+          S.algaeh_m_screen_role_privilage_mapping_id,S. module_role_map_id,S.screen_id, 
+          C.algaeh_m_component_screen_privilage_mapping_id,
+          C. component_id, C.algaeh_m_screen_role_privilage_mapping_id as screen_role_map_id
+          from algaeh_m_module_role_privilage_mapping M 
+          inner join algaeh_m_screen_role_privilage_mapping S
+          on M.algaeh_m_module_role_privilage_mapping_id=S.module_role_map_id
+          left join algaeh_m_component_screen_privilage_mapping C on
+          S.algaeh_m_screen_role_privilage_mapping_id=C.algaeh_m_screen_role_privilage_mapping_id
+          where M.role_id=? and M.module_id=? `,
+          values: [req.query.role_id, req.query.module_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          const createGroup = _.chain(result)
+            .groupBy(g => g.screen_id)
+            .map(screen => {
+              const {
+                algaeh_m_screen_role_privilage_mapping_id,
+                module_role_map_id,
+                screen_id
+              } = screen[0];
+
+              const compo = screen
+                .filter(
+                  f => f.algaeh_m_component_screen_privilage_mapping_id > 0
+                )
+                .map(m => {
+                  return {
+                    screen_role_map_id: m.screen_role_map_id,
+                    component_id: m.component_id,
+                    algaeh_m_component_screen_privilage_mapping_id:
+                      m.algaeh_m_component_screen_privilage_mapping_id,
+                    checked: false
+                  };
+                });
+
+              return {
+                algaeh_m_screen_role_privilage_mapping_id: algaeh_m_screen_role_privilage_mapping_id,
+                module_role_map_id: module_role_map_id,
+                screen_id: screen_id,
+                checked: true,
+                componentList: compo
+              };
+            })
+            .value();
+
+          req.records = {
+            role_id: result[0]["role_id"],
+            module_id: result[0]["module_id"],
+            algaeh_m_module_role_privilage_mapping_id:
+              result[0]["algaeh_m_module_role_privilage_mapping_id"],
+            screen_list: createGroup
+          };
+
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } else {
+      req.records={
+        invalid_input:true,
+        message:"Please select Role and Module "
+      } 
+      next();
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
 export default {
   getAlgaehScreensWithModules,
   addAlgaehGroupMAster,
@@ -2949,5 +3031,6 @@ export default {
   getComponentsForScreen,
   assignComponentScreenPermissions,
   getScreensWithComponents,
-  addScreensAndComponents
+  addScreensAndComponents,
+  getCurrentAssignedScreenAndComponent
 };
