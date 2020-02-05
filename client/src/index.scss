@@ -326,6 +326,7 @@ ul.ul-legend {
   background-color: lighten($primary-color, 48%) !important;
   color: $primary-color !important;
   text-decoration: underline !important;
+  cursor: pointer;
 }
 
 .cancelledClass {
