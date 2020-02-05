@@ -485,7 +485,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
         role_type === "SU"
           ? ""
           : "where m.access_by <> 'SU' and m.record_status='A'"
-      }`;
+        }`;
     } else {
       strQuery = `select m.algaeh_d_module_id,m.module_code,m.module_name,m.icons,m.display_order,m.other_language,
       s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
@@ -521,7 +521,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
 
         const records = _.chain(result)
           .groupBy(g => g.algaeh_d_module_id)
-          .map(function(detail, key) {
+          .map(function (detail, key) {
             const first = _.head(detail);
             return {
               module_id: key,
@@ -2060,7 +2060,7 @@ let assignScreens = (req, res, next) => {
                     " INSERT IGNORE INTO `algaeh_m_screen_role_privilage_mapping` (module_role_map_id, screen_id, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?); ",
                     [
                       input.update_screens[i][
-                        "algaeh_m_module_role_privilage_mapping_id"
+                      "algaeh_m_module_role_privilage_mapping_id"
                       ],
                       input.update_screens[i]["insert_screens"][k],
                       req.userIdentity.algaeh_d_app_user_id,
@@ -2931,58 +2931,68 @@ const getCurrentAssignedScreenAndComponent = (req, res, next) => {
         .then(result => {
           _mysql.releaseConnection();
 
-          const createGroup = _.chain(result)
-            .groupBy(g => g.screen_id)
-            .map(screen => {
-              const {
-                algaeh_m_screen_role_privilage_mapping_id,
-                module_role_map_id,
-                screen_id
-              } = screen[0];
+          if (result.length > 0) {
 
-              const compo = screen
-                .filter(
-                  f => f.algaeh_m_component_screen_privilage_mapping_id > 0
-                )
-                .map(m => {
-                  return {
-                    screen_role_map_id: m.screen_role_map_id,
-                    component_id: m.component_id,
-                    algaeh_m_component_screen_privilage_mapping_id:
-                      m.algaeh_m_component_screen_privilage_mapping_id,
-                    checked: false
-                  };
-                });
+            const createGroup = _.chain(result)
+              .groupBy(g => g.screen_id)
+              .map(screen => {
+                const {
+                  algaeh_m_screen_role_privilage_mapping_id,
+                  module_role_map_id,
+                  screen_id
+                } = screen[0];
 
-              return {
-                algaeh_m_screen_role_privilage_mapping_id: algaeh_m_screen_role_privilage_mapping_id,
-                module_role_map_id: module_role_map_id,
-                screen_id: screen_id,
-                checked: true,
-                componentList: compo
-              };
-            })
-            .value();
+                const compo = screen
+                  .filter(
+                    f => f.algaeh_m_component_screen_privilage_mapping_id > 0
+                  )
+                  .map(m => {
+                    return {
+                      screen_role_map_id: m.screen_role_map_id,
+                      algaeh_d_app_component_id: m.component_id,
+                      algaeh_m_component_screen_privilage_mapping_id:
+                        m.algaeh_m_component_screen_privilage_mapping_id,
+                      checked: false
+                    };
+                  });
 
-          req.records = {
-            role_id: result[0]["role_id"],
-            module_id: result[0]["module_id"],
-            algaeh_m_module_role_privilage_mapping_id:
-              result[0]["algaeh_m_module_role_privilage_mapping_id"],
-            screen_list: createGroup
-          };
+                return {
+                  algaeh_m_screen_role_privilage_mapping_id: algaeh_m_screen_role_privilage_mapping_id,
+                  module_role_map_id: module_role_map_id,
+                  algaeh_app_screens_id: screen_id,
+                  checked: true,
+                  componentList: compo
+                };
+              })
+              .value();
 
-          next();
+            req.records = {
+              role_id: result[0]["role_id"],
+              module_id: result[0]["module_id"],
+              algaeh_m_module_role_privilage_mapping_id:
+                result[0]["algaeh_m_module_role_privilage_mapping_id"],
+              screen_list: createGroup
+            };
+
+          }
+
+
+          else {
+            req.records = {}
+
+
+          }
+          next()
         })
         .catch(error => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
-      req.records={
-        invalid_input:true,
-        message:"Please select Role and Module "
-      } 
+      req.records = {
+        invalid_input: true,
+        message: "Please select Role and Module "
+      }
       next();
     }
   } catch (e) {

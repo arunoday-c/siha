@@ -16,13 +16,20 @@ export function ScreenAssignmentEvents() {
         case "module_id":
           // getRoleBaseActive($this);
           getModuleScreenComponent($this, value.value);
+
+          if ($this.state.role_id !== null) {
+            getRoleActiveModules($this, $this.state.role_id, value.value);
+          }
+
           $this.setState({
             [value.name]: value.value
           });
           break;
         default:
           //getRoleBaseActive($this);
-          // getRoleActiveModules($this, value.value);
+          if ($this.state.module_id !== null) {
+            getRoleActiveModules($this, value.value, $this.state.module_id);
+          }
           $this.setState({
             [value.name]: value.value
           });
@@ -31,26 +38,8 @@ export function ScreenAssignmentEvents() {
     },
     assignSelectedScreen: that => {
       return new Promise((resolve, reject) => {
-        // const module = Object.keys(that.state.selectedScreen).map(item => {
-        //   const selected = that.state.ScreenList.find(f => f.screen_code === item);
-        //   if (selected !== undefined) {
-        //     const screens = Object.keys(that.state.selectedScreen[item]).map(
-        //       screen => {
-        //         return selected.componentList.find(s => s.component_code === screen);
-        //       }
-        //     );
-        //     return {
-        //       role_id: that.state.role_id,
-        //       screen_id: selected.algaeh_app_screens_id,
-        //       module_id: that.state.module_id,
-        //       componentList: screens
-        //     };
-        //   }
-        // });
-
-        debugger
         algaehApiCall({
-          uri: "/algaehMasters/moduleScreenAssignment",
+          uri: "/algaehMasters/addScreensAndComponents",
           method: "POST",
           data: {
             screen_list: that.state.ScreenList,
@@ -225,15 +214,15 @@ export function ScreenAssignmentEvents() {
       });
     },
     clearState: $this => {
-      $this.setState({ app_group_id: null, role_id: null, roles: [] });
+      $this.setState({ module_id: null, app_group_id: null, role_id: null, roles: [], ScreenList: [] });
       getRoleBaseActive($this);
     },
 
-    changeScreen: ($this, data, e) => {
+    changeComponent: ($this, data, e) => {
       const _status = e.target.checked;
       let val = parseInt(e.target.value, 10);
 
-      let main_modules = $this.state.ScreenList;
+      let screen_list = $this.state.ScreenList;
 
       const _screens = data.componentList.map(item => {
         if (item.algaeh_d_app_component_id === val) {
@@ -248,7 +237,7 @@ export function ScreenAssignmentEvents() {
         return f.checked === true;
       });
 
-      let newModule = _.map(main_modules, f => {
+      let newModule = _.map(screen_list, f => {
         let _sList = f.componentList;
         if (f.algaeh_app_screens_id === data.algaeh_app_screens_id) {
           _sList = _screens;
@@ -262,11 +251,11 @@ export function ScreenAssignmentEvents() {
 
       $this.setState({ ScreenList: newModule });
     },
-    changeModules: ($this, data, e) => {
+    changeScreen: ($this, data, e) => {
       const _status = e.target.checked;
       let val = parseInt(e.target.value, 10);
 
-      let main_modules = $this.state.ScreenList;
+      let screen_list = $this.state.ScreenList;
 
       const _screens = data.componentList.map(item => {
         return {
@@ -274,7 +263,7 @@ export function ScreenAssignmentEvents() {
           checked: _status ? true : false
         };
       });
-      let newModule = _.map(main_modules, f => {
+      let newModule = _.map(screen_list, f => {
         let _sList = f.componentList;
         let _checked = { checked: f.checked ? true : false };
         if (parseInt(f.algaeh_app_screens_id) === val) {
@@ -376,26 +365,56 @@ function getModuleScreenComponent($this, module_id) {
   });
 }
 
-export function getRoleActiveModules(role_id) {
-  return new Promise((resolve, reject) => {
-    let inputObj = { role_id: role_id, from_assignment: "Y" };
-    algaehApiCall({
-      uri: "/algaehMasters/getRoleBaseActiveModules",
-      method: "GET",
-      data: inputObj,
-      onSuccess: res => {
-        const { success, records, message } = res.data;
-        if (success) {
-          resolve(records);
-        } else {
-          reject(message);
-        }
-      },
-      onCatch: err => {
-        const { message } = err.response.data;
-        reject(message);
+function getRoleActiveModules($this, role_id, module_id) {
+  debugger
+  algaehApiCall({
+    uri: "/algaehMasters/getCurrentAssignedScreenAndComponent",
+    method: "GET",
+    data: { role_id: role_id, module_id: module_id },
+    onSuccess: res => {
+      if (res.data.success) {
+        debugger
+        let data = res.data.records.screen_list;
+        let ScreenList = $this.state.ScreenList;
+        data.map(item => {
+          let _findModule = _.find(
+            ScreenList,
+            m => m.algaeh_app_screens_id === item.algaeh_app_screens_id
+          );
+          const index = ScreenList.indexOf(_findModule);
+          ScreenList[index] = {
+            ...ScreenList[index],
+            checked: true,
+            algaeh_m_module_role_privilage_mapping_id:
+              item.algaeh_m_module_role_privilage_mapping_id
+          };
+
+          item.componentList.map(screen => {
+            let _findScreen = _.find(
+              ScreenList[index]["componentList"],
+              s => s.algaeh_d_app_component_id === screen.algaeh_d_app_component_id
+            );
+            const indexS = ScreenList[index]["componentList"].indexOf(_findScreen);
+            ScreenList[index]["componentList"][indexS] = {
+              ...ScreenList[index]["componentList"][indexS],
+              checked: true,
+              algaeh_m_component_screen_privilage_mapping_id:
+                screen.algaeh_m_component_screen_privilage_mapping_id
+            };
+          });
+        });
+        // ScreenList = ScreenList.concat(data)
+        $this.setState({
+          ScreenList: ScreenList
+        });
       }
-    });
+    },
+    onFailure: err => {
+      swalMessage({
+        title: err.message,
+        type: "error"
+      });
+    }
   });
 }
 
@@ -410,27 +429,6 @@ export function getComponentsForScreen(sceen_id) {
         const { success, records, message } = res.data;
         if (success) {
           resolve(records);
-        } else {
-          reject(message);
-        }
-      },
-      onCatch: err => {
-        const { message } = err.response.data;
-        reject(message);
-      }
-    });
-  });
-}
-export function assignComponentScreenPermissions(input) {
-  return new Promise((resolve, reject) => {
-    algaehApiCall({
-      uri: "/algaehMasters/assignComponentScreenPermissions",
-      method: "POST",
-      data: input,
-      onSuccess: res => {
-        const { success, message } = res.data;
-        if (success) {
-          resolve(message);
         } else {
           reject(message);
         }
