@@ -78,7 +78,19 @@
   }
 }
 
-.disableFinder{
+.disableFinder {
   opacity: 0.4;
   pointer-events: none;
+}
+
+#prescribedListGrid {
+  .ReactTable {
+    max-height: 50vh !important;
   }
+}
+
+#itemBatchsGrid {
+  .ReactTable {
+    max-height: 50vh !important;
+  }
+}
