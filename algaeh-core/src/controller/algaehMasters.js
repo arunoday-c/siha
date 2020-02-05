@@ -42,7 +42,8 @@ const {
   moduleScreenAssignment,
   getComponentsForScreen,
   assignComponentScreenPermissions,
-  getScreensWithComponents
+  getScreensWithComponents,
+  addScreensAndComponents
 } = masterModels;
 const { releaseConnection } = utils;
 
@@ -720,6 +721,20 @@ export default ({ config, db }) => {
   api.get(
     "/getScreensWithComponents",
     getScreensWithComponents,
+    (req, res, next) => {
+      let result = req.records;
+
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+
+      next();
+    }
+  );
+  api.post(
+    "/addScreensAndComponents",
+    addScreensAndComponents,
     (req, res, next) => {
       let result = req.records;
 
