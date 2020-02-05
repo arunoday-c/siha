@@ -150,7 +150,7 @@ class PurchaseOrderEntry extends Component {
                       this.state.authorize2 === "N" ? (
                       <span className="badge badge-danger">Pending</span>
                     ) : (
-                      "-------"
+                      <span className="badge badge-danger">Pending</span>
                     )}
                   </h6>
                 </div>
