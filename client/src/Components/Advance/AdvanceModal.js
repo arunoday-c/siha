@@ -63,7 +63,7 @@ class AddAdvanceModal extends PureComponent {
 
   UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.PackageAdvance === undefined) {
-      debugger
+
       let Cashchecked = false
       let Cardchecked = false
       let cash_amount = 0

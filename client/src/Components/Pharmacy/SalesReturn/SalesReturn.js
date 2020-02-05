@@ -52,7 +52,7 @@ class SalesReturn extends Component {
 
   static contextType = MainContext;
   componentDidMount() {
-    debugger
+
     this.setState({
       userToken: this.context.userToken
     })

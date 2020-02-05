@@ -79,7 +79,7 @@ class ScreenAssignment extends Component {
     ScreenAssignmentEvents().clearState(this);
   }
   onSearchAllModules(e) {
-    debugger
+
     const value = e.target.value;
     let result = [];
     let userMenu = this.context.userMenu.filter(f => f.module_code !== "APM");
@@ -103,7 +103,7 @@ class ScreenAssignment extends Component {
     });
   }
   checkAllScreenWise(sub_menu, e) {
-    debugger
+
     const checked = e.target.checked;
     let existingModules = this.state.selectedScreen;
     if (checked === false) {
@@ -120,7 +120,7 @@ class ScreenAssignment extends Component {
     this.setState({ selectedScreen: { ...existingModules } });
   }
   checkScreenSelector(data, e) {
-    debugger
+
     const checked = e.target.checked;
     let existingModules = this.state.selectedScreen;
     if (checked === false) {

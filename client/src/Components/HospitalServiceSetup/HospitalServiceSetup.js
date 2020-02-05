@@ -372,67 +372,12 @@ class HospitalServiceSetup extends Component {
                         maxWidth: 200
                       }
                     },
-                    // {
-                    //   fieldName: "cpt_p_code",
-                    //   label: <AlgaehLabel label={{ fieldName: "cpt_code" }} />
-                    // },
                     {
                       fieldName: "service_name",
                       label: (
                         <AlgaehLabel label={{ fieldName: "service_name" }} />
                       )
                     },
-                    // {
-                    //   fieldName: "sub_department_id",
-                    //   label: (
-                    //     <AlgaehLabel
-                    //       label={{ fieldName: "sub_department_id" }}
-                    //     />
-                    //   ),
-                    //   displayTemplate: row => {
-                    //     let display =
-                    //       this.props.subdepartments === undefined
-                    //         ? []
-                    //         : this.props.subdepartments.filter(
-                    //             f =>
-                    //               f.hims_d_sub_department_id ===
-                    //               row.sub_department_id
-                    //           );
-
-                    //     return (
-                    //       <span>
-                    //         {display !== null && display.length !== 0
-                    //           ? this.state.selectedLang === "en"
-                    //             ? display[0].sub_department_name
-                    //             : display[0].arabic_sub_department_name
-                    //           : ""}
-                    //       </span>
-                    //     );
-                    //   }
-                    // },
-                    // {
-                    //   fieldName: "hospital_id",
-                    //   label: (
-                    //     <AlgaehLabel label={{ fieldName: "hospital_id" }} />
-                    //   ),
-                    //   displayTemplate: row => {
-                    //     let display =
-                    //       this.props.hospitaldetails === undefined
-                    //         ? []
-                    //         : this.props.hospitaldetails.filter(
-                    //             f => f.hims_d_hospital_id === row.hospital_id
-                    //           );
-                    //     return (
-                    //       <span>
-                    //         {display !== null && display.length !== 0
-                    //           ? this.state.selectedLang === "en"
-                    //             ? display[0].hospital_name
-                    //             : display[0].arabic_hospital_name
-                    //           : ""}
-                    //       </span>
-                    //     );
-                    //   }
-                    // },
                     {
                       fieldName: "service_type_id",
                       label: (
@@ -443,10 +388,10 @@ class HospitalServiceSetup extends Component {
                           this.props.servicetype === undefined
                             ? []
                             : this.props.servicetype.filter(
-                                f =>
-                                  f.hims_d_service_type_id ===
-                                  row.service_type_id
-                              );
+                              f =>
+                                f.hims_d_service_type_id ===
+                                row.service_type_id
+                            );
 
                         return (
                           <span>

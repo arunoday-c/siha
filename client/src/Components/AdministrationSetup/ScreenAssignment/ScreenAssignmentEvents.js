@@ -351,7 +351,7 @@ function getModuleScreenComponent($this, module_id) {
       module_id: module_id
     },
     onSuccess: response => {
-      debugger
+
       if (response.data.success) {
         $this.setState({ ScreenList: response.data.records });
       }
@@ -366,14 +366,14 @@ function getModuleScreenComponent($this, module_id) {
 }
 
 function getRoleActiveModules($this, role_id, module_id) {
-  debugger
+
   algaehApiCall({
     uri: "/algaehMasters/getCurrentAssignedScreenAndComponent",
     method: "GET",
     data: { role_id: role_id, module_id: module_id },
     onSuccess: res => {
       if (res.data.success) {
-        debugger
+
         let data = res.data.records.screen_list;
         let ScreenList = $this.state.ScreenList;
         data.map(item => {

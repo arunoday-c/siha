@@ -32,7 +32,7 @@ class BusinessSetup extends Component {
   static contextType = MainContext;
 
   UNSAFE_componentWillMount() {
-    debugger
+
     const userToken = this.context.userToken;
     const active =
       userToken.product_type === "HIMS_ERP" ||

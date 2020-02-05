@@ -8,148 +8,119 @@ export default {
     let inputParam = req.body;
     const _mysql = new algaehMysql();
     try {
+
       _mysql
-        .executeQuery({
+        .executeQueryWithTransaction({
           query:
-            "select product_type from hims_d_hospital where hims_d_hospital_id=? and \
-            (product_type='HIMS_ERP' or product_type='HRMS_ERP' or product_type='FINANCE_ERP');",
-          values: [req.userIdentity.hospital_id],
+            "INSERT INTO `hims_d_services` (`service_code`, `cpt_code`,`service_name`, `hospital_id`,`service_type_id`, \
+                `physiotherapy_service`,`sub_department_id`,`standard_fee`, `discount`, `vat_applicable`, \
+              `vat_percent`, `effective_start_date` , `created_by` ,`created_date`, head_id, child_id ) \
+                VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?)",
+          values: [
+            inputParam.service_code,
+            inputParam.cpt_code,
+            inputParam.service_name,
+            inputParam.hospital_id,
+            inputParam.service_type_id,
+            inputParam.physiotherapy_service,
+            inputParam.sub_department_id,
+            inputParam.standard_fee,
+            inputParam.discount,
+            inputParam.vat_applicable,
+            inputParam.vat_percent,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+
+            inputParam.head_id,
+            inputParam.child_id,
+          ],
           printQuery: true
         })
-        .then(appResult => {
-          let fields = "";
-          let questionMark = "";
-
-          if (appResult.length > 0) {
-            fields = ",head_id,child_id,insurance_head_id,insurance_child_id ";
-            questionMark = ", ?, ?, ?, ?";
-          }
-
+        .then(result => {
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection: _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
+          let service_id = result.insertId;
+          let package_service_id = result.insertId;
           _mysql
-            .executeQueryWithTransaction({
+            .executeQuery({
               query:
-                "INSERT INTO `hims_d_services` (`service_code`, `cpt_code`,`service_name`, `hospital_id`,`service_type_id`, \
-                `physiotherapy_service`,`sub_department_id`,`standard_fee`, `discount`, `vat_applicable`, \
-              `vat_percent`, `effective_start_date` , `created_by` ,`created_date` " +
-                fields +
-                ") \
-                VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? " +
-                questionMark +
-                ")",
-              values: [
-                inputParam.service_code,
-                inputParam.cpt_code,
-                inputParam.service_name,
-                inputParam.hospital_id,
-                inputParam.service_type_id,
-                inputParam.physiotherapy_service,
-                inputParam.sub_department_id,
-                inputParam.standard_fee,
-                inputParam.discount,
-                inputParam.vat_applicable,
-                inputParam.vat_percent,
-                new Date(),
-                req.userIdentity.algaeh_d_app_user_id,
-                new Date(),
-
-                inputParam.head_id,
-                inputParam.child_id,
-
-                inputParam.insurance_head_id,
-                inputParam.insurance_child_id
-              ],
+                "SELECT insurance_id FROM hims_d_services_insurance group by insurance_id; \
+              SELECT insurance_id,network_id FROM hims_d_services_insurance_network group by network_id;",
               printQuery: true
             })
-            .then(result => {
-              req.connection = {
-                connection: _mysql.connection,
-                isTransactionConnection: _mysql.isTransactionConnection,
-                pool: _mysql.pool
-              };
-              let service_id = result.insertId;
-              let package_service_id = result.insertId;
-              _mysql
-                .executeQuery({
-                  query:
-                    "SELECT insurance_id FROM hims_d_services_insurance group by insurance_id; \
-              SELECT insurance_id,network_id FROM hims_d_services_insurance_network group by network_id;",
-                  printQuery: true
-                })
-                .then(services_insurance_network => {
-                  const service_insurance = services_insurance_network[0];
-                  const service_insurance_network =
-                    services_insurance_network[1];
+            .then(services_insurance_network => {
+              const service_insurance = services_insurance_network[0];
+              const service_insurance_network =
+                services_insurance_network[1];
 
-                  if (
-                    service_insurance.length == 0 &&
-                    service_insurance_network.length == 0
-                  ) {
-                    if (inputParam.direct_call == true) {
-                      _mysql.commitTransaction(() => {
-                        _mysql.releaseConnection();
-                        req.body.service_id = service_id;
-                        req.body.package_service_id = package_service_id;
-                        req.records = result;
-                        next();
-                      });
-                    } else {
-                      req.body.service_id = service_id;
-                      req.body.package_service_id = package_service_id;
-                      req.records = result;
-                      next();
-                    }
-                  } else {
-                    InsertintoServiceInsurance({
+              if (
+                service_insurance.length == 0 &&
+                service_insurance_network.length == 0
+              ) {
+                if (inputParam.direct_call == true) {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.body.service_id = service_id;
+                    req.body.package_service_id = package_service_id;
+                    req.records = result;
+                    next();
+                  });
+                } else {
+                  req.body.service_id = service_id;
+                  req.body.package_service_id = package_service_id;
+                  req.records = result;
+                  next();
+                }
+              } else {
+                InsertintoServiceInsurance({
+                  inputParam: inputParam,
+                  services_id: service_id,
+                  service_insurance: service_insurance,
+                  _mysql: _mysql,
+                  req: req,
+                  next: next
+                })
+                  .then(insert_service => {
+                    InsertintoServiceInsuranceNetwork({
                       inputParam: inputParam,
                       services_id: service_id,
-                      service_insurance: service_insurance,
+                      service_insurance_network: service_insurance_network,
                       _mysql: _mysql,
                       req: req,
                       next: next
                     })
-                      .then(insert_service => {
-                        InsertintoServiceInsuranceNetwork({
-                          inputParam: inputParam,
-                          services_id: service_id,
-                          service_insurance_network: service_insurance_network,
-                          _mysql: _mysql,
-                          req: req,
-                          next: next
-                        })
-                          .then(insert_service_network => {
-                            if (inputParam.direct_call == true) {
-                              _mysql.commitTransaction(() => {
-                                _mysql.releaseConnection();
-                                req.body.service_id = service_id;
-                                req.body.package_service_id = package_service_id;
-                                req.records = result;
-                                next();
-                              });
-                            } else {
-                              req.body.service_id = service_id;
-                              req.body.package_service_id = package_service_id;
-                              req.records = result;
-                              next();
-                            }
-                          })
-                          .catch(error => {
-                            _mysql.rollBackTransaction(() => {
-                              next(error);
-                            });
+                      .then(insert_service_network => {
+                        if (inputParam.direct_call == true) {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.body.service_id = service_id;
+                            req.body.package_service_id = package_service_id;
+                            req.records = result;
+                            next();
                           });
+                        } else {
+                          req.body.service_id = service_id;
+                          req.body.package_service_id = package_service_id;
+                          req.records = result;
+                          next();
+                        }
                       })
                       .catch(error => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
                       });
-                  }
-                })
-                .catch(error => {
-                  _mysql.rollBackTransaction(() => {
-                    next(error);
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
                   });
-                });
+              }
             })
             .catch(error => {
               _mysql.rollBackTransaction(() => {
@@ -162,6 +133,7 @@ export default {
             next(error);
           });
         });
+
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
@@ -310,71 +282,23 @@ export default {
         _strAppend += "and procedure_type=?";
         inputValues.push(input.procedure_type);
       }
-
       _mysql
         .executeQuery({
           query:
-            "select product_type from hims_d_hospital where hims_d_hospital_id=? and \
-        (product_type='HIMS_ERP' or product_type='HRMS_ERP' or product_type='FINANCE_ERP');",
-          values: [req.userIdentity.hospital_id],
-          printQuery: true
-        })
-        .then(appResult => {
-          if (appResult.length > 0) {
-            _mysql
-              .executeQuery({
-                query:
-                  "select hims_d_services_id, service_code, S.cpt_code, CPT.cpt_code as cpt_p_code, service_name, service_desc, \
-              sub_department_id, hospital_id, service_type_id, standard_fee , discount, vat_applicable, vat_percent, \
-              effective_start_date, effectice_end_date, procedure_type, physiotherapy_service,\
-              P.account_name as cash_head_account,C.child_name as cash_child_account,\
-              H.account_name as insurance_head_account,CH.child_name as insurance_child_account,\
-              S.head_id,S.child_id,S.insurance_head_id,S.insurance_child_id, \
-              service_status from \
-              hims_d_services S left join hims_d_cpt_code CPT on CPT.hims_d_cpt_code_id = S.cpt_code \
-              left join finance_account_head P on S.head_id=P.finance_account_head_id\
-              left join finance_account_child C on S.child_id=C.finance_account_child_id \
-              left join finance_account_head H on S.insurance_head_id=H.finance_account_head_id\
-              left join finance_account_child CH on S.insurance_child_id=CH.finance_account_child_id \
-              WHERE S.record_status ='A' " +
-                  _strAppend +
-                  " order by hims_d_services_id desc",
-                values: inputValues,
-                printQuery: true
-              })
-              .then(result => {
-                _mysql.releaseConnection();
-                req.records = result;
-                next();
-              })
-              .catch(error => {
-                _mysql.releaseConnection();
-                next(error);
-              });
-          } else {
-            _mysql
-              .executeQuery({
-                query:
-                  "select hims_d_services_id, service_code, S.cpt_code, CPT.cpt_code as cpt_p_code, service_name, service_desc, \
+            "select hims_d_services_id, service_code, S.cpt_code, CPT.cpt_code as cpt_p_code, service_name, service_desc, \
                 sub_department_id, hospital_id, service_type_id, standard_fee , discount, vat_applicable, vat_percent, \
-                effective_start_date, effectice_end_date, procedure_type, physiotherapy_service from \
+                effective_start_date, effectice_end_date, procedure_type, physiotherapy_service, head_id, child_id from \
                 hims_d_services S left join hims_d_cpt_code CPT on CPT.hims_d_cpt_code_id = S.cpt_code \
                 WHERE S.record_status ='A' " +
-                  _strAppend +
-                  " order by hims_d_services_id desc",
-                values: inputValues,
-                printQuery: true
-              })
-              .then(result => {
-                _mysql.releaseConnection();
-                req.records = result;
-                next();
-              })
-              .catch(error => {
-                _mysql.releaseConnection();
-                next(error);
-              });
-          }
+            _strAppend +
+            " order by hims_d_services_id desc",
+          values: inputValues,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
         })
         .catch(error => {
           _mysql.releaseConnection();
