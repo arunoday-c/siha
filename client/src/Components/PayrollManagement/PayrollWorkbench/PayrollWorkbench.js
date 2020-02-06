@@ -5,6 +5,7 @@ import EmployeePayments from "./EmployeePayments/EmployeePayments";
 import EmployeePaymentCancel from "./EmployeePaymentCancel/EmployeePaymentCancel";
 import NewSalaryPayments from "./SalaryPayments/NewSalaryPayments";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import { AlgaehTabs } from "algaeh-react-components";
 
 class PayrollWorkbench extends Component {
   constructor(props) {
@@ -29,7 +30,73 @@ class PayrollWorkbench extends Component {
   render() {
     return (
       <div className="payroll_wb">
-        <div className="row">
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Salary Payments"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <NewSalaryPayments />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_SAL_PAY"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Other Payments"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <EmployeePayments />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_OTR_PAY"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Payment Cancellation"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <EmployeePaymentCancel />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_PAY_CAN"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Employee Receipts"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <EmployeeReceipts />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_EMP_RCP"
+            }
+          ]}
+        />
+
+        {/* <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
               {" "}
@@ -98,10 +165,14 @@ class PayrollWorkbench extends Component {
           ) : this.state.pageDisplay === "NewSalaryPayments" ? (
             <NewSalaryPayments />
           ) : null}
-        </div>
+        </div> */}
       </div>
     );
   }
+}
+
+function ChildrenItem({ children }) {
+  return <div className="payroll-workbench-section">{children}</div>;
 }
 
 export default PayrollWorkbench;

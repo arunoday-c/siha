@@ -3,6 +3,7 @@ import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import AttendanceSettings from "./AttendanceSettings/AttendanceSettings";
 import EndServiceOption from "./EndServiceOption/EndServiceOption";
 import LeaveSalarySetup from "./LeaveSalarySetup/LeaveSalarySetup";
+import { AlgaehTabs } from "algaeh-react-components";
 
 class PayrollOptions extends Component {
   constructor(props) {
@@ -27,7 +28,57 @@ class PayrollOptions extends Component {
   render() {
     return (
       <div className="payroll_options">
-        <div className="row">
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Attendance Settings"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <AttendanceSettings />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_ATT_SET"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "End of Service"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <EndServiceOption />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_EOS_SER&D_MTR"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Annual Leave Salary Setup"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <LeaveSalarySetup />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_ANN_LEV_SAL_SET"
+            }
+          ]}
+        />
+        {/* <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
@@ -78,10 +129,14 @@ class PayrollOptions extends Component {
           <EndServiceOption />
         ) : this.state.pageDisplay === "LeaveSalarySetup" ? (
           <LeaveSalarySetup />
-        ) : null}
+        ) : null} */}
       </div>
     );
   }
+}
+
+function ChildrenItem({ children }) {
+  return <div className="payroll-options-section">{children}</div>;
 }
 
 export default PayrollOptions;

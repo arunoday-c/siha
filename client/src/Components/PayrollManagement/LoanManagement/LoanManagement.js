@@ -109,7 +109,7 @@ class LoanManagement extends Component {
 }
 
 function ChildrenItem({ children }) {
-  return <div className="lxit-management-section">{children}</div>;
+  return <div className="loan-management-section">{children}</div>;
 }
 
 export default LoanManagement;

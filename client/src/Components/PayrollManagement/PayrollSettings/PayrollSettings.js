@@ -5,7 +5,7 @@ import LoanMaster from "./LoanMaster/LoanMaster";
 import HolidayMaster from "./HolidayMaster/HolidayMaster";
 import LeaveMasterIndex from "./LeaveMasterIndex/LeaveMasterIndex";
 import OvertimeGroups from "./OvertimeGroups/OvertimeGroups";
-
+import { AlgaehTabs } from "algaeh-react-components";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 
 class PayrollSettings extends Component {
@@ -31,7 +31,88 @@ class PayrollSettings extends Component {
   render() {
     return (
       <div className="payroll_settings">
-        <div className="row">
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Leave Master"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <LeaveMasterIndex />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_SET_LEV_MTR"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Earnings & Deductions"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <EarningsDeductions />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_SET_E&D_MTR"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Loan Master"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <LoanMaster />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_SET_LON"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Holiday Master"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <HolidayMaster />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_SET_HOL_MTR"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Overtime Groups"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <OvertimeGroups />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_SET_OVR_TIM"
+            }
+          ]}
+        />
+
+        {/* <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
@@ -114,10 +195,14 @@ class PayrollSettings extends Component {
           ) : this.state.pageDisplay === "OvertimeGroups" ? (
             <OvertimeGroups />
           ) : null}
-        </div>
+        </div> */}
       </div>
     );
   }
+}
+
+function ChildrenItem({ children }) {
+  return <div className="payroll-settings-section">{children}</div>;
 }
 
 export default PayrollSettings;

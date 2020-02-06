@@ -16,6 +16,7 @@ class ScreenAssignment extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      algaeh_m_module_role_privilage_mapping_id: null,
       groups: [],
       roles: [],
       modules: [],
@@ -57,22 +58,23 @@ class ScreenAssignment extends Component {
 
   assignScreens() {
     // ScreenAssignmentEvents().assignScreens(this);
-    ScreenAssignmentEvents()
-      .assignSelectedScreen(this)
-      .then(result => {
-        const { success, message } = result;
-        swalMessage({
-          title: message,
-          type: success === true ? "success" : "error"
-        });
-        // this.onUpdateFunctionCall(this.state.role_id);
-      })
-      .catch(error => {
-        swalMessage({
-          title: error,
-          type: "error"
-        });
-      });
+    ScreenAssignmentEvents().assignSelectedScreen(this)
+    // ScreenAssignmentEvents()
+    //   .assignSelectedScreen(this)
+    //   .then(result => {
+    //     const { success, message } = result;
+    //     swalMessage({
+    //       title: message,
+    //       type: success === true ? "success" : "error"
+    //     });
+    //     // this.onUpdateFunctionCall(this.state.role_id);
+    //   })
+    //   .catch(error => {
+    //     swalMessage({
+    //       title: error,
+    //       type: "error"
+    //     });
+    //   });
   }
 
   clearState() {
@@ -334,7 +336,7 @@ class ScreenAssignment extends Component {
                                       : data.checked
                                   }
                                   value={data.algaeh_app_screens_id}
-                                // indeterminate={checked.indeterminate}
+                                  indeterminate={data.indeterminate}
                                 >
                                   {data.screen_name}
                                 </Checkbox>
