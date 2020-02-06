@@ -95,6 +95,11 @@
     h6 {
       font-weight: bold;
     }
+
+    &:hover {
+      background-color: lighten($primary-color, 60%);
+      cursor: pointer;
+    }
   }
 
   .spotlightSearchIconBox {
