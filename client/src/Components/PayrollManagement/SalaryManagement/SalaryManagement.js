@@ -5,6 +5,7 @@ import NewSalaryProcessing from "./SalaryProcessing/NewSalaryProcessing";
 import MiscEarningsDeductions from "./MiscEarningsDeductions/MiscEarningsDeductions";
 import MiscEarningsDeductionsNew from "./MiscEarningsDeductionsNew/MiscEarningsDeductionsNew";
 import LeaveSalaryProcess from "./LeaveSalaryProcess/LeaveSalaryProcess";
+import { AlgaehTabs } from "algaeh-react-components";
 
 export default class SalaryManagement extends Component {
   constructor(props) {
@@ -29,22 +30,75 @@ export default class SalaryManagement extends Component {
   render() {
     return (
       <div className="salary_management">
-        <div className="row">
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Miscellaneous E&D"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <MiscEarningsDeductions />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_LEV_AUTH"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Miscellaneous E&D Bulk"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <MiscEarningsDeductionsNew />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_ENC_AUTH"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Normal Salary Process"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <NewSalaryProcessing />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_YEA_LEV_SAL"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Leave Salary Process"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <LeaveSalaryProcess />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_YEA_LEV_SAL"
+            }
+          ]}
+        />
+
+        {/* <div className="row">
           <div className="tabMaster toggle-section">
-            <ul className="nav">
-              {/* <li
-                algaehtabs={"SalaryProcessing"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Salary Processing"
-                    }}
-                  />
-                }
-              </li> */}
+            <ul className="nav">             
               <li
                 algaehtabs={"MiscEarningsDeductions"}
                 className={"nav-item tab-button active"}
@@ -83,20 +137,7 @@ export default class SalaryManagement extends Component {
                     }}
                   />
                 }
-              </li>
-              {/* <li
-                algaehtabs={"SalaryPayments"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Salary Payments"
-                    }}
-                  />
-                }
-              </li> */}{" "}
+              </li>              
               <li
                 algaehtabs={"LeaveSalaryProcess"}
                 className={"nav-item tab-button"}
@@ -123,8 +164,11 @@ export default class SalaryManagement extends Component {
           ) : this.state.pageDisplay === "LeaveSalaryProcess" ? (
             <LeaveSalaryProcess />
           ) : null}
-        </div>
+        </div> */}
       </div>
     );
   }
+}
+function ChildrenItem({ children }) {
+  return <div className="Salary-Management-section">{children}</div>;
 }
