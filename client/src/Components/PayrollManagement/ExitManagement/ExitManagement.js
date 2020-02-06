@@ -3,6 +3,7 @@ import GratuityAccrual from "./GratuityAccrual/GratuityAccrual";
 import EOSGratuity from "./EOSGratuity/EOSGratuity";
 import FinalSettlement from "./FinalSettlement/FinalSettlement";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import { AlgaehTabs } from "algaeh-react-components";
 
 import "./ExitManagement.scss";
 class ExitManagement extends Component {
@@ -35,7 +36,59 @@ class ExitManagement extends Component {
   render() {
     return (
       <div className="exit_mgmt">
-        <div className="row">
+
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Gratuity Accrual"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <GratuityAccrual parent={this} />
+                </ChildrenItem>
+              ),
+              componentCode: "EXT_GRT_ACC"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "EOS / Gratuity"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <EOSGratuity parent={this} />
+                </ChildrenItem>
+              ),
+              componentCode: "EXT_EOS_GRT"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Final Settlement"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <FinalSettlement />
+                </ChildrenItem>
+              ),
+              componentCode: "EXT_FIN_STL"
+            }
+          ]}
+        />
+
+        {/* <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
@@ -88,10 +141,14 @@ class ExitManagement extends Component {
           ) : this.state.pageDisplay === "FinalSettlement" ? (
             <FinalSettlement />
           ) : null}
-        </div>
+        </div> */}
       </div>
     );
   }
+}
+
+function ChildrenItem({ children }) {
+  return <div className="exit-management-section">{children}</div>;
 }
 
 export default ExitManagement;

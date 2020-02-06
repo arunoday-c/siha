@@ -3,6 +3,7 @@ import "./loan_mgmt.scss";
 import LoanAdjustment from "./LoanAdjustment/LoanAdjustment";
 import LoanAuthorization from "./LoanAuthorization/LoanAuthorization";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import { AlgaehTabs } from "algaeh-react-components";
 
 class LoanManagement extends Component {
   constructor(props) {
@@ -27,7 +28,43 @@ class LoanManagement extends Component {
   render() {
     return (
       <div className="loan_mgmt">
-        <div className="row">
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Loan Authorization"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <LoanAuthorization />
+                </ChildrenItem>
+              ),
+              componentCode: "EXT_GRT_ACC"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Loan Adjustment"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <LoanAdjustment />
+                </ChildrenItem>
+              ),
+              componentCode: "EXT_EOS_GRT"
+            }
+          ]}
+        />
+
+        {/* <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
@@ -65,10 +102,14 @@ class LoanManagement extends Component {
           ) : this.state.pageDisplay === "LoanAdjustment" ? (
             <LoanAdjustment />
           ) : null}
-        </div>
+        </div> */}
       </div>
     );
   }
+}
+
+function ChildrenItem({ children }) {
+  return <div className="lxit-management-section">{children}</div>;
 }
 
 export default LoanManagement;
