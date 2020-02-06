@@ -20,7 +20,6 @@ class Label extends PureComponent {
       let fileName =
         screenName + (langua === undefined || langua === "" ? "en" : langua);
       let fileImport = "./languages/" + fileName + ".json";
-
       let savePage = window.localStorage.getItem(fileName);
       if (savePage !== null && savePage !== "") {
         let getLanguageLables = JSON.parse(savePage);

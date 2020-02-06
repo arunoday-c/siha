@@ -45,7 +45,13 @@ export default memo(function({
     setItem("userSelectedMenu", selMenu);
     setSelectedMenuItem(selMenu);
     setCookie("ScreenName", screenName);
-    history.push(`/${screenName}`);
+    const extraParam =
+      item.redirect_url !== undefined &&
+      item.redirect_url !== "" &&
+      item.redirect_url !== null
+        ? `/${item.redirect_url}`
+        : "";
+    history.push(`/${screenName}${extraParam}`);
   }
   return (
     <div className="breadCrumpMenu">
