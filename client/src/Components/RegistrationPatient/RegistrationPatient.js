@@ -75,7 +75,7 @@ class RegistrationPatient extends Component {
   }
   static contextType = MainContext;
   UNSAFE_componentWillMount() {
-    debugger
+
     const userToken = this.context.userToken;
     let IOputs = emptyObject;
     IOputs.employee_id_required = userToken.requied_emp_id
@@ -90,7 +90,7 @@ class RegistrationPatient extends Component {
 
   componentDidMount() {
     // const userToken = this.context.userToken;
-    // debugger
+    // 
     // this.setState({
     //   employee_id_required: userToken.requied_emp_id,
     //   hospital_id: userToken.hims_d_hospital_id,
@@ -836,7 +836,6 @@ class RegistrationPatient extends Component {
             value={{
               state: this.state,
               updateState: obj => {
-                debugger
                 this.setState({ ...obj });
               }
             }}

@@ -40,7 +40,7 @@ export default class AddReciptForm extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    debugger
+
     this.setState(nextProps.SettlementIOputs);
   }
 

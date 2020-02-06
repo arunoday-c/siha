@@ -13,65 +13,50 @@ export function ScreenAssignmentEvents() {
             roles: []
           });
           break;
+        case "module_id":
+          // getRoleBaseActive($this);
+          getModuleScreenComponent($this, value.value);
+
+          if ($this.state.role_id !== null) {
+            getRoleActiveModules($this, $this.state.role_id, value.value);
+          }
+
+          $this.setState({
+            [value.name]: value.value
+          });
+          break;
         default:
           //getRoleBaseActive($this);
-          // getRoleActiveModules($this, value.value);
-          // $this.setState({
-          //   [value.name]: value.value
-          // });
+          if ($this.state.module_id !== null) {
+            getRoleActiveModules($this, value.value, $this.state.module_id);
+          }
+          $this.setState({
+            [value.name]: value.value
+          });
           break;
       }
     },
-    assignSelectedModules: that => {
+    assignSelectedScreen: that => {
       return new Promise((resolve, reject) => {
-        const module = Object.keys(that.state.selectedModules).map(item => {
-          const selected = that.state.modules.find(f => f.module_code === item);
-          if (selected !== undefined) {
-            const screens = Object.keys(that.state.selectedModules[item]).map(
-              screen => {
-                return selected.ScreenList.find(s => s.screen_code === screen);
-              }
-            );
-            return {
-              module_code: selected.module_code,
-              module_id: selected.module_id,
-              module_name: selected.module_name,
-              other_language: selected.other_language,
-              icons: selected.icons,
-              order: selected.order,
-              ScreenList: screens
-            };
-          }
-        });
         algaehApiCall({
-          uri: "/algaehMasters/moduleScreenAssignment",
+          uri: "/algaehMasters/addScreensAndComponents",
           method: "POST",
           data: {
-            module_screen: module,
+            screen_list: that.state.ScreenList,
             app_group_id: that.state.app_group_id,
+            module_id: that.state.module_id,
             role_id: that.state.role_id
           },
           onSuccess: res => {
-            // const { success, message } = res.data;
             resolve(res.data);
-            // swalMessage({
-            //   title: message,
-            //   type: success === true ? "success" : "error"
-            // });
           },
           onCatch: err => {
             const { message } = err.response.data;
             reject(message);
-            // swalMessage({
-            //   title: message,
-            //   type: "error"
-            // });
           }
         });
       });
 
-      // that.setState({ assignedModules: module });
-      // console.log("module", module);
     },
     assignScreens: $this => {
       //To build delete inputs
@@ -229,18 +214,18 @@ export function ScreenAssignmentEvents() {
       });
     },
     clearState: $this => {
-      $this.setState({ app_group_id: null, role_id: null, roles: [] });
+      $this.setState({ module_id: null, app_group_id: null, role_id: null, roles: [], ScreenList: [] });
       getRoleBaseActive($this);
     },
 
-    changeScreen: ($this, data, e) => {
+    changeComponent: ($this, data, e) => {
       const _status = e.target.checked;
       let val = parseInt(e.target.value, 10);
 
-      let main_modules = $this.state.modules;
+      let screen_list = $this.state.ScreenList;
 
-      const _screens = data.ScreenList.map(item => {
-        if (item.screen_id === val) {
+      const _screens = data.componentList.map(item => {
+        if (item.algaeh_d_app_component_id === val) {
           item.checked = _status ? true : false;
         }
         return {
@@ -252,67 +237,69 @@ export function ScreenAssignmentEvents() {
         return f.checked === true;
       });
 
-      let newModule = _.map(main_modules, f => {
-        let _sList = f.ScreenList;
-        if (f.module_id === data.module_id) {
+      let newModule = _.map(screen_list, f => {
+        let _sList = f.componentList;
+        if (f.algaeh_app_screens_id === data.algaeh_app_screens_id) {
           _sList = _screens;
           f.checked = _check.length > 0 ? true : false;
         }
         return {
           ...f,
-          ScreenList: _sList
+          componentList: _sList
         };
       });
 
-      $this.setState({ modules: newModule });
+      $this.setState({ ScreenList: newModule });
     },
-    changeModules: ($this, data, e) => {
+    changeScreen: ($this, data, e) => {
       const _status = e.target.checked;
       let val = parseInt(e.target.value, 10);
 
-      let main_modules = $this.state.modules;
+      let screen_list = $this.state.ScreenList;
 
-      const _screens = data.ScreenList.map(item => {
+      const _screens = data.componentList.map(item => {
         return {
           ...item,
           checked: _status ? true : false
         };
       });
-      let newModule = _.map(main_modules, f => {
-        let _sList = f.ScreenList;
+      let newModule = _.map(screen_list, f => {
+        let _sList = f.componentList;
         let _checked = { checked: f.checked ? true : false };
-        if (parseInt(f.module_id) === val) {
+        if (parseInt(f.algaeh_app_screens_id) === val) {
           _sList = _screens;
           _checked = { checked: _status ? true : false };
         }
         return {
           ...f,
           ..._checked,
-          ScreenList: _sList
+          componentList: _sList
         };
       });
-      $this.setState({ modules: newModule });
+      $this.setState({ ScreenList: newModule });
+    },
+
+    getModules: ($this) => {
+      algaehApiCall({
+        uri: "/algaehMasters/getAlgaehModules",
+        method: "GET",
+        onSuccess: response => {
+          if (response.data.success) {
+            $this.setState({
+              algaeh_modules: response.data.records
+            });
+          }
+        },
+        onError: error => {
+          swalMessage({
+            title: error.message,
+            type: "success"
+          });
+        }
+      });
     }
   };
 }
-
-// function getGroupData($this) {
-//   algaehApiCall({
-//     uri: "/algaehappuser/selectAppGroup",
-//     method: "GET",
-//     onSuccess: response => {
-//       if (response.data.success) {
-//         $this.setState({ groups: response.data.records });
-//       }
-//     },
-//     onFailure: error => {
-//       swalMessage({
-//         title: error.message,
-//         type: "error"
-//       });
-//     }
-//   });
-// }
 
 function getRoleBaseActive($this) {
   $this._isMounted = true;
@@ -356,26 +343,78 @@ function getRoles($this, group_id) {
   });
 }
 
-export function getRoleActiveModules(role_id) {
-  return new Promise((resolve, reject) => {
-    let inputObj = { role_id: role_id, from_assignment: "Y" };
-    algaehApiCall({
-      uri: "/algaehMasters/getRoleBaseActiveModules",
-      method: "GET",
-      data: inputObj,
-      onSuccess: res => {
-        const { success, records, message } = res.data;
-        if (success) {
-          resolve(records);
-        } else {
-          reject(message);
-        }
-      },
-      onCatch: err => {
-        const { message } = err.response.data;
-        reject(message);
+function getModuleScreenComponent($this, module_id) {
+  algaehApiCall({
+    uri: "/algaehMasters/getScreensWithComponents",
+    method: "GET",
+    data: {
+      module_id: module_id
+    },
+    onSuccess: response => {
+
+      if (response.data.success) {
+        $this.setState({ ScreenList: response.data.records });
       }
-    });
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+}
+
+function getRoleActiveModules($this, role_id, module_id) {
+
+  algaehApiCall({
+    uri: "/algaehMasters/getCurrentAssignedScreenAndComponent",
+    method: "GET",
+    data: { role_id: role_id, module_id: module_id },
+    onSuccess: res => {
+      if (res.data.success) {
+
+        let data = res.data.records.screen_list;
+        let ScreenList = $this.state.ScreenList;
+        data.map(item => {
+          let _findModule = _.find(
+            ScreenList,
+            m => m.algaeh_app_screens_id === item.algaeh_app_screens_id
+          );
+          const index = ScreenList.indexOf(_findModule);
+          ScreenList[index] = {
+            ...ScreenList[index],
+            checked: true,
+            algaeh_m_module_role_privilage_mapping_id:
+              item.algaeh_m_module_role_privilage_mapping_id
+          };
+
+          item.componentList.map(screen => {
+            let _findScreen = _.find(
+              ScreenList[index]["componentList"],
+              s => s.algaeh_d_app_component_id === screen.algaeh_d_app_component_id
+            );
+            const indexS = ScreenList[index]["componentList"].indexOf(_findScreen);
+            ScreenList[index]["componentList"][indexS] = {
+              ...ScreenList[index]["componentList"][indexS],
+              checked: true,
+              algaeh_m_component_screen_privilage_mapping_id:
+                screen.algaeh_m_component_screen_privilage_mapping_id
+            };
+          });
+        });
+        // ScreenList = ScreenList.concat(data)
+        $this.setState({
+          ScreenList: ScreenList
+        });
+      }
+    },
+    onFailure: err => {
+      swalMessage({
+        title: err.message,
+        type: "error"
+      });
+    }
   });
 }
 
@@ -390,27 +429,6 @@ export function getComponentsForScreen(sceen_id) {
         const { success, records, message } = res.data;
         if (success) {
           resolve(records);
-        } else {
-          reject(message);
-        }
-      },
-      onCatch: err => {
-        const { message } = err.response.data;
-        reject(message);
-      }
-    });
-  });
-}
-export function assignComponentScreenPermissions(input) {
-  return new Promise((resolve, reject) => {
-    algaehApiCall({
-      uri: "/algaehMasters/assignComponentScreenPermissions",
-      method: "POST",
-      data: input,
-      onSuccess: res => {
-        const { success, message } = res.data;
-        if (success) {
-          resolve(message);
         } else {
           reject(message);
         }

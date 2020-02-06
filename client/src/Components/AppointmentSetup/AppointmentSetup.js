@@ -4,6 +4,7 @@ import AppointmentStatus from "./AppointmentStatus/AppointmentStatus";
 import AppointmentRooms from "./AppointmentRooms/AppointmentRooms";
 import AppointmentClinics from "./AppointmentClinics/AppointmentClinics";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
+import { AlgaehTabs } from "algaeh-react-components";
 
 class AppointmentSetup extends Component {
   constructor(props) {
@@ -28,7 +29,59 @@ class AppointmentSetup extends Component {
   render() {
     return (
       <div className="appointment_setup">
-        <div className="row">
+
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    fieldName: "appointment_status"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <AppointmentStatus />
+                </ChildrenItem>
+              ),
+              componentCode: "APP_STATUS"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    fieldName: "appointment_rooms"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <AppointmentRooms />
+                </ChildrenItem>
+              ),
+              componentCode: "APP_ROOMS"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    fieldName: "appointment_clinics"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <AppointmentClinics />
+                </ChildrenItem>
+              ),
+              componentCode: "APP_CLINICS"
+            }
+          ]}
+        />
+
+        {/* <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
@@ -81,10 +134,13 @@ class AppointmentSetup extends Component {
           ) : this.state.pageDisplay === "AppointmentClinics" ? (
             <AppointmentClinics />
           ) : null}
-        </div>
+        </div> */}
       </div>
     );
   }
 }
 
+function ChildrenItem({ children }) {
+  return <div className="appointment-section">{children}</div>;
+}
 export default AppointmentSetup;

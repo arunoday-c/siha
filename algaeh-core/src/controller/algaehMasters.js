@@ -42,7 +42,9 @@ const {
   moduleScreenAssignment,
   getComponentsForScreen,
   assignComponentScreenPermissions,
-  getScreensWithComponents
+  getScreensWithComponents,
+  addScreensAndComponents,
+  getCurrentAssignedScreenAndComponent
 } = masterModels;
 const { releaseConnection } = utils;
 
@@ -727,6 +729,41 @@ export default ({ config, db }) => {
         success: true,
         records: result
       });
+
+      next();
+    }
+  );
+  api.post(
+    "/addScreensAndComponents",
+    addScreensAndComponents,
+    (req, res, next) => {
+      let result = req.records;
+
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+
+      next();
+    }
+  );
+  api.get(
+    "/getCurrentAssignedScreenAndComponent",
+    getCurrentAssignedScreenAndComponent,
+    (req, res, next) => {
+      let result = req.records;
+
+      if (result.invalid_input == true) {
+        res.status(httpStatus.internalServer).json({
+          success: false,
+          message: result.message
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
 
       next();
     }

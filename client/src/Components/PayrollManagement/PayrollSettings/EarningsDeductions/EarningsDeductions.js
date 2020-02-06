@@ -73,10 +73,7 @@ class EarningsDeductions extends Component {
     this.selected_collections = [];
     getEarningDeductions(this);
 
-    if (this.FIN_Active === true) {
-      getFinanceHeaders(this, 5);
-      getFinanceLibilityHeaders(this);
-    }
+
   }
 
   static contextType = MainContext;
@@ -89,6 +86,11 @@ class EarningsDeductions extends Component {
         userToken.product_type === "HRMS_ERP"
         ? true
         : false;
+
+    if (this.FIN_Active === true) {
+      getFinanceHeaders(this, 5);
+      getFinanceLibilityHeaders(this);
+    }
     if (
       this.props.nationalities === undefined ||
       this.props.nationalities.length === 0

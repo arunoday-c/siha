@@ -186,7 +186,7 @@ class Groups extends Component {
       <div className="groups">
         <div className="row inner-top-search">
           <AlagehFormGroup
-            div={{ className: "col-1  mandatory form-group" }}
+            div={{ className: "col-2  mandatory form-group" }}
             label={{
               forceLabel: "Group Code",
               isImp: true
@@ -414,7 +414,7 @@ class Groups extends Component {
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => {},
+                      onEdit: () => { },
                       onDelete: this.deleteGroups.bind(this),
                       onDone: this.updateGroups.bind(this)
                     }}

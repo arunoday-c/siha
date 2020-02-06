@@ -3,15 +3,11 @@ import "./screen_assignment.scss";
 import {
   AlgaehLabel,
   AlagehAutoComplete
-  // AlgaehDataGrid
 } from "../../Wrapper/algaehWrapper";
 import { swalMessage } from "../../../utils/algaehApiCall";
-// import _ from "lodash";
 import {
   ScreenAssignmentEvents,
-  getRoleActiveModules,
   getComponentsForScreen,
-  assignComponentScreenPermissions
 } from "./ScreenAssignmentEvents";
 import { MainContext } from "algaeh-react-components/context";
 import { Checkbox, Radio, Button } from "algaeh-react-components";
@@ -26,51 +22,50 @@ class ScreenAssignment extends Component {
       selectedText: "",
       app_group_id: null,
       role_id: null,
-      selectedModules: {},
+      selectedScreen: {},
       assignedModules: [],
       components: [],
-      selectedScreen: {},
       dummy: false,
-      update_loading: false
+      update_loading: false,
+      algaeh_modules: [],
+      ScreenList: [],
+      module_id: null
     };
-
-    // this.getGroups();
   }
+
   static contextType = MainContext;
   componentWillUnmount() {
     this._isMounted = false;
   }
 
   componentDidMount() {
-    // const userMenu = this.context.userMenu;
     ScreenAssignmentEvents().getGroups(this);
-    // this.setState({ modules: userMenu.filter(f => f.module_code !== "APM") });
-    // ScreenAssignmentEvents().getRoleBaseActiveModules(this);
+    ScreenAssignmentEvents().getModules(this);
   }
 
   dropDownEvent(value) {
     ScreenAssignmentEvents().dropDownHandler(this, value);
   }
 
-  changeScreen(data, e) {
-    ScreenAssignmentEvents().changeScreen(this, data, e);
+  changeComponent(data, e) {
+    ScreenAssignmentEvents().changeComponent(this, data, e);
   }
 
-  changeModules(data, e) {
-    ScreenAssignmentEvents().changeModules(this, data, e);
+  changeScreen(data, e) {
+    ScreenAssignmentEvents().changeScreen(this, data, e);
   }
 
   assignScreens() {
     // ScreenAssignmentEvents().assignScreens(this);
     ScreenAssignmentEvents()
-      .assignSelectedModules(this)
+      .assignSelectedScreen(this)
       .then(result => {
         const { success, message } = result;
         swalMessage({
           title: message,
           type: success === true ? "success" : "error"
         });
-        this.onUpdateFunctionCall(this.state.role_id);
+        // this.onUpdateFunctionCall(this.state.role_id);
       })
       .catch(error => {
         swalMessage({
@@ -84,6 +79,7 @@ class ScreenAssignment extends Component {
     ScreenAssignmentEvents().clearState(this);
   }
   onSearchAllModules(e) {
+
     const value = e.target.value;
     let result = [];
     let userMenu = this.context.userMenu.filter(f => f.module_code !== "APM");
@@ -106,68 +102,70 @@ class ScreenAssignment extends Component {
       selectedText: value
     });
   }
-  checkModuleSelector(sub_menu, e) {
+  checkAllScreenWise(sub_menu, e) {
+
     const checked = e.target.checked;
-    let existingModules = this.state.selectedModules;
+    let existingModules = this.state.selectedScreen;
     if (checked === false) {
-      delete existingModules[sub_menu.module_code][sub_menu.screen_code];
-      this.setState({ selectedModules: { ...existingModules } });
+      delete existingModules[sub_menu.screen_code][sub_menu.component_code];
+      this.setState({ selectedScreen: { ...existingModules } });
       return;
     }
-    let screens = existingModules[sub_menu.module_code];
-    existingModules[sub_menu.module_code] = {
+    let screens = existingModules[sub_menu.screen_code];
+    existingModules[sub_menu.screen_code] = {
       ...screens,
-      [sub_menu.screen_code]: true
+      [sub_menu.component_code]: true
     };
 
-    this.setState({ selectedModules: { ...existingModules } });
+    this.setState({ selectedScreen: { ...existingModules } });
   }
-  checkAllModuleWise(data, e) {
+  checkScreenSelector(data, e) {
+
     const checked = e.target.checked;
-    let existingModules = this.state.selectedModules;
+    let existingModules = this.state.selectedScreen;
     if (checked === false) {
-      delete existingModules[data.module_code];
-      this.setState({ selectedModules: { ...existingModules } });
+      delete existingModules[data.screen_code];
+      this.setState({ selectedScreen: { ...existingModules } });
       return;
     }
 
     let newScreens = {};
-    for (let i = 0; i < data.ScreenList.length; i++) {
-      newScreens[data.ScreenList[i].screen_code] = true;
+    for (let i = 0; i < data.componentList.length; i++) {
+      newScreens[data.componentList[i].component_code] = true;
     }
-    existingModules[data.module_code] = newScreens;
-    this.setState({ selectedModules: { ...existingModules } });
+    existingModules[data.screen_code] = newScreens;
+    this.setState({ selectedScreen: { ...existingModules } });
   }
 
-  onUpdateFunctionCall(value) {
-    let userMenu = this.context.userMenu.filter(f => f.module_code !== "APM");
-    getRoleActiveModules(value)
-      .then(result => {
-        let selectedModules = {};
-        result.forEach(item => {
-          let screens = {};
-          item.ScreenList.forEach(screen => {
-            screens[screen.screen_code] = true;
-          });
-          selectedModules[item.module_code] = screens;
-        });
-        this.setState({
-          selectedModules: selectedModules,
-          modules: userMenu,
-          role_id: value,
-          assignedModules: result
-        });
-      })
-      .catch(error => {
-        swalMessage({
-          title: error,
-          type: "error"
-        });
-      });
-  }
+  // onUpdateFunctionCall(value) {
+  //   let userMenu = this.context.userMenu.filter(f => f.screen_code !== "APM");
+  //   getRoleActiveModules(value)
+  //     .then(result => {
+  //       let selectedScreen = {};
+  //       result.forEach(item => {
+  //         let screens = {};
+  //         item.ScreenList.forEach(screen => {
+  //           screens[screen.component_code] = true;
+  //         });
+  //         selectedScreen[item.screen_code] = screens;
+  //       });
+  //       this.setState({
+  //         selectedScreen: selectedScreen,
+  //         modules: userMenu,
+  //         role_id: value,
+  //         assignedModules: result
+  //       });
+  //     })
+  //     .catch(error => {
+  //       swalMessage({
+  //         title: error,
+  //         type: "error"
+  //       });
+  //     });
+  // }
 
   onHandleChangeRoleId(e) {
-    this.onUpdateFunctionCall(e.value);
+    // this.onUpdateFunctionCall(e.value);
   }
   onClickScreenToComponents(data, e) {
     getComponentsForScreen(data.screen_id)
@@ -181,40 +179,40 @@ class ScreenAssignment extends Component {
         });
       });
   }
-  onClickUpdate() {
-    const checkFilter = this.state.components.filter(
-      f => f.view_privilege !== undefined
-    );
-    if (checkFilter.length === 0) {
-      swalMessage({
-        title: "There is no permission selected",
-        type: "error"
-      });
-      return;
-    }
-    this.setState({ update_loading: true }, () => {
-      assignComponentScreenPermissions({
-        algaeh_m_screen_role_privilage_mapping_id: this.state.selectedScreen
-          .algaeh_m_screen_role_privilage_mapping_id,
-        compoment_list: checkFilter
-      })
-        .then(() => {
-          this.setState({ update_loading: false });
-          swalMessage({
-            title: "Successfully done",
-            type: "success"
-          });
-        })
-        .catch(error => {
-          this.setState({ update_loading: false });
-          const { message } = error.response.data;
-          swalMessage({
-            title: message,
-            type: "error"
-          });
-        });
-    });
-  }
+  // onClickUpdate() {
+  //   const checkFilter = this.state.components.filter(
+  //     f => f.view_privilege !== undefined
+  //   );
+  //   if (checkFilter.length === 0) {
+  //     swalMessage({
+  //       title: "There is no permission selected",
+  //       type: "error"
+  //     });
+  //     return;
+  //   }
+  //   this.setState({ update_loading: true }, () => {
+  //     assignComponentScreenPermissions({
+  //       algaeh_m_screen_role_privilage_mapping_id: this.state.selectedScreen
+  //         .algaeh_m_screen_role_privilage_mapping_id,
+  //       compoment_list: checkFilter
+  //     })
+  //       .then(() => {
+  //         this.setState({ update_loading: false });
+  //         swalMessage({
+  //           title: "Successfully done",
+  //           type: "success"
+  //         });
+  //       })
+  //       .catch(error => {
+  //         this.setState({ update_loading: false });
+  //         const { message } = error.response.data;
+  //         swalMessage({
+  //           title: message,
+  //           type: "error"
+  //         });
+  //       });
+  //   });
+  // }
   render() {
     return (
       <div className="screen_assignment">
@@ -247,81 +245,117 @@ class ScreenAssignment extends Component {
                 valueField: "app_d_app_roles_id",
                 data: this.state.roles
               },
-              onChange: this.onHandleChangeRoleId.bind(this) //this.dropDownEvent.bind(this)
+              onChange: this.dropDownEvent.bind(this)
             }}
           />
         </div>
         <div className="row">
-          <div className="col-6">
+          <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Define Module/Screen</h3>
+                  <h3 className="caption-subject">Define Screen/Components</h3>
+                </div>
+              </div>
+              <div className="row margin-top-15">
+                <AlagehAutoComplete
+                  div={{ className: "col-5 mandatory form-group" }}
+                  label={{ forceLabel: "Select Module", isImp: true }}
+                  selector={{
+                    name: "module_id",
+                    className: "select-fld",
+                    value: this.state.module_id,
+                    dataSource: {
+                      textField: "module_name",
+                      valueField: "algaeh_d_module_id",
+                      data: this.state.algaeh_modules
+                    },
+                    onChange: this.dropDownEvent.bind(this)
+                  }}
+                />
+                <AlagehAutoComplete
+                  div={{ className: "col-5 mandatory form-group" }}
+                  label={{
+                    forceLabel: "Assign Landing Screen",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "app_group_id",
+                    className: "select-fld",
+                    value: this.state.app_group_id,
+                    dataSource: {
+                      textField: "app_group_name",
+                      valueField: "algaeh_d_app_group_id",
+                      data: this.state.groups
+                    },
+                    onChange: this.dropDownEvent.bind(this),
+                    others: {}
+                  }}
+                />
+                <div className="col">
+
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={this.clearState.bind(this)}
+                    style={{ marginTop: 19 }}
+                  >
+                    <AlgaehLabel label={{ forceLabel: "Save" }} />
+                  </button>
                 </div>
               </div>
               <div className="portlet-body">
                 <div className="row">
                   <div className="col-12">
                     <div className="moduleList list-group-check">
+
                       <input
                         type="text"
                         className="moduleSearchInput"
                         placeholder="Search Module"
                         onChange={this.onSearchAllModules.bind(this)}
                         disabled={
-                          this.state.modules.length === 0 ? true : false
+                          this.state.ScreenList.length === 0 ? true : false
                         }
                       />
-                      {this.state.modules.length > 0 ? (
+                      {this.state.ScreenList.length > 0 ? (
                         <ul className="mainmenu">
-                          {this.state.modules.map((data, index) => {
-                            const allModules =
-                              this.state.selectedModules[data.module_code] !==
-                              undefined
-                                ? Object.keys(
-                                    this.state.selectedModules[data.module_code]
-                                  ).length
-                                : 0;
-                            const checked =
-                              allModules > 0 &&
-                              allModules < data.ScreenList.length
-                                ? { indeterminate: true, checked: false }
-                                : allModules === data.ScreenList.length
-                                ? { checked: true, indeterminate: false }
-                                : { checked: false, indeterminate: false };
+                          {this.state.ScreenList.map((data, index) => {
                             return (
                               <li key={data.module_id}>
                                 <Checkbox
-                                  onChange={this.checkAllModuleWise.bind(
+                                  onChange={this.changeScreen.bind(
                                     this,
                                     data
                                   )}
-                                  checked={checked.checked}
-                                  indeterminate={checked.indeterminate}
+                                  checked={
+                                    data.checked === undefined
+                                      ? false
+                                      : data.checked
+                                  }
+                                  value={data.algaeh_app_screens_id}
+                                // indeterminate={checked.indeterminate}
                                 >
-                                  {data.module_name}
+                                  {data.screen_name}
                                 </Checkbox>
 
                                 <ul className="submenu">
-                                  {data.ScreenList.map((sub_menu, index) => {
-                                    const isChecked =
-                                      this.state.selectedModules[
-                                        data.module_code
-                                      ] !== undefined
-                                        ? this.state.selectedModules[
-                                            data.module_code
-                                          ][sub_menu.screen_code]
-                                        : false;
+                                  {data.componentList.map((sub_menu, index) => {
                                     return (
                                       <li key={sub_menu.screen_id}>
                                         <Checkbox
-                                          onChange={this.checkModuleSelector.bind(
+                                          onChange={this.changeComponent.bind(
                                             this,
-                                            sub_menu
+                                            data
                                           )}
-                                          checked={isChecked}
+                                          checked={
+                                            sub_menu.checked === undefined
+                                              ? false
+                                              : sub_menu.checked
+                                          }
+                                          value={sub_menu.algaeh_d_app_component_id}
                                         >
-                                          {sub_menu.screen_name}
+                                          {sub_menu.component_name}
                                         </Checkbox>
                                       </li>
                                     );
@@ -332,8 +366,8 @@ class ScreenAssignment extends Component {
                           })}
                         </ul>
                       ) : (
-                        <p>No role is selected</p>
-                      )}
+                          <p>No role is selected</p>
+                        )}
                     </div>
                     <div className="actionLeftRight">
                       <button
@@ -341,15 +375,15 @@ class ScreenAssignment extends Component {
                         className="btn btn-primary"
                         onClick={this.assignScreens.bind(this)}
                       >
-                        <AlgaehLabel label={{ forceLabel: "Update" }} />
+                        <AlgaehLabel label={{ forceLabel: "Assign" }} />
                       </button>
                     </div>
-                    <div className="moduleList list-group-check">
+                    {/* <div className="moduleList list-group-check">
                       <ul className="mainmenu">
                         {this.state.assignedModules.map((data, index) => {
                           return (
                             <li key={data.module_id}>
-                              <i className={data.icons + " fa-1x"}></i>{" "}
+                              <i className={data.icons + " fa-1x"}></i>
                               <b> {data.module_name}</b>
                               <ul className="submenu">
                                 {data.ScreenList.map((sub_menu, index) => {
@@ -361,7 +395,7 @@ class ScreenAssignment extends Component {
                                         sub_menu
                                       )}
                                     >
-                                      <i className="fas fa-arrow-circle-right fa-1x"></i>{" "}
+                                      <i className="fas fa-arrow-circle-right fa-1x"></i>
                                       {sub_menu.screen_name}
                                     </li>
                                   );
@@ -371,11 +405,11 @@ class ScreenAssignment extends Component {
                           );
                         })}
                       </ul>
-                    </div>
+                    </div> */}
                   </div>
-                  <div className="col-12">
+                  {/* <div className="col-12">
                     <div className="row margin-top-15">
-                      {" "}
+                      
                       <AlagehAutoComplete
                         div={{ className: "col-6 mandatory form-group" }}
                         label={{
@@ -396,7 +430,7 @@ class ScreenAssignment extends Component {
                         }}
                       />
                       <div className="col">
-                        {" "}
+                        
                         <button
                           type="button"
                           className="btn btn-default"
@@ -407,19 +441,19 @@ class ScreenAssignment extends Component {
                         </button>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* <div className="col-5"></div> */}
                 </div>
               </div>
             </div>
-          </div>{" "}
-          <div className="col-6">
+          </div>
+          {/* <div className="col-6">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">
-                    Define Permissions{" "}
+                    Define Permissions
                     <b>'{this.state.selectedScreen.screen_name}'</b>
                   </h3>
                 </div>
@@ -460,15 +494,15 @@ class ScreenAssignment extends Component {
                         loading={this.state.update_loading}
                         onClick={this.onClickUpdate.bind(this)}
                       >
-                        {" "}
-                        Update{" "}
+                        
+                        Update
                       </Button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="hptl-phase1-footer">

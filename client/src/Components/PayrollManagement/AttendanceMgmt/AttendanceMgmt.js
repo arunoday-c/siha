@@ -2,10 +2,12 @@ import React, { Component } from "react";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import NewMonthlyAttendence from "./MonthlyAttendance/NewMonthlyAttendance";
 import WeeklyAttendance from "./WeeklyAttendance/WeeklyAttendance";
-import AbsenceManagement from "./AbsenceManagement/AbsenceManagement";
-import OverTimeMgmt from "./OvertimeManagement/OvertimeManagement";
 import BulkTimeSheet from "./BulkTimeSheet";
 import "./AttendanceMgmt.scss";
+import { AlgaehTabs } from "algaeh-react-components";
+
+// import AbsenceManagement from "./AbsenceManagement/AbsenceManagement";
+// import OverTimeMgmt from "./OvertimeManagement/OvertimeManagement";
 
 export default class AttendanceMgmt extends Component {
   constructor(props) {
@@ -31,7 +33,58 @@ export default class AttendanceMgmt extends Component {
   render() {
     return (
       <div className="attendance_mgmt">
-        <div className="row">
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Monthly Attendance"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <NewMonthlyAttendence />
+                </ChildrenItem>
+              ),
+              componentCode: "ATT_MON_ATT"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Manual Timesheet (Single/Bulk)"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <BulkTimeSheet />
+                </ChildrenItem>
+              ),
+              componentCode: "ATT_MAN_TIM"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Biometric Timesheet"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <WeeklyAttendance />
+                </ChildrenItem>
+              ),
+              componentCode: "ATT_BIO_TIM"
+            }
+          ]}
+        />
+
+        {/* <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
@@ -59,20 +112,7 @@ export default class AttendanceMgmt extends Component {
                     }}
                   />
                 }
-              </li>{" "}
-              {/* <li
-                algaehtabs={"OverTimeMgmt"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "OverTime Management"
-                    }}
-                  />
-                }
-              </li> */}
+              </li>
               <li
                 algaehtabs={"WeeklyAttendance"}
                 className={"nav-item tab-button"}
@@ -85,33 +125,7 @@ export default class AttendanceMgmt extends Component {
                     }}
                   />
                 }
-              </li>{" "}
-              {/* <li
-                algaehtabs={"AbsenceManagement"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Absence Management"
-                    }}
-                  />
-                }
-              </li> */}
-              {/* <li
-                algaehtabs={"ManualAttendance"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Manual Timesheet"
-                    }}
-                  />
-                }
-              </li> */}
+              </li>
             </ul>
           </div>
         </div>
@@ -127,8 +141,11 @@ export default class AttendanceMgmt extends Component {
           ) : this.state.pageDisplay === "OverTimeMgmt" ? (
             <OverTimeMgmt />
           ) : null}
-        </div>
+        </div> */}
       </div>
     );
   }
+}
+function ChildrenItem({ children }) {
+  return <div className="Attendance-Management-section">{children}</div>;
 }

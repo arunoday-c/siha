@@ -470,7 +470,7 @@ const generateBillDetails = ($this, context) => {
 
   AlgaehLoader({ show: true });
 
-  debugger
+
   algaehApiCall({
     uri: "/billing/getBillDetails",
     module: "billing",
@@ -478,7 +478,7 @@ const generateBillDetails = ($this, context) => {
     data: serviceInput,
     onSuccess: response => {
       if (response.data.success) {
-        debugger
+
         response.data.records.follow_up = FollowUp;
         response.data.records.existing_treat = zeroBill;
 
