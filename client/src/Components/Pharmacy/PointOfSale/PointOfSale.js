@@ -21,6 +21,7 @@ import {
   nationalityhandle,
   CancelPosEntry,
   generateReport,
+  generatePharmacyLabel,
   getCashiersAndShiftMAP,
   ClosePrescribedItem
 } from "./PointOfSaleEvents";
@@ -517,6 +518,14 @@ class PointOfSale extends Component {
                         style={{ float: "left" }}
                       >
                         Cash Invoice
+                      </button>
+
+                      <button
+                        onClick={generatePharmacyLabel.bind(this, this)}
+                        className="btn btn-other"
+                        style={{ float: "left" }}
+                      >
+                        Print Label
                       </button>
 
                       {this.state.insured === "Y" ? (

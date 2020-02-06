@@ -262,31 +262,12 @@ body {
   background: #ffc7a6;
   font-weight: bold;
 }
-.tableForPharmacy {
-  width: 100%;
-  border-collapse: collapse;
-}
-.tableForPharmacy td {
-  border: 1px solid #ccc;
-  padding: 3px;
-  margin: 0;
-  font-size: 13px;
-  width: 50%;
-}
-.tableForPharmacy td span {
-  display: inline-block;
-  margin: 0 5px;
-  font-weight: bold;
-}
 
 .tableTotal {
   width: 50%;
   border-top: 1px solid #ccc;
   margin-top: 20px;
   float: right;
-}
-.tableForPharmacy td:last-child {
-  text-align: right;
 }
 .tableTotal td {
   border-bottom: 1px solid #ccc;
@@ -511,4 +492,43 @@ body {
 .termsCnd li {
   margin: 0 0 0 15px;
   padding: 0;
+}
+.tableForPharmacyDiv {
+  border: 1px dashed #fff;
+  height: 339px;
+  padding: 5px 0 0;
+  margin: 0 0 12px;
+}
+.tableForPharmacy {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+}
+.tableForPharmacy td {
+  border: 1px solid #ccc;
+  padding: 5px;
+  margin: 0;
+  font-size: 13px;
+}
+
+.tableForPharmacy td:first-child {
+  text-align: left;
+  width: 15%;
+}
+
+.tableForPharmacy td:nth-child(2) {
+  text-align: left;
+  width: 35%;
+  font-weight: bolder;
+}
+
+.tableForPharmacy td:nth-child(3) {
+  width: 35%;
+  text-align: right;
+  font-weight: bolder;
+}
+
+.tableForPharmacy td:last-child {
+  text-align: right;
+  width: 15%;
 }

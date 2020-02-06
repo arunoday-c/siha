@@ -1084,6 +1084,45 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
   });
 };
 
+const generatePharmacyLabel = $this => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "PharmacyMedicineLabel",
+        reportParams: [
+          {
+            name: "visit_id",
+            value: $this.state.visit_id
+          }
+        ],
+        pageSize: "A6",
+        pageOrentation: "landscape",
+        outputFileType: "PDF",
+        breakAtArray: true
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = "";
+    }
+  });
+};
+
 const getCashiersAndShiftMAP = $this => {
   algaehApiCall({
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",
@@ -1444,6 +1483,7 @@ export {
   CancelPosEntry,
   getPosEntry,
   generateReport,
+  generatePharmacyLabel,
   getCashiersAndShiftMAP,
   ClosePrescribedItem,
   qtyonchangegridcol,
