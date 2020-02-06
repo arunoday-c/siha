@@ -5,9 +5,9 @@ import LeaveAuth from "./LeaveAuthorization/LeaveAuthorization";
 import LeaveEncashAuth from "./LeaveEncashmentAuth/LeaveEncashmentAuth";
 // import LeaveSalaryProcess from "./LeaveSalaryProcess/LeaveSalaryProcess";
 import LeaveYearlyProcess from "./LeaveYearlyProcess/LeaveYearlyProcess";
-import LeaveSalaryAccural from "./LeaveSalaryAccural/LeaveSalaryAccural";
-
+// import LeaveSalaryAccural from "./LeaveSalaryAccural/LeaveSalaryAccural";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import { AlgaehTabs } from "algaeh-react-components";
 
 export default class LeaveManagement extends Component {
   constructor(props) {
@@ -30,8 +30,58 @@ export default class LeaveManagement extends Component {
 
   render() {
     return (
-      <div className="row leave_mgmt">
-        <div className="tabMaster toggle-section">
+      <div className="leave_mgmt">
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Leave Authorization"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <LeaveAuth />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_LEV_AUTH"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Encashment Authorization"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <LeaveEncashAuth />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_ENC_AUTH"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Yearly Leave Process"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <LeaveYearlyProcess />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_YEA_LEV_SAL"
+            }
+          ]}
+        />
+        {/* <div className="tabMaster toggle-section">
           <ul className="nav">
             <li
               algaehtabs={"LeaveAuth"}
@@ -87,8 +137,11 @@ export default class LeaveManagement extends Component {
           ) : this.state.pageDisplay === "LeaveSalaryAccural" ? (
             <LeaveSalaryAccural />
           ) : null}
-        </div>
+        </div> */}
       </div>
     );
   }
+}
+function ChildrenItem({ children }) {
+  return <div className="Leave-Management-section">{children}</div>;
 }

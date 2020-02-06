@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { AlagehReducers } from "./reducers/algaehReducers";
 import logger from "redux-logger";
-import ContextBinding from "./contextCheck";
+// import ContextBinding from "./contextCheck";
 import Routes from "./routes.js";
 import thunk from "redux-thunk";
 import { applyMiddleware, createStore } from "redux";
@@ -23,9 +23,9 @@ const store = createStore(AlagehReducers, middleware);
 ReactDOM.render(
   <MainContex>
     <Provider store={store}>
-      <ContextBinding>
-        <Routes />
-      </ContextBinding>
+      {/* <ContextBinding> */}
+      <Routes />
+      {/* </ContextBinding> */}
     </Provider>
   </MainContex>,
   document.getElementById("root")

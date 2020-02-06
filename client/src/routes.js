@@ -510,7 +510,7 @@ const QuotationCompare = React.lazy(() =>
 const DefaultLandingPage = React.lazy(() =>
   retry(() => import("./Components/Dashboard/defaultlandingPage"))
 );
-function LoadComponent({ children }) {
+function LoadComponent({ match, children }) {
   return (
     <Suspense
       fallback={
@@ -1216,8 +1216,11 @@ const appRoutes = [
     component: <RequisitionList />
   },
   {
-    path: "/ReportsList",
+    path: "/ReportsList/:name",
     isExactPath: true,
+    others: {
+      strict: true
+    },
     component: <ReportsList />
   },
   {
@@ -1253,11 +1256,15 @@ function Routes() {
     <BrowserRouter>
       <Switch>
         {appRoutes.map((routeItem, idx) => {
+          const others = routeItem.others === undefined ? {} : routeItem.others;
+          const path = routeItem.path.replace("/?", "?");
+
           return (
             <Route
               key={routeItem.path}
-              path={routeItem.path}
+              path={path}
               exact={routeItem.isExactPath}
+              strict={true}
               render={params => {
                 if (routeItem.path === "/") return routeItem.component;
                 else {

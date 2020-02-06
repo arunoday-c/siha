@@ -1,10 +1,11 @@
 import React, { useState, useContext, memo, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { MainContext } from "algaeh-react-components/context";
 import { setItem, getItem } from "algaeh-react-components/storage";
 import { setCookie } from "../../../utils/algaehApiCall";
 
 function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
+  const { name } = useParams();
   const { userMenu, userToken, userLanguage, setSelectedMenuItem } = useContext(
     MainContext
   );
@@ -31,8 +32,15 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
     const selMenu = { ...item, ...others };
     setItem("userSelectedMenu", selMenu);
     setSelectedMenuItem(selMenu);
+    setActiveScreen(item.screen_name);
     setCookie("ScreenName", screenName);
-    history.push(`/${screenName}`);
+    const extraParam =
+      item.redirect_url !== undefined &&
+      item.redirect_url !== "" &&
+      item.redirect_url !== null
+        ? `/${item.redirect_url}`
+        : "";
+    history.push(`/${screenName}${extraParam}`);
   }
   function searchModuleText(e) {
     const value = e.target.value;
@@ -57,6 +65,7 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
   const moduleSelect = activeModule === "" ? openModule : activeModule;
   const screenSelected = activeScreen === "" ? openScreen : activeScreen;
   const list = searchText === "" ? userMenu : modules;
+
   return (
     <div className={`animated leftNavCntr`}>
       <div className="hptl-phase1-sideMenuBar">
@@ -107,28 +116,32 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
               {moduleSelect === item.module_name || searchText !== "" ? (
                 <div className="row sub-menu-option">
                   <ul className="tree-structure-menu">
-                    {item.ScreenList.map((screen, idx) => (
-                      <li
-                        key={idx}
-                        className={
-                          screenSelected === screen.screen_name ? "active" : ""
-                        }
-                        onClick={() => {
-                          const { screen_name, s_other_language } = screen;
-                          redirectToScreen(screen, screen.page_to_redirect, {
-                            screen_name,
-                            s_other_language
-                          });
-                        }}
-                      >
-                        <i className="fas fa-arrow-circle-right fa-1x " />
-                        <span>
-                          {userLanguage === "en"
-                            ? screen.screen_name
-                            : screen.other_language}
-                        </span>
-                      </li>
-                    ))}
+                    {item.ScreenList.map((screen, idx) => {
+                      return (
+                        <li
+                          key={idx}
+                          className={
+                            screenSelected === screen.screen_name
+                              ? "active"
+                              : ""
+                          }
+                          onClick={() => {
+                            const { screen_name, s_other_language } = screen;
+                            redirectToScreen(screen, screen.page_to_redirect, {
+                              screen_name,
+                              s_other_language
+                            });
+                          }}
+                        >
+                          <i className="fas fa-arrow-circle-right fa-1x " />
+                          <span>
+                            {userLanguage === "en"
+                              ? screen.screen_name
+                              : screen.other_language}
+                          </span>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               ) : null}

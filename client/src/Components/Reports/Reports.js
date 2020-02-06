@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import "./reports.scss";
 // import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 import loadActiveReports from "./reports_data";
@@ -28,15 +29,35 @@ class Reports extends Component {
   }
   componentDidMount() {
     const { userToken, selectedMenu } = this.context;
-    loadActiveReports(userToken, selectedMenu).then(result => {
-      console.log("result", result);
-      this.setState({
-        // [value.name]: value.value,
-        itemList: result.submenu,
-        excel: result.excel
-      });
-    });
+    // console.log("useParams", this.props.match);
+    const { match } = this.props;
+    loadActiveReports(userToken, selectedMenu, match.params.name).then(
+      result => {
+        this.setState({
+          // [value.name]: value.value,
+          itemList: result.submenu,
+          excel: result.excel
+        });
+      }
+    );
   }
+
+  componentDidUpdate(prevProps) {
+    const { match } = this.props;
+    if (prevProps.match.params.name !== match.params.name) {
+      const { userToken, selectedMenu } = this.context;
+      loadActiveReports(userToken, selectedMenu, match.params.name).then(
+        result => {
+          this.setState({
+            // [value.name]: value.value,
+            itemList: result.submenu,
+            excel: result.excel
+          });
+        }
+      );
+    }
+  }
+
   render() {
     const { userToken, selectedMenu } = this.context;
     return (
@@ -119,4 +140,4 @@ class Reports extends Component {
   }
 }
 
-export default Reports;
+export default withRouter(Reports);
