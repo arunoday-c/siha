@@ -276,7 +276,7 @@ class AddReciptForm extends Component {
                   />
                 </div>
                 {/* Check */}
-                <div className="row secondary-box-container">
+                {/* <div className="row secondary-box-container">
                   <div
                     className="customCheckbox col-lg-3"
                     style={{ border: "none", marginTop: "28px" }}
@@ -355,7 +355,7 @@ class AddReciptForm extends Component {
                     }}
                     value={this.state.cheque_date}
                   />
-                </div>
+                </div> */}
                 <div className="row secondary-box-container">
                   <div className="col-lg-3" />
                   <div className="col-lg-5">
@@ -394,8 +394,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AddReciptForm)
+  connect(mapStateToProps, mapDispatchToProps)(AddReciptForm)
 );
