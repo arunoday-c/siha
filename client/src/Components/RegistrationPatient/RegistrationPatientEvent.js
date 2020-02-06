@@ -321,6 +321,23 @@ const ShowAdvanceScreen = ($this, e) => {
   }
 };
 
+const showAdvanceRefundList = ($this, e) => {
+  if (
+    $this.state.patient_code !== undefined &&
+    $this.state.patient_code !== ""
+  ) {
+    $this.setState({
+      ...$this.state,
+      AdvanceRefundOpen: !$this.state.AdvanceRefundOpen
+    });
+  } else {
+    swalMessage({
+      title: "Please select a patient to view advance for",
+      type: "warning"
+    });
+  }
+};
+
 const closePopup = $this => {
   $this.setState({ popUpGenereted: false });
 };
@@ -442,7 +459,7 @@ const getCtrlCode = ($this, patcode, row) => {
         if (
           hospitaldetails.local_vat_applicable === "N" &&
           hospitaldetails.default_nationality ===
-          data.patientRegistration.nationality_id
+            data.patientRegistration.nationality_id
         ) {
           data.patientRegistration.vat_applicable = "N";
         }
@@ -656,5 +673,6 @@ export {
   getCtrlCode,
   ShowPackageUtilize,
   ClosePackageUtilize,
-  UpdatePatientDetail
+  UpdatePatientDetail,
+  showAdvanceRefundList
 };
