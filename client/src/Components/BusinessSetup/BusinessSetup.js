@@ -107,7 +107,7 @@ class BusinessSetup extends Component {
                   />
                 }
               </li>
-              {this.state.HIMS_Active === true ? (
+              {/* {this.state.HIMS_Active === true ? (
                 <li
                   algaehtabs={"Speciality"}
                   className={"nav-item tab-button"}
@@ -151,7 +151,7 @@ class BusinessSetup extends Component {
                     />
                   }
                 </li>
-              ) : null}
+              ) : null} */}
               <li
                 algaehtabs={"Shift"}
                 className={"nav-item tab-button"}
