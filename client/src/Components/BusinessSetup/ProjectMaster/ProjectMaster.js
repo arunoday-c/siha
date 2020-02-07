@@ -6,12 +6,12 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlgaehDateHandler
-} from "../../../Wrapper/algaehWrapper";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
+} from "../../Wrapper/algaehWrapper";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
 import ProjectMasterEvents from "./ProjectMasterEvents";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
-import Options from "../../../../Options.json";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import moment from "moment";
+import Options from "../../../Options.json";
 
 class EmployeeGroups extends Component {
   constructor(props) {

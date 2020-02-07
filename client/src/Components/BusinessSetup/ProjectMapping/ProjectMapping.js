@@ -3,18 +3,18 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import { AlgaehActions } from "../../../../actions/algaehActions";
+import { AlgaehActions } from "../../../actions/algaehActions";
 import "./ProjectMapping.scss";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
   AlgaehDataGrid
-} from "../../../Wrapper/algaehWrapper";
+} from "../../Wrapper/algaehWrapper";
 
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import ProjectMappingEvents from "./ProjectMappingEvents";
-import Options from "../../../../Options.json";
 import moment from "moment";
+import Options from "../../../Options.json";
 
 class ProjectMapping extends Component {
   constructor(props) {
@@ -183,9 +183,9 @@ class ProjectMapping extends Component {
                               this.props.organizations === undefined
                                 ? []
                                 : this.props.organizations.filter(
-                                  f =>
-                                    f.hims_d_hospital_id === row.division_id
-                                );
+                                    f =>
+                                      f.hims_d_hospital_id === row.division_id
+                                  );
 
                             return (
                               <span>
@@ -211,8 +211,8 @@ class ProjectMapping extends Component {
                               this.props.projects === undefined
                                 ? []
                                 : this.props.projects.filter(
-                                  f => f.hims_d_project_id === row.project_id
-                                );
+                                    f => f.hims_d_project_id === row.project_id
+                                  );
 
                             return (
                               <span>
@@ -308,8 +308,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ProjectMapping)
+  connect(mapStateToProps, mapDispatchToProps)(ProjectMapping)
 );

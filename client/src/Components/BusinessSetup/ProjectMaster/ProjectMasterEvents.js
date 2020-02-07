@@ -1,6 +1,6 @@
 import moment from "moment";
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import Options from "../../../../Options.json";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import Options from "../../../Options.json";
 import swal from "sweetalert2";
 export default function ProjectMasterEvents() {
   return {

@@ -1,4 +1,4 @@
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import Enumerable from "linq";
 
@@ -99,7 +99,7 @@ export default function ProjectMappingEvents() {
               });
             }
           });
-        } 
+        }
       });
     }
   };
