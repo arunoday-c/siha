@@ -56,8 +56,6 @@ export const getAdvanceRefundList = $this => {
 };
 
 export const generateAdvanceRefundReceipt = (row, that) => {
-  // debugger;
-  // console.log("row_result", row);
   const {
     patient_code,
     full_name,

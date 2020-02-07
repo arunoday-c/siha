@@ -35,12 +35,12 @@ export default {
             PH.sub_insurance_provider_id,PH.network_id,PH.network_type,PH.network_office_id,PH.policy_number,\
             PH.secondary_card_number,PH.secondary_effective_start_date,PH.secondary_effective_end_date,\
             PH.secondary_insurance_provider_id,PH.secondary_network_id,PH.secondary_network_type,\
-            PH.secondary_sub_insurance_provider_id,PH.secondary_network_office_id from  \
-            hims_f_pharmacy_pos_header PH inner join hims_d_pharmacy_location L\
-            on PH.location_id=L.hims_d_pharmacy_location_id left outer join hims_f_patient_visit V on\
-            PH.visit_id=V.hims_f_patient_visit_id left outer join hims_f_patient P \
-            on PH.patient_id=P.hims_d_patient_id left outer join hims_d_insurance_provider INS \
-            on PH.insurance_provider_id=INS.hims_d_insurance_provider_id \
+            PH.secondary_sub_insurance_provider_id,PH.secondary_network_office_id, \
+            PH.advance_amount, PH.advance_adjust from  hims_f_pharmacy_pos_header PH \
+            inner join hims_d_pharmacy_location L on PH.location_id=L.hims_d_pharmacy_location_id \
+            left outer join hims_f_patient_visit V on PH.visit_id=V.hims_f_patient_visit_id \
+            left outer join hims_f_patient P on PH.patient_id=P.hims_d_patient_id \
+            left outer join hims_d_insurance_provider INS on PH.insurance_provider_id=INS.hims_d_insurance_provider_id \
             left outer join hims_d_insurance_sub ISB on PH.sub_insurance_provider_id = ISB.hims_d_insurance_sub_id \
             where PH.record_status='A' and L.record_status='A' " +
             _strAppend,
@@ -152,14 +152,14 @@ export default {
                 location_id, location_type, sub_total, discount_percentage, discount_amount, net_total, copay_amount, patient_responsibility,\
                 patient_tax, patient_payable,company_responsibility,company_tax,company_payable,comments, sec_company_responsibility,\
                 sec_company_tax,sec_company_payable,sec_copay_amount,net_tax,gross_total,sheet_discount_amount,\
-                sheet_discount_percentage,net_amount,credit_amount,balance_credit,receiveable_amount, card_number,effective_start_date,effective_end_date,\
+                sheet_discount_percentage,advance_amount, advance_adjust, net_amount,credit_amount,balance_credit,receiveable_amount, card_number,effective_start_date,effective_end_date,\
                 insurance_provider_id, sub_insurance_provider_id, network_id, network_type, network_office_id, policy_number, \
                 secondary_card_number, secondary_effective_start_date, secondary_effective_end_date, secondary_insurance_provider_id,\
                 secondary_network_id, secondary_network_type, secondary_sub_insurance_provider_id, secondary_network_office_id, \
                  pos_customer_type,patient_name,referal_doctor,mobile_number,nationality_id,receipt_header_id,posted,\
                  insurance_yesno,s_patient_tax,created_date,\
                  created_by,updated_date,updated_by,hospital_id) \
-                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 pos_number,
                 today,
@@ -190,6 +190,8 @@ export default {
                 input.gross_total,
                 input.sheet_discount_amount,
                 input.sheet_discount_percentage,
+                input.advance_amount,
+                input.advance_adjust,
                 input.net_amount,
                 input.credit_amount,
                 input.balance_credit,
@@ -360,9 +362,9 @@ export default {
             "UPDATE `hims_f_pharmacy_pos_header` SET sub_total=?, discount_percentage=?, discount_amount=?,\
             net_total=?, copay_amount=?, patient_responsibility=?,patient_tax=?, patient_payable=?,\
             company_responsibility=?, company_tax=?, company_payable=?, net_tax=?, gross_total=?,\
-            sheet_discount_amount=?, sheet_discount_percentage=?, net_amount=?, credit_amount=?, balance_credit=?,\
-            receiveable_amount=?,`posted`=?, `receipt_header_id`=?,`updated_by`=?,\
-            `updated_date`=? WHERE `hims_f_pharmacy_pos_header_id`=?",
+            sheet_discount_amount=?, sheet_discount_percentage=?, advance_amount=?, advance_adjust=?, \
+            net_amount=?, credit_amount=?, balance_credit=?, receiveable_amount=?,`posted`=?, \
+            `receipt_header_id`=?,`updated_by`=?, `updated_date`=? WHERE `hims_f_pharmacy_pos_header_id`=?",
           values: [
             inputParam.sub_total,
             inputParam.discount_percentage,
@@ -379,6 +381,8 @@ export default {
             inputParam.gross_total,
             inputParam.sheet_discount_amount,
             inputParam.sheet_discount_percentage,
+            inputParam.advance_amount,
+            inputParam.advance_adjust,
             inputParam.net_amount,
             inputParam.credit_amount,
             inputParam.balance_credit,
@@ -1244,6 +1248,62 @@ export default {
           });
         });
 
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  updatePatientAdvance: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      let inputParam = req.body;
+      if (parseFloat(inputParam.advance_adjust) > 0) {
+        _mysql
+          .executeQuery({
+            query:
+              "SELECT advance_amount FROM hims_f_patient WHERE hims_d_patient_id=?",
+            values: [inputParam.patient_id],
+            printQuery: true
+          })
+          .then(result => {
+            let existingAdvance = result[0].advance_amount;
+            if (result.length != 0) {
+              inputParam.advance_amount =
+                parseFloat(existingAdvance) - parseFloat(inputParam.advance_adjust);
+
+              _mysql
+                .executeQuery({
+                  query:
+                    "UPDATE  `hims_f_patient` SET  `advance_amount`=?, `updated_by`=?, `updated_date`=? \
+                    WHERE `hims_d_patient_id`=?",
+                  values: [
+                    inputParam.advance_amount,
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                    inputParam.patient_id
+                  ],
+                  printQuery: true
+                }).then(patient_advance => {
+                  next();
+                })
+                .catch(error => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            }
+          })
+          .catch(error => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      } else {
+        next()
+      }
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);

@@ -71,18 +71,14 @@ export default () => {
     "/addPurchaseOrderEntry",
     addPurchaseOrderEntry,
     (req, res, next) => {
-      utilities.logger().log("po_from: ", req.body.po_from);
       if (req.body.po_from == "PHR" && req.body.phar_requisition_id != null) {
-        utilities.logger().log("po_from: ", req.body.po_from);
         updatePharReqEntry(req, res, next);
       } else {
         next();
       }
     },
     (req, res, next) => {
-      utilities.logger().log("po_from: ", req.body.po_from);
       if (req.body.po_from == "INV" && req.body.inv_requisition_id != null) {
-        utilities.logger().log("po_from: ", req.body.po_from);
         updateInvReqEntry(req, res, next);
       } else {
         next();
