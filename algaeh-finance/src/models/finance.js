@@ -810,7 +810,7 @@ export default {
         left join algaeh_d_app_user U on H.entered_by=U.algaeh_d_app_user_id
         where ${strQry}; `,
 
-        printQuery: false
+        printQuery: true
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -1683,8 +1683,8 @@ export default {
                             select voucher_type,document_number,finance_day_end_header_id,amount,transaction_date,\
                             narration,from_screen,'D',year(transaction_date),month(transaction_date), \
                             invoice_no,ref_no,cheque_date,cheque_amount\
-                            from finance_day_end_header where finance_day_end_header_id in(?) ",
-                        values: [input.finance_day_end_header_ids],
+                            from finance_day_end_header where finance_day_end_header_id=? ",
+                        values: [input.finance_day_end_header_id],
                         printQuery: true
                       })
                       .then(headRes => {
@@ -1719,13 +1719,13 @@ export default {
                               .executeQueryWithTransaction({
                                 query:
                                   " update finance_day_end_header set posted='Y' ,posted_date=CURDATE(),posted_by=? where \
-                                finance_day_end_header_id in(?);" +
+                                finance_day_end_header_id=?;" +
                                   strQry +
                                   "" +
                                   updateQry,
                                 values: [
                                   req.userIdentity.algaeh_d_app_user_id,
-                                  input. finance_day_end_header_ids
+                                  input. finance_day_end_header_id
                                 ],
                                 printQuery: false
                               })
