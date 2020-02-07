@@ -285,7 +285,7 @@ export default {
       });
   },
   //created by irfan:
-  getCostCenters: (req, res, next) => {
+  getCostCentersNEW_feb7: (req, res, next) => {
     const _mysql = new algaehMysql();
     const input = req.query;
     _mysql
@@ -332,7 +332,7 @@ export default {
   },
 
   //created by irfan:
-  getCostCenters_bkp_4_feb_2020: (req, res, next) => {
+  getCostCenters: (req, res, next) => {
     const _mysql = new algaehMysql();
     const input = req.query;
     _mysql
@@ -344,17 +344,22 @@ export default {
           let strQry = "";
 
           if (input.hospital_id > 0) {
-            strQry = ` where C.hospital_id= ${input.hospital_id}`;
+            strQry = ` where division_id= ${input.hospital_id}`;
           } else if (input.fromMaster != "Y") {
-            strQry = ` where C.hospital_id= ${req.userIdentity.hospital_id}`;
+            strQry = ` where division_id= ${req.userIdentity.hospital_id}`;
           }
 
+          // query: `select finance_cost_center_id,C.hospital_id, cost_center_id,P.project_desc as cost_center,hospital_name from \
+          // finance_cost_center C inner join hims_d_project P\
+          // on C.cost_center_id=P.hims_d_project_id\
+          // left join  hims_d_hospital H on H.hims_d_hospital_id=C.hospital_id ${strQry}; `,
           _mysql
             .executeQuery({
-              query: `select finance_cost_center_id,C.hospital_id, cost_center_id,P.project_desc as cost_center,hospital_name from \
-                    finance_cost_center C inner join hims_d_project P\
-                    on C.cost_center_id=P.hims_d_project_id\
-                    left join  hims_d_hospital H on H.hims_d_hospital_id=C.hospital_id ${strQry}; `,
+              query: `select hims_m_division_project_id, division_id, project_id as cost_center_id,
+              P.project_desc as cost_center,hospital_name
+              from hims_m_division_project D inner join hims_d_project P 
+              on D.project_id=P.hims_d_project_id 
+              inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id ${strQry}; `,
 
               printQuery: true
             })
@@ -374,18 +379,23 @@ export default {
           let strQry = "";
 
           if (input.hospital_id > 0) {
-            strQry = ` where C.hospital_id= ${input.hospital_id}`;
+            strQry = ` where hospital_id= ${input.hospital_id}`;
           } else if (input.fromMaster != "Y") {
-            strQry = ` where C.hospital_id= ${req.userIdentity.hospital_id}`;
+            strQry = ` where hospital_id= ${req.userIdentity.hospital_id}`;
           }
 
+          // select finance_cost_center_id,C.hospital_id, cost_center_id,
+          //     SD.sub_department_name as cost_center ,hospital_name from
+          //     finance_cost_center C inner join hims_d_sub_department SD
+          //     on C.cost_center_id=SD.hims_d_sub_department_id\
+          //     left join  hims_d_hospital H on H.hims_d_hospital_id=C.hospital_id
           _mysql
             .executeQuery({
-              query: `select finance_cost_center_id,C.hospital_id, cost_center_id,
-              SD.sub_department_name as cost_center ,hospital_name from 
-              finance_cost_center C inner join hims_d_sub_department SD
-              on C.cost_center_id=SD.hims_d_sub_department_id\
-              left join  hims_d_hospital H on H.hims_d_hospital_id=C.hospital_id ${strQry}; `,
+              query: ` select  hims_m_branch_dept_map_id, hospital_id, sub_department_id   as cost_center_id,
+              SD.sub_department_name as cost_center,hospital_name
+              from hims_m_branch_dept_map M inner join hims_d_sub_department SD
+              on M.sub_department_id=SD.hims_d_sub_department_id
+              inner join hims_d_hospital H on M.hospital_id=H.hims_d_hospital_id;${strQry}; `,
 
               printQuery: true
             })
