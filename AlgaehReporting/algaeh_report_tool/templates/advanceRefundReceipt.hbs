@@ -1,0 +1,52 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+
+<div class="print-body" style="margin:-8px 0 0 ;padding:0;">
+    {{!-- {{#each header}} --}}
+    <section class="tableForPharmacyDiv">
+
+        <table class="tableForPharmacy" cell-padding="0">
+            <tbody>
+
+                <tr>
+                    <td>Patient Code</td>
+                    <td>{{patient_code}}</td>
+                    <td> رقم المريض</td>
+                </tr>
+                <tr>
+                    <td>Patient Name</td>
+                    <td>{{full_name}}</td>
+                    <td>اسم المريض</td>
+                </tr>
+                <tr>
+                    <td>Receipt Type</td>
+                    <td>{{transaction_type}}</td>
+                    <td>نوع الإيصال</td>
+                </tr>
+                <tr>
+                    <td>Receipt Number</td>
+                    <td>{{receipt_number}}</td>
+                    <td>عدد إيصال</td>
+                </tr>
+                <tr>
+                    <td>Receipt Date</td>
+                    <td>{{receipt_date}}</td>
+                    <td> تاريخ استلام</td>
+                </tr>
+                <tr>
+                    <td>Receipt Amount</td>
+                    <td>{{advance_amount}}</td>
+                    <td>قيمة الاستلام</td>
+                </tr>
+                <tr>
+                    <td>Cashier Name</td>
+                    <td>{{cashier}}</td>
+                    <td>اسم أمين الصندوق </td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    {{!-- {{/each}} --}}
+
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+</div>

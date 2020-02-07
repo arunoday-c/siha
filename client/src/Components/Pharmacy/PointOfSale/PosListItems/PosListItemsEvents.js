@@ -684,7 +684,8 @@ const AddItems = ($this, context) => {
                 qtyhand: 0,
                 barcode: null,
                 discount_percentage: 0,
-                OTItemAddDis: true
+                OTItemAddDis: true,
+                saveEnable: false
               });
             }
 
@@ -1124,26 +1125,28 @@ const adjustadvance = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
   if (e.target.value > $this.state.advance_amount) {
+    e.target.value = 0
     swalMessage({
       title: "Adjusted amount cannot be greater than Advance amount",
       type: "warning"
     });
-  } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        PosheaderCalculation($this, context);
-      }
-    );
-
-    if (context !== null) {
-      context.updateState({
-        [e.target.name]: e.target.value
-      });
-    }
   }
+
+  $this.setState(
+    {
+      [e.target.name]: e.target.value
+    },
+    () => {
+      PosheaderCalculation($this, context);
+    }
+  );
+
+  if (context !== null) {
+    context.updateState({
+      [e.target.name]: e.target.value
+    });
+  }
+
 };
 
 const PosheaderCalculation = ($this, context) => {

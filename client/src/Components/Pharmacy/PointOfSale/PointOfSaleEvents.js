@@ -25,29 +25,29 @@ const changeTexts = ($this, ctrl, e) => {
     case "pos_customer_type":
       value === "OT"
         ? $this.setState({
-            [name]: value,
-            mode_of_pay: "1",
-            OTItemAddDis: false
-          })
+          [name]: value,
+          mode_of_pay: "1",
+          OTItemAddDis: false
+        })
         : $this.setState({
-            [name]: value,
-            mode_of_pay: "",
-            OTItemAddDis: false
-          });
+          [name]: value,
+          mode_of_pay: "",
+          OTItemAddDis: false
+        });
       break;
 
     case "mode_of_pay":
       value === "1"
         ? $this.setState({
-            [name]: value,
-            insurance_yesno: "N",
-            insured: "N"
-          })
+          [name]: value,
+          insurance_yesno: "N",
+          insured: "N"
+        })
         : $this.setState({
-            [name]: value,
-            insurance_yesno: "Y",
-            insured: "Y"
-          });
+          [name]: value,
+          insurance_yesno: "Y",
+          insured: "Y"
+        });
       break;
 
     default:
@@ -494,6 +494,7 @@ const SavePosEnrty = $this => {
     delete posdata.patInsuranceFrontImg;
     delete posdata.patInsuranceBackImg;
 
+    // debugger
     algaehApiCall({
       uri: callUri,
       module: "pharmacy",
@@ -539,7 +540,11 @@ const SavePosEnrty = $this => {
             );
           }
           Promise.all(_arrayImages).then(result => {
-            getPosEntry($this, response.data.records.pos_number);
+            // debugger
+            const pos_number =
+              $this.state.hims_f_pharmacy_pos_header_id !== null ? $this.state.pos_number
+                : response.data.records.pos_number;
+            getPosEntry($this, pos_number);
             // $this.setState({
             //   pos_number: response.data.records.pos_number,
             //   hims_f_pharmacy_pos_header_id:
@@ -796,7 +801,8 @@ const VisitSearch = ($this, e) => {
             insured: row.insured,
             sec_insured: row.sec_insured,
             episode_id: row.episode_id,
-            postEnable: false,
+            advance_amount: row.advance_amount,
+            // postEnable: false,
             vat_applicable: vat_applicable,
             OTItemAddDis: true
           },
@@ -1154,7 +1160,7 @@ const getCashiersAndShiftMAP = $this => {
   });
 };
 
-const ClosePrescribedItem = ($this, e) => {
+const ClosePrescribedItem = ($this, e) => {  
   if (e !== undefined && e.length > 0 && Array.isArray(e)) {
     algaehApiCall({
       uri: "/billing/billingCalculations",
@@ -1193,7 +1199,9 @@ const ClosePrescribedItem = ($this, e) => {
           $this.setState({
             ...sum_data,
             pharmacy_stock_detail: e,
-            prescribed_item: !$this.state.prescribed_item
+            prescribed_item: !$this.state.prescribed_item,
+            postEnable: false,
+            saveEnable: false
           });
         } else {
           swalMessage({

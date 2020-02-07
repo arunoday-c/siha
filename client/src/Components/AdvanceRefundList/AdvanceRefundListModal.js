@@ -18,17 +18,8 @@ import {
 import { getLabelFromLanguage } from "../../utils/GlobalFunctions";
 
 import {
-  texthandle,
-  datehandle,
-  cashtexthandle,
-  cardtexthandle,
-  chequetexthandle,
-  checkcashhandaler,
-  checkcardhandaler,
-  checkcheckhandaler,
-  Validations,
-  // countertexthandle,
-  getCashiersAndShiftMAP
+  getAdvanceRefundList,
+  generateAdvanceRefundReceipt
 } from "./AdvanceRefundListModalHandaler";
 
 import AdvRefunIOputs from "../../Models/AdvanceRefund";
@@ -45,33 +36,27 @@ import MyContext from "../../utils/MyContext";
 export default class AdvanceRefundListModal extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      refund_amount: 0,
+      advance_amount: 0
+    };
   }
-  UNSAFE_componentWillMount() {
+
+  componentDidMount() {
     let IOputs = AdvRefunIOputs.inputParam();
     this.setState(IOputs);
   }
 
-  UNSAFE_componentWillReceiveProps(newProps) {
-    if (newProps.PackageAdvance === undefined) {
-      let lang_sets = "en_comp";
-      if (Window.global.selectedLang === "ar") {
-        lang_sets = "ar_comp";
-      }
-      this.setState({
-        selectedLang: Window.global.selectedLang,
-        lang_sets: lang_sets
-      });
+  componentDidUpdate(prevProps) {
+    if (this.props.show && !this.state.advaceRefundList) {
+      getAdvanceRefundList(this);
     }
   }
 
-  componentDidMount() {}
-
   onClose = e => {
     let IOputs = AdvRefunIOputs.inputParam();
-    this.setState(IOputs, () => {
-      this.props.onClose && this.props.onClose(e);
-    });
+    this.props.onClose && this.props.onClose(e);
+    this.setState({ ...IOputs, advaceRefundList: undefined });
   };
 
   render() {
@@ -112,6 +97,22 @@ export default class AdvanceRefundListModal extends PureComponent {
                       : "Patient Name"}
                   </h6>
                 </div>
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Total Advance"
+                    }}
+                  />
+                  <h6>{this.state.advance_amount}</h6>
+                </div>{" "}
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Total Refund"
+                    }}
+                  />
+                  <h6>{this.state.refund_amount}</h6>
+                </div>
               </div>
               <hr style={{ margin: "0rem" }} />
               <div className="row">
@@ -119,11 +120,15 @@ export default class AdvanceRefundListModal extends PureComponent {
                   <AlgaehDataGrid
                     columns={[
                       {
-                        fieldName: "action",
+                        fieldName: "Actions",
                         label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
                         displayTemplate: row => {
                           return (
-                            <span>
+                            <span
+                              onClick={() =>
+                                generateAdvanceRefundReceipt(row, this)
+                              }
+                            >
                               <i className="fas fa-eye" aria-hidden="true" />
                             </span>
                           );
@@ -134,19 +139,19 @@ export default class AdvanceRefundListModal extends PureComponent {
                         }
                       },
                       {
-                        fieldName: "",
+                        fieldName: "transaction_type",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Receipt Type" }} />
                         )
                       },
                       {
-                        fieldName: "",
+                        fieldName: "receipt_number",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Receipt NO." }} />
                         )
                       },
                       {
-                        fieldName: "",
+                        fieldName: "receipt_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Receipt Date" }} />
                         ),
@@ -155,7 +160,7 @@ export default class AdvanceRefundListModal extends PureComponent {
                         }
                       },
                       {
-                        fieldName: "",
+                        fieldName: "advance_amount",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Receipt Amount" }}
@@ -166,14 +171,14 @@ export default class AdvanceRefundListModal extends PureComponent {
                         }
                       },
                       {
-                        fieldName: "",
+                        fieldName: "cashier",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Cashier Name" }} />
                         )
                       }
                     ]}
                     keyId=""
-                    dataSource={{}}
+                    dataSource={{ data: this.state.advaceRefundList }}
                     isEditable={false}
                     filter={true}
                     actions={false}

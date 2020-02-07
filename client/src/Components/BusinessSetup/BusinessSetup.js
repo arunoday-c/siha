@@ -15,6 +15,8 @@ import UserShiftMapping from "./UserShiftMapping/UserShiftMapping";
 import CategorySpeciality from "./CategorySpecialityMapping/CategorySpeciality";
 import BankMaster from "./BankMaster/BankMaster";
 import CompanyAccount from "./CompanyAccount/CompanyAccount";
+import ProjectMapping from "./ProjectMapping/ProjectMapping";
+import ProjectMaster from "./ProjectMaster/ProjectMaster";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import _ from "lodash";
@@ -78,8 +80,34 @@ class BusinessSetup extends Component {
                     }}
                   />
                 }
+              </li>{" "}
+              <li
+                algaehtabs={"ProjectMaster"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Project Master"
+                    }}
+                  />
+                }
               </li>
-              {this.state.HIMS_Active === true ? (
+              <li
+                algaehtabs={"ProjectMapping"}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Project Mapping"
+                    }}
+                  />
+                }
+              </li>
+              {/* {this.state.HIMS_Active === true ? (
                 <li
                   algaehtabs={"Speciality"}
                   className={"nav-item tab-button"}
@@ -123,7 +151,7 @@ class BusinessSetup extends Component {
                     />
                   }
                 </li>
-              ) : null}
+              ) : null} */}
               <li
                 algaehtabs={"Shift"}
                 className={"nav-item tab-button"}
@@ -240,6 +268,10 @@ class BusinessSetup extends Component {
             <CompanyAccount />
           ) : this.state.pageDisplay === "CategorySpeciality" ? (
             <CategorySpeciality />
+          ) : this.state.pageDisplay === "ProjectMapping" ? (
+            <ProjectMapping />
+          ) : this.state.pageDisplay === "ProjectMaster" ? (
+            <ProjectMaster />
           ) : null}
         </div>
       </div>
