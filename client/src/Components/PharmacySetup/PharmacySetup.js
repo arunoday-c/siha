@@ -13,6 +13,7 @@ import Location from "./Location/Location";
 import ItemForm from "./ItemForm/ItemForm";
 import ItemStorage from "./ItemStorage/ItemStorage";
 import LocationPermission from "./LocationPermission/LocationPermission";
+import ReorderQtyMasterPharmacy from "./ReorderQtyMasterPharmacy/ReorderQtyMasterPharmacy";
 // import PharmacyOptions from "./PharmacyOptions/PharmacyOptions";
 // import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
@@ -62,7 +63,6 @@ class PharmacySetup extends Component {
   render() {
     return (
       <div className="hims_pharmacy_setup">
-
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
@@ -183,6 +183,19 @@ class PharmacySetup extends Component {
                   />
                 }
               </li>
+              <li
+                className={"nav-item tab-button "}
+                algaehtabs={"ReorderQtyMasterPharmacy"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Reorder Qty Master"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -207,6 +220,8 @@ class PharmacySetup extends Component {
             <ItemStorage />
           ) : this.state.pageDisplay === "LocationPermission" ? (
             <LocationPermission />
+          ) : this.state.pageDisplay === "ReorderQtyMasterPharmacy" ? (
+            <ReorderQtyMasterPharmacy />
           ) : null}
         </div>
       </div>
@@ -230,8 +245,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PharmacySetup)
+  connect(mapStateToProps, mapDispatchToProps)(PharmacySetup)
 );
