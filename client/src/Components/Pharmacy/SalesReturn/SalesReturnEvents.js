@@ -327,7 +327,6 @@ const getPOSEntry = $this => {
           AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
         );
 
-        debugger
         if (
           hospitaldetails !== undefined &&
           hospitaldetails.local_vat_applicable === "N" &&

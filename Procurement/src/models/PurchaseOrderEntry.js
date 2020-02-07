@@ -564,63 +564,39 @@ export default {
     try {
       const utilities = new algaehUtilities();
       utilities.logger().log("updatePOEntry: ");
-      let inputParam = { ...req.body };
+      const details = req.body.pharmacy_stock_detail;
 
+      let qry = "";
+
+      for (let i = 0; i < details.length; i++) {
+        qry += mysql.format(
+          "UPDATE hims_f_pharmacy_material_detail SET `po_created_date`=?, po_created='Y', po_created_quantity=?\
+              where `hims_f_pharmacy_material_detail_id`=? ;",
+          [
+            new Date(),
+            details[i].total_quantity,
+            details[i].pharmacy_requisition_id
+          ]
+        );
+      }
       _mysql
         .executeQuery({
-          query:
-            "UPDATE `hims_f_pharamcy_material_header` SET `is_completed`=?, `completed_date`=? \
-          WHERE `hims_f_pharamcy_material_header_id`=?;",
-          values: ["Y", new Date(), inputParam.phar_requisition_id],
+          query: qry,
           printQuery: true
         })
-        .then(headerResult => {
-          utilities.logger().log("headerResult: ");
-          if (headerResult != null) {
-            let details = inputParam.pharmacy_stock_detail;
-
-            let qry = "";
-
-            for (let i = 0; i < details.length; i++) {
-              qry += mysql.format(
-                "UPDATE hims_f_pharmacy_material_detail SET `po_created_date`=?, po_created='Y', po_created_quantity=?\
-              where `hims_f_pharmacy_material_detail_id`=? ;",
-                [
-                  new Date(),
-                  details[i].total_quantity,
-                  details[i].pharmacy_requisition_id
-                ]
-              );
-            }
-            _mysql
-              .executeQuery({
-                query: qry,
-                printQuery: true
-              })
-              .then(detailResult => {
-                // _mysql.commitTransaction(() => {
-                //   _mysql.releaseConnection();
-                req.data = req.records.purchase_number;
-                next();
-                // });
-              })
-              .catch(e => {
-                _mysql.rollBackTransaction(() => {
-                  next(e);
-                });
-              });
-          } else {
-            _mysql.rollBackTransaction(() => {
-              req.records = {};
-              next();
-            });
-          }
+        .then(detailResult => {
+          // _mysql.commitTransaction(() => {
+          //   _mysql.releaseConnection();
+          req.data = req.records.purchase_number;
+          next();
+          // });
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
         });
+
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
@@ -634,63 +610,40 @@ export default {
     try {
       const utilities = new algaehUtilities();
       utilities.logger().log("updatePOEntry: ");
-      let inputParam = { ...req.body };
 
+      const details = req.body.inventory_stock_detail;
+      let qry = "";
+
+      for (let i = 0; i < details.length; i++) {
+        qry += mysql.format(
+          "UPDATE hims_f_inventory_material_detail SET `po_created_date`=?, po_created='Y', po_created_quantity=?\
+              where `hims_f_inventory_material_detail_id`=? ;",
+          [
+            new Date(),
+            details[i].total_quantity,
+            details[i].inventory_requisition_id
+          ]
+        );
+      }
       _mysql
         .executeQuery({
-          query:
-            "UPDATE `hims_f_inventory_material_header` SET `is_completed`=?, `completed_date`=? \
-          WHERE `hims_f_inventory_material_header_id`=?;",
-          values: ["Y", new Date(), inputParam.inv_requisition_id],
+          query: qry,
           printQuery: true
         })
-        .then(headerResult => {
-          utilities.logger().log("headerResult: ");
-          if (headerResult != null) {
-            let details = inputParam.inventory_stock_detail;
-
-            let qry = "";
-
-            for (let i = 0; i < details.length; i++) {
-              qry += mysql.format(
-                "UPDATE hims_f_inventory_material_detail SET `po_created_date`=?, po_created='Y', po_created_quantity=?\
-              where `hims_f_inventory_material_detail_id`=? ;",
-                [
-                  new Date(),
-                  details[i].total_quantity,
-                  details[i].inventory_requisition_id
-                ]
-              );
-            }
-            _mysql
-              .executeQuery({
-                query: qry,
-                printQuery: true
-              })
-              .then(detailResult => {
-                // _mysql.commitTransaction(() => {
-                //   _mysql.releaseConnection();
-                req.data = req.records.purchase_number;
-                next();
-                // });
-              })
-              .catch(e => {
-                _mysql.rollBackTransaction(() => {
-                  next(e);
-                });
-              });
-          } else {
-            _mysql.rollBackTransaction(() => {
-              req.records = {};
-              next();
-            });
-          }
+        .then(detailResult => {
+          // _mysql.commitTransaction(() => {
+          //   _mysql.releaseConnection();
+          req.data = req.records.purchase_number;
+          next();
+          // });
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
         });
+
+
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);

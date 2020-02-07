@@ -283,10 +283,7 @@ class ItemList extends Component {
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
-                                      number: {
-                                        allowNegative: false,
-                                        thousandSeparator: ","
-                                      },
+                                      decimal: { allowNegative: false },
                                       value: row.discount_percentage,
                                       className: "txt-fld",
                                       name: "discount_percentage",
@@ -315,10 +312,7 @@ class ItemList extends Component {
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
-                                      number: {
-                                        allowNegative: false,
-                                        thousandSeparator: ","
-                                      },
+                                      decimal: { allowNegative: false },
                                       value: row.discount_amount,
                                       className: "txt-fld",
                                       name: "discount_amount",

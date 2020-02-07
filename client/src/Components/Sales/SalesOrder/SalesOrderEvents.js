@@ -253,6 +253,7 @@ const ClearData = ($this, e) => {
         ).decimal_places,
         saveEnable: true,
         dataExists: false,
+        dataExitst: false,
         hospital_id: JSON.parse(
             AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
         ).hims_d_hospital_id,

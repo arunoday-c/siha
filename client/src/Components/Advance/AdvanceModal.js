@@ -62,6 +62,7 @@ class AddAdvanceModal extends PureComponent {
         lang_sets: lang_sets
       });
     }
+    getCashiersAndShiftMAP(this, this);
   }
 
   componentDidMount() {
@@ -361,8 +362,8 @@ class AddAdvanceModal extends PureComponent {
                         <h6>
                           {this.props.inputsparameters.collect_advance
                             ? getAmountFormart(
-                                this.props.inputsparameters.collect_advance
-                              )
+                              this.props.inputsparameters.collect_advance
+                            )
                             : getAmountFormart("0")}
                         </h6>
                       </div>
@@ -642,8 +643,8 @@ class AddAdvanceModal extends PureComponent {
                       <h6>
                         {this.props.inputsparameters.advance_amount
                           ? getAmountFormart(
-                              this.props.inputsparameters.advance_amount
-                            )
+                            this.props.inputsparameters.advance_amount
+                          )
                           : getAmountFormart("0")}
                       </h6>
                     </div>
