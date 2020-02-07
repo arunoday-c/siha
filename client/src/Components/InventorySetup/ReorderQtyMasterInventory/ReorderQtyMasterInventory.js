@@ -53,7 +53,7 @@ export default class ReorderQtyMasterInventory extends Component {
                   </div>
                   <AlagehFormGroup
                     div={{
-                      className: "col-4 form-group mandatory"
+                      className: "col-4  mandatory"
                     }}
                     label={{
                       forceLabel: "Reorder Qty",
@@ -68,9 +68,12 @@ export default class ReorderQtyMasterInventory extends Component {
                   />
                 </div>
                 <div className="row">
-                  <div className="col-12">
+                  <div
+                    className="col-12"
+                    id="ReorderQtyMasterInventoryGrid_Cntr"
+                  >
                     <AlgaehDataGrid
-                      id=""
+                      id="ReorderQtyMasterInventoryGrid"
                       columns={[
                         {
                           fieldName: "abc",
@@ -145,6 +148,12 @@ export default class ReorderQtyMasterInventory extends Component {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{}}
                     />
+                  </div>{" "}
+                  <div
+                    className="col-12"
+                    style={{ textAlign: "right", marginTop: 15 }}
+                  >
+                    <button className="btn btn-primary">Assign</button>
                   </div>
                 </div>
               </div>
@@ -162,7 +171,6 @@ export default class ReorderQtyMasterInventory extends Component {
                 <div className="row">
                   <div className="col-12">
                     <AlgaehDataGrid
-                      id="bc"
                       columns={[
                         {
                           fieldName: "abc",
@@ -216,7 +224,7 @@ export default class ReorderQtyMasterInventory extends Component {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{}}
                     />
-                  </div>
+                  </div>{" "}
                 </div>
               </div>
             </div>
