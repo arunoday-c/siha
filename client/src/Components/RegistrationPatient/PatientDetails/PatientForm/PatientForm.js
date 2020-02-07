@@ -464,7 +464,7 @@ class AddPatientForm extends Component {
                           }
                         }}
                       />
-                      <AlagehAutoComplete
+                      {/* <AlagehAutoComplete
                         div={{
                           className: "col-1 mandatory",
                           others: {
@@ -498,10 +498,10 @@ class AddPatientForm extends Component {
                             tabIndex: "4"
                           }
                         }}
-                      />
+                      /> */}
                       <AlagehFormGroup
                         div={{
-                          className: "col-2 mandatory",
+                          className: "col-3 mandatory",
                           others: {
                             style: { paddingLeft: 0 }
                           }
