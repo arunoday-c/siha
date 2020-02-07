@@ -11,6 +11,7 @@ import ItemUOM from "./ItemUOM/ItemUOM";
 import Location from "./Location/Location";
 
 import LocationPermission from "./LocationPermission/LocationPermission";
+import ReorderQtyMasterInventory from "./ReorderQtyMasterInventory/ReorderQtyMasterInventory";
 
 // import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import InventoryOptions from "./InventoryOptions/InventoryOptions";
@@ -104,7 +105,6 @@ class InventorySetup extends Component {
                   />
                 }
               </li>
-
               <li
                 algaehtabs={"ItemCategory"}
                 className={"nav-item tab-button"}
@@ -144,6 +144,19 @@ class InventorySetup extends Component {
                   />
                 }
               </li>
+              <li
+                className={"nav-item tab-button "}
+                algaehtabs={"ReorderQtyMasterInventory"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Reorder Qty Master"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -161,6 +174,8 @@ class InventorySetup extends Component {
             <Location />
           ) : this.state.pageDisplay === "LocationPermission" ? (
             <LocationPermission />
+          ) : this.state.pageDisplay === "ReorderQtyMasterInventory" ? (
+            <ReorderQtyMasterInventory />
           ) : null}
         </div>
       </div>
@@ -184,8 +199,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(InventorySetup)
+  connect(mapStateToProps, mapDispatchToProps)(InventorySetup)
 );
