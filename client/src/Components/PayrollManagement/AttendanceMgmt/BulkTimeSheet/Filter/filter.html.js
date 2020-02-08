@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 import "./filter.html.scss";
-import { AlagehAutoComplete } from "../../../../Wrapper/algaehWrapper";
+import {
+  AlagehAutoComplete,
+  AlgaehLabel
+} from "../../../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../../../Wrapper/autoSearch";
 import { swalMessage } from "../../../../../utils/algaehApiCall";
 import {
   AlgaehOpenContainer,
   getYears
 } from "../../../../../utils/GlobalFunctions";
+import AlgaehSearch from "../../../../Wrapper/globalSearch";
+
 import {
   getHospitals,
   getAttendanceDates,
@@ -114,6 +119,24 @@ export default function Filter(props) {
     dateCalcl(undefined, undefined, selYear);
   }, [month]);
 
+  function employeeSearch() {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.Employee_details.employee
+      },
+      searchName: "employee",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        setEmployeeId(row.hims_d_employee_id);
+        setFullName(row.full_name);
+        setHospitalID(row.hospital_id);
+      }
+    });
+  }
+
   return (
     <div className="row  inner-top-search">
       <AlagehAutoComplete
@@ -143,7 +166,7 @@ export default function Filter(props) {
         showLoading={true}
       />
       <AlagehAutoComplete
-        div={{ className: "col-1" }}
+        div={{ className: "col-1 form-group mandatory" }}
         label={{
           forceLabel: "Select Year",
           isImp: true
@@ -339,7 +362,14 @@ export default function Filter(props) {
           }
         }}
       />
-      <AlgaehAutoSearch
+      <div className="col-3 globalSearchCntr">
+        <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+        <h6 onClick={employeeSearch}>
+          {fullName ? fullName : "Search Employee"}
+          <i className="fas fa-search fa-lg"></i>
+        </h6>
+      </div>
+      {/* <AlgaehAutoSearch
         div={{ className: "col" }}
         label={{ forceLabel: "Employee Search" }}
         title="Employee Search"
@@ -366,7 +396,7 @@ export default function Filter(props) {
           setFullName("");
           setEmployeeId("");
         }}
-      />
+      /> */}
       {/* <input
         type="file"
         name="manualTimeSheet"
