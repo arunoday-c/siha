@@ -1407,14 +1407,16 @@ export default {
             let strQuery = ""
             if (inputParam.payment_type === "AD") {
               strQuery += _mysql.mysqlQueryFormat(
-                "select advance_amount as pay_amount, employee_code, full_name,E.hospital_id from hims_f_employee_advance LA  \
+                "select advance_amount as pay_amount, employee_code, full_name,E.hospital_id, E.sub_department_id\
+                from hims_f_employee_advance LA  \
                 inner join hims_d_employee E on E.hims_d_employee_id = LA.employee_id \
                 where hims_f_employee_advance_id = ?;",
                 [inputParam.employee_advance_id]
               );
             } else if (inputParam.payment_type === "LN") {
               strQuery += _mysql.mysqlQueryFormat(
-                "select head_id, child_id, approved_amount as pay_amount, employee_code, full_name,E.hospital_id from hims_f_loan_application LA \
+                "select head_id, child_id, approved_amount as pay_amount, employee_code, full_name,E.hospital_id, \
+                E.sub_department_id from hims_f_loan_application LA \
                 inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id \
                 inner join hims_d_employee E on E.hims_d_employee_id = LA.employee_id \
                 where hims_f_loan_application_id = ?",
@@ -1423,7 +1425,7 @@ export default {
             } else if (inputParam.payment_type === "LS") {
               strQuery += _mysql.mysqlQueryFormat(
                 "select salary_amount, leave_amount, airfare_amount, total_amount as pay_amount, employee_code, full_name,\
-                E.hospital_id from hims_f_leave_salary_header LA \
+                E.hospital_id, E.sub_department_id from hims_f_leave_salary_header LA \
                 inner join hims_d_employee E on E.hims_d_employee_id = LA.employee_id \
                 where hims_f_leave_salary_header_id = ?;",
                 [inputParam.employee_leave_settlement_id]
@@ -1431,14 +1433,14 @@ export default {
             } else if (inputParam.payment_type === "GR") {
               strQuery += _mysql.mysqlQueryFormat(
                 "select payable_amount as pay_amount, employee_code, full_name, \
-                E.hospital_id from hims_f_end_of_service ES \
+                E.hospital_id, E.sub_department_id from hims_f_end_of_service ES \
                 inner join hims_d_employee E on E.hims_d_employee_id = ES.employee_id \
                 where hims_f_end_of_service_id = ?;",
                 [inputParam.employee_end_of_service_id]
               );
             } else if (inputParam.payment_type === "EN") {
               strQuery += _mysql.mysqlQueryFormat(
-                "SELECT total_amount as pay_amount,employee_code, full_name, E.hospital_id, L.leave_category \
+                "SELECT total_amount as pay_amount,employee_code, full_name, E.hospital_id, L.leave_category, E.sub_department_id \
                 FROM hims_f_leave_encash_header EH \
                 inner join hims_d_employee E on E.hims_d_employee_id = EH.employee_id \
                 inner join hims_d_leave L on L.hims_d_leave_id = EH.leave_id \
@@ -1447,7 +1449,7 @@ export default {
               );
             } else if (inputParam.payment_type === "FS") {
               strQuery += _mysql.mysqlQueryFormat(
-                "SELECT total_amount as pay_amount,employee_code, full_name, E.hospital_id\
+                "SELECT total_amount as pay_amount,employee_code, full_name, E.hospital_id, E.sub_department_id\
                 FROM hims_f_final_settlement_header EH \
                 inner join hims_d_employee E on E.hims_d_employee_id = EH.employee_id \
                 where hims_f_final_settlement_header_id=?;",
@@ -1530,7 +1532,9 @@ export default {
                           child_id: inputParam.child_id,
                           debit_amount: headerResult[0].pay_amount,
                           payment_type: "DR",
-                          credit_amount: 0
+                          credit_amount: 0,
+                          hospital_id: headerResult[0].hospital_id,
+                          sub_department_id: headerResult[0].sub_department_id
                         });
                       } else {
                         insertSubDetail.push({
@@ -1539,7 +1543,9 @@ export default {
                           child_id: inputParam.child_id,
                           debit_amount: 0,
                           payment_type: "CR",
-                          credit_amount: headerResult[0].pay_amount
+                          credit_amount: headerResult[0].pay_amount,
+                          hospital_id: headerResult[0].hospital_id,
+                          sub_department_id: headerResult[0].sub_department_id
                         });
                       }
                     } else if (inputParam.payment_mode === "CH") {
@@ -1552,7 +1558,8 @@ export default {
                           debit_amount: headerResult[0].pay_amount,
                           payment_type: "DR",
                           credit_amount: 0,
-                          hospital_id: headerResult[0].hospital_id
+                          hospital_id: headerResult[0].hospital_id,
+                          sub_department_id: headerResult[0].sub_department_id
                         });
                       } else {
                         insertSubDetail.push({
@@ -1562,7 +1569,8 @@ export default {
                           debit_amount: 0,
                           payment_type: "CR",
                           credit_amount: headerResult[0].pay_amount,
-                          hospital_id: headerResult[0].hospital_id
+                          hospital_id: headerResult[0].hospital_id,
+                          sub_department_id: headerResult[0].sub_department_id
                         });
                       }
                     }
@@ -1579,7 +1587,8 @@ export default {
                             debit_amount: 0,
                             payment_type: "CR",
                             credit_amount: headerResult[0].leave_amount,
-                            hospital_id: headerResult[0].hospital_id
+                            hospital_id: headerResult[0].hospital_id,
+                            sub_department_id: headerResult[0].sub_department_id
                           });
                         }
 
@@ -1592,7 +1601,8 @@ export default {
                             debit_amount: 0,
                             payment_type: "DR",
                             credit_amount: headerResult[0].salary_amount,
-                            hospital_id: headerResult[0].hospital_id
+                            hospital_id: headerResult[0].hospital_id,
+                            sub_department_id: headerResult[0].sub_department_id
                           });
                         }
 
@@ -1605,7 +1615,8 @@ export default {
                             debit_amount: 0,
                             payment_type: "DR",
                             credit_amount: headerResult[0].airfare_amount,
-                            hospital_id: headerResult[0].hospital_id
+                            hospital_id: headerResult[0].hospital_id,
+                            sub_department_id: headerResult[0].sub_department_id
                           });
                         }
                       } else {
@@ -1618,7 +1629,8 @@ export default {
                             debit_amount: headerResult[0].leave_amount,
                             payment_type: "DR",
                             credit_amount: 0,
-                            hospital_id: headerResult[0].hospital_id
+                            hospital_id: headerResult[0].hospital_id,
+                            sub_department_id: headerResult[0].sub_department_id
                           });
                         }
 
@@ -1631,7 +1643,8 @@ export default {
                             debit_amount: headerResult[0].salary_amount,
                             payment_type: "DR",
                             credit_amount: 0,
-                            hospital_id: headerResult[0].hospital_id
+                            hospital_id: headerResult[0].hospital_id,
+                            sub_department_id: headerResult[0].sub_department_id
                           });
                         }
 
@@ -1644,7 +1657,8 @@ export default {
                             debit_amount: headerResult[0].airfare_amount,
                             payment_type: "DR",
                             credit_amount: 0,
-                            hospital_id: headerResult[0].hospital_id
+                            hospital_id: headerResult[0].hospital_id,
+                            sub_department_id: headerResult[0].sub_department_id
                           });
                         }
                       }
@@ -1660,7 +1674,8 @@ export default {
                             debit_amount: 0,
                             payment_type: "CR",
                             credit_amount: headerResult[0].pay_amount,
-                            hospital_id: headerResult[0].hospital_id
+                            hospital_id: headerResult[0].hospital_id,
+                            sub_department_id: headerResult[0].sub_department_id
                           });
                         }
                       } else {
@@ -1673,7 +1688,8 @@ export default {
                             debit_amount: headerResult[0].pay_amount,
                             payment_type: "DR",
                             credit_amount: 0,
-                            hospital_id: headerResult[0].hospital_id
+                            hospital_id: headerResult[0].hospital_id,
+                            sub_department_id: headerResult[0].sub_department_id
                           });
                         }
                       }
@@ -1689,7 +1705,8 @@ export default {
                             debit_amount: 0,
                             payment_type: "CR",
                             credit_amount: headerResult[0].pay_amount,
-                            hospital_id: headerResult[0].hospital_id
+                            hospital_id: headerResult[0].hospital_id,
+                            sub_department_id: headerResult[0].sub_department_id
                           });
                         }
                       } else {
@@ -1702,7 +1719,8 @@ export default {
                             debit_amount: headerResult[0].pay_amount,
                             payment_type: "DR",
                             credit_amount: 0,
-                            hospital_id: headerResult[0].hospital_id
+                            hospital_id: headerResult[0].hospital_id,
+                            sub_department_id: headerResult[0].sub_department_id
                           });
                         }
                       }
@@ -1718,7 +1736,8 @@ export default {
                             debit_amount: 0,
                             payment_type: "CR",
                             credit_amount: headerResult[0].pay_amount,
-                            hospital_id: headerResult[0].hospital_id
+                            hospital_id: headerResult[0].hospital_id,
+                            sub_department_id: headerResult[0].sub_department_id
                           });
                         }
                       } else {
@@ -1731,7 +1750,8 @@ export default {
                             debit_amount: headerResult[0].pay_amount,
                             payment_type: "DR",
                             credit_amount: 0,
-                            hospital_id: headerResult[0].hospital_id
+                            hospital_id: headerResult[0].hospital_id,
+                            sub_department_id: headerResult[0].sub_department_id
                           });
                         }
                       }
@@ -1745,7 +1765,8 @@ export default {
                           debit_amount: 0,
                           payment_type: "CR",
                           credit_amount: headerResult[0].pay_amount,
-                          hospital_id: headerResult[0].hospital_id
+                          hospital_id: headerResult[0].hospital_id,
+                          sub_department_id: headerResult[0].sub_department_id
                         });
                       } else {
                         insertSubDetail.push({
@@ -1755,7 +1776,8 @@ export default {
                           debit_amount: headerResult[0].pay_amount,
                           payment_type: "DR",
                           credit_amount: 0,
-                          hospital_id: headerResult[0].hospital_id
+                          hospital_id: headerResult[0].hospital_id,
+                          sub_department_id: headerResult[0].sub_department_id
                         });
                       }
                     }
@@ -1766,7 +1788,8 @@ export default {
                       "debit_amount",
                       "payment_type",
                       "credit_amount",
-                      "hospital_id"
+                      "hospital_id",
+                      "sub_department_id"
                     ];
 
                     const month = moment().format("M");
