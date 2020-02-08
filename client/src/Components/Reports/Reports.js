@@ -61,7 +61,7 @@ class Reports extends Component {
   render() {
     const { userToken, selectedMenu } = this.context;
     return (
-      <div className="reports">
+      <div className="reports margin-top-15">
         {/* <div className="row inner-top-search">
           <form action="none" style={{ width: "100%" }}>
             <div className="row padding-10">
