@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./PatientRecall.scss";
 import {
   AlgaehDataGrid,
   AlgaehDateHandler,
@@ -129,55 +130,27 @@ class PatientRecall extends Component {
     return (
       <div className="patient_recall">
         <div className="row inner-top-search">
-          {/* <AlagehAutoComplete
-            div={{ className: "col" }}
-            label={{
-              forceLabel: "Department"
-            }}
-            selector={{
-              name: "sub_department_id",
-              className: "select-fld",
-              value: this.state.sub_department_id,
-              dataSource: {
-                textField: "sub_department_name",
-                valueField: "sub_department_id",
-                data: this.state.departments
-              },
-              onChange: this.dropDownHandle.bind(this),
-              onClear: () => {
-                this.setState({
-                  sub_department_id: null
-                });
-              }
-            }}
-          />
-
-          <AlagehAutoComplete
-            div={{ className: "col" }}
-            label={{
-              forceLabel: "Doctor"
-            }}
-            selector={{
-              name: "provider_id",
-              className: "select-fld",
-              value: this.state.provider_id,
-              dataSource: {
-                textField: "full_name",
-                valueField: "employee_id",
-                data: this.state.doctors
-              },
-              onChange: this.dropDownHandle.bind(this),
-              onClear: () => {
-                this.setState({
-                  provider_id: null
-                });
-              }
-            }}
-          /> */}
-
           <AlgaehDateHandler
-            div={{ className: "col" }}
-            label={{ forceLabel: "Date" }}
+            div={{ className: "col-2 form-group" }}
+            label={{ forceLabel: "From Date" }}
+            textBox={{
+              className: "txt-fld",
+              name: "date_of_recall"
+            }}
+            minDate={new Date()}
+            events={{
+              onChange: selectedDate => {
+                this.setState({
+                  date_of_recall: selectedDate
+                });
+              },
+              onBlur: this.dateValidate.bind(this)
+            }}
+            value={this.state.date_of_recall}
+          />{" "}
+          <AlgaehDateHandler
+            div={{ className: "col-2 form-group" }}
+            label={{ forceLabel: "To Date" }}
             textBox={{
               className: "txt-fld",
               name: "date_of_recall"
@@ -193,128 +166,694 @@ class PatientRecall extends Component {
             }}
             value={this.state.date_of_recall}
           />
-
-          <div className="col form-group">
-            <button
-              onClick={this.loadPatients.bind(this)}
-              style={{ marginTop: 19 }}
-              className="btn btn-primary"
-            >
-              LOAD
-            </button>
-          </div>
+          <AlagehAutoComplete
+            div={{ className: "col-2 form-group" }}
+            label={{
+              forceLabel: "Filter by Department"
+            }}
+            selector={{
+              name: "",
+              className: "select-fld",
+              value: "",
+              dataSource: {}
+            }}
+          />
+          <AlagehAutoComplete
+            div={{ className: "col-2 form-group" }}
+            label={{
+              forceLabel: "Filter by Doctor"
+            }}
+            selector={{
+              name: "",
+              className: "select-fld",
+              value: "",
+              dataSource: {}
+            }}
+          />
         </div>
-
-        <div className="portlet portlet-bordered ">
-          <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">Patient List</h3>
+        <div className="scrolling-wrapper">
+          <div className="card">
+            <h2>01-Jan-2020</h2>
+            <div className="slotsDiv">
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>
             </div>
           </div>
-          <div className="portlet-body" id="mrdList-Cntr">
-            <div className="row">
-              <div className="col-lg-12">
-                <AlgaehDataGrid
-                  id="index"
-                  columns={[
-                    {
-                      fieldName: "registration_date",
-                      label: "Registration Date",
-                      others: {
-                        maxWidth: 150,
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "patient_code",
-                      label: "Patient Code",
-                      displayTemplate: row => {
-                        return (
-                          <span onClick={() => {}} className="pat-code">
-                            {row.patient_code}
-                          </span>
-                        );
-                      },
-                      others: {
-                        maxWidth: 150,
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      },
-                      className: drow => {
-                        return "greenCell";
-                      }
-                    },
-                    {
-                      fieldName: "full_name",
-                      label: "Patient Name",
-                      others: {
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "sub_department_name",
-                      label: "Department",
-                      others: {
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "employee_name",
-                      label: "Doctor",
-                      others: {
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "gender",
-                      label: "Gender",
-                      others: {
-                        maxWidth: 90,
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "date_of_birth",
-                      label: "Date of Birth",
-                      displayTemplate: row => {
-                        return (
-                          <span>{this.dateFormater(row.date_of_birth)}</span>
-                        );
-                      },
-                      others: {
-                        maxWidth: 120,
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "contact_number",
-                      label: "Phone Number",
-                      others: {
-                        maxWidth: 180,
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    }
-                  ]}
-                  keyId="index"
-                  dataSource={{
-                    data: this.state.patients
-                  }}
-                  isEditable={false}
-                  filter={true}
-                  paging={{ page: 0, rowsPerPage: 20 }}
-                  events={{
-                    onDelete: row => {},
-                    onEdit: row => {},
-                    onDone: row => {}
-                  }}
-                />
+          <div className="card">
+            <h2>01-Jan-2020</h2>
+            <div className="slotsDiv">
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="card">
+            <h2>01-Jan-2020</h2>
+            <div className="slotsDiv">
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="card">
+            <h2>01-Jan-2020</h2>
+            <div className="slotsDiv">
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+            </div>
+          </div>
+          <div className="card">
+            <h2>01-Jan-2020</h2>
+            <div className="slotsDiv">
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+            </div>
+          </div>
+          <div className="card">
+            <h2>01-Jan-2020</h2>
+            <div className="slotsDiv">
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="card">
+            <h2>01-Jan-2020</h2>
+            <div className="slotsDiv">
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
+              </div>{" "}
+              <div className="eachSlot">
+                <small>Patient Code</small>
+                <h3>Patient Name</h3>
+                <small>Mobile No.</small>
+                <br />
+                <small>
+                  <b>10:00 AM</b> - <b>10:15 AM</b>{" "}
+                </small>
+                <hr />
+                <small>
+                  <b>Doctor Name</b>
+                </small>
+                <br />
+                <small>Department Name</small>
+                <button className="btn btn-default btn-block btn-sm btn-book">
+                  Book Appointment
+                </button>
               </div>
             </div>
           </div>
