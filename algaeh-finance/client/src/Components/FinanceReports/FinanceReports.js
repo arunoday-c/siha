@@ -63,6 +63,7 @@ export default function FinanceReports() {
   }
 
   function loadReport(report) {
+    debugger
     const { url, reportName } = report;
     getBalanceSheet({
       url: url,
@@ -120,17 +121,15 @@ export default function FinanceReports() {
   if (finOptions) {
     return (
       <div className="row">
-        <div className="col-12 topBarCostCenter">
-          {" "}
-          <div className="row">
-            {" "}
+        {/* <div className="col-12 topBarCostCenter">          
+          <div className="row">            
             <CostCenter
               result={resultdata}
-              propBranchID={String(finOptions.default_branch_id)}
               propCenterID={String(finOptions.default_cost_center_id)}
+              propBranchID={String(finOptions.default_branch_id)}
             />
           </div>
-        </div>
+        </div> */}
         <div className="col-12">
           <div className="row">
             <div className="col reportMenuSecLeft">
@@ -171,7 +170,7 @@ export default function FinanceReports() {
                   }}
                 >
                   Trail Balance
-                </li>{" "}
+                </li>
                 <li
                   className={selectedClass("AR")}
                   onClick={() => {
@@ -211,12 +210,22 @@ export default function FinanceReports() {
                     result={["asset", "liabilities"]}
                   />
                 ) : selected === "PL" ? (
-                  <Balance
-                    data={data}
-                    layout={layout}
-                    result={["income", "expense"]}
-                    footer={result => <div>Profit : {result.profit}</div>}
-                  />
+                  <div className="col">
+                    <div className="row">
+                      <CostCenter
+                        result={resultdata}
+                      // propCenterID={String(finOptions.default_cost_center_id)}
+                      // propBranchID={String(finOptions.default_branch_id)}
+                      />
+                    </div>
+
+                    <Balance
+                      data={data}
+                      layout={layout}
+                      result={["income", "expense"]}
+                      footer={result => <div>Profit : {result.profit}</div>}
+                    />
+                  </div>
                 ) : selected === "TB" ? (
                   <TrailBalance layout={layout} data={trailBanlance} />
                 ) : selected === "AR" ? (
@@ -250,17 +259,17 @@ export default function FinanceReports() {
                     </Tooltip>
                   </li>
                 ) : (
-                  <li>
-                    <Tooltip title="Shrink" placement="left">
-                      <Button
-                        icon="shrink"
-                        size="large"
-                        disabled={!selected}
-                        onClick={() => layoutDispatch({ type: "collapse" })}
-                      />
-                    </Tooltip>
-                  </li>
-                )}
+                    <li>
+                      <Tooltip title="Shrink" placement="left">
+                        <Button
+                          icon="shrink"
+                          size="large"
+                          disabled={!selected}
+                          onClick={() => layoutDispatch({ type: "collapse" })}
+                        />
+                      </Tooltip>
+                    </li>
+                  )}
               </ul>
             </div>
           </div>
