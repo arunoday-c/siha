@@ -341,31 +341,41 @@ export default {
       })
       .then(result => {
         if (result.length == 1 && result[0]["cost_center_type"] == "P") {
-          let strQry = "";
-
-          if (input.hospital_id > 0) {
-            strQry = ` where division_id= ${input.hospital_id}`;
-          } else if (input.fromMaster != "Y") {
-            strQry = ` where division_id= ${req.userIdentity.hospital_id}`;
-          }
-
-          // query: `select finance_cost_center_id,C.hospital_id, cost_center_id,P.project_desc as cost_center,hospital_name from \
-          // finance_cost_center C inner join hims_d_project P\
-          // on C.cost_center_id=P.hims_d_project_id\
-          // left join  hims_d_hospital H on H.hims_d_hospital_id=C.hospital_id ${strQry}; `,
           _mysql
             .executeQuery({
-              query: `select hims_m_division_project_id, division_id, project_id as cost_center_id,
-              P.project_desc as cost_center,hospital_name
+              query: `select hims_m_division_project_id,   project_id as cost_center_id,
+              P.project_desc as cost_center,hospital_name,H.hims_d_hospital_id
               from hims_m_division_project D inner join hims_d_project P 
               on D.project_id=P.hims_d_project_id 
-              inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id ${strQry}; `,
-
+              inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id ; `,
               printQuery: true
             })
             .then(results => {
               _mysql.releaseConnection();
-              req.records = results;
+
+              let cost = _.chain(results)
+                .groupBy(g => g.cost_center_id)
+                .value();
+              const output = [];
+
+              for (let c in cost) {
+                const branches = [];
+                results.forEach(item => {
+                  if (item.cost_center_id == c) {
+                    branches.push({
+                      hospital_name: item.hospital_name,
+                      hims_d_hospital_id: item.hims_d_hospital_id
+                    });
+                  }
+                });
+                output.push({
+                  cost_center_id: cost[c][0]["cost_center_id"],
+                  cost_center: cost[c][0]["cost_center"],
+                  branches: branches
+                });
+              }
+
+              req.records = output;
               next();
             })
             .catch(e => {
@@ -376,13 +386,13 @@ export default {
           result.length == 1 &&
           result[0]["cost_center_type"] == "SD"
         ) {
-          let strQry = "";
+          // let strQry = "";
 
-          if (input.hospital_id > 0) {
-            strQry = ` where hospital_id= ${input.hospital_id}`;
-          } else if (input.fromMaster != "Y") {
-            strQry = ` where hospital_id= ${req.userIdentity.hospital_id}`;
-          }
+          // if (input.hospital_id > 0) {
+          //   strQry = ` where hospital_id= ${input.hospital_id}`;
+          // } else if (input.fromMaster != "Y") {
+          //   strQry = ` where hospital_id= ${req.userIdentity.hospital_id}`;
+          // }
 
           // select finance_cost_center_id,C.hospital_id, cost_center_id,
           //     SD.sub_department_name as cost_center ,hospital_name from
@@ -391,16 +401,41 @@ export default {
           //     left join  hims_d_hospital H on H.hims_d_hospital_id=C.hospital_id
           _mysql
             .executeQuery({
-              query: ` select  hims_m_branch_dept_map_id, hospital_id, sub_department_id   as cost_center_id,
+              query: ` select  hims_m_branch_dept_map_id, hims_d_hospital_id, sub_department_id   as cost_center_id,
               SD.sub_department_name as cost_center,hospital_name
               from hims_m_branch_dept_map M inner join hims_d_sub_department SD
               on M.sub_department_id=SD.hims_d_sub_department_id
-              inner join hims_d_hospital H on M.hospital_id=H.hims_d_hospital_id;${strQry}; `,
+              inner join hims_d_hospital H on M.hospital_id=H.hims_d_hospital_id; ; `,
 
               printQuery: true
             })
             .then(results => {
               _mysql.releaseConnection();
+
+              let cost = _.chain(results)
+                .groupBy(g => g.cost_center_id)
+                .value();
+              const output = [];
+
+              for (let c in cost) {
+                const branches = [];
+                results.forEach(item => {
+                  if (item.cost_center_id == c) {
+                    branches.push({
+                      hospital_name: item.hospital_name,
+                      hims_d_hospital_id: item.hims_d_hospital_id
+                    });
+                  }
+                });
+                output.push({
+                  cost_center_id: cost[c][0]["cost_center_id"],
+                  cost_center: cost[c][0]["cost_center"],
+                  branches: branches
+                });
+              }
+
+              req.records = output;
+              next();
               req.records = results;
               next();
             })
