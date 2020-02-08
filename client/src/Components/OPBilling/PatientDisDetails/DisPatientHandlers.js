@@ -34,7 +34,6 @@ const selectVisit = ($this, context, e) => {
     mode_of_pay = "Insurance";
     applydiscount = true;
   }
-
   $this.setState(
     {
       incharge_or_provider: e.selected.doctor_id,
@@ -42,7 +41,8 @@ const selectVisit = ($this, context, e) => {
       insured: e.selected.insured,
       insurance_yesno: e.selected.insured,
       sec_insured: e.selected.sec_insured,
-      mode_of_pay: mode_of_pay
+      mode_of_pay: mode_of_pay,
+      sub_department_id: e.selected.sub_department_id
     },
     () => {
       if ($this.state.insured === "Y") {
@@ -196,7 +196,8 @@ const selectVisit = ($this, context, e) => {
       insured: e.selected.insured,
       sec_insured: e.selected.sec_insured,
       mode_of_pay: mode_of_pay,
-      addNewService: false
+      addNewService: false,
+      sub_department_id: e.selected.sub_department_id
     });
   }
 };

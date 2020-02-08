@@ -3226,7 +3226,7 @@ export default {
     }
   },
 
-  generateAccountingEntry: (req, res, next) => {
+  generateAccountingEntry_backup7FEB: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
@@ -3513,6 +3513,381 @@ export default {
                             "payment_type",
                             "credit_amount",
                             "hospital_id"
+                          ];
+
+                          const month = moment().format("M");
+                          const year = moment().format("YYYY");
+
+                          _mysql
+                            .executeQueryWithTransaction({
+                              query:
+                                "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                              values: insert_finance_detail,
+                              includeValues: IncludeValuess,
+                              bulkInsertOrUpdate: true,
+                              extraValues: {
+                                year: year,
+                                month: month
+                              },
+                              printQuery: true
+                            })
+                            .then(subResult => {
+                              _mysql.commitTransaction(() => {
+                                _mysql.releaseConnection();
+                                // req.records = subResult;
+                                next();
+                              });
+                            })
+                            .catch(error => {
+                              _mysql.rollBackTransaction(() => {
+                                next(error);
+                              });
+                            });
+                        })
+                        .catch(error => {
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
+                        });
+                    })
+                    .catch(error => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                      });
+                    });
+                })
+                .catch(error => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            } else {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                // req.records = org_data;
+                next();
+              });
+            }
+          })
+          .catch(error => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      } else {
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          next();
+        });
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  generateAccountingEntry: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      if (req.flag != 1) {
+
+        let inputParam = req.body;
+        _mysql
+          .executeQueryWithTransaction({
+            query:
+              "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
+              select account, head_id, child_id from finance_accounts_maping \
+              where account in ('SAL_PYBLS', 'LV_SAL_PYBL', 'AIRFR_PYBL', 'GRAT_PYBL');\
+              select head_id, child_id from hims_d_earning_deduction where component_category='E' and component_type='LS';\
+              select head_id, child_id from hims_d_earning_deduction where component_category='E' and component_type='AR';\
+              select head_id, child_id from hims_d_earning_deduction where component_category='E' and component_type='EOS';"
+          })
+          .then(result => {
+            const org_data = result[0]
+
+            if (
+              org_data[0]["product_type"] == "HIMS_ERP" ||
+              org_data[0]["product_type"] == "FINANCE_ERP"
+            ) {
+              const salary_pay_acc = result[1].find(f => f.account === "SAL_PYBLS");
+              const lv_salary_pay_acc = result[1].find(f => f.account === "LV_SAL_PYBL");
+              const airfair_pay_acc = result[1].find(f => f.account === "AIRFR_PYBL");
+              const gratuity_pay_acc = result[1].find(f => f.account === "GRAT_PYBL");
+
+              const leave_sal_expence_acc = result[2][0];
+              const airfare_expence_acc = result[3][0];
+              const gratuity_expence_acc = result[4][0];
+
+              _mysql
+                .executeQueryWithTransaction({
+                  query: `select hims_f_salary_id, hims_f_salary_id as document_id, '${inputParam.ScreenCode}' as from_screen,
+                  salary_number as document_number, salary_date as transaction_date,
+                  S.net_salary as amount, 'journal' as voucher_type,S.hospital_id, 
+                  concat('Salary for Employee: ', E.employee_code , '/' , E.full_name , ' in ' , year , '/' , monthname(concat('1999-',month,'-01'))) as narration,
+                  E.sub_department_id from hims_f_salary s 
+                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
+                  where hims_f_salary_id in (?);
+                  select hims_f_salary_id, curDate() payment_date,SE.amount as debit_amount, ED.head_id, ED.child_id,\
+                  'DR' as payment_type, 0 as credit_amount, S.hospital_id, E.sub_department_id from hims_f_salary s 
+                  left join hims_f_salary_earnings SE on SE.salary_header_id = S.hims_f_salary_id
+                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id
+                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
+                  where hims_f_salary_id in(?); 
+                  select hims_f_salary_id, curDate() payment_date, SD.amount as credit_amount, ED.head_id, ED.child_id, \
+                  'CR' as payment_type, 0 as debit_amount ,S.hospital_id, E.sub_department_id from hims_f_salary s 
+                  left join hims_f_salary_deductions SD on SD.salary_header_id = S.hims_f_salary_id 
+                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SD.deductions_id
+                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
+                  where hims_f_salary_id in(?); 
+                  select hims_f_salary_id, curDate() payment_date, SC.amount as debit_amount, ED.head_id, ED.child_id, \
+                  'DR' as payment_type,0 as credit_amount ,S.hospital_id, E.sub_department_id from hims_f_salary s 
+                  left join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id
+                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id 
+                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
+                  where hims_f_salary_id in(?);
+                  select hims_f_salary_id, curDate() payment_date, SC.amount as credit_amount, ED.li_head_id as  head_id, 
+                  ED.li_child_id as child_id, 'CR' as payment_type,0 as debit_amount, S.hospital_id, E.sub_department_id from hims_f_salary s 
+                  left join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id
+                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id 
+                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
+                  where hims_f_salary_id in(?);
+                  select hims_f_salary_id, curDate() payment_date, SL.loan_due_amount as credit_amount, L.head_id, 
+                  L.child_id, 'CR' as payment_type, 0 as debit_amount,S.hospital_id,E.sub_department_id from hims_f_salary s 
+                  left join hims_f_salary_loans SL on SL.salary_header_id = S.hims_f_salary_id
+                  left join hims_f_loan_application LA on LA.hims_f_loan_application_id = SL.loan_application_id
+                  inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id 
+                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
+                  where hims_f_salary_id in(?);
+                  select employee_id, leave_salary, airfare_amount, E.hospital_id, E.sub_department_id from hims_f_leave_salary_accrual_detail D 
+                  inner join hims_d_employee E on E.hims_d_employee_id =D.employee_id 
+                  where year=? and month = ? and employee_id in (?);
+                  select employee_id, gratuity_amount, E.hospital_id, E.sub_department_id from hims_f_gratuity_provision G
+                  inner join hims_d_employee E on E.hims_d_employee_id =G.employee_id 
+                  where year=? and month = ? and employee_id in (?);
+                  select employee_id, head_id, child_id, E.hospital_id, approved_amount, E.sub_department_id from hims_f_loan_application LA
+                  inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id 
+                  inner join hims_d_employee E on E.hims_d_employee_id = LA.employee_id where loan_authorized='APR' 
+                  and loan_closed='N' and loan_dispatch_from='SAL' and employee_id in (?);`,
+                  values: [
+                    inputParam.salary_header_id,
+                    inputParam.salary_header_id,
+                    inputParam.salary_header_id,
+                    inputParam.salary_header_id,
+                    inputParam.salary_header_id,
+                    inputParam.salary_header_id,
+                    inputParam.year,
+                    inputParam.month,
+                    inputParam.employee_id,
+                    inputParam.year,
+                    inputParam.month,
+                    inputParam.employee_id,
+                    inputParam.employee_id
+                  ],
+                  printQuery: true
+                })
+                .then(headerResult => {
+                  const leave_salary_booking = headerResult[6]
+                  const gratuity_provision_booking = headerResult[7]
+                  const loan_payable_amount = headerResult[8]
+
+                  const Header_IncludeValuess = [
+                    "document_id",
+                    "from_screen",
+                    "document_number",
+                    "transaction_date",
+                    "amount",
+                    "voucher_type",
+                    "narration"
+                  ];
+
+                  _mysql
+                    .executeQueryWithTransaction({
+                      query:
+                        "INSERT INTO finance_day_end_header (??) VALUES ? ;",
+                      values: headerResult[0],
+                      includeValues: Header_IncludeValuess,
+                      extraValues: {
+                        entered_date: new Date(),
+                        entered_by: req.userIdentity.algaeh_d_app_user_id
+                      },
+                      bulkInsertOrUpdate: true,
+                      printQuery: true
+                    })
+                    .then(finance_header => {
+                      _mysql
+                        .executeQueryWithTransaction({
+                          query:
+                            "SELECT finance_day_end_header_id, document_id, amount, S.employee_id FROM finance_day_end_header EH\
+                            inner join hims_f_salary S on S.hims_f_salary_id= EH.document_id \
+                            where from_screen = ? and document_id in (?)",
+                          values: [inputParam.ScreenCode, inputParam.salary_header_id],
+                          printQuery: true
+                        })
+                        .then(insert_result => {
+                          const insert_finance_detail = []
+
+                          insert_result.forEach(per_salary => {
+                            const employee_barnch = headerResult[0].find(f => f.hims_f_salary_id === per_salary.document_id)
+
+                            const earnings = headerResult[1].filter(f => f.hims_f_salary_id === per_salary.document_id).map(m => {
+                              return { ...m, day_end_header_id: per_salary.finance_day_end_header_id }
+                            });
+                            const deduction = headerResult[2].filter(f => f.hims_f_salary_id === per_salary.document_id).map(m => {
+                              return { ...m, day_end_header_id: per_salary.finance_day_end_header_id }
+                            });
+                            const contribution = headerResult[3].filter(f => f.hims_f_salary_id === per_salary.document_id).map(m => {
+                              return { ...m, day_end_header_id: per_salary.finance_day_end_header_id }
+                            });
+
+                            const lib_acc_contribution = headerResult[4].filter(f => f.hims_f_salary_id === per_salary.document_id).map(m => {
+                              return { ...m, day_end_header_id: per_salary.finance_day_end_header_id }
+                            });
+
+                            const loan_data = headerResult[5].filter(f => f.hims_f_salary_id === per_salary.document_id).map(m => {
+                              return { ...m, day_end_header_id: per_salary.finance_day_end_header_id }
+                            });
+
+                            insert_finance_detail.push(
+                              ...earnings,
+                              ...deduction,
+                              ...contribution,
+                              ...lib_acc_contribution,
+                              ...loan_data,
+                              {
+                                day_end_header_id: per_salary.finance_day_end_header_id,
+                                payment_date: new Date(),
+                                head_id: salary_pay_acc.head_id,
+                                child_id: salary_pay_acc.child_id,
+                                debit_amount: 0,
+                                payment_type: "CR",
+                                credit_amount: per_salary.amount,
+                                hospital_id: employee_barnch.hospital_id,
+                                sub_department_id: employee_barnch.sub_department_id
+                              })
+                          })
+
+                          leave_salary_booking.forEach(per_employee => {
+                            const finance_header = insert_result.find(f => f.employee_id === per_employee.employee_id)
+
+                            //Booking Leave salary to Laibility account
+                            insert_finance_detail.push({
+                              day_end_header_id: finance_header.finance_day_end_header_id,
+                              payment_date: new Date(),
+                              head_id: lv_salary_pay_acc.head_id,
+                              child_id: lv_salary_pay_acc.child_id,
+                              debit_amount: 0,
+                              payment_type: "CR",
+                              credit_amount: per_employee.leave_salary,
+                              hospital_id: per_employee.hospital_id,
+                              sub_department_id: per_employee.sub_department_id
+                            });
+
+                            //Booking Leave salary to Expence account
+                            insert_finance_detail.push({
+                              day_end_header_id: finance_header.finance_day_end_header_id,
+                              payment_date: new Date(),
+                              head_id: leave_sal_expence_acc.head_id,
+                              child_id: leave_sal_expence_acc.child_id,
+                              debit_amount: per_employee.leave_salary,
+                              payment_type: "DR",
+                              credit_amount: 0,
+                              hospital_id: per_employee.hospital_id,
+                              sub_department_id: per_employee.sub_department_id
+                            });
+
+                            if (parseFloat(per_employee.airfare_amount) > 0) {
+                              //Booking Airfaie to Laibility account
+                              insert_finance_detail.push({
+                                day_end_header_id: finance_header.finance_day_end_header_id,
+                                payment_date: new Date(),
+                                head_id: airfair_pay_acc.head_id,
+                                child_id: airfair_pay_acc.child_id,
+                                debit_amount: 0,
+                                payment_type: "CR",
+                                credit_amount: per_employee.airfare_amount,
+                                hospital_id: per_employee.hospital_id,
+                                sub_department_id: per_employee.sub_department_id
+                              });
+
+                              //Booking Airfaie to Expence account
+                              insert_finance_detail.push({
+                                day_end_header_id: finance_header.finance_day_end_header_id,
+                                payment_date: new Date(),
+                                head_id: airfare_expence_acc.head_id,
+                                child_id: airfare_expence_acc.child_id,
+                                debit_amount: per_employee.airfare_amount,
+                                payment_type: "DR",
+                                credit_amount: 0,
+                                hospital_id: per_employee.hospital_id,
+                                sub_department_id: per_employee.sub_department_id
+                              });
+                            }
+                          })
+
+                          gratuity_provision_booking.forEach(per_employee => {
+                            const gra_finance_header = insert_result.find(f => f.employee_id === per_employee.employee_id)
+
+                            if (parseFloat(per_employee.gratuity_amount) > 0) {
+                              //Booking Gratuity Provision to Laibility account
+                              insert_finance_detail.push({
+                                day_end_header_id: gra_finance_header.finance_day_end_header_id,
+                                payment_date: new Date(),
+                                head_id: gratuity_pay_acc.head_id,
+                                child_id: gratuity_pay_acc.child_id,
+                                debit_amount: 0,
+                                payment_type: "CR",
+                                credit_amount: per_employee.gratuity_amount,
+                                hospital_id: per_employee.hospital_id,
+                                sub_department_id: per_employee.sub_department_id
+                              });
+
+                              //Booking Gratuity Provision to Expence account
+                              insert_finance_detail.push({
+                                day_end_header_id: gra_finance_header.finance_day_end_header_id,
+                                payment_date: new Date(),
+                                head_id: gratuity_expence_acc.head_id,
+                                child_id: gratuity_expence_acc.child_id,
+                                debit_amount: per_employee.gratuity_amount,
+                                payment_type: "DR",
+                                credit_amount: 0,
+                                hospital_id: per_employee.hospital_id,
+                                sub_department_id: per_employee.sub_department_id
+                              });
+                            }
+                          })
+
+                          loan_payable_amount.forEach(per_employee => {
+                            const loan_finance_header = insert_result.find(f => f.employee_id === per_employee.employee_id)
+
+                            if (parseFloat(per_employee.approved_amount) > 0) {
+                              //Booking Gratuity Provision to Laibility account
+                              insert_finance_detail.push({
+                                day_end_header_id: loan_finance_header.finance_day_end_header_id,
+                                payment_date: new Date(),
+                                head_id: per_employee.head_id,
+                                child_id: per_employee.child_id,
+                                debit_amount: per_employee.approved_amount,
+                                payment_type: "DR",
+                                credit_amount: 0,
+                                hospital_id: per_employee.hospital_id,
+                                sub_department_id: per_employee.sub_department_id
+                              });
+                            }
+                          })
+
+
+                          const IncludeValuess = [
+                            "day_end_header_id",
+                            "payment_date",
+                            "head_id",
+                            "child_id",
+                            "debit_amount",
+                            "payment_type",
+                            "credit_amount",
+                            "hospital_id",
+                            "sub_department_id"
                           ];
 
                           const month = moment().format("M");

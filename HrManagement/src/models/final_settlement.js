@@ -369,28 +369,31 @@ export default {
 
             _mysql
               .executeQueryWithTransaction({
-                query: `SELECT hims_f_final_settlement_header_id, final_settlement_number, total_salary, total_amount, total_eos, \
-                        total_leave_encash, employee_code, full_name, E.hospital_id FROM hims_f_final_settlement_header SH
+                query: `SELECT hims_f_final_settlement_header_id, final_settlement_number, total_salary, total_amount, total_eos, 
+                        total_leave_encash, employee_code, full_name, E.hospital_id, E.sub_department_id FROM hims_f_final_settlement_header SH
                         inner join hims_d_employee E on E.hims_d_employee_id = SH.employee_id 
                         where hims_f_final_settlement_header_id=?;
-                        select hims_f_final_settlement_header_id, curDate() payment_date,SE.amount as debit_amount, \
-                        ED.head_id, ED.child_id, 'DR' as payment_type, 0 as credit_amount, S.hospital_id \
+                        select hims_f_final_settlement_header_id, curDate() payment_date,SE.amount as debit_amount, 
+                        ED.head_id, ED.child_id, 'DR' as payment_type, 0 as credit_amount, S.hospital_id, E.sub_department_id
                         from hims_f_final_settlement_header s 
                         left join hims_f_final_settle_earnings_detail SE on SE.final_settlement_header = S.hims_f_final_settlement_header_id
-                        inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id \
+                        inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id 
+                        inner join hims_d_employee E on E.hims_d_employee_id = SH.employee_id 
                         where hims_f_final_settlement_header_id=?;
-                        select hims_f_final_settlement_header_id, curDate() payment_date, SD.amount as credit_amount, \
-                        ED.head_id, ED.child_id, 'CR' as payment_type, 0 as debit_amount ,S.hospital_id
+                        select hims_f_final_settlement_header_id, curDate() payment_date, SD.amount as credit_amount, 
+                        ED.head_id, ED.child_id, 'CR' as payment_type, 0 as debit_amount ,S.hospital_id, E.sub_department_id
                         from hims_f_final_settlement_header s 
                         left join hims_f_final_settle_deductions_detail SD on SD.final_settlement_header_id = S.hims_f_final_settlement_header_id 
                         inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SD.deductions_id
+                        inner join hims_d_employee E on E.hims_d_employee_id = SH.employee_id 
                         where hims_f_final_settlement_header_id=?;
-                        select hims_f_final_settlement_header_id, curDate() payment_date, \
-                        SL.balance_amount as credit_amount, L.head_id, L.child_id, 'CR' as payment_type, \
-                        0 as debit_amount,S.hospital_id from hims_f_final_settlement_header s 
+                        select hims_f_final_settlement_header_id, curDate() payment_date, 
+                        SL.balance_amount as credit_amount, L.head_id, L.child_id, 'CR' as payment_type, 
+                        0 as debit_amount,S.hospital_id, E.sub_department_id from hims_f_final_settlement_header s 
                         left join hims_f_final_settle_loan_details SL on SL.final_settlement_header_id = S.hims_f_final_settlement_header_id
                         left join hims_f_loan_application LA on LA.hims_f_loan_application_id = SL.loan_application_id
                         inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id 
+                        inner join hims_d_employee E on E.hims_d_employee_id = SH.employee_id 
                         where hims_f_final_settlement_header_id = ?;`,
                 values: [
                   inputParam.hims_f_final_settlement_header_id,
@@ -436,7 +439,8 @@ export default {
                         debit_amount: final_settlement_data[0].total_salary,
                         payment_type: "DR",
                         credit_amount: 0,
-                        hospital_id: final_settlement_data[0].hospital_id
+                        hospital_id: final_settlement_data[0].hospital_id,
+                        sub_department_id: final_settlement_data[0].sub_department_id
                       })
 
                     if (parseFloat(final_settlement_data[0].total_eos) > 0) {
@@ -448,7 +452,8 @@ export default {
                         debit_amount: final_settlement_data[0].total_eos,
                         payment_type: "DR",
                         credit_amount: 0,
-                        hospital_id: final_settlement_data[0].hospital_id
+                        hospital_id: final_settlement_data[0].hospital_id,
+                        sub_department_id: final_settlement_data[0].sub_department_id
                       });
                     }
                     if (parseFloat(final_settlement_data[0].total_leave_encash) > 0) {
@@ -460,7 +465,8 @@ export default {
                         debit_amount: final_settlement_data[0].total_leave_encash,
                         payment_type: "DR",
                         credit_amount: 0,
-                        hospital_id: final_settlement_data[0].hospital_id
+                        hospital_id: final_settlement_data[0].hospital_id,
+                        sub_department_id: final_settlement_data[0].sub_department_id
                       });
                     }
 
@@ -473,7 +479,8 @@ export default {
                         debit_amount: 0,
                         payment_type: "CR",
                         credit_amount: final_settlement_data[0].total_amount,
-                        hospital_id: final_settlement_data[0].hospital_id
+                        hospital_id: final_settlement_data[0].hospital_id,
+                        sub_department_id: final_settlement_data[0].sub_department_id
                       });
                     }
 
@@ -485,7 +492,8 @@ export default {
                       "debit_amount",
                       "payment_type",
                       "credit_amount",
-                      "hospital_id"
+                      "hospital_id",
+                      "sub_department_id"
                     ];
 
                     const month = moment().format("M");
