@@ -112,9 +112,9 @@ class ProjectPayroll extends Component {
       <div className="projectPayrollScreen">
         <div className="row  inner-top-search">
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col mandatory" }}
             label={{
-              forceLabel: "Select a Year.",
+              forceLabel: "Year",
               isImp: true
             }}
             selector={{
@@ -137,9 +137,9 @@ class ProjectPayroll extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col mandatory" }}
             label={{
-              forceLabel: "Select a Month.",
+              forceLabel: "Month",
               isImp: true
             }}
             selector={{
@@ -162,9 +162,9 @@ class ProjectPayroll extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col mandatory" }}
             label={{
-              forceLabel: "Filter by Branch.",
+              forceLabel: "Filter by Branch",
               isImp: true
             }}
             selector={{
@@ -186,7 +186,7 @@ class ProjectPayroll extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
+            div={{ className: "col form-group mandatory" }}
             label={{
               forceLabel: "Select Project",
               isImp: true
@@ -209,7 +209,19 @@ class ProjectPayroll extends Component {
             }}
           />
 
-          <div className="col-3" style={{ marginTop: 10 }}>
+          <div className="col-3 globalSearchCntr">
+            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <h6
+              onClick={ProjectPayrollEvents().employeeSearch.bind(this, this)}
+            >
+              {this.state.employee_name
+                ? this.state.employee_name
+                : "Search Employee"}
+              <i className="fas fa-search fa-lg"></i>
+            </h6>
+          </div>
+
+          {/* <div className="col-3" style={{ marginTop: 10 }}>
             <div
               className="row"
               style={{
@@ -244,7 +256,7 @@ class ProjectPayroll extends Component {
                 />
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="col-2 form-group">
             <button

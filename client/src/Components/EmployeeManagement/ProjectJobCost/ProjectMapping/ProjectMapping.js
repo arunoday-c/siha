@@ -78,9 +78,9 @@ class ProjectMapping extends Component {
       <div className="ProjectMappingScreen">
         <div className="row  inner-top-search">
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
+            div={{ className: "col-2 form-group mandatory" }}
             label={{
-              forceLabel: "Select a Branch.",
+              forceLabel: "Select a Branch",
               isImp: true
             }}
             selector={{
@@ -101,7 +101,7 @@ class ProjectMapping extends Component {
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
+            div={{ className: "col-3 form-group mandatory" }}
             label={{
               forceLabel: "Select Project",
               isImp: true
@@ -183,9 +183,9 @@ class ProjectMapping extends Component {
                               this.props.organizations === undefined
                                 ? []
                                 : this.props.organizations.filter(
-                                  f =>
-                                    f.hims_d_hospital_id === row.division_id
-                                );
+                                    f =>
+                                      f.hims_d_hospital_id === row.division_id
+                                  );
 
                             return (
                               <span>
@@ -211,8 +211,8 @@ class ProjectMapping extends Component {
                               this.props.projects === undefined
                                 ? []
                                 : this.props.projects.filter(
-                                  f => f.hims_d_project_id === row.project_id
-                                );
+                                    f => f.hims_d_project_id === row.project_id
+                                  );
 
                             return (
                               <span>
@@ -308,8 +308,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ProjectMapping)
+  connect(mapStateToProps, mapDispatchToProps)(ProjectMapping)
 );
