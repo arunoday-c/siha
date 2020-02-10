@@ -848,9 +848,9 @@ export default class EmployeeShiftRostering extends Component {
 
         <div className="row  inner-top-search">
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col mandatory" }}
             label={{
-              forceLabel: "Select a Year.",
+              forceLabel: "Year",
               isImp: true
             }}
             selector={{
@@ -872,9 +872,9 @@ export default class EmployeeShiftRostering extends Component {
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col mandatory" }}
             label={{
-              forceLabel: "Select a Month.",
+              forceLabel: "Month",
               isImp: true
             }}
             selector={{
@@ -897,7 +897,7 @@ export default class EmployeeShiftRostering extends Component {
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
+            div={{ className: "col form-group  mandatory" }}
             label={{
               forceLabel: "Filter by Branch",
               isImp: true
@@ -922,8 +922,8 @@ export default class EmployeeShiftRostering extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col-2 form-group" }}
-            label={{ forceLabel: "Select Sub Dept.", isImp: true }}
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{ forceLabel: "Sub Department", isImp: true }}
             selector={{
               name: "sub_department_id",
               value: this.state.sub_department_id,
@@ -942,6 +942,14 @@ export default class EmployeeShiftRostering extends Component {
             }}
           />
 
+          <div className="col-3 globalSearchCntr">
+            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <h6 onClick={this.employeeSearch.bind(this)}>
+              {this.state.emp_name ? this.state.emp_name : "Search Employee"}
+              <i className="fas fa-search fa-lg"></i>
+            </h6>
+          </div>
+          {/* 
           <div className="col-3" style={{ marginTop: 10 }}>
             <div
               className="row"
@@ -952,7 +960,7 @@ export default class EmployeeShiftRostering extends Component {
               }}
             >
               <div className="col">
-                <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
+                <AlgaehLabel label={{ forceLabel: "Select a Employee" }} />
                 <h6> {this.state.emp_name ? this.state.emp_name : "------"}</h6>
               </div>
               <div
@@ -970,7 +978,7 @@ export default class EmployeeShiftRostering extends Component {
                 />
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="col form-group">
             <button

@@ -181,7 +181,7 @@ class DocumentMaster extends Component {
       <div className="doc_master">
         <div className="row inner-top-search">
           <AlagehFormGroup
-            div={{ className: "col-lg-2" }}
+            div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Description",
               isImp: true
@@ -197,7 +197,7 @@ class DocumentMaster extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col-2 form-group" }}
+            div={{ className: "col-2 form-group mandatory" }}
             label={{ forceLabel: "Document Type", isImp: true }}
             selector={{
               name: "document_type",
