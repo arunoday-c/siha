@@ -33,6 +33,9 @@ export default function FinanceReports() {
   const [finOptions, setFinOptions] = useState(null);
   const [selected, setSelected] = useState("");
   const [data, setData] = useState({});
+  const [project_id, setProjectID] = useState(null);
+  const [branch_id, setBranchID] = useState(null);
+
   const [layout, layoutDispatch] = useReducer(layoutReducer, {
     cols: 24,
     expand: false
@@ -62,15 +65,24 @@ export default function FinanceReports() {
     return report === selected ? "active" : "";
   }
 
+  function costCenterAssin({ projectID, branchID }) {
+    if (projectID !== undefined)
+      setProjectID(projectID);
+    if (branchID !== undefined)
+      setBranchID(branchID);
+  }
+
+  function loadData({ profitLoss }) {
+    setData(profitLoss)
+  }
+
   function loadReport(report) {
-    debugger
     const { url, reportName } = report;
     getBalanceSheet({
       url: url,
       inputParam: {
-        hospital_id: resultdata["hospital_id"] || finOptions.default_branch_id,
-        cost_center_id:
-          resultdata["cost_center_id"] || finOptions.default_cost_center_id
+        hospital_id: branch_id,
+        cost_center_id: project_id
       }
     })
       .then(result => {
@@ -187,8 +199,6 @@ export default function FinanceReports() {
                   className={selectedClass("AP")}
                   onClick={() => {
                     if (checkExists()) {
-                      // loadReport({ url: "getApAging", reportName: "AP" });
-                      // setLoading(true);
                       setSelected("AP");
                     }
                   }}
@@ -214,6 +224,8 @@ export default function FinanceReports() {
                     <div className="row">
                       <CostCenter
                         result={resultdata}
+                        costCenterAssin={costCenterAssin}
+                        loadData={loadData}
                       // propCenterID={String(finOptions.default_cost_center_id)}
                       // propBranchID={String(finOptions.default_branch_id)}
                       />

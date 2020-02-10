@@ -10,7 +10,9 @@ function CostCenter({
   render,
   orgUrl,
   propBranchID,
-  propCenterID
+  propCenterID,
+  costCenterAssin,
+  loadData
 }) {
   const [costCenterdata, setCostCenterData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -20,7 +22,7 @@ function CostCenter({
   const [branch, setBranch] = useState([]);
 
   useEffect(() => {
-    debugger
+
     setLoading(true);
     algaehApiCall({
       uri: "/finance_masters/getCostCenters",
@@ -122,22 +124,45 @@ function CostCenter({
       result["hospital_id_label"] = details["hospital_name"];
       result["hospital_id"] = value;
     }
-    setCostCenter(null);
+    costCenterAssin({ branchID: value });
+
   }
 
   function HandleCostCenter(details, value) {
-    debugger
     setCostCenter(value);
     setBranch(details.branches);
     if (result) {
       result["cost_center_id_label"] = details["cost_center"];
       result["cost_center_id"] = value;
     }
+    setHims_d_hospital_id(null);
+    costCenterAssin({ projectID: value });
+
   }
 
   function clearValues() {
     setCostCenter(null);
     setHims_d_hospital_id(null);
+  }
+
+  function handleLoad() {
+    algaehApiCall({
+      uri: "/financeReports/getProfitAndLoss",
+      data: {
+        hospital_id: hims_d_hospital_id,
+        cost_center_id: costCenter
+      },
+      method: "GET",
+      module: "finance",
+      onSuccess: response => {
+        if (response.data.success === true) {
+          loadData({ profitLoss: response.data.result });
+        }
+      },
+      onCatch: error => {
+        console.log("error", error);
+      }
+    });
   }
 
   /* {noborder === undefined ? "col-12 costCenterFilter" : "col-12"} */
@@ -162,6 +187,7 @@ function CostCenter({
             },
             onClear: () => {
               setCostCenter(null);
+              costCenterAssin({ projectID: null });
             }
           }}
         />
@@ -183,9 +209,15 @@ function CostCenter({
             },
             onClear: () => {
               setHims_d_hospital_id(null);
+              costCenterAssin({ branchID: null });
             }
           }}
         />
+      </div>
+      <div className="col">
+        <button className="btn btn-primary" onClick={handleLoad}>
+          Load
+        </button>
       </div>
 
       {render ? render({ costCenter, hims_d_hospital_id, clearValues }) : null}
