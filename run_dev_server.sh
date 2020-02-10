@@ -25,24 +25,41 @@ startServer () {
 #   echo "done"
 # }
 
-startServer "./algaeh-core" "core"
-startServer "./DocumentManagement" "document_server" 
-startServer "./HrManagement" "hr_server" 
- startServer "./FrontDesk" "front_desk_server" 
-startServer "./MasterSettings" "master_settings_server" 
- startServer "./Inventory" "inventory_server" 
- startServer "./Pharmacy" "pharmacy_server" 
- startServer "./Insurance" "insurance_server" 
- startServer "./Radiology" "radiology_server" 
- startServer "./Laboratory" "lab_server" 
- startServer "./Billing" "billing_server" 
- startServer "./MRD" "mrd_server" 
- startServer "./Procurement" "procurement_server"
- startServer "./AlgaehReporting" "report_server"
- startServer "./Sockets" "sockets"
-startServer "./client" "client"
-startServer "./algaeh-finance" "finance"  
- startServer "./Sales" "sales"  
+  # Core Modules #
+  startServer "./algaeh-core" "core"
+  startServer "./client" "client"
+  startServer "./MasterSettings" "master_settings_server" 
+  startServer "./DocumentManagement" "document_server" 
+  startServer "./AlgaehReporting" "report_server"
+  startServer "./Sockets" "sockets"
+
+  # HRMS MOdules #
+  startServer "./HrManagement" "hr_server"
+
+  # HIS MOdules #
+  # startServer "./FrontDesk" "front_desk_server" 
+  # startServer "./Billing" "billing_server" 
+  # startServer "./MRD" "mrd_server" 
+  # startServer "./Insurance" "insurance_server" 
+
+  # Lab MOdules
+  #startServer "./Laboratory" "lab_server" 
+
+  # Rad MOdules #
+  #startServer "./Radiology" "radiology_server" 
+
+  # Pharmacy MOdules # 
+  #startServer "./Pharmacy" "pharmacy_server" 
+  #startServer "./Procurement" "procurement_server"
+
+  # Inventory MOdules # 
+  #startServer "./Inventory" "inventory_server" 
+  #startServer "./Sales" "sales"  
+
+  # Finance MOdules # 
+  #startServer "./algaeh-finance" "finance"  
+
+
 
 # installMysql "./algaeh-core" "core"
 # installMysql "./DocumentManagement" "document_server" 
