@@ -93,15 +93,6 @@ class ConsumptionEntry extends Component {
   }
 
   render() {
-    const from_location_name =
-      this.state.from_location_id !== null
-        ? _.filter(this.props.userwiselocations, f => {
-          return (
-            f.hims_d_pharmacy_location_id === this.state.from_location_id
-          );
-        })
-        : [];
-
     return (
       <React.Fragment>
         <div>

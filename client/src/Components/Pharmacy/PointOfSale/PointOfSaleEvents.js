@@ -802,7 +802,7 @@ const VisitSearch = ($this, e) => {
             sec_insured: row.sec_insured,
             episode_id: row.episode_id,
             advance_amount: row.advance_amount,
-            // postEnable: false,
+            sub_department_id: row.sub_department_id,
             vat_applicable: vat_applicable,
             OTItemAddDis: true
           },
@@ -1160,7 +1160,7 @@ const getCashiersAndShiftMAP = $this => {
   });
 };
 
-const ClosePrescribedItem = ($this, e) => {  
+const ClosePrescribedItem = ($this, e) => {
   if (e !== undefined && e.length > 0 && Array.isArray(e)) {
     algaehApiCall({
       uri: "/billing/billingCalculations",
