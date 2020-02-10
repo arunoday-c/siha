@@ -18,7 +18,6 @@ import {
   CptCodesSearch,
   clearData,
   numberEventHandaler,
-  PhyThryAppilicable,
   getFinanceHeaders
 } from "./HospitalServicesEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -26,15 +25,16 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 // import { successfulMessage } from "../../../utils/GlobalFunctions";
 import { getCookie, algaehApiCall } from "../../../utils/algaehApiCall";
 import { setGlobal } from "../../../utils/GlobalFunctions";
-
-import AccountDropDown from "../accountsDropdown";
 import { AlgaehTreeSearch } from "algaeh-react-components";
 import { MainContext } from "algaeh-react-components/context";
+
 class HospitalServices extends PureComponent {
   constructor(props) {
     super(props);
     this.initCall();
-    this.FIN_Active = false
+
+    this.FIN_Active = false;
+
     this.state = {
       open: false,
 
@@ -66,6 +66,10 @@ class HospitalServices extends PureComponent {
       selected_gl_account: null,
       finance_account: []
     };
+
+    // if (this.FIN_Active === true) {
+    //   getFinanceHeaders(this, 4);
+    // }
   }
 
   initCall() {
@@ -96,13 +100,13 @@ class HospitalServices extends PureComponent {
 
     this.FIN_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP" ||
-        userToken.product_type === "HRMS_ERP"
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "HRMS_ERP"
         ? true
         : false;
 
     if (this.FIN_Active === true) {
-      getFinanceHeaders(this, 4)
+      getFinanceHeaders(this, 4);
     }
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
@@ -127,8 +131,10 @@ class HospitalServices extends PureComponent {
         IOputs.PhyService = false;
       }
 
-      IOputs.selected_gl_account = newProps.servicePop.child_id !== null ?
-        newProps.servicePop.head_id + "-" + newProps.servicePop.child_id : null;
+      IOputs.selected_gl_account =
+        newProps.servicePop.child_id !== null
+          ? newProps.servicePop.head_id + "-" + newProps.servicePop.child_id
+          : null;
 
       this.setState({
         ...this.state,
@@ -360,8 +366,7 @@ class HospitalServices extends PureComponent {
                     }
                   }}
                 />
-
-                {this.FIN_Active ?
+                {this.FIN_Active ? (
                   <div className="col-12 form-group">
                     <div className="row">
                       <AlgaehTreeSearch
@@ -376,7 +381,7 @@ class HospitalServices extends PureComponent {
                           onChange: value => {
                             this.setState({
                               selected_gl_account: value
-                            })
+                            });
                           },
                           data: this.state.finance_account || [],
                           textField: "label",
@@ -395,7 +400,8 @@ class HospitalServices extends PureComponent {
                         }}
                       />
                     </div>
-                  </div> : null}
+                  </div>
+                ) : null}
                 {/* <div className="row">
                     <AccountDropDown
                       labelText="Account mapping cash patient"
@@ -470,8 +476,8 @@ class HospitalServices extends PureComponent {
                       {this.state.hims_d_services_id === null ? (
                         <AlgaehLabel label={{ fieldName: "btnSave" }} />
                       ) : (
-                          <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                        )}
+                        <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                      )}
                     </button>
                     <button
                       onClick={e => {
@@ -492,8 +498,8 @@ class HospitalServices extends PureComponent {
                         <AlgaehLabel label={{ fieldName: "btn_clear" }} />
                       </button>
                     ) : (
-                        ""
-                      )}
+                      ""
+                    )}
                   </div>
                 </div>
               </div>

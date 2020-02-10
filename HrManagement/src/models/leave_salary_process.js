@@ -1162,40 +1162,46 @@ export default {
             _mysql
               .executeQueryWithTransaction({
                 query: `select hims_f_salary_id, curDate() payment_date,SE.amount as debit_amount, ED.head_id, ED.child_id,\
-                  'DR' as payment_type, 0 as credit_amount, S.hospital_id from hims_f_salary s 
+                  'DR' as payment_type, 0 as credit_amount, S.hospital_id, E.sub_department_id from hims_f_salary s 
                   left join hims_f_salary_earnings SE on SE.salary_header_id = S.hims_f_salary_id
                   inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id
+                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
                   where hims_f_salary_id in(?); 
                   select hims_f_salary_id, curDate() payment_date, SD.amount as credit_amount, ED.head_id, ED.child_id, \
-                  'CR' as payment_type, 0 as debit_amount ,S.hospital_id
+                  'CR' as payment_type, 0 as debit_amount ,S.hospital_id, E.sub_department_id
                   from hims_f_salary s 
                   left join hims_f_salary_deductions SD on SD.salary_header_id = S.hims_f_salary_id 
                   inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SD.deductions_id
+                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
                   where hims_f_salary_id in(?); 
                   select hims_f_salary_id, curDate() payment_date, SC.amount as debit_amount, ED.head_id, ED.child_id, \
-                  'DR' as payment_type,0 as credit_amount ,S.hospital_id from hims_f_salary s 
+                  'DR' as payment_type,0 as credit_amount ,S.hospital_id, E.sub_department_id from hims_f_salary s 
                   left join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id
-                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id 
+                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id
+                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id  
                   where hims_f_salary_id in(?);
                   select hims_f_salary_id, curDate() payment_date, SC.amount as credit_amount, ED.li_head_id as  head_id, 
-                  ED.li_child_id as child_id, 'CR' as payment_type,0 as debit_amount, S.hospital_id from hims_f_salary s 
+                  ED.li_child_id as child_id, 'CR' as payment_type,0 as debit_amount, S.hospital_id, E.sub_department_id from hims_f_salary s 
                   left join hims_f_salary_contributions SC on SC.salary_header_id = S.hims_f_salary_id
-                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id 
+                  inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SC.contributions_id
+                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id  
                   where hims_f_salary_id in(?);
                   select hims_f_salary_id, curDate() payment_date, SL.loan_due_amount as credit_amount, L.head_id, 
-                  L.child_id, 'CR' as payment_type, 0 as debit_amount,S.hospital_id from hims_f_salary s 
+                  L.child_id, 'CR' as payment_type, 0 as debit_amount,S.hospital_id, E.sub_department_id from hims_f_salary s 
                   left join hims_f_salary_loans SL on SL.salary_header_id = S.hims_f_salary_id
                   left join hims_f_loan_application LA on LA.hims_f_loan_application_id = SL.loan_application_id
                   inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id 
+                  inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
                   where hims_f_salary_id in(?);
-                  select employee_id, leave_salary, airfare_amount, hospital_id from hims_f_leave_salary_accrual_detail D 
+                  select employee_id, leave_salary, airfare_amount, E.hospital_id, E.sub_department_id from hims_f_leave_salary_accrual_detail D 
                   inner join hims_d_employee E on E.hims_d_employee_id =D.employee_id 
                   where year in (?) and month in (?) and employee_id in (?);
-                  select employee_id, gratuity_amount, hospital_id from hims_f_gratuity_provision G
+                  select employee_id, gratuity_amount, E.hospital_id, E.sub_department_id from hims_f_gratuity_provision G
                   inner join hims_d_employee E on E.hims_d_employee_id =G.employee_id 
                   where year in (?) and month in (?) and employee_id in (?);
-                  select employee_id, head_id, child_id, hospital_id, approved_amount from hims_f_loan_application LA
-                  inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id where loan_authorized='APR' 
+                  select employee_id, head_id, child_id, E.hospital_id, approved_amount, E.sub_department_id from hims_f_loan_application LA
+                  inner join hims_d_loan L on L.hims_d_loan_id = LA.loan_id 
+                  inner join hims_d_employee E on E.hims_d_employee_id = LA.employee_id where loan_authorized='APR' 
                   and loan_closed='N' and loan_dispatch_from='SAL' and employee_id in (?);`,
                 values: [
                   inputParam.salary_header_id,
@@ -1253,7 +1259,8 @@ export default {
                         debit_amount: 0,
                         payment_type: "CR",
                         credit_amount: inputParam.salary_amount,
-                        hospital_id: inputParam.hospital_id
+                        hospital_id: inputParam.hospital_id,
+                        sub_department_id: null
                       })
 
 
@@ -1266,7 +1273,8 @@ export default {
                         debit_amount: 0,
                         payment_type: "CR",
                         credit_amount: per_employee.leave_salary,
-                        hospital_id: per_employee.hospital_id
+                        hospital_id: per_employee.hospital_id,
+                        sub_department_id: per_employee.sub_department_id
                       });
 
                       //Booking Leave salary to Expence account
@@ -1277,7 +1285,8 @@ export default {
                         debit_amount: per_employee.leave_salary,
                         payment_type: "DR",
                         credit_amount: 0,
-                        hospital_id: per_employee.hospital_id
+                        hospital_id: per_employee.hospital_id,
+                        sub_department_id: per_employee.sub_department_id
                       });
 
                       if (parseFloat(per_employee.airfare_amount) > 0) {
@@ -1289,7 +1298,8 @@ export default {
                           debit_amount: 0,
                           payment_type: "CR",
                           credit_amount: per_employee.airfare_amount,
-                          hospital_id: per_employee.hospital_id
+                          hospital_id: per_employee.hospital_id,
+                          sub_department_id: per_employee.sub_department_id
                         });
 
                         //Booking Airfaie to Expence account
@@ -1300,7 +1310,8 @@ export default {
                           debit_amount: per_employee.airfare_amount,
                           payment_type: "DR",
                           credit_amount: 0,
-                          hospital_id: per_employee.hospital_id
+                          hospital_id: per_employee.hospital_id,
+                          sub_department_id: per_employee.sub_department_id
                         });
                       }
                     })
@@ -1315,7 +1326,8 @@ export default {
                           debit_amount: 0,
                           payment_type: "CR",
                           credit_amount: per_employee.gratuity_amount,
-                          hospital_id: per_employee.hospital_id
+                          hospital_id: per_employee.hospital_id,
+                          sub_department_id: per_employee.sub_department_id
                         });
 
                         //Booking Gratuity Provision to Expence account
@@ -1326,7 +1338,8 @@ export default {
                           debit_amount: per_employee.gratuity_amount,
                           payment_type: "DR",
                           credit_amount: 0,
-                          hospital_id: per_employee.hospital_id
+                          hospital_id: per_employee.hospital_id,
+                          sub_department_id: per_employee.sub_department_id
                         });
                       }
                     })
@@ -1341,7 +1354,8 @@ export default {
                           debit_amount: per_employee.approved_amount,
                           payment_type: "DR",
                           credit_amount: 0,
-                          hospital_id: per_employee.hospital_id
+                          hospital_id: per_employee.hospital_id,
+                          sub_department_id: per_employee.sub_department_id
                         });
                       }
                     })
@@ -1355,7 +1369,8 @@ export default {
                       "debit_amount",
                       "payment_type",
                       "credit_amount",
-                      "hospital_id"
+                      "hospital_id",
+                      "sub_department_id"
                     ];
 
                     const month = moment().format("M");

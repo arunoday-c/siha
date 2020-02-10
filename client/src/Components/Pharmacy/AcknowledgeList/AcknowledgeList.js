@@ -209,7 +209,7 @@ class AcknowledgeList extends Component {
                           return (
                             <span>
                               <i
-                                className="fas fa-check"
+                                className="fas fa-eye"
                                 onClick={() => {
                                   this.ourOwnMiniNavigator({
                                     RQ_Screen: "TransferEntry",
@@ -229,6 +229,24 @@ class AcknowledgeList extends Component {
                         }
                       },
                       {
+                        fieldName: "ack_done",
+                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                        displayTemplate: row => {
+                          return row.ack_done === "Y" ? (
+                            <span className="badge badge-success">
+                              Acknowledged
+                            </span>
+                          ) : (
+                            <span className="badge badge-danger">Pending</span>
+                          );
+                        },
+                        others: {
+                          maxWidth: 120,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
                         fieldName: "transfer_number",
                         label: (
                           <AlgaehLabel
@@ -237,6 +255,7 @@ class AcknowledgeList extends Component {
                         ),
                         disabled: true,
                         others: {
+                          maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -256,18 +275,8 @@ class AcknowledgeList extends Component {
 
                         disabled: true,
                         others: {
-                          maxWidth: 200,
-                          resizable: false,
-                          style: { textAlign: "left" }
-                        }
-                      },
-                      {
-                        fieldName: "ack_done",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Ack Status" }} />
-                        ),
-                        displayTemplate: row => {
-                          return row.ack_done === "Y" ? "Yes" : "No";
+                          maxWidth: 150,
+                          resizable: false
                         }
                       },
                       {
@@ -300,7 +309,6 @@ class AcknowledgeList extends Component {
                         },
                         disabled: true,
                         others: {
-                          maxWidth: 200,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -336,7 +344,6 @@ class AcknowledgeList extends Component {
                           //created by Adnan
                         },
                         others: {
-                          maxWidth: 200,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -375,8 +382,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AcknowledgeList)
+  connect(mapStateToProps, mapDispatchToProps)(AcknowledgeList)
 );

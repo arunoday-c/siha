@@ -2,7 +2,12 @@ import { Router } from "express";
 import utlities from "algaeh-utilities";
 import regModels from "../models/patientRegistration";
 
-const { getPatientInsurance, updatePatientData, getVisitServiceAmount } = regModels;
+const {
+  getPatientInsurance,
+  updatePatientData,
+  getVisitServiceAmount,
+  getPatientAdvaceAndRefund
+} = regModels;
 
 export default () => {
   const api = Router();
@@ -33,6 +38,17 @@ export default () => {
   api.put(
     "/updatePatientData",
     updatePatientData,
+
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+  api.get(
+    "/getPatientAdvaceAndRefund",
+    getPatientAdvaceAndRefund,
 
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

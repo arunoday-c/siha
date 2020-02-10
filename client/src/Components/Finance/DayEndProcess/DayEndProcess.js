@@ -85,23 +85,23 @@ class DayEndProcess extends Component {
       module_id: null,
       screen_code: null
     };
-    this.selectedDayEndIds = [];
+    this.selectedDayEndIds = "";
   }
 
   getDayEndProcess() {
     try {
-      let inputObj = { posted: this.state.posted }
+      let inputObj = { posted: this.state.posted };
       if (this.state.screen_code !== null) {
-        inputObj.screen_code = this.state.screen_code
+        inputObj.screen_code = this.state.screen_code;
       }
       if (this.state.module_id !== null) {
-        inputObj.module_id = this.state.module_id
+        inputObj.module_id = this.state.module_id;
       }
       if (this.state.from_date !== null) {
-        inputObj.from_date = this.state.from_date
+        inputObj.from_date = this.state.from_date;
       }
       if (this.state.to_date !== null) {
-        inputObj.to_date = this.state.to_date
+        inputObj.to_date = this.state.to_date;
       }
       algaehApiCall({
         uri: "/finance/getDayEndData",
@@ -119,19 +119,18 @@ class DayEndProcess extends Component {
       console.error(e);
     }
   }
-  postDayEndProcess() {
-
+  postDayEndProcess(finance_day_end_header_id) {
     try {
-      if (this.selectedDayEndIds.length === 0) {
-        swalMessage({
-          title: "Select Atleast one transaction to post",
-          type: "warning"
-        });
-        return
-      }
+      // if (this.selectedDayEndIds.length === 0) {
+      //   swalMessage({
+      //     title: "Select Atleast one transaction to post",
+      //     type: "warning"
+      //   });
+      //   return;
+      // }
       algaehApiCall({
         uri: "/finance/postDayEndData",
-        data: { finance_day_end_header_ids: this.selectedDayEndIds },
+        data: { finance_day_end_header_id: finance_day_end_header_id },
         method: "POST",
         module: "finance",
         onSuccess: response => {
@@ -152,12 +151,11 @@ class DayEndProcess extends Component {
       [e.target.name]: e.target.checked ? "Y" : "N",
       dayEnd: []
     });
-  };
+  }
 
   dropDownHandle(value) {
     switch (value.name) {
       case "module_id":
-
         this.setState({
           trans_type: value.selected.trans_type,
           [value.name]: value.value
@@ -197,9 +195,10 @@ class DayEndProcess extends Component {
   }
 
   dateValidate(value, event) {
-
     if (event.target.name === "from_date" && this.state.to_date !== undefined) {
-      let inRange = moment(value).isBefore(moment(this.state.to_date).format("YYYY-MM-DD"));
+      let inRange = moment(value).isBefore(
+        moment(this.state.to_date).format("YYYY-MM-DD")
+      );
       if (inRange) {
         swalMessage({
           title: "From Date cannot be grater than To Date.",
@@ -219,9 +218,11 @@ class DayEndProcess extends Component {
         this.setState({
           [event.target.name]: null
         });
-        return
+        return;
       }
-      let inRange = moment(value).isBefore(moment(this.state.from_date).format("YYYY-MM-DD"));
+      let inRange = moment(value).isBefore(
+        moment(this.state.from_date).format("YYYY-MM-DD")
+      );
       if (inRange) {
         swalMessage({
           title: "To Date cannot be less than From Date.",
@@ -233,8 +234,7 @@ class DayEndProcess extends Component {
         });
       }
     }
-
-  };
+  }
 
   render() {
     return (
@@ -248,7 +248,6 @@ class DayEndProcess extends Component {
             }
           }}
         >
-
           <div className="col-lg-12 popupInner">
             <div className="row" style={{ paddingTop: 15 }}>
               {/* <div className="col-2">
@@ -309,7 +308,7 @@ class DayEndProcess extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Debit Amount" }} />
                       )
-                    },
+                    }
                     // {
                     //   fieldName: "narration",
                     //   label: <AlgaehLabel label={{ forceLabel: "Narration" }} />
@@ -368,8 +367,7 @@ class DayEndProcess extends Component {
                       trans_type: []
                     });
                   },
-                  onChange: this.dropDownHandle.bind(this),
-
+                  onChange: this.dropDownHandle.bind(this)
                 }}
               />
 
@@ -493,42 +491,74 @@ class DayEndProcess extends Component {
                         label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
                         displayTemplate: row => (
                           <>
-                            {this.state.posted === "N" ? <span style={{ padding: 6 }}>
-                              <input
-                                type="checkbox"
-                                onClick={e => {
-                                  if (e.target.checked === true) {
-                                    this.selectedDayEndIds.push(
-                                      row.finance_day_end_header_id
-                                    );
-                                  } else {
-                                    const itemExists = this.selectedDayEndIds.findIndex(
-                                      f => f === row.finance_day_end_header_id
-                                    );
-                                    this.selectedDayEndIds.splice(
-                                      itemExists,
-                                      1
-                                    );
-                                  }
+                            {this.state.posted === "N" ? (
+                              <i
+                                className="fas fa-paper-plane"
+                                onClick={() => {
+                                  this.postDayEndProcess(
+                                    row.finance_day_end_header_id
+                                  );
                                 }}
-                              />
-                              {/* <label for="">gfgh</label> */}
-                            </span> : null}
+                              ></i>
+                            ) : null}
 
                             <i
                               className="fas fa-eye"
                               onClick={() => {
                                 this.onOpenPreviewPopUP(row, this);
-                                // this.setState({openPopup:true});
                               }}
                             ></i>
                           </>
                         ),
                         others: {
-                          maxWidth: 80,
+                          maxWidth: 90,
                           filterable: false
                         }
                       },
+
+                      // {
+                      //   fieldName: "select_id",
+                      //   label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
+                      //   displayTemplate: row => (
+                      //     <>
+                      //       {this.state.posted === "N" ? (
+                      //         <span style={{ padding: 6 }}>
+                      //           <input
+                      //             type="checkbox"
+                      //             onClick={e => {
+                      //               if (e.target.checked === true) {
+                      //                 this.selectedDayEndIds.push(
+                      //                   row.finance_day_end_header_id
+                      //                 );
+                      //               } else {
+                      //                 const itemExists = this.selectedDayEndIds.findIndex(
+                      //                   f => f === row.finance_day_end_header_id
+                      //                 );
+                      //                 this.selectedDayEndIds.splice(
+                      //                   itemExists,
+                      //                   1
+                      //                 );
+                      //               }
+                      //             }}
+                      //           />
+                      //           {/* <label for="">gfgh</label> */}
+                      //         </span>
+                      //       ) : null}
+
+                      //       <i
+                      //         className="fas fa-eye"
+                      //         onClick={() => {
+                      //           this.onOpenPreviewPopUP(row, this);
+                      //           // this.setState({openPopup:true});
+                      //         }}
+                      //       ></i>
+                      //     </>
+                      //   ),
+                      //   others: {
+                      //     maxWidth: 80,
+                      //     filterable: false
+                      //   }
+                      // },
 
                       {
                         fieldName: "document_number",
@@ -550,11 +580,9 @@ class DayEndProcess extends Component {
                       {
                         fieldName: "voucher_type",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Voucher Type" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Voucher Type" }} />
                         ),
-                        disabled: true,
+                        disabled: true
                         // others: { filterable: false }
                       },
                       {
@@ -570,15 +598,13 @@ class DayEndProcess extends Component {
                             label={{ forceLabel: "From Document" }}
                           />
                         ),
-                        disabled: true,
+                        disabled: true
                         // others: { filterable: false }
                       },
                       {
                         fieldName: "narration",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Narration" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Narration" }} />
                         ),
                         disabled: true,
                         others: { filterable: false }
@@ -597,7 +623,7 @@ class DayEndProcess extends Component {
             </div>
           </div>
         </div>
-        <div className="hptl-phase1-footer">
+        {/* <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col">
               <button
@@ -609,7 +635,7 @@ class DayEndProcess extends Component {
               </button>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }

@@ -47,30 +47,114 @@ export default {
   },
   //created by irfan:
   getProfitAndLoss: (req, res, next) => {
+    const _mysql = new algaehMysql();
     const decimal_places = req.userIdentity.decimal_places;
+    let strQuery = undefined;
+    const input = req.query;
+    if (input.cost_center_id > 0) {
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT cost_center_type,cost_center_required  FROM finance_options limit 1; "
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          if (result[0]["cost_center_required"] == "Y") {
+            switch (result[0]["cost_center_type"]) {
+              case "P":
+                if (input.hospital_id > 0) {
+                  strQuery = ` and VD.hospital_id=${input.hospital_id} and VD.project_id=${req.query.cost_center_id}`;
+                } else {
+                  strQuery = ` and VD.project_id=${req.query.cost_center_id}`;
+                }
 
-    getAccountHeadsForReport(decimal_places, 4)
-      .then(income => {
-        getAccountHeadsForReport(decimal_places, 5)
-          .then(expense => {
-            const balance = parseFloat(
-              parseFloat(income.subtitle) - parseFloat(expense.subtitle)
-            ).toFixed(decimal_places);
+                break;
+              case "SD":
+                if (input.hospital_id > 0) {
+                  strQuery = ` and VD.hospital_id=${input.hospital_id} and VD.sub_department_id=${req.query.cost_center_id}`;
+                } else {
+                  strQuery = ` and VD.sub_department_id=${req.query.cost_center_id}`;
+                }
 
-            req.records = {
-              profit: balance,
-              income: income,
-              expense: expense
-            };
-            next();
-          })
-          .catch(e => {
-            next(e);
-          });
-      })
-      .catch(e => {
-        next(e);
-      });
+                break;
+              case "B":
+                strQuery = ` and VD.hospital_id=${req.query.cost_center_id}`;
+            }
+            getAccountHeadsForReport(decimal_places, 4, strQuery)
+              .then(income => {
+                getAccountHeadsForReport(decimal_places, 5, strQuery)
+                  .then(expense => {
+                    const balance = parseFloat(
+                      parseFloat(income.subtitle) - parseFloat(expense.subtitle)
+                    ).toFixed(decimal_places);
+
+                    req.records = {
+                      profit: balance,
+                      income: income,
+                      expense: expense
+                    };
+                    next();
+                  })
+                  .catch(e => {
+                    next(e);
+                  });
+              })
+              .catch(e => {
+                next(e);
+              });
+          } else {
+            getAccountHeadsForReport(decimal_places, 4)
+              .then(income => {
+                getAccountHeadsForReport(decimal_places, 5)
+                  .then(expense => {
+                    const balance = parseFloat(
+                      parseFloat(income.subtitle) - parseFloat(expense.subtitle)
+                    ).toFixed(decimal_places);
+
+                    req.records = {
+                      profit: balance,
+                      income: income,
+                      expense: expense
+                    };
+                    next();
+                  })
+                  .catch(e => {
+                    next(e);
+                  });
+              })
+              .catch(e => {
+                next(e);
+              });
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      getAccountHeadsForReport(decimal_places, 4)
+        .then(income => {
+          getAccountHeadsForReport(decimal_places, 5)
+            .then(expense => {
+              const balance = parseFloat(
+                parseFloat(income.subtitle) - parseFloat(expense.subtitle)
+              ).toFixed(decimal_places);
+
+              req.records = {
+                profit: balance,
+                income: income,
+                expense: expense
+              };
+              next();
+            })
+            .catch(e => {
+              next(e);
+            });
+        })
+        .catch(e => {
+          next(e);
+        });
+    }
   },
   //created by irfan:
   getTrialBalanceBAKP_16_JAN_2020: (req, res, next) => {
@@ -842,7 +926,11 @@ function getAccountHeadsForTrialBalance(
   });
 }
 //created by irfan: ALL REPORTS
-function getAccountHeadsForReport(decimal_places, finance_account_head_id) {
+function getAccountHeadsForReport(
+  decimal_places,
+  finance_account_head_id,
+  str
+) {
   const utilities = new algaehUtilities();
   const _mysql = new algaehMysql();
 
@@ -854,6 +942,10 @@ function getAccountHeadsForReport(decimal_places, finance_account_head_id) {
         trans_symbol = "Dr.";
       }
 
+      let qryStr = "";
+      if (str) {
+        qryStr = str;
+      }
       _mysql
         .executeQuery({
           query: `select finance_account_head_id,account_code,account_name,account_parent,account_level,
@@ -861,31 +953,27 @@ function getAccountHeadsForReport(decimal_places, finance_account_head_id) {
           finance_account_child_id,child_name,head_id,C.created_from as child_created_from
           from finance_account_head H left join 
           finance_account_child C on C.head_id=H.finance_account_head_id 
-           where (root_id=? or finance_account_head_id=?) order by account_level,sort_order;           
+           where root_id=? order by account_level,sort_order;           
            select C.head_id,finance_account_child_id as child_id,child_name
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
           ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount, 
           ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
           ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
           from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
-          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'  
-          where (H.root_id=? or H.finance_account_head_id=?)
+          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'   ${qryStr}
+          where H.root_id=? 
           group by C.finance_account_child_id;
           select max(account_level) as account_level from finance_account_head 
-          where (root_id=? or finance_account_head_id=?);
+          where root_id=?;
           select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
           ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount
           from finance_account_head H              
-          left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'  
-          where (H.root_id=? or H.finance_account_head_id=?) 
+          left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'   ${qryStr}
+          where H.root_id=?  
           group by H.finance_account_head_id  order by account_level;  `,
 
           values: [
-            finance_account_head_id,
-            finance_account_head_id,
-            finance_account_head_id,
-            finance_account_head_id,
             finance_account_head_id,
             finance_account_head_id,
             finance_account_head_id,

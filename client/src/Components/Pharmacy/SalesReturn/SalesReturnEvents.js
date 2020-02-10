@@ -263,6 +263,7 @@ const POSSearch = ($this, e) => {
         {
           pos_number: row.pos_number,
           from_pos_id: row.hims_f_pharmacy_pos_header_id,
+          sub_department_id: row.sub_department_id,
           saveEnable: false
         },
         () => {

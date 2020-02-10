@@ -4,16 +4,14 @@ import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 // import EmployeeProjectRoster from "./EmployeeProjectRoster/EmployeeProjectRoster";
 // import NewEmployeeProjectRoster from "./EmployeeProjectRoster/NewEmployeeProjectRoster";
 import NewEmployeeProjectRoster from "./EmployeeProjectRoster/Roster";
-import ProjectMapping from "./ProjectMapping/ProjectMapping";
 import ProjectPayroll from "./ProjectPayroll/ProjectPayroll";
 import ProjectActivityMgmnt from "./ProjectActivityMgmnt/ProjectActivityMgmnt";
-import ProjectMaster from "./ProjectMaster/ProjectMaster";
 
 class ProjectJobCost extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "ProjectMaster"
+      pageDisplay: "NewEmployeeProjectRoster"
     };
   }
   openTab(e) {
@@ -34,47 +32,6 @@ class ProjectJobCost extends Component {
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
-              {" "}
-              <li
-                algaehtabs={"ProjectMaster"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Project Master"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"ProjectMapping"}
-                className={"nav-item tab-button "}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Project Mapping"
-                    }}
-                  />
-                }
-              </li>
-              {/* <li
-                algaehtabs={"ProjectActivityMgmnt"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Project Activity Management"
-                    }}
-                  />
-                }
-              </li>
-             */}
               <li
                 algaehtabs={"NewEmployeeProjectRoster"}
                 className={"nav-item tab-button"}
@@ -84,6 +41,19 @@ class ProjectJobCost extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Project Roster"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"ProjectActivityMgmnt"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Project Activity Management"
                     }}
                   />
                 }
@@ -110,14 +80,10 @@ class ProjectJobCost extends Component {
           // ) :
           this.state.pageDisplay === "NewEmployeeProjectRoster" ? (
             <NewEmployeeProjectRoster />
-          ) : this.state.pageDisplay === "ProjectMapping" ? (
-            <ProjectMapping />
           ) : this.state.pageDisplay === "ProjectPayroll" ? (
             <ProjectPayroll />
           ) : this.state.pageDisplay === "ProjectActivityMgmnt" ? (
             <ProjectActivityMgmnt />
-          ) : this.state.pageDisplay === "ProjectMaster" ? (
-            <ProjectMaster />
           ) : null}
         </div>
       </div>

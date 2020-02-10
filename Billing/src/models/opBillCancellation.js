@@ -583,7 +583,7 @@ export default {
         inputParam.billdetails,
         f =>
           f.service_type_id ==
-            appsettings.hims_d_service_type.service_type_id.Procedure &&
+          appsettings.hims_d_service_type.service_type_id.Procedure &&
           f.ordered_services_id != null
       );
       console.log("dental_Services: ", dental_Services.length);
@@ -721,7 +721,8 @@ export default {
                   "select finance_accounts_maping_id,account,head_id,child_id from finance_accounts_maping  where \
             account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL');\
             SELECT hims_d_services_id,service_name,head_id,child_id,\
-            insurance_head_id,insurance_child_id FROM hims_d_services where hims_d_services_id in(?);",
+            insurance_head_id,insurance_child_id FROM hims_d_services where hims_d_services_id in(?);\
+            select cost_center_type, cost_center_required from finance_options limit 1;",
                 values: [servicesIds],
                 printQuery: true
               })
@@ -779,15 +780,17 @@ export default {
                     hospital_id: req.userIdentity.hospital_id
                   });
 
-                  EntriesArray.push({
-                    payment_date: new Date(),
-                    head_id: OUTPUT_TAX.head_id,
-                    child_id: OUTPUT_TAX.child_id,
-                    debit_amount: bill.patient_tax,
-                    payment_type: "DR",
-                    credit_amount: 0,
-                    hospital_id: req.userIdentity.hospital_id
-                  });
+                  if (parseFloat(bill.patient_tax) > 0) {
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: OUTPUT_TAX.head_id,
+                      child_id: OUTPUT_TAX.child_id,
+                      debit_amount: bill.patient_tax,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                      hospital_id: req.userIdentity.hospital_id
+                    });
+                  }
                 });
 
                 //ADJUSTING AMOUNT FROM PRVIOUS ADVANCE
@@ -838,12 +841,20 @@ export default {
                   });
                 });
 
+                let strQuery = "";
+
+                if (Result[2][0].cost_center_required === "Y" && Result[2][0].cost_center_type === "P") {
+                  strQuery = `select  hims_m_division_project_id, project_id from hims_m_division_project D \
+                    inner join hims_d_project P on D.project_id=P.hims_d_project_id \
+                    inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id where \
+                    division_id= ${req.userIdentity.hospital_id} limit 1;`
+                }
                 _mysql
                   .executeQueryWithTransaction({
                     query:
                       "INSERT INTO finance_day_end_header (transaction_date,amount,voucher_type,document_id,\
                   document_number,from_screen,narration,entered_by,entered_date) \
-                  VALUES (?,?,?,?,?,?,?,?,?)",
+                  VALUES (?,?,?,?,?,?,?,?,?);"+ strQuery,
                     values: [
                       new Date(),
                       amount,
@@ -857,7 +868,12 @@ export default {
                     ],
                     printQuery: true
                   })
-                  .then(headerDayEnd => {
+                  .then(header_result => {
+                    let project_id = null;
+                    const headerDayEnd = header_result[0]
+                    if (header_result[1].length > 0) {
+                      project_id = header_result[1][0].project_id
+                    }
                     const month = moment().format("M");
                     const year = moment().format("YYYY");
                     const IncludeValuess = [
@@ -880,7 +896,9 @@ export default {
                         extraValues: {
                           year: year,
                           month: month,
-                          day_end_header_id: headerDayEnd.insertId
+                          day_end_header_id: headerDayEnd.insertId,
+                          project_id: project_id,
+                          sub_department_id: req.body.sub_department_id
                         },
                         printQuery: true
                       })

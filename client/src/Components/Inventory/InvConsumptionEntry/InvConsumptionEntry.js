@@ -102,15 +102,6 @@ class InvConsumptionEntry extends Component {
   }
 
   render() {
-    const from_location_name =
-      this.state.from_location_id !== null
-        ? _.filter(this.props.invuserwiselocations, f => {
-            return (
-              f.hims_d_inventory_location_id === this.state.from_location_id
-            );
-          })
-        : [];
-
     return (
       <React.Fragment>
         <div>

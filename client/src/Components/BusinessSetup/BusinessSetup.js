@@ -15,6 +15,8 @@ import UserShiftMapping from "./UserShiftMapping/UserShiftMapping";
 // import CategorySpeciality from "./CategorySpecialityMapping/CategorySpeciality";
 import BankMaster from "./BankMaster/BankMaster";
 import CompanyAccount from "./CompanyAccount/CompanyAccount";
+import ProjectMapping from "./ProjectMapping/ProjectMapping";
+import ProjectMaster from "./ProjectMaster/ProjectMaster";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import _ from "lodash";
 import { AlgaehTabs } from "algaeh-react-components";
@@ -32,11 +34,10 @@ class BusinessSetup extends Component {
   static contextType = MainContext;
 
   UNSAFE_componentWillMount() {
-
     const userToken = this.context.userToken;
     const active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HIMS_CLINICAL"
+      userToken.product_type === "HIMS_CLINICAL"
         ? true
         : false;
     let screens_data = [
@@ -118,7 +119,8 @@ class BusinessSetup extends Component {
             </ChildrenItem>
           ),
           componentCode: "BUSS_COUNTER"
-        })
+        }
+      );
     }
     screens_data.push(
       {
@@ -165,7 +167,8 @@ class BusinessSetup extends Component {
           </ChildrenItem>
         ),
         componentCode: "BUSS_COMPANY"
-      })
+      }
+    );
     this.setState({
       HIMS_Active: active,
       screens_data: screens_data
@@ -187,7 +190,6 @@ class BusinessSetup extends Component {
   render() {
     return (
       <div className="business_setup">
-
         <AlgaehTabs
           removeCommonSection={true}
           content={this.state.screens_data}
@@ -221,8 +223,34 @@ class BusinessSetup extends Component {
                     }}
                   />
                 }
+              </li>{" "}
+              <li
+                algaehtabs={"ProjectMaster"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Project Master"
+                    }}
+                  />
+                }
               </li>
-              {this.state.HIMS_Active === true ? (
+              <li
+                algaehtabs={"ProjectMapping"}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Project Mapping"
+                    }}
+                  />
+                }
+              </li>
+              {/* {this.state.HIMS_Active === true ? (
                 <li
                   algaehtabs={"Speciality"}
                   className={"nav-item tab-button"}
@@ -266,7 +294,7 @@ class BusinessSetup extends Component {
                     />
                   }
                 </li>
-              ) : null}
+              ) : null} 
               <li
                 algaehtabs={"Shift"}
                 className={"nav-item tab-button"}
@@ -383,6 +411,10 @@ class BusinessSetup extends Component {
             <CompanyAccount />
           ) : this.state.pageDisplay === "CategorySpeciality" ? (
             <CategorySpeciality />
+          ) : this.state.pageDisplay === "ProjectMapping" ? (
+            <ProjectMapping />
+          ) : this.state.pageDisplay === "ProjectMaster" ? (
+            <ProjectMaster />
           ) : null}
         </div> */}
       </div>
