@@ -8,9 +8,11 @@ import keys from "algaeh-keys";
 import utliites from "algaeh-utilities";
 import routes from "./routes";
 import compression from "compression";
+import dash from "appmetrics-dash";
 // import { userSecurity } from "algaeh-utilities/checksecurity";
 import { authentication } from "algaeh-utilities/authentication";
 const app = exxpress();
+// dash.attach();
 app.server = http.createServer(app);
 
 app.use(cors());
@@ -28,68 +30,6 @@ app.use(compression());
 app.use((req, res, next) => {
   authentication(req, res, next);
 });
-
-// app.use((req, res, next) => {
-//   const reqH = req.headers;
-//   const _token = reqH["x-api-key"];
-//
-//   utliites
-//     .AlgaehUtilities()
-//     .logger()
-//     .log("Xapi", _token, "debug");
-//   const _verify = utliites.AlgaehUtilities().tokenVerify(_token);
-//   if (_verify) {
-//     let header = reqH["x-app-user-identity"];
-//     if (header != null && header != "" && header != "null") {
-//       header = utliites.AlgaehUtilities().decryption(header);
-//       req.userIdentity = header;
-//       let reqUser = utliites.AlgaehUtilities().getTokenData(_token).id;
-//       const { username } = req.userIdentity;
-//       userSecurity(reqH["x-client-ip"], username)
-//         .then(() => {
-//           res.setHeader("connection", "keep-alive");
-//           next();
-//         })
-//         .catch(error => {
-//           res.status(423).json({
-//             success: false,
-//             message: error,
-//             username: error === "false" ? undefined : username
-//           });
-//           return;
-//         });
-//
-//       utliites
-//         .AlgaehUtilities()
-//         .logger("res-tracking")
-//         .log(
-//           "",
-//           {
-//             dateTime: new Date().toLocaleString(),
-//             requestIdentity: {
-//               requestClient: reqH["x-client-ip"],
-//               requestAPIUser: reqUser,
-//               reqUserIdentity: req.userIdentity
-//             },
-//             requestUrl: req.originalUrl,
-//             requestHeader: {
-//               host: reqH.host,
-//               "user-agent": reqH["user-agent"],
-//               "cache-control": reqH["cache-control"],
-//               origin: reqH.origin
-//             },
-//             requestMethod: req.method
-//           },
-//           "info"
-//         );
-//     }
-//   } else {
-//     res.status(utliites.AlgaehUtilities().httpStatus().unAuthorized).json({
-//       success: false,
-//       message: "unauthorized access"
-//     });
-//   }
-// });
 
 app.use("/api/v1", routes);
 
@@ -150,4 +90,17 @@ app.use((error, req, res, next) => {
 });
 app.server.listen(_port);
 console.log(`HR MANAGEMENT Server is running  on PORT  - ${_port} *`);
+
+if (process.env.ENABLE_MONITOR === true) {
+  let dashPort =
+    typeof _port === "string" ? parseInt(_port) + 1000 : _port + 1000;
+
+  dash.monitor({
+    port: dashPort,
+    url: "/hr-monitor",
+    title: "HR Dashboard",
+    docs: "http://algaeh.com"
+  });
+}
+
 export default app;

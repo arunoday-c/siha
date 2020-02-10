@@ -13,7 +13,11 @@ class ScreenElements extends Component {
     this.state = {
       components: [],
       screen_elements: [],
-      selected_component: null
+      selected_component: null,
+      extra_props: "",
+      props_type: undefined,
+      landing_page: undefined,
+      assignedScreens: []
     };
     this.getComponents();
     this.getScreenElements();
@@ -67,7 +71,9 @@ class ScreenElements extends Component {
       data: {
         screen_element_code: this.state.screen_element_code,
         screen_element_name: this.state.screen_element_name,
-        component_id: component_id[2]
+        component_id: component_id[2],
+        extra_props: this.state.extra_props,
+        props_type: this.state.props_type
       },
       onSuccess: response => {
         if (response.data.success) {
@@ -92,12 +98,15 @@ class ScreenElements extends Component {
     this.setState({
       screen_element_code: "",
       screen_element_name: "",
-      component_id: null
+      component_id: null,
+      extra_props: "",
+      props_type: undefined
     });
   }
 
   changeTexts(e) {
-    this.setState({ [e.target.name]: e.target.value });
+    const { value, name } = e.target;
+    this.setState({ [name]: value });
   }
 
   dropDownHandle(value) {
@@ -154,24 +163,6 @@ class ScreenElements extends Component {
               value: this.state.selected_component
             }}
           />
-          {/* <AlagehAutoComplete
-            div={{ className: "col-2 mandatory form-group" }}
-            label={{
-              forceLabel: "Component",
-              isImp: true
-            }}
-            selector={{
-              name: "component_id",
-              className: "select-fld",
-              value: this.state.component_id,
-              dataSource: {
-                textField: "component_name",
-                valueField: "algaeh_d_app_component_id",
-                data: this.state.components
-              },
-              onChange: this.dropDownHandle.bind(this)
-            }}
-          /> */}
 
           <AlagehFormGroup
             div={{ className: "col-2 mandatory form-group" }}
@@ -189,7 +180,7 @@ class ScreenElements extends Component {
             }}
           />
           <AlagehFormGroup
-            div={{ className: "col-3 mandatory form-group" }}
+            div={{ className: "col-2 mandatory form-group" }}
             label={{
               forceLabel: "Screen Element Name",
               isImp: true
@@ -204,6 +195,40 @@ class ScreenElements extends Component {
             }}
           />
 
+          <AlagehFormGroup
+            div={{ className: "col-3 form-group" }}
+            label={{
+              forceLabel: "Extra Props"
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "extra_props",
+              value: this.state.extra_props,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
+          <AlagehAutoComplete
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Props Type"
+            }}
+            selector={{
+              name: "props_type",
+              className: "select-fld",
+              value: this.state.props_type,
+              dataSource: {
+                textField: "text",
+                valueField: "value",
+                data: [
+                  { value: "D", text: "Decision Making" },
+                  { value: "S", text: "Stages" }
+                ]
+              },
+              onChange: this.dropDownHandle.bind(this)
+            }}
+          />
           <div className="col">
             <button
               type="submit"
@@ -248,6 +273,14 @@ class ScreenElements extends Component {
                         {
                           fieldName: "component_name",
                           label: "Component"
+                        },
+                        {
+                          fieldName: "extra_props",
+                          label: "Extra Props"
+                        },
+                        {
+                          fieldName: "props_type",
+                          label: "Props Type"
                         }
                       ]}
                       keyId="algaeh_d_module_id"
