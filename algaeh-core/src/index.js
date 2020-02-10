@@ -14,7 +14,10 @@ import cryptoUtils from "./utils/cryptography";
 import algaehKeys from "algaeh-keys";
 // import { userSecurity } from "algaeh-utilities/checksecurity";
 import { authentication } from "algaeh-utilities/authentication";
-import dash from "appmetrics-dash";
+let dash = null;
+if (process.env.ENABLE_MONITOR) {
+  dash = require("appmetrics-dash");
+}
 const keys = algaehKeys.default;
 let app = express();
 const _port = process.env.PORT;
