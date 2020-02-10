@@ -453,6 +453,9 @@ const getPatientDetails = $this => {
         data.patientRegistration.incharge_or_provider =
           last_visitDetails.doctor_id;
 
+        data.patientRegistration.sub_department_id =
+          last_visitDetails.sub_department_id;
+
         data.patientRegistration.insured = last_visitDetails.insured;
         data.patientRegistration.insurance_yesno = last_visitDetails.insured;
         data.patientRegistration.sec_insured = last_visitDetails.sec_insured;

@@ -263,6 +263,7 @@ const POSSearch = ($this, e) => {
         {
           pos_number: row.pos_number,
           from_pos_id: row.hims_f_pharmacy_pos_header_id,
+          sub_department_id: row.sub_department_id,
           saveEnable: false
         },
         () => {
@@ -325,6 +326,10 @@ const getPOSEntry = $this => {
         data.shift_id = $this.state.shift_id || null;
         data.credit_amount = parseFloat(data.balance_credit);
         data.insured = data.insurance_provider_id !== null ? "Y" : "N";
+
+        const hospitaldetails = JSON.parse(
+          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+        );
 
         if (
           $this.state.userToken !== undefined &&

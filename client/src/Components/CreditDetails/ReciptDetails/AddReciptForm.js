@@ -7,7 +7,7 @@ import {
   cardtexthandle,
   // chequetexthandle,
   checkcashhandaler,
-  checkcardhandaler,
+  checkcardhandaler
   // checkcheckhandaler,
   // calculateRecipt,
   // countertexthandle
@@ -40,7 +40,6 @@ export default class AddReciptForm extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-
     this.setState(nextProps.SettlementIOputs);
   }
 
@@ -212,9 +211,10 @@ export default class AddReciptForm extends Component {
                         onChange: cardtexthandle.bind(this, this, context)
                       },
                       others: {
-                        disabled: this.state.Billexists === true
-                          ? true
-                          : !this.state.Cardchecked,
+                        disabled:
+                          this.state.Billexists === true
+                            ? true
+                            : !this.state.Cardchecked,
                         placeholder: "0.00"
                         // onBlur: calculateRecipt.bind(this, this, context),
                         // onFocus: e => {
@@ -237,9 +237,10 @@ export default class AddReciptForm extends Component {
                         onChange: texthandle.bind(this, this, context)
                       },
                       others: {
-                        disabled: this.state.Billexists === true
-                          ? true
-                          : !this.state.Cardchecked
+                        disabled:
+                          this.state.Billexists === true
+                            ? true
+                            : !this.state.Cardchecked
                       }
                     }}
                   />
@@ -253,9 +254,11 @@ export default class AddReciptForm extends Component {
                       className: "txt-fld",
                       name: "card_date"
                     }}
-                    disabled={this.state.Billexists === true
-                      ? true
-                      : !this.state.Cardchecked}
+                    disabled={
+                      this.state.Billexists === true
+                        ? true
+                        : !this.state.Cardchecked
+                    }
                     minDate={new Date()}
                     events={{
                       onChange: datehandle.bind(this, this, context)
@@ -366,3 +369,21 @@ export default class AddReciptForm extends Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    counters: state.counters
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getCounters: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(AddReciptForm)
+);

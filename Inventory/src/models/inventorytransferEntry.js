@@ -841,7 +841,7 @@ export default {
             "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
         })
         .then(result => {
-          // console.log("result", result)
+          console.log("result", result)
           if (
             result[0]["product_type"] == "HIMS_ERP" ||
             result[0]["product_type"] == "FINANCE_ERP"
@@ -859,12 +859,16 @@ export default {
                 inner join hims_f_inventory_transfer_batches TB on TB.transfer_detail_id = TD.hims_f_inventory_transfer_detail_id \
                 inner join hims_d_inventory_location FPL on FPL.hims_d_inventory_location_id = TH.from_location_id \
                 inner join hims_d_inventory_location TPL on TPL.hims_d_inventory_location_id = TH.to_location_id \
-                where hims_f_inventory_transfer_header_id=?;",
+                where hims_f_inventory_transfer_header_id=?;\
+                select hims_d_sub_department_id from hims_d_sub_department where department_type='I';\
+                select cost_center_type, cost_center_required from finance_options limit 1;",
                 values: [inputParam.hims_f_inventory_transfer_header_id],
                 printQuery: true
               })
-              .then(headerResult => {
+              .then(result_data => {
 
+                const headerResult = result_data[0]
+                const sub_department_id = result_data[1].length > 0 ? result_data[1][0].hims_d_sub_department_id : null
                 const decimal_places = req.userIdentity.decimal_places;
                 console.log("headerResult", headerResult)
                 let transfered_cost = _.sumBy(headerResult, s =>
@@ -889,11 +893,20 @@ export default {
                   decimal_places
                 )
 
+                let strQuery = "";
+
+                if (result_data[2][0].cost_center_required === "Y" && result_data[2][0].cost_center_type === "P") {
+                  strQuery = `select  hims_m_division_project_id, project_id from hims_m_division_project D \
+                    inner join hims_d_project P on D.project_id=P.hims_d_project_id \
+                    inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id where \
+                    division_id= ${req.userIdentity.hospital_id} limit 1;`
+                }
+
                 _mysql
                   .executeQuery({
                     query: "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
                         document_number, from_screen, narration, entered_date, entered_by) \
-                        VALUES (?,?,?,?,?,?,?,?,?)",
+                        VALUES (?,?,?,?,?,?,?,?,?);" + strQuery,
                     values: [
                       new Date(),
                       transfered_cost,
@@ -907,7 +920,12 @@ export default {
                     ],
                     printQuery: true
                   })
-                  .then(day_end_header => {
+                  .then(header_result => {
+                    let project_id = null;
+                    const day_end_header = header_result[0]
+                    if (header_result[1].length > 0) {
+                      project_id = header_result[1][0].project_id
+                    }
                     let insertSubDetail = []
                     const month = moment().format("M");
                     const year = moment().format("YYYY");
@@ -973,7 +991,9 @@ export default {
                         extraValues: {
                           day_end_header_id: day_end_header.insertId,
                           year: year,
-                          month: month
+                          month: month,
+                          project_id: project_id,
+                          sub_department_id: sub_department_id
                         },
                         printQuery: false
                       })

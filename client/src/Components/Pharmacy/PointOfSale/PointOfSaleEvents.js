@@ -490,7 +490,7 @@ const SavePosEnrty = $this => {
     delete posdata.patInsuranceFrontImg;
     delete posdata.patInsuranceBackImg;
 
-
+    // debugger
     algaehApiCall({
       uri: callUri,
       module: "pharmacy",
@@ -536,7 +536,11 @@ const SavePosEnrty = $this => {
             );
           }
           Promise.all(_arrayImages).then(result => {
-            getPosEntry($this, response.data.records.pos_number);
+            // debugger
+            const pos_number =
+              $this.state.hims_f_pharmacy_pos_header_id !== null ? $this.state.pos_number
+                : response.data.records.pos_number;
+            getPosEntry($this, pos_number);
             // $this.setState({
             //   pos_number: response.data.records.pos_number,
             //   hims_f_pharmacy_pos_header_id:
@@ -656,7 +660,7 @@ const PostPosEntry = $this => {
             posdata = $this.state;
           }
 
-          posdata.ScreenCode = getCookie("ScreenCode")
+          posdata.ScreenCode = getCookie("ScreenCode");
           const _patInsuranceFrontImg = $this.state.patInsuranceFrontImg;
           const _patInsuranceBackImg = $this.state.patInsuranceBackImg;
           delete posdata.patInsuranceFrontImg;
@@ -789,7 +793,8 @@ const VisitSearch = ($this, e) => {
             insured: row.insured,
             sec_insured: row.sec_insured,
             episode_id: row.episode_id,
-            postEnable: false,
+            advance_amount: row.advance_amount,
+            sub_department_id: row.sub_department_id,
             vat_applicable: vat_applicable,
             OTItemAddDis: true
           },
@@ -939,7 +944,11 @@ const LocationchangeTexts = ($this, ctrl, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   $this.setState(
-    { [name]: value, location_type: e.selected.location_type, dataFinder: true },
+    {
+      [name]: value,
+      location_type: e.selected.location_type,
+      dataFinder: true
+    },
     () => {
       let _screenName = getCookie("ScreenName").replace("/", "");
       algaehApiCall({
@@ -1069,6 +1078,45 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
   });
 };
 
+const generatePharmacyLabel = $this => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "PharmacyMedicineLabel",
+        reportParams: [
+          {
+            name: "visit_id",
+            value: $this.state.visit_id
+          }
+        ],
+        pageSize: "A6",
+        pageOrentation: "landscape",
+        outputFileType: "PDF",
+        breakAtArray: true
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = "";
+    }
+  });
+};
+
 const getCashiersAndShiftMAP = $this => {
   algaehApiCall({
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",
@@ -1144,7 +1192,9 @@ const ClosePrescribedItem = ($this, e) => {
           $this.setState({
             ...sum_data,
             pharmacy_stock_detail: e,
-            prescribed_item: !$this.state.prescribed_item
+            prescribed_item: !$this.state.prescribed_item,
+            postEnable: false,
+            saveEnable: false
           });
         } else {
           swalMessage({
@@ -1434,6 +1484,7 @@ export {
   CancelPosEntry,
   getPosEntry,
   generateReport,
+  generatePharmacyLabel,
   getCashiersAndShiftMAP,
   ClosePrescribedItem,
   qtyonchangegridcol,

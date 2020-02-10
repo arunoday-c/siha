@@ -168,8 +168,8 @@ class ResultEntry extends Component {
       this.props.providers === undefined
         ? []
         : this.props.providers.filter(
-            f => f.hims_d_employee_id === this.state.provider_id
-          );
+          f => f.hims_d_employee_id === this.state.provider_id
+        );
     let color_display =
       this.state.critical_status === "N"
         ? "badge badge-primary"
@@ -203,6 +203,9 @@ class ResultEntry extends Component {
                             Options.dateFormat
                           )}
                         </b>
+                      </span>
+                      <span>
+                        AGE:&nbsp;<b>{this.state.years} {this.state.months} {this.state.days}</b>
                       </span>
                       <span>
                         MRN:&nbsp;<b>{this.state.patient_code}</b>
@@ -351,10 +354,10 @@ class ResultEntry extends Component {
                                 Validated
                               </span>
                             ) : (
-                              <span className="badge badge-light">
-                                Result Not Entered
+                                    <span className="badge badge-light">
+                                      Result Not Entered
                               </span>
-                            );
+                                  );
                           },
                           others: {
                             maxWidth: 150,
@@ -372,10 +375,10 @@ class ResultEntry extends Component {
                               this.props.labanalytes === undefined
                                 ? []
                                 : this.props.labanalytes.filter(
-                                    f =>
-                                      f.hims_d_lab_analytes_id ===
-                                      row.analyte_id
-                                  );
+                                  f =>
+                                    f.hims_d_lab_analytes_id ===
+                                    row.analyte_id
+                                );
 
                             return (
                               <span>
@@ -402,8 +405,8 @@ class ResultEntry extends Component {
                             return row.analyte_type === "QU"
                               ? "Quality"
                               : row.analyte_type === "QN"
-                              ? "Quantity"
-                              : "Text";
+                                ? "Quantity"
+                                : "Text";
                           },
                           others: {
                             resizable: false,
@@ -447,8 +450,8 @@ class ResultEntry extends Component {
                                     }}
                                   />
                                 ) : (
-                                  row.result
-                                )}
+                                    row.result
+                                  )}
                               </span>
                             );
                           },
@@ -543,26 +546,18 @@ class ResultEntry extends Component {
                           displayTemplate: row => {
                             return !row.critical_type ? null : row.critical_type ===
                               "N" ? (
-                              <span className="badge badge-success">
-                                Normal
+                                <span className="badge badge-success">
+                                  Normal
                               </span>
-                            ) : row.critical_type === "CL" ? (
-                              <span className="badge badge-danger">
-                                Critical Low
-                              </span>
-                            ) : row.critical_type === "CH" ? (
-                              <span className="badge badge-danger">
-                                Critical High
-                              </span>
-                            ) : row.critical_type === "L" ? (
-                              <span className="badge badge-warning">Low</span>
-                            ) : (
-                              row.critical_type === "H" && (
-                                <span className="badge badge-warning">
-                                  High
+                              ) : row.critical_type === "L" || row.critical_type === "CL" ? (
+                                <span className="badge badge-warning">Low</span>
+                              ) : (
+                                  row.critical_type === "H" || row.critical_type === "CH" && (
+                                    <span className="badge badge-warning">
+                                      High
                                 </span>
-                              )
-                            );
+                                  )
+                                );
                           }
                         },
                         {
@@ -589,36 +584,6 @@ class ResultEntry extends Component {
                             style: { textAlign: "center" }
                           }
                         },
-                        {
-                          fieldName: "critical_low",
-                          label: (
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Critical Low"
-                              }}
-                            />
-                          ),
-                          others: {
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
-
-                        {
-                          fieldName: "critical_high",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Critical High" }}
-                            />
-                          ),
-                          others: {
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
-                        //TODO
                         {
                           fieldName: "confirm",
                           label: (
@@ -649,8 +614,8 @@ class ResultEntry extends Component {
                                 ) : row.confirm === "N" ? (
                                   "No"
                                 ) : (
-                                  "Yes"
-                                )}
+                                      "Yes"
+                                    )}
                               </span>
                             );
                           },
@@ -691,8 +656,8 @@ class ResultEntry extends Component {
                                 ) : row.confirm === "N" ? (
                                   "No"
                                 ) : (
-                                  "Yes"
-                                )}
+                                      "Yes"
+                                    )}
                               </span>
                             );
                           },
@@ -734,8 +699,8 @@ class ResultEntry extends Component {
                                 ) : row.amended === "N" ? (
                                   "No"
                                 ) : (
-                                  "Yes"
-                                )}
+                                      "Yes"
+                                    )}
                               </span>
                             );
                           },
@@ -777,8 +742,8 @@ class ResultEntry extends Component {
                                 ) : row.remarks !== "null" ? (
                                   row.remarks
                                 ) : (
-                                  ""
-                                )}
+                                      ""
+                                    )}
                               </span>
                             );
                           },
@@ -853,22 +818,22 @@ class ResultEntry extends Component {
                       <ol>
                         {this.state.comment_list.length > 0
                           ? this.state.comment_list.map((row, index) => {
-                              return (
-                                <React.Fragment key={index}>
-                                  <li key={index}>
-                                    <span>{row}</span>
-                                    <i
-                                      className="fas fa-times"
-                                      onClick={deleteComment.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )}
-                                    ></i>
-                                  </li>
-                                </React.Fragment>
-                              );
-                            })
+                            return (
+                              <React.Fragment key={index}>
+                                <li key={index}>
+                                  <span>{row}</span>
+                                  <i
+                                    className="fas fa-times"
+                                    onClick={deleteComment.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )}
+                                  ></i>
+                                </li>
+                              </React.Fragment>
+                            );
+                          })
                           : null}
                       </ol>
                     </div>
@@ -932,8 +897,8 @@ class ResultEntry extends Component {
                   this.state.status === "C"
                     ? true
                     : this.state.status === "V"
-                    ? true
-                    : false
+                      ? true
+                      : false
                 }
               >
                 Confirm All
@@ -987,3 +952,58 @@ function mapDispatchToProps(dispatch) {
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps)(ResultEntry)
 );
+
+// {
+//   fieldName: "critical_low",
+//   label: (
+//     <AlgaehLabel
+//       label={{
+//         forceLabel: "Critical Low"
+//       }}
+//     />
+//   ),
+//   others: {
+//     resizable: false,
+//     filterable: false,
+//     style: { textAlign: "center" }
+//   }
+// },
+
+// {
+//   fieldName: "critical_high",
+//   label: (
+//     <AlgaehLabel
+//       label={{ forceLabel: "Critical High" }}
+//     />
+//   ),
+//   others: {
+//     resizable: false,
+//     filterable: false,
+//     style: { textAlign: "center" }
+//   }
+// },
+
+// displayTemplate: row => {
+//   return !row.critical_type ? null : row.critical_type ===
+//     "N" ? (
+//       <span className="badge badge-success">
+//         Normal
+//     </span>
+//     ) : row.critical_type === "CL" ? (
+//       <span className="badge badge-danger">
+//         Critical Low
+//     </span>
+//     ) : row.critical_type === "CH" ? (
+//       <span className="badge badge-danger">
+//         Critical High
+//     </span>
+//     ) : row.critical_type === "L" || row.critical_type === "CL" ? (
+//       <span className="badge badge-warning">Low</span>
+//     ) : (
+//             row.critical_type === "H" && (
+//               <span className="badge badge-warning">
+//                 High
+//       </span>
+//             )
+//           );
+// }

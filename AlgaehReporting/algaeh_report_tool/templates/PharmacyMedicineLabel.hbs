@@ -1,52 +1,60 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
 
-<body>
-    <div class="print-body">
 
-        <section>
+<div class="print-body" style="margin:-8px 0 0 ;padding:0;">
+  {{!-- {{#each header}} --}}
+  <section class="tableForPharmacyDiv">
 
+    <table class="tableForPharmacy" cell-padding="0">
+      <tbody>
 
-  <table class="tableForPharmacy" cell-padding="0">
-               <tr><td><labe>Pharmacy:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>:اسم الصيدلية</label></td></tr>
-                 <tr><td><labe>Place:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>: موقعك</label></td></tr>
-                 <tr><td><labe>Patient Name:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>: اسم المريض</label></td></tr>
-                 <tr><td><labe>Medcine Name:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>: اسم الدواء</label></td></tr>
-                 <tr><td><labe>Dosage:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>: جرعة</label></td></tr>
-                 <tr><td><labe>Exp. Date:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>: تاريخ الانتهاء</label></td></tr>
-                 <tr><td><labe>Pharmacist Name:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>: اسم الصيدلي</label></td></tr>
-                  <tr><td><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span></td></tr>
-                <tr>
-                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
-                </tr>
-                <table class="tableForPharmacy" cell-padding="0">
-               <tr><td><labe>Pharmacy:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>:اسم الصيدلية</label></td></tr>
-                 <tr><td><labe>Place:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>: موقعك</label></td></tr>
-                 <tr><td><labe>Patient Name:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>: اسم المريض</label></td></tr>
-                 <tr><td><labe>Medcine Name:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>: اسم الدواء</label></td></tr>
-                 <tr><td><labe>Dosage:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>: جرعة</label></td></tr>
-                 <tr><td><labe>Exp. Date:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>: تاريخ الانتهاء</label></td></tr>
-                 <tr><td><labe>Pharmacist Name:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>: اسم الصيدلي</label></td></tr>
-                  <tr><td><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span></td></tr>
-                <tr>
-                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
-                </tr>  <table class="tableForPharmacy" cell-padding="0">
-               <tr><td><labe>Pharmacy:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>:اسم الصيدلية</label></td></tr>
-                 <tr><td><labe>Place:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>: موقعك</label></td></tr>
-                 <tr><td><labe>Patient Name:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>: اسم المريض</label></td></tr>
-                 <tr><td><labe>Medcine Name:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>: اسم الدواء</label></td></tr>
-                 <tr><td><labe>Dosage:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>: جرعة</label></td></tr>
-                 <tr><td><labe>Exp. Date:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>: تاريخ الانتهاء</label></td></tr>
-                 <tr><td><labe>Pharmacist Name:</label><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span><label>: اسم الصيدلي</label></td></tr>
-                  <tr><td><span>{{header.patient_full_name}}</span></td><td><span>{{header.invoice_date}}</span></td></tr>
-                <tr>
-                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
-                </tr>
-               
-            </table>
+        <tr>
+          <td>Pharmacy Name</td>
+          <td>{{hospital_name}}</td>
+          <td>{{arabic_hospital_name}}</td>
+          <td>اسم الصيدلية</td>
+        </tr>
+        <tr>
+          <td>Patient Name</td>
+          <td>{{patient_full_name}}</td>
+          <td>{{patient_arabic_name}}</td>
+          <td>اسم المريض</td>
+        </tr>
+        <tr>
+          <td>Medcine Name</td>
+          <td>{{item_description}}</td>
+          <td>{{item_description}}</td>
+          <td>اسم الدواء</td>
+        </tr>
+        <tr>
+          <td>Dosage</td>
+          <td>{{instructions}}</td>
+          <td>{{instructions}}</td>
+          <td>جرعة</td>
+        </tr>
+        <tr>
+          <td>Expiry Date</td>
+          <td>{{expiry_date}}</td>
+          <td>{{expiry_date}}</td>
+          <td>تاريخ الانتهاء</td>
+        </tr>
+        <tr>
+          <td>Dispense date</td>
+          <td>{{dispense_date}}</td>
+          <td>{{dispense_date}}</td>
+          <td>تاريخ الاستغناء</td>
+        </tr>
+        <tr>
+          <td>Pharmacist Name</td>
+          <td>{{p_name}}</td>
+          <td>{{p_arabic_name}}</td>
+          <td>اسم الصيدلي</td>
+        </tr>
 
+      </tbody>
+    </table>
+  </section>
+  {{!-- {{/each}} --}}
 
-        </section>
-        
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
-</body>
+  {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+</div>

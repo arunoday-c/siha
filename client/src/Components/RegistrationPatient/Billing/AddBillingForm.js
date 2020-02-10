@@ -214,8 +214,8 @@ class AddBillingForm extends Component {
                           {this.state.bill_number
                             ? this.state.bill_number
                             : this.state.selectedLang === "en"
-                              ? "Not Generated"
-                              : "غير مولدة"}
+                            ? "Not Generated"
+                            : "غير مولدة"}
                         </h6>
                       </div>
 
@@ -411,8 +411,8 @@ class AddBillingForm extends Component {
                             {this.state.receipt_number
                               ? this.state.receipt_number
                               : this.state.selectedLang === "en"
-                                ? "Not Generated"
-                                : "غير مولدة"}
+                              ? "Not Generated"
+                              : "غير مولدة"}
                           </h6>
                         </div>
                         <div className="col-lg-3">
@@ -424,8 +424,8 @@ class AddBillingForm extends Component {
                           <h6>
                             {this.state.receipt_date
                               ? moment(this.state.receipt_date).format(
-                                "DD-MM-YYYY"
-                              )
+                                  "DD-MM-YYYY"
+                                )
                               : "DD/MM/YYYY"}
                           </h6>
                         </div>
@@ -456,7 +456,7 @@ class AddBillingForm extends Component {
                         /> */}
 
                         <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col-3  mandatory" }}
                           label={{
                             fieldName: "shift_id",
                             isImp: true
@@ -519,7 +519,7 @@ class AddBillingForm extends Component {
                         </div>
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-2" }}
+                          div={{ className: "col-2 mandatory" }}
                           label={{
                             fieldName: "amount",
                             isImp: true
@@ -575,9 +575,10 @@ class AddBillingForm extends Component {
                         </div>
                         {this.state.Cardchecked === true ? (
                           <AlagehAutoComplete
-                            div={{ className: "col-lg-2" }}
+                            div={{ className: "col-2 mandatory" }}
                             label={{
                               fieldName: "select_card",
+                              isImp: this.state.Cardchecked
                             }}
                             selector={{
                               name: "bank_card_id",
@@ -597,7 +598,7 @@ class AddBillingForm extends Component {
                         ) : null}
 
                         <AlagehFormGroup
-                          div={{ className: "col-lg-2" }}
+                          div={{ className: "col-2  mandatory" }}
                           label={{
                             fieldName: "amount",
                             isImp: this.state.Cardchecked
@@ -625,9 +626,11 @@ class AddBillingForm extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col no-padding-left-right" }}
+                          div={{
+                            className: "col no-padding-left-right  mandatory"
+                          }}
                           label={{
-                            fieldName: "card_check_number",
+                            fieldName: "card_check_number"
                           }}
                           textBox={{
                             // card: { creditCard: true },
@@ -645,7 +648,7 @@ class AddBillingForm extends Component {
                               disabled:
                                 this.state.savedData === true
                                   ? true
-                                  : !this.state.Cardchecked,
+                                  : !this.state.Cardchecked
                               // placeholder: "0000-0000-0000-0000"
                             }
                           }}

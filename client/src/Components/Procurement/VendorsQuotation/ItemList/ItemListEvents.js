@@ -7,7 +7,7 @@ const onchhangeNumber = ($this, context, row, e) => {
   let quotation_detail = $this.state.quotation_detail;
   let _index = quotation_detail.indexOf(row)
 
-
+  row[name] = value;
   if (name === "unit_price") {
     row.extended_price = value === "" || value === undefined ? 0
       :
@@ -34,7 +34,7 @@ const onchhangeNumber = ($this, context, row, e) => {
     row.discount_amount =
       value === "" || value === undefined ? 0
         :
-        ((parseFloat(row.extended_price) * parseFloat(value)) / 100).toFixed($this.state.decimal_places);
+        ((parseFloat(row.extended_price) * parseFloat(row.discount_percentage)) / 100).toFixed($this.state.decimal_places);
   }
 
   if (name === "discount_amount") {
@@ -51,7 +51,9 @@ const onchhangeNumber = ($this, context, row, e) => {
         : ((parseFloat(row.discount_amount) / parseFloat(row.extended_price)) * 100).toFixed($this.state.decimal_places);
   }
 
-  row.net_extended_cost = (parseFloat(row.extended_price) - parseFloat(row.discount_amount)).toFixed($this.state.decimal_places);
+  row.net_extended_cost = row.discount_amount === undefined ?
+    parseFloat(row.extended_price).toFixed($this.state.decimal_places)
+    : (parseFloat(row.extended_price) - parseFloat(row.discount_amount)).toFixed($this.state.decimal_places);
   if (name === "tax_percentage") {
     if (parseFloat(value) > 100) {
       swalMessage({
@@ -71,7 +73,7 @@ const onchhangeNumber = ($this, context, row, e) => {
   }
 
   row.total_amount = parseFloat(row.net_extended_cost) + parseFloat(row.tax_amount)
-  row[name] = value;
+
 
   quotation_detail[_index] = row
   $this.setState({

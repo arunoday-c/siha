@@ -7,7 +7,7 @@ import variableJson from "../../../../utils/GlobalVariables.json";
 
 export default function RangeInput({ addAnalyte, analyteType }) {
   const baseInput = {
-    gender: "Male",
+    gender: "MALE",
     age_type: "D",
     from_age: "",
     to_age: "",
@@ -52,7 +52,7 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           dataSource: {
             textField: "name",
             valueField: "value",
-            data: variableJson.FORMAT_GENDER
+            data: variableJson.LEAVE_GENDER
           },
           onChange: handleChange
         }}
@@ -193,21 +193,21 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           }}
         />
       ) : (
-        <AlagehFormGroup
-          div={{ className: "col" }}
-          label={{
-            forceLabel: "Text"
-          }}
-          textBox={{
-            className: "txt-fld",
-            name: "text_value",
-            value: inputs.text_value,
-            events: {
-              onChange: handleChange
-            }
-          }}
-        />
-      )}
+            <AlagehFormGroup
+              div={{ className: "col" }}
+              label={{
+                forceLabel: "Text"
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "text_value",
+                value: inputs.text_value,
+                events: {
+                  onChange: handleChange
+                }
+              }}
+            />
+          )}
 
       <div className="col" style={{ padding: 0 }}>
         <button

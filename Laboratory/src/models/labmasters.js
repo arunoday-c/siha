@@ -1396,7 +1396,8 @@ export default {
                 const existData = result.filter(f => {
                   return (
                     f.age_type == item.age_type &&
-                    f.gender == item.gender.toUpperCase()
+                    (f.gender == item.gender.toUpperCase() ||
+                      f.gender == "BOTH")
                   );
                 });
 

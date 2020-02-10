@@ -17,7 +17,8 @@ const {
   cancelPosEntry,
   insertPreApprovalOutsideCustomer,
   updatePOSDetailForPreApproval,
-  generateAccountingEntry
+  generateAccountingEntry,
+  updatePatientAdvance
 } = posEntryModels;
 
 const { updateIntoItemLocation } = comModels;
@@ -90,6 +91,7 @@ export default () => {
     "/addandpostPosEntry",
     addReceiptEntry,
     addPosEntry,
+    updatePatientAdvance,
     addCashHandover,
     (req, res, next) => {
       if (
@@ -137,6 +139,7 @@ export default () => {
     "/postPosEntry",
     addReceiptEntry,
     updatePosEntry,
+    updatePatientAdvance,
     addCashHandover,
     generateAccountingEntry,
     (req, res, next) => {

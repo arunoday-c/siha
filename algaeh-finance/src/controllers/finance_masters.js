@@ -7,7 +7,9 @@ const {
   getCostCenters,
   addCostCenter,
   updateCostCenters,
-  updateFinanceOption
+  updateFinanceOption,
+  addCostCenterGroup,
+  getCostCenterGroups
 } = finance_masters;
 
 export default () => {
@@ -52,7 +54,45 @@ export default () => {
         .end();
     }
   });
+  api.get("/getCostCenterGroups", getCostCenterGroups, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+        .json({
+          success: false,
+          message: req.records.message
+        })
+        .end();
+    } else {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records
+        })
+        .end();
+    }
+  });
 
+  api.post("/addCostCenterGroup", addCostCenterGroup, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+        .json({
+          success: false,
+          message: req.records.message
+        })
+        .end();
+    } else {
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          result: req.records
+        })
+        .end();
+    }
+  });
   api.post("/addCostCenter", addCostCenter, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res

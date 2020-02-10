@@ -88,6 +88,7 @@ class AddAdvanceModal extends PureComponent {
         total_amount: cash_amount
       });
     }
+    getCashiersAndShiftMAP(this, this);
   }
 
   componentDidMount() {
@@ -324,9 +325,9 @@ class AddAdvanceModal extends PureComponent {
                 }}
                 title={this.props.HeaderCaption}
                 openPopup={this.props.show}
-                class={this.state.lang_sets + "advanceRefundModal"}
+                class={this.state.lang_sets + " advanceRefundModal"}
               >
-                <div className="col-lg-12 popupInner">
+                <div className="col-12 popupInner margin-top-15">
                   <div className="row">
                     <div className="col">
                       <AlgaehLabel

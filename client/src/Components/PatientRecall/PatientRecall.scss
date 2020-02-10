@@ -1,0 +1,87 @@
+.patient_recall {
+  /* The heart of the matter */
+  .scrolling-wrapper {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+
+    .card {
+      display: inline-block;
+
+      margin: 0 3px 0 0;
+      width: 15vw;
+      h2 {
+        border-bottom: 1px solid #dfdfdf;
+        font-size: 1rem;
+        margin: 0;
+        padding: 5px;
+        text-align: center;
+      }
+      .slotsDiv {
+        min-height: 73vh;
+        max-height: 73vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        .eachSlot {
+          padding: 3px 10px;
+          border-bottom: 1px solid #dfdfdf;
+          font-size: 0.9rem;
+          h3 {
+            margin: 0;
+            padding: 2px 0;
+            font-size: 1rem;
+          }
+          hr {
+            margin: 5px 0;
+          }
+          p {
+            margin: 0;
+          }
+          &:nth-child(odd) {
+            background-color: #f9f9f9;
+          }
+          .btn-book {
+            border-radius: 0;
+            padding: 0;
+            margin: 5px 0 0;
+            /* width: 100%; */
+            min-height: 25px !important;
+          }
+        }
+      }
+    }
+
+    .scrolling-wrapper-flexbox {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+
+      .card {
+        flex: 0 0 auto;
+      }
+    }
+    .scrolling-wrapper {
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* width */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background: #ffffff;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: rgb(214, 214, 214);
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: #00a796;
+    }
+  }
+}
