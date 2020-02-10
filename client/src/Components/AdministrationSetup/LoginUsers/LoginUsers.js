@@ -74,13 +74,17 @@ class LoginUsers extends Component {
         ? HIMS_HR_USER_TYPE
         : HIMS_Active === true
         ? HIMS_USER_TYPE
-        : HRMS_Active
+        : HRMS_Active === true
         ? HR_USER_TYPE
         : [];
     if (userToken.user_type !== "SU") {
       USER_TYPE = USER_TYPE.filter(f => f.value !== "AD");
     }
-
+    if (userToken.product_type === undefined) {
+      USER_TYPE = HIMS_HR_USER_TYPE;
+      USER_TYPE = HIMS_USER_TYPE;
+      USER_TYPE = HR_USER_TYPE;
+    }
     this.setState({
       PR_USER_TYPE: USER_TYPE,
       current_user_type: userToken.user_type
@@ -683,7 +687,7 @@ class LoginUsers extends Component {
                   {!this.state.verify_password ? (
                     <>
                       <AlagehFormGroup
-                        div={{ className: "col-6 form-group" }}
+                        div={{ className: "col-12 form-group" }}
                         label={{
                           fieldName: "username",
                           isImp: true
@@ -703,11 +707,30 @@ class LoginUsers extends Component {
                           }
                         }}
                       />
-                      <div className="col-6 userNameExt">
+                      <div
+                        className="col-12 form-group"
+                        style={{ textAlign: "center" }}
+                      >
+                        <span className=" badge badge-danger">
+                          This username is taken, Try Another.
+                        </span>
+                      </div>{" "}
+                      <div
+                        className="col-12 form-group"
+                        style={{ backgroundColor: "#ffffe6" }}
+                      >
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Suggested Username"
+                          }}
+                        />
+                        <h6>Abcd</h6>
+                      </div>
+                      {/* <div className="col-6 userNameExt">
                         <span>
                           <b>{this.getHospitalShortDesc()}</b>
                         </span>
-                      </div>
+                      </div> */}
                       <AlagehAutoComplete
                         div={{ className: "col-6 form-group" }}
                         label={{
@@ -780,7 +803,6 @@ class LoginUsers extends Component {
                           onChange: this.dropDownHandler.bind(this)
                         }}
                       />
-
                       {this.state.algaeh_d_app_user_id !== null ? (
                         <AlagehAutoComplete
                           div={{ className: "col-6 form-group" }}
