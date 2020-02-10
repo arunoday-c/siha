@@ -12,7 +12,7 @@ function CostCenter({
   propBranchID,
   propCenterID
 }) {
-  const [data, setData] = useState([]);
+  const [costCenterdata, setCostCenterData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadBranch, setLoadBranch] = useState(false);
   const [costCenter, setCostCenter] = useState(propCenterID);
@@ -20,50 +20,101 @@ function CostCenter({
   const [branch, setBranch] = useState([]);
 
   useEffect(() => {
-    setLoadBranch(true);
+    debugger
+    setLoading(true);
     algaehApiCall({
-      uri: orgUrl || `/organization/getOrganizationByUser`,
+      uri: "/finance_masters/getCostCenters",
       method: "GET",
+      module: "finance",
+
       onSuccess: response => {
-        setLoadBranch(false);
+        setLoading(false);
         if (response.data.success === true) {
-          setBranch(response.data.records);
+          setCostCenterData(response.data.result);
         }
       },
       onCatch: error => {
-        setLoadBranch(false);
+        setLoading(false);
         console.log("error", error);
       }
     });
-  }, [orgUrl]);
+  }, [costCenter]);
 
-  useEffect(() => {
-    function onChangeHospitalId() {
-      if (hims_d_hospital_id) {
-        setLoading(true);
-        algaehApiCall({
-          uri: "/finance_masters/getCostCenters",
-          data: { hospital_id: hims_d_hospital_id },
-          method: "GET",
-          module: "finance",
-          onSuccess: response => {
-            setLoading(false);
-            if (response.data.success === true) {
-              setData(response.data.result);
-              // if (propBranchID === hims_d_hospital_id) {
-              //   setCostCenter(propCenterID);
-              // }
-            }
-          },
-          onCatch: error => {
-            setLoading(false);
-            console.log("error", error);
-          }
-        });
-      }
-    }
-    onChangeHospitalId();
-  }, [hims_d_hospital_id]);
+  // useEffect(() => {
+
+  //   function onChangeCostCenter() {
+  //     debugger
+  //     if (costCenter) {
+  //       setLoading(true);
+  //       algaehApiCall({
+  //         uri: "/finance_masters/getCostCenters",
+  //         data: { hospital_id: hims_d_hospital_id },
+  //         method: "GET",
+  //         module: "finance",
+  //         onSuccess: response => {
+  //           setLoading(false);
+  //           if (response.data.success === true) {
+  //             setData(response.data.result);
+  //             // if (propBranchID === hims_d_hospital_id) {
+  //             //   setCostCenter(propCenterID);
+  //             // }
+  //           }
+  //         },
+  //         onCatch: error => {
+  //           setLoading(false);
+  //           console.log("error", error);
+  //         }
+  //       });
+  //     }
+  //   }
+  //   onChangeCostCenter();
+  // }, [costCenter]);
+
+  // useEffect(() => {
+  //   setLoadBranch(true);
+  //   algaehApiCall({
+  //     uri: orgUrl || `/organization/getOrganizationByUser`,
+  //     method: "GET",
+  //     onSuccess: response => {
+  //       setLoadBranch(false);
+  //       if (response.data.success === true) {
+  //         setBranch(response.data.records);
+  //       }
+  //     },
+  //     onCatch: error => {
+  //       setLoadBranch(false);
+  //       console.log("error", error);
+  //     }
+  //   });
+  // }, [orgUrl]);
+
+  // useEffect(() => {
+  //   function onChangeHospitalId() {
+  //     if (hims_d_hospital_id) {
+  //       setLoading(true);
+  //       algaehApiCall({
+  //         uri: "/finance_masters/getCostCenters",
+  //         data: { hospital_id: hims_d_hospital_id },
+  //         method: "GET",
+  //         module: "finance",
+  //         onSuccess: response => {
+  //           setLoading(false);
+  //           if (response.data.success === true) {
+  //             setData(response.data.result);
+  //             // if (propBranchID === hims_d_hospital_id) {
+  //             //   setCostCenter(propCenterID);
+  //             // }
+  //           }
+  //         },
+  //         onCatch: error => {
+  //           setLoading(false);
+  //           console.log("error", error);
+  //         }
+  //       });
+  //     }
+  //   }
+  //   onChangeHospitalId();
+  // }, [hims_d_hospital_id]);
 
   function HandleHospital(details, value) {
     setHims_d_hospital_id(value);
@@ -75,7 +126,9 @@ function CostCenter({
   }
 
   function HandleCostCenter(details, value) {
+    debugger
     setCostCenter(value);
+    setBranch(details.branches);
     if (result) {
       result["cost_center_id_label"] = details["cost_center"];
       result["cost_center_id"] = value;
@@ -91,7 +144,29 @@ function CostCenter({
 
   return (
     <>
-      <div className="col">
+
+      <div className="col-4">
+        <AlgaehAutoComplete
+          div={{ ...div }}
+          label={{ forceLabel: "Select a Cost Center" }}
+          selector={{
+            dataSource: {
+              data: costCenterdata,
+              valueField: "cost_center_id",
+              textField: "cost_center"
+            },
+            value: costCenter,
+            onChange: HandleCostCenter,
+            others: {
+              loading: loading
+            },
+            onClear: () => {
+              setCostCenter(null);
+            }
+          }}
+        />
+      </div>
+      <div className="col-4">
         <AlgaehAutoComplete
           div={{ ...div }}
           label={{ forceLabel: "Select a Branch" }}
@@ -105,28 +180,14 @@ function CostCenter({
             onChange: HandleHospital,
             others: {
               loading: loadBranch
-            }
-          }}
-        />
-      </div>
-      <div className="col">
-        <AlgaehAutoComplete
-          div={{ ...div }}
-          label={{ forceLabel: "Select a Cost Center" }}
-          selector={{
-            dataSource: {
-              data: data,
-              valueField: "cost_center_id",
-              textField: "cost_center"
             },
-            value: costCenter,
-            onChange: HandleCostCenter,
-            others: {
-              loading: loading
+            onClear: () => {
+              setHims_d_hospital_id(null);
             }
           }}
         />
       </div>
+
       {render ? render({ costCenter, hims_d_hospital_id, clearValues }) : null}
     </>
   );
