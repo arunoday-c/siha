@@ -3404,7 +3404,8 @@ const getScreenElementsRoles = (req, res, next) => {
                           extra_props,
                           props_type,
                           user_extra_props,
-                          checked
+                          checked,
+                          screen_element_scren_module_mapping_id
                         } = ele;
                         let stages = [];
                         if (props_type === "S" && extra_props !== "") {
@@ -3430,6 +3431,7 @@ const getScreenElementsRoles = (req, res, next) => {
                           algaeh_d_app_scrn_elements_id,
                           screen_element_code,
                           screen_element_name,
+                          screen_element_scren_module_mapping_id,
                           isStaged: stages.length === 0 ? false : true,
                           stages,
                           checked: checked === "1" ? true : false
@@ -3465,14 +3467,20 @@ const updateScreenElementRoles = (req, res, next) => {
       for (let j = 0; j < component.length; j++) {
         const { elements } = component[j];
         for (let e = 0; e < elements.length; e++) {
-          const { stages, checked, algaeh_d_app_scrn_elements_id } = elements[
-            e
-          ];
-          removeItem += _mysql.mysqlQueryFormat(
-            `delete from screen_element_scren_module_mapping 
-               where role_Id=? and algaeh_d_app_scrn_elements_id=?;`,
-            [role_id, algaeh_d_app_scrn_elements_id]
-          );
+          const {
+            stages,
+            checked,
+            screen_element_scren_module_mapping_id,
+            algaeh_d_app_scrn_elements_id
+          } = elements[e];
+          if (screen_element_scren_module_mapping_id !== null) {
+            removeItem += _mysql.mysqlQueryFormat(
+              `delete from screen_element_scren_module_mapping 
+                 where role_Id=? and algaeh_d_app_scrn_elements_id=?;`,
+              [role_id, algaeh_d_app_scrn_elements_id]
+            );
+          }
+
           if (checked === true) {
             if (stages.length === 0) {
               accessItem += _mysql.mysqlQueryFormat(
