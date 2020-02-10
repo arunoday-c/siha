@@ -24,23 +24,16 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 
 // import { successfulMessage } from "../../../utils/GlobalFunctions";
 import { getCookie, algaehApiCall } from "../../../utils/algaehApiCall";
-import { setGlobal, AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { setGlobal } from "../../../utils/GlobalFunctions";
 import { AlgaehTreeSearch } from "algaeh-react-components";
+import { MainContext } from "algaeh-react-components/context";
 
 class HospitalServices extends PureComponent {
   constructor(props) {
     super(props);
     this.initCall();
 
-    let Activated_Modueles = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    );
-
-    const FIN_Active = Activated_Modueles.filter(f => {
-      return f.module_code === "FIN";
-    });
-
-    this.FIN_Active = FIN_Active.length > 0 ? true : false;
+    this.FIN_Active = false;
 
     this.state = {
       open: false,
@@ -74,9 +67,9 @@ class HospitalServices extends PureComponent {
       finance_account: []
     };
 
-    if (this.FIN_Active === true) {
-      getFinanceHeaders(this, 4);
-    }
+    // if (this.FIN_Active === true) {
+    //   getFinanceHeaders(this, 4);
+    // }
   }
 
   initCall() {

@@ -368,22 +368,3 @@ export default class AddReciptForm extends Component {
     // return <div className="">Recipt Details</div>;
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    counters: state.counters
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getCounters: AlgaehActions
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(AddReciptForm)
-);

@@ -34,11 +34,10 @@ class BusinessSetup extends Component {
   static contextType = MainContext;
 
   UNSAFE_componentWillMount() {
-
     const userToken = this.context.userToken;
     const active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HIMS_CLINICAL"
+      userToken.product_type === "HIMS_CLINICAL"
         ? true
         : false;
     let screens_data = [
@@ -120,7 +119,8 @@ class BusinessSetup extends Component {
             </ChildrenItem>
           ),
           componentCode: "BUSS_COUNTER"
-        })
+        }
+      );
     }
     screens_data.push(
       {
@@ -167,7 +167,8 @@ class BusinessSetup extends Component {
           </ChildrenItem>
         ),
         componentCode: "BUSS_COMPANY"
-      })
+      }
+    );
     this.setState({
       HIMS_Active: active,
       screens_data: screens_data
@@ -189,7 +190,6 @@ class BusinessSetup extends Component {
   render() {
     return (
       <div className="business_setup">
-
         <AlgaehTabs
           removeCommonSection={true}
           content={this.state.screens_data}
@@ -294,7 +294,7 @@ class BusinessSetup extends Component {
                     />
                   }
                 </li>
-              ) : null} */}
+              ) : null} 
               <li
                 algaehtabs={"Shift"}
                 className={"nav-item tab-button"}

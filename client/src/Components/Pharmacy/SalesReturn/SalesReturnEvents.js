@@ -327,10 +327,6 @@ const getPOSEntry = $this => {
         data.credit_amount = parseFloat(data.balance_credit);
         data.insured = data.insurance_provider_id !== null ? "Y" : "N";
 
-        const hospitaldetails = JSON.parse(
-          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        );
-
         if (
           $this.state.userToken !== undefined &&
           $this.state.userToken.local_vat_applicable === "N" &&

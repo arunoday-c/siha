@@ -241,9 +241,6 @@ const ClearData = ($this, e) => {
     saveEnable: true,
     dataExists: false,
     dataExitst: false,
-    hospital_id: JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    ).hims_d_hospital_id,
     sales_person_id: null,
     employee_name: null,
 
