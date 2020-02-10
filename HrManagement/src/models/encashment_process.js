@@ -375,6 +375,7 @@ export default {
         });
       });
   },
+
   UpdateLeaveEncash: (req, res, next) => {
     const _mysql = new algaehMysql();
     let inputParam = { ...req.body };
@@ -479,6 +480,7 @@ export default {
         next(e);
       });
   },
+
   getEncashmentApplied: (req, res, next) => {
     const _mysql = new algaehMysql();
     const inputParam = req.query;
