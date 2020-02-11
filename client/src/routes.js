@@ -352,9 +352,7 @@ const ProjJobCst = React.lazy(() =>
 const OrgChart = React.lazy(() =>
   retry(() => import("./Components/OrgChart/OrgChart"))
 );
-const AppSetup = React.lazy(() =>
-  retry(() => import("./Components/AppSetup/AppSetup"))
-);
+
 const PackageSetup = React.lazy(() =>
   retry(() => import("./Components/PackageSetup/PackageSetup"))
 );
@@ -936,11 +934,6 @@ const appRoutes = [
     path: "/OrgChart",
     isExactPath: true,
     component: <OrgChart />
-  },
-  {
-    path: "/AppSetup",
-    isExactPath: true,
-    component: <AppSetup />
   },
   {
     path: "/PackageSetup",
