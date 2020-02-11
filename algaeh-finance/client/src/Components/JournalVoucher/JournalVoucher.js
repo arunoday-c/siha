@@ -17,7 +17,8 @@ import { AllAccounts } from "../FinanceAccounts";
 import {
   getHeaders,
   addJurnorLedger,
-  getInvoiceDetail
+  getInvoiceDetail,
+  getCostCentersForVoucher
 } from "./JournalVoucher.events";
 import PaymentComponent from "./PaymentComponent";
 import AccountsDrawer from "./AccountDrawer";
@@ -46,6 +47,11 @@ export default function JournalVoucher() {
   const [narration, setNarration] = useState("");
   const [invoiceNo, setInvoiceNo] = useState("");
   const [selInvoice, setSelInvoice] = useState("");
+
+  const [cost_center_id, setCostCenter] = useState(null);
+  const [hospital_id, setHospitakID] = useState(null);
+  const [branchData, setbranchData] = useState([]);
+  const [costCenterdata, setcostCenterdata] = useState([]);
 
   // const [prefix, setPrefix] = useState("");
   const basePayment = {
@@ -94,10 +100,22 @@ export default function JournalVoucher() {
           })
           .catch(e => console.log(e));
       }
+      getCostCentersForVoucher().then(result => {
+        setbranchData(result)
+      })
     }
-  }, [voucherType, drawer]);
+  }, []);
 
   const show = voucherType === "receipt" || voucherType === "payment";
+
+  function HandleHospital(details, value) {
+    setHospitakID(value);
+    setcostCenterdata(details.cost_centers)
+  }
+
+  function HandleCostCenter(details, value) {
+    setCostCenter(value);
+  }
 
   function handlePaymentDrop(...args) {
     const value = args[1];
@@ -156,30 +174,47 @@ export default function JournalVoucher() {
       }
     }
 
-    let costcenter = {};
-    if (Object.keys(records_av).length === 0) {
-      setLoading(false);
+    if (hospital_id === null) {
       AlgaehMessagePop({
         type: "error",
-        display: "Branch and Cost Center is mandatory"
+        display: "Branch is mandatory"
       });
+      setLoading(false);
       return;
-    } else {
-      if (
-        records_av["hospital_id"] === undefined ||
-        records_av["cost_center_id"] === undefined
-      ) {
-        setLoading(false);
-        AlgaehMessagePop({
-          type: "info",
-          display: "Branch and Cost Center is mandatory"
-        });
-        return;
-      } else {
-        costcenter["hospital_id"] = records_av["hospital_id"];
-        costcenter["cost_center_id"] = records_av["cost_center_id"];
-      }
     }
+    if (cost_center_id === null) {
+      AlgaehMessagePop({
+        type: "error",
+        display: "Cost Center is mandatory"
+      });
+      setLoading(false);
+      return;
+    }
+
+    // let costcenter = {};
+    // if (Object.keys(records_av).length === 0) {
+    //   setLoading(false);
+    //   AlgaehMessagePop({
+    //     type: "error",
+    //     display: "Branch and Cost Center is mandatory"
+    //   });
+    //   return;
+    // } else {
+    //   if (
+    //     records_av["hospital_id"] === undefined ||
+    //     records_av["cost_center_id"] === undefined
+    //   ) {
+    //     setLoading(false);
+    //     AlgaehMessagePop({
+    //       type: "info",
+    //       display: "Branch and Cost Center is mandatory"
+    //     });
+    //     return;
+    //   } else {
+    //     costcenter["hospital_id"] = records_av["hospital_id"];
+    //     costcenter["cost_center_id"] = records_av["cost_center_id"];
+    //   }
+    // }
 
     if (journerList.length >= 2) {
       const check =
@@ -204,20 +239,23 @@ export default function JournalVoucher() {
       return;
     }
 
+
     addJurnorLedger({
       transaction_date: voucherDate,
       voucher_type: voucherType,
       invoice_no:
         voucherType === "payment" ||
-        voucherType === "receipt" ||
-        voucherType === "credit_note" ||
-        voucherType === "debit_note"
+          voucherType === "receipt" ||
+          voucherType === "credit_note" ||
+          voucherType === "debit_note"
           ? selInvoice
           : voucherType === "purchase" || voucherType === "sales"
-          ? invoiceNo
-          : null,
+            ? invoiceNo
+            : null,
       // voucher_no: `${voucher_no}`,
-      ...costcenter,
+      hospital_id: hospital_id,
+      cost_center_id: cost_center_id,
+      // ...costcenter,
       ...payment,
       from_screen: getCookie("ScreenCode"),
       hospital_id: getCookie("HospitalId"),
@@ -347,28 +385,28 @@ export default function JournalVoucher() {
           voucherType === "receipt" ||
           voucherType === "credit_note" ||
           voucherType === "debit_note" ? (
-          <AlgaehAutoComplete
-            div={{ className: "col-2" }}
-            label={{
-              forceLabel: "Select Invoice No.",
-              isImp: true
-            }}
-            selector={{
-              value: selInvoice,
-              dataSource: {
-                data: invoiceData,
-                valueField: "invoice_no",
-                textField: "invoice_no"
-              },
-              onChange: selected => {
-                setSelInvoice(selected.invoice_no);
-              },
-              onClear: () => {
-                setSelInvoice("");
-              }
-            }}
-          />
-        ) : null}
+              <AlgaehAutoComplete
+                div={{ className: "col-2" }}
+                label={{
+                  forceLabel: "Select Invoice No.",
+                  isImp: true
+                }}
+                selector={{
+                  value: selInvoice,
+                  dataSource: {
+                    data: invoiceData,
+                    valueField: "invoice_no",
+                    textField: "invoice_no"
+                  },
+                  onChange: selected => {
+                    setSelInvoice(selected.invoice_no);
+                  },
+                  onClear: () => {
+                    setSelInvoice("");
+                  }
+                }}
+              />
+            ) : null}
 
         <PaymentComponent
           show={show}
@@ -377,7 +415,48 @@ export default function JournalVoucher() {
           handleChange={setPayment}
         />
 
-        <CostCenter result={records_av} noborder={false} />
+
+        <AlgaehAutoComplete
+          div={{ className: "col-2" }}
+          label={{ forceLabel: "Select a Branch", isImp: true }}
+          selector={{
+            dataSource: {
+              data: branchData,
+              valueField: "hims_d_hospital_id",
+              textField: "hospital_name"
+            },
+            value: hospital_id,
+            onChange: HandleHospital,
+            // others: {
+            //   loading: loadBranch
+            // },
+            onClear: () => {
+              setHospitakID(null);
+            }
+          }}
+        />
+
+        <AlgaehAutoComplete
+          div={{ className: "col-2" }}
+          label={{ forceLabel: "Select a Cost Center" }}
+          selector={{
+            dataSource: {
+              data: costCenterdata,
+              valueField: "cost_center_id",
+              textField: "cost_center"
+            },
+            value: cost_center_id,
+            onChange: HandleCostCenter,
+            // others: {
+            //   loading: loading
+            // },
+            onClear: () => {
+              setCostCenter(null);
+            }
+          }}
+        />
+
+        {/* <CostCenter result={records_av} noborder={false} /> */}
       </div>
       <div className="row">
         <div className="col-12">
@@ -587,6 +666,10 @@ export default function JournalVoucher() {
                 setVoucherType("");
                 setAccounts([]);
                 setPayment(basePayment);
+                setHospitakID(null);
+                setCostCenter(null);
+                setClearLoading(false);
+                setLoading(false);
               }}
             >
               Clear
