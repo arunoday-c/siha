@@ -549,6 +549,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
             return {
               screen_element_code,
               props_type,
+              ele_view_previlage,
               stages
             };
           })
