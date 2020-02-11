@@ -526,9 +526,6 @@ const PageToPlot = {
   OrgChart: React.lazy(() =>
     retry(() => import("./Components/OrgChart/OrgChart"))
   ),
-  AppSetup: React.lazy(() =>
-    retry(() => import("./Components/AppSetup/AppSetup"))
-  ),
   PackageSetup: React.lazy(() =>
     retry(() => import("./Components/PackageSetup/PackageSetup"))
   ),
