@@ -265,7 +265,7 @@ export default class MiscEarningsDeductions extends Component {
 
   getEmployee = row => {
     algaehApiCall({
-      uri: "/salary/getEmployeeMiscellaneous",
+      uri: "/salarypayment/getEmployeeMiscellaneous",
       module: "hrManagement",
       method: "GET",
       data: {
@@ -308,7 +308,7 @@ export default class MiscEarningsDeductions extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
-          uri: "/salary/deleteMiscEarningsDeductions",
+          uri: "/salarypayment/deleteMiscEarningsDeductions",
           module: "hrManagement",
           method: "DELETE",
           data: {
