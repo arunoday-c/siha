@@ -374,7 +374,6 @@ class ScreenAssignment extends Component {
                                                   <li key={value}>
                                                     <Checkbox
                                                       defaultChecked={checked}
-                                                      value={value}
                                                       onChange={this.onClickElementClick.bind(
                                                         this,
                                                         stage

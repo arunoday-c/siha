@@ -205,10 +205,11 @@ export default ({ config, db }) => {
     "/getRoleBaseActiveModules",
     getRoleBaseActiveModules,
     (req, res, next) => {
-      let result = req.records;
+      const { result, elements } = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
+        elements: elements
       });
       next();
     }
