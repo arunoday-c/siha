@@ -160,9 +160,10 @@ function Login(props) {
         uri: "/algaehMasters/getRoleBaseActiveModules",
         method: "GET",
         onSuccess: dataResponse => {
-          if (dataResponse.data.success) {
-            setItem("menu", dataResponse.data.records);
-
+          const { success, records, elements } = dataResponse.data;
+          if (success) {
+            setItem("menu", records);
+            setItem("elements", elements);
             resolve();
           } else {
             reject(new Error(dataResponse.data.message));

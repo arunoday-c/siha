@@ -484,25 +484,26 @@ let getRoleBaseActiveModules = (req, res, next) => {
       on s.module_id = m.algaeh_d_module_id  ${
         role_type === "SU"
           ? ""
-          : "where m.access_by <> 'SU' and m.record_status='A'"
+          : "where m.access_by <> 'SU' and m.record_status='A' and s.record_status='A'"
       }`;
     } else {
       strQuery = `select m.algaeh_d_module_id,m.module_code,m.module_name,m.icons,m.display_order,m.other_language,
       s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
       s.other_language as s_other_language,c.algaeh_d_app_component_id,c.component_code,c.component_name,
       cs.view_privilege as comp_view_previlage,se.view_type as ele_view_previlage,se.extra_props as ele_extra_props,
-      e.screen_element_code,e.screen_element_name,sr.screen_id,sr.algaeh_m_screen_role_privilage_mapping_id
+      e.screen_element_code,e.screen_element_name,sr.screen_id,sr.algaeh_m_screen_role_privilage_mapping_id,
+      se.algaeh_d_app_scrn_elements_id,e.props_type,e.extra_props
       from algaeh_m_module_role_privilage_mapping as mr inner 
       join algaeh_d_app_module as  m
-      on mr.module_id=m.algaeh_d_module_id inner join algaeh_m_screen_role_privilage_mapping as sr
+      on mr.module_id=m.algaeh_d_module_id and m.record_status = 'A' inner join algaeh_m_screen_role_privilage_mapping as sr
       on  sr.module_role_map_id = mr.algaeh_m_module_role_privilage_mapping_id inner join algaeh_d_app_screens as s
-      on s.algaeh_app_screens_id=sr.screen_id left join algaeh_m_component_screen_privilage_mapping as cs
+      on s.algaeh_app_screens_id=sr.screen_id and s.record_status='A' left join algaeh_m_component_screen_privilage_mapping as cs
       on cs.algaeh_m_screen_role_privilage_mapping_id =sr.algaeh_m_screen_role_privilage_mapping_id
       left join algaeh_d_app_component as c on c.algaeh_d_app_component_id =cs.component_id
       left join screen_element_scren_module_mapping as se on 
       se.role_id = mr.role_id
       left join algaeh_d_app_scrn_elements as e on e.algaeh_d_app_scrn_elements_id = se.algaeh_d_app_scrn_elements_id
-      where mr.role_id=${_roleId} and mr.record_status ='A' and m.record_status = 'A' and m.access_by <> 'SU';`;
+      where mr.role_id=${_roleId} and mr.record_status ='A'  and m.access_by <> 'SU';`;
     }
 
     _mysql
@@ -518,6 +519,40 @@ let getRoleBaseActiveModules = (req, res, next) => {
           next();
           return;
         }
+        const elements = _.chain(result)
+          .groupBy(g => g.algaeh_d_app_scrn_elements_id)
+          .map(element => {
+            const {
+              ele_extra_props,
+              ele_view_previlage,
+              screen_element_code,
+              props_type,
+              extra_props
+            } = _.head(element);
+            let stages = [];
+
+            if (props_type === "S" && ele_view_previlage !== "") {
+              const original =
+                extra_props !== null ? extra_props.split(",") : [];
+              const userStage =
+                ele_extra_props !== null ? ele_extra_props.split(",") : [];
+              original.forEach((st, stIdx) => {
+                const hasStage = userStage.find(t => t === st);
+                if (hasStage === undefined) {
+                  stages.push({
+                    value: stIdx,
+                    text: st
+                  });
+                }
+              });
+            }
+            return {
+              screen_element_code,
+              props_type,
+              stages
+            };
+          })
+          .value();
 
         const records = _.chain(result)
           .groupBy(g => g.algaeh_d_module_id)
@@ -546,8 +581,10 @@ let getRoleBaseActiveModules = (req, res, next) => {
                     screen_code,
                     screen_name,
                     screen_id,
-                    redirect_url
+                    redirect_url,
+                    algaeh_d_app_scrn_elements_id
                   } = sec;
+
                   return {
                     algaeh_d_module_id,
                     algaeh_m_screen_role_privilage_mapping_id,
@@ -599,7 +636,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
           .sort((a, b) => {
             return a.order - b.order;
           });
-        req.records = records;
+        req.records = { result: records, elements };
         next();
       })
       .catch(error => {
@@ -3476,54 +3513,68 @@ const updateScreenElementRoles = (req, res, next) => {
           if (screen_element_scren_module_mapping_id !== null) {
             removeItem += _mysql.mysqlQueryFormat(
               `delete from screen_element_scren_module_mapping 
-                 where role_Id=? and algaeh_d_app_scrn_elements_id=?;`,
-              [role_id, algaeh_d_app_scrn_elements_id]
+                 where screen_element_scren_module_mapping_id=?;`,
+              [screen_element_scren_module_mapping_id]
             );
           }
 
-          if (checked === true) {
-            if (stages.length === 0) {
+          if (stages.length === 0) {
+            if (checked === false) {
               accessItem += _mysql.mysqlQueryFormat(
-                `insert  into screen_element_scren_module_mapping 
-                  (algaeh_d_app_scrn_elements_id,role_Id,view_type) value
-                  (?,?,?);`,
+                `insert ignore into screen_element_scren_module_mapping 
+                    (algaeh_d_app_scrn_elements_id,role_Id,view_type) value
+                    (?,?,?);`,
                 [algaeh_d_app_scrn_elements_id, role_id, "H"]
               );
-            } else {
-              let extraProps = "";
-              const allCheck = stages.filter(f => f.checked === true);
-              for (let a = 0; a < allCheck.length; a++) {
-                const { text } = allCheck[a];
-                if (allCheck.length - 1 !== a) {
-                  extraProps += text + ",";
-                } else {
-                  extraProps += text;
-                }
-              }
-              accessItem += _mysql.mysqlQueryFormat(
-                `insert  into screen_element_scren_module_mapping 
-                     (algaeh_d_app_scrn_elements_id,role_Id,view_type,extra_props) value
-                     (?,?,?,?);`,
-                [algaeh_d_app_scrn_elements_id, role_id, null, extraProps]
-              );
             }
+          } else {
+            let extraProps = "";
+            const allCheck = stages.filter(f => f.checked === false);
+            for (let a = 0; a < allCheck.length; a++) {
+              const { text } = allCheck[a];
+              if (allCheck.length - 1 !== a) {
+                extraProps += text + ",";
+              } else {
+                extraProps += text;
+              }
+            }
+            accessItem += _mysql.mysqlQueryFormat(
+              `insert ignore into screen_element_scren_module_mapping 
+                     (algaeh_d_app_scrn_elements_id,role_Id,extra_props) value
+                     (?,?,?);`,
+              [algaeh_d_app_scrn_elements_id, role_id, extraProps]
+            );
           }
         }
       }
     }
-    _mysql
-      .executeQuery({
-        query: removeItem + accessItem,
-        printQuery: true
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = {
-          success: true,
-          message: "Successully Updated"
-        };
-        next();
-      });
+    const _query = removeItem + accessItem;
+    if (_query !== "") {
+      _mysql
+        .executeQuery({
+          query: removeItem + accessItem,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = {
+            success: true,
+            message: "Successully Updated"
+          };
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      _mysql.releaseConnection();
+      req.records = {
+        success: true,
+        message: "Nothing Updated"
+      };
+      next();
+    }
   } catch (e) {
     _mysql.releaseConnection();
     next(e);

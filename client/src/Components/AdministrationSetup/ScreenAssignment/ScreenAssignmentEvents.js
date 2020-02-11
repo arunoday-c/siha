@@ -540,6 +540,7 @@ export function assignLandingPage() {
 
 export function updateScreenElementRoles() {
   this.setState({ loading_update_element: true }, () => {
+    debugger;
     algaehApiCall({
       uri: "/algaehMasters/updateScreenElementRoles",
       method: "POST",
@@ -549,10 +550,12 @@ export function updateScreenElementRoles() {
       },
       onSuccess: response => {
         const { success, message } = response.data;
+        this.setState({
+          loading_update_element: false
+        });
         swalMessage({
           title: message,
-          type: !success ? "error" : "success",
-          loading_update_element: false
+          type: !success ? "error" : "success"
         });
       },
       onCatch: error => {
