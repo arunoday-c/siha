@@ -462,159 +462,172 @@ export default {
     const _mysql = new algaehMysql(_options);
     try {
       let inputParam = { ...req.body };
+
+      console.log("generateAccountingEntry")
       _mysql
         .executeQuery({
-          query:
-            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
-            select head_id, child_id from finance_accounts_maping where account in ('INPUT_TAX');"
+          query: "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
         })
-        .then(result => {
-          // console.log("result", result)
-          const input_tax_acc = result[1][0]
-          const org_data = result[0]
+        .then(org_data => {
 
           if (
             org_data[0]["product_type"] == "HIMS_ERP" ||
             org_data[0]["product_type"] == "FINANCE_ERP"
           ) {
-            let strQuery = ""
-            if (inputParam.grn_for === "PHR") {
-              // strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, GH.net_payable, \
-              //   GH.detail_discount, GH.total_tax, PL.head_id, PL.child_id, V.head_id as v_head_id, \
-              //   V.child_id as v_child_id,  sum(DB.net_extended_cost) as net_extended_cost, sum(DB.total_amount) as total_amount \
-              //   from hims_f_procurement_grn_header GH \
-              //   inner join hims_f_procurement_grn_detail GD on GH.hims_f_procurement_grn_header_id = GD.grn_header_id \
-              //   inner join hims_f_procurement_dn_detail DD on DD.hims_f_procurement_dn_header_id = GD.dn_header_id \
-              //   inner join hims_f_procurement_dn_batches DB on DD.hims_f_procurement_dn_detail_id = DB.hims_f_procurement_dn_detail_id \
-              //   inner join hims_d_pharmacy_location PL on PL.hims_d_pharmacy_location_id = GH.pharmcy_location_id\
-              //   inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id\
-              //   where hims_f_procurement_grn_header_id=? group by DB.pharmcy_location_id;"
-
-              strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, \
-                GH.net_total, GH.total_tax, \
-                GH.net_payable, PL.head_id, PL.child_id, PL.hospital_id ,V.head_id as v_head_id, V.child_id as v_child_id \
-                from hims_f_procurement_grn_header GH \
-                inner join hims_d_pharmacy_location PL on PL.hims_d_pharmacy_location_id = GH.pharmcy_location_id\
-                inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id\
-                where hims_f_procurement_grn_header_id=?;"
-            }
-            else {
-              // strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, GH.net_payable, \
-              //   GH.detail_discount, GH.total_tax, IL.head_id, IL.child_id, V.head_id as v_head_id, \
-              //   V.child_id as v_child_id,  sum(DB.net_extended_cost) as net_extended_cost, sum(DB.total_amount) as total_amount \
-              //   from hims_f_procurement_grn_header GH \
-              //   inner join hims_f_procurement_grn_detail GD on GH.hims_f_procurement_grn_header_id = GD.grn_header_id \
-              //   inner join hims_f_procurement_dn_detail DD on DD.hims_f_procurement_dn_header_id = GD.dn_header_id \
-              //   inner join hims_f_procurement_dn_batches DB on DD.hims_f_procurement_dn_detail_id = DB.hims_f_procurement_dn_detail_id \
-              //   inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = DB.inventory_location_id\
-              //   inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id\
-              //   where hims_f_procurement_grn_header_id=? group by DB.inventory_location_id;"
-
-              strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, \
-                GH.net_total, GH.total_tax, \
-                GH.net_payable, PL.head_id, PL.child_id, PL.hospital_id, V.head_id as v_head_id, V.child_id as v_child_id, \
-                V.vendor_name from hims_f_procurement_grn_header GH \
-                inner join hims_d_inventory_location PL on PL.hims_d_inventory_location_id = GH.inventory_location_id \
-                inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id\
-                where hims_f_procurement_grn_header_id=?;"
-            }
             _mysql
               .executeQuery({
-                query: strQuery,
-                values: [inputParam.hims_f_procurement_grn_header_id],
-                printQuery: true
+                query:
+                  "select head_id, child_id from finance_accounts_maping where account in ('INPUT_TAX');\
+                  select hims_d_sub_department_id from hims_d_sub_department where department_type='I';\
+                  select hims_d_sub_department_id from hims_d_sub_department where department_type='PH';\
+                  select cost_center_type, cost_center_required from finance_options limit 1;"
               })
-              .then(headerResult => {
+              .then(result => {
+                const input_tax_acc = result[0][0]
+                let sub_department_id = null
+                let strQuery = ""
+
+                if (inputParam.grn_for === "PHR") {
+                  strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, \
+                    GH.net_total, GH.total_tax, \
+                    GH.net_payable, PL.head_id, PL.child_id, PL.hospital_id ,V.head_id as v_head_id, V.child_id as v_child_id \
+                    from hims_f_procurement_grn_header GH \
+                    inner join hims_d_pharmacy_location PL on PL.hims_d_pharmacy_location_id = GH.pharmcy_location_id\
+                    inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id\
+                    where hims_f_procurement_grn_header_id=?;"
+                  sub_department_id = result[2].length > 0 ? result[2][0].hims_d_sub_department_id : null
+                }
+                else {
+
+                  strQuery = "select GH.hims_f_procurement_grn_header_id, GH.grn_number, GH.inovice_number, \
+                    GH.net_total, GH.total_tax, \
+                    GH.net_payable, PL.head_id, PL.child_id, PL.hospital_id, V.head_id as v_head_id, V.child_id as v_child_id, \
+                    V.vendor_name from hims_f_procurement_grn_header GH \
+                    inner join hims_d_inventory_location PL on PL.hims_d_inventory_location_id = GH.inventory_location_id \
+                    inner join hims_d_vendor V on V.hims_d_vendor_id = GH.vendor_id\
+                    where hims_f_procurement_grn_header_id=?;"
+                  sub_department_id = result[1].length > 0 ? result[1][0].hims_d_sub_department_id : null
+                }
+
+                if (result[3][0].cost_center_required === "Y" && result[3][0].cost_center_type === "P") {
+                  strQuery += `select  hims_m_division_project_id, project_id from hims_m_division_project D \
+                    inner join hims_d_project P on D.project_id=P.hims_d_project_id \
+                    inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id where \
+                    division_id= ${req.userIdentity.hospital_id} limit 1;`
+                }
 
                 _mysql
                   .executeQuery({
-                    query: "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
-                        document_number, from_screen, narration,  invoice_no, entered_date, entered_by) \
-                        VALUES (?,?,?,?,?,?,?,?,?,?)",
-                    values: [
-                      new Date(),
-                      headerResult[0].net_payable,
-                      "purchase",
-                      headerResult[0].hims_f_procurement_grn_header_id,
-                      headerResult[0].grn_number,
-                      inputParam.ScreenCode,
-                      "Receipt Generated " + + headerResult[0].vendor_name + "/" + headerResult[0].net_payable,
-                      headerResult[0].inovice_number,
-                      new Date(),
-                      req.userIdentity.algaeh_d_app_user_id
-                    ],
+                    query: strQuery,
+                    values: [inputParam.hims_f_procurement_grn_header_id],
                     printQuery: true
                   })
-                  .then(day_end_header => {
-                    let insertSubDetail = []
-                    const month = moment().format("M");
-                    const year = moment().format("YYYY");
-                    const IncludeValuess = [
-                      "payment_date",
-                      "head_id",
-                      "child_id",
-                      "debit_amount",
-                      "payment_type",
-                      "credit_amount",
-                      "hospital_id"
-                    ];
-
-                    //Vendor Entry
-                    insertSubDetail.push({
-                      payment_date: new Date(),
-                      head_id: headerResult[0].v_head_id,
-                      child_id: headerResult[0].v_child_id,
-                      debit_amount: 0,
-                      payment_type: "CR",
-                      credit_amount: headerResult[0].net_payable,
-                      hospital_id: req.userIdentity.hospital_id
-                    });
-
-                    //Tax Entry
-                    if (parseFloat(headerResult[0].total_tax) > 0) {
-                      insertSubDetail.push({
-                        payment_date: new Date(),
-                        head_id: input_tax_acc.head_id,
-                        child_id: input_tax_acc.child_id,
-                        debit_amount: headerResult[0].total_tax,
-                        payment_type: "DR",
-                        credit_amount: 0,
-                        hospital_id: req.userIdentity.hospital_id
-                      });
+                  .then(header_result => {
+                    console.log("header_result", header_result[0])
+                    console.log("header_result", header_result[1])
+                    let project_id = null;
+                    const headerResult = header_result[0]
+                    if (header_result[1].length > 0) {
+                      project_id = header_result[1][0].project_id
                     }
 
-                    insertSubDetail.push({
-                      payment_date: new Date(),
-                      head_id: headerResult[0].head_id,
-                      child_id: headerResult[0].child_id,
-                      debit_amount: headerResult[0].net_total,
-                      payment_type: "DR",
-                      credit_amount: 0,
-                      hospital_id: headerResult[0].hospital_id
-                    });
-
-
-                    // console.log("insertSubDetail", insertSubDetail)
                     _mysql
                       .executeQuery({
-                        query:
-                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
-                        values: insertSubDetail,
-                        includeValues: IncludeValuess,
-                        bulkInsertOrUpdate: true,
-                        extraValues: {
-                          day_end_header_id: day_end_header.insertId,
-                          year: year,
-                          month: month
-                        },
-                        printQuery: false
+                        query: "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
+                        document_number, from_screen, narration,  invoice_no, entered_date, entered_by) \
+                        VALUES (?,?,?,?,?,?,?,?,?,?)",
+                        values: [
+                          new Date(),
+                          headerResult[0].net_payable,
+                          "purchase",
+                          headerResult[0].hims_f_procurement_grn_header_id,
+                          headerResult[0].grn_number,
+                          inputParam.ScreenCode,
+                          "Receipt Generated " + + headerResult[0].vendor_name + "/" + headerResult[0].net_payable,
+                          headerResult[0].inovice_number,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id
+                        ],
+                        printQuery: true
                       })
-                      .then(subResult => {
-                        _mysql.commitTransaction(() => {
-                          _mysql.releaseConnection();
-                          req.records = subResult;
-                          next();
+                      .then(day_end_header => {
+                        let insertSubDetail = []
+                        const month = moment().format("M");
+                        const year = moment().format("YYYY");
+                        const IncludeValuess = [
+                          "payment_date",
+                          "head_id",
+                          "child_id",
+                          "debit_amount",
+                          "payment_type",
+                          "credit_amount",
+                          "hospital_id"
+                        ];
+
+                        //Vendor Entry
+                        insertSubDetail.push({
+                          payment_date: new Date(),
+                          head_id: headerResult[0].v_head_id,
+                          child_id: headerResult[0].v_child_id,
+                          debit_amount: 0,
+                          payment_type: "CR",
+                          credit_amount: headerResult[0].net_payable,
+                          hospital_id: req.userIdentity.hospital_id
                         });
+
+                        //Tax Entry
+                        if (parseFloat(headerResult[0].total_tax) > 0) {
+                          insertSubDetail.push({
+                            payment_date: new Date(),
+                            head_id: input_tax_acc.head_id,
+                            child_id: input_tax_acc.child_id,
+                            debit_amount: headerResult[0].total_tax,
+                            payment_type: "DR",
+                            credit_amount: 0,
+                            hospital_id: req.userIdentity.hospital_id
+                          });
+                        }
+
+                        insertSubDetail.push({
+                          payment_date: new Date(),
+                          head_id: headerResult[0].head_id,
+                          child_id: headerResult[0].child_id,
+                          debit_amount: headerResult[0].net_total,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          hospital_id: headerResult[0].hospital_id
+                        });
+
+
+                        // console.log("insertSubDetail", insertSubDetail)
+                        _mysql
+                          .executeQuery({
+                            query:
+                              "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                            values: insertSubDetail,
+                            includeValues: IncludeValuess,
+                            bulkInsertOrUpdate: true,
+                            extraValues: {
+                              day_end_header_id: day_end_header.insertId,
+                              year: year,
+                              month: month,
+                              project_id: project_id,
+                              sub_department_id: sub_department_id
+                            },
+                            printQuery: false
+                          })
+                          .then(subResult => {
+                            _mysql.commitTransaction(() => {
+                              _mysql.releaseConnection();
+                              req.records = subResult;
+                              next();
+                            });
+                          })
+                          .catch(error => {
+                            _mysql.rollBackTransaction(() => {
+                              next(error);
+                            });
+                          });
                       })
                       .catch(error => {
                         _mysql.rollBackTransaction(() => {

@@ -1012,220 +1012,254 @@ export default {
         return o.item_id;
       });
 
-      console.log("service_id: ", _all_service_id)
-      console.log("_all_item_id: ", _all_item_id)
+      // console.log("service_id: ", _all_service_id)
+      // console.log("_all_item_id: ", _all_item_id)
 
       _mysql
         .executeQuery({
-          query:
-            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
-            SELECT * FROM finance_accounts_maping; \
-            SELECT hims_d_services_id, head_id, child_id FROM hims_d_services where hims_d_services_id in (?); \
-            SELECT hims_d_item_master_id, waited_avg_cost FROM hims_d_item_master where hims_d_item_master_id in (?); \
-            SELECT location_description, head_id, child_id, hospital_id FROM hims_d_pharmacy_location where hims_d_pharmacy_location_id=?;",
-          values: [_all_service_id, _all_item_id, inputParam.location_id],
+          query: "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;",
           printQuery: true
         })
-        .then(result => {
-          const org_data = result[0];
-
-          const output_tax_acc = result[1].find(f => f.account === "OUTPUT_TAX")
-          const cogs_acc_data = result[1].find(f => f.account === "PHAR_COGS")
-          const cash_in_acc = result[1].find(f => f.account === "CIH_PH")
-          const sales_discount_acc = result[1].find(f => f.account === "SALES_DISCOUNT")
-          const card_settlement_acc = result[1].find(f => f.account === "CARD_SETTL")
-          const pos_criedt_settl_acc = result[1].find(f => f.account === "PHAR_REC")
-
-          const income_acc = result[2];
-          const item_waited_avg_cost = result[3];
-          const location_acc = result[4];
-
+        .then(org_data => {
           if (
             org_data[0]["product_type"] == "HIMS_ERP" ||
             org_data[0]["product_type"] == "FINANCE_ERP"
           ) {
-
             _mysql
               .executeQuery({
-                query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
-                          voucher_type, document_id, document_number, from_screen, \
-                          narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?)",
-                values: [
-                  new Date(),
-                  inputParam.net_amount,
-                  "receipt",
-                  inputParam.hims_f_pharmacy_pos_header_id,
-                  inputParam.pos_number,
-                  inputParam.ScreenCode,
-                  "Pharmacy Sales for " + location_acc[0].location_description + "/" + inputParam.net_amount,
-                  new Date(),
-                  req.userIdentity.algaeh_d_app_user_id
-                ],
+                query:
+                  "SELECT * FROM finance_accounts_maping; \
+                  SELECT hims_d_services_id, head_id, child_id FROM hims_d_services where hims_d_services_id in (?); \
+                  SELECT hims_d_item_master_id, waited_avg_cost FROM hims_d_item_master where hims_d_item_master_id in (?); \
+                  SELECT location_description, head_id, child_id, hospital_id FROM hims_d_pharmacy_location \
+                  where hims_d_pharmacy_location_id=?;\
+                  SELECT hims_d_sub_department_id from hims_d_sub_department where department_type='PH';\
+                  SELECT cost_center_type, cost_center_required from finance_options limit 1;",
+                values: [_all_service_id, _all_item_id, inputParam.location_id],
                 printQuery: true
               })
-              .then(day_end_header => {
-                let insertSubDetail = []
-                const month = moment().format("M");
-                const year = moment().format("YYYY");
-                const IncludeValuess = [
-                  "payment_date",
-                  "head_id",
-                  "child_id",
-                  "debit_amount",
-                  "payment_type",
-                  "credit_amount",
-                  "hospital_id"
-                ];
+              .then(result => {
+                const output_tax_acc = result[0].find(f => f.account === "OUTPUT_TAX")
+                const cogs_acc_data = result[0].find(f => f.account === "PHAR_COGS")
+                const cash_in_acc = result[0].find(f => f.account === "CIH_PH")
+                const sales_discount_acc = result[0].find(f => f.account === "SALES_DISCOUNT")
+                const card_settlement_acc = result[0].find(f => f.account === "CARD_SETTL")
+                const pos_criedt_settl_acc = result[0].find(f => f.account === "PHAR_REC")
 
-                // Sheet Level Discount
-                if (parseFloat(inputParam.sheet_discount_amount) > 0) {
-                  insertSubDetail.push({
-                    payment_date: new Date(),
-                    head_id: sales_discount_acc.head_id,
-                    child_id: sales_discount_acc.child_id,
-                    debit_amount: inputParam.sheet_discount_amount,
-                    payment_type: "DR",
-                    credit_amount: 0,
-                    hospital_id: req.userIdentity.hospital_id
-                  });
+                const income_acc = result[1];
+                const item_waited_avg_cost = result[2];
+                const location_acc = result[3];
+
+                let sub_department_id = null
+                if (inputParam.pos_customer_type === "OP") {
+                  sub_department_id = inputParam.sub_department_id
+                } else if (inputParam.pos_customer_type === "OT") {
+                  sub_department_id = result[4].length > 0 ? result[4][0].hims_d_sub_department_id : null
                 }
 
-                // Credit Amount
-                if (parseFloat(inputParam.credit_amount) > 0) {
-                  insertSubDetail.push({
-                    payment_date: new Date(),
-                    head_id: pos_criedt_settl_acc.head_id,
-                    child_id: pos_criedt_settl_acc.child_id,
-                    debit_amount: inputParam.credit_amount,
-                    payment_type: "DR",
-                    credit_amount: 0,
-                    hospital_id: req.userIdentity.hospital_id
-                  });
+                let strQuery = "";
+
+                if (result[5][0].cost_center_required === "Y" && result[5][0].cost_center_type === "P") {
+                  strQuery = `select  hims_m_division_project_id, project_id from hims_m_division_project D \
+                    inner join hims_d_project P on D.project_id=P.hims_d_project_id \
+                    inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id where \
+                    division_id= ${req.userIdentity.hospital_id} limit 1;`
                 }
-
-                //OUT PUT Tax Entry
-                if (parseFloat(inputParam.patient_tax) > 0 || parseFloat(inputParam.company_tax) > 0) {
-                  insertSubDetail.push({
-                    payment_date: new Date(),
-                    head_id: output_tax_acc.head_id,
-                    child_id: output_tax_acc.child_id,
-                    debit_amount: 0,
-                    payment_type: "CR",
-                    credit_amount: parseFloat(inputParam.patient_tax) + parseFloat(inputParam.company_tax),
-                    hospital_id: req.userIdentity.hospital_id
-                  });
-                }
-
-
-                for (let i = 0; i < inputParam.receiptdetails.length; i++) {
-                  if (inputParam.receiptdetails[i].pay_type === "CA") {
-                    //POS Cash in Hand
-                    insertSubDetail.push({
-                      payment_date: new Date(),
-                      head_id: cash_in_acc.head_id,
-                      child_id: cash_in_acc.child_id,
-                      debit_amount: inputParam.receiptdetails[i].amount,
-                      payment_type: "DR",
-                      credit_amount: 0,
-                      hospital_id: req.userIdentity.hospital_id
-                    });
-                  }
-                  if (inputParam.receiptdetails[i].pay_type === "CD") {
-                    //POS Card
-                    insertSubDetail.push({
-                      payment_date: new Date(),
-                      head_id: card_settlement_acc.head_id,
-                      child_id: card_settlement_acc.child_id,
-                      debit_amount: inputParam.receiptdetails[i].amount,
-                      payment_type: "DR",
-                      credit_amount: 0,
-                      hospital_id: req.userIdentity.hospital_id
-                    });
-                  }
-                  if (inputParam.receiptdetails[i].pay_type === "CH") {
-                    //POS Cheque To be done
-                    insertSubDetail.push({
-                      payment_date: new Date(),
-                      head_id: cash_in_acc.head_id,
-                      child_id: cash_in_acc.child_id,
-                      debit_amount: inputParam.receiptdetails[i].amount,
-                      payment_type: "DR",
-                      credit_amount: 0,
-                      hospital_id: req.userIdentity.hospital_id
-                    });
-                  }
-                }
-
-                for (let i = 0; i < inputParam.pharmacy_stock_detail.length; i++) {
-
-                  console.log("conversion_factor", inputParam.pharmacy_stock_detail[i].conversion_factor)
-                  const income_head_id = income_acc.find(f =>
-                    parseInt(f.hims_d_services_id) === parseInt(inputParam.pharmacy_stock_detail[i].service_id))
-                  const income_child_id = income_acc.find(f =>
-                    parseInt(f.hims_d_services_id) === parseInt(inputParam.pharmacy_stock_detail[i].service_id))
-
-                  const item_avg_cost = item_waited_avg_cost.find(f =>
-                    parseInt(f.hims_d_item_master_id) === parseInt(inputParam.pharmacy_stock_detail[i].item_id))
-
-                  //Income Entry
-                  insertSubDetail.push({
-                    payment_date: new Date(),
-                    head_id: income_head_id.head_id,
-                    child_id: income_child_id.child_id,
-                    debit_amount: 0,
-                    payment_type: "CR",
-                    credit_amount: inputParam.pharmacy_stock_detail[i].net_extended_cost,
-                    hospital_id: req.userIdentity.hospital_id
-                  });
-
-                  const waited_avg_cost =
-                    utilities.decimalPoints(
-                      (parseFloat(inputParam.pharmacy_stock_detail[i].quantity) *
-                        parseFloat(inputParam.pharmacy_stock_detail[i].conversion_factor) *
-                        parseFloat(item_avg_cost.waited_avg_cost)),
-                      decimal_places
-                    )
-
-                  //COGS Entry
-                  insertSubDetail.push({
-                    payment_date: new Date(),
-                    head_id: cogs_acc_data.head_id,
-                    child_id: cogs_acc_data.child_id,
-                    debit_amount: waited_avg_cost,
-                    payment_type: "DR",
-                    credit_amount: 0,
-                    hospital_id: req.userIdentity.hospital_id
-                  });
-
-                  //Location Wise
-                  insertSubDetail.push({
-                    payment_date: new Date(),
-                    head_id: location_acc[0].head_id,
-                    child_id: location_acc[0].child_id,
-                    debit_amount: 0,
-                    payment_type: "CR",
-                    credit_amount: waited_avg_cost,
-                    hospital_id: location_acc[0].hospital_id
-                  });
-                }
-
-                console.log("insertSubDetail", insertSubDetail)
                 _mysql
                   .executeQuery({
-                    query:
-                      "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
-                    values: insertSubDetail,
-                    includeValues: IncludeValuess,
-                    bulkInsertOrUpdate: true,
-                    extraValues: {
-                      day_end_header_id: day_end_header.insertId,
-                      year: year,
-                      month: month
-                    },
-                    printQuery: false
+                    query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
+                          voucher_type, document_id, document_number, from_screen, \
+                          narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?);" + strQuery,
+                    values: [
+                      new Date(),
+                      inputParam.net_amount,
+                      "receipt",
+                      inputParam.hims_f_pharmacy_pos_header_id,
+                      inputParam.pos_number,
+                      inputParam.ScreenCode,
+                      "Pharmacy Sales for " + location_acc[0].location_description + "/" + inputParam.net_amount,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id
+                    ],
+                    printQuery: true
                   })
-                  .then(subResult => {
-                    next();
+                  .then(header_result => {
+                    let project_id = null;
+                    const day_end_header = header_result[0]
+                    if (header_result[1].length > 0) {
+                      project_id = header_result[1][0].project_id
+                    }
+
+                    let insertSubDetail = []
+                    const month = moment().format("M");
+                    const year = moment().format("YYYY");
+                    const IncludeValuess = [
+                      "payment_date",
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "payment_type",
+                      "credit_amount",
+                      "hospital_id"
+                    ];
+
+                    // Sheet Level Discount
+                    if (parseFloat(inputParam.sheet_discount_amount) > 0) {
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: sales_discount_acc.head_id,
+                        child_id: sales_discount_acc.child_id,
+                        debit_amount: inputParam.sheet_discount_amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    }
+
+                    // Credit Amount
+                    if (parseFloat(inputParam.credit_amount) > 0) {
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: pos_criedt_settl_acc.head_id,
+                        child_id: pos_criedt_settl_acc.child_id,
+                        debit_amount: inputParam.credit_amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    }
+
+                    //OUT PUT Tax Entry
+                    if (parseFloat(inputParam.patient_tax) > 0 || parseFloat(inputParam.company_tax) > 0) {
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: output_tax_acc.head_id,
+                        child_id: output_tax_acc.child_id,
+                        debit_amount: 0,
+                        payment_type: "CR",
+                        credit_amount: parseFloat(inputParam.patient_tax) + parseFloat(inputParam.company_tax),
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    }
+
+
+                    for (let i = 0; i < inputParam.receiptdetails.length; i++) {
+                      if (inputParam.receiptdetails[i].pay_type === "CA") {
+                        //POS Cash in Hand
+                        insertSubDetail.push({
+                          payment_date: new Date(),
+                          head_id: cash_in_acc.head_id,
+                          child_id: cash_in_acc.child_id,
+                          debit_amount: inputParam.receiptdetails[i].amount,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          hospital_id: req.userIdentity.hospital_id
+                        });
+                      }
+                      if (inputParam.receiptdetails[i].pay_type === "CD") {
+                        //POS Card
+                        insertSubDetail.push({
+                          payment_date: new Date(),
+                          head_id: card_settlement_acc.head_id,
+                          child_id: card_settlement_acc.child_id,
+                          debit_amount: inputParam.receiptdetails[i].amount,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          hospital_id: req.userIdentity.hospital_id
+                        });
+                      }
+                      if (inputParam.receiptdetails[i].pay_type === "CH") {
+                        //POS Cheque To be done
+                        insertSubDetail.push({
+                          payment_date: new Date(),
+                          head_id: cash_in_acc.head_id,
+                          child_id: cash_in_acc.child_id,
+                          debit_amount: inputParam.receiptdetails[i].amount,
+                          payment_type: "DR",
+                          credit_amount: 0,
+                          hospital_id: req.userIdentity.hospital_id
+                        });
+                      }
+                    }
+
+                    for (let i = 0; i < inputParam.pharmacy_stock_detail.length; i++) {
+
+                      // console.log("conversion_factor", inputParam.pharmacy_stock_detail[i].conversion_factor)
+                      const income_head_id = income_acc.find(f =>
+                        parseInt(f.hims_d_services_id) === parseInt(inputParam.pharmacy_stock_detail[i].service_id))
+                      const income_child_id = income_acc.find(f =>
+                        parseInt(f.hims_d_services_id) === parseInt(inputParam.pharmacy_stock_detail[i].service_id))
+
+                      const item_avg_cost = item_waited_avg_cost.find(f =>
+                        parseInt(f.hims_d_item_master_id) === parseInt(inputParam.pharmacy_stock_detail[i].item_id))
+
+                      //Income Entry
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: income_head_id.head_id,
+                        child_id: income_child_id.child_id,
+                        debit_amount: 0,
+                        payment_type: "CR",
+                        credit_amount: inputParam.pharmacy_stock_detail[i].net_extended_cost,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+
+                      const waited_avg_cost =
+                        utilities.decimalPoints(
+                          (parseFloat(inputParam.pharmacy_stock_detail[i].quantity) *
+                            parseFloat(inputParam.pharmacy_stock_detail[i].conversion_factor) *
+                            parseFloat(item_avg_cost.waited_avg_cost)),
+                          decimal_places
+                        )
+
+                      //COGS Entry
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: cogs_acc_data.head_id,
+                        child_id: cogs_acc_data.child_id,
+                        debit_amount: waited_avg_cost,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+
+                      //Location Wise
+                      insertSubDetail.push({
+                        payment_date: new Date(),
+                        head_id: location_acc[0].head_id,
+                        child_id: location_acc[0].child_id,
+                        debit_amount: 0,
+                        payment_type: "CR",
+                        credit_amount: waited_avg_cost,
+                        hospital_id: location_acc[0].hospital_id
+                      });
+                    }
+
+                    // console.log("insertSubDetail", insertSubDetail)
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                        values: insertSubDetail,
+                        includeValues: IncludeValuess,
+                        bulkInsertOrUpdate: true,
+                        extraValues: {
+                          day_end_header_id: day_end_header.insertId,
+                          year: year,
+                          month: month,
+                          project_id: project_id,
+                          sub_department_id: sub_department_id
+                        },
+                        printQuery: false
+                      })
+                      .then(subResult => {
+                        next();
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
                   })
                   .catch(error => {
                     _mysql.rollBackTransaction(() => {
