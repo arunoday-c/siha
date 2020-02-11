@@ -34,7 +34,7 @@ class ProjectJobCost extends Component {
             <ul className="nav">
               <li
                 algaehtabs={"NewEmployeeProjectRoster"}
-                className={"nav-item tab-button"}
+                className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
                 {
@@ -76,15 +76,15 @@ class ProjectJobCost extends Component {
         </div>
         <div className="ProjectJobCostSec">
           {//   this.state.pageDisplay === "EmployeeProjectRoster" ? (
-          //   <EmployeeProjectRoster />
-          // ) :
-          this.state.pageDisplay === "NewEmployeeProjectRoster" ? (
-            <NewEmployeeProjectRoster />
-          ) : this.state.pageDisplay === "ProjectPayroll" ? (
-            <ProjectPayroll />
-          ) : this.state.pageDisplay === "ProjectActivityMgmnt" ? (
-            <ProjectActivityMgmnt />
-          ) : null}
+            //   <EmployeeProjectRoster />
+            // ) :
+            this.state.pageDisplay === "NewEmployeeProjectRoster" ? (
+              <NewEmployeeProjectRoster />
+            ) : this.state.pageDisplay === "ProjectPayroll" ? (
+              <ProjectPayroll />
+            ) : this.state.pageDisplay === "ProjectActivityMgmnt" ? (
+              <ProjectActivityMgmnt />
+            ) : null}
         </div>
       </div>
     );
