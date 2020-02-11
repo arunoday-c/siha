@@ -23,6 +23,7 @@ import shift_roster from "../controllers/shift_roster";
 import excelFile from "../controllers/excel_file";
 import projectjobcosting from "../controllers/project_job_costing";
 import openingBalanceUpload from "../controllers/openingBalanceUpload";
+import salarypayment from "../controllers/salarypayment";
 
 const router = express();
 router.use("/attendance", attendance());
@@ -49,5 +50,6 @@ router.use("/shift_roster", shift_roster());
 router.use("/excel", excelFile());
 router.use("/projectjobcosting", projectjobcosting());
 router.use("/openingBalanceUpload", openingBalanceUpload());
+router.use("/salarypayment", salarypayment());
 
 export default router;
