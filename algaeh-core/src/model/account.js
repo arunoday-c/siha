@@ -213,10 +213,11 @@ let userCheck = (req, res, next) => {
       inner join hims_d_employee as e on e.hims_d_employee_id = ume.employee_id
       where UCASE(u.username)=UCASE(?) and u.record_status='A' and date(u.effective_start_date) <= date(now()) 
       and date(u.effective_end_date) >= date(now()) and e.employee_status in ('A','R') and u.locked='N'; `,
-        values: [userId]
+        values: [userId],
+        printQuery: true
       })
       .then(result => {
-        if (result.length === 1) {
+        if (result.length > 0) {
           const {
             date_of_birth,
             hospital_id,

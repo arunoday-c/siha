@@ -485,7 +485,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
         role_type === "SU"
           ? ""
           : "where m.access_by <> 'SU' and m.record_status='A' and s.record_status='A'"
-      }`;
+        }`;
     } else {
       strQuery = `select m.algaeh_d_module_id,m.module_code,m.module_name,m.icons,m.display_order,m.other_language,
       s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
@@ -557,7 +557,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
 
         const records = _.chain(result)
           .groupBy(g => g.algaeh_d_module_id)
-          .map(function(detail, key) {
+          .map(function (detail, key) {
             const first = _.head(detail);
             return {
               module_id: key,
@@ -1056,7 +1056,7 @@ let getAlgaehModules = (req, res, next) => {
         .executeQuery({
           query:
             "select algaeh_d_module_id, module_name,module_code,display_order, icons,other_language, module_plan,licence_key  from algaeh_d_app_module\
-          where  record_status='A' " +
+          where  1=1 " +
             superUser +
             " order by algaeh_d_module_id desc"
         })
@@ -2100,7 +2100,7 @@ let assignScreens = (req, res, next) => {
                     " INSERT IGNORE INTO `algaeh_m_screen_role_privilage_mapping` (module_role_map_id, screen_id, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?); ",
                     [
                       input.update_screens[i][
-                        "algaeh_m_module_role_privilage_mapping_id"
+                      "algaeh_m_module_role_privilage_mapping_id"
                       ],
                       input.update_screens[i]["insert_screens"][k],
                       req.userIdentity.algaeh_d_app_user_id,
@@ -2792,12 +2792,12 @@ const getScreensWithComponents = (req, res, next) => {
                       extraPropsList:
                         extra_props !== null && extra_props !== ""
                           ? extra_props.split(",").map((m, index) => {
-                              return {
-                                label: m,
-                                value: index,
-                                checked: false
-                              };
-                            })
+                            return {
+                              label: m,
+                              value: index,
+                              checked: false
+                            };
+                          })
                           : []
                     };
                   })
