@@ -6,7 +6,7 @@
     "@craco/craco": "^5.4.0",
     "@toast-ui/react-image-editor": "^1.0.0",
     "agentkeepalive": "^4.0.0",
-    "algaeh-react-components": "^1.3.0",
+    "algaeh-react-components": "^1.4.0",
     "axios": "^0.18.0",
     "axios-cancel": "^0.2.2",
     "chart.js": "^2.7.2",
