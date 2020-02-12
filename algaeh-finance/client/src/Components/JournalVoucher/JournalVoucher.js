@@ -104,7 +104,7 @@ export default function JournalVoucher() {
         setbranchData(result)
       })
     }
-  }, []);
+  }, [voucherType]);
 
   const show = voucherType === "receipt" || voucherType === "payment";
 
