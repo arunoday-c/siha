@@ -127,7 +127,7 @@ function Login(props) {
                         `/${
                           records.page_to_redirect === null
                             ? "NoDashboard"
-                            : records.page_to_redirect
+                            : records.page_to_redirect.replace(/\s/g, "")
                         }`
                       );
                     })
@@ -219,7 +219,7 @@ function Login(props) {
                 `/${
                   records.page_to_redirect === null
                     ? "NoDashboard"
-                    : records.page_to_redirect
+                    : records.page_to_redirect.replace(/\s/g, "")
                 }`
               );
             })
