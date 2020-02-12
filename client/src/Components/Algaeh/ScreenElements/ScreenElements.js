@@ -288,7 +288,10 @@ class ScreenElements extends Component {
                         data: this.state.screen_elements
                       }}
                       filter={true}
-                      isEditable={false}
+                      isEditable={true}
+                      actions={{
+                        allowDelete: false
+                      }}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onEdit: () => {},
