@@ -82,10 +82,10 @@ let getLoginUserMasterOLD = (req, res, next) => {
         inner join algaeh_m_role_user_mappings RU  on  UM.user_id=RU.user_id inner join algaeh_d_app_roles R on  \
         RU.role_id=R.app_d_app_roles_id inner join algaeh_d_app_group G on R.app_group_id=G.algaeh_d_app_group_id\
         where E.record_status='A' and U.record_status='A' " +
-          adminUSer +
-          "and " +
-          where.condition +
-          " order by algaeh_m_role_user_mappings_id desc",
+        adminUSer +
+        "and " +
+        where.condition +
+        " order by algaeh_m_role_user_mappings_id desc",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -881,7 +881,7 @@ let createUserLogin = (req, res, next) => {
                       })
                       .then(finalResult => {
                         if (finalResult.insertId > 0 && input.employee_id > 0) {
-                          const insurtColumns = ["hospital_id"];
+                          const insurtColumns = ["login_user", "hospital_id"];
                           // let strGrnQry = mysql.format(
                           //   "select trim(email)as email  from hims_d_employee where hims_d_employee_id=?;",
                           //   [input.employee_id]
@@ -895,6 +895,7 @@ let createUserLogin = (req, res, next) => {
                               values: input.branch_data,
                               includeValues: insurtColumns,
                               extraValues: {
+                                employee_id: input.employee_id,
                                 user_id: result.insertId,
                                 created_by:
                                   req.userIdentity.algaeh_d_app_user_id,
@@ -1367,7 +1368,7 @@ function sendMailFunction(n_name, n_Password, n_from_mail, n_to_mail) {
       }
     };
 
-    transporter.sendMail(mailOptions, function(e, r) {
+    transporter.sendMail(mailOptions, function (e, r) {
       transporter.close();
       if (e) {
         console.log(e);

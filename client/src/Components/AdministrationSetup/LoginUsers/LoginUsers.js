@@ -39,7 +39,8 @@ class LoginUsers extends Component {
       current_user_type: "",
       verify_password: true,
       load_verify_email: false,
-      employee_id: ""
+      employee_id: "",
+      editData: false
     };
   }
   componentWillUnmount() {
@@ -57,26 +58,25 @@ class LoginUsers extends Component {
 
     const HIMS_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HIMS_CLINICAL"
+        userToken.product_type === "HIMS_CLINICAL"
         ? true
         : false;
 
     const HRMS_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HRMS" ||
-      userToken.product_type === "HRMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP"
+        userToken.product_type === "HRMS" ||
+        userToken.product_type === "HRMS_ERP" ||
+        userToken.product_type === "FINANCE_ERP"
         ? true
         : false;
-
     let USER_TYPE =
       HIMS_Active === true && HRMS_Active === true
         ? HIMS_HR_USER_TYPE
         : HIMS_Active === true
-        ? HIMS_USER_TYPE
-        : HRMS_Active === true
-        ? HR_USER_TYPE
-        : [];
+          ? HIMS_USER_TYPE
+          : HRMS_Active === true
+            ? HR_USER_TYPE
+            : [];
     if (userToken.user_type !== "SU") {
       USER_TYPE = USER_TYPE.filter(f => f.value !== "AD");
     }
@@ -91,28 +91,18 @@ class LoginUsers extends Component {
     });
   }
   searchSelect(data) {
-    // let branch_detail = this.state.branch_detail;
-    // let selecte_branch = _.find(
-    //   branch_detail,
-    //   f => f.hims_d_hospital_id === data.hospital_id
-    // );
-    // const _index = branch_detail.indexOf(selecte_branch);
-    // selecte_branch.checked = true;
-    // branch_detail[_index] = selecte_branch;
     const email =
       data.work_email !== null && data.work_email !== ""
         ? data.work_email
         : data.email !== null && data.email !== ""
-        ? data.email
-        : "";
+          ? data.email
+          : "";
     this.setState({
       employee_id: data.hims_d_employee_id,
       sub_department_id: data.sub_department_id,
       full_name: data.full_name,
       display_name: data.full_name,
       username: data.full_name.split(" ")[0].toLowerCase(),
-      // username: data.work_email.toLowerCase(),
-      // branch_detail: branch_detail,
       password_email: email,
       verify_password: email === "" ? true : false
     });
@@ -134,7 +124,8 @@ class LoginUsers extends Component {
       branch_detail: [],
       branch_desc: "",
       password_email: "",
-      verify_password: true
+      verify_password: true,
+      editData: false
     });
     this.getBranchDetail();
   }
@@ -186,6 +177,7 @@ class LoginUsers extends Component {
           const data = response.data.records.map(item => {
             return {
               checked: false,
+              login_user: "N",
               ...item
             };
           });
@@ -332,6 +324,7 @@ class LoginUsers extends Component {
           const selectedData = this.state.branch_detail.find(
             f => f.hims_d_hospital_id === this.state.hospital_id
           );
+          selectedData.login_user = "Y"
           branch_data.push(selectedData);
           algaehApiCall({
             uri: "/algaehappuser/createUserLogin",
@@ -368,7 +361,7 @@ class LoginUsers extends Component {
                 });
               }
             },
-            onError: error => {}
+            onError: error => { }
           });
         } else {
           let branch_data = _.filter(
@@ -472,6 +465,7 @@ class LoginUsers extends Component {
   }
 
   selectBranch(data, e) {
+    debugger
     let branch_detail = this.state.branch_detail;
     let selecte_branch = _.find(
       branch_detail,
@@ -485,12 +479,8 @@ class LoginUsers extends Component {
 
   EditLoginUser(row) {
     let branch_detail = this.state.branch_detail;
-    // branch_detail = branch_detail.map(item => {
-    //   return {
-    //     hims_m_user_employee_id: null,
-    //     ...item
-    //   };
-    // });
+
+    debugger
     for (let i = 0; i < row.branch_data.length; i++) {
       let selecte_branch = _.find(
         branch_detail,
@@ -507,8 +497,8 @@ class LoginUsers extends Component {
       row.work_email !== null && row.work_email !== ""
         ? row.work_email
         : row.email !== null && row.email !== ""
-        ? row.email
-        : "";
+          ? row.email
+          : "";
     this.setState({
       algaeh_d_app_user_id: row.algaeh_d_app_user_id,
       username: row.username,
@@ -523,7 +513,8 @@ class LoginUsers extends Component {
       algaeh_m_role_user_mappings_id: row.algaeh_m_role_user_mappings_id,
       branch_detail: branch_detail,
       password_email: email,
-      verify_password: email !== "" ? false : true
+      verify_password: email !== "" ? false : true,
+      editData: true
       // branch_data: branch_data
     });
   }
@@ -730,10 +721,12 @@ class LoginUsers extends Component {
                         <span>
                           <b>{this.getHospitalShortDesc()}</b>
                         </span>
-                      </div> */}
-                      {this.state.PR_USER_TYPE.find(
+                      </div> 
+                      this.state.PR_USER_TYPE.find(
                         f => f.value === this.state.user_type
-                      ) === undefined ? (
+                      ) === undefined &&
+                      */}
+                      {this.state.user_type === "AD" && this.state.current_user_type !== "SU" && this.state.editData === true ? (
                         <div className="col-6 form-group">
                           <AlgaehLabel
                             label={{
@@ -743,31 +736,25 @@ class LoginUsers extends Component {
                           <h6>Admin</h6>
                         </div>
                       ) : (
-                        <AlagehAutoComplete
-                          div={{ className: "col-6 form-group" }}
-                          label={{
-                            forceLabel: "User Type",
-                            isImp: true
-                          }}
-                          selector={{
-                            name: "user_type",
-                            className: "select-fld",
-                            value: this.state.user_type,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: this.state.PR_USER_TYPE
-                            },
-                            // others: {
-                            //   disabled:
-                            //     this.state.algaeh_d_app_user_id === null
-                            //       ? false
-                            //       : true
-                            // },
-                            onChange: this.dropDownHandler.bind(this)
-                          }}
-                        />
-                      )}
+                          <AlagehAutoComplete
+                            div={{ className: "col-6 form-group" }}
+                            label={{
+                              forceLabel: "User Type",
+                              isImp: true
+                            }}
+                            selector={{
+                              name: "user_type",
+                              className: "select-fld",
+                              value: this.state.user_type,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: this.state.PR_USER_TYPE
+                              },
+                              onChange: this.dropDownHandler.bind(this)
+                            }}
+                          />
+                        )}
 
                       <AlagehAutoComplete
                         div={{ className: "col-6 form-group" }}
@@ -855,15 +842,15 @@ class LoginUsers extends Component {
                                     name="modules"
                                     checked={
                                       this.state.hospital_id ===
-                                      data.hims_d_hospital_id
+                                        data.hims_d_hospital_id
                                         ? true
                                         : data.checked === undefined
-                                        ? false
-                                        : data.checked
+                                          ? false
+                                          : data.checked
                                     }
                                     disabled={
                                       this.state.hospital_id ===
-                                      data.hims_d_hospital_id
+                                        data.hims_d_hospital_id
                                         ? true
                                         : false
                                     }
@@ -904,28 +891,28 @@ class LoginUsers extends Component {
                               }}
                             />
                           ) : (
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Update"
-                              }}
-                            />
-                          )}
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Update"
+                                }}
+                              />
+                            )}
                         </button>
                       </div>
                     </>
                   ) : (
-                    <div className="col-12">
-                      <Button
-                        type="primary"
-                        icon="check-circle"
-                        block
-                        className="btn btn-primary"
-                        onClick={this.onVerifyEmailID.bind(this)}
-                      >
-                        Verify Email
+                      <div className="col-12">
+                        <Button
+                          type="primary"
+                          icon="check-circle"
+                          block
+                          className="btn btn-primary"
+                          onClick={this.onVerifyEmailID.bind(this)}
+                        >
+                          Verify Email
                       </Button>
-                    </div>
-                  )}
+                      </div>
+                    )}
                 </div>
               </div>
             </div>
@@ -1031,8 +1018,8 @@ class LoginUsers extends Component {
                             let x =
                               row.user_type !== "AD"
                                 ? Enumerable.from(this.state.PR_USER_TYPE)
-                                    .where(w => w.value === row.user_type)
-                                    .firstOrDefault()
+                                  .where(w => w.value === row.user_type)
+                                  .firstOrDefault()
                                 : { name: "Admin" };
                             return (
                               <span>
@@ -1056,8 +1043,8 @@ class LoginUsers extends Component {
                             return row.user_status === "A"
                               ? "Active"
                               : row.user_status === "I"
-                              ? "Inactive"
-                              : "----------";
+                                ? "Inactive"
+                                : "----------";
                           }
                         }
                       ]}
