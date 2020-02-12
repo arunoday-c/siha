@@ -63,7 +63,7 @@ let getOrganizationByUser = (req, res, next) => {
         _stringData
     } else {
       _stringData += " and UE.user_id=?";
-      inputValues.push(req.query.algaeh_d_app_user_id);
+      inputValues.push(req.userIdentity.algaeh_d_app_user_id);
 
       strQuery = "SELECT hims_d_hospital_id, hospital_code, local_vat_applicable, default_nationality, default_country, \
       default_currency, default_slot, default_patient_type, standard_from_time, standard_to_time, hospital_name, \
