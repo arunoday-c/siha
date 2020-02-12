@@ -2718,6 +2718,7 @@ function createHierarchy(
           finance_account_child_id: item["finance_account_child_id"],
           trans_symbol: trans_symbol,
           subtitle: amount,
+          ledger_code: item.ledger_code,
           title: item.child_name,
           label: item.child_name,
           head_id: item["head_id"],
@@ -2995,7 +2996,7 @@ function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
 
       _mysql
         .executeQuery({
-          query: `select finance_account_head_id,account_code,account_name,account_parent,account_level,
+          query: `select finance_account_head_id,account_code,account_name,C.ledger_code,account_parent,account_level,
           H.created_from as created_status ,sort_order,parent_acc_id,root_id,
           finance_account_child_id,child_name,head_id,C.created_from as child_created_from
           from finance_account_head H left join 
