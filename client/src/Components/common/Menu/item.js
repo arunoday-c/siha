@@ -70,7 +70,9 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
 
   const moduleSelect = activeModule === "" ? openModule : activeModule;
   const screenSelected = activeScreen === "" ? openScreen : activeScreen;
-  const list = searchText === "" ? userMenu : modules;
+
+  const list =
+    searchText === "" ? (userMenu === null ? [] : userMenu) : modules;
 
   return (
     <div className={`animated leftNavCntr`}>
