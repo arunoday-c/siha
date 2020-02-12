@@ -150,7 +150,7 @@ class ScreenAssignment extends Component {
       <div className="screen_assignment">
         <div className="row inner-top-search">
           <AlagehAutoComplete
-            div={{ className: "col-2 mandatory form-group" }}
+            div={{ className: "col-3 mandatory form-group" }}
             label={{ forceLabel: "Select a Group", isImp: true }}
             selector={{
               name: "app_group_id",
@@ -164,9 +164,8 @@ class ScreenAssignment extends Component {
               onChange: this.dropDownEvent.bind(this)
             }}
           />
-
           <AlagehAutoComplete
-            div={{ className: "col-2 mandatory form-group" }}
+            div={{ className: "col-3 mandatory form-group" }}
             label={{ forceLabel: "Select a Role", isImp: true }}
             selector={{
               name: "role_id",
@@ -179,75 +178,51 @@ class ScreenAssignment extends Component {
               },
               onChange: this.dropDownEvent.bind(this)
             }}
+          />{" "}
+          <AlagehAutoComplete
+            div={{ className: "col-4 mandatory form-group" }}
+            label={{ forceLabel: "Select Module", isImp: true }}
+            selector={{
+              name: "module_id",
+              className: "select-fld",
+              value: this.state.module_id,
+              dataSource: {
+                textField: "module_name",
+                valueField: "algaeh_d_module_id",
+                data: this.state.algaeh_modules
+              },
+              onChange: this.dropDownEvent.bind(this)
+            }}
           />
-        </div>
-        <div className="row">
-          <div className="col-12">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Define Screen/Components</h3>
+        </div>{" "}
+        {this.state.ScreenList.length > 0 ? (
+          <div className="row">
+            <div className="col-6">
+              <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">
+                      Define Screen/Components
+                    </h3>
+                  </div>
                 </div>
-              </div>
-              <div className="row margin-top-15">
-                <AlagehAutoComplete
-                  div={{ className: "col-5 mandatory form-group" }}
-                  label={{ forceLabel: "Select Module", isImp: true }}
-                  selector={{
-                    name: "module_id",
-                    className: "select-fld",
-                    value: this.state.module_id,
-                    dataSource: {
-                      textField: "module_name",
-                      valueField: "algaeh_d_module_id",
-                      data: this.state.algaeh_modules
-                    },
-                    onChange: this.dropDownEvent.bind(this)
-                  }}
-                />
-                <AlagehAutoComplete
-                  div={{ className: "col-5 mandatory form-group" }}
-                  label={{
-                    forceLabel: "Assign Landing Screen",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "landing_page",
-                    className: "select-fld",
-                    value: this.state.landing_page,
-                    dataSource: {
-                      textField: "screen_name",
-                      valueField: "algaeh_app_screens_id",
-                      data: this.state.assignedScrens
-                    },
-                    onChange: this.dropDownEvent.bind(this)
-                  }}
-                />
-                <div className="col">
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    onClick={assignLandingPage.bind(this)}
-                    style={{ marginTop: 19 }}
-                  >
-                    <AlgaehLabel label={{ forceLabel: "Set Landing Page" }} />
-                  </button>
-                </div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-12">
-                    <div className="moduleList list-group-check">
-                      <input
-                        type="text"
-                        className="moduleSearchInput"
-                        placeholder="Search Module"
-                        onChange={this.onSearchAllModules.bind(this)}
-                        disabled={
-                          this.state.ScreenList.length === 0 ? true : false
-                        }
-                      />
-                      {this.state.ScreenList.length > 0 ? (
+
+                <div className="portlet-body">
+                  {" "}
+                  <div className="row margin-top-15"></div>
+                  <div className="row">
+                    <div className="col-12">
+                      <div className="moduleList list-group-check">
+                        <input
+                          type="text"
+                          className="moduleSearchInput"
+                          placeholder="Search Module"
+                          onChange={this.onSearchAllModules.bind(this)}
+                          disabled={
+                            this.state.ScreenList.length === 0 ? true : false
+                          }
+                        />
+
                         <ul className="mainmenu">
                           {this.state.ScreenList.map((data, index) => {
                             return (
@@ -293,11 +268,7 @@ class ScreenAssignment extends Component {
                             );
                           })}
                         </ul>
-                      ) : (
-                        <p>No role is selected</p>
-                      )}
-                    </div>
-                    <div className="actionLeftRight">
+                      </div>
                       <button
                         type="button"
                         className="btn btn-primary"
@@ -307,110 +278,164 @@ class ScreenAssignment extends Component {
                       </button>
                     </div>
                   </div>
+                  <div className="row">
+                    <AlagehAutoComplete
+                      div={{ className: "col-9 mandatory form-group" }}
+                      label={{
+                        forceLabel: "Assign Landing Screen",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "landing_page",
+                        className: "select-fld",
+                        value: this.state.landing_page,
+                        dataSource: {
+                          textField: "screen_name",
+                          valueField: "algaeh_app_screens_id",
+                          data: this.state.assignedScrens
+                        },
+                        onChange: this.dropDownEvent.bind(this)
+                      }}
+                    />
+                    <div className="col">
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        onClick={assignLandingPage.bind(this)}
+                        style={{ marginTop: 19 }}
+                      >
+                        <AlgaehLabel
+                          label={{ forceLabel: "Set Landing Page" }}
+                        />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="col-6">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">
-                    Define Element Permissions for Role
-                  </h3>
+            <div className="col-6">
+              <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">
+                      Define Element Permissions for Role
+                    </h3>
+                  </div>
                 </div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <ul className="mainmenu">
-                    {this.state.assignedScreenElements.map(element => {
-                      const {
-                        algaeh_app_screens_id,
-                        screen_name,
-                        component
-                      } = element;
-                      return (
-                        <li key={algaeh_app_screens_id}>
-                          <b>{screen_name}</b>
-                          <ul className="submenu">
-                            {component.map(comp => {
-                              const {
-                                component_name,
-                                component_code,
-                                elements
-                              } = comp;
-                              return (
-                                <li key={component_code}>
-                                  {component_name}
-                                  <ul className="submenu">
-                                    {elements.map(items => {
-                                      const {
-                                        algaeh_d_app_scrn_elements_id,
-                                        screen_element_name,
-                                        stages,
-                                        checked
-                                      } = items;
-                                      return (
-                                        <li key={algaeh_d_app_scrn_elements_id}>
-                                          {stages.length === 0 ? (
-                                            <Checkbox
-                                              defaultChecked={checked}
-                                              onChange={this.onClickElementClick.bind(
-                                                this,
-                                                items
-                                              )}
-                                            >
-                                              {screen_element_name}
-                                            </Checkbox>
-                                          ) : (
-                                            <ul className="submenu">
-                                              {stages.map(stage => {
-                                                const {
-                                                  checked,
-                                                  value,
-                                                  text
-                                                } = stage;
-                                                return (
-                                                  <li key={value}>
+                <div className="portlet-body">
+                  <div className="row">
+                    {" "}
+                    <div className="col-12">
+                      <div className="moduleList list-group-check">
+                        <ul className="mainmenu">
+                          {this.state.assignedScreenElements.map(element => {
+                            const {
+                              algaeh_app_screens_id,
+                              screen_name,
+                              component
+                            } = element;
+                            return (
+                              <li key={algaeh_app_screens_id}>
+                                <label className="mainHeader">
+                                  <span> {screen_name}</span>
+                                </label>
+                                <ul className="submenu">
+                                  {component.map(comp => {
+                                    const {
+                                      component_name,
+                                      component_code,
+                                      elements
+                                    } = comp;
+                                    return (
+                                      <li key={component_code}>
+                                        <label className="subHeader">
+                                          <span> {component_name}</span>
+                                        </label>
+                                        <ul className="submenu">
+                                          {elements.map(items => {
+                                            const {
+                                              algaeh_d_app_scrn_elements_id,
+                                              screen_element_name,
+                                              stages,
+                                              checked
+                                            } = items;
+                                            return (
+                                              <React.Fragment
+                                                key={
+                                                  algaeh_d_app_scrn_elements_id
+                                                }
+                                              >
+                                                {stages.length === 0 ? (
+                                                  <li>
                                                     <Checkbox
                                                       defaultChecked={checked}
                                                       onChange={this.onClickElementClick.bind(
                                                         this,
-                                                        stage
+                                                        items
                                                       )}
                                                     >
-                                                      {text}
+                                                      {screen_element_name}
                                                     </Checkbox>
                                                   </li>
-                                                );
-                                              })}
-                                            </ul>
-                                          )}
-                                        </li>
-                                      );
-                                    })}
-                                  </ul>
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                  <Button
-                    className="btn btn-primary"
-                    loading={this.state.loading_update_element}
-                    onClick={updateScreenElementRoles.bind(this)}
-                  >
-                    Update Elements
-                  </Button>
+                                                ) : (
+                                                  <React.Fragment>
+                                                    {stages.map(stage => {
+                                                      const {
+                                                        checked,
+                                                        value,
+                                                        text
+                                                      } = stage;
+                                                      return (
+                                                        <li key={value}>
+                                                          <Checkbox
+                                                            defaultChecked={
+                                                              checked
+                                                            }
+                                                            onChange={this.onClickElementClick.bind(
+                                                              this,
+                                                              stage
+                                                            )}
+                                                          >
+                                                            {text}
+                                                          </Checkbox>
+                                                        </li>
+                                                      );
+                                                    })}
+                                                  </React.Fragment>
+                                                )}
+                                              </React.Fragment>
+                                            );
+                                          })}
+                                        </ul>
+                                      </li>
+                                    );
+                                  })}
+                                </ul>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                      <Button
+                        className="btn btn-primary"
+                        loading={this.state.loading_update_element}
+                        onClick={updateScreenElementRoles.bind(this)}
+                      >
+                        Update Elements
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-
+        ) : (
+          <div className="selectGroupRole">
+            {" "}
+            <h5>Select a Group & Role</h5>
+            <p>To the define Screens/Component/Element/Authorizations</p>
+          </div>
+        )}
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">

@@ -303,6 +303,7 @@ export function ScreenAssignmentEvents() {
       $this.setState({ ScreenList: newModule });
     },
     changeScreen: ($this, data, e) => {
+      debugger;
       const _status = e.target.checked;
       let val = parseInt(e.target.value, 10);
 
