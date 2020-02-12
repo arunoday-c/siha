@@ -1259,7 +1259,7 @@ let getAlgaehScreensWithModules = (req, res, next) => {
     if (req.userIdentity.role_type != "GN") {
       let module_id = "";
       if (req.query.module_id != undefined && req.query.module_id != null) {
-        module_id = ` and module_id=${req.query.module_id} `;
+        module_id = ` where module_id=${req.query.module_id} `;
       }
       _mysql
         // .executeQuery({
@@ -1273,7 +1273,7 @@ let getAlgaehScreensWithModules = (req, res, next) => {
         .executeQuery({
           query: `select M.module_name,M.module_code,M.algaeh_d_module_id,M.module_name,S.screen_name as label,
           S.other_language,S.algaeh_app_screens_id from algaeh_d_app_module as M inner join
-          algaeh_d_app_screens as S on M.algaeh_d_module_id = S.module_id where M.record_status='A' and S.record_status='A'`
+          algaeh_d_app_screens as S on M.algaeh_d_module_id = S.module_id ${module_id};`
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -1446,15 +1446,15 @@ let getAlgaehComponents = (req, res, next) => {
   try {
     let screen_id = "";
     if (req.query.screen_id != undefined && req.query.screen_id != null) {
-      screen_id = ` and C.screen_id=${req.query.screen_id} `;
+      screen_id = ` where and C.screen_id=${req.query.screen_id} `;
     }
     if (req.userIdentity.role_type != "GN") {
       _mysql
         .executeQuery({
-          query: `select  algaeh_d_app_component_id, screen_id,S.screen_name, component_code, component_name 
+          query: `select  algaeh_d_app_component_id, screen_id,S.screen_name, component_code, component_name ,C.record_status
             from algaeh_d_app_component as C inner join algaeh_d_app_screens S 
             on C.screen_id = S.algaeh_app_screens_id
-            where  C.record_status='A' ${screen_id} order by algaeh_d_app_component_id desc `
+            ${screen_id} order by algaeh_d_app_component_id desc `
         })
         .then(result => {
           _mysql.releaseConnection();

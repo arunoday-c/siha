@@ -3,10 +3,13 @@ import "./components.scss";
 import {
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehTreeSearch } from "algaeh-react-components";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
+
 class Components extends Component {
   constructor(props) {
     super(props);
@@ -255,6 +258,46 @@ class Components extends Component {
                             fieldName: "component_name",
                             label: "Component Name",
                             disabled: true
+                          },
+                          {
+                            fieldName: "record_status",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Status" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  {row.record_status === "A"
+                                    ? "Active"
+                                    : "Inactive"}
+                                </span>
+                              );
+                            },
+                            editorTemplate: row => {
+                              return (
+                                <AlagehAutoComplete
+                                  div={{ className: "col" }}
+                                  selector={{
+                                    name: "record_status",
+                                    className: "select-fld",
+                                    value: row.record_status,
+                                    dataSource: {
+                                      textField: "name",
+                                      valueField: "value",
+                                      data: GlobalVariables.FORMAT_STATUS
+                                    },
+                                    others: {
+                                      errormessage: "Status - cannot be blank",
+                                      required: true
+                                    },
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  }}
+                                />
+                              );
+                            }
                           }
                         ]}
                         keyId="algaeh_d_module_id"
