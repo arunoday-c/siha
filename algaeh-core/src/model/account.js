@@ -208,7 +208,7 @@ let userCheck = (req, res, next) => {
     _mysql
       .executeQuery({
         query: `select ume.hospital_id,e.full_name,e.arabic_name,
-          e.date_of_birth from algaeh_d_app_user as u inner join 
+          e.date_of_birth,e.employee_code from algaeh_d_app_user as u inner join 
           hims_m_user_employee as ume  on ume.user_id = u.algaeh_d_app_user_id
           inner join hims_d_employee as e on e.hims_d_employee_id = ume.employee_id
           where UCASE(u.username)=UCASE(?) and u.record_status='A' and date(u.effective_start_date) <= date(now()) 
@@ -222,7 +222,8 @@ let userCheck = (req, res, next) => {
             date_of_birth,
             hospital_id,
             full_name,
-            arabic_name
+            arabic_name,
+            employee_code
           } = result[0];
           let happyBirthDay = "";
           const dobMonthDay = parseInt(moment(date_of_birth).format("MMDD"));
@@ -235,12 +236,13 @@ let userCheck = (req, res, next) => {
             hospital_id,
             full_name,
             arabic_name,
-            happyBirthDay
+            happyBirthDay,
+            employee_code
           };
 
           next();
         } else {
-          next(new Error("No such user find! / user might be inactive."));
+          next(new Error("User Does Not Exist OR User is Inactive"));
         }
       })
       .catch(error => {

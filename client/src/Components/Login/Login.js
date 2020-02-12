@@ -42,6 +42,7 @@ function Login(props) {
     happyBirthDay: "",
     loading: true
   });
+  const [userImage, setUserImage] = useState("");
   const [remberMe, setRememberMe] = useState(
     remebermeUser !== null && remebermeUser !== "" ? true : false
   );
@@ -49,7 +50,7 @@ function Login(props) {
   const [showPassword, setShowPassword] = useState(false);
   let userRef = useRef(undefined);
   let passwordRef = useRef(undefined);
-  const { clearAll } = useContext(MainContext);
+  const { clearAll, setSelectedMenuItem } = useContext(MainContext);
   useEffect(() => {
     clearItem();
     clearAll();
@@ -117,18 +118,21 @@ function Login(props) {
               const { success, records, message } = response.data;
 
               if (success === true) {
-                // setCookie("authToken", records.token);
                 setItem("token", records.token).then(() => {
                   getActiveModulesForUser()
-                    .then(() => {
-                      setLoginLoad(false);
-                      setItem("userName", records.user_display_name);
-                      history.push(
-                        `/${
-                          records.page_to_redirect === null
-                            ? "NoDashboard"
-                            : records.page_to_redirect.replace(/\s/g, "")
-                        }`
+                    .then(userMenu => {
+                      setSelectedMenu(userMenu, records.page_to_redirect).then(
+                        () => {
+                          setLoginLoad(false);
+                          setItem("userName", records.user_display_name);
+                          history.push(
+                            `/${
+                              records.page_to_redirect === null
+                                ? "NoDashboard"
+                                : records.page_to_redirect.replace(/\s/g, "")
+                            }`
+                          );
+                        }
                       );
                     })
                     .catch(error => {
@@ -154,6 +158,31 @@ function Login(props) {
       }
     });
   }
+  function setSelectedMenu(records, page_to_redirect) {
+    return new Promise(resolve => {
+      if (page_to_redirect === null) {
+        resolve();
+      } else {
+        let selectedMenu = {};
+
+        for (let i = 0; i < records.length; i++) {
+          const { ScreenList } = records[i];
+          const selected = ScreenList.find(
+            f =>
+              String(f.page_to_redirect).toLowerCase() ===
+              String(page_to_redirect).toLowerCase()
+          );
+          if (selected !== undefined) {
+            selectedMenu = selected;
+            break;
+          }
+        }
+        setItem("userSelectedMenu", selectedMenu);
+        setSelectedMenuItem(selectedMenu);
+        resolve();
+      }
+    });
+  }
   function getActiveModulesForUser() {
     return new Promise((resolve, reject) => {
       algaehApiCall({
@@ -164,7 +193,7 @@ function Login(props) {
           if (success) {
             setItem("menu", records);
             setItem("elements", elements);
-            resolve();
+            resolve(records);
           } else {
             reject(new Error(dataResponse.data.message));
           }
@@ -175,7 +204,10 @@ function Login(props) {
       });
     });
   }
-
+  function onErrorUserImage(e) {
+    e.target.onerror = null;
+    e.target.src = noUserImg;
+  }
   function logout() {
     algaehApiCall({
       uri: "/apiAuth/logout",
@@ -190,7 +222,6 @@ function Login(props) {
     setLoginLoad(true);
     checkUser({ userId: login.username })
       .then(result => {
-        // if (passwordRef.current !== undefined) passwordRef.current.focus();
         setLogin(data => {
           return {
             username: login.username,
@@ -198,13 +229,20 @@ function Login(props) {
             ...result
           };
         });
+        const hostName = window.location.hostname;
+
+        setUserImage(
+          `http://${hostName}:3006/api/v1/Document/get?destinationName=${result.employee_code}&fileType=Employees`
+        );
         setShowPassword(true);
         setLoginLoad(false);
+        if (passwordRef.current !== undefined) passwordRef.current.focus();
       })
       .catch(error => {
         setLoginLoad(false);
         setShowPassword(false);
-        swalMessage({ type: "error", title: error });
+        const { message } = error.response.data;
+        swalMessage({ type: "error", title: message });
       });
   }
   function submitLogin() {
@@ -213,15 +251,17 @@ function Login(props) {
       .then(records => {
         setItem("token", records.token).then(() => {
           getActiveModulesForUser()
-            .then(() => {
-              setLoginLoad(false);
-              history.push(
-                `/${
-                  records.page_to_redirect === null
-                    ? "NoDashboard"
-                    : records.page_to_redirect.replace(/\s/g, "")
-                }`
-              );
+            .then(userMenu => {
+              setSelectedMenu(userMenu, records.page_to_redirect).then(() => {
+                setLoginLoad(false);
+                history.push(
+                  `/${
+                    records.page_to_redirect === null
+                      ? "NoDashboard"
+                      : records.page_to_redirect.replace(/\s/g, "")
+                  }`
+                );
+              });
             })
             .catch(error => {
               setLoginLoad(false);
@@ -239,12 +279,19 @@ function Login(props) {
           popUpMessage(error);
           return;
         }
-        swalMessage({ type: "error", title: error });
+
+        const { message } = error.response.data;
+        swalMessage({ type: "error", title: message });
       });
   }
   function onHitEnter(e) {
     if (e.key === "Enter") {
       checkUserActive();
+    }
+  }
+  function onHitEnterPassword(e) {
+    if (e.key === "Enter") {
+      submitLogin();
     }
   }
   function onChangeRememberMe(e) {
@@ -318,7 +365,11 @@ function Login(props) {
                           ) : null}
                           <div className="row">
                             <div className="col userAfterLogin">
-                              <img className="userImg" src={noUserImg}></img>
+                              <img
+                                className="userImg"
+                                src={userImage}
+                                onError={onErrorUserImage}
+                              ></img>
                               <h1>Welcome</h1>
                               <h6>{login.full_name}</h6>
                             </div>
@@ -340,7 +391,8 @@ function Login(props) {
                                   type: "password",
                                   tabIndex: "3",
                                   placeholder: "Enter Password",
-                                  ref: passwordRef
+                                  ref: passwordRef,
+                                  onKeyDown: onHitEnterPassword
                                 }
                               }}
                             />

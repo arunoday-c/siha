@@ -9,7 +9,8 @@ export default function Layout({ children }) {
     userToken,
     setUserMenu,
     setUserToken,
-    setElementsItems
+    setElementsItems,
+    setSelectedMenuItem
   } = useContext(MainContext);
   const [pageLoading, setPageLoading] = useState(false);
   const [text, setText] = useState("Please wait configure is in process");
@@ -26,6 +27,9 @@ export default function Layout({ children }) {
           const details = tokenDecode(result);
           setUserToken(details);
           setPageLoading(true);
+        });
+        getItem("userSelectedMenu").then(result => {
+          setSelectedMenuItem(result);
         });
       });
     }
