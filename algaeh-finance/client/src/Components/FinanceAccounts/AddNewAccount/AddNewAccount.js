@@ -18,11 +18,15 @@ export default function AddNewAccount({
   accountName,
   accountType,
   openingBal,
-  propOnOK
+  propOnOK,
+  isNewAccount,
+  ledgerCode
 }) {
+  debugger
   const [lodingAddtoList, setLoadingAddtoList] = useState(false);
   // const [account_code, setAccountCode] = useState("");
   const [account_name, setAccountName] = useState("");
+  const [ledger_code, setLedgerCode] = useState("");
   const [account_type, setAccountType] = useState("G");
   const [opening_balance, setOpeningBalance] = useState(0);
   const [enableOP, setEnableOP] = useState(true);
@@ -47,9 +51,10 @@ export default function AddNewAccount({
 
     if (accountName) {
       setAccountName(accountName);
+      setLedgerCode(ledgerCode);
 
       // eslint-disable-next-line eqeqeq
-      if (accountType !== "G" && !(accountCode == 4 || accountCode == 5)) {
+      if (accountType !== "G" && !(accountCode === 4 || accountCode === 5)) {
         setLoadingAddtoList(true);
         getOpeningBalance(selectedNode.node.finance_account_child_id)
           .then(res => {
@@ -75,12 +80,29 @@ export default function AddNewAccount({
     setLoadingAddtoList(false);
     // setAccountCode("");
     setAccountName("");
+    setLedgerCode("");
     setAccountType("G");
     setOpeningBalance(0);
     onClose();
   }
 
   function onOK() {
+    if (ledger_code === "") {
+      AlgaehMessagePop({
+        type: "warning",
+        display: "Enter Account Code."
+      });
+      return
+    }
+
+    if (account_name === "") {
+      AlgaehMessagePop({
+        type: "warning",
+        display: "Enter Account Name."
+      });
+      return
+    }
+
     setLoadingAddtoList(true);
     if (accountName && propOnOK) {
       const input = {
@@ -105,11 +127,13 @@ export default function AddNewAccount({
           account_code: account_code,
           chart_of_account: parent_acc_id,
           leaf_node: account_type === "G" ? "N" : "Y",
-          opening_bal: opening_balance
+          opening_bal: opening_balance,
+          ledger_code: ledger_code
         },
         errorMessage => {
           // setAccountCode("");
           setAccountName("");
+          setLedgerCode("");
           setAccountType("G");
           setOpeningBalance(0);
           setLoadingAddtoList(false);
@@ -122,6 +146,7 @@ export default function AddNewAccount({
         result => {
           // setAccountCode("");
           setAccountName("");
+          setLedgerCode("");
           setAccountType("G");
           setOpeningBalance(0);
           const {
@@ -191,6 +216,28 @@ export default function AddNewAccount({
               }}
             />
 
+            {selectedNode.node.leafnode === "Y" ?
+              <AlgaehFormGroup
+                div={{
+                  className: "col form-group"
+                }}
+                label={{
+                  forceLabel: "Ledger Code",
+                  isImp: true
+                }}
+                textBox={{
+                  type: "text",
+                  value: ledger_code,
+                  className: "form-control",
+                  id: "name",
+                  onChange: e => {
+                    setLedgerCode(e.target.value);
+                  },
+                  placeholder: " Enter Ledger Code",
+                  autoComplete: false
+                }}
+              /> : null}
+
             <AlgaehFormGroup
               div={{
                 className: "col form-group"
@@ -208,12 +255,13 @@ export default function AddNewAccount({
                   setAccountName(e.target.value);
                 },
                 placeholder: " Enter Account Name",
-                autoComplete: false
+                autoComplete: false,
+                disabled: isNewAccount === true ? false : selectedNode.node.created_status === "S" ? true : false
               }}
             />
           </div>
           {account_type === "C" ? (
-            accountCode !== "4" && accountCode !== "5" ? (
+            accountCode !== 4 && accountCode !== 5 ? (
               <div className="row">
                 {accountName ? (
                   <div className="col">
