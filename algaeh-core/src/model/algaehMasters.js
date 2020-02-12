@@ -2850,7 +2850,7 @@ const getScreensWithComponents = (req, res, next) => {
 };
 
 //created by:IRFAN
-const addScreensAndComponents_BACKUP_07_02_2020 = (req, res, next) => {
+const addScreensAndComponents = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     const input = req.body;
@@ -2863,6 +2863,7 @@ const addScreensAndComponents_BACKUP_07_02_2020 = (req, res, next) => {
 
     let module_role_map_id = input.algaeh_m_module_role_privilage_mapping_id;
 
+    console.log("input.checked", input.checked);
     if (input.checked == false) {
       _mysql
         .executeQuery({
@@ -2880,6 +2881,7 @@ const addScreensAndComponents_BACKUP_07_02_2020 = (req, res, next) => {
           next(error);
         });
     } else {
+      console.log("input.checked", input.checked);
       _mysql
         .executeQueryWithTransaction({
           query:
@@ -2896,6 +2898,7 @@ const addScreensAndComponents_BACKUP_07_02_2020 = (req, res, next) => {
           printQuery: true
         })
         .then(result => {
+          console.log("result.insertId", result);
           if (result.insertId > 0) {
             module_role_map_id = result.insertId;
           }
@@ -2948,6 +2951,8 @@ const addScreensAndComponents_BACKUP_07_02_2020 = (req, res, next) => {
             "updated_by",
             "updated_date"
           ];
+
+          console.log("screenList", screenList);
 
           _mysql
             .executeQueryWithTransaction({
@@ -3048,7 +3053,7 @@ const addScreensAndComponents_BACKUP_07_02_2020 = (req, res, next) => {
   }
 };
 
-const addScreensAndComponents = (req, res, next) => {
+const addScreensAndComponents_new = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     const input = req.body;
