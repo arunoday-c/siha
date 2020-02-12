@@ -464,16 +464,16 @@ let getRoleBaseActiveModules = (req, res, next) => {
     const { from_assignment } = req.query;
     let _roleId = role_id;
     let strQuery = "";
-
     if (from_assignment === "Y") {
       _roleId = req.query.role_id;
     }
 
     if (
       (role_type === "SU" && from_assignment === undefined) ||
-      from_assignment === "N" ||
-      (role_type === "AD" && from_assignment === undefined) ||
       from_assignment === "N"
+      // ||
+      // (role_type === "AD" && from_assignment === undefined) ||
+      // from_assignment === "N"
     ) {
       strQuery = `select m.algaeh_d_module_id,m.module_code,m.module_name,m.icons,m.display_order,m.other_language,
       s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
@@ -485,7 +485,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
         role_type === "SU"
           ? ""
           : "where m.access_by <> 'SU' and m.record_status='A' and s.record_status='A'"
-        }`;
+      }`;
     } else {
       strQuery = `select m.algaeh_d_module_id,m.module_code,m.module_name,m.icons,m.display_order,m.other_language,
       s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
@@ -557,7 +557,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
 
         const records = _.chain(result)
           .groupBy(g => g.algaeh_d_module_id)
-          .map(function (detail, key) {
+          .map(function(detail, key) {
             const first = _.head(detail);
             return {
               module_id: key,
@@ -1049,13 +1049,13 @@ let getAlgaehModules = (req, res, next) => {
     let superUser = "";
     //for admin login
     if (req.userIdentity.role_type == "AD") {
-      superUser = " and access_by <> 'SU'";
+      superUser = " and access_by <> 'SU' and record_status = 'A' ";
     }
     if (req.userIdentity.role_type != "GN") {
       _mysql
         .executeQuery({
           query:
-            "select algaeh_d_module_id, module_name,module_code,display_order, icons,other_language, module_plan,licence_key  from algaeh_d_app_module\
+            "select algaeh_d_module_id, module_name,module_code,display_order, icons,other_language, module_plan,licence_key,record_status  from algaeh_d_app_module\
           where  1=1 " +
             superUser +
             " order by algaeh_d_module_id desc"
@@ -1097,14 +1097,15 @@ let updateAlgaehModules = (req, res, next) => {
         .executeQuery({
           query:
             "update algaeh_d_app_module set  display_order=?, module_name=?, \
-          updated_date=?, updated_by=?,other_language=?,licence_key=? WHERE `algaeh_d_module_id`=?;",
+          updated_date=?,other_language=?,licence_key=?,record_status=?, updated_by=? WHERE `algaeh_d_module_id`=?;",
           values: [
             input.display_order,
             input.module_name,
             new Date(),
-            input.updated_by,
             input.other_language,
             input.licence_key,
+            input.record_status,
+            req.userIdentity.algaeh_d_app_user_id,
             input.algaeh_d_module_id
           ],
           printQuery: true
@@ -1184,19 +1185,30 @@ let addAlgaehScreen = (req, res, next) => {
 let getAlgaehScreens = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.userIdentity.role_type != "GN") {
+    const { role_type } = req.userIdentity;
+    if (role_type != "GN") {
       let module_id = "";
+
+      const wherecondition =
+        role_type !== "SU"
+          ? `where S.record_status='A' and M.record_status='A' and `
+          : "";
+
       if (req.query.module_id != undefined && req.query.module_id != null) {
-        module_id = ` and module_id=${req.query.module_id} `;
+        module_id = `${wherecondition === "" ? " where " : ""} module_id=${
+          req.query.module_id
+        } `;
       }
       _mysql
         .executeQuery({
           query:
-            "select algaeh_app_screens_id, screen_code, screen_name, page_to_redirect, module_name,module_code, S.other_language\
-            from algaeh_d_app_screens S inner join algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id \
-            where  S.record_status='A' and M.record_status='A' " +
+            "select algaeh_app_screens_id, screen_code, screen_name, page_to_redirect, module_name,module_code, S.other_language,\
+            S.record_status from algaeh_d_app_screens S inner join algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id \
+             " +
+            wherecondition +
             module_id +
-            "  order by algaeh_app_screens_id desc "
+            "  order by algaeh_app_screens_id desc ",
+          printQuery: true
         })
         // .executeQuery({
         //   query: `select M.module_name,M.module_code,M.algaeh_d_module_id,M.module_name,S.screen_name,
@@ -1313,15 +1325,15 @@ let updateAlgaehScreen = (req, res, next) => {
       _mysql
         .executeQuery({
           query:
-            "update algaeh_d_app_screens set screen_name=? ,page_to_redirect=?,other_language=?,\
-            updated_by=?,updated_date=? where algaeh_app_screens_id=?",
+            "update algaeh_d_app_screens set screen_name=? ,page_to_redirect=?,other_language=?,updated_date=?,record_status=?, updated_by=? where algaeh_app_screens_id=?",
           values: [
             input.screen_name,
             input.page_to_redirect,
 
             input.other_language,
-            input.updated_by,
             new Date(),
+            input.record_status,
+            req.userIdentity.algaeh_d_app_user_id,
             input.algaeh_app_screens_id
           ],
           printQuery: true
@@ -2100,7 +2112,7 @@ let assignScreens = (req, res, next) => {
                     " INSERT IGNORE INTO `algaeh_m_screen_role_privilage_mapping` (module_role_map_id, screen_id, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?); ",
                     [
                       input.update_screens[i][
-                      "algaeh_m_module_role_privilage_mapping_id"
+                        "algaeh_m_module_role_privilage_mapping_id"
                       ],
                       input.update_screens[i]["insert_screens"][k],
                       req.userIdentity.algaeh_d_app_user_id,
@@ -2792,12 +2804,12 @@ const getScreensWithComponents = (req, res, next) => {
                       extraPropsList:
                         extra_props !== null && extra_props !== ""
                           ? extra_props.split(",").map((m, index) => {
-                            return {
-                              label: m,
-                              value: index,
-                              checked: false
-                            };
-                          })
+                              return {
+                                label: m,
+                                value: index,
+                                checked: false
+                              };
+                            })
                           : []
                     };
                   })
