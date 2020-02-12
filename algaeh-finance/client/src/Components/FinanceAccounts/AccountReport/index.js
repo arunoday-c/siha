@@ -24,28 +24,28 @@ export default memo(function Modal(props) {
   function onPdfGeneration() {
     setPleaseWait("Please wait pdf is generating...");
     setLoading(true);
-    if (Object.keys(resultdata).length === 0) {
-      setLoading(false);
-      setPleaseWait("");
-      AlgaehMessagePop({
-        type: "info",
-        display: "Please select Branch and Cost Center"
-      });
-      return;
-    } else {
-      if (
-        resultdata["hospital_id"] === undefined ||
-        resultdata["cost_center_id"] === undefined
-      ) {
-        setLoading(false);
-        setPleaseWait("");
-        AlgaehMessagePop({
-          type: "info",
-          display: "Branch and Cost Center are mandatory"
-        });
-        return;
-      }
-    }
+    // if (Object.keys(resultdata).length === 0) {
+    //   setLoading(false);
+    //   setPleaseWait("");
+    //   AlgaehMessagePop({
+    //     type: "info",
+    //     display: "Please select Branch and Cost Center"
+    //   });
+    //   return;
+    // } else {
+    //   if (
+    //     resultdata["hospital_id"] === undefined ||
+    //     resultdata["cost_center_id"] === undefined
+    //   ) {
+    //     setLoading(false);
+    //     setPleaseWait("");
+    //     AlgaehMessagePop({
+    //       type: "info",
+    //       display: "Branch and Cost Center are mandatory"
+    //     });
+    //     return;
+    //   }
+    // }
     generateReport("pdf", resultdata)
       .then(result => {
         // console.log("result", result);
@@ -116,16 +116,16 @@ export default memo(function Modal(props) {
           dateRange.length === 0
             ? {}
             : {
-                name: "from_date",
-                value: moment(dateRange[0]).format("YYYY-MM-DD")
-              };
+              name: "from_date",
+              value: moment(dateRange[0]).format("YYYY-MM-DD")
+            };
         const to_date =
           dateRange.length === 0
             ? {}
             : {
-                name: "to_date",
-                value: moment(dateRange[1]).format("YYYY-MM-DD")
-              };
+              name: "to_date",
+              value: moment(dateRange[1]).format("YYYY-MM-DD")
+            };
         // const monthwise =
         //   dateRange.length === 0
         //     ? {}
@@ -287,7 +287,7 @@ export default memo(function Modal(props) {
               Month Wise
             </label>
           </div>
-          <CostCenter result={resultdata} />
+          {/* <CostCenter result={resultdata} /> */}
           <AlgaehDateHandler
             type={"range"}
             div={{
