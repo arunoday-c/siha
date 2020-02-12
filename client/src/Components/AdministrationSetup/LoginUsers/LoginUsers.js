@@ -338,7 +338,7 @@ class LoginUsers extends Component {
             method: "POST",
             data: {
               password_email: this.state.password_email,
-              username: this.state.username + this.getHospitalShortDesc(),
+              username: this.state.username,
               user_display_name: this.state.display_name,
               // effective_start_date: this.state.effective_start_date,
               // effective_end_date: this.state.effective_end_date,
@@ -707,7 +707,7 @@ class LoginUsers extends Component {
                           }
                         }}
                       />
-                      <div
+                      {/* <div
                         className="col-12 form-group"
                         style={{ textAlign: "center" }}
                       >
@@ -725,36 +725,50 @@ class LoginUsers extends Component {
                           }}
                         />
                         <h6>Abcd</h6>
-                      </div>
+                      </div> */}
                       {/* <div className="col-6 userNameExt">
                         <span>
                           <b>{this.getHospitalShortDesc()}</b>
                         </span>
                       </div> */}
-                      <AlagehAutoComplete
-                        div={{ className: "col-6 form-group" }}
-                        label={{
-                          forceLabel: "User Type",
-                          isImp: true
-                        }}
-                        selector={{
-                          name: "user_type",
-                          className: "select-fld",
-                          value: this.state.user_type,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: this.state.PR_USER_TYPE
-                          },
-                          // others: {
-                          //   disabled:
-                          //     this.state.algaeh_d_app_user_id === null
-                          //       ? false
-                          //       : true
-                          // },
-                          onChange: this.dropDownHandler.bind(this)
-                        }}
-                      />
+                      {this.state.PR_USER_TYPE.find(
+                        f => f.value === this.state.user_type
+                      ) === undefined ? (
+                        <div className="col-6 form-group">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "User Type"
+                            }}
+                          />
+                          <h6>Admin</h6>
+                        </div>
+                      ) : (
+                        <AlagehAutoComplete
+                          div={{ className: "col-6 form-group" }}
+                          label={{
+                            forceLabel: "User Type",
+                            isImp: true
+                          }}
+                          selector={{
+                            name: "user_type",
+                            className: "select-fld",
+                            value: this.state.user_type,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: this.state.PR_USER_TYPE
+                            },
+                            // others: {
+                            //   disabled:
+                            //     this.state.algaeh_d_app_user_id === null
+                            //       ? false
+                            //       : true
+                            // },
+                            onChange: this.dropDownHandler.bind(this)
+                          }}
+                        />
+                      )}
+
                       <AlagehAutoComplete
                         div={{ className: "col-6 form-group" }}
                         label={{
@@ -862,7 +876,10 @@ class LoginUsers extends Component {
                           })}
                         </ul>
                       </div>
-                      <div className="col-12 form-group">
+                      <div
+                        className="col-12 form-group"
+                        style={{ textAlign: "right" }}
+                      >
                         <button
                           onClick={this.resetSaveState.bind(this)}
                           type="button"
@@ -1011,9 +1028,12 @@ class LoginUsers extends Component {
                           ),
 
                           displayTemplate: row => {
-                            let x = Enumerable.from(this.state.PR_USER_TYPE)
-                              .where(w => w.value === row.user_type)
-                              .firstOrDefault();
+                            let x =
+                              row.user_type !== "AD"
+                                ? Enumerable.from(this.state.PR_USER_TYPE)
+                                    .where(w => w.value === row.user_type)
+                                    .firstOrDefault()
+                                : { name: "Admin" };
                             return (
                               <span>
                                 {x !== undefined ? x.name : "Unknown user"}
