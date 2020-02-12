@@ -34,7 +34,7 @@ class ProjectJobCost extends Component {
             <ul className="nav">
               <li
                 algaehtabs={"NewEmployeeProjectRoster"}
-                className={"nav-item tab-button"}
+                className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
                 {
@@ -45,7 +45,7 @@ class ProjectJobCost extends Component {
                   />
                 }
               </li>
-              <li
+              {/* <li
                 algaehtabs={"ProjectActivityMgmnt"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
@@ -57,7 +57,7 @@ class ProjectJobCost extends Component {
                     }}
                   />
                 }
-              </li>
+              </li> */}
               <li
                 algaehtabs={"ProjectPayroll"}
                 className={"nav-item tab-button"}
