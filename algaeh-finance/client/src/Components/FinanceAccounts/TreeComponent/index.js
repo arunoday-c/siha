@@ -35,6 +35,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
   const [searchFocusIndex, setSearchFocusIndex] = useState(0);
   const [searchFoundCount, setSearchFoundCount] = useState(undefined);
   const [isAccountHead, setIsAccountHead] = useState(false);
+  const [isNewAccount, setNewAccount] = useState(false);
   const [reportVisible, setReportVisible] = useState(false);
   const [editorRecord, setEditorRecord] = useState({});
   const [period, setPeriod] = useState("4");
@@ -87,6 +88,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
         setEditorRecord({});
         stopLoad();
         setShowPopup(false);
+        setNewAccount(false)
         AlgaehMessagePop({
           type: "success",
           display: "Renamed successfull"
@@ -97,6 +99,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
         console.log("error", error);
         stopLoad();
         setShowPopup(false);
+        setNewAccount(false)
         AlgaehMessagePop({
           type: "error",
           display: error
@@ -159,6 +162,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
 
   function onClose(e) {
     setShowPopup(false);
+    setNewAccount(false)
     if (isAccountHead) {
       loadAccount();
       setIsAccountHead(false);
@@ -174,6 +178,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
 
   function onEditClose() {
     setShowPopup(false);
+    setNewAccount(false)
     setEditorRecord({});
   }
 
@@ -186,6 +191,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
 
   const generateNodeProps = rowInfo => {
     const { node } = rowInfo;
+    debugger
     return {
       buttons: [
         <div className="box">
@@ -197,6 +203,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
               }
               onClick={() => {
                 setShowPopup(true);
+                setNewAccount(true)
                 setSelectedNode(rowInfo);
               }}
             >
@@ -206,16 +213,16 @@ function TreeComponent({ assetCode, title, inDrawer }) {
               label="edit"
               className={
                 "NodeEditButton " +
-                (node.created_status === "S" ? "disabled" : "")
+                (node.leafnode === "N" ? "disabled" : "")
               }
               onClick={() => {
-                console.log(node, "edited");
                 if (Object.keys(editorRecord).length > 0) {
                   setEditorRecord({});
                 } else {
                   setEditorRecord(rowInfo);
                   if (!isExpOrInc && node.leafnode === "Y") {
                     setShowPopup(true);
+                    setNewAccount(false)
                   }
                 }
               }}
@@ -223,8 +230,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
               {JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
                 <i className="fas fa-times" />
               ) : (
-                <i className="fas fa-pen" />
-              )}
+                  <i className="fas fa-pen" />
+                )}
             </li>
             <li
               label="print"
@@ -322,14 +329,14 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                       }}
                     />
                   }
-                  defaultValue={node.title}
+                  defaultValue={node.title + " (" + node.ledger_code + ")"}
                 />
               ) : (
-                node.title
-              )
+                  node.title
+                )
             ) : (
-              node.title
-            )}
+                node.title + " (" + node.ledger_code + ")"
+              )}
             {node.leafnode === "Y" ? null : (
               <>/{node.children === undefined ? 0 : node.children.length}</>
             )}
@@ -354,8 +361,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
         node.created_status === "S"
           ? "systemGen"
           : node.leafnode === "Y"
-          ? ""
-          : "accGroup"
+            ? ""
+            : "accGroup"
     };
   };
 
@@ -447,6 +454,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
           accountCode={assetCode}
           onClose={editorRecord.node ? onEditClose : onClose}
           accountName={editorRecord.node ? editorRecord.node.title : ""}
+          ledgerCode={editorRecord.node ? editorRecord.node.ledger_code : ""}
           propOnOK={editorRecord.node ? editChild : null}
           okText={editorRecord.node ? "Change" : "Add"}
           accountType={
@@ -456,6 +464,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                 : "G"
               : ""
           }
+          isNewAccount={isNewAccount}
           openingBal={editorRecord.node ? editorRecord.node.subtitle : ""}
         />
       ) : null}
@@ -498,6 +507,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                     });
                     setShowPopup(true);
                     setIsAccountHead(true);
+                    setNewAccount(true)
                   }}
                 >
                   <i className="fas fa-plus" />
@@ -517,7 +527,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                     const values =
                       searchFocusIndex !== undefined
                         ? (searchFoundCount + searchFocusIndex - 1) %
-                          searchFoundCount
+                        searchFoundCount
                         : searchFoundCount - 1;
                     setSearchFocusIndex(values);
                   }}
