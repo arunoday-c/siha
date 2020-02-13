@@ -26,8 +26,8 @@ startServer () {
 # }
 
   # Core Modules #
-  # startServer "./algaeh-core" "core"
-  # startServer "./client" "client"
+  startServer "./algaeh-core" "core"
+  startServer "./client" "client"
   startServer "./MasterSettings" "master_settings_server" 
   startServer "./DocumentManagement" "document_server" 
   startServer "./AlgaehReporting" "report_server"

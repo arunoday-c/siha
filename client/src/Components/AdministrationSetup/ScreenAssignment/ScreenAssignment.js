@@ -161,7 +161,16 @@ class ScreenAssignment extends Component {
                 valueField: "algaeh_d_app_group_id",
                 data: this.state.groups
               },
-              onChange: this.dropDownEvent.bind(this)
+              onChange: this.dropDownEvent.bind(this),
+              onClear: () => {
+                this.setState({
+                  app_group_id: null,
+                  role_id: null,
+                  module_id: null,
+                  roles: [],
+                  ScreenList: []
+                });
+              }
             }}
           />
           <AlagehAutoComplete
@@ -176,7 +185,14 @@ class ScreenAssignment extends Component {
                 valueField: "app_d_app_roles_id",
                 data: this.state.roles
               },
-              onChange: this.dropDownEvent.bind(this)
+              onChange: this.dropDownEvent.bind(this),
+              onClear: () => {
+                this.setState({
+                  role_id: null,
+                  module_id: null,
+                  ScreenList: []
+                });
+              }
             }}
           />{" "}
           <AlagehAutoComplete
@@ -191,7 +207,13 @@ class ScreenAssignment extends Component {
                 valueField: "algaeh_d_module_id",
                 data: this.state.algaeh_modules
               },
-              onChange: this.dropDownEvent.bind(this)
+              onChange: this.dropDownEvent.bind(this),
+              onClear: () => {
+                this.setState({
+                  module_id: null,
+                  ScreenList: []
+                });
+              }
             }}
           />
         </div>{" "}

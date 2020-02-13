@@ -10,7 +10,8 @@ export function ScreenAssignmentEvents() {
           getRoles($this, value.value);
           $this.setState({
             [value.name]: value.value,
-            roles: []
+            roles: [],
+            ScreenList: []
           });
           break;
         case "module_id":
@@ -21,7 +22,8 @@ export function ScreenAssignmentEvents() {
           }
 
           $this.setState({
-            [value.name]: value.value
+            [value.name]: value.value,
+            ScreenList: []
           });
           break;
         default:
@@ -34,7 +36,8 @@ export function ScreenAssignmentEvents() {
             getScreenElementsRoles($this, value.value);
           }
           $this.setState({
-            [value.name]: value.value
+            [value.name]: value.value,
+            ScreenList: []
           });
           break;
       }
