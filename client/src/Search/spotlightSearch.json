@@ -260,14 +260,12 @@
         "label": "Requisition Date"
       },
       {
-        "fieldName": "from_location",
-        "label": "From Location",
-        "required": "N"
+        "fieldName": "FPL.location_description",
+        "label": "From Location"
       },
       {
-        "fieldName": "to_location",
-        "label": "To Location",
-        "required": "N"
+        "fieldName": "TPL.location_description",
+        "label": "To Location"
       }
     ]
   },
@@ -311,14 +309,12 @@
         "label": "Transfer Date"
       },
       {
-        "fieldName": "from_location",
-        "label": "From Location",
-        "required": "N"
+        "fieldName": "FPL.location_description",
+        "label": "From Location"
       },
       {
-        "fieldName": "to_location",
-        "label": "To Location",
-        "required": "N"
+        "fieldName": "TPL.location_description",
+        "label": "To Location"
       }
     ]
   },
@@ -405,8 +401,7 @@
       },
       {
         "fieldName": "vendor_name",
-        "label": "Vendor Name",
-        "required": "N"
+        "label": "Vendor Name"
       }
     ],
     "POReturnEntry": [
@@ -521,8 +516,7 @@
       },
       {
         "fieldName": "vendor_name",
-        "label": "Vendor Name",
-        "required": "N"
+        "label": "Vendor Name"
       }
     ]
   },
@@ -794,8 +788,7 @@
       },
       {
         "fieldName": "location_description",
-        "label": "Location Name",
-        "required": "N"
+        "label": "Location Name"
       }
     ],
     "InvConsEntry": [
@@ -814,8 +807,7 @@
       },
       {
         "fieldName": "location_description",
-        "label": "Location Name",
-        "required": "N"
+        "label": "Location Name"
       }
     ]
   },

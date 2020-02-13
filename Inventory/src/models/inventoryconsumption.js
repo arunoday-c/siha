@@ -68,6 +68,13 @@ export default {
           table_name: "hims_f_inventory_numgen"
         })
         .then(generatedNumbers => {
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection:
+              _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
+
           document_number = generatedNumbers.INV_CONS_NUM;
 
           let year = moment().format("YYYY");
@@ -133,21 +140,21 @@ export default {
                   printQuery: true
                 })
                 .then(detailResult => {
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.body.transaction_id = headerResult.insertId;
-                    req.body.year = year;
-                    req.body.period = period;
-                    period;
-                    req.records = {
-                      consumption_number: document_number,
-                      hims_f_inventory_consumption_header_id:
-                        headerResult.insertId,
-                      year: year,
-                      period: period
-                    };
-                    next();
-                  });
+                  // _mysql.commitTransaction(() => {
+                  //   _mysql.releaseConnection();
+                  req.body.transaction_id = headerResult.insertId;
+                  req.body.year = year;
+                  req.body.period = period;
+                  period;
+                  req.records = {
+                    consumption_number: document_number,
+                    hims_f_inventory_consumption_header_id:
+                      headerResult.insertId,
+                    year: year,
+                    period: period
+                  };
+                  next();
+                  // });
                 })
                 .catch(error => {
                   _mysql.rollBackTransaction(() => {
