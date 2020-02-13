@@ -15,11 +15,18 @@ export function ScreenAssignmentEvents() {
           });
           break;
         case "module_id":
-          getModuleScreenComponent($this, value.value);
-          if ($this.state.role_id !== null) {
-            AlgaehLoader({ show: true });
-            getRoleActiveModules($this, $this.state.role_id, value.value);
+          if ($this.state.role_id === null) {
+            $this.setState({
+              [value.name]: null
+            });
+            swalMessage({
+              title: "Please select role and then select module.",
+              type: "error"
+            });
+            document.querySelector("[name='role_id']").focus();
+            return;
           }
+          getModuleScreenComponent($this, value.value);
 
           $this.setState({
             [value.name]: value.value,
@@ -27,10 +34,6 @@ export function ScreenAssignmentEvents() {
           });
           break;
         default:
-          if ($this.state.module_id !== null) {
-            AlgaehLoader({ show: true });
-            getRoleActiveModules($this, value.value, $this.state.module_id);
-          }
           if (value.name === "role_id") {
             getAllAssignedScreen($this, value.value);
             getScreenElementsRoles($this, value.value);
@@ -306,7 +309,6 @@ export function ScreenAssignmentEvents() {
       $this.setState({ ScreenList: newModule });
     },
     changeScreen: ($this, data, e) => {
-      debugger;
       const _status = e.target.checked;
       let val = parseInt(e.target.value, 10);
 
@@ -452,6 +454,7 @@ function getRoles($this, group_id) {
 }
 
 function getModuleScreenComponent($this, module_id) {
+  AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/algaehMasters/getScreensWithComponents",
     method: "GET",
@@ -460,14 +463,10 @@ function getModuleScreenComponent($this, module_id) {
     },
     onSuccess: response => {
       if (response.data.success) {
-        $this.setState({ ScreenList: response.data.records });
+        $this.setState({ ScreenList: response.data.records }, () => {
+          getRoleActiveModules($this, $this.state.role_id, module_id);
+        });
       }
-    },
-    onFailure: error => {
-      swalMessage({
-        title: error.message,
-        type: "error"
-      });
     }
   });
 }
@@ -544,7 +543,6 @@ export function assignLandingPage() {
 
 export function updateScreenElementRoles() {
   this.setState({ loading_update_element: true }, () => {
-    debugger;
     algaehApiCall({
       uri: "/algaehMasters/updateScreenElementRoles",
       method: "POST",
@@ -589,50 +587,54 @@ function getRoleActiveModules($this, role_id, module_id) {
             ScreenList,
             m => m.algaeh_app_screens_id === item.algaeh_app_screens_id
           );
-          const index = ScreenList.indexOf(_findModule);
-          // const indeterminate = item.componentList.length === 0 ? false :
-          //   item.componentList.length === ScreenList[index]["componentList"].length ? false : true;
+          if (_findModule !== undefined) {
+            const index = ScreenList.indexOf(_findModule);
+            // const indeterminate = item.componentList.length === 0 ? false :
+            //   item.componentList.length === ScreenList[index]["componentList"].length ? false : true;
 
-          ScreenList[index] = {
-            ...ScreenList[index],
-            checked: true,
-            algaeh_m_screen_role_privilage_mapping_id:
-              item.algaeh_m_screen_role_privilage_mapping_id
-            // indeterminate: indeterminate
-          };
+            ScreenList[index] = {
+              ...ScreenList[index],
+              checked: true,
+              algaeh_m_screen_role_privilage_mapping_id:
+                item.algaeh_m_screen_role_privilage_mapping_id
+              // indeterminate: indeterminate
+            };
 
-          if (item.componentList.length > 0) {
-            ScreenList[index]["componentList"].map(screen => {
-              const _findComponent = _.find(
-                item.componentList,
-                m =>
-                  m.algaeh_d_app_component_id ===
-                  screen.algaeh_d_app_component_id
-              );
-              const indexS = ScreenList[index]["componentList"].indexOf(screen);
-              if (_findComponent !== undefined) {
-                ScreenList[index]["componentList"][indexS] = {
-                  ...ScreenList[index]["componentList"][indexS],
-                  checked: false,
-                  algaeh_m_component_screen_privilage_mapping_id:
-                    _findComponent.algaeh_m_component_screen_privilage_mapping_id
-                };
-              } else {
-                ScreenList[index]["componentList"][indexS] = {
-                  ...ScreenList[index]["componentList"][indexS],
-                  checked: true
-                };
+            if (item.componentList.length > 0) {
+              ScreenList[index]["componentList"].map(screen => {
+                const _findComponent = _.find(
+                  item.componentList,
+                  m =>
+                    m.algaeh_d_app_component_id ===
+                    screen.algaeh_d_app_component_id
+                );
+                const indexS = ScreenList[index]["componentList"].indexOf(screen);
+                if (_findComponent !== undefined) {
+                  ScreenList[index]["componentList"][indexS] = {
+                    ...ScreenList[index]["componentList"][indexS],
+                    checked: false,
+                    algaeh_m_component_screen_privilage_mapping_id:
+                      _findComponent.algaeh_m_component_screen_privilage_mapping_id
+                  };
+                } else {
+                  ScreenList[index]["componentList"][indexS] = {
+                    ...ScreenList[index]["componentList"][indexS],
+                    checked: true
+                  };
+                }
+              });
+            } else {
+              if (ScreenList[index]["componentList"].length > 0) {
+                ScreenList[index]["componentList"].map(screen => {
+                  const indexS = ScreenList[index]["componentList"].indexOf(screen);
+
+                  ScreenList[index]["componentList"][indexS] = {
+                    ...ScreenList[index]["componentList"][indexS],
+                    checked: true
+                  };
+                });
               }
-            });
-          } else {
-            ScreenList[index]["componentList"].map(screen => {
-              const indexS = ScreenList[index]["componentList"].indexOf(screen);
-
-              ScreenList[index]["componentList"][indexS] = {
-                ...ScreenList[index]["componentList"][indexS],
-                checked: true
-              };
-            });
+            }
           }
         });
         // ScreenList = ScreenList.concat(data)
