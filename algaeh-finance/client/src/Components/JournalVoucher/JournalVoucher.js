@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal } from "antd";
-import CostCenter from "../costCenterComponent";
+// import CostCenter from "../costCenterComponent";
 import moment from "moment";
 import "./JournalVoucher.scss";
 import {
@@ -24,7 +24,7 @@ import PaymentComponent from "./PaymentComponent";
 import AccountsDrawer from "./AccountDrawer";
 
 import { getCookie } from "../../utils/algaehApiCall";
-let records_av = {};
+// let records_av = {};
 let dataPayment = [
   { value: "journal", label: "Journal" },
   { label: "Contra", value: "contra" },
@@ -104,7 +104,7 @@ export default function JournalVoucher() {
         setbranchData(result)
       })
     }
-  }, [voucherType]);
+  }, [voucherType, drawer]);
 
   const show = voucherType === "receipt" || voucherType === "payment";
 
@@ -258,7 +258,7 @@ export default function JournalVoucher() {
       // ...costcenter,
       ...payment,
       from_screen: getCookie("ScreenCode"),
-      hospital_id: getCookie("HospitalId"),
+      // hospital_id: getCookie("HospitalId"),
       details: journerList,
       narration: narration
     })

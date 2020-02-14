@@ -23,8 +23,8 @@ import { newAlgaehApi } from "../../../hooks";
 import "../alice.scss";
 
 function AllAccounts({ title, inDrawer }) {
-  const [symbol, setSymbol] = useState("");
-  const [financeHeadId, setFinanceHeadId] = useState(undefined);
+  // const [symbol, setSymbol] = useState("");
+  // const [financeHeadId, setFinanceHeadId] = useState(undefined);
   const [treeData, setTreeData] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [selectedNode, setSelectedNode] = useState({});
@@ -222,8 +222,8 @@ function AllAccounts({ title, inDrawer }) {
               {JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
                 <i className="fas fa-times" />
               ) : (
-                <i className="fas fa-pen" />
-              )}
+                  <i className="fas fa-pen" />
+                )}
             </li>
 
             <li
@@ -315,11 +315,11 @@ function AllAccounts({ title, inDrawer }) {
                   defaultValue={node.title}
                 />
               ) : (
-                node.title
-              )
+                  node.title
+                )
             ) : (
-              node.title
-            )}
+                node.title
+              )}
             {node.leafnode === "Y" ? null : (
               <>/{node.children === undefined ? 0 : node.children.length}</>
             )}
@@ -336,7 +336,7 @@ function AllAccounts({ title, inDrawer }) {
             {node.subtitle === undefined ? "0.00" : node.subtitle}
           </span>
           <small>
-            {node.trans_symbol === undefined ? symbol : node.trans_symbol}
+            {node.trans_symbol === undefined ? "" : node.trans_symbol}
           </small>
         </div>
       ),
@@ -344,8 +344,8 @@ function AllAccounts({ title, inDrawer }) {
         node.created_status === "S"
           ? "systemGen"
           : node.leafnode === "Y"
-          ? ""
-          : "accGroup"
+            ? ""
+            : "accGroup"
     };
   };
 
@@ -400,7 +400,7 @@ function AllAccounts({ title, inDrawer }) {
                   onClick={() => {
                     setSelectedNode({
                       node: {
-                        finance_account_head_id: financeHeadId,
+                        // finance_account_head_id: financeHeadId,
                         parent_acc_id: assetCode
                       }
                     });
@@ -425,7 +425,7 @@ function AllAccounts({ title, inDrawer }) {
                     const values =
                       searchFocusIndex !== undefined
                         ? (searchFoundCount + searchFocusIndex - 1) %
-                          searchFoundCount
+                        searchFoundCount
                         : searchFoundCount - 1;
                     setSearchFocusIndex(values);
                   }}

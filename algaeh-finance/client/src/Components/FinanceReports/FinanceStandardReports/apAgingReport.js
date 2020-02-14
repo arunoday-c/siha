@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { Row, Col } from "antd";
+// import { Row, Col } from "antd";
 import "./antTableCustomStyle.scss";
 
 import { AlgaehDataGrid } from "algaeh-react-components";
@@ -10,7 +10,7 @@ export default function ApAging({ style, result, footer, layout }) {
   const createPrintObject = useRef(undefined);
   const [apAgingData, setData] = useState([]);
   const [apAgingDataFooter, setFooterData] = useState({});
-  useEffect(function() {
+  useEffect(function () {
     algaehApiCall({
       uri: `/financeReports/getAccountPayableAging`,
       method: "GET",

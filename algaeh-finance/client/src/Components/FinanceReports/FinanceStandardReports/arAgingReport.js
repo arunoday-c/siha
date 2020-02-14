@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { Row, Col } from "antd";
+// import { Row, Col } from "antd";
 import "./antTableCustomStyle.scss";
 import { AlgaehDataGrid } from "algaeh-react-components";
 // import { Button } from "algaeh-react-components";
@@ -11,7 +11,7 @@ export default function ArAging({ style, result, footer, layout }) {
 
   const [arAgingData, setData] = useState([]);
   const [arAgingDataFooter, setFooterData] = useState({});
-  useEffect(function() {
+  useEffect(function () {
     algaehApiCall({
       uri: `/financeReports/getAccountReceivableAging`,
       method: "GET",

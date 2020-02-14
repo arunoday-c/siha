@@ -74,7 +74,7 @@ export default function AddNewAccount({
     if (accountType) {
       setAccountType(accountType);
     }
-  }, [accountName, accountType, openingBal, selectedNode, accountCode]);
+  }, [accountName, accountType, openingBal, selectedNode, accountCode, ledgerCode]);
 
   function onCancel() {
     setLoadingAddtoList(false);

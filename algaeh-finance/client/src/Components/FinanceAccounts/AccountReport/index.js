@@ -8,7 +8,7 @@ import {
   AlgaehMessagePop
 } from "algaeh-react-components";
 import moment from "moment";
-import CostCenter from "../../costCenterComponent";
+// import CostCenter from "../../costCenterComponent";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 let resultdata = {};
 export default memo(function Modal(props) {
