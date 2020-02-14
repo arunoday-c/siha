@@ -534,8 +534,8 @@ export default {
                     _mysql
                       .executeQuery({
                         query: "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
-                        document_number, from_screen, narration,  invoice_no, entered_date, entered_by) \
-                        VALUES (?,?,?,?,?,?,?,?,?,?)",
+                        document_number, from_screen, narration,  invoice_no, due_date, entered_date, entered_by) \
+                        VALUES (?,?,?,?,?,?,?,?,?,?,?)",
                         values: [
                           new Date(),
                           headerResult[0].net_payable,
@@ -545,6 +545,7 @@ export default {
                           inputParam.ScreenCode,
                           "Receipt Generated " + + headerResult[0].vendor_name + "/" + headerResult[0].net_payable,
                           headerResult[0].inovice_number,
+                          inputParam.due_date,
                           new Date(),
                           req.userIdentity.algaeh_d_app_user_id
                         ],

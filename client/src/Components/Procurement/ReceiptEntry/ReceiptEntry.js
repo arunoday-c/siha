@@ -275,7 +275,7 @@ class ReceiptEntry extends Component {
                   <AlgaehLabel label={{ forceLabel: "Payment Terms" }} />
                   <h6>
                     {this.state.payment_terms
-                      ? this.state.payment_terms
+                      ? this.state.payment_terms + " days"
                       : "0 days"}
                   </h6>
                 </div>

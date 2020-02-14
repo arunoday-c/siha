@@ -284,7 +284,8 @@ const SaveReceiptEnrty = $this => {
           year: response.data.records.year,
           period: response.data.records.period,
           saveEnable: true,
-          postEnable: false
+          postEnable: false,
+          dataExitst: true
         });
         swalMessage({
           type: "success",
@@ -518,6 +519,8 @@ const PostReceiptEntry = $this => {
 
   Inputobj.posted = "Y";
   Inputobj.ScreenCode = getCookie("ScreenCode")
+  Inputobj.due_date = moment($this.state.invoice_date, "YYYY-MM-DD")
+    .add($this.state.payment_terms, "days").format("YYYY-MM-DD")
 
   algaehApiCall({
     uri: "/ReceiptEntry/postReceiptEntry",
