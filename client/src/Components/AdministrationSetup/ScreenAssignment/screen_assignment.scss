@@ -35,10 +35,7 @@
     }
     /* make ALL links (main and submenu) have padding and background color */
     .mainmenu {
-      min-height: 46vh;
-      max-height: 46vh;
-      min-height: 46vh;
-      max-height: 46vh;
+      max-height: 38vh;
       overflow-x: hidden;
       overflow-y: auto;
       li {
@@ -108,17 +105,6 @@
           line-height: 30px;
         }
       }
-    }
-
-    /* this is the initial state of all submenus.
-      we set it to max-height: 0, and hide the overflowed content.
-    */
-    &:first-child {
-      margin-right: 10px;
-    }
-    &:last-child {
-      margin-left: 10px;
-      background: #edfffd;
     }
   }
   .actionLeftRight {

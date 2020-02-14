@@ -216,6 +216,17 @@ class ScreenAssignment extends Component {
               }
             }}
           />
+          <div className="col">
+            {" "}
+            <button
+              type="button"
+              style={{ marginTop: 19 }}
+              className="btn btn-default"
+              onClick={this.clearState.bind(this)}
+            >
+              <AlgaehLabel label={{ forceLabel: "Clear" }} />
+            </button>
+          </div>
         </div>{" "}
         {this.state.ScreenList.length > 0 ? (
           <div className="row">
@@ -291,18 +302,26 @@ class ScreenAssignment extends Component {
                           })}
                         </ul>
                       </div>
+                    </div>
+
+                    <div className="col-12" style={{ textAlign: "right" }}>
                       <button
                         type="button"
-                        className="btn btn-primary"
+                        className="btn btn-primary margin-top-15"
                         onClick={this.assignScreens.bind(this)}
                       >
                         <AlgaehLabel label={{ forceLabel: "Assign" }} />
                       </button>
                     </div>
                   </div>
+                </div>
+              </div>
+
+              <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="portlet-body">
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col-9 mandatory form-group" }}
+                      div={{ className: "col-10 mandatory" }}
                       label={{
                         forceLabel: "Assign Landing Screen",
                         isImp: true
@@ -319,16 +338,14 @@ class ScreenAssignment extends Component {
                         onChange: this.dropDownEvent.bind(this)
                       }}
                     />
-                    <div className="col">
+                    <div className="col-2">
                       <button
                         type="button"
                         className="btn btn-default"
                         onClick={assignLandingPage.bind(this)}
                         style={{ marginTop: 19 }}
                       >
-                        <AlgaehLabel
-                          label={{ forceLabel: "Set Landing Page" }}
-                        />
+                        <AlgaehLabel label={{ forceLabel: "Apply" }} />
                       </button>
                     </div>
                   </div>
@@ -349,7 +366,7 @@ class ScreenAssignment extends Component {
                     {" "}
                     <div className="col-12">
                       <div className="moduleList list-group-check">
-                        <ul className="mainmenu">
+                        <ul className="mainmenu" style={{ maxHeight: "58vh" }}>
                           {this.state.assignedScreenElements.map(element => {
                             const {
                               algaeh_app_screens_id,
@@ -438,12 +455,14 @@ class ScreenAssignment extends Component {
                           })}
                         </ul>
                       </div>
+                    </div>
+                    <div className="col-12" style={{ textAlign: "right" }}>
                       <Button
-                        className="btn btn-primary"
+                        className="btn btn-primary margin-top-15"
                         loading={this.state.loading_update_element}
                         onClick={updateScreenElementRoles.bind(this)}
                       >
-                        Update Elements
+                        Assign
                       </Button>
                     </div>
                   </div>
@@ -458,19 +477,6 @@ class ScreenAssignment extends Component {
             <p>To the define Screens/Component/Element/Authorizations</p>
           </div>
         )}
-        <div className="hptl-phase1-footer">
-          <div className="row">
-            <div className="col-lg-12">
-              <button
-                type="button"
-                className="btn btn-default"
-                onClick={this.clearState.bind(this)}
-              >
-                <AlgaehLabel label={{ forceLabel: "Clear" }} />
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     );
   }
