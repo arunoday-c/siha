@@ -213,12 +213,24 @@ export default {
                   // const balance = parseFloat(
                   //   parseFloat(income.subtitle) - parseFloat(expense.subtitle)
                   // ).toFixed(decimal_places);
+                  const totals = {};
+
+                  income.cost_centers.forEach(item => {
+                    const cost_center_id = item.cost_center_id.toString();
+                    const income_amount = income.outputArray[cost_center_id];
+                    const expense_amount = expense.outputArray[cost_center_id];
+
+                    totals[cost_center_id] = (
+                      parseFloat(income_amount) - parseFloat(expense_amount)
+                    ).toFixed(decimal_places);
+                  });
 
                   req.records = {
                     profit: 0,
                     cost_centers: income.cost_centers,
                     income: income.outputArray,
-                    expense: expense.outputArray
+                    expense: expense.outputArray,
+                    totals: totals
                   };
                   next();
                 })
