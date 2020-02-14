@@ -16,7 +16,7 @@ function CostCenter({
 }) {
   const [costCenterdata, setCostCenterData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [loadBranch, setLoadBranch] = useState(false);
+  // const [loadBranch, setLoadBranch] = useState(false);
   const [costCenter, setCostCenter] = useState(propCenterID);
   const [hims_d_hospital_id, setHims_d_hospital_id] = useState(propBranchID);
   const [branch, setBranch] = useState([]);
@@ -204,9 +204,6 @@ function CostCenter({
             },
             value: hims_d_hospital_id,
             onChange: HandleHospital,
-            others: {
-              loading: loadBranch
-            },
             onClear: () => {
               setHims_d_hospital_id(null);
               costCenterAssin({ branchID: null });
