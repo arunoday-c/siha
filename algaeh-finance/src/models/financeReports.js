@@ -165,8 +165,6 @@ export default {
       whrStr,
       costCenterQuery = "";
 
-    const input = req.query;
-
     _mysql
       .executeQuery({
         query:
@@ -210,9 +208,6 @@ export default {
                 costCenterQuery
               )
                 .then(expense => {
-                  // const balance = parseFloat(
-                  //   parseFloat(income.subtitle) - parseFloat(expense.subtitle)
-                  // ).toFixed(decimal_places);
                   const totals = {};
 
                   income.cost_centers.forEach(item => {
