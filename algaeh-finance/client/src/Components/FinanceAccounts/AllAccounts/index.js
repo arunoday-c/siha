@@ -404,7 +404,7 @@ function AllAccounts({ title, inDrawer }) {
                 <button className="btn btn-default btn-circle active">
                   <i className="fas fa-print" />
                 </button>
-                <button
+                {/* <button
                   className="btn btn-primary btn-circle active"
                   onClick={() => {
                     setSelectedNode({
@@ -418,7 +418,7 @@ function AllAccounts({ title, inDrawer }) {
                   }}
                 >
                   <i className="fas fa-plus" />
-                </button>
+                </button> */}
               </div>
               <div className="searchCntr">
                 <input
