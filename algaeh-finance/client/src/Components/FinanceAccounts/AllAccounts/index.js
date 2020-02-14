@@ -34,6 +34,7 @@ function AllAccounts({ title, inDrawer }) {
   const [isAccountHead, setIsAccountHead] = useState(false);
   const [editorRecord, setEditorRecord] = useState({});
   const [assetCode, setAssetCode] = useState(null);
+  const [isNewAccount, setNewAccount] = useState(false);
 
   function isExpOrInc(code) {
     //eslint-disable-next-line
@@ -85,6 +86,7 @@ function AllAccounts({ title, inDrawer }) {
         setEditorRecord({});
         stopLoad();
         setShowPopup(false);
+        setNewAccount(false)
         AlgaehMessagePop({
           type: "success",
           display: "Renamed successfull"
@@ -95,6 +97,7 @@ function AllAccounts({ title, inDrawer }) {
         console.log("error", error);
         stopLoad();
         setShowPopup(false);
+        setNewAccount(false)
         AlgaehMessagePop({
           type: "error",
           display: error
@@ -156,6 +159,7 @@ function AllAccounts({ title, inDrawer }) {
 
   function onClose(e) {
     setShowPopup(false);
+    setNewAccount(false)
     if (isAccountHead) {
       loadAccount();
       setIsAccountHead(false);
@@ -171,6 +175,7 @@ function AllAccounts({ title, inDrawer }) {
 
   function onEditClose() {
     setShowPopup(false);
+    setNewAccount(false)
     setEditorRecord({});
   }
 
@@ -197,6 +202,7 @@ function AllAccounts({ title, inDrawer }) {
                 console.log(rowInfo, "selected node");
                 setSelectedNode(rowInfo);
                 setShowPopup(true);
+                setNewAccount(true);
               }}
             >
               <i className="fas fa-plus"></i>
@@ -215,6 +221,7 @@ function AllAccounts({ title, inDrawer }) {
                   setEditorRecord(rowInfo);
                   if (!isExpOrInc(rowInfo.parentNode.root_id)) {
                     setShowPopup(true);
+                    setNewAccount(false)
                   }
                 }
               }}
@@ -359,6 +366,7 @@ function AllAccounts({ title, inDrawer }) {
         accountCode={assetCode}
         onClose={editorRecord.node ? onEditClose : onClose}
         accountName={editorRecord.node ? editorRecord.node.title : ""}
+        ledgerCode={editorRecord.node ? editorRecord.node.ledger_code : ""}
         propOnOK={editorRecord.node ? editChild : null}
         okText={editorRecord.node ? "Change" : "Add"}
         accountType={
@@ -368,6 +376,7 @@ function AllAccounts({ title, inDrawer }) {
               : "G"
             : ""
         }
+        isNewAccount={isNewAccount}
         openingBal={editorRecord.node ? editorRecord.node.subtitle : ""}
       />
       {/* <ReportLauncher

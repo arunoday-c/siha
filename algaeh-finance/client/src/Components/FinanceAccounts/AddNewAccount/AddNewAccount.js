@@ -216,7 +216,7 @@ export default function AddNewAccount({
               }}
             />
 
-            {selectedNode.node.leafnode === "Y" ?
+            {(selectedNode.node !== undefined && selectedNode.node.leafnode === "Y") || account_type === "C" ?
               <AlgaehFormGroup
                 div={{
                   className: "col form-group"
@@ -256,7 +256,7 @@ export default function AddNewAccount({
                 },
                 placeholder: " Enter Account Name",
                 autoComplete: false,
-                disabled: isNewAccount === true ? false : selectedNode.node.created_status === "S" ? true : false
+                disabled: isNewAccount === true ? false : selectedNode.node !== undefined && selectedNode.node.created_status === "S" ? true : false
               }}
             />
           </div>
