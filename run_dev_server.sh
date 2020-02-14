@@ -57,7 +57,7 @@ startServer () {
   #startServer "./Sales" "sales"  
 
   # Finance MOdules # 
-  #startServer "./algaeh-finance" "finance"  
+  startServer "./algaeh-finance" "finance"  
 
 
 
