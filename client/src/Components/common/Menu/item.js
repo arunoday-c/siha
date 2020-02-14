@@ -48,7 +48,7 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
       let result = [];
       userMenu.filter(f => {
         let screens = [];
-        f.ScreenList.filter(s => {
+        const filScren = f.ScreenList.filter(s => {
           const { screen_name, s_other_language } = s;
           if (
             screen_name.toLowerCase().indexOf(value.toLowerCase()) > -1 ||
@@ -56,10 +56,10 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
               s_other_language.toLowerCase().indexOf(value.toLowerCase()) > -1)
           ) {
             screens.push(s);
-          }
+            return true;
+          } else return false;
         });
-
-        result.push({ ...f, ScreenList: screens });
+        if (filScren.length > 0) result.push({ ...f, ScreenList: screens });
       });
       setModules(() => {
         return result;
