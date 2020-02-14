@@ -568,8 +568,17 @@ const getDeliveryForReceipt = ($this, row) => {
     },
     onSuccess: response => {
       if (response.data.success) {
+        debugger
         let data = response.data.records;
 
+        if (data.length === 0) {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: "No delivery note exists for selecetd PO.",
+            type: "warning"
+          });
+          return
+        }
         if (data !== null && data !== undefined) {
           for (let i = 0; i < data.length; i++) {
             data[i].extended_cost = data[i].sub_total;
