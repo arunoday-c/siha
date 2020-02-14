@@ -179,20 +179,20 @@ export default {
             case "P":
               selectStr = " ,VD.project_id as cost_center_id ";
               whrStr = " and VD.project_id= ";
-              costCenterQuery = `select hims_d_project_id as cost_center_id ,project_desc  as cost_center from hims_d_project where pjoject_status='A';
+              costCenterQuery = `select hims_d_project_id as cost_center_id ,project_desc  as cost_center   from hims_d_project where pjoject_status='A';
              `;
               break;
             case "SD":
               selectStr = " ,VD.sub_department_id as cost_center_id ";
               whrStr = " and  VD.sub_department_id = ";
 
-              costCenterQuery = `  select hims_d_sub_department_id as cost_center_id ,sub_department_name  as cost_center from hims_d_sub_department where record_status='A';  `;
+              costCenterQuery = `  select hims_d_sub_department_id as cost_center_id ,sub_department_name  as cost_center  from hims_d_sub_department where record_status='A';  `;
 
               break;
             case "B":
               selectStr = " ,VD.hospital_id as cost_center_id ";
               whrStr = " and VD.hospital_id=  ";
-              costCenterQuery = ` select  hims_d_hospital_id as cost_center_id ,hospital_name as cost_center from hims_d_hospital where record_status='A';`;
+              costCenterQuery = ` select  hims_d_hospital_id as cost_center_id ,hospital_name as cost_center  from hims_d_hospital where record_status='A';`;
           }
           getAccountHeadsForProfitAndLoss(
             decimal_places,
@@ -216,8 +216,9 @@ export default {
 
                   req.records = {
                     profit: 0,
-                    income: income,
-                    expense: expense
+                    cost_centers: income.cost_centers,
+                    income: income.outputArray,
+                    expense: expense.outputArray
                   };
                   next();
                 })
@@ -1846,10 +1847,10 @@ function getAccountHeadsForProfitAndLoss(
   const _mysql = new algaehMysql();
 
   return new Promise((resolve, reject) => {
-    if (finance_account_head_id > 0 && finance_account_head_id < 6) {
+    if (finance_account_head_id == 4 || finance_account_head_id == 5) {
       const default_total = parseFloat(0).toFixed(decimal_places);
       let trans_symbol = "Cr.";
-      if (finance_account_head_id == 1 || finance_account_head_id == 5) {
+      if (finance_account_head_id == 5) {
         trans_symbol = "Dr.";
       }
 
@@ -1928,7 +1929,7 @@ function getAccountHeadsForProfitAndLoss(
                 decimal_places
               );
 
-              resolve(outputArray);
+              resolve({ outputArray: outputArray[0], cost_centers: result[2] });
               // utilities.logger().log("headObj:", headObj);
             })
             .catch(e => {
@@ -2037,6 +2038,7 @@ function buildHierarchyForProfitAndLoss(
   try {
     // const onlyChilds = [];
     const utilities = new algaehUtilities();
+
     let roots = [],
       children = {};
 
@@ -2056,7 +2058,7 @@ function buildHierarchyForProfitAndLoss(
           children[item.finance_account_head_id] ||
           (children[item.finance_account_head_id] = []);
 
-        let subtitleArray = [];
+        let subtitleObj = {};
 
         for (let child in child_data) {
           //ST---calulating Amount
@@ -2074,19 +2076,13 @@ function buildHierarchyForProfitAndLoss(
                 decimal_places
               );
 
-              subtitleArray.push({
-                cost_center_id: child,
-                amount: amount
-              });
+              subtitleObj[child] = amount;
             } else {
               amount = parseFloat(BALANCE.cred_minus_deb).toFixed(
                 decimal_places
               );
 
-              subtitleArray.push({
-                cost_center_id: child,
-                amount: amount
-              });
+              subtitleObj[child] = amount;
             }
           }
         }
@@ -2095,7 +2091,7 @@ function buildHierarchyForProfitAndLoss(
         child.push({
           finance_account_child_id: item["finance_account_child_id"],
           trans_symbol: trans_symbol,
-          subtitle: subtitleArray,
+          ...subtitleObj,
           title: item.child_name,
           label: item.child_name,
           head_id: item["head_id"],
@@ -2109,7 +2105,7 @@ function buildHierarchyForProfitAndLoss(
         });
 
         if (!data) {
-          let subtitleArray = [];
+          let subtitleObj = {};
           //ST---calulating Amount
           for (let head in head_data) {
             const BALANCE = head_data[head].find(f => {
@@ -2121,17 +2117,11 @@ function buildHierarchyForProfitAndLoss(
               if (trans_symbol == "Dr.") {
                 amount = BALANCE.deb_minus_cred;
 
-                subtitleArray.push({
-                  cost_center_id: head,
-                  amount: amount
-                });
+                subtitleObj[head] = amount;
               } else {
                 amount = BALANCE.cred_minus_deb;
 
-                subtitleArray.push({
-                  cost_center_id: head,
-                  amount: amount
-                });
+                subtitleObj[head] = amount;
               }
             }
           }
@@ -2141,7 +2131,7 @@ function buildHierarchyForProfitAndLoss(
           target.push({
             ...item,
             trans_symbol: trans_symbol,
-            subtitle: subtitleArray,
+            ...subtitleObj,
             title: item.account_name,
             label: item.account_name,
 
@@ -2149,7 +2139,7 @@ function buildHierarchyForProfitAndLoss(
           });
         }
       } else {
-        let subtitleArray = [];
+        let subtitleObj = {};
         //ST---calulating Amount
         for (let head in head_data) {
           const BALANCE = head_data[head].find(f => {
@@ -2161,17 +2151,11 @@ function buildHierarchyForProfitAndLoss(
             if (trans_symbol == "Dr.") {
               amount = BALANCE.deb_minus_cred;
 
-              subtitleArray.push({
-                cost_center_id: head,
-                amount: amount
-              });
+              subtitleObj[head] = amount;
             } else {
               amount = BALANCE.cred_minus_deb;
 
-              subtitleArray.push({
-                cost_center_id: head,
-                amount: amount
-              });
+              subtitleObj[head] = amount;
             }
           }
         }
@@ -2181,7 +2165,7 @@ function buildHierarchyForProfitAndLoss(
         target.push({
           ...item,
           trans_symbol: trans_symbol,
-          subtitle: subtitleArray,
+          ...subtitleObj,
           title: item.account_name,
           label: item.account_name,
 
