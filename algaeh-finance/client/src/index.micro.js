@@ -7,6 +7,11 @@ import FinanceOptions from "./Components/FinanceOptions";
 import CostCenter from "./Components/CostCenterPage";
 import CostCenterMaster from "./Components/CostCenterMaster";
 import JournalAuthorization from "./Components/JournalAuthorization";
+import QuickSearchFinance from "./Components/QuickSearchFinance";
+import CustomerListFinance from "./Components/CustomerListFinance";
+import CustomerPayment from "./Components/CustomerPayment";
+import SupplierListFinance from "./Components/SupplierListFinance";
+import SupplierPayment from "./Components/SupplierPayment";
 import "react-sortable-tree/style.css";
 const Pages = {
   Accounts,
@@ -17,7 +22,12 @@ const Pages = {
   FinanceOptions,
   CostCenter,
   CostCenterMaster,
-  JournalAuthorization
+  JournalAuthorization,
+  QuickSearchFinance,
+  CustomerListFinance,
+  CustomerPayment,
+  SupplierListFinance,
+  SupplierPayment
 };
 
 window.FinanceComponent = Pages;

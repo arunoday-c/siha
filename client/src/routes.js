@@ -801,6 +801,31 @@ const appRoutes = [
     component: <FinanceFragment path="FinanceOptions" />
   },
   {
+    path: "/QuickSearchFinance",
+    isExactPath: true,
+    component: <FinanceFragment path="QuickSearchFinance" />
+  },
+  {
+    path: "/CustomerListFinance",
+    isExactPath: true,
+    component: <FinanceFragment path="CustomerListFinance" />
+  },
+  {
+    path: "/CustomerPayment",
+    isExactPath: true,
+    component: <FinanceFragment path="CustomerPayment" />
+  },
+  {
+    path: "/SupplierListFinance",
+    isExactPath: true,
+    component: <FinanceFragment path="SupplierListFinance" />
+  },
+  {
+    path: "/SupplierPayment",
+    isExactPath: true,
+    component: <FinanceFragment path="SupplierPayment" />
+  },
+  {
     path: "/NurseWorkbench",
     isExactPath: true,
     component: <NurseWorkbench />

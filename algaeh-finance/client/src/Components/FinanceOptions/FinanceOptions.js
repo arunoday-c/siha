@@ -23,7 +23,7 @@ export default function FinanceOptions(props) {
       } catch (e) {
         AlgaehMessagePop({
           info: "error",
-          display: e.response.data.message
+          display: e.message || e.response.data.message
         });
       }
     }
@@ -40,7 +40,7 @@ export default function FinanceOptions(props) {
       .catch(e =>
         AlgaehMessagePop({
           info: "error",
-          display: e.response.data.message
+          display: e.message || e.response.data.message
         })
       );
   }, [finOptions.default_branch_id]);
