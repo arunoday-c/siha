@@ -2092,7 +2092,7 @@ function buildHierarchyForProfitAndLoss(
           finance_account_child_id: item["finance_account_child_id"],
           trans_symbol: trans_symbol,
           ...subtitleObj,
-          title: item.child_name,
+
           label: item.child_name,
           head_id: item["head_id"],
 
@@ -2132,7 +2132,7 @@ function buildHierarchyForProfitAndLoss(
             ...item,
             trans_symbol: trans_symbol,
             ...subtitleObj,
-            title: item.account_name,
+
             label: item.account_name,
 
             leafnode: "N"
@@ -2166,7 +2166,7 @@ function buildHierarchyForProfitAndLoss(
           ...item,
           trans_symbol: trans_symbol,
           ...subtitleObj,
-          title: item.account_name,
+
           label: item.account_name,
 
           leafnode: "N"

@@ -9,6 +9,7 @@ import ApAging from "./FinanceStandardReports/apAgingReport";
 import CostCenter from "../costCenterComponent";
 import { getBalanceSheet } from "./FinanceReportEvents";
 import { newAlgaehApi } from "../../hooks";
+import PandLCostCenter from "./FinanceStandardReports/pandLCostCenter";
 let resultdata = {};
 
 function layoutReducer(state, action) {
@@ -66,14 +67,12 @@ export default function FinanceReports() {
   }
 
   function costCenterAssin({ projectID, branchID }) {
-    if (projectID !== undefined)
-      setProjectID(projectID);
-    if (branchID !== undefined)
-      setBranchID(branchID);
+    if (projectID !== undefined) setProjectID(projectID);
+    if (branchID !== undefined) setBranchID(branchID);
   }
 
   function loadData({ profitLoss }) {
-    setData(profitLoss)
+    setData(profitLoss);
   }
 
   function loadReport(report) {
@@ -205,6 +204,16 @@ export default function FinanceReports() {
                 >
                   AP Aging
                 </li>
+                <li
+                  className={selectedClass("PandL")}
+                  onClick={() => {
+                    if (checkExists()) {
+                      setSelected("PandL");
+                    }
+                  }}
+                >
+                  P and L Cost center based
+                </li>
               </ul>
             </div>
             <div className="col reportPreviewSecLeft">
@@ -226,8 +235,8 @@ export default function FinanceReports() {
                         result={resultdata}
                         costCenterAssin={costCenterAssin}
                         loadData={loadData}
-                      // propCenterID={String(finOptions.default_cost_center_id)}
-                      // propBranchID={String(finOptions.default_branch_id)}
+                        // propCenterID={String(finOptions.default_cost_center_id)}
+                        // propBranchID={String(finOptions.default_branch_id)}
                       />
                     </div>
 
@@ -244,6 +253,8 @@ export default function FinanceReports() {
                   <ArAging layout={layout} />
                 ) : selected === "AP" ? (
                   <ApAging layout={layout} />
+                ) : selected === "PandL" ? (
+                  <PandLCostCenter />
                 ) : null}
               </Spin>
             </div>
@@ -271,17 +282,17 @@ export default function FinanceReports() {
                     </Tooltip>
                   </li>
                 ) : (
-                    <li>
-                      <Tooltip title="Shrink" placement="left">
-                        <Button
-                          icon="shrink"
-                          size="large"
-                          disabled={!selected}
-                          onClick={() => layoutDispatch({ type: "collapse" })}
-                        />
-                      </Tooltip>
-                    </li>
-                  )}
+                  <li>
+                    <Tooltip title="Shrink" placement="left">
+                      <Button
+                        icon="shrink"
+                        size="large"
+                        disabled={!selected}
+                        onClick={() => layoutDispatch({ type: "collapse" })}
+                      />
+                    </Tooltip>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
