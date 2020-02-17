@@ -85,7 +85,10 @@ export default function() {
               if (success === true) {
                 setCookie("userName", records.user_display_name);
                 // setCookie("keyResources", records.keyResources, 30);
-                setCookie("authToken",records.token);
+                setCookie("authToken", records.token);
+                sockets.emit("authentication", {
+                  token: records.token
+                });
                 sessionStorage.setItem(
                   "keyData",
                   AlgaehCloseContainer(JSON.stringify(records.keyData))
@@ -177,7 +180,12 @@ export default function() {
                                   "userName",
                                   records.user_display_name
                                 );
-                                setCookie("authToken",records.token);
+                                setCookie("authToken", records.token);
+                                debugger;
+                                sockets.emit("authentication", {
+                                  token: records.token
+                                });
+
                                 // setCookie(
                                 //   "keyResources",
                                 //   records.keyResources,

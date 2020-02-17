@@ -23,8 +23,8 @@ class PersistentDrawer extends React.Component {
     const Activated_Modueles =
       sessionStorage.getItem("ModuleDetails") !== null
         ? JSON.parse(
-          AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-        )
+            AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+          )
         : [];
     let Hims_active = false;
     let Hrms_active = false;
@@ -91,6 +91,7 @@ class PersistentDrawer extends React.Component {
       Lab_active: Lab_active,
       Rad_active: Rad_active
     };
+    this.sockets = sockets;
     const _userName = getCookie("userName");
     // const _keyResources = getCookie("keyResources");
     if (_userName === null || _userName === "") {
@@ -99,7 +100,9 @@ class PersistentDrawer extends React.Component {
     // if (_keyResources === null || _keyResources === "") {
     //   window.location.hash = "";
     // }
+  }
 
+  componentDidMount() {
     algaehApiCall({
       uri: "/algaehMasters/getRoleBaseActiveModules",
       method: "GET",
@@ -167,14 +170,15 @@ class PersistentDrawer extends React.Component {
               menuList: dataResponse.data.records
             },
             () => {
-              if (sockets.connected) {
-                sockets.emit(
+              console.log(this.sockets.connected, "check");
+              if (this.sockets.connected) {
+                this.sockets.emit(
                   "user_logged",
                   getCookie("userName"),
                   this.state.menuList.map(module =>
                     module.module_code.toLowerCase()
                   ),
-                  getCookie("keyResources")
+                  getCookie("authToken")
                 );
               }
             }
@@ -188,9 +192,7 @@ class PersistentDrawer extends React.Component {
         });
       }
     });
-  }
 
-  componentDidMount() {
     let prevLang = getCookie("Language");
     if (prevLang !== "en") {
       this.setState({
@@ -346,16 +348,16 @@ class PersistentDrawer extends React.Component {
   handleDrawerClose = () => {
     const _activeNodes =
       this.state.activeNode.menuselected === "" &&
-        this.state.activeNode.lastSelected !== ""
+      this.state.activeNode.lastSelected !== ""
         ? {
-          activeNode: {
-            ...this.state.activeNode,
-            ...{
-              menuselected: this.state.activeNode.lastSelected,
-              lastSelected: ""
+            activeNode: {
+              ...this.state.activeNode,
+              ...{
+                menuselected: this.state.activeNode.lastSelected,
+                lastSelected: ""
+              }
             }
           }
-        }
         : {};
 
     this.setState({
@@ -377,11 +379,11 @@ class PersistentDrawer extends React.Component {
     const isModfySelect =
       this.state.activeNode.menuselected === data.module_code
         ? {
-          activeNode: {
-            ...this.state.activeNode,
-            ...{ menuselected: "", lastSelected: data.module_code }
+            activeNode: {
+              ...this.state.activeNode,
+              ...{ menuselected: "", lastSelected: data.module_code }
+            }
           }
-        }
         : {};
     _putData = isModfySelect.activeNode !== undefined ? "" : _putData;
     this.setState({ onlyToggeleMenu: _putData, ...isModfySelect });
@@ -522,8 +524,8 @@ class PersistentDrawer extends React.Component {
               {_menuSelected === menu.module_code || _toggle ? (
                 <i className="fas fa-angle-up" />
               ) : (
-                  <i className="fas fa-angle-down" />
-                )}
+                <i className="fas fa-angle-down" />
+              )}
             </div>
           </div>
           {_menuSelected === menu.module_code || _toggle ? (
@@ -590,8 +592,8 @@ class PersistentDrawer extends React.Component {
             {this.state.Hims_active === true ? (
               <p className="appLogoHIMSOnly" />
             ) : (
-                <p className="appLogoHRMSOnly" />
-              )}
+              <p className="appLogoHRMSOnly" />
+            )}
           </div>
 
           <h5 className="topNavbar-title mr-auto">
