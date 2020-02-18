@@ -4,7 +4,7 @@ import Menu from "../Menu";
 import { Result } from "algaeh-react-components";
 import { MainContext } from "algaeh-react-components/context";
 import { getItem, tokenDecode } from "algaeh-react-components/storage";
-export default function Layout({ path, children }) {
+export default function Layout({ path, noSecurityCheck, children }) {
   const {
     userLanguage,
     userToken,
@@ -38,8 +38,7 @@ export default function Layout({ path, children }) {
     }
   }, []);
   function checkHasAccessToPage() {
-    if (String(path).toLowerCase() === String("/NoDashboard").toLowerCase())
-      return true;
+    if (noSecurityCheck === true) return true;
     if (selectedMenu === null) return false;
     if (Object.keys(selectedMenu).length === 0) {
       return false;
