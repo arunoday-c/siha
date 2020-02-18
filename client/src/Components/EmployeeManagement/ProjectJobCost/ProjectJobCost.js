@@ -76,15 +76,15 @@ class ProjectJobCost extends Component {
         </div>
         <div className="ProjectJobCostSec">
           {//   this.state.pageDisplay === "EmployeeProjectRoster" ? (
-          //   <EmployeeProjectRoster />
-          // ) :
-          this.state.pageDisplay === "NewEmployeeProjectRoster" ? (
-            <NewEmployeeProjectRoster />
-          ) : this.state.pageDisplay === "ProjectPayroll" ? (
-            <ProjectPayroll />
-          ) : this.state.pageDisplay === "ProjectActivityMgmnt" ? (
-            <ProjectActivityMgmnt />
-          ) : null}
+            //   <EmployeeProjectRoster />
+            // ) :
+            this.state.pageDisplay === "NewEmployeeProjectRoster" ? (
+              <NewEmployeeProjectRoster />
+            ) : this.state.pageDisplay === "ProjectPayroll" ? (
+              <ProjectPayroll />
+            ) : this.state.pageDisplay === "ProjectActivityMgmnt" ? (
+              <ProjectActivityMgmnt />
+            ) : null}
         </div>
       </div>
     );

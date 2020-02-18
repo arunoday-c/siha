@@ -1089,9 +1089,9 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "update hims_f_lab_order set `status`=?, run_type=?, updated_date= ?, updated_by=?, comments=?, `critical_status`=?" +
+                  "update hims_f_lab_order set `status`=?, run_type=?, updated_date= ?, updated_by=?, comments=?, `critical_status`=? " +
                   strQuery +
-                  "where hims_f_lab_order_id=? ",
+                  " where hims_f_lab_order_id=?; ",
                 values: [
                   ref,
                   runtype[0],

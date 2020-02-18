@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./Notifications.scss";
+import { notification } from "antd";
 import { Header, Segment, Portal, Button } from "semantic-ui-react";
 // import isEqual from "lodash/isEqual";
 import alNotification from "../../Wrapper/algaehNotification.js";
@@ -41,6 +42,7 @@ export default class Notifications extends Component {
         );
       });
       this.socket.on("patient_added", patient => {
+        debugger;
         const time = this.formatTime(patient.appointment_from_time);
         const date = this.formatDate(patient.appointment_date);
         this.addToNotiList(
@@ -54,6 +56,11 @@ export default class Notifications extends Component {
           serStr = serStr + service;
         });
         this.addToNotiList(`The following services are ordered: ${serStr}`);
+      });
+
+      this.socket.on("/success", text => {
+        debugger;
+        this.addToNotiList(text);
       });
 
       this.socket.on("/leave/requested", text => {
@@ -77,6 +84,11 @@ export default class Notifications extends Component {
   addToNotiList = text => {
     const { notiList } = this.state;
     notiList.push(text);
+    // notification.open({
+    //   message: "Notification",
+    //   description: text,
+    //   duration: 6
+    // });
     this.setState(
       {
         notiList
@@ -116,8 +128,10 @@ export default class Notifications extends Component {
           <Segment>Notifications</Segment>
           <Segment.Group>
             {notiList.length !== 0 ? (
-              notiList.map(noti => (
-                <Segment className="notificationList">{noti}</Segment>
+              notiList.map((noti, index) => (
+                <Segment className="notificationList" key={index}>
+                  {noti}
+                </Segment>
               ))
             ) : (
               <Segment style={{ textAlign: "center" }}>

@@ -39,8 +39,13 @@ const texthandle = ($this, ctrl, e) => {
 
         sales_order_items: [],
         sales_order_services: [],
+        decimal_place: 2,
+        //  JSON.parse(
+        //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+        // ).decimal_places,
         saveEnable: true,
         dataExists: false,
+        hospital_id: null,
         sales_person_id: null,
         employee_name: null,
         delivery_date: null,
@@ -55,10 +60,16 @@ const texthandle = ($this, ctrl, e) => {
         uom_description: null,
         discount_percentage: 0,
         unit_cost: 0,
-        tax_percent: 0
+        tax_percent: 0,
+        organizations: []
       });
       break;
-
+    case "project_id":
+      $this.setState({
+        [name]: value,
+        organizations: e.selected.branches
+      });
+      break;
     default:
       $this.setState({
         [name]: value
@@ -218,7 +229,6 @@ const ClearData = ($this, e) => {
     sales_quotation_id: null,
     sales_order_number: null,
     sales_order_date: new Date(),
-    sales_order_mode: "I",
     reference_number: null,
     customer_id: null,
     quote_validity: null,
@@ -241,8 +251,10 @@ const ClearData = ($this, e) => {
     saveEnable: true,
     dataExists: false,
     dataExitst: false,
+    hospital_id: null,
     sales_person_id: null,
     employee_name: null,
+    delivery_date: null,
 
     addItemButton: true,
     item_description: "",
@@ -256,7 +268,8 @@ const ClearData = ($this, e) => {
     unit_cost: 0,
     tax_percent: 0,
     selectedData: false,
-    delivery_date: null
+    delivery_date: null,
+    organizations: []
     // services_required: "N"
   };
 
@@ -612,6 +625,20 @@ const CancelSalesServiceOrder = $this => {
     }
   });
 };
+
+const getCostCenters = $this => {
+  algaehApiCall({
+    uri: "/finance_masters/getCostCenters",
+    method: "GET",
+    module: "finance",
+
+    onSuccess: response => {
+      if (response.data.success === true) {
+        $this.setState({ cost_projects: response.data.result });
+      }
+    }
+  });
+};
 export {
   texthandle,
   datehandle,
@@ -625,5 +652,6 @@ export {
   employeeSearch,
   dateValidate,
   AuthorizeOrderEntry,
-  CancelSalesServiceOrder
+  CancelSalesServiceOrder,
+  getCostCenters
 };

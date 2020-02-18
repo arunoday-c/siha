@@ -35,7 +35,7 @@ const LoadSalaryPayment = ($this, e) => {
       }
 
       algaehApiCall({
-        uri: "/salary/getSalaryProcessToPay",
+        uri: "/salarypayment/getSalaryProcessToPay",
         module: "hrManagement",
         data: inputObj,
         method: "GET",
@@ -120,7 +120,7 @@ const PaySalary = $this => {
   };
   AlgaehLoader({ show: true });
   algaehApiCall({
-    uri: "/salary/SaveSalaryPayment",
+    uri: "/salarypayment/SaveSalaryPayment",
     module: "hrManagement",
     data: inputObj,
     method: "PUT",

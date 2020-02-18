@@ -1,6 +1,6 @@
 const apsock = socket => {
   socket.on("appointment_created", patient => {
-    console.log(patient);
+    console.log(patient, "patient");
     socket.broadcast.to("ftdsk").emit("refresh_appointment", patient);
     socket.broadcast
       .to(`${patient.provider_id}`)

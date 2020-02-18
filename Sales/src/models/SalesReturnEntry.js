@@ -371,7 +371,7 @@ export function generateAccountingEntry(req, res, next) {
                                         narration, invoice_no, cancel_transaction, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
                                             values: [
                                                 new Date(),
-                                                headerResult[0].net_payable,
+                                                headerResult[0].return_total,
                                                 "credit_note",
                                                 headerResult[0].hims_f_sales_return_header_id,
                                                 headerResult[0].sales_return_number,

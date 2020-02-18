@@ -1,5 +1,5 @@
 import React, { memo, useState } from "react";
-import "../infobar.scss";
+import "../../infobar.scss";
 import {
   AlgaehDataGrid,
   AlgaehMessagePop,

@@ -1,5 +1,5 @@
 import React, { memo, useState } from "react";
-import "../infobar.scss";
+import "../../infobar.scss";
 import {
   AlgaehDataGrid,
   AlgaehMessagePop,
@@ -247,7 +247,7 @@ export default memo(function(props) {
     <div className="row">
       <div className="col-12">
         <div className="row infoBar">
-          <div className="col">
+          <div className="col danger">
             <div className="text">
               <p>Overdue</p>
               0.00

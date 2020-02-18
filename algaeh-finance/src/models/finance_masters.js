@@ -488,5 +488,89 @@ export default {
         _mysql.releaseConnection();
         next(e);
       });
+  },
+
+  //created by irfan:
+  getCostCentersForVoucher: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const input = req.query;
+    _mysql
+      .executeQuery({
+        query: "SELECT cost_center_type  FROM finance_options limit 1; "
+      })
+      .then(result => {
+        if (result.length == 1) {
+          let strQuery = "";
+
+          switch (result[0]["cost_center_type"]) {
+            case "P":
+              strQuery = `select hims_m_division_project_id,   project_id as cost_center_id,
+                          P.project_desc as cost_center,hospital_name,H.hims_d_hospital_id
+                          from hims_m_division_project D inner join hims_d_project P 
+                          on D.project_id=P.hims_d_project_id 
+                          inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id ;`;
+              break;
+            case "SD":
+              strQuery = ` select  hims_m_branch_dept_map_id, hims_d_hospital_id, sub_department_id   as cost_center_id,
+            SD.sub_department_name as cost_center,hospital_name
+            from hims_m_branch_dept_map M inner join hims_d_sub_department SD
+            on M.sub_department_id=SD.hims_d_sub_department_id
+            inner join hims_d_hospital H on M.hospital_id=H.hims_d_hospital_id;  `;
+              break;
+            default:
+              strQuery = ` select hims_d_hospital_id,hospital_name,hims_d_hospital_id as cost_center_id
+                   ,hospital_name as cost_center from hims_d_hospital where record_status='A';`;
+          }
+
+          _mysql
+            .executeQuery({
+              query: strQuery,
+              printQuery: true
+            })
+            .then(results => {
+              _mysql.releaseConnection();
+
+              let branch = _.chain(results)
+                .groupBy(g => g.hims_d_hospital_id)
+                .value();
+              const output = [];
+
+              for (let b in branch) {
+                const cost_centers = [];
+                results.forEach(item => {
+                  if (item.hims_d_hospital_id == b) {
+                    cost_centers.push({
+                      cost_center: item.cost_center,
+                      cost_center_id: item.cost_center_id
+                    });
+                  }
+                });
+                output.push({
+                  hospital_name: branch[b][0]["hospital_name"],
+                  hims_d_hospital_id: branch[b][0]["hims_d_hospital_id"],
+                  cost_centers: cost_centers
+                });
+              }
+
+              req.records = output;
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: "Please Define cost center type"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };

@@ -32,12 +32,14 @@ export default function TrailBalaceReport({
       />
       <div ref={createPrintObject}>
         <div className="financeReportHeader">
-          <div>Client Name Here</div>
-          <div>Client Address Here</div>
+          <div>Twareat Medical Centre</div>
+          <div>
+            Al Fanar Mall، 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia
+          </div>
           <hr></hr>
           <h3>Trail Balance</h3>
           <p>
-            As on: <b>Date Here</b>
+            As on: <b>12/02/2020</b>
           </p>
         </div>
         <div className="reportTableStyle" style={{ border: "none" }}>

@@ -284,7 +284,8 @@ const SaveReceiptEnrty = $this => {
           year: response.data.records.year,
           period: response.data.records.period,
           saveEnable: true,
-          postEnable: false
+          postEnable: false,
+          dataExitst: true
         });
         swalMessage({
           type: "success",
@@ -518,6 +519,8 @@ const PostReceiptEntry = $this => {
 
   Inputobj.posted = "Y";
   Inputobj.ScreenCode = getCookie("ScreenCode")
+  Inputobj.due_date = moment($this.state.invoice_date, "YYYY-MM-DD")
+    .add($this.state.payment_terms, "days").format("YYYY-MM-DD")
 
   algaehApiCall({
     uri: "/ReceiptEntry/postReceiptEntry",
@@ -568,8 +571,17 @@ const getDeliveryForReceipt = ($this, row) => {
     },
     onSuccess: response => {
       if (response.data.success) {
+        debugger
         let data = response.data.records;
 
+        if (data.length === 0) {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: "No delivery note exists for selecetd PO.",
+            type: "warning"
+          });
+          return
+        }
         if (data !== null && data !== undefined) {
           for (let i = 0; i < data.length; i++) {
             data[i].extended_cost = data[i].sub_total;

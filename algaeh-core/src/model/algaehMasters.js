@@ -880,11 +880,11 @@ let getRoleBaseInActiveComponents = (req, res, next) => {
               inner join algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
               where  CRM.record_status='A' and C.record_status='A' and  M.record_status= 'A' and\
               S.record_status='A'  and CRM.role_id=?;\
-              SELECT   component_role_map_id, screen_element_code,screen_element_name,component_code,\
-          screen_code, module_code from algaeh_m_component_role_privilage_mapping CRM   \
+              SELECT   CRM.role_id, screen_element_code,screen_element_name,component_code,\
+          screen_code, module_code from   algaeh_m_component_role_privilage_mapping CRM   \
           inner join algaeh_m_scrn_elmnt_role_privilage_mapping SERM on \
-          CRM.algaeh_m_component_role_privilage_mapping_id=SERM.component_role_map_id \
-              inner join algaeh_d_app_scrn_elements  SE on SERM.screen_element_id=SE.algaeh_d_app_scrn_elements_id\
+          CRM.algaeh_m_component_role_privilage_mapping_id=SERM.role_id \
+              inner join algaeh_d_app_scrn_elements  SE on SERM.element_id=SE.algaeh_d_app_scrn_elements_id\
               inner join algaeh_d_app_component C on SE.component_id=C.algaeh_d_app_component_id  \
               inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
               inner join  algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\

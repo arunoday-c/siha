@@ -66,8 +66,23 @@ export function algaehApiCall(options) {
         },
         options
       );
-      if (settings.uri === null) {
-        return;
+    }
+
+    if (String(settings.method).toUpperCase() === "GET") {
+      let str = [];
+      let p = undefined;
+      for (p in settings.data) {
+        if (settings.data.hasOwnProperty(p)) {
+          if (settings.data[p] !== undefined) {
+            let _newData = settings.data[p];
+            if (typeof _newData === "object") {
+              _newData = JSON.stringify(_newData);
+            }
+            str.push(
+              encodeURIComponent(p) + "=" + encodeURIComponent(_newData)
+            );
+          }
+        }
       }
       let _baseUrl = settings.baseUrl;
       const _localaddress =

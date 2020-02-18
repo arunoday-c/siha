@@ -109,8 +109,8 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "REQEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS RH.*,date(RH.requistion_date) as requistion_date, \
-          FPL.location_description as from_location,\
-          TPL.location_description as to_location from hims_f_pharamcy_material_header RH,\
+          FPL.location_description  as 'FPL.location_description', \
+          TPL.location_description as 'TPL.location_description' from hims_f_pharamcy_material_header RH,\
           hims_d_pharmacy_location FPL, hims_d_pharmacy_location TPL \
           where FPL.hims_d_pharmacy_location_id = RH.from_location_id and \
           RH.to_location_id = TPL.hims_d_pharmacy_location_id and  RH.hospital_id=" +
@@ -139,8 +139,8 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "TransferEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS PH.*, FPL.location_description as from_location, \
-          TPL.location_description as to_location, date(PH.transfer_date) as transfer_date \
+          "select SQL_CALC_FOUND_ROWS PH.*, FPL.location_description  as 'FPL.location_description', \
+          TPL.location_description as 'TPL.location_description', date(PH.transfer_date) as transfer_date \
           from hims_f_pharmacy_transfer_header PH, hims_d_pharmacy_location FPL, hims_d_pharmacy_location TPL \
           where FPL.hims_d_pharmacy_location_id = PH.from_location_id and  \
           PH.to_location_id = TPL.hims_d_pharmacy_location_id ",
@@ -179,8 +179,8 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "InvREQEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS RH.*,date(RH.requistion_date) as requistion_date,\
-          FPL.location_description as from_location, \
-          TPL.location_description as to_location from hims_f_inventory_material_header RH,\
+          FPL.location_description  as 'FPL.location_description', \
+          TPL.location_description as 'TPL.location_description' from hims_f_inventory_material_header RH,\
           hims_d_inventory_location FPL, hims_d_inventory_location TPL \
           where FPL.hims_d_inventory_location_id = RH.from_location_id and \
           RH.to_location_id = TPL.hims_d_inventory_location_id and  RH.hospital_id=" +
@@ -190,8 +190,9 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "InvTransferEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS TH.*, FPL.location_description as from_location,   \
-          TPL.location_description as to_location,date(TH.transfer_date) as transfer_date from hims_f_inventory_transfer_header TH, \
+          "select SQL_CALC_FOUND_ROWS TH.*, FPL.location_description  as 'FPL.location_description', \
+          TPL.location_description as 'TPL.location_description' , \
+          date(TH.transfer_date) as transfer_date from hims_f_inventory_transfer_header TH, \
           hims_d_inventory_location FPL, hims_d_inventory_location TPL          \
           where FPL.hims_d_inventory_location_id = TH.from_location_id and           \
           TH.to_location_id = TPL.hims_d_inventory_location_id and  TH.hospital_id=" +
@@ -535,7 +536,7 @@ let algaehSearchConfig = (searchName, req) => {
           "select SQL_CALC_FOUND_ROWS H.*,date(H.consumption_date) as consumption_date, IL.location_description,\
             EMP.full_name as doctor_name  from hims_f_inventory_consumption_header H \
             inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = H.location_id  \
-            inner join hims_d_employee EMP on EMP.hims_d_employee_id = H.provider_id  \
+            left join hims_d_employee EMP on EMP.hims_d_employee_id = H.provider_id  \
             where H.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_inventory_consumption_header_id desc"
