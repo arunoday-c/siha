@@ -117,7 +117,8 @@ export function algaehApiCall(options) {
 
     if (String(settings.method).toUpperCase() === "GET") {
       let str = [];
-      for (let p in settings.data) {
+      let p = undefined;
+      for (p in settings.data) {
         if (settings.data.hasOwnProperty(p)) {
           if (settings.data[p] !== undefined) {
             let _newData = settings.data[p];

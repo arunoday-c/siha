@@ -212,7 +212,7 @@ export default function FinanceReports() {
                     }
                   }}
                 >
-                  P and L Cost center based
+                  P&L by Cost center
                 </li>
               </ul>
             </div>
