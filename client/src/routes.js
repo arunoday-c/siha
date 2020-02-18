@@ -1266,6 +1266,10 @@ const appRoutes = [
     path: "/ConcurrentTest",
     isExactPath: true,
     component: <ConcurrentTest />
+  },
+  {
+    path: "*",
+    component: <DefaultLandingPage />
   }
 ];
 
