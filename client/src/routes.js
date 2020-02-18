@@ -508,7 +508,7 @@ const QuotationCompare = React.lazy(() =>
 const DefaultLandingPage = React.lazy(() =>
   retry(() => import("./Components/Dashboard/defaultlandingPage"))
 );
-function LoadComponent({ match, children }) {
+function LoadComponent({ path, children }) {
   return (
     <Suspense
       fallback={
@@ -519,7 +519,7 @@ function LoadComponent({ match, children }) {
         </div>
       }
     >
-      <Layout>{children}</Layout>
+      <Layout path={path}>{children}</Layout>
     </Suspense>
   );
 }
@@ -1290,7 +1290,11 @@ function Routes() {
               render={params => {
                 if (routeItem.path === "/") return routeItem.component;
                 else {
-                  return <LoadComponent>{routeItem.component}</LoadComponent>;
+                  return (
+                    <LoadComponent path={path}>
+                      {routeItem.component}
+                    </LoadComponent>
+                  );
                 }
               }}
             />
