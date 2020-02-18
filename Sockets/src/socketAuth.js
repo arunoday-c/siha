@@ -10,9 +10,8 @@ export function authenticate(socket, data, callback) {
   //     header = utliites.AlgaehUtilities().decryption(header);
   //     req.userIdentity = { ...header, "x-branch": reqH["x-branch"] };
   //   }
-  console.log(_verify);
   if (!_verify) {
     return callback(new Error("Permission Denied"));
   }
-  return callback(null, _verify);
+  return callback(null, true);
 }

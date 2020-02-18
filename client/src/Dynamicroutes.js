@@ -26,7 +26,6 @@ import PatientPackages from "./Components/PatientPackages/PatientPackages";
 import AcknowledgeList from "./Components/Pharmacy/AcknowledgeList/AcknowledgeSwitch";
 import ExpiringItemList from "./Components/Pharmacy/ExpiringItemList/ExpiringItemList";
 import InvAcknowledgeList from "./Components/Inventory/InvAcknowledgeList/InvAcknowledgeSwitch";
-import DynamicDashboard from "./Components/Dashboard/dynamicDashboard";
 import FinanceFragment from "./Components/FinanceFragment";
 
 // Capital, Expense, Income, Liabili;
@@ -38,12 +37,20 @@ const FinanceReports = () => <FinanceFragment path="FinanceReports" />;
 const FinanceOptions = () => <FinanceFragment path="FinanceOptions" />;
 const CostCenter = () => <FinanceFragment path="CostCenter" />;
 const CostCenterMaster = () => <FinanceFragment path="CostCenterMaster" />;
+const QuickSearchFinance = () => <FinanceFragment path="QuickSearchFinance" />;
+const CustomerListFinance = () => (
+  <FinanceFragment path="CustomerListFinance" />
+);
+const CustomerPayment = () => <FinanceFragment path="CustomerPayment" />;
+const SupplierListFinance = () => (
+  <FinanceFragment path="SupplierListFinance" />
+);
+const SupplierPayment = () => <FinanceFragment path="SupplierPayment" />;
 const JournalAuthorization = () => (
   <FinanceFragment path="JournalAuthorization" />
 );
 const PageToPlot = {
   Dashboard: CommonDashboard,
-  //Dashboard: DynamicDashboard,
   1: React.lazy(() => retry(() => import("./Components/Dashboard/Dashboard"))),
   6: React.lazy(() => retry(() => import("./Components/Dashboard/Dashboard"))),
   7: React.lazy(() =>
@@ -528,9 +535,6 @@ const PageToPlot = {
   OrgChart: React.lazy(() =>
     retry(() => import("./Components/OrgChart/OrgChart"))
   ),
-  AppSetup: React.lazy(() =>
-    retry(() => import("./Components/AppSetup/AppSetup"))
-  ),
   PackageSetup: React.lazy(() =>
     retry(() => import("./Components/PackageSetup/PackageSetup"))
   ),
@@ -587,7 +591,12 @@ const PageToPlot = {
   FinanceOptions,
   JournalAuthorization,
   CostCenter,
-  CostCenterMaster
+  CostCenterMaster,
+  QuickSearchFinance,
+  CustomerListFinance,
+  CustomerPayment,
+  SupplierListFinance,
+  SupplierPayment
 };
 
 const DirectRoutes = React.memo(props => {

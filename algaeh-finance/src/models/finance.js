@@ -1456,80 +1456,80 @@ export default {
                   .then(closeBalance => {
                     let internal_eror = false;
                     //ST-closing balance CHECK
-                    // result.forEach(entry => {
-                    //   //checking debit balance for asset and expence
-                    //   if (
-                    //     (entry.root_id == 1 || entry.root_id == 5) &&
-                    //     entry.payment_type == "CR"
-                    //   ) {
-                    //     let ledger = closeBalance.find(f => {
-                    //       return f.child_id == entry.child_id;
-                    //     });
+                    result.forEach(entry => {
+                      //checking debit balance for asset and expence
+                      if (
+                        (entry.root_id == 1 || entry.root_id == 5) &&
+                        entry.payment_type == "CR"
+                      ) {
+                        let ledger = closeBalance.find(f => {
+                          return f.child_id == entry.child_id;
+                        });
 
-                    //     if (ledger != undefined) {
-                    //       const temp =
-                    //         parseFloat(ledger.deb_minus_cred) -
-                    //         parseFloat(entry.credit_amount);
+                        if (ledger != undefined) {
+                          const temp =
+                            parseFloat(ledger.deb_minus_cred) -
+                            parseFloat(entry.credit_amount);
 
-                    //       if (temp < 0) {
-                    //         internal_eror = true;
-                    //         req.records = {
-                    //           invalid_input: true,
-                    //           message: `${entry.child_name} doesn't have debit balance`
-                    //         };
-                    //         next();
-                    //         return;
-                    //       } else {
-                    //         ledger.deb_minus_cred = temp;
-                    //       }
-                    //     } else {
-                    //       internal_eror = true;
-                    //       req.records = {
-                    //         invalid_input: true,
-                    //         message: `${entry.child_name} doesn't have debit balance`
-                    //       };
-                    //       next();
-                    //       return;
-                    //     }
-                    //   }
-                    //   //checking credit balance for liabilty,capital and income
-                    //   else if (
-                    //     (entry.root_id == 2 ||
-                    //       entry.root_id == 3 ||
-                    //       entry.root_id == 4) &&
-                    //     entry.payment_type == "DR"
-                    //   ) {
-                    //     let ledger = closeBalance.find(f => {
-                    //       return f.child_id == entry.child_id;
-                    //     });
+                          if (temp < 0) {
+                            internal_eror = true;
+                            req.records = {
+                              invalid_input: true,
+                              message: `${entry.child_name} doesn't have debit balance`
+                            };
+                            next();
+                            return;
+                          } else {
+                            ledger.deb_minus_cred = temp;
+                          }
+                        } else {
+                          internal_eror = true;
+                          req.records = {
+                            invalid_input: true,
+                            message: `${entry.child_name} doesn't have debit balance`
+                          };
+                          next();
+                          return;
+                        }
+                      }
+                      //checking credit balance for liabilty,capital and income
+                      else if (
+                        (entry.root_id == 2 ||
+                          entry.root_id == 3 ||
+                          entry.root_id == 4) &&
+                        entry.payment_type == "DR"
+                      ) {
+                        let ledger = closeBalance.find(f => {
+                          return f.child_id == entry.child_id;
+                        });
 
-                    //     if (ledger != undefined) {
-                    //       const temp =
-                    //         parseFloat(ledger.cred_minus_deb) -
-                    //         parseFloat(entry.debit_amount);
+                        if (ledger != undefined) {
+                          const temp =
+                            parseFloat(ledger.cred_minus_deb) -
+                            parseFloat(entry.debit_amount);
 
-                    //       if (temp < 0) {
-                    //         internal_eror = true;
-                    //         req.records = {
-                    //           invalid_input: true,
-                    //           message: `${entry.child_name} doesn't have credit balance`
-                    //         };
-                    //         next();
-                    //         return;
-                    //       } else {
-                    //         ledger.deb_minus_cred = temp;
-                    //       }
-                    //     } else {
-                    //       internal_eror = true;
-                    //       req.records = {
-                    //         invalid_input: true,
-                    //         message: `${entry.child_name} doesn't have credit balance`
-                    //       };
-                    //       next();
-                    //       return;
-                    //     }
-                    //   }
-                    // });
+                          if (temp < 0) {
+                            internal_eror = true;
+                            req.records = {
+                              invalid_input: true,
+                              message: `${entry.child_name} doesn't have credit balance`
+                            };
+                            next();
+                            return;
+                          } else {
+                            ledger.deb_minus_cred = temp;
+                          }
+                        } else {
+                          internal_eror = true;
+                          req.records = {
+                            invalid_input: true,
+                            message: `${entry.child_name} doesn't have credit balance`
+                          };
+                          next();
+                          return;
+                        }
+                      }
+                    });
 
                     //END-closing balance CHECK
                     if (internal_eror == false) {
@@ -1675,10 +1675,10 @@ export default {
                     .executeQueryWithTransaction({
                       query:
                         "insert into finance_voucher_header (voucher_type,voucher_no,day_end_header_id,amount,\
-                            payment_date,narration,from_screen,posted_from,year,month,invoice_no,ref_no,cheque_date,cheque_amount)\
+                            payment_date,narration,from_screen,posted_from,year,month,invoice_no,ref_no,cheque_date,cheque_amount,due_date)\
                             select voucher_type,document_number,finance_day_end_header_id,amount,transaction_date,\
                             narration,from_screen,'D',year(transaction_date),month(transaction_date), \
-                            invoice_no,ref_no,cheque_date,cheque_amount\
+                            invoice_no,ref_no,cheque_date,cheque_amount,due_date\
                             from finance_day_end_header where finance_day_end_header_id=? ",
                       values: [input.finance_day_end_header_id],
                       printQuery: true
