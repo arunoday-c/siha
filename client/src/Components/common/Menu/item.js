@@ -45,15 +45,21 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
   function searchModuleText(e) {
     const value = e.target.value;
     if (value !== "") {
-      const result = userMenu.filter(f => {
-        const screens = f.ScreenList.filter(
-          s =>
-            s.screen_name.toLowerCase().indexOf(value.toLowerCase()) > -1 ||
-            s.s_other_language.toLowerCase().indexOf(value.toLowerCase()) > -1
-        );
-        if (screens.length > 0) {
-          return { ...f, ScreenList: screens };
-        }
+      let result = [];
+      userMenu.filter(f => {
+        let screens = [];
+        const filScren = f.ScreenList.filter(s => {
+          const { screen_name, s_other_language } = s;
+          if (
+            screen_name.toLowerCase().indexOf(value.toLowerCase()) > -1 ||
+            (s_other_language !== null &&
+              s_other_language.toLowerCase().indexOf(value.toLowerCase()) > -1)
+          ) {
+            screens.push(s);
+            return true;
+          } else return false;
+        });
+        if (filScren.length > 0) result.push({ ...f, ScreenList: screens });
       });
       setModules(() => {
         return result;
@@ -64,7 +70,9 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
 
   const moduleSelect = activeModule === "" ? openModule : activeModule;
   const screenSelected = activeScreen === "" ? openScreen : activeScreen;
-  const list = searchText === "" ? userMenu : modules;
+
+  const list =
+    searchText === "" ? (userMenu === null ? [] : userMenu) : modules;
 
   return (
     <div className={`animated leftNavCntr`}>

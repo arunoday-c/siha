@@ -310,10 +310,11 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT *,emp.full_name as doctor_name, bh.patient_payable as patient_payable_h  FROM hims_f_billing_header bh \
+            "SELECT *,emp.full_name as doctor_name, bh.patient_payable as patient_payable_h, VST.sub_department_id \
+             FROM hims_f_billing_header bh \
           left join hims_d_employee as emp on bh.incharge_or_provider = emp.hims_d_employee_id\
           inner join hims_f_patient as PAT on bh.patient_id = PAT.hims_d_patient_id\
-          inner join hims_f_patient_visit as vst on bh.visit_id = vst.hims_f_patient_visit_id\
+          inner join hims_f_patient_visit as VST on bh.visit_id = VST.hims_f_patient_visit_id\
           where bh.record_status='A' AND bh.bill_number='" +
             req.query.bill_number +
             "'",

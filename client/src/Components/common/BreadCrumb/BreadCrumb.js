@@ -41,17 +41,17 @@ class BreadCrumb extends PureComponent {
     if (this.props.soptlightSearch !== undefined) {
       return (
         <div className="col  margin-top-15">
-          <div className="row spotlightSearchBox">
+          <div
+            className="row spotlightSearchBox"
+            onClick={SearchDetails.bind(this, this)}
+          >
             <div className="col">
               <AlgaehLabel
                 label={{ forceLabel: this.props.soptlightSearch.label }}
               />
               <h6>{this.state.value ? this.state.value : "----------"}</h6>
             </div>
-            <div
-              className="col spotlightSearchIconBox"
-              onClick={SearchDetails.bind(this, this)}
-            >
+            <div className="col spotlightSearchIconBox">
               <i className="fas fa-search fa-lg" />
             </div>
           </div>

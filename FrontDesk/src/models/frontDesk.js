@@ -13,8 +13,8 @@ export default {
 
       let inputValues = [];
       let _stringData = "";
-      _stringData += " and hospital_id=?";
-      inputValues.push(req.userIdentity.hospital_id);
+      // _stringData += " and hospital_id=?";
+      // inputValues.push(req.userIdentity.hospital_id);
 
       if (input.hims_d_patient_id != null) {
         _stringData += " and hims_d_patient_id=?";

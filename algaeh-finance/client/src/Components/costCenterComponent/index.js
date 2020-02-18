@@ -10,60 +10,113 @@ function CostCenter({
   render,
   orgUrl,
   propBranchID,
-  propCenterID
+  propCenterID,
+  costCenterAssin,
+  loadData
 }) {
-  const [data, setData] = useState([]);
+  const [costCenterdata, setCostCenterData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [loadBranch, setLoadBranch] = useState(false);
+  // const [loadBranch, setLoadBranch] = useState(false);
   const [costCenter, setCostCenter] = useState(propCenterID);
   const [hims_d_hospital_id, setHims_d_hospital_id] = useState(propBranchID);
   const [branch, setBranch] = useState([]);
 
   useEffect(() => {
-    setLoadBranch(true);
+
+    setLoading(true);
     algaehApiCall({
-      uri: orgUrl || `/organization/getOrganizationByUser`,
+      uri: "/finance_masters/getCostCenters",
       method: "GET",
+      module: "finance",
+
       onSuccess: response => {
-        setLoadBranch(false);
+        setLoading(false);
         if (response.data.success === true) {
-          setBranch(response.data.records);
+          setCostCenterData(response.data.result);
         }
       },
       onCatch: error => {
-        setLoadBranch(false);
+        setLoading(false);
         console.log("error", error);
       }
     });
-  }, [orgUrl]);
+  }, [costCenter]);
 
-  useEffect(() => {
-    function onChangeHospitalId() {
-      if (hims_d_hospital_id) {
-        setLoading(true);
-        algaehApiCall({
-          uri: "/finance_masters/getCostCenters",
-          data: { hospital_id: hims_d_hospital_id },
-          method: "GET",
-          module: "finance",
-          onSuccess: response => {
-            setLoading(false);
-            if (response.data.success === true) {
-              setData(response.data.result);
-              // if (propBranchID === hims_d_hospital_id) {
-              //   setCostCenter(propCenterID);
-              // }
-            }
-          },
-          onCatch: error => {
-            setLoading(false);
-            console.log("error", error);
-          }
-        });
-      }
-    }
-    onChangeHospitalId();
-  }, [hims_d_hospital_id]);
+  // useEffect(() => {
+
+  //   function onChangeCostCenter() {
+  //     debugger
+  //     if (costCenter) {
+  //       setLoading(true);
+  //       algaehApiCall({
+  //         uri: "/finance_masters/getCostCenters",
+  //         data: { hospital_id: hims_d_hospital_id },
+  //         method: "GET",
+  //         module: "finance",
+  //         onSuccess: response => {
+  //           setLoading(false);
+  //           if (response.data.success === true) {
+  //             setData(response.data.result);
+  //             // if (propBranchID === hims_d_hospital_id) {
+  //             //   setCostCenter(propCenterID);
+  //             // }
+  //           }
+  //         },
+  //         onCatch: error => {
+  //           setLoading(false);
+  //           console.log("error", error);
+  //         }
+  //       });
+  //     }
+  //   }
+  //   onChangeCostCenter();
+  // }, [costCenter]);
+
+  // useEffect(() => {
+  //   setLoadBranch(true);
+  //   algaehApiCall({
+  //     uri: orgUrl || `/organization/getOrganizationByUser`,
+  //     method: "GET",
+  //     onSuccess: response => {
+  //       setLoadBranch(false);
+  //       if (response.data.success === true) {
+  //         setBranch(response.data.records);
+  //       }
+  //     },
+  //     onCatch: error => {
+  //       setLoadBranch(false);
+  //       console.log("error", error);
+  //     }
+  //   });
+  // }, [orgUrl]);
+
+  // useEffect(() => {
+  //   function onChangeHospitalId() {
+  //     if (hims_d_hospital_id) {
+  //       setLoading(true);
+  //       algaehApiCall({
+  //         uri: "/finance_masters/getCostCenters",
+  //         data: { hospital_id: hims_d_hospital_id },
+  //         method: "GET",
+  //         module: "finance",
+  //         onSuccess: response => {
+  //           setLoading(false);
+  //           if (response.data.success === true) {
+  //             setData(response.data.result);
+  //             // if (propBranchID === hims_d_hospital_id) {
+  //             //   setCostCenter(propCenterID);
+  //             // }
+  //           }
+  //         },
+  //         onCatch: error => {
+  //           setLoading(false);
+  //           console.log("error", error);
+  //         }
+  //       });
+  //     }
+  //   }
+  //   onChangeHospitalId();
+  // }, [hims_d_hospital_id]);
 
   function HandleHospital(details, value) {
     setHims_d_hospital_id(value);
@@ -71,15 +124,20 @@ function CostCenter({
       result["hospital_id_label"] = details["hospital_name"];
       result["hospital_id"] = value;
     }
-    setCostCenter(null);
+    costCenterAssin({ branchID: value });
+
   }
 
   function HandleCostCenter(details, value) {
     setCostCenter(value);
+    setBranch(details.branches);
     if (result) {
       result["cost_center_id_label"] = details["cost_center"];
       result["cost_center_id"] = value;
     }
+    setHims_d_hospital_id(null);
+    costCenterAssin({ projectID: value });
+
   }
 
   function clearValues() {
@@ -87,11 +145,54 @@ function CostCenter({
     setHims_d_hospital_id(null);
   }
 
+  function handleLoad() {
+    algaehApiCall({
+      uri: "/financeReports/getProfitAndLoss",
+      data: {
+        hospital_id: hims_d_hospital_id,
+        cost_center_id: costCenter
+      },
+      method: "GET",
+      module: "finance",
+      onSuccess: response => {
+        if (response.data.success === true) {
+          loadData({ profitLoss: response.data.result });
+        }
+      },
+      onCatch: error => {
+        console.log("error", error);
+      }
+    });
+  }
+
   /* {noborder === undefined ? "col-12 costCenterFilter" : "col-12"} */
 
   return (
     <>
-      <div className="col">
+
+      <div className="col-4">
+        <AlgaehAutoComplete
+          div={{ ...div }}
+          label={{ forceLabel: "Select a Cost Center" }}
+          selector={{
+            dataSource: {
+              data: costCenterdata,
+              valueField: "cost_center_id",
+              textField: "cost_center"
+            },
+            value: costCenter,
+            onChange: HandleCostCenter,
+            others: {
+              loading: loading
+            },
+            onClear: () => {
+              setCostCenter(null);
+              costCenterAssin({ projectID: null });
+            }
+          }}
+        />
+      </div>
+      <div className="col-4">
         <AlgaehAutoComplete
           div={{ ...div }}
           label={{ forceLabel: "Select a Branch" }}
@@ -103,30 +204,19 @@ function CostCenter({
             },
             value: hims_d_hospital_id,
             onChange: HandleHospital,
-            others: {
-              loading: loadBranch
+            onClear: () => {
+              setHims_d_hospital_id(null);
+              costCenterAssin({ branchID: null });
             }
           }}
         />
       </div>
       <div className="col">
-        <AlgaehAutoComplete
-          div={{ ...div }}
-          label={{ forceLabel: "Select a Cost Center" }}
-          selector={{
-            dataSource: {
-              data: data,
-              valueField: "cost_center_id",
-              textField: "cost_center"
-            },
-            value: costCenter,
-            onChange: HandleCostCenter,
-            others: {
-              loading: loading
-            }
-          }}
-        />
+        <button className="btn btn-primary" onClick={handleLoad}>
+          Load
+        </button>
       </div>
+
       {render ? render({ costCenter, hims_d_hospital_id, clearValues }) : null}
     </>
   );

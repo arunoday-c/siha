@@ -1,0 +1,24 @@
+.infoBar {
+  .col {
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px solid #000;
+    padding: 10px 15px 5px;
+    .text {
+      font-size: 1.5rem;
+      p {
+        font-size: 1rem;
+      }
+    }
+  }
+  .danger {
+    background: #ffdede;
+    border: 1px solid #ffb1b1;
+    color: red;
+  }
+  .danger {
+    background: #ffdede;
+    border: 1px solid #ffb1b1;
+    color: red;
+  }
+}

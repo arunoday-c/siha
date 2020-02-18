@@ -4,6 +4,7 @@ import httpStatus from "../utils/httpStatus";
 
 import masterModels from "../model/algaehMasters";
 const {
+  updateScreenElementRoles,
   addAlgaehGroupMAster,
   updateAlgaehGroupMAster,
   deleteAlgaehGroupMAster,
@@ -44,7 +45,10 @@ const {
   assignComponentScreenPermissions,
   getScreensWithComponents,
   addScreensAndComponents,
-  getCurrentAssignedScreenAndComponent
+  getCurrentAssignedScreenAndComponent,
+  getAllAssignedScrens,
+  updateLandingScreen,
+  getScreenElementsRoles
 } = masterModels;
 const { releaseConnection } = utils;
 
@@ -201,10 +205,11 @@ export default ({ config, db }) => {
     "/getRoleBaseActiveModules",
     getRoleBaseActiveModules,
     (req, res, next) => {
-      let result = req.records;
+      const { result, elements } = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
+        elements: elements
       });
       next();
     }
@@ -768,6 +773,55 @@ export default ({ config, db }) => {
       next();
     }
   );
+  api.get("/getAllAssignedScrens", getAllAssignedScrens, (req, res) => {
+    let result = req.records;
+    const default_landing = result.find(f => f.default_land_screen_id !== null);
 
+    res
+      .status(httpStatus.ok)
+      .json({
+        success: true,
+        records: {
+          landing_page:
+            default_landing !== undefined
+              ? default_landing.default_land_screen_id
+              : undefined,
+
+          allScreens: result
+        }
+      })
+      .end();
+  });
+
+  api.put("/updateLandingScreen", updateLandingScreen, (req, res) => {
+    res.status(httpStatus.ok).json({
+      success: true,
+      message: "Successfully Done...."
+    });
+  });
+
+  api.get("/getScreenElementsRoles", getScreenElementsRoles, (req, res) => {
+    let result = req.records;
+    res
+      .status(httpStatus.ok)
+      .json({
+        success: true,
+        records: result
+      })
+      .end();
+    delete req.records;
+  });
+  api.post(
+    "/updateScreenElementRoles",
+    updateScreenElementRoles,
+    (req, res) => {
+      let result = req.records;
+      res
+        .status(httpStatus.ok)
+        .json(result)
+        .end();
+      delete req.records;
+    }
+  );
   return api;
 };

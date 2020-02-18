@@ -100,7 +100,6 @@ export default {
   getVisitServiceAmount: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-
       _mysql
         .executeQuery({
           query:
@@ -109,7 +108,7 @@ export default {
           printQuery: true
         })
         .then(VisitServiceAmount => {
-          console.log("VisitServiceAmount", VisitServiceAmount)
+          console.log("VisitServiceAmount", VisitServiceAmount);
           _mysql.releaseConnection();
           req.records = VisitServiceAmount;
           next();
@@ -296,6 +295,42 @@ export default {
             new Date(),
             inputparam.hims_d_patient_id
           ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  //created by:irfan
+  getPatientAdvaceAndRefund: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      let inputParam = req.query;
+
+      const utilities = new algaehUtilities();
+      /* Select statemwnt  */
+
+      _mysql
+        .executeQuery({
+          query: `select hims_f_patient_advance_id,hims_f_patient_id,A.hims_f_receipt_header_id,A.advance_amount,
+              case transaction_type  when 'AD' then 'Advance' when 'RF' then 'Refund' end as transaction_type,
+              date_format(R.receipt_date, '%d-%m-%Y') as receipt_date, U.username as cashier, R.receipt_number  from hims_f_patient_advance A
+              inner join hims_f_receipt_header R on A.hims_f_receipt_header_id = R.hims_f_receipt_header_id
+              left join algaeh_d_app_user U on A.created_by = U.algaeh_d_app_user_id
+              where A.hims_f_patient_id = ? and A.record_status = 'A' and R.record_status = 'A';`,
+          values: [inputParam.patient_id],
           printQuery: true
         })
         .then(result => {

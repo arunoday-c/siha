@@ -2,7 +2,7 @@
 import extend from "extend";
 import utils from "../../utils";
 import httpStatus from "../../utils/httpStatus";
-
+import sql from "mssql";
 import logUtils from "../../utils/logging";
 import moment from "moment";
 import _ from "lodash";
@@ -351,7 +351,7 @@ let deleteHoliday = (req, res, next) => {
 //created by irfan: connect to other db
 let getMSDb = (req, res, next) => {
   try {
-    var sql = require("mssql");
+    // var sql = require("mssql");
 
     // config for your database
     var config = {
@@ -469,7 +469,7 @@ let getTimeSheetOLD = (req, res, next) => {
               result.length > 0 &&
               result[0]["biometric_database"] == "MSACCESS"
             ) {
-              var sql = require("mssql");
+              // var sql = require("mssql");
 
               // config for your database
               var config = {
@@ -1045,7 +1045,7 @@ let getTimeSheet = (req, res, next) => {
               result.length > 0 &&
               result[0]["biometric_database"] == "MSACCESS"
             ) {
-              var sql = require("mssql");
+              // var sql = require("mssql");
 
               // config for your database
               var config = {

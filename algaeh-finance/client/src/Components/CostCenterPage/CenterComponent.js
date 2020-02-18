@@ -30,7 +30,7 @@ export default memo(function CenterComponent({ data }) {
   }
 
   return (
-    <div>
+    <>
       {visible && current ? (
         <AlgaehModal
           title="Edit Cost Center"
@@ -58,50 +58,48 @@ export default memo(function CenterComponent({ data }) {
           />
         </AlgaehModal>
       ) : null}
-      <div className="row">
-        <div className="col-12">
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">List of Cost Center</h3>
-              </div>
-              <div className="actions"></div>
+      <div className="col-12">
+        <div className="portlet portlet-bordered margin-bottom-15">
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">List of Cost Center</h3>
             </div>
-            <div className="portlet-body">
-              <AlgaehDataGrid
-                columns={[
-                  {
-                    title: "Action",
-                    key: "key",
-                    align: "center",
-                    displayTemplate: EditButton
-                  },
-                  {
-                    key: "hospital_name",
-                    title: "Branch",
-                    filtered: true,
-                    align: "center"
-                  },
-                  {
-                    key: "cost_center",
-                    title: "Cost Center",
-                    filtered: true,
-                    align: "center"
-                  }
-                ]}
-                loading={false}
-                isEditable={false}
-                filter={false}
-                dataSource={{
-                  data
-                }}
-                rowUnique="cost_center_id"
-                xaxis={1500}
-              />
-            </div>
+            <div className="actions"></div>
+          </div>
+          <div className="portlet-body">
+            <AlgaehDataGrid
+              columns={[
+                {
+                  title: "Action",
+                  key: "key",
+                  align: "center",
+                  displayTemplate: EditButton
+                },
+                {
+                  key: "hospital_name",
+                  title: "Branch",
+                  filtered: true,
+                  align: "center"
+                },
+                {
+                  key: "cost_center",
+                  title: "Cost Center",
+                  filtered: true,
+                  align: "center"
+                }
+              ]}
+              loading={false}
+              isEditable={false}
+              filter={false}
+              dataSource={{
+                data
+              }}
+              rowUnique="cost_center_id"
+              xaxis={1500}
+            />
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 });

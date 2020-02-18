@@ -138,7 +138,8 @@ class Modules extends Component {
         other_language: data.other_language,
         licence_key: data.licence_key,
         module_name: data.module_name,
-        display_order: data.display_order
+        display_order: data.display_order,
+        record_status: data.record_status
       },
       onSuccess: response => {
         if (response.data.success) {
@@ -485,6 +486,46 @@ class Modules extends Component {
                                 />
                               );
                             }
+                          },
+                          {
+                            fieldName: "record_status",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Status" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  {row.record_status === "A"
+                                    ? "Active"
+                                    : "Inactive"}
+                                </span>
+                              );
+                            },
+                            editorTemplate: row => {
+                              return (
+                                <AlagehAutoComplete
+                                  div={{ className: "col" }}
+                                  selector={{
+                                    name: "record_status",
+                                    className: "select-fld",
+                                    value: row.record_status,
+                                    dataSource: {
+                                      textField: "name",
+                                      valueField: "value",
+                                      data: GlobalVariables.FORMAT_STATUS
+                                    },
+                                    others: {
+                                      errormessage: "Status - cannot be blank",
+                                      required: true
+                                    },
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  }}
+                                />
+                              );
+                            }
                           }
                         ]}
                         keyId="algaeh_d_module_id"
@@ -493,10 +534,13 @@ class Modules extends Component {
                         }}
                         filter={true}
                         isEditable={true}
+                        actions={{
+                          allowDelete: false
+                        }}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
                           onEdit: () => {},
-                          onDelete: this.deleteModules.bind(this),
+                          // onDelete: this.deleteModules.bind(this),
                           onDone: this.updateModules.bind(this)
                         }}
                       />

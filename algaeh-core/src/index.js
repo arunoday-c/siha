@@ -14,12 +14,16 @@ import cryptoUtils from "./utils/cryptography";
 import algaehKeys from "algaeh-keys";
 // import { userSecurity } from "algaeh-utilities/checksecurity";
 import { authentication } from "algaeh-utilities/authentication";
+let dash = null;
+if (process.env.ENABLE_MONITOR) {
+  dash = require("appmetrics-dash");
+}
 const keys = algaehKeys.default;
 let app = express();
 const _port = process.env.PORT;
 const { logger, requestTracking } = logUtils;
 const { decryption } = cryptoUtils;
-
+// dash.attach();
 app.use(compression());
 if (process.env.NODE_ENV === "production") {
   console.log("Running prod...." + _port);
@@ -83,83 +87,6 @@ app.use((req, res, next) => {
     authentication(req, res, next);
   }
 });
-
-// app.use((req, res, next) => {
-//   let reqH = req.headers;
-//   let reqUser = "";
-//   // if (req.url !== "/api/v1/apiAuth") {
-//   //   if(reqH["x-api-key"] !=="undefined" && reqH["x-api-key"] !=null){
-//   //     reqUser = jwtDecode(reqH["x-api-key"]);
-//   //   }else{
-//   //     reqUser = req.body;
-//   //   }
-//
-//     // if (
-//     //   req.url !== "/api/v1/apiAuth/authUser" &&
-//     //   req.url !== "/api/v1/apiAuth/relogin"
-//     // ) {
-//   if( req.url.includes("/apiAuth") ===false ){
-//       let header = req.headers["x-api-key"];//["x-app-user-identity"];
-//
-//       if (header != null && header !== "" && header !== "null") {
-//
-//         header =jwtDecode(reqH["x-api-key"]);//decryption(header);
-//
-//         req.body.created_by = header.algaeh_d_app_user_id;
-//         req.body.updated_by = header.algaeh_d_app_user_id;
-//         req.userIdentity = { ...header, "x-branch": reqH["x-branch"] };
-//
-//         const { username } = req.userIdentity;
-//
-//         userSecurity(reqH["x-client-ip"], username.toLowerCase()).catch(error => {
-//
-//           res.status(httpStatus.locked).json({
-//             success: false,
-//             message: error,
-//             username: error === "false" ? undefined : username
-//           }).end();
-//           return;
-//         });
-//       } else {
-//         res.status(httpStatus.unAuthorized).json({
-//           success: false,
-//           message: "unauthorized credentials cannot procees.."
-//         });
-//         return;
-//       }
-//     }else{
-//     if(req.url.includes("/logout")){
-//       let header = req.headers["x-api-key"];
-//       if (header != null && header !== "" && header !== "null") {
-//         header =jwtDecode(reqH["x-api-key"]);
-//         req.userIdentity = { ...header, "x-branch": reqH["x-branch"] };
-//       }
-//     }
-//
-//   }
-//
-//  // }
-//
-//   requestTracking("", {
-//     dateTime: new Date().toLocaleString(),
-//     requestIdentity: {
-//       requestClient: reqH["x-client-ip"],
-//       requestAPIUser: reqUser,
-//       reqUserIdentity: req.userIdentity
-//     },
-//     requestUrl: req.originalUrl,
-//     requestHeader: {
-//       host: reqH.host,
-//       "user-agent": reqH["user-agent"],
-//       "cache-control": reqH["cache-control"],
-//       origin: reqH.origin
-//     },
-//
-//     requestMethod: req.method
-//   });
-//
-//   next();
-// });
 
 app.set("trust proxy", true);
 //api routeres v1
@@ -251,5 +178,17 @@ app.use((error, req, res, next) => {
 
 app.server.listen(_port);
 console.log(`started on port ${_port}`);
+
+if (process.env.ENABLE_MONITOR === true) {
+  let dashPort =
+    typeof _port === "string" ? parseInt(_port) + 1000 : _port + 1000;
+
+  dash.monitor({
+    port: dashPort,
+    url: "/core-monitor",
+    title: "Core Dashboard",
+    docs: "http://algaeh.com"
+  });
+}
 
 export default app;

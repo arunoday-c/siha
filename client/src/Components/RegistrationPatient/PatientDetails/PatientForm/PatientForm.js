@@ -395,8 +395,8 @@ class AddPatientForm extends Component {
                           },
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "7"
-                            // placeholder: "Y"
+                            tabIndex: "7",
+                            placeholder: "Y"
                           }
                         }}
                       />
@@ -405,7 +405,7 @@ class AddPatientForm extends Component {
                         div={{
                           className: "col mandatory  ageMonth",
                           others: {
-                            style: { paddingLeft: 5, paddingRight: 5 }
+                            style: { paddingLeft: 0, paddingRight: 0 }
                           }
                         }}
                         label={{
@@ -427,8 +427,8 @@ class AddPatientForm extends Component {
                           },
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "8"
-                            // placeholder: "M"
+                            tabIndex: "8",
+                            placeholder: "M"
                           }
                         }}
                       />
@@ -459,14 +459,53 @@ class AddPatientForm extends Component {
                           },
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "9"
-                            // placeholder: "D"
+                            tabIndex: "9",
+                            placeholder: "D"
                           }
                         }}
                       />
-
+                      {/* <AlagehAutoComplete
+                        div={{
+                          className: "col-1 mandatory",
+                          others: {
+                            style: { paddingRight: 0 }
+                          }
+                        }}
+                        label={{
+                          fieldName: "tel_code",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "gender",
+                          className: "select-fld",
+                          value: this.state.gender,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "name"
+                                : "arabic_name",
+                            valueField: "value",
+                            data: variableJson.FORMAT_GENDER
+                          },
+                          onChange: texthandle.bind(this, this),
+                          onClear: () => {
+                            this.setState({
+                              gender: null
+                            });
+                          },
+                          others: {
+                            disabled: this.state.existingPatient,
+                            tabIndex: "4"
+                          }
+                        }}
+                      /> */}
                       <AlagehFormGroup
-                        div={{ className: "col-3 mandatory" }}
+                        div={{
+                          className: "col-3 mandatory",
+                          others: {
+                            style: { paddingLeft: 0 }
+                          }
+                        }}
                         label={{
                           fieldName: "contact_number",
                           isImp: true

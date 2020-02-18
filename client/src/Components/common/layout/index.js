@@ -5,8 +5,12 @@ import { MainContext } from "algaeh-react-components/context";
 import { getItem, tokenDecode } from "algaeh-react-components/storage";
 export default function Layout({ children }) {
   const {
-    userLanguage
-    , userToken, setUserMenu, setUserToken
+    userLanguage,
+    userToken,
+    setUserMenu,
+    setUserToken,
+    setElementsItems,
+    setSelectedMenuItem
   } = useContext(MainContext);
   const [pageLoading, setPageLoading] = useState(false);
   const [text, setText] = useState("Please wait configure is in process");
@@ -16,30 +20,41 @@ export default function Layout({ children }) {
     } else {
       getItem("menu").then(result => {
         setUserMenu(result);
+        getItem("elements").then(result => {
+          setElementsItems(result);
+        });
         getItem("token").then(result => {
           const details = tokenDecode(result);
           setUserToken(details);
           setPageLoading(true);
         });
+        getItem("userSelectedMenu").then(result => {
+          setSelectedMenuItem(result);
+        });
       });
-
     }
-
-  }, [])
+  }, []);
   return (
-    <> {pageLoading === true ? (<> <Menu />
-      <main
-        className={`mainPageArea container-fluid ${
-          userLanguage === "en"
-            ? "english_component"
-            : userLanguage + "_component"
-          }`}
-        id="hisapp"
-      >
-        {children}
-      </main> </>) : (<center>{text}</center>)}
-
+    <>
+      {" "}
+      {pageLoading === true ? (
+        <>
+          {" "}
+          <Menu />
+          <main
+            className={`mainPageArea container-fluid ${
+              userLanguage === "en"
+                ? "english_component"
+                : userLanguage + "_component"
+            }`}
+            id="hisapp"
+          >
+            {children}
+          </main>{" "}
+        </>
+      ) : (
+        <center>{text}</center>
+      )}
     </>
   );
-
 }

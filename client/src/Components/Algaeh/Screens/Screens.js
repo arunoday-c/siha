@@ -3,11 +3,14 @@ import "./screens.scss";
 import {
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import { AlgaehTreeSearch } from "algaeh-react-components";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
+
 class Screens extends Component {
   constructor(props) {
     super(props);
@@ -160,6 +163,7 @@ class Screens extends Component {
         screen_name: data.screen_name,
         page_to_redirect: data.page_to_redirect,
         other_language: data.other_language,
+        record_status: data.record_status,
         algaeh_app_screens_id: data.algaeh_app_screens_id
       },
       onSuccess: response => {
@@ -387,6 +391,46 @@ class Screens extends Component {
                                 />
                               );
                             }
+                          },
+                          {
+                            fieldName: "record_status",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Status" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  {row.record_status === "A"
+                                    ? "Active"
+                                    : "Inactive"}
+                                </span>
+                              );
+                            },
+                            editorTemplate: row => {
+                              return (
+                                <AlagehAutoComplete
+                                  div={{ className: "col" }}
+                                  selector={{
+                                    name: "record_status",
+                                    className: "select-fld",
+                                    value: row.record_status,
+                                    dataSource: {
+                                      textField: "name",
+                                      valueField: "value",
+                                      data: GlobalVariables.FORMAT_STATUS
+                                    },
+                                    others: {
+                                      errormessage: "Status - cannot be blank",
+                                      required: true
+                                    },
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  }}
+                                />
+                              );
+                            }
                           }
                         ]}
                         keyId="algaeh_app_screens_id"
@@ -394,11 +438,14 @@ class Screens extends Component {
                           data: this.state.screens
                         }}
                         filter={true}
-                        isEditable={false}
+                        isEditable={true}
+                        actions={{
+                          allowDelete: false
+                        }}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
                           onEdit: () => {},
-                          onDelete: this.deleteScreens.bind(this),
+                          //  onDelete: this.deleteScreens.bind(this),
                           onDone: this.updateScreens.bind(this)
                         }}
                       />

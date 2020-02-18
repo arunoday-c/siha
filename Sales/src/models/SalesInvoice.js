@@ -432,191 +432,218 @@ export function generateAccountingEntry(req, res, next) {
 
         _mysql
             .executeQuery({
-                query:
-                    "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
-                    select account,head_id, child_id from finance_accounts_maping where account in ('INVNT_COGS', 'OUTPUT_TAX');"
+                query: "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
             })
-            .then(result => {
-
-                // const input_tax_acc = result[1].find(f => f.account === "INPUT_TAX")
-                const output_tax_acc = result[1].find(f => f.account === "OUTPUT_TAX")
-                const cogs_acc_data = result[1].find(f => f.account === "INVNT_COGS")
-
-                const org_data = result[0]
-
-
+            .then(org_data => {
                 if (
                     org_data[0]["product_type"] == "HIMS_ERP" ||
                     org_data[0]["product_type"] == "FINANCE_ERP"
                 ) {
-                    console.log("inputParam.sales_invoice_mode ", inputParam.sales_invoice_mode)
-                    let strQuery = "";
-                    let sales_done = "";
-                    if (inputParam.sales_invoice_mode === "I") {
-                        strQuery = mysql.format(
-                            "select GH.hims_f_sales_invoice_header_id, GH.invoice_number, GH.net_total, GH.total_tax, \
-                            GH.net_payable, IL.hospital_id ,IL.head_id as inv_head_id, IL.child_id as inv_child_id, C.head_id as customer_head_id, C.child_id as customer_child_id,\
-                            DB.dispatch_quantity , DB.net_extended_cost, ITM.waited_avg_cost, S.head_id as income_head_id, \
-                            S.child_id as income_child_id, C.customer_name, IU.conversion_factor, GH.hospital_id as c_hospital_id\
-                            from hims_f_sales_invoice_header GH \
-                            inner join hims_f_sales_invoice_detail GD on GH.hims_f_sales_invoice_header_id = GD.sales_invoice_header_id \
-                            inner join hims_f_sales_dispatch_note_detail DD on DD.dispatch_note_header_id = GD.dispatch_note_header_id \
-                            inner join hims_f_sales_dispatch_note_batches DB on DD.hims_f_sales_dispatch_note_detail_id = DB.sales_dispatch_note_detail_id \
-                            inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = GH.location_id\
-                            inner join hims_d_customer C on C.hims_d_customer_id = GH.customer_id\
-                            inner join hims_d_inventory_item_master ITM on ITM.hims_d_inventory_item_master_id = DB.item_id\
-                            inner join hims_d_services S on S.hims_d_services_id = ITM.service_id\
-                            inner join hims_m_inventory_item_uom IU on IU.item_master_id = DB.item_id and IU.uom_id = DB.uom_id\
-                            where hims_f_sales_invoice_header_id=?;",
-                            [inputParam.hims_f_sales_invoice_header_id]
-                        );
-                        sales_done = "Item"
-                    } else {
-                        strQuery = mysql.format(
-                            "select GH.hims_f_sales_invoice_header_id, GH.invoice_number, GH.net_total, GH.total_tax, \
-                            GH.net_payable, GS.net_extended_cost, C.head_id as customer_head_id, C.child_id as customer_child_id, \
-                            S.head_id as income_head_id, S.child_id as income_child_id, C.customer_name, GH.hospital_id as c_hospital_id\
-                            from hims_f_sales_invoice_header GH \
-                            inner join hims_f_sales_invoice_services GS on GH.hims_f_sales_invoice_header_id = GS.sales_invoice_header_id \
-                            inner join hims_d_customer C on C.hims_d_customer_id = GH.customer_id\
-                            inner join hims_d_services S on S.hims_d_services_id = GS.services_id\
-                            where hims_f_sales_invoice_header_id=?;",
-                            [inputParam.hims_f_sales_invoice_header_id]
-                        );
-                        sales_done = "Service"
-                    }
                     _mysql
                         .executeQuery({
-                            query: strQuery,
-                            printQuery: true
+                            query:
+                                "select account,head_id, child_id from finance_accounts_maping where account in \
+                                ('INVNT_COGS', 'OUTPUT_TAX');\
+                                select hims_d_sub_department_id from hims_d_sub_department where department_type='I';"
                         })
-                        .then(headerResult => {
+                        .then(result => {
+                            const output_tax_acc = result[0].find(f => f.account === "OUTPUT_TAX")
+                            const cogs_acc_data = result[0].find(f => f.account === "INVNT_COGS")
 
+                            const sub_department_id = result[1].length > 0 ? result[1][0].hims_d_sub_department_id : null
+
+                            let strQuery = "";
+                            let sales_done = "";
+                            if (inputParam.sales_invoice_mode === "I") {
+                                strQuery = mysql.format(
+                                    "select GH.hims_f_sales_invoice_header_id, GH.invoice_number, GH.net_total, GH.total_tax, \
+                                    GH.net_payable, IL.hospital_id ,IL.head_id as inv_head_id, IL.child_id as inv_child_id, C.head_id as customer_head_id, C.child_id as customer_child_id,\
+                                    DB.dispatch_quantity , DB.net_extended_cost, ITM.waited_avg_cost, S.head_id as income_head_id, \
+                                    S.child_id as income_child_id, C.customer_name, IU.conversion_factor, GH.hospital_id as c_hospital_id,\
+                                    GH.project_id, D.hims_d_sub_department_id from hims_f_sales_invoice_header GH \
+                                    inner join hims_f_sales_invoice_detail GD on GH.hims_f_sales_invoice_header_id = GD.sales_invoice_header_id \
+                                    inner join hims_f_sales_dispatch_note_detail DD on DD.dispatch_note_header_id = GD.dispatch_note_header_id \
+                                    inner join hims_f_sales_dispatch_note_batches DB on DD.hims_f_sales_dispatch_note_detail_id = DB.sales_dispatch_note_detail_id \
+                                    inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = GH.location_id\
+                                    inner join hims_d_customer C on C.hims_d_customer_id = GH.customer_id\
+                                    inner join hims_d_inventory_item_master ITM on ITM.hims_d_inventory_item_master_id = DB.item_id\
+                                    inner join hims_d_services S on S.hims_d_services_id = ITM.service_id\
+                                    inner join hims_m_inventory_item_uom IU on IU.item_master_id = DB.item_id and IU.uom_id = DB.uom_id\
+                                    left join hims_d_sub_department D on D.inventory_location_id = GH.location_id\
+                                    where hims_f_sales_invoice_header_id=?;",
+                                    [inputParam.hims_f_sales_invoice_header_id]
+                                );
+                                sales_done = "Item"
+                            } else {
+                                strQuery = mysql.format(
+                                    "select GH.hims_f_sales_invoice_header_id, GH.invoice_number, GH.net_total, GH.total_tax, \
+                                    GH.net_payable, GS.net_extended_cost, C.head_id as customer_head_id, C.child_id as customer_child_id, \
+                                    S.head_id as income_head_id, S.child_id as income_child_id, C.customer_name, GH.hospital_id as c_hospital_id,\
+                                    D.hims_d_sub_department_id from hims_f_sales_invoice_header GH \
+                                    inner join hims_f_sales_invoice_services GS on GH.hims_f_sales_invoice_header_id = GS.sales_invoice_header_id \
+                                    inner join hims_d_customer C on C.hims_d_customer_id = GH.customer_id\
+                                    inner join hims_d_services S on S.hims_d_services_id = GS.services_id\
+                                    left join hims_d_sub_department D on D.hims_d_sub_department_id = S.sub_department_id\
+                                    where hims_f_sales_invoice_header_id=?;",
+                                    [inputParam.hims_f_sales_invoice_header_id]
+                                );
+                                sales_done = "Service"
+                            }
                             _mysql
                                 .executeQuery({
-                                    query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
-                                        voucher_type, document_id, document_number, from_screen, \
-                                        narration, invoice_no, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?,?)",
-                                    values: [
-                                        new Date(),
-                                        headerResult[0].net_payable,
-                                        "sales",
-                                        headerResult[0].hims_f_sales_invoice_header_id,
-                                        headerResult[0].invoice_number,
-                                        inputParam.ScreenCode,
-                                        sales_done + " Sales done for  " + headerResult[0].customer_name,
-                                        headerResult[0].invoice_number,
-                                        new Date(),
-                                        req.userIdentity.algaeh_d_app_user_id
-                                    ],
+                                    query: strQuery,
                                     printQuery: true
                                 })
-                                .then(day_end_header => {
-                                    let insertSubDetail = []
-                                    const month = moment().format("M");
-                                    const year = moment().format("YYYY");
-                                    const IncludeValuess = [
-                                        "payment_date",
-                                        "head_id",
-                                        "child_id",
-                                        "debit_amount",
-                                        "payment_type",
-                                        "credit_amount",
-                                        "hospital_id"
-                                    ];
+                                .then(headerResult => {
 
-                                    //Customer Entry
-                                    insertSubDetail.push({
-                                        payment_date: new Date(),
-                                        head_id: headerResult[0].customer_head_id,
-                                        child_id: headerResult[0].customer_child_id,
-                                        debit_amount: headerResult[0].net_payable,
-                                        payment_type: "DR",
-                                        credit_amount: 0,
-                                        hospital_id: headerResult[0].c_hospital_id
-                                    });
-
-                                    //OUT PUT Tax Entry
-                                    if (parseFloat(headerResult[0].total_tax) > 0) {
-                                        insertSubDetail.push({
-                                            payment_date: new Date(),
-                                            head_id: output_tax_acc.head_id,
-                                            child_id: output_tax_acc.child_id,
-                                            debit_amount: 0,
-                                            payment_type: "CR",
-                                            credit_amount: headerResult[0].total_tax,
-                                            hospital_id: req.userIdentity.hospital_id
-                                        });
-                                    }
-
-
-
-                                    for (let i = 0; i < headerResult.length; i++) {
-                                        //Income Entry
-                                        let waited_avg_cost =
-                                            utilities.decimalPoints(
-                                                (parseFloat(headerResult[i].dispatch_quantity) *
-                                                    parseFloat(headerResult[i].conversion_factor) *
-                                                    parseFloat(headerResult[i].waited_avg_cost)),
-                                                decimal_places
-                                            )
-
-                                        insertSubDetail.push({
-                                            payment_date: new Date(),
-                                            head_id: headerResult[i].income_head_id,
-                                            child_id: headerResult[i].income_child_id,
-                                            debit_amount: 0,
-                                            payment_type: "CR",
-                                            credit_amount: headerResult[i].net_extended_cost,
-                                            hospital_id: req.userIdentity.hospital_id
-                                        });
-
-                                        if (inputParam.sales_invoice_mode === "I") {
-                                            //COGS Entry
-                                            insertSubDetail.push({
-                                                payment_date: new Date(),
-                                                head_id: cogs_acc_data.head_id,
-                                                child_id: cogs_acc_data.child_id,
-                                                debit_amount: waited_avg_cost,
-                                                payment_type: "DR",
-                                                credit_amount: 0,
-                                                hospital_id: req.userIdentity.hospital_id
-                                            });
-
-                                            //Location Wise
-                                            insertSubDetail.push({
-                                                payment_date: new Date(),
-                                                head_id: headerResult[i].inv_head_id,
-                                                child_id: headerResult[i].inv_child_id,
-                                                debit_amount: 0,
-                                                payment_type: "CR",
-                                                credit_amount: waited_avg_cost,
-                                                hospital_id: headerResult[i].hospital_id
-                                            });
-                                        }
-                                    }
-
-                                    // console.log("insertSubDetail", insertSubDetail)
                                     _mysql
                                         .executeQuery({
-                                            query:
-                                                "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
-                                            values: insertSubDetail,
-                                            includeValues: IncludeValuess,
-                                            bulkInsertOrUpdate: true,
-                                            extraValues: {
-                                                day_end_header_id: day_end_header.insertId,
-                                                year: year,
-                                                month: month
-                                            },
-                                            printQuery: false
+                                            query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
+                                        voucher_type, document_id, document_number, from_screen, \
+                                        narration, invoice_no, due_date, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+                                            values: [
+                                                new Date(),
+                                                headerResult[0].net_payable,
+                                                "sales",
+                                                headerResult[0].hims_f_sales_invoice_header_id,
+                                                headerResult[0].invoice_number,
+                                                inputParam.ScreenCode,
+                                                sales_done + " Sales done for  " + headerResult[0].customer_name,
+                                                headerResult[0].invoice_number,
+                                                inputParam.due_date,
+                                                new Date(),
+                                                req.userIdentity.algaeh_d_app_user_id
+                                            ],
+                                            printQuery: true
                                         })
-                                        .then(subResult => {
-                                            _mysql.commitTransaction(() => {
-                                                _mysql.releaseConnection();
-                                                req.records = subResult;
-                                                next();
+                                        .then(day_end_header => {
+                                            let insertSubDetail = []
+                                            const month = moment().format("M");
+                                            const year = moment().format("YYYY");
+                                            const IncludeValuess = [
+                                                "payment_date",
+                                                "head_id",
+                                                "child_id",
+                                                "debit_amount",
+                                                "payment_type",
+                                                "credit_amount",
+                                                "hospital_id",
+                                                "sub_department_id",
+                                                "project_id"
+                                            ];
+
+                                            //Customer Entry
+                                            insertSubDetail.push({
+                                                payment_date: new Date(),
+                                                head_id: headerResult[0].customer_head_id,
+                                                child_id: headerResult[0].customer_child_id,
+                                                debit_amount: headerResult[0].net_payable,
+                                                payment_type: "DR",
+                                                credit_amount: 0,
+                                                hospital_id: headerResult[0].c_hospital_id,
+                                                sub_department_id: headerResult[0].hims_d_sub_department_id === null ?
+                                                    sub_department_id : headerResult[0].hims_d_sub_department_id,
+                                                project_id: headerResult[0].project_id
                                             });
+
+                                            //OUT PUT Tax Entry
+                                            if (parseFloat(headerResult[0].total_tax) > 0) {
+                                                insertSubDetail.push({
+                                                    payment_date: new Date(),
+                                                    head_id: output_tax_acc.head_id,
+                                                    child_id: output_tax_acc.child_id,
+                                                    debit_amount: 0,
+                                                    payment_type: "CR",
+                                                    credit_amount: headerResult[0].total_tax,
+                                                    hospital_id: req.userIdentity.hospital_id,
+                                                    sub_department_id: headerResult[0].hims_d_sub_department_id === null ?
+                                                        sub_department_id : headerResult[0].hims_d_sub_department_id,
+                                                    project_id: headerResult[0].project_id
+                                                });
+                                            }
+
+
+
+                                            for (let i = 0; i < headerResult.length; i++) {
+                                                //Income Entry
+                                                insertSubDetail.push({
+                                                    payment_date: new Date(),
+                                                    head_id: headerResult[i].income_head_id,
+                                                    child_id: headerResult[i].income_child_id,
+                                                    debit_amount: 0,
+                                                    payment_type: "CR",
+                                                    credit_amount: headerResult[i].net_extended_cost,
+                                                    hospital_id: req.userIdentity.hospital_id,
+                                                    sub_department_id: headerResult[i].hims_d_sub_department_id === null ?
+                                                        sub_department_id : headerResult[i].hims_d_sub_department_id,
+                                                    project_id: headerResult[i].project_id
+                                                });
+
+                                                if (inputParam.sales_invoice_mode === "I") {
+                                                    let waited_avg_cost =
+                                                        utilities.decimalPoints(
+                                                            (parseFloat(headerResult[i].dispatch_quantity) *
+                                                                parseFloat(headerResult[i].conversion_factor) *
+                                                                parseFloat(headerResult[i].waited_avg_cost)),
+                                                            decimal_places
+                                                        )
+                                                    //COGS Entry
+                                                    insertSubDetail.push({
+                                                        payment_date: new Date(),
+                                                        head_id: cogs_acc_data.head_id,
+                                                        child_id: cogs_acc_data.child_id,
+                                                        debit_amount: waited_avg_cost,
+                                                        payment_type: "DR",
+                                                        credit_amount: 0,
+                                                        hospital_id: req.userIdentity.hospital_id,
+                                                        sub_department_id: headerResult[i].hims_d_sub_department_id === null ?
+                                                            sub_department_id : headerResult[i].hims_d_sub_department_id,
+                                                        project_id: headerResult[i].project_id
+                                                    });
+
+                                                    //Location Wise
+                                                    insertSubDetail.push({
+                                                        payment_date: new Date(),
+                                                        head_id: headerResult[i].inv_head_id,
+                                                        child_id: headerResult[i].inv_child_id,
+                                                        debit_amount: 0,
+                                                        payment_type: "CR",
+                                                        credit_amount: waited_avg_cost,
+                                                        hospital_id: headerResult[i].hospital_id,
+                                                        sub_department_id: headerResult[i].hims_d_sub_department_id === null ?
+                                                            sub_department_id : headerResult[i].hims_d_sub_department_id,
+                                                        project_id: headerResult[i].project_id
+                                                    });
+                                                }
+                                            }
+
+                                            console.log("insertSubDetail", insertSubDetail)
+                                            _mysql
+                                                .executeQuery({
+                                                    query:
+                                                        "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                                                    values: insertSubDetail,
+                                                    includeValues: IncludeValuess,
+                                                    bulkInsertOrUpdate: true,
+                                                    extraValues: {
+                                                        day_end_header_id: day_end_header.insertId,
+                                                        year: year,
+                                                        month: month
+                                                    },
+                                                    printQuery: false
+                                                })
+                                                .then(subResult => {
+                                                    _mysql.commitTransaction(() => {
+                                                        _mysql.releaseConnection();
+                                                        req.records = subResult;
+                                                        next();
+                                                    });
+                                                })
+                                                .catch(error => {
+                                                    _mysql.rollBackTransaction(() => {
+                                                        next(error);
+                                                    });
+                                                });
                                         })
                                         .catch(error => {
                                             _mysql.rollBackTransaction(() => {

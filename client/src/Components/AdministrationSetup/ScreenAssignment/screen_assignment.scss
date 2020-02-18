@@ -1,13 +1,26 @@
 .screen_assignment {
+  .selectGroupRole {
+    text-align: center;
+    h5 {
+      font-weight: bold;
+      font-size: 2rem;
+      margin-top: 10vh;
+    }
+  }
   .moduleList {
     border: 1px solid #d3d3d3;
-    border-radius: 5px;
-    width: calc(56% - 110px);
+    width: 100%;
     float: left;
 
-.moduleSearchInput{
-  width: 100%;
-}
+    .moduleSearchInput {
+      width: 100%;
+      padding: 5px 10px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 0;
+      border-bottom: 1px solid #d3d3d3;
+    }
 
     /* reset our lists to remove bullet points and padding */
     .mainmenu,
@@ -22,9 +35,7 @@
     }
     /* make ALL links (main and submenu) have padding and background color */
     .mainmenu {
-      min-height: 46vh;
-      max-height: 46vh;    min-height: 46vh;
-      max-height: 46vh;
+      max-height: 38vh;
       overflow-x: hidden;
       overflow-y: auto;
       li {
@@ -41,6 +52,22 @@
             display: block;
           }
         }
+        .mainHeader {
+          span {
+            margin-left: 10px;
+            font-weight: bold;
+          }
+        }
+        .subHeader {
+          span {
+            margin-left: 35px;
+          }
+        }
+        .mainHeader {
+          & + ul.submenu {
+            margin-left: 0 !important;
+          }
+        }
 
         ul.submenu {
           overflow: hidden;
@@ -48,7 +75,7 @@
           /* background: #efefef; */
           border-top: 1px dashed #d3d3d3;
           border-bottom: 0;
-          margin-left: 22px;//32px;
+          margin-left: 32px; //32px;
           border-left: 1px solid #d3d3d3;
           li {
             &:hover {
@@ -62,35 +89,22 @@
         }
       }
 
-      input[type="checkbox"] {
-        margin: 10px;
-      }
       a {
         padding: 4px 10px 6px;
         border-left: 1px solid #d3d3d3;
         display: inline-block;
       }
-.ant-checkbox-wrapper{
-      .ant-checkbox{
-        border-right: 1px solid #d3d3d3;
-        padding: 3px;
+      .ant-checkbox-wrapper {
+        .ant-checkbox {
+          border-right: 1px solid #d3d3d3;
+          padding: 8px;
+        }
+        span {
+          font-size: 0.8rem;
+          text-transform: normal;
+          line-height: 30px;
+        }
       }
-      span{
-        font-size: 0.8rem;
-        text-transform:normal;
-      }
-    }
-    }
-
-    /* this is the initial state of all submenus.
-      we set it to max-height: 0, and hide the overflowed content.
-    */
-    &:first-child {
-      margin-right: 10px;
-    }
-    &:last-child {
-      margin-left: 10px;
-      background: #edfffd;
     }
   }
   .actionLeftRight {

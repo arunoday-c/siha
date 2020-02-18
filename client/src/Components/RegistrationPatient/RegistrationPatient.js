@@ -23,6 +23,7 @@ import {
   getCookie
 } from "../../utils/algaehApiCall.js";
 import AddAdvanceModal from "../Advance/AdvanceModal";
+import AdvanceRefundListModal from "../AdvanceRefundList/AdvanceRefundListModal";
 import {
   imageToByteArray,
   AlgaehValidation
@@ -46,7 +47,8 @@ import {
   getCtrlCode,
   ShowPackageUtilize,
   ClosePackageUtilize,
-  UpdatePatientDetail
+  UpdatePatientDetail,
+  showAdvanceRefundList
 } from "./RegistrationPatientEvent";
 import { SetBulkState } from "../../utils/GlobalFunctions";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
@@ -64,6 +66,7 @@ class RegistrationPatient extends Component {
 
     this.state = {
       AdvanceOpen: false,
+      AdvanceRefundOpen: false,
       RefundOpen: false,
       visittypeselect: true,
       clearEnable: false,
@@ -75,14 +78,13 @@ class RegistrationPatient extends Component {
   }
   static contextType = MainContext;
   UNSAFE_componentWillMount() {
-
     const userToken = this.context.userToken;
     let IOputs = emptyObject;
-    IOputs.employee_id_required = userToken.requied_emp_id
-    IOputs.hospital_id = userToken.hims_d_hospital_id
-    IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false
-    IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false
-    IOputs.default_pay_type = userToken.default_pay_type
+    IOputs.employee_id_required = userToken.requied_emp_id;
+    IOputs.hospital_id = userToken.hims_d_hospital_id;
+    IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false;
+    IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false;
+    IOputs.default_pay_type = userToken.default_pay_type;
 
     this.setState(IOputs);
     setGlobal({ selectedLang: "en" });
@@ -90,7 +92,7 @@ class RegistrationPatient extends Component {
 
   componentDidMount() {
     // const userToken = this.context.userToken;
-    // 
+    //
     // this.setState({
     //   employee_id_required: userToken.requied_emp_id,
     //   hospital_id: userToken.hims_d_hospital_id,
@@ -207,6 +209,12 @@ class RegistrationPatient extends Component {
         getCtrlCode(this, this.state.patient_code);
       }
     );
+  }
+
+  CloseAdvanceRefundList(e) {
+    this.setState({
+      AdvanceRefundOpen: !this.state.AdvanceRefundOpen
+    });
   }
 
   CloseUpdatePatientDetail(e) {
@@ -796,8 +804,8 @@ class RegistrationPatient extends Component {
                 <h6>
                   {this.state.registration_date
                     ? moment(this.state.registration_date).format(
-                      Options.dateFormat
-                    )
+                        Options.dateFormat
+                      )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -808,26 +816,32 @@ class RegistrationPatient extends Component {
               onClick: UpdatePatientDetail.bind(this, this)
             }
           }}
-          printArea={{
-            menuitems: [
-              {
-                label: "ID Card",
-                events: {
-                  onClick: () => {
-                    generateIdCard(this, this);
-                  }
+          printArea={
+            this.state.patient_code !== null &&
+            this.state.patient_code !== undefined &&
+            this.state.patient_code !== ""
+              ? {
+                  menuitems: [
+                    {
+                      label: "ID Card",
+                      events: {
+                        onClick: () => {
+                          generateIdCard(this, this);
+                        }
+                      }
+                    },
+                    {
+                      label: "Advance/Refund Receipt",
+                      events: {
+                        onClick: () => {
+                          showAdvanceRefundList(this, this);
+                        }
+                      }
+                    }
+                  ]
                 }
-              },
-              {
-                label: "Print Receipt",
-                events: {
-                  onClick: () => {
-                    generateReceipt(this, this);
-                  }
-                }
-              }
-            ]
-          }}
+              : ""
+          }
           selectedLang={this.state.selectedLang}
         />
 
@@ -979,6 +993,29 @@ class RegistrationPatient extends Component {
                       transaction_type: "AD",
                       pay_type: "R",
                       advance_amount: this.state.advance_amount
+                    }}
+                  />
+
+                  <AdvanceRefundListModal
+                    show={this.state.AdvanceRefundOpen}
+                    onClose={this.CloseAdvanceRefundList.bind(this)}
+                    selectedLang={this.state.selectedLang}
+                    HeaderCaption={
+                      <AlgaehLabel
+                        label={{
+                          // fieldName: "advance_caption",
+                          forceLabel: "Advance/Refund List",
+                          align: "ltr"
+                        }}
+                      />
+                    }
+                    Advance={true}
+                    NumberLabel="receipt_number"
+                    DateLabel="receipt_date"
+                    inputsparameters={{
+                      patient_code: this.state.patient_code,
+                      full_name: this.state.full_name,
+                      hims_f_patient_id: this.state.hims_d_patient_id
                     }}
                   />
 

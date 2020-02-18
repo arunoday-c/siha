@@ -3,7 +3,7 @@ const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
       const _ = options.loadash;
-      // const utilities = new algaehUtilities();
+      const moment = options.moment;
 
       let input = {};
       const params = options.args.reportParams;
@@ -12,9 +12,12 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
+      const invoice_date = moment(input.invoice_date, "YYYY-MM-DD").format(
+        "DD-MM-YYYY"
+      );
       options.mysql
         .executeQuery({
-          query: `select  date_format('${input.invoice_date}    ','%d-%m-%Y')  as invoice_date, hims_f_procurement_grn_header_id,grn_number,grn_for,date_format(grn_date,'%d-%m-%Y') as grn_date,dn_header_id
+          query: `select    hims_f_procurement_grn_header_id,grn_number,grn_for,date_format(grn_date,'%d-%m-%Y') as grn_date,dn_header_id
             ,D.hims_f_procurement_grn_detail_id,H.sub_total,detail_discount ,H.net_total  ,H.total_tax ,H.net_payable
             from  hims_f_procurement_grn_header H inner join  hims_f_procurement_grn_detail D
             on H.hims_f_procurement_grn_header_id=D.grn_header_id
@@ -118,6 +121,7 @@ const executePDF = function executePDFMethod(options) {
             vendor_name: outputArray[0].vendor_name,
             purchase_number: outputArray[0].purchase_number,
             po_date: outputArray[0].po_date,
+            invoice_date: invoice_date,
             details: outputArray
           });
           // utilities.logger().log("output: ", {

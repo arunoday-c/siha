@@ -909,7 +909,8 @@ textarea {
   .algaeh-datePicker input[type="time"],
   .algaeh-datePicker input[type="datetime-local"],
   .algaeh-datePicker input[type="month"],
-  .algaeh-datePicker input[type="year"] {
+  .algaeh-datePicker input[type="year"],
+  .ant-select-selection {
     background-color: none;
     border: 1px solid #d9ae58;
   }
@@ -1972,6 +1973,10 @@ th {
       top: 9px;
       font-size: 14px;
       color: #808080;
+    }
+    &:hover {
+      background-color: lighten($primary-color, 60%);
+      cursor: pointer;
     }
   }
 }

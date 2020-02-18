@@ -352,9 +352,7 @@ const ProjJobCst = React.lazy(() =>
 const OrgChart = React.lazy(() =>
   retry(() => import("./Components/OrgChart/OrgChart"))
 );
-const AppSetup = React.lazy(() =>
-  retry(() => import("./Components/AppSetup/AppSetup"))
-);
+
 const PackageSetup = React.lazy(() =>
   retry(() => import("./Components/PackageSetup/PackageSetup"))
 );
@@ -803,6 +801,31 @@ const appRoutes = [
     component: <FinanceFragment path="FinanceOptions" />
   },
   {
+    path: "/QuickSearchFinance",
+    isExactPath: true,
+    component: <FinanceFragment path="QuickSearchFinance" />
+  },
+  {
+    path: "/CustomerListFinance",
+    isExactPath: true,
+    component: <FinanceFragment path="CustomerListFinance" />
+  },
+  {
+    path: "/CustomerPayment",
+    isExactPath: true,
+    component: <FinanceFragment path="CustomerPayment" />
+  },
+  {
+    path: "/SupplierListFinance",
+    isExactPath: true,
+    component: <FinanceFragment path="SupplierListFinance" />
+  },
+  {
+    path: "/SupplierPayment",
+    isExactPath: true,
+    component: <FinanceFragment path="SupplierPayment" />
+  },
+  {
     path: "/NurseWorkbench",
     isExactPath: true,
     component: <NurseWorkbench />
@@ -936,11 +959,6 @@ const appRoutes = [
     path: "/OrgChart",
     isExactPath: true,
     component: <OrgChart />
-  },
-  {
-    path: "/AppSetup",
-    isExactPath: true,
-    component: <AppSetup />
   },
   {
     path: "/PackageSetup",
@@ -1248,6 +1266,10 @@ const appRoutes = [
     path: "/ConcurrentTest",
     isExactPath: true,
     component: <ConcurrentTest />
+  },
+  {
+    path: "*",
+    component: <DefaultLandingPage />
   }
 ];
 

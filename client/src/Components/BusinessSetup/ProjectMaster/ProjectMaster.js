@@ -6,12 +6,12 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlgaehDateHandler
-} from "../../../Wrapper/algaehWrapper";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
+} from "../../Wrapper/algaehWrapper";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
 import ProjectMasterEvents from "./ProjectMasterEvents";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
-import Options from "../../../../Options.json";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import moment from "moment";
+import Options from "../../../Options.json";
 
 class EmployeeGroups extends Component {
   constructor(props) {
@@ -67,7 +67,7 @@ class EmployeeGroups extends Component {
       <div className="projectMasterScreen">
         <div className="row inner-top-search" data-validate="project">
           <AlagehFormGroup
-            div={{ className: "col" }}
+            div={{ className: "col mandatory" }}
             label={{
               forceLabel: "Code",
               isImp: true
@@ -82,7 +82,7 @@ class EmployeeGroups extends Component {
             }}
           />
           <AlagehFormGroup
-            div={{ className: "col" }}
+            div={{ className: "col mandatory" }}
             label={{
               forceLabel: "Description",
               isImp: true
@@ -99,7 +99,7 @@ class EmployeeGroups extends Component {
 
           <AlagehFormGroup
             div={{
-              className: "col arabic-txt-fld"
+              className: "col arabic-txt-fld mandatory"
             }}
             label={{
               forceLabel: "Arabic Description",
@@ -119,7 +119,7 @@ class EmployeeGroups extends Component {
           />
           <AlagehFormGroup
             div={{
-              className: "col"
+              className: "col mandatory"
             }}
             label={{
               forceLabel: "Project Abbreviation",
@@ -136,7 +136,7 @@ class EmployeeGroups extends Component {
           />
 
           <AlgaehDateHandler
-            div={{ className: "col" }}
+            div={{ className: "col mandatory" }}
             label={{ forceLabel: "Start Date", isImp: true }}
             textBox={{ className: "txt-fld", name: "start_date" }}
             events={{
@@ -145,7 +145,7 @@ class EmployeeGroups extends Component {
             value={this.state.start_date}
           />
           <AlgaehDateHandler
-            div={{ className: "col" }}
+            div={{ className: "col mandatory" }}
             label={{ forceLabel: "End Date", isImp: true }}
             textBox={{ className: "txt-fld", name: "end_date" }}
             events={{

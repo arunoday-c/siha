@@ -16,6 +16,7 @@
   "marital_status": "Marital Status",
   "address1": "Primary Address",
   "address2": "Secondary Address",
+  "tel_code": "Code",
   "contact_number": "Mobile Number",
   "mobile": "Mobile",
   "number": "Number",

@@ -21,7 +21,8 @@ class LeaveMaster extends Component {
       leaveEncash: [],
       leaveRules: [],
       encashment_percentage: 0,
-      carry_forward_percentage: 0
+      carry_forward_percentage: 0,
+      from_value: 0
     };
   }
 
@@ -68,7 +69,7 @@ class LeaveMaster extends Component {
         this.setState({
           leaveRules: this.state.leaveRules
         });
-      } 
+      }
     });
   }
   deleteLeaveEncash(row) {
@@ -87,7 +88,7 @@ class LeaveMaster extends Component {
         this.setState({
           leaveEncash: this.state.leaveEncash
         });
-      } 
+      }
     });
   }
 
@@ -190,7 +191,7 @@ class LeaveMaster extends Component {
         this.setState({
           rule_earning_id: null,
           paytype: null,
-          from_value: null,
+          from_value: parseFloat(this.state.to_value) + 1,
           to_value: null,
           value_type: null,
           total_days: null
@@ -492,7 +493,7 @@ class LeaveMaster extends Component {
           rule_earning_id: null,
           paytype: null,
           leaveRules: [],
-          from_value: "",
+          from_value: 0,
           to_value: "",
           value_type: null,
           total_days: ""

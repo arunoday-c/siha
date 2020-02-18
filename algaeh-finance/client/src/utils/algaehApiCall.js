@@ -66,232 +66,249 @@ export function algaehApiCall(options) {
         },
         options
       );
-      if (settings.uri === null) {
-        return;
-      }
-      let _baseUrl = settings.baseUrl;
-      const _localaddress =
-        window.location.protocol + "//" + window.location.hostname; //+ ":";
 
-      const isProxy = window.location.port === "";
-
-      if (settings.module === null || settings.module === "") {
-        const _defRoute = config.routersAndPorts.default;
-        const _url =
-          _defRoute.url === undefined || _defRoute.url === ""
-            ? _localaddress
-            : _defRoute.url;
-        const _baseurlInner =
-          _defRoute.baseUrl === undefined ? _baseUrl : _defRoute.baseUrl;
-
-        settings.baseUrl =
-          _url +
-          (isProxy ? _defRoute.path : `:${_defRoute.port}`) +
-          _baseurlInner;
-      } else {
-        const _myRouter = config.routersAndPorts[settings.module];
-        const _url =
-          _myRouter.url === undefined || _myRouter.url === ""
-            ? _localaddress
-            : _myRouter.url;
-        const _baseurlInner =
-          _myRouter.baseUrl === undefined ? _baseUrl : _myRouter.baseUrl;
-        settings.baseUrl =
-          _url +
-          (isProxy ? _myRouter.path : `:${_myRouter.port}`) +
-          _baseurlInner;
-      }
-      let queryParametres = "";
-
-      if (settings.skipParse === false) {
-        settings.data = JSON.parse(
-          JSON.stringify(settings.data, function(k, v) {
-            return v === undefined ? null : v;
-          }),
-          valueReviver
-        );
-      }
-      // if (String(settings.method).toUpperCase() === "GET") {
-      //   let str = [];
-      //   for (let p in settings.data) {
-      //     if (settings.data.hasOwnProperty(p)) {
-      //       if (settings.data[p] !== undefined) {
-      //         let _newData = settings.data[p];
-      //         if (typeof _newData === "object") {
-      //           _newData = JSON.stringify(_newData);
-      //         }
-      //         str.push(
-      //           encodeURIComponent(p) + "=" + encodeURIComponent(_newData)
-      //         );
-      //       }
-      //     }
-      //   }
-      //   settings.data = {};
-      //   queryParametres = "?" + str.join("&");
-      // }
-      let cancelRequest = {};
-      if (settings.cancelRequestId !== null) {
-        axiosCancel(axios, {
-          debug: false
-        });
-
-        cancelRequest = {
-          requestId: settings.cancelRequestId
-        };
-      }
-      const _contentType = settings.header !== undefined ? settings.header : {};
-
-      const Params =
-        String(settings.method).toUpperCase() === "GET"
-          ? { params: settings.data }
-          : { data: settings.data };
-      const timmer =
-        settings.timerNotRequired === undefined
-          ? {
-              timeout: settings.timeout !== undefined ? settings.timeout : 60000
-            }
-          : {};
-      axios({
-        method: settings.method,
-        url: settings.baseUrl + settings.uri + queryParametres,
-        headers: {
-          "x-api-key": headerToken,
-          // "x-app-user-identity": x_app_user_identity,
-          "x-client-ip": myIP,
-          "x-branch": x_branch,
-          ..._contentType
-        },
-        httpAgent: new Agent({
-          maxSockets: 100,
-          timeout: 60000, // active socket keepalive for 60 seconds
-          freeSocketTimeout: 30000 // free socket keepalive for 30 seconds
-        }), //new http.Agent({ keepAlive: true }),
-        ...settings.others,
-        ...Params,
-        ...timmer,
-        ...cancelRequest
-      })
-        .then(response => {
-          if (typeof settings.onSuccess === "function")
-            settings.onSuccess(response);
-        })
-        .catch(err => {
-          if (typeof settings.onCatch === "function") {
-            settings.onCatch(err);
-            return;
-          }
-          AlgaehLoader({ show: false });
-          if (!showOtherPopup) {
-            return;
-          }
-          if (
-            settings.cancelRequestId !== undefined ||
-            settings.cancelRequestId !== null ||
-            settings.cancelRequestId !== ""
-          ) {
-            if (axios.isCancel(err)) {
-              if (process.env.NODE_ENV === "development")
-                console.warn("Request canceled :", err.message);
-            }
-          }
-          if (err.response !== undefined) {
-            const { status, data } = err.response;
-            if (status === 423) {
-              showOtherPopup = false;
-              reLoginPopup(data);
-              return;
-            }
-          }
-
-          if (err.code === "ECONNABORTED") {
-            if (process.env.NODE_ENV === "development") {
-              console.error(
-                "Error Message : \n" +
-                  err.message +
-                  " \n Detail Info : \n" +
-                  JSON.stringify(err)
+      if (String(settings.method).toUpperCase() === "GET") {
+        let str = [];
+        let p = undefined;
+        for (p in settings.data) {
+          if (settings.data.hasOwnProperty(p)) {
+            if (settings.data[p] !== undefined) {
+              let _newData = settings.data[p];
+              if (typeof _newData === "object") {
+                _newData = JSON.stringify(_newData);
+              }
+              str.push(
+                encodeURIComponent(p) + "=" + encodeURIComponent(_newData)
               );
             }
-          } else {
-            if (settings.module === "documentManagement") {
-              const reader = new FileReader();
-              reader.onload = function() {
-                if (settings.onFileFailure === "function") {
-                  settings.onFileFailure(reader.result);
-                  return;
+          }
+        }
+        let _baseUrl = settings.baseUrl;
+        const _localaddress =
+          window.location.protocol + "//" + window.location.hostname; //+ ":";
+
+        const isProxy = window.location.port === "";
+
+        if (settings.module === null || settings.module === "") {
+          const _defRoute = config.routersAndPorts.default;
+          const _url =
+            _defRoute.url === undefined || _defRoute.url === ""
+              ? _localaddress
+              : _defRoute.url;
+          const _baseurlInner =
+            _defRoute.baseUrl === undefined ? _baseUrl : _defRoute.baseUrl;
+
+          settings.baseUrl =
+            _url +
+            (isProxy ? _defRoute.path : `:${_defRoute.port}`) +
+            _baseurlInner;
+        } else {
+          const _myRouter = config.routersAndPorts[settings.module];
+          const _url =
+            _myRouter.url === undefined || _myRouter.url === ""
+              ? _localaddress
+              : _myRouter.url;
+          const _baseurlInner =
+            _myRouter.baseUrl === undefined ? _baseUrl : _myRouter.baseUrl;
+          settings.baseUrl =
+            _url +
+            (isProxy ? _myRouter.path : `:${_myRouter.port}`) +
+            _baseurlInner;
+        }
+        let queryParametres = "";
+
+        if (settings.skipParse === false) {
+          settings.data = JSON.parse(
+            JSON.stringify(settings.data, function(k, v) {
+              return v === undefined ? null : v;
+            }),
+            valueReviver
+          );
+        }
+        // if (String(settings.method).toUpperCase() === "GET") {
+        //   let str = [];
+        //   for (let p in settings.data) {
+        //     if (settings.data.hasOwnProperty(p)) {
+        //       if (settings.data[p] !== undefined) {
+        //         let _newData = settings.data[p];
+        //         if (typeof _newData === "object") {
+        //           _newData = JSON.stringify(_newData);
+        //         }
+        //         str.push(
+        //           encodeURIComponent(p) + "=" + encodeURIComponent(_newData)
+        //         );
+        //       }
+        //     }
+        //   }
+        //   settings.data = {};
+        //   queryParametres = "?" + str.join("&");
+        // }
+        let cancelRequest = {};
+        if (settings.cancelRequestId !== null) {
+          axiosCancel(axios, {
+            debug: false
+          });
+
+          cancelRequest = {
+            requestId: settings.cancelRequestId
+          };
+        }
+        const _contentType =
+          settings.header !== undefined ? settings.header : {};
+
+        const Params =
+          String(settings.method).toUpperCase() === "GET"
+            ? { params: settings.data }
+            : { data: settings.data };
+        const timmer =
+          settings.timerNotRequired === undefined
+            ? {
+                timeout:
+                  settings.timeout !== undefined ? settings.timeout : 60000
+              }
+            : {};
+        axios({
+          method: settings.method,
+          url: settings.baseUrl + settings.uri + queryParametres,
+          headers: {
+            "x-api-key": headerToken,
+            // "x-app-user-identity": x_app_user_identity,
+            "x-client-ip": myIP,
+            "x-branch": x_branch,
+            ..._contentType
+          },
+          httpAgent: new Agent({
+            maxSockets: 100,
+            timeout: 60000, // active socket keepalive for 60 seconds
+            freeSocketTimeout: 30000 // free socket keepalive for 30 seconds
+          }), //new http.Agent({ keepAlive: true }),
+          ...settings.others,
+          ...Params,
+          ...timmer,
+          ...cancelRequest
+        })
+          .then(response => {
+            if (typeof settings.onSuccess === "function")
+              settings.onSuccess(response);
+          })
+          .catch(err => {
+            if (typeof settings.onCatch === "function") {
+              settings.onCatch(err);
+              return;
+            }
+            AlgaehLoader({ show: false });
+            if (!showOtherPopup) {
+              return;
+            }
+            if (
+              settings.cancelRequestId !== undefined ||
+              settings.cancelRequestId !== null ||
+              settings.cancelRequestId !== ""
+            ) {
+              if (axios.isCancel(err)) {
+                if (process.env.NODE_ENV === "development")
+                  console.warn("Request canceled :", err.message);
+              }
+            }
+            if (err.response !== undefined) {
+              const { status, data } = err.response;
+              if (status === 423) {
+                showOtherPopup = false;
+                reLoginPopup(data);
+                return;
+              }
+            }
+
+            if (err.code === "ECONNABORTED") {
+              if (process.env.NODE_ENV === "development") {
+                console.error(
+                  "Error Message : \n" +
+                    err.message +
+                    " \n Detail Info : \n" +
+                    JSON.stringify(err)
+                );
+              }
+            } else {
+              if (settings.module === "documentManagement") {
+                const reader = new FileReader();
+                reader.onload = function() {
+                  if (settings.onFileFailure === "function") {
+                    settings.onFileFailure(reader.result);
+                    return;
+                  } else {
+                    console.error(reader.result);
+                  }
+                };
+                if (
+                  err.response === undefined &&
+                  err.message === "Network Error"
+                ) {
+                  const routers = config.routersAndPorts;
+
+                  swalMessage({
+                    title:
+                      "'" +
+                      routers[settings.module]["name"] +
+                      "' module is not yet started",
+                    type: "info",
+                    position: "top"
+                  });
                 } else {
-                  console.error(reader.result);
+                  reader.readAsText(err.response.data);
                 }
-              };
-              if (
+              } else if (
+                err.response !== undefined &&
+                err.response.headers["content-type"] === "text/plain"
+              ) {
+                const reader = new FileReader();
+                reader.onload = function() {
+                  swalMessage({
+                    title: reader.result,
+                    type: "error",
+                    position: "top"
+                  });
+                };
+                reader.readAsText(err.response.data);
+              } else if (
                 err.response === undefined &&
                 err.message === "Network Error"
               ) {
                 const routers = config.routersAndPorts;
-
-                swalMessage({
-                  title:
-                    "'" +
-                    routers[settings.module]["name"] +
-                    "' module is not yet started",
-                  type: "info",
-                  position: "top"
-                });
-              } else {
-                reader.readAsText(err.response.data);
-              }
-            } else if (
-              err.response !== undefined &&
-              err.response.headers["content-type"] === "text/plain"
-            ) {
-              const reader = new FileReader();
-              reader.onload = function() {
-                swalMessage({
-                  title: reader.result,
-                  type: "error",
-                  position: "top"
-                });
-              };
-              reader.readAsText(err.response.data);
-            } else if (
-              err.response === undefined &&
-              err.message === "Network Error"
-            ) {
-              const routers = config.routersAndPorts;
-              if (routers[settings.module] !== undefined) {
-                swalMessage({
-                  title:
-                    "'" +
-                    routers[settings.module]["name"] +
-                    "' module is not yet started",
-                  type: "info",
-                  position: "top"
-                });
-              }
-            } else if (
-              err.response !== undefined &&
-              err.response.headers["content-type"] ===
-                "application/json; charset=utf-8"
-            ) {
-              if (
-                err.response.data !== undefined &&
-                err.response.data.success !== undefined
+                if (routers[settings.module] !== undefined) {
+                  swalMessage({
+                    title:
+                      "'" +
+                      routers[settings.module]["name"] +
+                      "' module is not yet started",
+                    type: "info",
+                    position: "top"
+                  });
+                }
+              } else if (
+                err.response !== undefined &&
+                err.response.headers["content-type"] ===
+                  "application/json; charset=utf-8"
               ) {
-                swalMessage({
-                  title: err.response.data.message,
-                  type: "error",
-                  position: "top"
-                });
-              } else {
-                swalMessage({
-                  title: err.response.statusText,
-                  type: "error",
-                  position: "top"
-                });
+                if (
+                  err.response.data !== undefined &&
+                  err.response.data.success !== undefined
+                ) {
+                  swalMessage({
+                    title: err.response.data.message,
+                    type: "error",
+                    position: "top"
+                  });
+                } else {
+                  swalMessage({
+                    title: err.response.statusText,
+                    type: "error",
+                    position: "top"
+                  });
+                }
               }
             }
-          }
-        });
+          });
+      }
     })
     .catch(error => {
       console.error("error", error);
@@ -703,7 +720,7 @@ export function swalMessage(options) {
     }
   }
 
-  toast({ type: settings.type, title: title });
+  toast.fire({ type: settings.type, title: title });
 }
 
 export function cancelRequest(requestId) {

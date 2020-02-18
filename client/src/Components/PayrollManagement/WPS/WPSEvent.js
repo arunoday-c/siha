@@ -10,7 +10,7 @@ export default function WPSEvents() {
         alertTypeIcon: "warning",
         onSuccess: () => {
           algaehApiCall({
-            uri: "/salary/getWpsEmployees",
+            uri: "/salarypayment/getWpsEmployees",
             method: "GET",
             data: {
               year: $this.state.year,

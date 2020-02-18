@@ -9,6 +9,7 @@ import ApAging from "./FinanceStandardReports/apAgingReport";
 import CostCenter from "../costCenterComponent";
 import { getBalanceSheet } from "./FinanceReportEvents";
 import { newAlgaehApi } from "../../hooks";
+import PandLCostCenter from "./FinanceStandardReports/pandLCostCenter";
 let resultdata = {};
 
 function layoutReducer(state, action) {
@@ -33,6 +34,9 @@ export default function FinanceReports() {
   const [finOptions, setFinOptions] = useState(null);
   const [selected, setSelected] = useState("");
   const [data, setData] = useState({});
+  const [project_id, setProjectID] = useState(null);
+  const [branch_id, setBranchID] = useState(null);
+
   const [layout, layoutDispatch] = useReducer(layoutReducer, {
     cols: 24,
     expand: false
@@ -62,14 +66,22 @@ export default function FinanceReports() {
     return report === selected ? "active" : "";
   }
 
+  function costCenterAssin({ projectID, branchID }) {
+    if (projectID !== undefined) setProjectID(projectID);
+    if (branchID !== undefined) setBranchID(branchID);
+  }
+
+  function loadData({ profitLoss }) {
+    setData(profitLoss);
+  }
+
   function loadReport(report) {
     const { url, reportName } = report;
     getBalanceSheet({
       url: url,
       inputParam: {
-        hospital_id: resultdata["hospital_id"] || finOptions.default_branch_id,
-        cost_center_id:
-          resultdata["cost_center_id"] || finOptions.default_cost_center_id
+        hospital_id: branch_id,
+        cost_center_id: project_id
       }
     })
       .then(result => {
@@ -120,140 +132,170 @@ export default function FinanceReports() {
   if (finOptions) {
     return (
       <div className="row">
-        <CostCenter
-          result={resultdata}
-          propBranchID={String(finOptions.default_branch_id)}
-          propCenterID={String(finOptions.default_cost_center_id)}
-        />
-        <div className="col reportMenuSecLeft">
-          <h6>Favourite Reports</h6>
-          <ul className="menuListUl">
-            <li
-              className={selectedClass("BS")}
-              onClick={e => {
-                if (checkExists()) {
-                  setLoading(true);
-                  setSelected("BS");
-                  loadReport({ url: "getBalanceSheet" });
-                }
-              }}
-            >
-              Balance Sheet
-            </li>
-            <li
-              className={selectedClass("PL")}
-              onClick={() => {
-                if (checkExists()) {
-                  loadReport({ url: "getProfitAndLoss" });
-                  setLoading(true);
-                  setSelected("PL");
-                }
-              }}
-            >
-              Profit and Loss
-            </li>
-            <li
-              className={selectedClass("TB")}
-              onClick={() => {
-                if (checkExists()) {
-                  loadReport({ url: "getTrialBalance", reportName: "TB" });
-                  setLoading(true);
-                  setSelected("TB");
-                }
-              }}
-            >
-              Trail Balance
-            </li>{" "}
-            <li
-              className={selectedClass("AR")}
-              onClick={() => {
-                if (checkExists()) {
-                  //loadReport({ url: "getArAging", reportName: "AR" });
-                  //  setLoading(true);
-                  setSelected("AR");
-                }
-              }}
-            >
-              AR Aging
-            </li>
-            <li
-              className={selectedClass("AP")}
-              onClick={() => {
-                if (checkExists()) {
-                  // loadReport({ url: "getApAging", reportName: "AP" });
-                  // setLoading(true);
-                  setSelected("AP");
-                }
-              }}
-            >
-              AP Aging
-            </li>
-          </ul>
-        </div>
-        <div className="col reportPreviewSecLeft">
-          <Spin
-            spinning={loading}
-            tip="Please wait report data is fetching.."
-            delay={500}
-          >
-            {selected === "BS" ? (
-              <Balance
-                data={data}
-                layout={layout}
-                result={["asset", "liabilities"]}
-              />
-            ) : selected === "PL" ? (
-              <Balance
-                data={data}
-                layout={layout}
-                result={["income", "expense"]}
-                footer={result => <div>Profit : {result.profit}</div>}
-              />
-            ) : selected === "TB" ? (
-              <TrailBalance layout={layout} data={trailBanlance} />
-            ) : selected === "AR" ? (
-              <ArAging layout={layout} />
-            ) : selected === "AP" ? (
-              <ApAging layout={layout} />
-            ) : null}
-          </Spin>
-        </div>
-        <div className="col reportPreviewToolRight">
-          <ul>
-            <li>
-              <Tooltip title="Change Layout" placement="left">
-                <Button
-                  icon="layout"
-                  size="large"
-                  disabled={!selected}
-                  onClick={() => layoutDispatch({ type: "switchCol" })}
-                />
-              </Tooltip>
-            </li>
-            {!layout.expand ? (
-              <li>
-                <Tooltip title="Expand" placement="left">
-                  <Button
-                    icon="arrows-alt"
-                    size="large"
-                    disabled={!selected}
-                    onClick={() => layoutDispatch({ type: "expand" })}
+        {/* <div className="col-12 topBarCostCenter">          
+          <div className="row">            
+            <CostCenter
+              result={resultdata}
+              propCenterID={String(finOptions.default_cost_center_id)}
+              propBranchID={String(finOptions.default_branch_id)}
+            />
+          </div>
+        </div> */}
+        <div className="col-12">
+          <div className="row">
+            <div className="col reportMenuSecLeft">
+              <h6>Favourite Reports</h6>
+              <ul className="menuListUl">
+                <li
+                  className={selectedClass("BS")}
+                  onClick={e => {
+                    if (checkExists()) {
+                      setLoading(true);
+                      setSelected("BS");
+                      loadReport({ url: "getBalanceSheet" });
+                    }
+                  }}
+                >
+                  Balance Sheet
+                </li>
+                <li
+                  className={selectedClass("PL")}
+                  onClick={() => {
+                    if (checkExists()) {
+                      loadReport({ url: "getProfitAndLoss" });
+                      setLoading(true);
+                      setSelected("PL");
+                    }
+                  }}
+                >
+                  Profit and Loss
+                </li>
+                <li
+                  className={selectedClass("TB")}
+                  onClick={() => {
+                    if (checkExists()) {
+                      loadReport({ url: "getTrialBalance", reportName: "TB" });
+                      setLoading(true);
+                      setSelected("TB");
+                    }
+                  }}
+                >
+                  Trail Balance
+                </li>
+                <li
+                  className={selectedClass("AR")}
+                  onClick={() => {
+                    if (checkExists()) {
+                      //loadReport({ url: "getArAging", reportName: "AR" });
+                      //  setLoading(true);
+                      setSelected("AR");
+                    }
+                  }}
+                >
+                  AR Aging
+                </li>
+                <li
+                  className={selectedClass("AP")}
+                  onClick={() => {
+                    if (checkExists()) {
+                      setSelected("AP");
+                    }
+                  }}
+                >
+                  AP Aging
+                </li>
+                <li
+                  className={selectedClass("PandL")}
+                  onClick={() => {
+                    if (checkExists()) {
+                      setSelected("PandL");
+                    }
+                  }}
+                >
+                  P&L by Cost center
+                </li>
+              </ul>
+            </div>
+            <div className="col reportPreviewSecLeft">
+              <Spin
+                spinning={loading}
+                tip="Please wait report data is fetching.."
+                delay={500}
+              >
+                {selected === "BS" ? (
+                  <Balance
+                    data={data}
+                    layout={layout}
+                    result={["asset", "liabilities"]}
                   />
-                </Tooltip>
-              </li>
-            ) : (
-              <li>
-                <Tooltip title="Shrink" placement="left">
-                  <Button
-                    icon="shrink"
-                    size="large"
-                    disabled={!selected}
-                    onClick={() => layoutDispatch({ type: "collapse" })}
-                  />
-                </Tooltip>
-              </li>
-            )}
-          </ul>
+                ) : selected === "PL" ? (
+                  <div className="col">
+                    <div className="row">
+                      <CostCenter
+                        result={resultdata}
+                        costCenterAssin={costCenterAssin}
+                        loadData={loadData}
+                        // propCenterID={String(finOptions.default_cost_center_id)}
+                        // propBranchID={String(finOptions.default_branch_id)}
+                      />
+                    </div>
+
+                    <Balance
+                      data={data}
+                      layout={layout}
+                      result={["income", "expense"]}
+                      footer={result => <div>Profit : {result.profit}</div>}
+                    />
+                  </div>
+                ) : selected === "TB" ? (
+                  <TrailBalance layout={layout} data={trailBanlance} />
+                ) : selected === "AR" ? (
+                  <ArAging layout={layout} />
+                ) : selected === "AP" ? (
+                  <ApAging layout={layout} />
+                ) : selected === "PandL" ? (
+                  <PandLCostCenter />
+                ) : null}
+              </Spin>
+            </div>
+            <div className="col reportPreviewToolRight">
+              <ul>
+                <li>
+                  <Tooltip title="Change Layout" placement="left">
+                    <Button
+                      icon="layout"
+                      size="large"
+                      disabled={!selected}
+                      onClick={() => layoutDispatch({ type: "switchCol" })}
+                    />
+                  </Tooltip>
+                </li>
+                {!layout.expand ? (
+                  <li>
+                    <Tooltip title="Expand" placement="left">
+                      <Button
+                        icon="arrows-alt"
+                        size="large"
+                        disabled={!selected}
+                        onClick={() => layoutDispatch({ type: "expand" })}
+                      />
+                    </Tooltip>
+                  </li>
+                ) : (
+                  <li>
+                    <Tooltip title="Shrink" placement="left">
+                      <Button
+                        icon="shrink"
+                        size="large"
+                        disabled={!selected}
+                        onClick={() => layoutDispatch({ type: "collapse" })}
+                      />
+                    </Tooltip>
+                  </li>
+                )}
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     );

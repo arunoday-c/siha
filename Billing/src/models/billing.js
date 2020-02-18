@@ -2974,299 +2974,309 @@ export default {
 
 
 
- //created by:IRFAN
-addtoDayEnd: (req, res, next) => {
-  try {
-    const _options = req.connection == null ? {} : req.connection;
+  //created by:IRFAN
+  addtoDayEnd_backup_8_feb_2020: (req, res, next) => {
+    try {
+      const _options = req.connection == null ? {} : req.connection;
 
-    const _mysql = new algaehMysql(_options);
-    const utilities = new algaehUtilities();
+      const _mysql = new algaehMysql(_options);
+      // const utilities = new algaehUtilities();
 
 
-    _mysql
-      .executeQuery({
-        query:
-          "select product_type from  hims_d_organization where hims_d_organization_id=1\
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from  hims_d_organization where hims_d_organization_id=1\
           and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
-        printQuery: true
-      })
-      .then(product_type => {
-        if (product_type.length == 1) {
-          const inputParam = req.body;
-          const servicesIds = ["0"];
-          if (inputParam.billdetails && inputParam.billdetails.length > 0) {
-            inputParam.billdetails.forEach(item => {
-              servicesIds.push(item.services_id);
-            });
-          }
+          printQuery: true
+        })
+        .then(product_type => {
+          if (product_type.length == 1) {
+            const inputParam = req.body;
+            const servicesIds = ["0"];
+            if (inputParam.billdetails && inputParam.billdetails.length > 0) {
+              inputParam.billdetails.forEach(item => {
+                servicesIds.push(item.services_id);
+              });
+            }
 
-          _mysql
-            .executeQuery({
-              query:
-                "select finance_accounts_maping_id,account,head_id,child_id from finance_accounts_maping  where \
+            _mysql
+              .executeQuery({
+                query:
+                  "select finance_accounts_maping_id,account,head_id,child_id from finance_accounts_maping  where \
             account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL');\
             SELECT hims_d_services_id,service_name,head_id,child_id,\
             insurance_head_id,insurance_child_id FROM hims_d_services where hims_d_services_id in(?);",
-              values: [servicesIds],
-              printQuery: true
-            })
-            .then(Result => {
-              const controls = Result[0];
-              const serviceData = Result[1];
+                values: [servicesIds],
+                printQuery: true
+              })
+              .then(Result => {
+                const controls = Result[0];
+                const serviceData = Result[1];
 
-              const OP_DEP = controls.find(f => {
-                return f.account == "OP_DEP";
-              });
-
-              const CIH_OP = controls.find(f => {
-                return f.account == "CIH_OP";
-              });
-              const OUTPUT_TAX = controls.find(f => {
-                return f.account == "OUTPUT_TAX";
-              });
-              const OP_REC = controls.find(f => {
-                return f.account == "OP_REC";
-              });
-              const CARD_SETTL = controls.find(f => {
-                return f.account == "CARD_SETTL";
-              });
-
-              let voucher_type = "";
-              let narration = "";
-              let amount=0;
-
-              const EntriesArray = [];
-              if (inputParam.transaction_type == "AD") {
-                voucher_type = "receipt";
-
-                narration = " Collected Advance From Patient:"+inputParam.patient_code;
-
-                amount=inputParam.total_amount;
-
-                EntriesArray.push({
-                  payment_date: new Date(),
-                  head_id: OP_DEP.head_id,
-                  child_id: OP_DEP.child_id,
-                  debit_amount: 0,
-                  payment_type: "CR",
-                  credit_amount: inputParam.total_amount,
-                  hospital_id: req.userIdentity.hospital_id
+                const OP_DEP = controls.find(f => {
+                  return f.account == "OP_DEP";
                 });
 
-                inputParam.receiptdetails.forEach(m => {
-                  if (m.pay_type == "CD") {
-                    narration = narration+",Received By CARD:" + m.amount;
-
-                    EntriesArray.push({
-                      payment_date: new Date(),
-                      head_id: CARD_SETTL.head_id,
-                      child_id: CARD_SETTL.child_id,
-                      debit_amount: m.amount,
-                      payment_type: "DR",
-                      credit_amount: 0,
-                      hospital_id: req.userIdentity.hospital_id
-                    });
-                  } else {
-                    narration = narration+",Received By CASH:" + m.amount;
-                    EntriesArray.push({
-                      payment_date: new Date(),
-                      head_id: CIH_OP.head_id,
-                      child_id: CIH_OP.child_id,
-                      debit_amount: m.amount,
-                      payment_type: "DR",
-                      credit_amount: 0,
-                      hospital_id: req.userIdentity.hospital_id
-                    });
-                  }
+                const CIH_OP = controls.find(f => {
+                  return f.account == "CIH_OP";
                 });
-              } else if (inputParam.transaction_type == "RF") {
-                voucher_type = "payment";
-
-                narration = " Refund to Patient:"+inputParam.patient_code;
-                amount=inputParam.total_amount;
-
-                // DECREASE PATIENT PAYABLE
-
-                EntriesArray.push({
-                  payment_date: new Date(),
-                  head_id: OP_DEP.head_id,
-                  child_id: OP_DEP.child_id,
-                  debit_amount: inputParam.total_amount,
-                  payment_type: "DR",
-                  credit_amount: 0,
-                  hospital_id: req.userIdentity.hospital_id
+                const OUTPUT_TAX = controls.find(f => {
+                  return f.account == "OUTPUT_TAX";
+                });
+                const OP_REC = controls.find(f => {
+                  return f.account == "OP_REC";
+                });
+                const CARD_SETTL = controls.find(f => {
+                  return f.account == "CARD_SETTL";
                 });
 
-                    // DECREASE CASH IN HAND
-                EntriesArray.push({
-                  payment_date: new Date(),
-                  head_id: CIH_OP.head_id,
-                  child_id: CIH_OP.child_id,
-                  debit_amount: 0,
-                  payment_type: "CR",
-                  credit_amount: amount,
-                  hospital_id: req.userIdentity.hospital_id
-                });
-              } else {
-                voucher_type = "sales";
+                let voucher_type = "";
+                let narration = "";
+                let amount = 0;
 
-                amount= inputParam.receiveable_amount;
-                narration="Patient:"+inputParam.patient_code;
-            
-                //BOOKING INCOME AND TAX
-              serviceData.forEach(curService => {
-                narration =narration+
-                  ", Booking Income for " + curService.service_name;
+                const EntriesArray = [];
+                if (inputParam.transaction_type == "AD") {
+                  voucher_type = "receipt";
 
-                const bill = inputParam.billdetails.find(f => {
-                  if (f.services_id == curService.hims_d_services_id)
-                    return f;
-                });
+                  narration = " Collected Advance From Patient:" + inputParam.patient_code;
 
-                EntriesArray.push({
-                  payment_date: new Date(),
-                  head_id: curService.head_id,
-                  child_id: curService.child_id,
-                  debit_amount: 0,
-                  payment_type: "CR",
-                  credit_amount: bill.patient_resp,
-                  hospital_id: req.userIdentity.hospital_id
-                });
+                  amount = inputParam.total_amount;
 
-                EntriesArray.push({
-                  payment_date: new Date(),
-                  head_id: OUTPUT_TAX.head_id,
-                  child_id: OUTPUT_TAX.child_id,
-                  debit_amount: 0,
-                  payment_type: "CR",
-                  credit_amount: bill.patient_tax,
-                  hospital_id: req.userIdentity.hospital_id
-                });
-              });
-
-
-                //ADJUSTING AMOUNT FROM PRVIOUS ADVANCE
-                if (inputParam.advance_adjust > 0) {
-                  narration =narration+
-                    ", Adjusting Advance  Amount of " + inputParam.advance_adjust;
                   EntriesArray.push({
                     payment_date: new Date(),
                     head_id: OP_DEP.head_id,
                     child_id: OP_DEP.child_id,
-                    debit_amount: inputParam.advance_adjust,
-                    payment_type: "DR",
-                    credit_amount: 0,
+                    debit_amount: 0,
+                    payment_type: "CR",
+                    credit_amount: inputParam.total_amount,
                     hospital_id: req.userIdentity.hospital_id
                   });
-                }
-                //PROVING OP SERVICE ON CREDIT
-                if (inputParam.credit_amount > 0) {
-                  narration =narration+
-                    ", Providng OP Service On Credit for Amount " +
-                    inputParam.credit_amount;
+
+                  inputParam.receiptdetails.forEach(m => {
+                    if (m.pay_type == "CD") {
+                      narration = narration + ",Received By CARD:" + m.amount;
+
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: CARD_SETTL.head_id,
+                        child_id: CARD_SETTL.child_id,
+                        debit_amount: m.amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    } else {
+                      narration = narration + ",Received By CASH:" + m.amount;
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: CIH_OP.head_id,
+                        child_id: CIH_OP.child_id,
+                        debit_amount: m.amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    }
+                  });
+                } else if (inputParam.transaction_type == "RF") {
+                  voucher_type = "payment";
+
+                  narration = " Refund to Patient:" + inputParam.patient_code;
+                  amount = inputParam.total_amount;
+
+                  // DECREASE PATIENT PAYABLE
 
                   EntriesArray.push({
                     payment_date: new Date(),
-                    head_id: OP_REC.head_id,
-                    child_id: OP_REC.child_id,
-                    debit_amount: inputParam.credit_amount,
+                    head_id: OP_DEP.head_id,
+                    child_id: OP_DEP.child_id,
+                    debit_amount: inputParam.total_amount,
                     payment_type: "DR",
                     credit_amount: 0,
                     hospital_id: req.userIdentity.hospital_id
                   });
-                }
 
-             
+                  // DECREASE CASH IN HAND
+                  EntriesArray.push({
+                    payment_date: new Date(),
+                    head_id: CIH_OP.head_id,
+                    child_id: CIH_OP.child_id,
+                    debit_amount: 0,
+                    payment_type: "CR",
+                    credit_amount: amount,
+                    hospital_id: req.userIdentity.hospital_id
+                  });
+                } else {
+                  voucher_type = "sales";
 
-                //INCREASING CASH IN CAND AND BANK
-                inputParam.receiptdetails.forEach(m => {
-                  if (m.pay_type == "CD") {
-                    narration = narration+",Received By CARD:" + m.amount;
+                  amount = inputParam.receiveable_amount;
+                  narration = "Patient:" + inputParam.patient_code;
+
+                  //BOOKING INCOME AND TAX
+                  serviceData.forEach(curService => {
+                    narration = narration +
+                      ", Booking Income for " + curService.service_name;
+
+                    const bill = inputParam.billdetails.find(f => {
+                      if (f.services_id == curService.hims_d_services_id)
+                        return f;
+                    });
 
                     EntriesArray.push({
                       payment_date: new Date(),
-                      head_id: CARD_SETTL.head_id,
-                      child_id: CARD_SETTL.child_id,
-                      debit_amount: m.amount,
-                      payment_type: "DR",
-                      credit_amount: 0,
+                      head_id: curService.head_id,
+                      child_id: curService.child_id,
+                      debit_amount: 0,
+                      payment_type: "CR",
+                      credit_amount: bill.patient_resp,
                       hospital_id: req.userIdentity.hospital_id
                     });
-                  } else {
-                    narration = narration+",Received By CASH:" + m.amount;
+
                     EntriesArray.push({
                       payment_date: new Date(),
-                      head_id: CIH_OP.head_id,
-                      child_id: CIH_OP.child_id,
-                      debit_amount: m.amount,
+                      head_id: OUTPUT_TAX.head_id,
+                      child_id: OUTPUT_TAX.child_id,
+                      debit_amount: 0,
+                      payment_type: "CR",
+                      credit_amount: bill.patient_tax,
+                      hospital_id: req.userIdentity.hospital_id
+                    });
+                  });
+
+
+                  //ADJUSTING AMOUNT FROM PRVIOUS ADVANCE
+                  if (inputParam.advance_adjust > 0) {
+                    narration = narration +
+                      ", Adjusting Advance  Amount of " + inputParam.advance_adjust;
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: OP_DEP.head_id,
+                      child_id: OP_DEP.child_id,
+                      debit_amount: inputParam.advance_adjust,
                       payment_type: "DR",
                       credit_amount: 0,
                       hospital_id: req.userIdentity.hospital_id
                     });
                   }
-                });
-              }
+                  //PROVING OP SERVICE ON CREDIT
+                  if (inputParam.credit_amount > 0) {
+                    narration = narration +
+                      ", Providng OP Service On Credit for Amount " +
+                      inputParam.credit_amount;
+
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: OP_REC.head_id,
+                      child_id: OP_REC.child_id,
+                      debit_amount: inputParam.credit_amount,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                      hospital_id: req.userIdentity.hospital_id
+                    });
+                  }
+
+
+
+                  //INCREASING CASH IN CAND AND BANK
+                  inputParam.receiptdetails.forEach(m => {
+                    if (m.pay_type == "CD") {
+                      narration = narration + ",Received By CARD:" + m.amount;
+
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: CARD_SETTL.head_id,
+                        child_id: CARD_SETTL.child_id,
+                        debit_amount: m.amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    } else {
+                      narration = narration + ",Received By CASH:" + m.amount;
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: CIH_OP.head_id,
+                        child_id: CIH_OP.child_id,
+                        debit_amount: m.amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    }
+                  });
+                }
 
 
 
 
-              _mysql
-              .executeQueryWithTransaction({
-                query:
-                  "INSERT INTO finance_day_end_header (transaction_date,amount,voucher_type,document_id,\
-                  document_number,from_screen,narration,entered_by,entered_date) \
-                  VALUES (?,?,?,?,?,?,?,?,?)",
-                values: [
-                  new Date(),
-                  amount,
-                  voucher_type,
-                  inputParam.receipt_header_id,
-                  inputParam.receipt_number,
-                  inputParam.ScreenCode,
-                 narration,
-                  req.userIdentity.algaeh_d_app_user_id,
-                  new Date()
-
-                ],
-                printQuery: true
-              })
-              .then(headerDayEnd => {
-
-
-
-                const month = moment().format("M");
-                const year = moment().format("YYYY");
-                const IncludeValuess = [
-                  
-                  "payment_date",
-                  "head_id",
-                  "child_id",
-                  "debit_amount",
-                  "payment_type",
-                  "credit_amount",
-                  "hospital_id"
-                ];
-
-
-               
                 _mysql
                   .executeQueryWithTransaction({
                     query:
-                      "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;" ,
-                    values: EntriesArray,
-                    includeValues: IncludeValuess,
-                    bulkInsertOrUpdate: true,
-                    extraValues: {
-                      year: year,
-                      month: month,
-                      day_end_header_id:headerDayEnd.insertId
+                      "INSERT INTO finance_day_end_header (transaction_date,amount,voucher_type,document_id,\
+                  document_number,from_screen,narration,entered_by,entered_date) \
+                  VALUES (?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      new Date(),
+                      amount,
+                      voucher_type,
+                      inputParam.receipt_header_id,
+                      inputParam.receipt_number,
+                      inputParam.ScreenCode,
+                      narration,
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date()
 
-                    },
+                    ],
                     printQuery: true
                   })
-                  .then(subResult => {
-                    console.log("FOUR");
-                    next();
+                  .then(headerDayEnd => {
+
+
+
+                    const month = moment().format("M");
+                    const year = moment().format("YYYY");
+                    const IncludeValuess = [
+
+                      "payment_date",
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "payment_type",
+                      "credit_amount",
+                      "hospital_id"
+                    ];
+
+
+
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                        values: EntriesArray,
+                        includeValues: IncludeValuess,
+                        bulkInsertOrUpdate: true,
+                        extraValues: {
+                          year: year,
+                          month: month,
+                          day_end_header_id: headerDayEnd.insertId
+
+                        },
+                        printQuery: true
+                      })
+                      .then(subResult => {
+                        console.log("FOUR");
+                        next();
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+
+
+
+
                   })
                   .catch(error => {
                     _mysql.rollBackTransaction(() => {
@@ -3275,6 +3285,350 @@ addtoDayEnd: (req, res, next) => {
                   });
 
 
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            next();
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  //created by:IRFAN
+  addtoDayEnd: (req, res, next) => {
+    try {
+      const _options = req.connection == null ? {} : req.connection;
+
+      const _mysql = new algaehMysql(_options);
+      // const utilities = new algaehUtilities();
+
+
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from  hims_d_organization where hims_d_organization_id=1\
+          and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
+          printQuery: true
+        })
+        .then(product_type => {
+          if (product_type.length == 1) {
+            const inputParam = req.body;
+            const servicesIds = ["0"];
+            if (inputParam.billdetails && inputParam.billdetails.length > 0) {
+              inputParam.billdetails.forEach(item => {
+                servicesIds.push(item.services_id);
+              });
+            }
+
+            _mysql
+              .executeQuery({
+                query:
+                  "select finance_accounts_maping_id,account,head_id,child_id from finance_accounts_maping  where \
+            account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL');\
+            SELECT hims_d_services_id,service_name,head_id,child_id,\
+            insurance_head_id,insurance_child_id FROM hims_d_services where hims_d_services_id in(?);\
+            select cost_center_type, cost_center_required from finance_options limit 1;",
+                values: [servicesIds],
+                printQuery: true
+              })
+              .then(Result => {
+                const controls = Result[0];
+                const serviceData = Result[1];
+
+                const OP_DEP = controls.find(f => {
+                  return f.account == "OP_DEP";
+                });
+
+                const CIH_OP = controls.find(f => {
+                  return f.account == "CIH_OP";
+                });
+                const OUTPUT_TAX = controls.find(f => {
+                  return f.account == "OUTPUT_TAX";
+                });
+                const OP_REC = controls.find(f => {
+                  return f.account == "OP_REC";
+                });
+                const CARD_SETTL = controls.find(f => {
+                  return f.account == "CARD_SETTL";
+                });
+
+
+                let voucher_type = "";
+                let narration = "";
+                let amount = 0;
+
+                const EntriesArray = [];
+                if (inputParam.transaction_type == "AD") {
+                  voucher_type = "receipt";
+
+                  narration = " Collected Advance From Patient:" + inputParam.patient_code;
+
+                  amount = inputParam.total_amount;
+
+                  EntriesArray.push({
+                    payment_date: new Date(),
+                    head_id: OP_DEP.head_id,
+                    child_id: OP_DEP.child_id,
+                    debit_amount: 0,
+                    payment_type: "CR",
+                    credit_amount: inputParam.total_amount,
+                    hospital_id: req.userIdentity.hospital_id
+                  });
+
+                  inputParam.receiptdetails.forEach(m => {
+                    if (m.pay_type == "CD") {
+                      narration = narration + ",Received By CARD:" + m.amount;
+
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: CARD_SETTL.head_id,
+                        child_id: CARD_SETTL.child_id,
+                        debit_amount: m.amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    } else {
+                      narration = narration + ",Received By CASH:" + m.amount;
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: CIH_OP.head_id,
+                        child_id: CIH_OP.child_id,
+                        debit_amount: m.amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    }
+                  });
+                } else if (inputParam.transaction_type == "RF") {
+                  voucher_type = "payment";
+
+                  narration = " Refund to Patient:" + inputParam.patient_code;
+                  amount = inputParam.total_amount;
+
+                  // DECREASE PATIENT PAYABLE
+
+                  EntriesArray.push({
+                    payment_date: new Date(),
+                    head_id: OP_DEP.head_id,
+                    child_id: OP_DEP.child_id,
+                    debit_amount: inputParam.total_amount,
+                    payment_type: "DR",
+                    credit_amount: 0,
+                    hospital_id: req.userIdentity.hospital_id
+                  });
+
+                  // DECREASE CASH IN HAND
+                  EntriesArray.push({
+                    payment_date: new Date(),
+                    head_id: CIH_OP.head_id,
+                    child_id: CIH_OP.child_id,
+                    debit_amount: 0,
+                    payment_type: "CR",
+                    credit_amount: amount,
+                    hospital_id: req.userIdentity.hospital_id
+                  });
+                } else {
+                  voucher_type = "sales";
+
+                  amount = inputParam.receiveable_amount;
+                  narration = "Patient:" + inputParam.patient_code;
+
+                  //BOOKING INCOME AND TAX
+                  serviceData.forEach(curService => {
+                    narration = narration +
+                      ", Booking Income for " + curService.service_name;
+
+                    const bill = inputParam.billdetails.find(f => {
+                      if (f.services_id == curService.hims_d_services_id)
+                        return f;
+                    });
+
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: curService.head_id,
+                      child_id: curService.child_id,
+                      debit_amount: 0,
+                      payment_type: "CR",
+                      credit_amount: bill.patient_resp,
+                      hospital_id: req.userIdentity.hospital_id
+                    });
+
+                    if (parseFloat(bill.patient_tax) > 0) {
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: OUTPUT_TAX.head_id,
+                        child_id: OUTPUT_TAX.child_id,
+                        debit_amount: 0,
+                        payment_type: "CR",
+                        credit_amount: bill.patient_tax,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    }
+                  });
+
+
+                  //ADJUSTING AMOUNT FROM PRVIOUS ADVANCE
+                  if (inputParam.advance_adjust > 0) {
+                    narration = narration +
+                      ", Adjusting Advance  Amount of " + inputParam.advance_adjust;
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: OP_DEP.head_id,
+                      child_id: OP_DEP.child_id,
+                      debit_amount: inputParam.advance_adjust,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                      hospital_id: req.userIdentity.hospital_id
+                    });
+                  }
+                  //PROVING OP SERVICE ON CREDIT
+                  if (inputParam.credit_amount > 0) {
+                    narration = narration +
+                      ", Providng OP Service On Credit for Amount " +
+                      inputParam.credit_amount;
+
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: OP_REC.head_id,
+                      child_id: OP_REC.child_id,
+                      debit_amount: inputParam.credit_amount,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                      hospital_id: req.userIdentity.hospital_id
+                    });
+                  }
+
+
+
+                  //INCREASING CASH IN CAND AND BANK
+                  inputParam.receiptdetails.forEach(m => {
+                    if (m.pay_type == "CD") {
+                      narration = narration + ",Received By CARD:" + m.amount;
+
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: CARD_SETTL.head_id,
+                        child_id: CARD_SETTL.child_id,
+                        debit_amount: m.amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    } else {
+                      narration = narration + ",Received By CASH:" + m.amount;
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: CIH_OP.head_id,
+                        child_id: CIH_OP.child_id,
+                        debit_amount: m.amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    }
+                  });
+                }
+
+                let strQuery = "";
+
+                if (Result[2][0].cost_center_required === "Y" && Result[2][0].cost_center_type === "P") {
+                  strQuery = `select  hims_m_division_project_id, project_id from hims_m_division_project D \
+                    inner join hims_d_project P on D.project_id=P.hims_d_project_id \
+                    inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id where \
+                    division_id= ${req.userIdentity.hospital_id} limit 1;`
+                }
+                _mysql
+                  .executeQueryWithTransaction({
+                    query:
+                      "INSERT INTO finance_day_end_header (transaction_date,amount,voucher_type,document_id,\
+                  document_number,from_screen,narration,entered_by,entered_date) \
+                  VALUES (?,?,?,?,?,?,?,?,?);"+ strQuery,
+                    values: [
+                      new Date(),
+                      amount,
+                      voucher_type,
+                      inputParam.receipt_header_id,
+                      inputParam.receipt_number,
+                      inputParam.ScreenCode,
+                      narration,
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date()
+
+                    ],
+                    printQuery: true
+                  })
+                  .then(header_result => {
+                    let project_id = null;
+                    const headerDayEnd = header_result[0]
+                    if (header_result[1].length > 0) {
+                      project_id = header_result[1][0].project_id
+                    }
+
+
+                    const month = moment().format("M");
+                    const year = moment().format("YYYY");
+                    const IncludeValuess = [
+                      "payment_date",
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "payment_type",
+                      "credit_amount",
+                      "hospital_id"
+                    ];
+
+
+
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                        values: EntriesArray,
+                        includeValues: IncludeValuess,
+                        bulkInsertOrUpdate: true,
+                        extraValues: {
+                          year: year,
+                          month: month,
+                          day_end_header_id: headerDayEnd.insertId,
+                          project_id: project_id,
+                          sub_department_id: req.body.sub_department_id
+                        },
+                        printQuery: true
+                      })
+                      .then(subResult => {
+                        console.log("FOUR");
+                        next();
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+
+
+
+
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
 
 
               })
@@ -3283,29 +3637,21 @@ addtoDayEnd: (req, res, next) => {
                   next(error);
                 });
               });
-
-
-            })
-            .catch(error => {
-              _mysql.rollBackTransaction(() => {
-                next(error);
-              });
-            });
-        } else {
-          next();
-        }
-      })
-      .catch(error => {
-        _mysql.rollBackTransaction(() => {
-          next(error);
+          } else {
+            next();
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
         });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
       });
-  } catch (e) {
-    _mysql.rollBackTransaction(() => {
-      next(e);
-    });
+    }
   }
-}
 
 };
 

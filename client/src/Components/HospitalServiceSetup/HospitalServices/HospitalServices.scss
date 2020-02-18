@@ -14,6 +14,10 @@
   }
 }
 
+.ant-select-tree-dropdown{
+  z-index: 9999!important;
+}
+
 .popUpHospitalServices {
   .algaeh-modal {
     max-width: 40vw;
@@ -21,7 +25,7 @@
 }
 .HospitalServicesPopup {
   .algaeh-modal {
-    width: 55vw;
+    width: 57vw;
   }
 }
 

@@ -17,8 +17,12 @@ function createSockets() {
 const socket = createSockets();
 
 socket.on("connect", () => {
-  socket.emit("authentication", { token: getCookie("authToken") });
+  console.log("connected");
 });
+
+// socket.on("connect", () => {
+//   socket.emit("authentication", { token: getCookie("authToken") });
+// });
 
 socket.on("disconnect", () => {
   socket.open();

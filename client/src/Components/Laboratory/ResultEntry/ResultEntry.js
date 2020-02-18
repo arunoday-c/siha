@@ -177,6 +177,7 @@ class ResultEntry extends Component {
     return (
       <div>
         <AlgaehModalPopUp
+          class="labResultModalPopup"
           events={{
             onClose: this.onClose.bind(this)
           }}
@@ -184,693 +185,656 @@ class ResultEntry extends Component {
           openPopup={this.props.open}
         >
           <div className="popupInner">
-            <div
-              className="popRightDiv"
-              style={{ padding: 0, maxHeight: "79vh" }}
-            >
-              <div className="col-lg-12">
-                <div className="row">
-                  <div className="patientInfo-lab-Top box-shadow-normal">
-                    <div className="patientName">
-                      <h6>{this.state.full_name}</h6>
-                      <p>{this.state.gender}</p>
+            <div className="popRightDiv">
+              <div className="row">
+                <div className="col-12 topbarPatientDetails">
+                  <div className="row">
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Patient Name Name"
+                        }}
+                      />
+
+                      <h6>
+                        {this.state.full_name ? this.state.full_name : "------"}
+                      </h6>
                     </div>
-                    <div className="patientDemographic">
-                      <span>
-                        DOB:&nbsp;
-                        <b>
-                          {moment(this.state.date_of_birth).format(
-                            Options.dateFormat
-                          )}
-                        </b>
-                      </span>
-                      <span>
-                        MRN:&nbsp;<b>{this.state.patient_code}</b>
-                      </span>
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Test Name"
+                        }}
+                      />
+
+                      <h6>
+                        {this.state.service_name
+                          ? this.state.service_name
+                          : "------"}
+                      </h6>
                     </div>
-                    <div className="patientDemographic">
-                      <span>
-                        Ref by:&nbsp;
-                        <b>
-                          {display !== null && display.length !== 0
-                            ? display[0].full_name
-                            : ""}
-                        </b>
-                      </span>
-                      <span>
-                        Ordered Date:&nbsp;
-                        <b>
-                          {moment(this.state.ordered_date).format(
-                            Options.dateFormat
-                          )}
-                        </b>
-                      </span>
+
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Ordered By"
+                        }}
+                      />
+
+                      <h6>
+                        {display !== null && display.length !== 0
+                          ? display[0].full_name
+                          : ""}
+                      </h6>
                     </div>
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Ordered By"
+                        }}
+                      />
+
+                      <h6>
+                        {moment(this.state.ordered_date).format(
+                          Options.dateFormat
+                        )}
+                      </h6>
+                    </div>
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Critical Result"
+                        }}
+                      />
+
+                      <h6>
+                        <small className={color_display}>
+                          {" "}
+                          {this.state.critical_status === "N" ? "No" : "Yes"}
+                        </small>
+                      </h6>
+                    </div>
+
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Entered By"
+                      }}
+                      selector={{
+                        name: "entered_by",
+                        className: "select-fld",
+                        value: this.state.entered_by,
+                        dataSource: {
+                          textField: "username",
+                          valueField: "algaeh_d_app_user_id",
+                          data: this.props.labiologyusers
+                        },
+                        onChange: null,
+                        others: {
+                          disabled: true
+                        }
+                      }}
+                    />
+
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Confirmed By"
+                      }}
+                      selector={{
+                        name: "confirmed_by",
+                        className: "select-fld",
+                        value: this.state.confirmed_by,
+                        dataSource: {
+                          textField: "username",
+                          valueField: "algaeh_d_app_user_id",
+                          data: this.props.labiologyusers
+                        },
+                        onChange: null,
+                        others: {
+                          disabled: true
+                        }
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Validtaed By"
+                      }}
+                      selector={{
+                        name: "validated_by",
+                        className: "select-fld",
+                        value: this.state.validated_by,
+                        dataSource: {
+                          textField: "username",
+                          valueField: "algaeh_d_app_user_id",
+                          data: this.props.labiologyusers
+                        },
+                        onChange: null,
+                        others: {
+                          disabled: true
+                        }
+                      }}
+                    />
                   </div>
                 </div>
-              </div>
-
-              <div className="col-lg-12">
-                <div className="row">
-                  <div className="col-12">
-                    <div className="row">
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Test Name"
-                          }}
-                        />
-
-                        <h6>
-                          {this.state.service_name
-                            ? this.state.service_name
-                            : "------"}
-                        </h6>
-                      </div>
-                      <div className="col-2">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Critical Result"
-                          }}
-                        />
-
-                        <h6>
-                          <small className={color_display}>
-                            {" "}
-                            {this.state.critical_status === "N" ? "No" : "Yes"}
-                          </small>
-                        </h6>
-                      </div>
-
-                      <AlagehAutoComplete
-                        div={{ className: "col-2" }}
-                        label={{
-                          forceLabel: "Entered By"
-                        }}
-                        selector={{
-                          name: "entered_by",
-                          className: "select-fld",
-                          value: this.state.entered_by,
-                          dataSource: {
-                            textField: "username",
-                            valueField: "algaeh_d_app_user_id",
-                            data: this.props.labiologyusers
+                <hr />
+                <div className="col-12">
+                  <div className="row">
+                    <div className="col-9" id="labResultGrid_Cntr">
+                      <AlgaehDataGrid
+                        id="labResult_list_grid"
+                        columns={[
+                          {
+                            fieldName: "status",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Analyte Status" }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              return row.status === "E" ? (
+                                <span className="badge badge-secondary">
+                                  Result Entered
+                                </span>
+                              ) : row.status === "C" ? (
+                                <span className="badge badge-primary">
+                                  Confirmed
+                                </span>
+                              ) : row.status === "V" ? (
+                                <span className="badge badge-success">
+                                  Validated
+                                </span>
+                              ) : (
+                                <span className="badge badge-light">
+                                  Result Not Entered
+                                </span>
+                              );
+                            },
+                            others: {
+                              maxWidth: 150,
+                              resizable: false,
+                              style: { textAlign: "center" }
+                            }
                           },
-                          onChange: null,
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
+                          {
+                            fieldName: "analyte_id",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Analyte" }} />
+                            ),
+                            displayTemplate: row => {
+                              let display =
+                                this.props.labanalytes === undefined
+                                  ? []
+                                  : this.props.labanalytes.filter(
+                                      f =>
+                                        f.hims_d_lab_analytes_id ===
+                                        row.analyte_id
+                                    );
 
-                      <AlagehAutoComplete
-                        div={{ className: "col-2" }}
-                        label={{
-                          forceLabel: "Confirmed By"
-                        }}
-                        selector={{
-                          name: "confirmed_by",
-                          className: "select-fld",
-                          value: this.state.confirmed_by,
-                          dataSource: {
-                            textField: "username",
-                            valueField: "algaeh_d_app_user_id",
-                            data: this.props.labiologyusers
+                              return (
+                                <span>
+                                  {display !== null && display.length !== 0
+                                    ? display[0].description
+                                    : ""}
+                                </span>
+                              );
+                            },
+                            others: {
+                              minWidth: 250,
+                              resizable: false,
+                              style: { textAlign: "left" }
+                            }
                           },
-                          onChange: null,
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
-                      <AlagehAutoComplete
-                        div={{ className: "col-2" }}
-                        label={{
-                          forceLabel: "Validtaed By"
-                        }}
-                        selector={{
-                          name: "validated_by",
-                          className: "select-fld",
-                          value: this.state.validated_by,
-                          dataSource: {
-                            textField: "username",
-                            valueField: "algaeh_d_app_user_id",
-                            data: this.props.labiologyusers
+                          {
+                            fieldName: "analyte_type",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Analyte Type" }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              return row.analyte_type === "QU"
+                                ? "Quality"
+                                : row.analyte_type === "QN"
+                                ? "Quantity"
+                                : "Text";
+                            },
+                            others: {
+                              resizable: false,
+                              filterable: false,
+                              style: { textAlign: "center" }
+                            }
                           },
-                          onChange: null,
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>
+                          {
+                            fieldName: "result",
+                            label: (
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Result"
+                                }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  {row.validate === "N" ? (
+                                    <AlagehFormGroup
+                                      div={{}}
+                                      textBox={{
+                                        value: row.result,
+                                        className: "txt-fld",
+                                        name: "result",
+                                        number:
+                                          row.analyte_type === "QN"
+                                            ? true
+                                            : undefined,
+                                        events: {
+                                          onChange: onchangegridresult.bind(
+                                            this,
+                                            this,
+                                            row
+                                          )
+                                        },
+                                        others: {
+                                          placeholder: "Enter Result"
+                                        }
+                                      }}
+                                    />
+                                  ) : (
+                                    row.result
+                                  )}
+                                </span>
+                              );
+                            },
+                            others: {
+                              resizable: false,
+                              filterable: false,
+                              style: { textAlign: "center" }
+                            }
+                          },
 
-                  <div className="col-lg-12" id="labResultGrid_Cntr">
-                    <AlgaehDataGrid
-                      id="labResult_list_grid"
-                      columns={[
-                        {
-                          fieldName: "status",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Analyte Status" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            return row.status === "E" ? (
-                              <span className="badge badge-secondary">
-                                Result Entered
-                              </span>
-                            ) : row.status === "C" ? (
-                              <span className="badge badge-primary">
-                                Confirmed
-                              </span>
-                            ) : row.status === "V" ? (
-                              <span className="badge badge-success">
-                                Validated
-                              </span>
-                            ) : (
-                              <span className="badge badge-light">
-                                Result Not Entered
-                              </span>
-                            );
+                          {
+                            fieldName: "result_unit",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Units" }} />
+                            ),
+                            others: {
+                              maxWidth: 70,
+                              resizable: false,
+                              filterable: false,
+                              style: { textAlign: "center" }
+                            }
                           },
-                          others: {
-                            maxWidth: 150,
-                            resizable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
-                        {
-                          fieldName: "analyte_id",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Analyte" }} />
-                          ),
-                          displayTemplate: row => {
-                            let display =
-                              this.props.labanalytes === undefined
-                                ? []
-                                : this.props.labanalytes.filter(
-                                    f =>
-                                      f.hims_d_lab_analytes_id ===
-                                      row.analyte_id
-                                  );
+                          {
+                            fieldName: "run1",
+                            label: (
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Run 1"
+                                }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  {row.run1 !== "null" ? row.run1 : "----"}
+                                </span>
+                              );
+                            },
+                            others: {
+                              maxWidth: 70,
+                              resizable: false,
+                              filterable: false,
+                              style: { textAlign: "center" }
+                            }
+                          },
 
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].description
-                                  : ""}
-                              </span>
-                            );
+                          {
+                            fieldName: "run2",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Run 2" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  {row.run2 !== "null" ? row.run2 : "----"}
+                                </span>
+                              );
+                            },
+                            others: {
+                              maxWidth: 70,
+                              resizable: false,
+                              filterable: false,
+                              style: { textAlign: "center" }
+                            }
                           },
-                          others: {
-                            minWidth: 250,
-                            resizable: false,
-                            style: { textAlign: "left" }
-                          }
-                        },
-                        {
-                          fieldName: "analyte_type",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Analyte Type" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            return row.analyte_type === "QU"
-                              ? "Quality"
-                              : row.analyte_type === "QN"
-                              ? "Quantity"
-                              : "Text";
+                          {
+                            fieldName: "run3",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Run 3" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  {row.run3 !== "null" ? row.run3 : "----"}
+                                </span>
+                              );
+                            },
+                            others: {
+                              maxWidth: 70,
+                              resizable: false,
+                              filterable: false,
+                              style: { textAlign: "center" }
+                            }
                           },
-                          others: {
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
-                        {
-                          fieldName: "result",
-                          label: (
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Result"
-                              }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {row.validate === "N" ? (
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      value: row.result,
-                                      className: "txt-fld",
-                                      name: "result",
-                                      number:
-                                        row.analyte_type === "QN"
-                                          ? true
-                                          : undefined,
-                                      events: {
-                                        onChange: onchangegridresult.bind(
+                          {
+                            fieldName: "critical_type",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Critical Type" }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              return !row.critical_type ? null : row.critical_type ===
+                                "N" ? (
+                                <span className="badge badge-success">
+                                  Normal
+                                </span>
+                              ) : row.critical_type === "L" ||
+                                row.critical_type === "CL" ? (
+                                <span className="badge badge-warning">Low</span>
+                              ) : (
+                                row.critical_type === "H" ||
+                                (row.critical_type === "CH" && (
+                                  <span className="badge badge-warning">
+                                    High
+                                  </span>
+                                ))
+                              );
+                            }
+                          },
+                          {
+                            fieldName: "normal_low",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Normal Low" }}
+                              />
+                            ),
+                            others: {
+                              resizable: false,
+                              filterable: false,
+                              style: { textAlign: "center" }
+                            }
+                          },
+                          {
+                            fieldName: "normal_high",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Normal High" }}
+                              />
+                            ),
+                            others: {
+                              resizable: false,
+                              filterable: false,
+                              style: { textAlign: "center" }
+                            }
+                          },
+                          {
+                            fieldName: "confirm",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Confirm" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  {row.validate === "N" ? (
+                                    <AlagehAutoComplete
+                                      div={{}}
+                                      selector={{
+                                        name: "confirm",
+                                        className: "select-fld",
+                                        value: row.confirm,
+                                        dataSource: {
+                                          textField: "name",
+                                          valueField: "value",
+                                          data: FORMAT_YESNO
+                                        },
+                                        onChange: confirmedgridcol.bind(
                                           this,
                                           this,
                                           row
                                         )
-                                      },
-                                      others: {
-                                        placeholder: "Enter Result"
-                                      }
-                                    }}
-                                  />
-                                ) : (
-                                  row.result
-                                )}
-                              </span>
-                            );
-                          },
-                          others: {
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
-
-                        {
-                          fieldName: "result_unit",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Units" }} />
-                          ),
-                          others: {
-                            maxWidth: 70,
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
-                        {
-                          fieldName: "run1",
-                          label: (
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Run 1"
-                              }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {row.run1 !== "null" ? row.run1 : "----"}
-                              </span>
-                            );
-                          },
-                          others: {
-                            maxWidth: 70,
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
-
-                        {
-                          fieldName: "run2",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Run 2" }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {row.run2 !== "null" ? row.run2 : "----"}
-                              </span>
-                            );
-                          },
-                          others: {
-                            maxWidth: 70,
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
-                        {
-                          fieldName: "run3",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Run 3" }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {row.run3 !== "null" ? row.run3 : "----"}
-                              </span>
-                            );
-                          },
-                          others: {
-                            maxWidth: 70,
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
-                        {
-                          fieldName: "critical_type",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Critical Type" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            return !row.critical_type ? null : row.critical_type ===
-                              "N" ? (
-                              <span className="badge badge-success">
-                                Normal
-                              </span>
-                            ) : row.critical_type === "CL" ? (
-                              <span className="badge badge-danger">
-                                Critical Low
-                              </span>
-                            ) : row.critical_type === "CH" ? (
-                              <span className="badge badge-danger">
-                                Critical High
-                              </span>
-                            ) : row.critical_type === "L" ? (
-                              <span className="badge badge-warning">Low</span>
-                            ) : (
-                              row.critical_type === "H" && (
-                                <span className="badge badge-warning">
-                                  High
+                                      }}
+                                    />
+                                  ) : row.confirm === "N" ? (
+                                    "No"
+                                  ) : (
+                                    "Yes"
+                                  )}
                                 </span>
-                              )
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "normal_low",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Normal Low" }} />
-                          ),
-                          others: {
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
-                        {
-                          fieldName: "normal_high",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Normal High" }}
-                            />
-                          ),
-                          others: {
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
-                        {
-                          fieldName: "critical_low",
-                          label: (
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Critical Low"
-                              }}
-                            />
-                          ),
-                          others: {
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
-
-                        {
-                          fieldName: "critical_high",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Critical High" }}
-                            />
-                          ),
-                          others: {
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
-                        //TODO
-                        {
-                          fieldName: "confirm",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Confirm" }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {row.validate === "N" ? (
-                                  <AlagehAutoComplete
-                                    div={{}}
-                                    selector={{
-                                      name: "confirm",
-                                      className: "select-fld",
-                                      value: row.confirm,
-                                      dataSource: {
-                                        textField: "name",
-                                        valueField: "value",
-                                        data: FORMAT_YESNO
-                                      },
-                                      onChange: confirmedgridcol.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )
-                                    }}
-                                  />
-                                ) : row.confirm === "N" ? (
-                                  "No"
-                                ) : (
-                                  "Yes"
-                                )}
-                              </span>
-                            );
+                              );
+                            },
+                            others: {
+                              maxWidth: 70,
+                              resizable: false,
+                              filterable: false,
+                              style: { textAlign: "center" }
+                            }
                           },
-                          others: {
-                            maxWidth: 70,
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
-                        {
-                          fieldName: "validate",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Validate" }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {row.validate === "N" ? (
-                                  <AlagehAutoComplete
-                                    div={{}}
-                                    selector={{
-                                      name: "validate",
-                                      className: "select-fld",
-                                      value: row.validate,
-                                      dataSource: {
-                                        textField: "name",
-                                        valueField: "value",
-                                        data: FORMAT_YESNO
-                                      },
-                                      onChange: onchangegridcol.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )
-                                    }}
-                                  />
-                                ) : row.confirm === "N" ? (
-                                  "No"
-                                ) : (
-                                  "Yes"
-                                )}
-                              </span>
-                            );
-                          },
-                          others: {
-                            maxWidth: 70,
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
-                        //TODO
-                        {
-                          fieldName: "amended",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Amend" }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {row.amended === "N" ? (
-                                  <AlagehAutoComplete
-                                    div={{}}
-                                    selector={{
-                                      name: "amended",
-                                      className: "select-fld",
-                                      value: row.amended,
-                                      dataSource: {
-                                        textField: "name",
-                                        valueField: "value",
-                                        data: FORMAT_YESNO
-                                      },
-                                      onChange: onchangeAmend.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )
-                                    }}
-                                  />
-                                ) : row.amended === "N" ? (
-                                  "No"
-                                ) : (
-                                  "Yes"
-                                )}
-                              </span>
-                            );
-                          },
-                          others: {
-                            maxWidth: 70,
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
-                        {
-                          fieldName: "remarks",
-                          label: (
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Remarks"
-                              }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {row.validate === "N" ? (
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      value: row.remarks,
-                                      className: "txt-fld",
-                                      name: "remarks",
-                                      events: {
+                          {
+                            fieldName: "validate",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Validate" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  {row.validate === "N" ? (
+                                    <AlagehAutoComplete
+                                      div={{}}
+                                      selector={{
+                                        name: "validate",
+                                        className: "select-fld",
+                                        value: row.validate,
+                                        dataSource: {
+                                          textField: "name",
+                                          valueField: "value",
+                                          data: FORMAT_YESNO
+                                        },
                                         onChange: onchangegridcol.bind(
                                           this,
                                           this,
                                           row
                                         )
-                                      }
-                                    }}
-                                  />
-                                ) : row.remarks !== "null" ? (
-                                  row.remarks
-                                ) : (
-                                  ""
-                                )}
-                              </span>
-                            );
+                                      }}
+                                    />
+                                  ) : row.confirm === "N" ? (
+                                    "No"
+                                  ) : (
+                                    "Yes"
+                                  )}
+                                </span>
+                              );
+                            },
+                            others: {
+                              maxWidth: 70,
+                              resizable: false,
+                              filterable: false,
+                              style: { textAlign: "center" }
+                            }
                           },
-                          others: {
-                            filterable: false,
-                            minWidth: 250,
-                            resizable: false
-                          }
-                        }
-                      ]}
-                      keyId="patient_code"
-                      filter={true}
-                      dataSource={{
-                        data: this.state.test_analytes
-                      }}
-                      paging={{ page: 0, rowsPerPage: 30 }}
-                    />
-                  </div>
-                  <div className="col-5">
-                    <div className="row">
-                      <AlagehAutoComplete
-                        div={{ className: "col-12  form-group" }}
-                        label={{
-                          forceLabel: "Select Comment"
-                        }}
-                        selector={{
-                          name: "test_comments_id",
-                          className: "select-fld",
-                          value: this.state.test_comments_id,
-                          dataSource: {
-                            textField: "commnet_name",
-                            valueField: "hims_d_investigation_test_comments_id",
-                            data: this.state.comments_data
+                          //TODO
+                          {
+                            fieldName: "amended",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Amend" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  {row.amended === "N" ? (
+                                    <AlagehAutoComplete
+                                      div={{}}
+                                      selector={{
+                                        name: "amended",
+                                        className: "select-fld",
+                                        value: row.amended,
+                                        dataSource: {
+                                          textField: "name",
+                                          valueField: "value",
+                                          data: FORMAT_YESNO
+                                        },
+                                        onChange: onchangeAmend.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )
+                                      }}
+                                    />
+                                  ) : row.amended === "N" ? (
+                                    "No"
+                                  ) : (
+                                    "Yes"
+                                  )}
+                                </span>
+                              );
+                            },
+                            others: {
+                              maxWidth: 70,
+                              resizable: false,
+                              filterable: false,
+                              style: { textAlign: "center" }
+                            }
                           },
-                          onChange: this.selectCommentEvent.bind(this),
-                          onClear: () => {
-                            this.setState({
-                              test_comments_id: null,
-                              selcted_comments: ""
-                            });
+                          {
+                            fieldName: "remarks",
+                            label: (
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Remarks"
+                                }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  {row.validate === "N" ? (
+                                    <AlagehFormGroup
+                                      div={{}}
+                                      textBox={{
+                                        value: row.remarks,
+                                        className: "txt-fld",
+                                        name: "remarks",
+                                        events: {
+                                          onChange: onchangegridcol.bind(
+                                            this,
+                                            this,
+                                            row
+                                          )
+                                        }
+                                      }}
+                                    />
+                                  ) : row.remarks !== "null" ? (
+                                    row.remarks
+                                  ) : (
+                                    ""
+                                  )}
+                                </span>
+                              );
+                            },
+                            others: {
+                              filterable: false,
+                              minWidth: 250,
+                              resizable: false
+                            }
                           }
+                        ]}
+                        keyId="patient_code"
+                        filter={true}
+                        dataSource={{
+                          data: this.state.test_analytes
                         }}
+                        paging={{ page: 0, rowsPerPage: 30 }}
                       />
-                      <div className="col-12">
-                        <AlgaehLabel
+                    </div>
+                    <div className="col-3">
+                      <div className="row">
+                        <AlagehAutoComplete
+                          div={{ className: "col-12  form-group" }}
                           label={{
-                            forceLabel: "Enter Comment"
+                            forceLabel: "Select Comment"
+                          }}
+                          selector={{
+                            name: "test_comments_id",
+                            className: "select-fld",
+                            value: this.state.test_comments_id,
+                            dataSource: {
+                              textField: "commnet_name",
+                              valueField:
+                                "hims_d_investigation_test_comments_id",
+                              data: this.state.comments_data
+                            },
+                            onChange: this.selectCommentEvent.bind(this),
+                            onClear: () => {
+                              this.setState({
+                                test_comments_id: null,
+                                selcted_comments: ""
+                              });
+                            }
                           }}
                         />
+                        <div className="col-12">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Enter Comment"
+                            }}
+                          />
 
-                        <textarea
-                          value={this.state.selcted_comments}
-                          name="selcted_comments"
-                          onChange={this.textAreaEvent.bind(this)}
-                        />
+                          <textarea
+                            value={this.state.selcted_comments}
+                            name="selcted_comments"
+                            onChange={this.textAreaEvent.bind(this)}
+                          />
+                        </div>
+
+                        <div className="col-12" style={{ textAlign: "right" }}>
+                          <button
+                            onClick={addComments.bind(this, this)}
+                            className="btn btn-default"
+                            style={{ marginBottom: 15 }}
+                          >
+                            Add
+                          </button>
+                        </div>
                       </div>
 
-                      <div className="col-12" style={{ textAlign: "right" }}>
-                        <button
-                          onClick={addComments.bind(this, this)}
-                          className="btn btn-default"
-                          style={{ marginBottom: 15 }}
-                        >
-                          Add
-                        </button>
+                      <div className="col-12">
+                        <div className="row finalCommentsSection">
+                          <h6>View Final Comments</h6>
+                          <ol>
+                            {this.state.comment_list.length > 0
+                              ? this.state.comment_list.map((row, index) => {
+                                  return (
+                                    <React.Fragment key={index}>
+                                      <li key={index}>
+                                        <span>{row}</span>
+                                        <i
+                                          className="fas fa-times"
+                                          onClick={deleteComment.bind(
+                                            this,
+                                            this,
+                                            row
+                                          )}
+                                        ></i>
+                                      </li>
+                                    </React.Fragment>
+                                  );
+                                })
+                              : null}
+                          </ol>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                  <div className="col-7">
-                    <div className="row finalCommentsSection">
-                      <h6>View Final Comments</h6>
-                      <ol>
-                        {this.state.comment_list.length > 0
-                          ? this.state.comment_list.map((row, index) => {
-                              return (
-                                <React.Fragment key={index}>
-                                  <li key={index}>
-                                    <span>{row}</span>
-                                    <i
-                                      className="fas fa-times"
-                                      onClick={deleteComment.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )}
-                                    ></i>
-                                  </li>
-                                </React.Fragment>
-                              );
-                            })
-                          : null}
-                      </ol>
                     </div>
                   </div>
                 </div>
@@ -987,3 +951,58 @@ function mapDispatchToProps(dispatch) {
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps)(ResultEntry)
 );
+
+// {
+//   fieldName: "critical_low",
+//   label: (
+//     <AlgaehLabel
+//       label={{
+//         forceLabel: "Critical Low"
+//       }}
+//     />
+//   ),
+//   others: {
+//     resizable: false,
+//     filterable: false,
+//     style: { textAlign: "center" }
+//   }
+// },
+
+// {
+//   fieldName: "critical_high",
+//   label: (
+//     <AlgaehLabel
+//       label={{ forceLabel: "Critical High" }}
+//     />
+//   ),
+//   others: {
+//     resizable: false,
+//     filterable: false,
+//     style: { textAlign: "center" }
+//   }
+// },
+
+// displayTemplate: row => {
+//   return !row.critical_type ? null : row.critical_type ===
+//     "N" ? (
+//       <span className="badge badge-success">
+//         Normal
+//     </span>
+//     ) : row.critical_type === "CL" ? (
+//       <span className="badge badge-danger">
+//         Critical Low
+//     </span>
+//     ) : row.critical_type === "CH" ? (
+//       <span className="badge badge-danger">
+//         Critical High
+//     </span>
+//     ) : row.critical_type === "L" || row.critical_type === "CL" ? (
+//       <span className="badge badge-warning">Low</span>
+//     ) : (
+//             row.critical_type === "H" && (
+//               <span className="badge badge-warning">
+//                 High
+//       </span>
+//             )
+//           );
+// }

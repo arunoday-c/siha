@@ -5,6 +5,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import SalesInvoiceIO from "../../../Models/SalesInvoice";
 import _ from "lodash";
+import moment from "moment";
 
 const texthandle = ($this, ctrl, e) => {
     e = ctrl || e;
@@ -170,7 +171,10 @@ const PostSalesInvoice = $this => {
 
     Inputobj.posted = "Y";
     Inputobj.ScreenCode = getCookie("ScreenCode")
+    Inputobj.due_date = moment($this.state.invoice_date, "YYYY-MM-DD")
+        .add($this.state.payment_terms, "days").format("YYYY-MM-DD")
 
+    debugger
     algaehApiCall({
         uri: "/SalesInvoice/postSalesInvoice",
         module: "sales",
@@ -223,6 +227,8 @@ const SalesOrderSearch = ($this, e) => {
                                     title: "Item not dispatched yet",
                                     type: "warning"
                                 });
+                                AlgaehLoader({ show: false });
+                                return
                             }
 
                             data.sales_order_id = data.hims_f_sales_order_id;

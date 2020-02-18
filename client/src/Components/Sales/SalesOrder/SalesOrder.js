@@ -27,7 +27,8 @@ import {
   dateValidate,
   datehandle,
   AuthorizeOrderEntry,
-  CancelSalesServiceOrder
+  CancelSalesServiceOrder,
+  getCostCenters
 } from "./SalesOrderEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
@@ -77,7 +78,9 @@ class SalesOrder extends Component {
       delivery_date: null,
       sales_order_auth_level: "1",
       grid_edit: false,
-      cancelDisable: false
+      cancelDisable: false,
+      organizations: [],
+      cost_projects: []
     };
     getSalesOptions(this, this);
   }
@@ -89,13 +92,13 @@ class SalesOrder extends Component {
     this.setState({
       decimal_place: userToken.decimal_places,
       hospital_id: userToken.hims_d_hospital_id
-    })
+    });
 
     this.HRMNGMT_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HRMS" ||
-        userToken.product_type === "HRMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP"
+      userToken.product_type === "HRMS" ||
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP"
         ? true
         : false;
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
@@ -107,20 +110,6 @@ class SalesOrder extends Component {
         redux: {
           type: "ITEM_GET_DATA",
           mappingName: "itemlist"
-        }
-      });
-    }
-
-    if (
-      this.props.organizations === undefined ||
-      this.props.organizations.length === 0
-    ) {
-      this.props.getOrganizations({
-        uri: "/organization/getOrganizationByUser",
-        method: "GET",
-        redux: {
-          type: "ORGS_GET_DATA",
-          mappingName: "organizations"
         }
       });
     }
@@ -155,6 +144,7 @@ class SalesOrder extends Component {
       }
     });
 
+    getCostCenters(this);
     if (
       this.props.sales_order_number !== undefined &&
       this.props.sales_order_number.length !== 0
@@ -222,8 +212,8 @@ class SalesOrder extends Component {
                 <h6>
                   {this.state.sales_order_date
                     ? moment(this.state.sales_order_date).format(
-                      Options.dateFormat
-                    )
+                        Options.dateFormat
+                      )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -241,29 +231,29 @@ class SalesOrder extends Component {
                     ) : this.state.authorize1 === "Y" &&
                       this.state.authorize2 === "Y" &&
                       this.state.is_completed === "N" ? (
-                          <span className="badge badge-success">
-                            Authorized / Dispatch Pending
+                      <span className="badge badge-success">
+                        Authorized / Dispatch Pending
                       </span>
-                        ) : this.state.authorize1 === "Y" &&
-                          this.state.authorize2 === "N" ? (
-                            <span className="badge badge-danger">
-                              Authorized 2 Pending
+                    ) : this.state.authorize1 === "Y" &&
+                      this.state.authorize2 === "N" ? (
+                      <span className="badge badge-danger">
+                        Authorized 2 Pending
                       </span>
-                          ) : this.state.authorize1 === "N" &&
-                            this.state.authorize2 === "N" ? (
-                              <span className="badge badge-danger">Pending</span>
-                            ) : this.state.is_completed === "Y" &&
-                              this.state.invoice_generated === "N" ? (
-                                <span className="badge badge-danger">
-                                  Invoice Generation Pending
+                    ) : this.state.authorize1 === "N" &&
+                      this.state.authorize2 === "N" ? (
+                      <span className="badge badge-danger">Pending</span>
+                    ) : this.state.is_completed === "Y" &&
+                      this.state.invoice_generated === "N" ? (
+                      <span className="badge badge-danger">
+                        Invoice Generation Pending
                       </span>
-                              ) : this.state.invoice_generated === "Y" ? (
-                                <span className="badge badge-success">
-                                  Invoice Generated
+                    ) : this.state.invoice_generated === "Y" ? (
+                      <span className="badge badge-success">
+                        Invoice Generated
                       </span>
-                              ) : (
-                                  "-------"
-                                )}
+                    ) : (
+                      <span className="badge badge-danger">Pending</span>
+                    )}
                   </h6>
                 </div>
               ) : null}
@@ -272,17 +262,17 @@ class SalesOrder extends Component {
           printArea={
             this.state.sales_order_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Sales Order Report",
-                    events: {
-                      onClick: () => {
-                        generateSalesOrderReport(this.state);
+                  menuitems: [
+                    {
+                      label: "Sales Order Report",
+                      events: {
+                        onClick: () => {
+                          generateSalesOrderReport(this.state);
+                        }
                       }
                     }
-                  }
-                ]
-              }
+                  ]
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -409,25 +399,25 @@ class SalesOrder extends Component {
                     </h6>
                   </div>
                 ) : (
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Name of Sales Person",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "sales_man",
-                        value: this.state.sales_man,
-                        events: {
-                          onChange: texthandle.bind(this, this)
-                        },
-                        others: {
-                          disabled: this.state.dataExists
-                        }
-                      }}
-                    />
-                  )}
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Name of Sales Person",
+                      isImp: false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "sales_man",
+                      value: this.state.sales_man,
+                      events: {
+                        onChange: texthandle.bind(this, this)
+                      },
+                      others: {
+                        disabled: this.state.dataExists
+                      }
+                    }}
+                  />
+                )}
               </div>
               <div className="row">
                 <AlgaehDateHandler
@@ -466,6 +456,35 @@ class SalesOrder extends Component {
                 />
 
                 <AlagehAutoComplete
+                  div={{ className: "col-2 form-group mandatory" }}
+                  label={{
+                    forceLabel: "Select Project",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "project_id",
+                    className: "select-fld",
+                    value: this.state.project_id,
+                    dataSource: {
+                      textField: "cost_center",
+                      valueField: "cost_center_id",
+                      data: this.state.cost_projects
+                    },
+                    onChange: texthandle.bind(this, this),
+                    others: {
+                      disabled: this.state.dataExists
+                    },
+                    onClear: () => {
+                      this.setState({
+                        project_id: null,
+                        hospital_id: null,
+                        organizations: []
+                      });
+                    }
+                  }}
+                />
+
+                <AlagehAutoComplete
                   div={{ className: "col-2 mandatory" }}
                   label={{
                     forceLabel: "Select Branch",
@@ -478,7 +497,7 @@ class SalesOrder extends Component {
                     dataSource: {
                       textField: "hospital_name",
                       valueField: "hims_d_hospital_id",
-                      data: this.props.organizations
+                      data: this.state.organizations
                     },
                     onChange: texthandle.bind(this, this),
                     others: {
@@ -491,34 +510,6 @@ class SalesOrder extends Component {
                     }
                   }}
                 />
-
-                <AlagehAutoComplete
-                  div={{ className: "col-2 form-group mandatory" }}
-                  label={{
-                    forceLabel: "Select Project",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "project_id",
-                    className: "select-fld",
-                    value: this.state.project_id,
-                    dataSource: {
-                      textField: "project_desc",
-                      valueField: "hims_d_project_id",
-                      data: this.props.projects
-                    },
-                    onChange: texthandle.bind(this, this),
-                    others: {
-                      disabled: this.state.dataExists
-                    },
-                    onClear: () => {
-                      this.setState({
-                        project_id: null
-                      });
-                    }
-                  }}
-                />
-
                 <AlagehFormGroup
                   div={{ className: "col-2 mandatory" }}
                   label={{
@@ -553,11 +544,11 @@ class SalesOrder extends Component {
               {this.state.sales_order_mode === "S" ? (
                 <SalesOrdListService SALESIOputs={this.state} />
               ) : (
-                  <SalesOrdListItems
-                    SALESIOputs={this.state}
-                    sales_order_number={this.props.sales_order_number}
-                  />
-                )}
+                <SalesOrdListItems
+                  SALESIOputs={this.state}
+                  sales_order_number={this.props.sales_order_number}
+                />
+              )}
             </MyContext.Provider>
           </div>
         </div>
@@ -672,38 +663,39 @@ class SalesOrder extends Component {
                     </button>
                   ) : null}
 
-                  {this.state.cancelled === "N" ? <button
-                    type="button"
-                    className="btn btn-other"
-                    disabled={
-                      this.state.authBtnEnable === true
-                        ? true
-                        : this.state.authorize1 === "Y" &&
-                          this.state.authorize2 === "Y"
+                  {this.state.cancelled === "N" ? (
+                    <button
+                      type="button"
+                      className="btn btn-other"
+                      disabled={
+                        this.state.authBtnEnable === true
+                          ? true
+                          : this.state.authorize1 === "Y" &&
+                            this.state.authorize2 === "Y"
                           ? true
                           : false
-                    }
-                    onClick={AuthorizeOrderEntry.bind(
-                      this,
-                      this,
-                      this.state.authorize1 === "N"
-                        ? "authorize1"
-                        : "authorize2"
-                    )}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel:
-                          this.state.authorize1 === "N"
-                            ? "Authorize 1"
-                            : this.state.sales_order_auth_level === "2"
+                      }
+                      onClick={AuthorizeOrderEntry.bind(
+                        this,
+                        this,
+                        this.state.authorize1 === "N"
+                          ? "authorize1"
+                          : "authorize2"
+                      )}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel:
+                            this.state.authorize1 === "N"
+                              ? "Authorize 1"
+                              : this.state.sales_order_auth_level === "2"
                               ? "Authorize 2"
                               : "Authorize 1",
-                        returnText: true
-                      }}
-                    />
-                  </button> : null}
-
+                          returnText: true
+                        }}
+                      />
+                    </button>
+                  ) : null}
                 </div>
               ) : null}
             </div>
@@ -718,9 +710,8 @@ function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
     itemuom: state.itemuom,
-    customer_data: state.customer_data,
-    organizations: state.organizations,
-    projects: state.projects
+    customer_data: state.customer_data
+    // cost_projects: state.cost_projects
   };
 }
 
@@ -729,9 +720,8 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getItemUOM: AlgaehActions,
-      getCustomerMaster: AlgaehActions,
-      getOrganizations: AlgaehActions,
-      getDivisionProject: AlgaehActions
+      getCustomerMaster: AlgaehActions
+      // getDivisionProject: AlgaehActions
     },
     dispatch
   );

@@ -30,7 +30,7 @@ export default {
       });
   },
   //created by irfan:
-  addCostCenter: (req, res, next) => {
+  addCostCenter_BAKUP_FEB_3_2020: (req, res, next) => {
     const _mysql = new algaehMysql();
 
     const input = req.body;
@@ -135,6 +135,203 @@ export default {
       });
   },
   //created by irfan:
+  addCostCenterGroup: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    const input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT finance_options_id,cost_center_required  from finance_options limit 1; "
+      })
+      .then(result => {
+        if (result.length == 1 && result[0]["cost_center_required"] == "Y") {
+          _mysql
+            .executeQuery({
+              query:
+                "insert into finance_cost_center_group (group_code,group_name,created_by,created_date,\
+                  updated_by,updated_date)  VALUE(?,?,?,?,?,?);",
+              values: [
+                input.group_code,
+                input.group_name,
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date()
+              ],
+              printQuery: false
+            })
+            .then(groupRes => {
+              _mysql.releaseConnection();
+              req.records = groupRes;
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: "Cost center is disabled"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+  //created by irfan:
+  addCostCenter: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    const input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT finance_options_id,cost_center_required from finance_options limit 1; "
+      })
+      .then(result => {
+        if (result.length == 1 && result[0]["cost_center_required"] == "Y") {
+          _mysql
+            .executeQuery({
+              query:
+                "insert into finance_cost_center (cost_center_code,group_id,cost_center_name,created_by,created_date,\
+                  updated_by,updated_date)  VALUE(?,?,?,?,?,?,?);",
+              values: [
+                input.cost_center_code,
+                input.group_id,
+                input.cost_center_name,
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date()
+              ],
+              printQuery: false
+            })
+            .then(groupRes => {
+              _mysql.releaseConnection();
+              req.records = groupRes;
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: "Cost center is disabled"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  //created by irfan:
+  getCostCenterGroups: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const input = req.query;
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT finance_options_id,cost_center_required from finance_options limit 1; "
+      })
+      .then(result => {
+        if (result.length == 1 && result[0]["cost_center_required"] == "Y") {
+          let str = "";
+
+          if (input.finance_cost_center_group_id > 0) {
+            str = ` where finance_cost_center_group_id=${input.finance_cost_center_group_id}`;
+          }
+          _mysql
+            .executeQuery({
+              query: `SELECT finance_cost_center_group_id, group_code, group_name\
+              from finance_cost_center_group ${str};`,
+
+              printQuery: false
+            })
+            .then(groupRes => {
+              _mysql.releaseConnection();
+              req.records = groupRes;
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: "Cost center is disabled"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+  //created by irfan:
+  getCostCentersNEW_feb7: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const input = req.query;
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT finance_options_id,cost_center_required from finance_options limit 1; "
+      })
+      .then(result => {
+        if (result.length == 1 && result[0]["cost_center_required"] == "Y") {
+          let str = "";
+
+          if (input.group_id > 0) {
+            str = ` where group_id=${input.group_id}`;
+          }
+          _mysql
+            .executeQuery({
+              query: `SELECT finance_cost_center_id, cost_center_code, group_id, cost_center_name\
+                from finance_cost_center  ${str};`,
+
+              printQuery: false
+            })
+            .then(groupRes => {
+              _mysql.releaseConnection();
+              req.records = groupRes;
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: "Cost center is disabled"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  //created by irfan:
   getCostCenters: (req, res, next) => {
     const _mysql = new algaehMysql();
     const input = req.query;
@@ -143,58 +340,60 @@ export default {
         query: "SELECT cost_center_type  FROM finance_options limit 1; "
       })
       .then(result => {
-        if (result.length == 1 && result[0]["cost_center_type"] == "P") {
-          let strQry = "";
+        if (result.length == 1) {
+          let strQuery = "";
 
-          if (input.hospital_id > 0) {
-            strQry = ` where C.hospital_id= ${input.hospital_id}`;
-          } else if (input.fromMaster != "Y") {
-            strQry = ` where C.hospital_id= ${req.userIdentity.hospital_id}`;
+          switch (result[0]["cost_center_type"]) {
+            case "P":
+              strQuery = `select hims_m_division_project_id,   project_id as cost_center_id,
+                          P.project_desc as cost_center,hospital_name,H.hims_d_hospital_id
+                          from hims_m_division_project D inner join hims_d_project P 
+                          on D.project_id=P.hims_d_project_id 
+                          inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id ;`;
+              break;
+            case "SD":
+              strQuery = ` select  hims_m_branch_dept_map_id, hims_d_hospital_id, sub_department_id   as cost_center_id,
+            SD.sub_department_name as cost_center,hospital_name
+            from hims_m_branch_dept_map M inner join hims_d_sub_department SD
+            on M.sub_department_id=SD.hims_d_sub_department_id
+            inner join hims_d_hospital H on M.hospital_id=H.hims_d_hospital_id;  `;
+              break;
+            default:
+              strQuery = ` select hims_d_hospital_id,hospital_name,hims_d_hospital_id as cost_center_id
+                   ,hospital_name as cost_center from hims_d_hospital where record_status='A';`;
           }
 
           _mysql
             .executeQuery({
-              query: `select finance_cost_center_id,C.hospital_id, cost_center_id,P.project_desc as cost_center,hospital_name from \
-                    finance_cost_center C inner join hims_d_project P\
-                    on C.cost_center_id=P.hims_d_project_id\
-                    left join  hims_d_hospital H on H.hims_d_hospital_id=C.hospital_id ${strQry}; `,
-
+              query: strQuery,
               printQuery: true
             })
             .then(results => {
               _mysql.releaseConnection();
-              req.records = results;
-              next();
-            })
-            .catch(e => {
-              _mysql.releaseConnection();
-              next(e);
-            });
-        } else if (
-          result.length == 1 &&
-          result[0]["cost_center_type"] == "SD"
-        ) {
-          let strQry = "";
 
-          if (input.hospital_id > 0) {
-            strQry = ` where C.hospital_id= ${input.hospital_id}`;
-          } else if (input.fromMaster != "Y") {
-            strQry = ` where C.hospital_id= ${req.userIdentity.hospital_id}`;
-          }
+              let cost = _.chain(results)
+                .groupBy(g => g.cost_center_id)
+                .value();
+              const output = [];
 
-          _mysql
-            .executeQuery({
-              query: `select finance_cost_center_id,C.hospital_id, cost_center_id,
-              SD.sub_department_name as cost_center ,hospital_name from 
-              finance_cost_center C inner join hims_d_sub_department SD
-              on C.cost_center_id=SD.hims_d_sub_department_id\
-              left join  hims_d_hospital H on H.hims_d_hospital_id=C.hospital_id ${strQry}; `,
+              for (let c in cost) {
+                const branches = [];
+                results.forEach(item => {
+                  if (item.cost_center_id == c) {
+                    branches.push({
+                      hospital_name: item.hospital_name,
+                      hims_d_hospital_id: item.hims_d_hospital_id
+                    });
+                  }
+                });
+                output.push({
+                  cost_center_id: cost[c][0]["cost_center_id"],
+                  cost_center: cost[c][0]["cost_center"],
+                  branches: branches
+                });
+              }
 
-              printQuery: true
-            })
-            .then(results => {
-              _mysql.releaseConnection();
-              req.records = results;
+              req.records = output;
               next();
             })
             .catch(e => {
@@ -284,6 +483,90 @@ export default {
 
         req.records = result;
         next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  //created by irfan:
+  getCostCentersForVoucher: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const input = req.query;
+    _mysql
+      .executeQuery({
+        query: "SELECT cost_center_type  FROM finance_options limit 1; "
+      })
+      .then(result => {
+        if (result.length == 1) {
+          let strQuery = "";
+
+          switch (result[0]["cost_center_type"]) {
+            case "P":
+              strQuery = `select hims_m_division_project_id,   project_id as cost_center_id,
+                          P.project_desc as cost_center,hospital_name,H.hims_d_hospital_id
+                          from hims_m_division_project D inner join hims_d_project P 
+                          on D.project_id=P.hims_d_project_id 
+                          inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id ;`;
+              break;
+            case "SD":
+              strQuery = ` select  hims_m_branch_dept_map_id, hims_d_hospital_id, sub_department_id   as cost_center_id,
+            SD.sub_department_name as cost_center,hospital_name
+            from hims_m_branch_dept_map M inner join hims_d_sub_department SD
+            on M.sub_department_id=SD.hims_d_sub_department_id
+            inner join hims_d_hospital H on M.hospital_id=H.hims_d_hospital_id;  `;
+              break;
+            default:
+              strQuery = ` select hims_d_hospital_id,hospital_name,hims_d_hospital_id as cost_center_id
+                   ,hospital_name as cost_center from hims_d_hospital where record_status='A';`;
+          }
+
+          _mysql
+            .executeQuery({
+              query: strQuery,
+              printQuery: true
+            })
+            .then(results => {
+              _mysql.releaseConnection();
+
+              let branch = _.chain(results)
+                .groupBy(g => g.hims_d_hospital_id)
+                .value();
+              const output = [];
+
+              for (let b in branch) {
+                const cost_centers = [];
+                results.forEach(item => {
+                  if (item.hims_d_hospital_id == b) {
+                    cost_centers.push({
+                      cost_center: item.cost_center,
+                      cost_center_id: item.cost_center_id
+                    });
+                  }
+                });
+                output.push({
+                  hospital_name: branch[b][0]["hospital_name"],
+                  hims_d_hospital_id: branch[b][0]["hims_d_hospital_id"],
+                  cost_centers: cost_centers
+                });
+              }
+
+              req.records = output;
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: "Please Define cost center type"
+          };
+          next();
+        }
       })
       .catch(e => {
         _mysql.releaseConnection();

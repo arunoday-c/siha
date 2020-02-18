@@ -43,24 +43,43 @@ let getOrganizationByUser = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let _stringData = "";
-    let inputValues = [req.userIdentity.algaeh_d_app_user_id];
+    let inputValues = [];
     if (req.query.hims_d_hospital_id != null) {
       _stringData += " and hims_d_hospital_id=?";
       inputValues.push(req.query.hims_d_hospital_id);
     }
+    // req.userIdentity.algaeh_d_app_user_id
+    let strQuery = ""
+    if (req.userIdentity.role_type === "SU") {
+
+      strQuery = "SELECT hims_d_hospital_id, hospital_code, local_vat_applicable, default_nationality, default_country, \
+      default_currency, default_slot, default_patient_type, standard_from_time, standard_to_time, hospital_name, \
+      arabic_hospital_name, hospital_address, city_id, organization_id, effective_start_date, effective_end_date, \
+      hosital_status, lab_location_code ,hims_d_currency_id, currency_code, currency_description, currency_symbol,\
+      decimal_places, symbol_position, thousand_separator, decimal_separator, negative_separator,\
+      requied_emp_id FROM hims_d_hospital H \
+      inner join hims_d_currency CUR on CUR.hims_d_currency_id=H.default_currency and CUR.record_status='A'\
+      WHERE H.record_status='A'" +
+        _stringData
+    } else {
+      _stringData += " and UE.user_id=?";
+      inputValues.push(req.userIdentity.algaeh_d_app_user_id);
+
+      strQuery = "SELECT hims_d_hospital_id, hospital_code, local_vat_applicable, default_nationality, default_country, \
+      default_currency, default_slot, default_patient_type, standard_from_time, standard_to_time, hospital_name, \
+      arabic_hospital_name, hospital_address, city_id, organization_id, effective_start_date, effective_end_date, \
+      hosital_status, lab_location_code ,hims_d_currency_id, currency_code, currency_description, currency_symbol,\
+      decimal_places, symbol_position, thousand_separator, decimal_separator, negative_separator,\
+      requied_emp_id FROM hims_d_hospital H \
+      inner join hims_m_user_employee UE on UE.hospital_id=H.hims_d_hospital_id and UE.record_status='A' \
+      inner join hims_d_currency CUR on CUR.hims_d_currency_id=H.default_currency and CUR.record_status='A'\
+      WHERE H.record_status='A' " +
+        _stringData
+
+    }
     _mysql
       .executeQuery({
-        query:
-          "SELECT hims_d_hospital_id, hospital_code, local_vat_applicable, default_nationality, default_country, \
-          default_currency, default_slot, default_patient_type, standard_from_time, standard_to_time, hospital_name, \
-          arabic_hospital_name, hospital_address, city_id, organization_id, effective_start_date, effective_end_date, \
-          hosital_status, lab_location_code ,hims_d_currency_id, currency_code, currency_description, currency_symbol,\
-          decimal_places, symbol_position, thousand_separator, decimal_separator, negative_separator,\
-          requied_emp_id FROM hims_d_hospital H \
-          inner join hims_m_user_employee UE on UE.hospital_id=H.hims_d_hospital_id and UE.record_status='A' \
-          inner join hims_d_currency CUR on CUR.hims_d_currency_id=H.default_currency and CUR.record_status='A'\
-          WHERE H.record_status='A' AND UE.user_id=?" +
-          _stringData,
+        query: strQuery,
         values: inputValues,
         printQuery: true
       })

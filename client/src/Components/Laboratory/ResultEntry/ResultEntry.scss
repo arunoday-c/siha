@@ -119,12 +119,6 @@
     border-right: 1px solid #e6e6e6;
   }
 }
-#labResultGrid_Cntr {
-  margin-bottom: 10px;
-  .ReactTable {
-    max-height: 45vh !important;
-  }
-}
 .finalCommentsSection {
   h6 {
     width: 100%;
@@ -134,11 +128,11 @@
   }
   ol {
     width: 100%;
-    margin: 0 15px 0 0;
+    margin: 0;
     padding: 5px 15px;
     border: 1px solid #d3d3d3;
-    min-height: 19vh;
-    max-height: 19vh;
+    min-height: 36vh;
+    max-height: 36vh;
     overflow: auto;
     border-radius: 4px;
     li {
@@ -161,6 +155,27 @@
           cursor: pointer;
         }
       }
+    }
+  }
+}
+.labResultModalPopup {
+  .algaeh-modal {
+    margin: 0 auto;
+  }
+  .popRightDiv {
+    max-height: 88vh !important;
+    padding-top: 0 !important;
+    .topbarPatientDetails {
+      background: #f7f7f7;
+      border-bottom: 1px solid #ccc;
+      padding-top: 10px;
+    }
+  }
+  #labResultGrid_Cntr {
+    margin-bottom: 10px;
+    padding-right: 0;
+    .ReactTable {
+      max-height: 69vh !important;
     }
   }
 }
