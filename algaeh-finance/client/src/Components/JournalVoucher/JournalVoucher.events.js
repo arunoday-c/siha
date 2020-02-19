@@ -18,7 +18,7 @@ export function getVoucherNumber(input) {
           reject(error);
         }
       });
-    } catch (e) { }
+    } catch (e) {}
   });
 }
 export function getHeaders(input) {
@@ -94,11 +94,11 @@ export function addJurnorLedger(input) {
   });
 }
 
-export function getCostCentersForVoucher(input) {  
+export function getCostCentersForVoucher(input) {
   return new Promise((resolve, reject) => {
     try {
       algaehApiCall({
-        uri: "/finance_masters/getCostCentersForVoucher",        
+        uri: "/finance_masters/getCostCentersForVoucher",
         method: "GET",
         module: "finance",
         onSuccess: response => {
