@@ -176,23 +176,23 @@ export default class AttendanceSettings extends Component {
       case "salary_calendar":
         e.target.value === "P"
           ? this.setState({
-            [e.target.name]: e.target.value,
-            salary_calendar_fixed_days: null
-          })
+              [e.target.name]: e.target.value,
+              salary_calendar_fixed_days: null
+            })
           : this.setState({
-            [e.target.name]: e.target.value
-          });
+              [e.target.name]: e.target.value
+            });
         break;
 
       case "airfare_factor":
         e.target.value === "FI"
           ? this.setState({
-            [e.target.name]: e.target.value,
-            airfare_percentage: null
-          })
+              [e.target.name]: e.target.value,
+              airfare_percentage: null
+            })
           : this.setState({
-            [e.target.name]: e.target.value
-          });
+              [e.target.name]: e.target.value
+            });
 
         break;
 
@@ -629,9 +629,7 @@ export default class AttendanceSettings extends Component {
                   </div>
                 </div>
                 <div className="col">
-
-
-                  <label>External Finznce</label>
+                  <label>External Finance</label>
                   <div className="customRadio">
                     <label className="radio inline">
                       <input
@@ -655,7 +653,6 @@ export default class AttendanceSettings extends Component {
                       <span>No</span>
                     </label>
                   </div>
-
                 </div>
                 {/*
                 <div className="col-2">
