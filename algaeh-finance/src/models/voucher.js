@@ -53,6 +53,7 @@ export default {
   addVoucher: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
+
     const algaeh_d_app_user_id = req.userIdentity.algaeh_d_app_user_id;
 
     let voucher_type = "";
@@ -89,6 +90,7 @@ export default {
         invalid_input: true,
         message: "Please select voucher type"
       };
+      next();
     } else {
       _mysql
         .generateRunningNumber({

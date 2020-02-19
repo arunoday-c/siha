@@ -123,7 +123,7 @@ export default {
                 values: [
                   input.loan_description,
                   head_id,
-                  "U",
+                  "S",
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
