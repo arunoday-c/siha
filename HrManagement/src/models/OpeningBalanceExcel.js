@@ -515,10 +515,7 @@ function excelEmployeeLeaveOpenBalance(req, res, next) {
 function excelEmployeeOpeningBalanceRead(req, res, next) {
   let buffer = "";
   const utilities = new algaehUtilities();
-
-  utilities.logger().log("excelEmployeeOpeningBalanceRead: ");
-
-  const leaves_data = JSON.parse(req.headers.leaves_data);
+  const leaves_data = JSON.parse(req.headers["x-leaves-data"]);
   req.on("data", chunk => {
     buffer += chunk.toString();
   });
@@ -533,13 +530,9 @@ function excelEmployeeOpeningBalanceRead(req, res, next) {
       .load(buff)
       .then(() => {
         var worksheet = workbook.getWorksheet(1);
-        utilities.logger().log("worksheet: ");
-
         let columns = [];
         const lastRow = worksheet.lastRow;
-
         try {
-          utilities.logger().log("filter: ", lastRow.values[2]);
           filter = lastRow.values[2];
         } catch (e) {
           properFile = false;
@@ -624,8 +617,8 @@ function excelEmployeeOpeningBalanceRead(req, res, next) {
                   }
 
                   // console.log("columnName", columnName);
-
-                  internal[columnName] = row.values[i];
+                  internal[columnName] =
+                    row.values[i] === undefined ? 0 : row.values[i];
                   if (i === columns.length - 1) {
                     excelArray.push(internal);
                   }
@@ -638,7 +631,6 @@ function excelEmployeeOpeningBalanceRead(req, res, next) {
       .then(() => {
         if (properFile) {
           excelArray.pop();
-          console.log("excelArray", excelArray);
           req.body = excelArray;
           req.filter = filter;
           next();

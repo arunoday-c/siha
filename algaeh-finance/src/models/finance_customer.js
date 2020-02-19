@@ -41,8 +41,8 @@ export default {
         invoice_no ,voucher_no,voucher_type,narration
         from finance_voucher_header H inner join finance_voucher_details D on 
         H.finance_voucher_header_id=D.voucher_header_id 
-        and voucher_type='payment' and invoice_no is not null   
-        where  D.child_id=?; `,
+        and H.voucher_type='payment' and H.invoice_no is not null   
+        and  D.child_id=?; `,
         values: [req.query.child_id],
         printQuery: true
       })
