@@ -1,3 +1,12 @@
+// if (process.env.ENABLE_MONITOR === true) {
+// const dash = require("appmetrics-dash")
+// dash.monitor({
+//   port: dashPort,
+//   url: "/core-monitor",
+//   title: "Core Dashboard",
+//   docs: "http://algaeh.com"
+// });
+// }
 import http from "http";
 import compression from "compression";
 import express from "express";
@@ -14,10 +23,6 @@ import cryptoUtils from "./utils/cryptography";
 import algaehKeys from "algaeh-keys";
 // import { userSecurity } from "algaeh-utilities/checksecurity";
 import { authentication } from "algaeh-utilities/authentication";
-let dash = null;
-if (process.env.ENABLE_MONITOR) {
-  dash = require("appmetrics-dash");
-}
 const keys = algaehKeys.default;
 let app = express();
 const _port = process.env.PORT;
@@ -178,17 +183,5 @@ app.use((error, req, res, next) => {
 
 app.server.listen(_port);
 console.log(`started on port ${_port}`);
-
-if (process.env.ENABLE_MONITOR === true) {
-  let dashPort =
-    typeof _port === "string" ? parseInt(_port) + 1000 : _port + 1000;
-
-  dash.monitor({
-    port: dashPort,
-    url: "/core-monitor",
-    title: "Core Dashboard",
-    docs: "http://algaeh.com"
-  });
-}
 
 export default app;

@@ -671,6 +671,7 @@ export default function Hr({
         reportName: "designationWiseEmployee",
         requireIframe: true,
         pageSize: "A3",
+        componentCode: "RPT_HR_EMP_DESG",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -799,6 +800,7 @@ export default function Hr({
         requireIframe: true,
         pageSize: "A3",
         pageOrentation: "landscape",
+        componentCode: "RPT_HR_WMP_NEW",
         reportParameters: [
           {
             className: "col-2 form-group mandatory",
