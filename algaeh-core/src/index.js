@@ -1,8 +1,9 @@
 // if (process.env.ENABLE_MONITOR === true) {
-// const dash = require("appmetrics-dash")
-// dash.monitor({
-//   port: dashPort,
-//   url: "/core-monitor",
+// const dash = require("appmetrics-dash");
+// import dash from "appmetrics-dash";
+// dash.attach({
+//   port: 4000,
+//   // url: "/core-monitor",
 //   title: "Core Dashboard",
 //   docs: "http://algaeh.com"
 // });
