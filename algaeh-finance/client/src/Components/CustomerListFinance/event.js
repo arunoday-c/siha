@@ -4,7 +4,7 @@ export function LoadVouchersToAuthorize(input) {
   return new Promise((resolve, reject) => {
     try {
       algaehApiCall({
-        uri: "/voucher/getVouchersToAuthorize",
+        uri: "/finance_customer/getCustomerReceivables",
         method: "GET",
         module: "finance",
         data: input,
@@ -23,15 +23,16 @@ export function LoadVouchersToAuthorize(input) {
   });
 }
 
-export function LoadVoucherDetails(input) {
+export function LoadCustomerReceivables() {
   return new Promise((resolve, reject) => {
     try {
+      debugger
       algaehApiCall({
-        uri: "/voucher/getVouchersDetailsToAuthorize",
+        uri: "/finance_customer/getCustomerReceivables",
         method: "GET",
         module: "finance",
-        data: input,
         onSuccess: response => {
+          debugger
           if (response.data.success === true) {
             resolve(response.data.result);
           }

@@ -108,6 +108,7 @@ export default class Eye extends Component {
       this.setState({
         openGlassPres: !this.state.openGlassPres
       });
+      this.getGlassPrescription();
     }
   }
   render() {

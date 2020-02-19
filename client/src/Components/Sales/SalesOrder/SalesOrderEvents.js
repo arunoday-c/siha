@@ -39,10 +39,6 @@ const texthandle = ($this, ctrl, e) => {
 
         sales_order_items: [],
         sales_order_services: [],
-        decimal_place: 2,
-        //  JSON.parse(
-        //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        // ).decimal_places,
         saveEnable: true,
         dataExists: false,
         hospital_id: null,
