@@ -2653,6 +2653,52 @@ export default {
         _mysql.releaseConnection();
         next(e);
       });
+  },
+
+  //created by irfan:
+  getCildLedgers: (req, res, next) => {
+    // const utilities = new algaehUtilities();
+    const _mysql = new algaehMysql();
+    let input = req.query;
+    const decimal_places = req.userIdentity.decimal_places;
+
+    if (input.root_id > 0 && input.root_id < 6) {
+      let strQry = "";
+
+      if (input.root_id == 1 || input.root_id == 5) {
+        strQry = `, ROUND((coalesce(sum(VD.debit_amount) ,0.0000)- coalesce(sum(VD.credit_amount) ,0.0000) ),${decimal_places}) as closing_balance `;
+      } else {
+        strQry = `, ROUND((coalesce(sum(VD.credit_amount) ,0.0000)- coalesce(sum(VD.debit_amount) ,0.0000) ),${decimal_places}) as closing_balance `;
+      }
+      _mysql
+        .executeQuery({
+          query: `select finance_account_child_id,ledger_code,child_name ${strQry}
+          from finance_account_child C left join finance_voucher_details VD on
+          C.finance_account_child_id=VD.child_id
+          and VD.child_id in (select finance_account_child_id from finance_account_child where head_id in 
+          (select finance_account_head_id from finance_account_head where root_id=?))
+          group by C.finance_account_child_id with rollup;`,
+          values: [input.root_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          const total = result.pop();
+          req.records = { ledgers: result, total: total.closing_balance };
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please provide Valid Input"
+      };
+      next();
+    }
   }
 };
 //created by :IRFAN to build tree hierarchy
