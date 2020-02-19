@@ -22,7 +22,15 @@ const app = exxpress();
 // dash.attach();
 app.server = http.createServer(app);
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+    allowedHeaders: "*",
+    optionsSuccessStatus: 204
+  })
+);
 const _port = process.env.PORT;
 app.use(
   bodyParser.json({
