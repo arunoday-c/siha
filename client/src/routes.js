@@ -508,7 +508,7 @@ const QuotationCompare = React.lazy(() =>
 const DefaultLandingPage = React.lazy(() =>
   retry(() => import("./Components/Dashboard/defaultlandingPage"))
 );
-function LoadComponent({ match, children }) {
+function LoadComponent({ path, noSecurityCheck, children }) {
   return (
     <Suspense
       fallback={
@@ -519,7 +519,9 @@ function LoadComponent({ match, children }) {
         </div>
       }
     >
-      <Layout>{children}</Layout>
+      <Layout path={path} noSecurityCheck={noSecurityCheck}>
+        {children}
+      </Layout>
     </Suspense>
   );
 }
@@ -533,6 +535,7 @@ const appRoutes = [
   {
     path: "/NoDashboard",
     isExactPath: true,
+    noSecurityCheck: true,
     component: <DefaultLandingPage />
   },
   // {
@@ -1280,7 +1283,7 @@ function Routes() {
         {appRoutes.map((routeItem, idx) => {
           const others = routeItem.others === undefined ? {} : routeItem.others;
           const path = routeItem.path.replace("/?", "?");
-
+          const noSecurityCheck = routeItem.noSecurityCheck;
           return (
             <Route
               key={routeItem.path}
@@ -1290,7 +1293,14 @@ function Routes() {
               render={params => {
                 if (routeItem.path === "/") return routeItem.component;
                 else {
-                  return <LoadComponent>{routeItem.component}</LoadComponent>;
+                  return (
+                    <LoadComponent
+                      path={path}
+                      noSecurityCheck={noSecurityCheck}
+                    >
+                      {routeItem.component}
+                    </LoadComponent>
+                  );
                 }
               }}
             />

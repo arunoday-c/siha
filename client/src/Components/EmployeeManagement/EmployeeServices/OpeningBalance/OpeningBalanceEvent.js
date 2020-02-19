@@ -644,15 +644,26 @@ export default function ManualAttendanceEvents() {
       reader.readAsDataURL(files[0]);
       reader.onload = e => {
         const data = e.target.result.split(",")[1];
-        let leaves_data = [];
+        let leaves_data = "";
         if ($this.state.selected_type === "LE") {
-          leaves_data = JSON.stringify($this.state.leaves_data);
+          console.log("$this.state.leaves_data", $this.state.leaves_data);
+          leaves_data = JSON.stringify(
+            $this.state.leaves_data.map(m => {
+              return {
+                leave_description: m.leave_description,
+                hims_d_leave_id: m.hims_d_leave_id
+              };
+            })
+          );
         } else {
-          leaves_data = JSON.stringify({});
+          leaves_data = "";
         }
+
         algaehApiCall({
           uri: "/employee/excelEmployeeOpeningBalanceRead",
-          header: { leaves_data: leaves_data },
+          header: {
+            "x-leaves-data": leaves_data
+          },
           data:
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," +
             data,
