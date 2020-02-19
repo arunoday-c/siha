@@ -5,6 +5,7 @@ import "./reports.scss";
 import loadActiveReports from "./reports_data";
 import AlgaehReport from "../Wrapper/printReports";
 import { MainContext } from "algaeh-react-components/context";
+import { AlgaehSecurityComponent } from "algaeh-react-components";
 class Reports extends Component {
   constructor(props) {
     super(props);
@@ -95,41 +96,46 @@ class Reports extends Component {
             <div className="col-lg-12">
               <div className="row">
                 {this.state.itemList.map((item, index) => (
-                  <div
-                    key={index}
-                    className="col-lg-2 reportList"
-                    onClick={() => {
-                      let pageProperies = {
-                        displayName: item.subitem,
-                        reportName: item.reportName,
-                        template_name: item.template_name,
-                        reportQuery: item.reportQuery,
-                        requireIframe: item.requireIframe,
-                        fileName: item.template_name
-                      };
-                      if (item.pageSize !== undefined && item.pageSize !== "") {
-                        pageProperies["pageSize"] = item.pageSize;
-                      }
-                      if (
-                        item.pageOrentation !== undefined &&
-                        item.pageOrentation !== ""
-                      ) {
-                        pageProperies["pageOrentation"] = item.pageOrentation;
-                      }
-                      pageProperies["excel"] = this.state.excel;
-                      AlgaehReport({
-                        report: pageProperies,
-                        plotUI: {
-                          paramters: item.reportParameters
+                  <AlgaehSecurityComponent componentCode={item.componentCode}>
+                    <div
+                      key={index}
+                      className="col-lg-2 reportList"
+                      onClick={() => {
+                        let pageProperies = {
+                          displayName: item.subitem,
+                          reportName: item.reportName,
+                          template_name: item.template_name,
+                          reportQuery: item.reportQuery,
+                          requireIframe: item.requireIframe,
+                          fileName: item.template_name
+                        };
+                        if (
+                          item.pageSize !== undefined &&
+                          item.pageSize !== ""
+                        ) {
+                          pageProperies["pageSize"] = item.pageSize;
                         }
-                      });
-                    }}
-                  >
-                    <div>
-                      <i className="fas fa-file-medical-alt" />
-                      <p>{item.subitem}</p>
+                        if (
+                          item.pageOrentation !== undefined &&
+                          item.pageOrentation !== ""
+                        ) {
+                          pageProperies["pageOrentation"] = item.pageOrentation;
+                        }
+                        pageProperies["excel"] = this.state.excel;
+                        AlgaehReport({
+                          report: pageProperies,
+                          plotUI: {
+                            paramters: item.reportParameters
+                          }
+                        });
+                      }}
+                    >
+                      <div>
+                        <i className="fas fa-file-medical-alt" />
+                        <p>{item.subitem}</p>
+                      </div>
                     </div>
-                  </div>
+                  </AlgaehSecurityComponent>
                 ))}
               </div>
             </div>
