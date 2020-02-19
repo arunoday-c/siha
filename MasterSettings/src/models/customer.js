@@ -60,7 +60,7 @@ export default {
     }
   },
 
-  //modified by:irfan to add vendor
+  //modified by:irfan to
   addCustomerMaster: (req, res, next) => {
     let inputParam = req.body;
     const _mysql = new algaehMysql();
@@ -85,7 +85,7 @@ export default {
                 values: [
                   inputParam.customer_name,
                   head_id,
-                  "U",
+                  "S",
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
