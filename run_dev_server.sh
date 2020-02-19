@@ -31,7 +31,7 @@ startServer () {
   startServer "./MasterSettings" "master_settings_server" 
   startServer "./DocumentManagement" "document_server" 
   startServer "./AlgaehReporting" "report_server"
-  startServer "./Sockets" "sockets"
+  # startServer "./Sockets" "sockets"
 
   # HRMS MOdules #
   startServer "./HrManagement" "hr_server"
