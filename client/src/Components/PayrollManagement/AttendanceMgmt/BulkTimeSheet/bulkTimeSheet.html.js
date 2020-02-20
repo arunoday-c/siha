@@ -22,60 +22,53 @@ function BulkTimeSheet(props) {
   const [message, setMessage] = useState("");
   const [process, setProcess] = useState(true);
   const [loadingProcess, setLoadingProcess] = useState(false);
-  const [project_state, setProjectState] = useState({
+  const base_state = {
     project_id: null,
     worked_hours: null,
     attendance_date: null,
     hims_f_daily_time_sheet_id: null,
     hims_f_project_roster_id: null,
     showPopup: false,
-    projects: []
-  });
+    projects: [],
+    employee_name: null
+  };
+  const [project_state, setProjectState] = useState(base_state);
   const [selectedTD, setSelectedTD] = useState({});
+
   function editingProjectRoster(e, employee_name) {
+    const projectObj = {
+      project_id: e.project_id,
+      worked_hours: e.worked_hours,
+      attendance_date: e.attendance_date,
+      hims_f_daily_time_sheet_id: e.hims_f_daily_time_sheet_id,
+      hims_f_project_roster_id: e.hims_f_project_roster_id,
+      showPopup: true,
+      employee_name: employee_name
+    };
     if (project_state.projects.length === 0) {
       getProjects()
         .then(result => {
           // setProjects(result);
 
           setProjectState({
-            project_id: e.project_id,
-            worked_hours: e.worked_hours,
-            attendance_date: e.attendance_date,
-            hims_f_daily_time_sheet_id: e.hims_f_daily_time_sheet_id,
-            hims_f_project_roster_id: e.hims_f_project_roster_id,
-            showPopup: true,
-            projects: result,
-            employee_name: employee_name
+            ...projectObj,
+            projects: result
           });
         })
         .catch(error => {
-          setProjectState({
-            project_id: null,
-            worked_hours: null,
-            attendance_date: null,
-            hims_f_daily_time_sheet_id: null,
-            hims_f_project_roster_id: null,
-            showPopup: false,
-            projects: [],
-            employee_name: null
-          });
+          setProjectState(base_state);
         });
     } else {
       setProjectState({
-        project_id: e.project_id,
-        worked_hours: e.worked_hours,
-        attendance_date: e.attendance_date,
-        hims_f_daily_time_sheet_id: e.hims_f_daily_time_sheet_id,
-        hims_f_project_roster_id: e.hims_f_project_roster_id,
-        showPopup: true,
-        employee_name: employee_name
+        ...projectObj
       });
     }
   }
+
   function selectedITD(value) {
     setSelectedTD(value);
   }
+
   return (
     <div id="bulkManualTimeSheet">
       <Filter
