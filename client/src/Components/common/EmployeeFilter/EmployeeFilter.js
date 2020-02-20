@@ -15,7 +15,8 @@ export default function EmployeeFilter(props) {
   const [empGroups, setEmpGroups] = useState([]);
   const [subDepts, setSubDepts] = useState([]);
   const [designations, setDesignations] = useState([]);
-  const userToken = useContext(MainContext);
+  const { userToken } = useContext(MainContext);
+  console.log(userToken, "hospital");
   const baseInput = {
     hospital_id: userToken.hims_d_hospital_id,
     year: moment().year(),
