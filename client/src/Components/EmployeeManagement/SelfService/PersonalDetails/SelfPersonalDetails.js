@@ -2483,25 +2483,7 @@ class SelfPersonalDetails extends Component {
               <div className="portlet-body">
                 <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col-3" }}
-                    label={{
-                      forceLabel: "Month",
-                      isImp: false
-                    }}
-                    selector={{
-                      name: "month",
-                      className: "select-fld",
-                      value: this.state.month,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: GlobalVariables.MONTHS
-                      },
-                      onChange: this.dropDownHandle.bind(this)
-                    }}
-                  />{" "}
-                  <AlagehAutoComplete
-                    div={{ className: "col-2 paddingLeft" }}
+                    div={{ className: "col-2 " }}
                     label={{
                       forceLabel: "Year",
                       isImp: false
@@ -2517,7 +2499,26 @@ class SelfPersonalDetails extends Component {
                       },
                       onChange: this.dropDownHandle.bind(this)
                     }}
-                  />
+                  />{" "}
+                  <AlagehAutoComplete
+                    div={{ className: "col-3 paddingLeft" }}
+                    label={{
+                      forceLabel: "Month",
+                      isImp: false
+                    }}
+                    selector={{
+                      name: "month",
+                      sort: "off",
+                      className: "select-fld",
+                      value: this.state.month,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.MONTHS
+                      },
+                      onChange: this.dropDownHandle.bind(this)
+                    }}
+                  />{" "}
                   <div className="col paddingLeft">
                     <button
                       type="button"
@@ -2529,7 +2530,7 @@ class SelfPersonalDetails extends Component {
                     </button>
                   </div>
                 </div>
-                <hr></hr>
+                {/* <hr></hr>
                 <div className="row">
                   <div className="col-8">
                     <Doughnut
@@ -2556,7 +2557,7 @@ class SelfPersonalDetails extends Component {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
             {/* <div className="portlet portlet-bordered margin-bottom-15">
@@ -2707,7 +2708,7 @@ class SelfPersonalDetails extends Component {
               </div>
             </div> */}
 
-            <div className="portlet portlet-bordered margin-bottom-15">
+            {/* <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Request / Download Forms</h3>
@@ -2770,7 +2771,7 @@ class SelfPersonalDetails extends Component {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
