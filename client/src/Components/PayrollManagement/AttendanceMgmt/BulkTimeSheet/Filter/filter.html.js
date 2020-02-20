@@ -27,10 +27,10 @@ import { MainContext } from "algaeh-react-components/context";
 
 export default function Filter(props) {
   let fileInput = React.createRef();
-  const userTocken = useContext(MainContext);
+  const { userToken } = useContext(MainContext);
 
   const [hospitals, setHospitals] = useState([]);
-  const [hospitalID, setHospitalID] = useState(userTocken.hims_d_hospital_id);
+  const [hospitalID, setHospitalID] = useState(userToken.hims_d_hospital_id);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [projectID, setProjectID] = useState("");
@@ -120,10 +120,12 @@ export default function Filter(props) {
   }, [month]);
 
   function employeeSearch() {
+    let input_data = " hospital_id=" + hospitalID;
     AlgaehSearch({
       searchGrid: {
         columns: spotlightSearch.Employee_details.employee
       },
+      inputs: input_data,
       searchName: "employee",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {

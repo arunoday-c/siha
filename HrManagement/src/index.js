@@ -1,6 +1,12 @@
 // if (process.env.ENABLE_MONITOR === true) {
-//    let dashPort = 4000
-//   require("appmetrics-dash").atttach({port: dashport})
+// let dashPort = 4000;
+// const dash = require("appmetrics-dash");
+// dash.attach({
+//   port: dashPort,
+//   // url: "/hr-monitor",
+//   title: "HR Dashboard",
+//   docs: "http://algaeh.com"
+// });
 // }
 import "core-js/stable";
 import "regenerator-runtime/runtime";

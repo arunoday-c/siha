@@ -34,7 +34,7 @@ export default class LeaveAuthorization extends Component {
   }
   static contextType = MainContext;
   componentDidMount() {
-    const userToken = this.context.userToken;
+    const { userToken } = this.context;
     this.setState({
       hospital_id: userToken.hims_d_hospital_id
     });
