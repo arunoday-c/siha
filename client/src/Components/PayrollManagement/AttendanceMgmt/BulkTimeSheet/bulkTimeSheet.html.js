@@ -3,9 +3,9 @@ import moment from "moment";
 import "./bulkTimeSheet.html.scss";
 import Filter from "./Filter/filter.html";
 import {
-  AlagehAutoComplete,
-  AlgaehLabel,
-  AlgaehDateHandler
+  // AlagehAutoComplete,
+  AlgaehLabel
+  // AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import {
@@ -45,11 +45,10 @@ function BulkTimeSheet(props) {
       showPopup: true,
       employee_name: employee_name
     };
+
     if (project_state.projects.length === 0) {
       getProjects()
         .then(result => {
-          // setProjects(result);
-
           setProjectState({
             ...projectObj,
             projects: result
@@ -59,9 +58,10 @@ function BulkTimeSheet(props) {
           setProjectState(base_state);
         });
     } else {
-      setProjectState({
+      setProjectState(state => ({
+        ...state,
         ...projectObj
-      });
+      }));
     }
   }
 
