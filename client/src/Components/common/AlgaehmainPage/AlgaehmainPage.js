@@ -194,9 +194,11 @@ class PersistentDrawer extends React.Component {
     //   }
     // });
   }
+  
   static contextType = MainContext;
+  
   componentDidMount() {
-    const userToken = this.context.userToken;
+    const {userToken} = this.context;
     // const Hims_active =
     //   userToken.product_type === "HIMS_ERP" ||
     //   userToken.product_type === "HIMS_CLINICAL"
