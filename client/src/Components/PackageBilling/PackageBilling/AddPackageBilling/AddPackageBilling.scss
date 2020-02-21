@@ -31,13 +31,13 @@
     margin-top: -10px;
   }
 
-  .Paper {background:#fff; 
+  .Paper {
+    background: #fff;
     border: 1px solid #d3d3d3;
   }
 
   th,
   td {
-    
     border-right: 1px solid #e6e6e6;
   }
 }
@@ -57,8 +57,4 @@
       border: none;
     }
   }
-}
-.highlightGrey {
-  background: #e4e4e4;
-  border: 1px solid #d3d3d3;
 }
