@@ -477,7 +477,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
     ) {
       strQuery = `select m.algaeh_d_module_id,m.module_code,m.module_name,m.icons,m.display_order,m.other_language,
       s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
-      s.other_language as s_other_language,'' as algaeh_d_app_component_id,'' as component_code,
+      s.other_language as s_other_language,s.child_pages,'' as algaeh_d_app_component_id,'' as component_code,
       '' as component_name,'' as comp_view_previlage,'' as ele_view_previlage,'' as ele_extra_props,
       '' as screen_element_code,'' as screen_element_name,algaeh_app_screens_id as screen_id
       from algaeh_d_app_module as m inner join algaeh_d_app_screens as s
@@ -489,7 +489,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
     } else {
       strQuery = `select m.algaeh_d_module_id,m.module_code,m.module_name,m.icons,m.display_order,m.other_language,
       s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
-      s.other_language as s_other_language,c.algaeh_d_app_component_id,c.component_code,c.component_name,
+      s.other_language as s_other_language,s.child_pages,c.algaeh_d_app_component_id,c.component_code,c.component_name,
       cs.view_privilege as comp_view_previlage,se.view_type as ele_view_previlage,se.extra_props as ele_extra_props,
       e.screen_element_code,e.screen_element_name,sr.screen_id,sr.algaeh_m_screen_role_privilage_mapping_id,
       se.algaeh_d_app_scrn_elements_id,e.props_type,e.extra_props
@@ -583,7 +583,8 @@ let getRoleBaseActiveModules = (req, res, next) => {
                     screen_name,
                     screen_id,
                     redirect_url,
-                    algaeh_d_app_scrn_elements_id
+                    algaeh_d_app_scrn_elements_id,
+                    child_pages
                   } = sec;
 
                   return {
@@ -598,6 +599,8 @@ let getRoleBaseActiveModules = (req, res, next) => {
                     screen_name,
                     screen_id,
                     redirect_url,
+                    child_pages:
+                      child_pages !== null ? child_pages.split(",") : [],
                     other_language: sec.s_other_language,
                     components: _.chain(screens)
                       .filter(f => f.algaeh_d_app_component_id !== null)

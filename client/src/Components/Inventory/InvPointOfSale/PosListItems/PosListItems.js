@@ -989,13 +989,7 @@ class PosListItems extends Component {
                               }}
                             />
 
-                            <div
-                              className="col-2"
-                              style={{
-                                background: " #44b8bd",
-                                color: " #fff"
-                              }}
-                            >
+                            <div className="col-2 highlightGreen">
                               <AlgaehLabel
                                 label={{
                                   forceLabel: "Receiveable Amount"

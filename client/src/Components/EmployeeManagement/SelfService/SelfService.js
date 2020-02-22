@@ -168,7 +168,7 @@ export default class SelfService extends Component {
             </div>
             <div className="EmployeeDemographic">
               <span>
-                Joining Date:
+                Joining Date:{" "}
                 <b>
                   {empDetails.date_of_joining !== null
                     ? empDetails.date_of_joining
@@ -178,6 +178,7 @@ export default class SelfService extends Component {
               <span>
                 Reporting to:
                 <b>
+                  {" "}
                   {empDetails.reporting_to_name !== null
                     ? empDetails.reporting_to_name
                     : "------"}
@@ -185,7 +186,7 @@ export default class SelfService extends Component {
               </span>
               {empDetails.license_number !== null ? (
                 <span>
-                  License No.:
+                  License No.:{" "}
                   <b>
                     {empDetails.license_number !== null
                       ? empDetails.license_number

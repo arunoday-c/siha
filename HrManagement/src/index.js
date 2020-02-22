@@ -1,3 +1,13 @@
+// if (process.env.ENABLE_MONITOR === true) {
+// let dashPort = 4000;
+// const dash = require("appmetrics-dash");
+// dash.attach({
+//   port: dashPort,
+//   // url: "/hr-monitor",
+//   title: "HR Dashboard",
+//   docs: "http://algaeh.com"
+// });
+// }
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import http from "http";
@@ -8,17 +18,25 @@ import keys from "algaeh-keys";
 import utliites from "algaeh-utilities";
 import routes from "./routes";
 import compression from "compression";
-let dash = null;
-if (process.env.ENABLE_MONITOR) {
-  dash = require("appmetrics-dash");
-}
+// let dash = null;
+// if (process.env.ENABLE_MONITOR) {
+//   dash = require("appmetrics-dash");
+// }
 // import { userSecurity } from "algaeh-utilities/checksecurity";
 import { authentication } from "algaeh-utilities/authentication";
 const app = exxpress();
 // dash.attach();
 app.server = http.createServer(app);
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    preflightContinue: false,
+    allowedHeaders: "*",
+    optionsSuccessStatus: 204
+  })
+);
 const _port = process.env.PORT;
 app.use(
   bodyParser.json({
@@ -93,17 +111,5 @@ app.use((error, req, res, next) => {
 });
 app.server.listen(_port);
 console.log(`HR MANAGEMENT Server is running  on PORT  - ${_port} *`);
-
-if (process.env.ENABLE_MONITOR === true) {
-  let dashPort =
-    typeof _port === "string" ? parseInt(_port) + 1000 : _port + 1000;
-
-  dash.monitor({
-    port: dashPort,
-    url: "/hr-monitor",
-    title: "HR Dashboard",
-    docs: "http://algaeh.com"
-  });
-}
 
 export default app;

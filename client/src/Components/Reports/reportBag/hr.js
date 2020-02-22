@@ -19,6 +19,7 @@ export default function Hr({
         reportName: "staffListReport",
         requireIframe: true,
         pageSize: "A3",
+        componentCode: "RPT_HR_EMP_DEP",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -157,6 +158,7 @@ export default function Hr({
         reportName: "ageWiseEmployee",
         requireIframe: true,
         pageSize: "A3",
+        componentCode: "RPT_HR_EMP_AGE",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -295,6 +297,7 @@ export default function Hr({
         reportName: "genderWiseEmployee",
         requireIframe: true,
         pageSize: "A3",
+        componentCode: "RPT_HR_GEN",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -419,6 +422,7 @@ export default function Hr({
         reportName: "nationalityWiseEmployee",
         requireIframe: true,
         pageSize: "A3",
+        componentCode: "RPT_HR_EMP_NAT",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -545,6 +549,7 @@ export default function Hr({
         reportName: "religionWiseEmployee",
         requireIframe: true,
         pageSize: "A3",
+        componentCode: "RPT_HR_EMP_REG",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -671,6 +676,7 @@ export default function Hr({
         reportName: "designationWiseEmployee",
         requireIframe: true,
         pageSize: "A3",
+        componentCode: "RPT_HR_EMP_DESG",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -798,6 +804,7 @@ export default function Hr({
         reportName: "newJoiningEmployee",
         requireIframe: true,
         pageSize: "A3",
+        componentCode: "RPT_HR_WMP_NEW",
         pageOrentation: "landscape",
         reportParameters: [
           {

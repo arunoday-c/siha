@@ -2,7 +2,8 @@ import React, { useState, useEffect, memo } from "react";
 import SortableTree, {
   getNodeAtPath,
   addNodeUnderParent,
-  removeNodeAtPath
+  removeNodeAtPath,
+  toggleExpandedForAll
 } from "react-sortable-tree";
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
 import {
@@ -10,7 +11,8 @@ import {
   AlgaehMessagePop,
   Input,
   Icon,
-  DatePicker
+  DatePicker,
+  AlgaehTable
 } from "algaeh-react-components";
 import ReportLauncher from "../AccountReport";
 import Charts from "../Charts";
@@ -20,7 +22,8 @@ import {
   removeAccount,
   isPositive,
   renameAccount,
-  getChartData
+  getChartData,
+  getGridChildNodes
 } from ".././FinanceAccountEvent";
 
 import "../alice.scss";
@@ -41,9 +44,11 @@ function TreeComponent({ assetCode, title, inDrawer }) {
   const [period, setPeriod] = useState("4");
   const [accountChart, setAccountChart] = useState([]);
   const [year, setYear] = useState(moment());
-
+  const [expandAll, setExpandAll] = useState(false);
+  const [layout, setLayout] = useState("tree");
+  const [gridData, setGridData] = useState([]);
+  const [loadingGridData, setLoadingGridData] = useState(false);
   const isExpOrInc = assetCode === 4 || assetCode === 5;
-
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
       try {
@@ -88,7 +93,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
         setEditorRecord({});
         stopLoad();
         setShowPopup(false);
-        setNewAccount(false)
+        setNewAccount(false);
         AlgaehMessagePop({
           type: "success",
           display: "Renamed successfull"
@@ -99,7 +104,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
         console.log("error", error);
         stopLoad();
         setShowPopup(false);
-        setNewAccount(false)
+        setNewAccount(false);
         AlgaehMessagePop({
           type: "error",
           display: error
@@ -148,21 +153,36 @@ function TreeComponent({ assetCode, title, inDrawer }) {
           setTreeData(firstData.children);
           setAmount(firstData["subtitle"]);
           setSymbol(firstData["trans_symbol"]);
+          setExpandAll(false);
+          setLayout("tree");
+          setGridData(() => {
+            return [...[]];
+          });
           if (isExpOrInc) {
             loadChartData(firstData.finance_account_head_id);
           }
         } else {
           setTreeData([]);
+          setLayout("tree");
+          setExpandAll(false);
+          setGridData(() => {
+            return [...[]];
+          });
         }
       } else {
         setTreeData([]);
+        setLayout("tree");
+        setExpandAll(false);
+        setGridData(() => {
+          return [...[]];
+        });
       }
     });
   }
 
   function onClose(e) {
     setShowPopup(false);
-    setNewAccount(false)
+    setNewAccount(false);
     if (isAccountHead) {
       loadAccount();
       setIsAccountHead(false);
@@ -178,7 +198,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
 
   function onEditClose() {
     setShowPopup(false);
-    setNewAccount(false)
+    setNewAccount(false);
     setEditorRecord({});
   }
 
@@ -191,7 +211,6 @@ function TreeComponent({ assetCode, title, inDrawer }) {
 
   const generateNodeProps = rowInfo => {
     const { node } = rowInfo;
-    debugger
     return {
       buttons: [
         <div className="box">
@@ -203,7 +222,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
               }
               onClick={() => {
                 setShowPopup(true);
-                setNewAccount(true)
+                setNewAccount(true);
                 setSelectedNode(rowInfo);
               }}
             >
@@ -212,8 +231,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
             <li
               label="edit"
               className={
-                "NodeEditButton " +
-                (node.leafnode === "N" ? "disabled" : "")
+                "NodeEditButton " + (node.leafnode === "N" ? "disabled" : "")
               }
               onClick={() => {
                 if (Object.keys(editorRecord).length > 0) {
@@ -222,7 +240,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                   setEditorRecord(rowInfo);
                   if (!isExpOrInc && node.leafnode === "Y") {
                     setShowPopup(true);
-                    setNewAccount(false)
+                    setNewAccount(false);
                   }
                 }
               }}
@@ -230,8 +248,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
               {JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
                 <i className="fas fa-times" />
               ) : (
-                  <i className="fas fa-pen" />
-                )}
+                <i className="fas fa-pen" />
+              )}
             </li>
             <li
               label="print"
@@ -332,11 +350,11 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                   defaultValue={node.title + " (" + node.ledger_code + ")"}
                 />
               ) : (
-                  node.title
-                )
+                node.title
+              )
             ) : (
-                node.title + " (" + node.ledger_code + ")"
-              )}
+              node.title + " (" + node.ledger_code + ")"
+            )}
             {node.leafnode === "Y" ? null : (
               <>/{node.children === undefined ? 0 : node.children.length}</>
             )}
@@ -361,8 +379,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
         node.created_status === "S"
           ? "systemGen"
           : node.leafnode === "Y"
-            ? ""
-            : "accGroup"
+          ? ""
+          : "accGroup"
     };
   };
 
@@ -444,7 +462,45 @@ function TreeComponent({ assetCode, title, inDrawer }) {
   }
 
   useEffect(loadAccount, [assetCode]);
-
+  function expandAllNodes() {
+    setTreeData(dtl => {
+      return toggleExpandedForAll({
+        treeData: dtl,
+        expanded: !expandAll
+      });
+    });
+    setExpandAll(expan => {
+      return !expan;
+    });
+  }
+  function layoutFlip() {
+    setLoadingGridData(true);
+    if (gridData.length === 0) {
+      getGridChildNodes({ root_id: assetCode })
+        .then(result => {
+          setLoadingGridData(false);
+          setGridData(() => {
+            return [...result.ledgers];
+          });
+          setLayout(result => {
+            return result === "tree" ? "grid" : "tree";
+          });
+        })
+        .catch(error => {
+          setLoadingGridData(false);
+          setGridData([]);
+          AlgaehMessagePop({ type: "error", display: error });
+          setLayout(result => {
+            return result === "tree" ? "grid" : "tree";
+          });
+        });
+    } else {
+      setLoadingGridData(false);
+      setLayout(result => {
+        return result === "tree" ? "grid" : "tree";
+      });
+    }
+  }
   return (
     <div className="container-fluid assetsModuleScreen">
       {showPopup ? (
@@ -493,6 +549,24 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                 </h3>
               </div>
               <div className="actions">
+                <button
+                  className="btn btn-primary btn-circle active"
+                  onClick={layoutFlip}
+                  title="Flip"
+                >
+                  {layout === "tree" ? (
+                    <i className="fas fa-tree"></i>
+                  ) : (
+                    <i className="fas fa-th-large"></i>
+                  )}
+                </button>
+                <button
+                  className="btn btn-default btn-circle active"
+                  onClick={expandAllNodes}
+                  title="Expand/Collapsed"
+                >
+                  <i className="fas fa-arrows-alt"></i>
+                </button>
                 <button className="btn btn-default btn-circle active">
                   <i className="fas fa-print" />
                 </button>
@@ -507,7 +581,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                     });
                     setShowPopup(true);
                     setIsAccountHead(true);
-                    setNewAccount(true)
+                    setNewAccount(true);
                   }}
                 >
                   <i className="fas fa-plus" />
@@ -527,7 +601,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                     const values =
                       searchFocusIndex !== undefined
                         ? (searchFoundCount + searchFocusIndex - 1) %
-                        searchFoundCount
+                          searchFoundCount
                         : searchFoundCount - 1;
                     setSearchFocusIndex(values);
                   }}
@@ -554,30 +628,49 @@ function TreeComponent({ assetCode, title, inDrawer }) {
             <div className="portlet-body">
               <div className="col">
                 <div className="row">
-                  <div className="treeNodeWrapper">
-                    <SortableTree
-                      treeData={treeData}
-                      onChange={treeData => {
-                        setTreeData(treeData);
-                      }}
-                      isVirtualized={true}
-                      canDrag={rowInfo => {
-                        return rowInfo.node.canDrag === true ? true : false;
-                      }}
-                      generateNodeProps={generateNodeProps}
-                      searchMethod={searchMethod}
-                      searchQuery={searchQuery}
-                      searchFocusOffset={searchFocusIndex}
-                      searchFinishCallback={matches => {
-                        setSearchFocusIndex(
-                          matches.length > 0
-                            ? searchFocusIndex % matches.length
-                            : 0
-                        );
-                        setSearchFoundCount(matches.length);
-                      }}
-                    />
-                  </div>
+                  {layout === "tree" ? (
+                    <div className="treeNodeWrapper">
+                      <SortableTree
+                        treeData={treeData}
+                        onChange={treeData => {
+                          setTreeData(treeData);
+                        }}
+                        isVirtualized={true}
+                        canDrag={rowInfo => {
+                          return rowInfo.node.canDrag === true ? true : false;
+                        }}
+                        generateNodeProps={generateNodeProps}
+                        searchMethod={searchMethod}
+                        searchQuery={searchQuery}
+                        searchFocusOffset={searchFocusIndex}
+                        searchFinishCallback={matches => {
+                          setSearchFocusIndex(
+                            matches.length > 0
+                              ? searchFocusIndex % matches.length
+                              : 0
+                          );
+                          setSearchFoundCount(matches.length);
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="row">
+                      {loadingGridData === true ? (
+                        <p>Please wait loading</p>
+                      ) : (
+                        <AlgaehTable
+                          columns={[
+                            { fieldName: "child_name", lable: "Ledger Name" },
+                            {
+                              fieldName: "closing_balance",
+                              lable: "Closing Balance"
+                            }
+                          ]}
+                          data={gridData}
+                        />
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

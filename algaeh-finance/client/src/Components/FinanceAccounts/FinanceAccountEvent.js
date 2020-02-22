@@ -98,3 +98,29 @@ export function renameAccount(input) {
     }
   });
 }
+
+export function getGridChildNodes(input) {
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/finance/getCildLedgers",
+        data: input,
+        method: "GET",
+        module: "finance",
+        onSuccess: response => {
+          const { success, result, message } = response.data;
+          if (success === true) {
+            resolve(result);
+          } else {
+            reject(message);
+          }
+        },
+        onCatch: error => {
+          reject(error);
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}

@@ -19,6 +19,7 @@ export default function ProjectPayroll({
         reportName: "projectWisePayroll",
         requireIframe: true,
         pageSize: "A3",
+        componentCode: "RPT_PRO_PROJ",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -181,6 +182,7 @@ export default function ProjectPayroll({
         reportName: "designationProjectWisePayroll",
         requireIframe: true,
         pageSize: "A3",
+        componentCode: "RPT_PRO_DES",
         pageOrentation: "landscape",
         reportParameters: [
           {

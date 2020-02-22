@@ -154,7 +154,6 @@ let apiAuthentication = (req, res, next) => {
   let authModel = {
     username: ""
   };
-  console.log("Inside api authentication");
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let inputData = extend(authModel, req.query);

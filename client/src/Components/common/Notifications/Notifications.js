@@ -59,7 +59,6 @@ export default class Notifications extends Component {
       });
 
       this.socket.on("/success", text => {
-        debugger;
         this.addToNotiList(text);
       });
 
