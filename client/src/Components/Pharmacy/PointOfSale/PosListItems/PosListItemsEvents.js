@@ -1609,6 +1609,64 @@ const getMedicationAprovalList = ($this, row) => {
   });
 };
 
+const generatePharmacyLabel = ($this, row) => {
+  if ($this.state.pos_customer_type === "OT") {
+    let item_details = $this.props.positemlist.find(f => f.hims_d_item_master_id ===
+      row.item_id)
+    $this.setState({
+      view_item_instructions: !$this.state.view_item_instructions,
+      item_details: item_details
+    });
+  } else {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob"
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "PharmacyMedicineLabel",
+          reportParams: [
+            {
+              name: "visit_id",
+              value: $this.state.visit_id
+            },
+            {
+              name: "item_id",
+              value: row.item_id
+            }
+          ],
+          pageSize: "A6",
+          pageOrentation: "landscape",
+          outputFileType: "PDF",
+          breakAtArray: true
+        }
+      },
+      onSuccess: res => {
+        const url = URL.createObjectURL(res.data);
+        let myWindow = window.open(
+          "{{ product.metafields.google.custom_label_0 }}",
+          "_blank"
+        );
+
+        myWindow.document.write(
+          "<iframe src= '" + url + "' width='100%' height='100%' />"
+        );
+        myWindow.document.title = "";
+      }
+    });
+  }
+};
+
+const CloseItemInstructions = $this => {
+  $this.setState({
+    view_item_instructions: !$this.state.view_item_instructions
+  });
+}
+
 export {
   discounthandle,
   UomchangeTexts,
@@ -1630,5 +1688,7 @@ export {
   EditGrid,
   credittexthandle,
   SelectBatchDetails,
-  getMedicationAprovalList
+  getMedicationAprovalList,
+  generatePharmacyLabel,
+  CloseItemInstructions
 };

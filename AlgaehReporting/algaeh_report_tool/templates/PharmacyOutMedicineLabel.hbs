@@ -1,0 +1,60 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+
+<div class="print-body" style="margin:-8px 0 0 ;padding:0;">
+  {{!-- {{#each header}} --}}
+  <section class="tableForPharmacyDiv">
+
+    <table class="tableForPharmacy" cell-padding="0">
+      <tbody>
+
+        <tr>
+          <td>Pharmacy Name</td>
+          <td>{{hospital_name}}</td>
+          <td>{{arabic_hospital_name}}</td>
+          <td>اسم الصيدلية</td>
+        </tr>
+        <tr>
+          <td>Patient Name</td>
+          <td>{{patient_name}}</td>
+          <td>{{patient_name}}</td>
+          <td>اسم المريض</td>
+        </tr>
+        <tr>
+          <td>Medcine Name</td>
+          <td>{{item_description}}</td>
+          <td>{{item_description}}</td>
+          <td>اسم الدواء</td>
+        </tr>
+        <tr>
+          <td>Dosage</td>
+          <td>{{instructions}}</td>
+          <td>{{instructions}}</td>
+          <td>جرعة</td>
+        </tr>
+        <tr>
+          <td>Expiry Date</td>
+          <td>{{expiry_date}}</td>
+          <td>{{expiry_date}}</td>
+          <td>تاريخ الانتهاء</td>
+        </tr>
+        <tr>
+          <td>Dispense date</td>
+          <td>{{dispense_date}}</td>
+          <td>{{dispense_date}}</td>
+          <td>تاريخ الاستغناء</td>
+        </tr>
+        <tr>
+          <td>Pharmacist Name</td>
+          <td>{{p_name}}</td>
+          <td>{{p_arabic_name}}</td>
+          <td>اسم الصيدلي</td>
+        </tr>
+
+      </tbody>
+    </table>
+  </section>
+  {{!-- {{/each}} --}}
+
+  {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+</div>

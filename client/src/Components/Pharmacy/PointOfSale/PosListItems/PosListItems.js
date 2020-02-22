@@ -9,8 +9,8 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehDateHandler
+  AlagehAutoComplete
+  // AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
@@ -33,8 +33,10 @@ import {
   qtyonchangegridcol,
   EditGrid,
   credittexthandle,
-  SelectBatchDetails,
-  getMedicationAprovalList
+  // SelectBatchDetails,
+  getMedicationAprovalList,
+  generatePharmacyLabel,
+  CloseItemInstructions
 } from "./PosListItemsEvents";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -46,6 +48,7 @@ import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import InsuranceForm from "../InsuranceDetails/InsuranceForm";
 import PreApprovalStatus from "./PreApprovalStatus/PreApprovalStatus";
 import { getMedicationList, getPosEntry } from "../PointOfSaleEvents";
+import ItemInstructions from "./ItemInstructions";
 
 class PosListItems extends Component {
   constructor(props) {
@@ -54,7 +57,9 @@ class PosListItems extends Component {
       selectBatch: false,
       selectBatchButton: true,
       viewInsurance: false,
-      viewPreapproval: false
+      viewPreapproval: false,
+      view_item_instructions: false,
+      item_details: {}
     };
     // this.onKeyPress = this.onKeyPress.bind(this);
   }
@@ -407,6 +412,16 @@ class PosListItems extends Component {
                               POSIOputs={this.state}
                               onClose={ViewInsurance.bind(this, this)}
                             />
+
+                            <ItemInstructions
+                              show={this.state.view_item_instructions}
+                              item_details={this.state.item_details}
+                              hims_f_pharmacy_pos_header_id={
+                                this.state.hims_f_pharmacy_pos_header_id
+                              }
+                              // POSIOputs={this.state}
+                              onClose={CloseItemInstructions.bind(this, this)}
+                            />
                           </div>
                         </div>
                       </div>
@@ -427,14 +442,7 @@ class PosListItems extends Component {
                                     ),
                                     displayTemplate: row => {
                                       return (
-                                        <span
-                                          onClick={deletePosDetail.bind(
-                                            this,
-                                            this,
-                                            context,
-                                            row
-                                          )}
-                                        >
+                                        <span>
                                           <i
                                             style={{
                                               pointerEvents:
@@ -447,6 +455,31 @@ class PosListItems extends Component {
                                                   : ""
                                             }}
                                             className="fas fa-trash-alt"
+                                            onClick={deletePosDetail.bind(
+                                              this,
+                                              this,
+                                              context,
+                                              row
+                                            )}
+                                          />
+
+                                          <i
+                                            style={{
+                                              pointerEvents:
+                                                this.state.posted === "N"
+                                                  ? "none"
+                                                  : "",
+                                              opacity:
+                                                this.state.posted === "N"
+                                                  ? "0.1"
+                                                  : ""
+                                            }}
+                                            className="fas fa-trash-alt"
+                                            onClick={generatePharmacyLabel.bind(
+                                              this,
+                                              this,
+                                              row
+                                            )}
                                           />
                                         </span>
                                       );
