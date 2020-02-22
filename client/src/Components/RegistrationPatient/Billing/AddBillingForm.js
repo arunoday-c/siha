@@ -366,13 +366,7 @@ class AddBillingForm extends Component {
                           }
                         }}
                       />
-                      <div
-                        className="col"
-                        style={{
-                          background: "rgb(68, 184, 189)",
-                          color: "rgb(255, 255, 255)"
-                        }}
-                      >
+                      <div className="col highlightGreen">
                         <AlgaehLabel
                           label={{
                             fieldName: "receiveable_amount"

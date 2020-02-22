@@ -1042,11 +1042,8 @@ class AddPackageBilling extends Component {
                         />
 
                         <div
-                          className="col"
-                          style={{
-                            background: " #44b8bd",
-                            color: " #fff"
-                          }}
+                          className="col highlightGreen"
+                        
                         >
                           <AlgaehLabel
                             label={{
@@ -1096,8 +1093,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AddPackageBilling)
+  connect(mapStateToProps, mapDispatchToProps)(AddPackageBilling)
 );
