@@ -474,7 +474,7 @@ class PosListItems extends Component {
                                                   ? "0.1"
                                                   : ""
                                             }}
-                                            className="fas fa-trash-alt"
+                                            className="fas fa-print"
                                             onClick={generatePharmacyLabel.bind(
                                               this,
                                               this,

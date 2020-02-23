@@ -494,10 +494,7 @@ body {
   padding: 0;
 }
 .tableForPharmacyDiv {
-  border: 1px dashed #fff;
-  height: 339px;
   padding: 5px 0 0;
-  margin: 0 0 12px;
 }
 .tableForPharmacy {
   width: 100%;
