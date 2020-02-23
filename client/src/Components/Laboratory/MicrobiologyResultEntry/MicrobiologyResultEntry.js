@@ -119,11 +119,8 @@ class MicrobiologyResultEntry extends Component {
     });
   }
   UNSAFE_componentWillReceiveProps(newProps) {
-    if (
-      newProps.selectedPatient !== undefined &&
-      newProps.selectedPatient.microopen === true
-    ) {
-      newProps.selectedPatient.microopen = false;
+    if (newProps.selectedPatient !== undefined && newProps.open === true) {
+      // newProps.selectedPatient.microopen = false;
       newProps.selectedPatient.radioNoGrowth =
         newProps.selectedPatient.bacteria_type === "NG" ? true : false;
       newProps.selectedPatient.radioGrowth =

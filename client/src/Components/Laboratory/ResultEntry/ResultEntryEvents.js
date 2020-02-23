@@ -1,5 +1,6 @@
 import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import _ from "lodash";
 
 const texthandle = ($this, e) => {
@@ -60,7 +61,7 @@ const UpdateLabOrder = ($this, value, status) => {
   if (critical_exit.length > 0) {
     value[0].critical_status = "Y";
   }
-
+  AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",
     module: "laboratory",
@@ -80,22 +81,32 @@ const UpdateLabOrder = ($this, value, status) => {
           });
         }
 
-        for (let k = 0; k < value.length; k++) {
-          if (value[k].run_type !== null && value[k].run_type !== undefined) {
-            value.splice(k, 1);
-          }
+        // for (let k = 0; k < value.length; k++) {
+        //   if (value[k].hasOwnProperty("run_type")) {
+        //     value.splice(k, 1);
+        //   }
+        // }
+        const last = value[value.length - 1];
+        if (last.hasOwnProperty("runtype")) {
+          value.pop();
         }
 
-        $this.setState({
-          test_analytes: value,
-          status: status,
-          entered_by:
-            response.data.records.entered_by || $this.state.entered_by,
-          confirmed_by:
-            response.data.records.confirmed_by || $this.state.confirmed_by,
-          validated_by:
-            response.data.records.validated_by || $this.state.validated_by
-        });
+        $this.setState(
+          {
+            test_analytes: value,
+            status: status,
+            entered_by:
+              response.data.records.entered_by || $this.state.entered_by,
+            confirmed_by:
+              response.data.records.confirmed_by || $this.state.confirmed_by,
+            validated_by:
+              response.data.records.validated_by || $this.state.validated_by,
+            run_type: status === "N" ? last.runtype : $this.state.run_type
+          },
+          () => {
+            AlgaehLoader({ show: false });
+          }
+        );
       }
     },
     onFailure: error => {
@@ -136,7 +147,7 @@ const onvalidate = $this => {
     cancelButtonText: "No"
   }).then(willProceed => {
     if (willProceed.value) {
-      test_analytes.push({ run_type: $this.state.run_type });
+      test_analytes.push({ runtype: $this.state.run_type });
       UpdateLabOrder($this, test_analytes, "V");
     }
   });
@@ -277,7 +288,7 @@ const resultEntryUpdate = $this => {
     test_analytes[k].comments = $this.state.comments;
   }
   if (enterResult === true && enterRemarks === true) {
-    test_analytes.push({ run_type: $this.state.run_type });
+    test_analytes.push({ runtype: $this.state.run_type });
     UpdateLabOrder($this, test_analytes, "E");
   } else {
     if (enterResult === false) {
@@ -322,115 +333,124 @@ const onconfirm = $this => {
     cancelButtonText: "No"
   }).then(willProceed => {
     if (willProceed.value) {
-      test_analytes.push({ run_type: $this.state.run_type });
+      test_analytes.push({ runtype: $this.state.run_type });
       UpdateLabOrder($this, test_analytes, "CF");
     }
   });
 };
 
 const onReRun = $this => {
-  let test_analytes = $this.state.test_analytes;
+  const { test_analytes, run_type } = $this.state;
+  let currentAnalytes = [...test_analytes];
   let success = true;
-  let runtype = [];
 
-  for (let k = 0; k < test_analytes.length; k++) {
-    if ($this.state.run_type === "N") {
-      // test_analytes[k].run1 = test_analytes[k].result;
-      runtype = { run_type: "1" };
-    } else if ($this.state.run_type === "1") {
-      // test_analytes[k].run2 = test_analytes[k].result;
-      runtype = { run_type: "2" };
-    } else if ($this.state.run_type === "2") {
-      // test_analytes[k].run3 = test_analytes[k].result;
-      runtype = { run_type: "3" };
+  let runtype = run_type === "N" ? 1 : parseInt(run_type) + 1;
+  if (runtype < 4) {
+    for (let k = 0; k < currentAnalytes.length; k++) {
+      currentAnalytes[k][`run${runtype}`] = currentAnalytes[k].result;
+      //Noor
+      // if (test_analytes[k].run1 === null) {
+      //   test_analytes[k].run1 = test_analytes[k].result;
+      // } else if (test_analytes[k].run2 === null) {
+      //   test_analytes[k].run2 = test_analytes[k].result;
+      // } else if (test_analytes[k].run3 === null) {
+      //   test_analytes[k].run3 = test_analytes[k].result;
+      // }
+
+      //end noor
+      currentAnalytes[k].result = "";
+      currentAnalytes[k].confirm = "N";
+      currentAnalytes[k].validate = "N";
+      currentAnalytes[k].status = "N";
+      currentAnalytes[k].isre_run = true;
+
+      currentAnalytes[k].comments = $this.state.comments;
     }
+    currentAnalytes.push({ runtype });
 
-    // test_analytes[k].result = "";
-
-    //Noor
-    if (test_analytes[k].run1 === null) {
-      test_analytes[k].run1 = test_analytes[k].result;
-    } else if (test_analytes[k].run2 === null) {
-      test_analytes[k].run2 = test_analytes[k].result;
-    } else if (test_analytes[k].run3 === null) {
-      test_analytes[k].run3 = test_analytes[k].result;
+    if (success === true) {
+      swal({
+        title: "Are you sure want to Re-Run?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        confirmButtonColor: "#44b8bd",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "No"
+      }).then(willProceed => {
+        if (willProceed.value) {
+          UpdateLabOrder($this, currentAnalytes, "N");
+        }
+      });
     }
-
-    //end noor
-    test_analytes[k].result = "";
-    test_analytes[k].confirm = "N";
-    test_analytes[k].validate = "N";
-    test_analytes[k].status = "N";
-    test_analytes[k].isre_run = true;
-
-    test_analytes[k].comments = $this.state.comments;
-  }
-  test_analytes.push(runtype);
-
-  if (success === true) {
-    swal({
-      title: "Are you sure want to Re-Run?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willProceed => {
-      if (willProceed.value) {
-        UpdateLabOrder($this, test_analytes, "N");
-      }
-    });
   }
 };
 
 const onchangegridresult = ($this, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  let test_analytes = $this.state.test_analytes;
-  let critical_status = "N";
+  let { test_analytes } = $this.state;
+  // let critical_status = "N";
   row[name] = value;
   for (let l = 0; l < test_analytes.length; l++) {
     if (
       test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
     ) {
       row["critical_type"] = checkRange(row);
-      if (row["critical_type"] === "CH" || row["critical_type"] === "CL") {
+      if (row["critical_type"] === "L" || row["critical_type"] === "H") {
         row["critical_status"] = "Y";
-        critical_status = "Y";
       }
       test_analytes[l] = row;
     }
   }
   $this.setState({
-    test_analytes: test_analytes,
-    critical_status: critical_status
+    test_analytes: test_analytes
   });
 };
 
 function checkRange(row) {
-  let { result, critical_low, critical_high, normal_low, normal_high } = row;
+  let { result, normal_low, normal_high } = row;
 
   result = parseFloat(result);
-  critical_low = parseFloat(critical_low);
+  // critical_low = parseFloat(critical_low);
   normal_low = parseFloat(normal_low);
   normal_high = parseFloat(normal_high);
-  critical_high = parseFloat(critical_high);
+  // critical_high = parseFloat(critical_high);
 
   if (!result) {
     return null;
-  } else if (result <= critical_low) {
-    return "CL";
-  } else if (result < normal_low) {
+  } else if (result <= normal_low) {
     return "L";
-  } else if (result < normal_high) {
-    return "N";
-  } else if (result < critical_high) {
+  } else if (result >= normal_high) {
     return "H";
   } else {
-    return "CH";
+    return "N";
   }
 }
+
+// function backup_checkRange(row) {
+//   let { result, critical_low, critical_high, normal_low, normal_high } = row;
+
+//   result = parseFloat(result);
+//   critical_low = parseFloat(critical_low);
+//   normal_low = parseFloat(normal_low);
+//   normal_high = parseFloat(normal_high);
+//   critical_high = parseFloat(critical_high);
+
+//   if (!result) {
+//     return null;
+//   } else if (result <= critical_low) {
+//     return "CL";
+//   } else if (result < normal_low) {
+//     return "L";
+//   } else if (result < normal_high) {
+//     return "N";
+//   } else if (result < critical_high) {
+//     return "H";
+//   } else {
+//     return "CH";
+//   }
+// }
 
 const onchangeAmend = ($this, row, e) => {
   let name = e.name || e.target.name;

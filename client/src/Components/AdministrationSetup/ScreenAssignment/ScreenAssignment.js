@@ -228,6 +228,40 @@ class ScreenAssignment extends Component {
             </button>
           </div>
         </div>{" "}
+        <div className="portlet portlet-bordered margin-bottom-15">
+          <div className="portlet-body">
+            <div className="row">
+              <AlagehAutoComplete
+                div={{ className: "col-10 mandatory" }}
+                label={{
+                  forceLabel: "Assign Landing Screen",
+                  isImp: true
+                }}
+                selector={{
+                  name: "landing_page",
+                  className: "select-fld",
+                  value: this.state.landing_page,
+                  dataSource: {
+                    textField: "screen_name",
+                    valueField: "algaeh_app_screens_id",
+                    data: this.state.assignedScrens
+                  },
+                  onChange: this.dropDownEvent.bind(this)
+                }}
+              />
+              <div className="col-2">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={assignLandingPage.bind(this)}
+                  style={{ marginTop: 19 }}
+                >
+                  <AlgaehLabel label={{ forceLabel: "Apply" }} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
         {this.state.ScreenList.length > 0 ? (
           <div className="row">
             <div className="col-6">
@@ -311,41 +345,6 @@ class ScreenAssignment extends Component {
                         onClick={this.assignScreens.bind(this)}
                       >
                         <AlgaehLabel label={{ forceLabel: "Assign" }} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="portlet portlet-bordered margin-bottom-15">
-                <div className="portlet-body">
-                  <div className="row">
-                    <AlagehAutoComplete
-                      div={{ className: "col-10 mandatory" }}
-                      label={{
-                        forceLabel: "Assign Landing Screen",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "landing_page",
-                        className: "select-fld",
-                        value: this.state.landing_page,
-                        dataSource: {
-                          textField: "screen_name",
-                          valueField: "algaeh_app_screens_id",
-                          data: this.state.assignedScrens
-                        },
-                        onChange: this.dropDownEvent.bind(this)
-                      }}
-                    />
-                    <div className="col-2">
-                      <button
-                        type="button"
-                        className="btn btn-default"
-                        onClick={assignLandingPage.bind(this)}
-                        style={{ marginTop: 19 }}
-                      >
-                        <AlgaehLabel label={{ forceLabel: "Apply" }} />
                       </button>
                     </div>
                   </div>

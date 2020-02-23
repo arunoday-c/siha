@@ -6,7 +6,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { GetAmountFormart } from "../../utils/GlobalFunctions";
-import DashBoardEvents from "./DashBoardEvents";
+import DashBoardEvents, { LegendOpt } from "./DashBoardEvents";
+import { MainContext } from "algaeh-react-components/context";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,
@@ -14,7 +15,8 @@ import {
   AlgaehDataGrid
 } from "../Wrapper/algaehWrapper";
 
-import { MainContext } from "algaeh-react-components/context";
+const dashEvents = DashBoardEvents();
+
 class Dashboard extends Component {
   constructor(props) {
     super(props);
@@ -23,6 +25,10 @@ class Dashboard extends Component {
       showDetails: "d-none",
       no_of_employees: 0,
       total_company_salary: 0,
+      total_staff_count: 0,
+      total_labour_count: 0,
+      total_staff_salary: 0,
+      total_labor_salary: 0,
       Dept_Employee: {},
       Desig_Employee: {},
       no_of_emp_join: [],
@@ -34,16 +40,6 @@ class Dashboard extends Component {
   static contextType = MainContext;
   componentDidMount() {
     const userToken = this.context.userToken;
-    this.setState({
-      hospital_id: userToken.hims_d_hospital_id
-    });
-  }
-  componentWillMount() {
-    DashBoardEvents().getEmployeeList(this);
-    DashBoardEvents().getEmployeeDepartmentsWise(this);
-    DashBoardEvents().getEmployeeDesignationWise(this);
-    DashBoardEvents().getProjectList(this);
-
     this.props.getOrganizations({
       uri: "/organization/getOrganizationByUser",
       method: "GET",
@@ -52,6 +48,18 @@ class Dashboard extends Component {
         mappingName: "organizations"
       }
     });
+
+    this.setState(
+      {
+        hospital_id: userToken.hims_d_hospital_id
+      },
+      () => {
+        dashEvents.getEmployeeList(this);
+        dashEvents.getEmployeeDepartmentsWise(this);
+        dashEvents.getEmployeeDesignationWise(this);
+        dashEvents.getProjectList(this);
+      }
+    );
   }
 
   showDetailHandler(event) {
@@ -76,13 +84,14 @@ class Dashboard extends Component {
         [name]: value
       },
       () => {
-        DashBoardEvents().getEmployeeList(this);
-        DashBoardEvents().getEmployeeDepartmentsWise(this);
-        DashBoardEvents().getEmployeeDesignationWise(this);
-        DashBoardEvents().getProjectList(this);
+        dashEvents.getEmployeeList(this);
+        dashEvents.getEmployeeDepartmentsWise(this);
+        dashEvents.getEmployeeDesignationWise(this);
+        dashEvents.getProjectList(this);
       }
     );
   }
+
   render() {
     return (
       <div className="dashboard ">
@@ -141,7 +150,7 @@ class Dashboard extends Component {
                 <div className="col-12">
                   <div className="text">
                     <p>Total Staff</p>
-                    {this.state.no_of_projects}
+                    {this.state.total_staff_count}
                   </div>
                 </div>
               </div>
@@ -158,7 +167,7 @@ class Dashboard extends Component {
                 <div className="col-12">
                   <div className="text">
                     <p>Total Labour</p>
-                    {this.state.no_of_projects}
+                    {this.state.total_labour_count}
                   </div>
                 </div>
               </div>
@@ -209,7 +218,7 @@ class Dashboard extends Component {
                 <div className="col-12">
                   <div className="text">
                     <p>Staff Cost</p>
-                    {this.state.no_of_projects}
+                    {GetAmountFormart(this.state.total_staff_salary)}
                   </div>
                 </div>
               </div>
@@ -226,7 +235,7 @@ class Dashboard extends Component {
                 <div className="col-12">
                   <div className="text">
                     <p>Labour Cost</p>
-                    {GetAmountFormart(this.state.total_company_salary)}
+                    {GetAmountFormart(this.state.total_labor_salary)}
                   </div>
                 </div>
               </div>
@@ -243,18 +252,19 @@ class Dashboard extends Component {
                   <div className="dashboardChartsCntr">
                     <Bar
                       data={this.state.Dept_Employee}
-                      options={{
-                        scales: {
-                          yAxes: [
-                            {
-                              ticks: {
-                                beginAtZero: true,
-                                min: 0
-                              }
-                            }
-                          ]
-                        }
-                      }}
+                      legend={LegendOpt}
+                      // options={{
+                      //   scales: {
+                      //     yAxes: [
+                      //       {
+                      //         ticks: {
+                      //           beginAtZero: true,
+                      //           min: 0
+                      //         }
+                      //       }
+                      //     ]
+                      //   }
+                      // }}
                     />
                   </div>
                 </div>
@@ -265,18 +275,19 @@ class Dashboard extends Component {
                   <div className="dashboardChartsCntr">
                     <Bar
                       data={this.state.Desig_Employee}
-                      options={{
-                        scales: {
-                          yAxes: [
-                            {
-                              ticks: {
-                                beginAtZero: true,
-                                min: 0
-                              }
-                            }
-                          ]
-                        }
-                      }}
+                      legend={LegendOpt}
+                      // options={{
+                      //   scales: {
+                      //     yAxes: [
+                      //       {
+                      //         ticks: {
+                      //           beginAtZero: true,
+                      //           min: 0
+                      //         }
+                      //       }
+                      //     ]
+                      //   }
+                      // }}
                     />
                   </div>
                 </div>

@@ -964,6 +964,7 @@ export default {
     utilities.logger().log("updateLabResultEntry: ");
     try {
       let inputParam = req.body;
+      console.log(req.body, "body");
 
       let status_C = new LINQ(inputParam).Where(w => w.status == "C").ToArray()
         .length;
@@ -976,10 +977,12 @@ export default {
       let status_E = new LINQ(inputParam).Where(w => w.status == "E").ToArray()
         .length;
       utilities.logger().log("runtype: ");
-      let runtype = new LINQ(inputParam)
-        .Where(w => w.run_type != null)
-        .Select(s => s.run_type)
-        .ToArray();
+      // let runtype = new LINQ(inputParam)
+      //   .Where(w => w.run_type != null)
+      //   .Select(s => s.run_type)
+      //   .ToArray();
+      let { runtype } = inputParam[inputParam.length - 1];
+      console.log(runtype, "run type");
 
       console.log("inputParam: ", inputParam[0].critical_status);
 
@@ -1094,7 +1097,7 @@ export default {
                   " where hims_f_lab_order_id=?; ",
                 values: [
                   ref,
-                  runtype[0],
+                  String(runtype),
                   moment().format("YYYY-MM-DD HH:mm"),
                   req.userIdentity.algaeh_d_app_user_id,
                   inputParam[0].comments,

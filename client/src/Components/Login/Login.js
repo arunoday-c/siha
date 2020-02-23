@@ -125,13 +125,12 @@ function Login(props) {
                         () => {
                           setLoginLoad(false);
                           setItem("userName", records.user_display_name);
-                          history.push(
-                            `/${
-                              records.page_to_redirect === null
-                                ? "NoDashboard"
-                                : records.page_to_redirect.replace(/\s/g, "")
-                            }`
-                          );
+                          const redPage =
+                            records.page_to_redirect === null
+                              ? "NoDashboard"
+                              : records.page_to_redirect.replace(/\s/g, "");
+                          setCookie("ScreenName", redPage);
+                          history.push(`/${redPage}`);
                         }
                       );
                     })
@@ -254,13 +253,12 @@ function Login(props) {
             .then(userMenu => {
               setSelectedMenu(userMenu, records.page_to_redirect).then(() => {
                 setLoginLoad(false);
-                history.push(
-                  `/${
-                    records.page_to_redirect === null
-                      ? "NoDashboard"
-                      : records.page_to_redirect.replace(/\s/g, "")
-                  }`
-                );
+                const redPage =
+                  records.page_to_redirect === null
+                    ? "NoDashboard"
+                    : records.page_to_redirect.replace(/\s/g, "");
+                setCookie("ScreenName", redPage);
+                history.push(`/${redPage}`);
               });
             })
             .catch(error => {

@@ -46,48 +46,6 @@ class ResultEntry extends Component {
     };
   }
 
-  selectCommentEvent(e) {
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
-
-    this.setState({
-      [name]: value,
-      selcted_comments: e.selected.commet
-    });
-  }
-
-  textAreaEvent(e) {
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
-
-    this.setState({
-      [name]: value
-    });
-  }
-
-  showReport(refBy) {
-    // console.log("test_analytes:", this.state.test_analytes);
-
-    AlgaehReport({
-      report: {
-        fileName: "haematologyReport"
-      },
-      data: {
-        investigation_name: this.state.service_name,
-        test_analytes: this.state.test_analytes,
-        payment_type: "cash",
-        patient_code: this.state.patient_code,
-        full_name: this.state.full_name,
-        advance_amount: "PAT-00000asdfadsf",
-        receipt_number: "123456",
-        receipt_date: this.state.ordered_date,
-        doctor_name: refBy,
-        test_name: this.state.service_name,
-        specimen: this.state.specimen
-      }
-    });
-  }
-
   componentDidMount() {
     if (
       this.props.labiologyusers === undefined ||
@@ -132,17 +90,63 @@ class ResultEntry extends Component {
       });
     }
   }
+
   UNSAFE_componentWillReceiveProps(newProps) {
-    if (
-      newProps.selectedPatient !== undefined &&
-      newProps.selectedPatient.open === true
-    ) {
-      newProps.selectedPatient.open = false;
-      this.setState({ ...this.state, ...newProps.selectedPatient }, () => {
+    if (newProps.selectedPatient !== undefined && newProps.open === true) {
+      // newProps.selectedPatient.open = false;
+      this.setState({ ...newProps.selectedPatient }, () => {
         getAnalytes(this, this);
       });
     }
   }
+
+  selectCommentEvent(e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+
+    this.setState({
+      [name]: value,
+      selcted_comments: e.selected.commet
+    });
+  }
+
+  textAreaEvent(e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+
+    this.setState({
+      [name]: value
+    });
+  }
+
+  showReport(refBy) {
+    // console.log("test_analytes:", this.state.test_analytes);
+
+    AlgaehReport({
+      report: {
+        fileName: "haematologyReport"
+      },
+      data: {
+        investigation_name: this.state.service_name,
+        test_analytes: this.state.test_analytes,
+        payment_type: "cash",
+        patient_code: this.state.patient_code,
+        full_name: this.state.full_name,
+        advance_amount: "PAT-00000asdfadsf",
+        receipt_number: "123456",
+        receipt_date: this.state.ordered_date,
+        doctor_name: refBy,
+        test_name: this.state.service_name,
+        specimen: this.state.specimen
+      }
+    });
+  }
+
+  isCritical = () => {
+    const { test_analytes } = this.state;
+    let status = test_analytes.some(el => el.critical_type !== "N");
+    return status;
+  };
 
   onClose = e => {
     this.setState(
@@ -170,10 +174,11 @@ class ResultEntry extends Component {
         : this.props.providers.filter(
             f => f.hims_d_employee_id === this.state.provider_id
           );
-    let color_display =
-      this.state.critical_status === "N"
-        ? "badge badge-primary"
-        : "badge badge-danger";
+    let isCritical = this.isCritical();
+    // let color_display =
+    //   this.state.critical_status === "N"
+    //     ? "badge badge-primary"
+    //     : "badge badge-danger";
     return (
       <div>
         <AlgaehModalPopUp
@@ -248,9 +253,13 @@ class ResultEntry extends Component {
                       />
 
                       <h6>
-                        <small className={color_display}>
+                        <small
+                          className={`badge ${
+                            isCritical ? "badge-danger" : "badge-primary"
+                          }`}
+                        >
                           {" "}
-                          {this.state.critical_status === "N" ? "No" : "Yes"}
+                          {isCritical ? "Yes" : "No"}
                         </small>
                       </h6>
                     </div>
@@ -541,16 +550,14 @@ class ResultEntry extends Component {
                                 <span className="badge badge-success">
                                   Normal
                                 </span>
-                              ) : row.critical_type === "L" ||
-                                row.critical_type === "CL" ? (
+                              ) : row.critical_type === "L" ? (
                                 <span className="badge badge-warning">Low</span>
                               ) : (
-                                row.critical_type === "H" ||
-                                (row.critical_type === "CH" && (
+                                row.critical_type === "H" && (
                                   <span className="badge badge-warning">
                                     High
                                   </span>
-                                ))
+                                )
                               );
                             }
                           },
@@ -871,7 +878,7 @@ class ResultEntry extends Component {
                 onClick={onReRun.bind(this, this)}
                 disabled={
                   this.state.entered_by !== null
-                    ? this.state.run_type === 3
+                    ? this.state.run_type == 3
                       ? true
                       : false
                     : true

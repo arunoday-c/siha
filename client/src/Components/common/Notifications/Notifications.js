@@ -42,7 +42,6 @@ export default class Notifications extends Component {
         );
       });
       this.socket.on("patient_added", patient => {
-        debugger;
         const time = this.formatTime(patient.appointment_from_time);
         const date = this.formatDate(patient.appointment_date);
         this.addToNotiList(

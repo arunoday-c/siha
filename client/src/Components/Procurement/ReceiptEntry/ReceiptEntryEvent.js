@@ -1,4 +1,8 @@
-import { swalMessage, algaehApiCall, getCookie } from "../../../utils/algaehApiCall";
+import {
+  swalMessage,
+  algaehApiCall,
+  getCookie
+} from "../../../utils/algaehApiCall";
 import moment from "moment";
 
 import AlgaehSearch from "../../Wrapper/globalSearch";
@@ -28,8 +32,8 @@ const textEventhandle = ($this, e) => {
     e.value === ""
       ? null
       : e.value || e.target.value === ""
-        ? null
-        : e.target.value;
+      ? null
+      : e.target.value;
 
   $this.setState({
     [name]: value
@@ -204,17 +208,17 @@ const DeliverySearch = ($this, e) => {
                   parseFloat(data.dn_entry_detail[i].quantity_outstanding) === 0
                     ? 0
                     : Math.abs(
-                      data.dn_entry_detail[i].dn_quantity -
-                      data.dn_entry_detail[i].quantity_outstanding
-                    );
+                        data.dn_entry_detail[i].dn_quantity -
+                          data.dn_entry_detail[i].quantity_outstanding
+                      );
 
                 data.dn_entry_detail[i].recieved_quantity =
                   parseFloat(data.dn_entry_detail[i].quantity_outstanding) === 0
                     ? data.dn_entry_detail[i].dn_quantity
                     : Math.abs(
-                      data.dn_entry_detail[i].quantity_recieved_todate -
-                      data.dn_entry_detail[i].quantity_outstanding
-                    );
+                        data.dn_entry_detail[i].quantity_recieved_todate -
+                          data.dn_entry_detail[i].quantity_outstanding
+                      );
 
                 data.dn_entry_detail[i].dn_header_id =
                   data.hims_f_procurement_dn_header_id;
@@ -440,7 +444,7 @@ const getData = $this => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "receiptitemcategory"
       },
-      afterSuccess: data => { }
+      afterSuccess: data => {}
     });
 
     $this.props.getItemGroup({
@@ -513,14 +517,14 @@ const generateReceiptEntryReport = data => {
 };
 
 const PostReceiptEntry = $this => {
-
   AlgaehLoader({ show: true });
-  let Inputobj = $this.state
+  let Inputobj = $this.state;
 
   Inputobj.posted = "Y";
-  Inputobj.ScreenCode = getCookie("ScreenCode")
+  Inputobj.ScreenCode = getCookie("ScreenCode");
   Inputobj.due_date = moment($this.state.invoice_date, "YYYY-MM-DD")
-    .add($this.state.payment_terms, "days").format("YYYY-MM-DD")
+    .add($this.state.payment_terms, "days")
+    .format("YYYY-MM-DD");
 
   algaehApiCall({
     uri: "/ReceiptEntry/postReceiptEntry",
@@ -571,7 +575,6 @@ const getDeliveryForReceipt = ($this, row) => {
     },
     onSuccess: response => {
       if (response.data.success) {
-        debugger
         let data = response.data.records;
 
         if (data.length === 0) {
@@ -580,7 +583,7 @@ const getDeliveryForReceipt = ($this, row) => {
             title: "No delivery note exists for selecetd PO.",
             type: "warning"
           });
-          return
+          return;
         }
         if (data !== null && data !== undefined) {
           for (let i = 0; i < data.length; i++) {

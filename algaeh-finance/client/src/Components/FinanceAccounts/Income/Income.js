@@ -175,7 +175,7 @@ export default function Income() {
         }}
       />
       <div className="row">
-        <div className="col-4">
+        {/* <div className="col-4">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
@@ -225,8 +225,8 @@ export default function Income() {
               <Charts data={[]} xAxis={""} yAxisBar={""} yAxisLine={""} />
             </div>
           </div>
-        </div>
-        <div className="col-8">
+        </div> */}
+        <div className="col-12">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
