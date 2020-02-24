@@ -20,14 +20,14 @@ const getPatientProfile = $this => {
 };
 
 const getPatientVitals = $this => {
-  const { current_patient, episode_id } = Window.global;
+  const { current_patient, visit_id } = Window.global;
   $this.props.getPatientVitals({
     uri: "/doctorsWorkBench/getPatientVitals",
     method: "GET",
     cancelRequestId: "getPatientVitals",
     data: {
       patient_id: current_patient, //Window.global["current_patient"],
-      visit_id: episode_id //Window.global["visit_id"]
+      visit_id: visit_id //Window.global["visit_id"]
     },
     redux: {
       type: "PATIENT_VITALS",
