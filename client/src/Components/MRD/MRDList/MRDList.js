@@ -20,8 +20,11 @@ class MRDList extends Component {
       to_date: new Date(),
       from_date: moment("01" + month + year, "DDMMYYYY")._d
     };
-    this.getPatientMrdList();
     this.baseState = this.state;
+  }
+
+  componentDidMount() {
+    this.getPatientMrdList();
   }
 
   changeTexts(e) {

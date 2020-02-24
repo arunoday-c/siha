@@ -308,7 +308,7 @@ const SaveInitialStock = $this => {
 const deleteInitialStock = ($this, row) => {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   let saveEnable = true;
-  let _index = pharmacy_stock_detail.indexOf(row)
+  let _index = pharmacy_stock_detail.indexOf(row);
   pharmacy_stock_detail.splice(_index, 1);
 
   if (pharmacy_stock_detail.length) {
@@ -399,6 +399,11 @@ const printBarcode = ($this, row) => {
     others: { responseType: "blob" },
     data: {
       report: {
+        others: {
+          width: "50mm",
+          height: "25mm",
+          showHeaderFooter: false
+        },
         reportName: "PharmacyBarcode",
         reportParams: [
           {

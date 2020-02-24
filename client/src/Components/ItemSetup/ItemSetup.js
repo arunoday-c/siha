@@ -255,6 +255,12 @@ class ItemSetup extends Component {
                       }
                     },
                     {
+                      fieldName: "standard_fee",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "price" }} />
+                      )
+                    },
+                    {
                       fieldName: "category_id",
                       label: (
                         <AlgaehLabel label={{ fieldName: "category_id" }} />
@@ -369,7 +375,6 @@ class ItemSetup extends Component {
                         );
                       }
                     },
-
                     {
                       fieldName: "item_status",
                       label: (

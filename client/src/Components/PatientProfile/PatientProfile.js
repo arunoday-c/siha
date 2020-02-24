@@ -274,6 +274,7 @@ class PatientProfile extends Component {
       }
     });
   }
+
   UNSAFE_componentWillReceiveProps(props) {
     if (props.patient_allergies !== undefined) {
       if (this.state.patientAllergies.length === 0)
@@ -596,64 +597,64 @@ class PatientProfile extends Component {
     } = Window.global;
     // let chief_complaint = Window.global["chief_complaint"];
     // let significant_signs = Window.global["significant_signs"];
-    const _Vitals =
-      this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
-        ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy(g => g.visit_date)
-            .lastOrDefault()
-        : [];
+    // const _Vitals =
+    //   this.props.patient_vitals !== undefined &&
+    //   this.props.patient_vitals.length > 0
+    //     ? Enumerable.from(this.props.patient_vitals)
+    //         .groupBy("$.visit_date", null, (k, g) => {
+    //           return g.getSource();
+    //         })
+    //         .orderBy(g => g.visit_date)
+    //         .lastOrDefault()
+    //     : [];
 
-    if (
-      chief_complaint === null ||
-      chief_complaint === undefined ||
-      chief_complaint.length < 4
-    ) {
-      swalMessage({
-        title: "Enter Chief Complaint. Atlest 4 letter",
-        type: "warning"
-      });
-    } else if (
-      significant_signs === null ||
-      significant_signs === undefined ||
-      significant_signs.length < 4
-    ) {
-      swalMessage({
-        title: "Enter Significant Signs. Atlest 4 letter",
-        type: "warning"
-      });
-    } else if (
-      _Vitals.length === 0 &&
-      // Window.global["vitals_mandatory"] === "Y"
-      vitals_mandatory === "Y"
-    ) {
-      swalMessage({
-        title: "Enter All Vitals...",
-        type: "warning"
-      });
-    } else {
-      const details = Window.global;
-      var element = document.querySelectorAll("[algaehsoap]");
-      for (var i = 0; i < element.length; i++) {
-        element[i].classList.remove("active");
-      }
-      e.currentTarget.classList.add("active");
-      var page = e.currentTarget.getAttribute("algaehsoap");
-
-      setGlobal({
-        "MRD-STD": "PatientMRD",
-        mrd_patient: details["current_patient"],
-        nationality: document.querySelector("[patient_nationality='true']")
-          .innerText,
-        gender: details["gender"]
-      });
-      this.setState({
-        pageDisplay: page
-      });
+    // if (
+    //   chief_complaint === null ||
+    //   chief_complaint === undefined ||
+    //   chief_complaint.length < 4
+    // ) {
+    //   swalMessage({
+    //     title: "Enter Chief Complaint. Atlest 4 letter",
+    //     type: "warning"
+    //   });
+    // } else if (
+    //   significant_signs === null ||
+    //   significant_signs === undefined ||
+    //   significant_signs.length < 4
+    // ) {
+    //   swalMessage({
+    //     title: "Enter Significant Signs. Atlest 4 letter",
+    //     type: "warning"
+    //   });
+    // } else if (
+    //   _Vitals.length === 0 &&
+    //   // Window.global["vitals_mandatory"] === "Y"
+    //   vitals_mandatory === "Y"
+    // ) {
+    //   swalMessage({
+    //     title: "Enter All Vitals...",
+    //     type: "warning"
+    //   });
+    // } else {
+    const details = Window.global;
+    var element = document.querySelectorAll("[algaehsoap]");
+    for (var i = 0; i < element.length; i++) {
+      element[i].classList.remove("active");
     }
+    e.currentTarget.classList.add("active");
+    var page = e.currentTarget.getAttribute("algaehsoap");
+
+    setGlobal({
+      "MRD-STD": "PatientMRD",
+      mrd_patient: details["current_patient"],
+      nationality: document.querySelector("[patient_nationality='true']")
+        .innerText,
+      gender: details["gender"]
+    });
+    this.setState({
+      pageDisplay: page
+    });
+    // }
   }
 
   goback = () => {
@@ -691,392 +692,385 @@ class PatientProfile extends Component {
       this.props.patient_diet === undefined ? [] : this.props.patient_diet;
 
     return (
-        <div className="row patientProfile">
-          <div className="patientInfo-Top box-shadow-normal">
-            <div className="backBtn">
-              <button
-                id="btn-outer-component-load"
-                className="d-none"
-                //  onClick={this.setPatientGlobalParameters.bind(this)}
-              />
-              <button
-                onClick={this.renderBackButton.bind(this)}
-                type="button"
-                className="btn btn-outline-secondary btn-sm"
-              >
-                <i className="fas fa-angle-double-left fa-lg" />
-                Back
-              </button>
-            </div>
-            <div className="patientImg">
-              <AlgaehFile
-                name="attach_photo"
-                accept="image/*"
-                textAltMessage={_pat_profile.full_name}
-                showActions={false}
-                serviceParameters={{
-                  uniqueID: _pat_profile.patient_code,
-                  destinationName: _pat_profile.patient_code,
-                  fileType: "Patients"
-                }}
-                forceRefresh={true}
-              />
-            </div>
-            <div className="patientName">
-              <h6>{_pat_profile.full_name}</h6>
-              <p>
-                {_pat_profile.gender} - {_pat_profile.age_in_years}y,
-                {_pat_profile.age_in_months}m, {_pat_profile.age_in_days}d
-              </p>
-            </div>
-            <div className="patientDemographic">
-              <span>
-                DOB:
-                <b>{moment(_pat_profile.date_of_birth).format("DD-MM-YYYY")}</b>
-              </span>
+      <div className="row patientProfile">
+        <div className="patientInfo-Top box-shadow-normal">
+          <div className="backBtn">
+            <button
+              id="btn-outer-component-load"
+              className="d-none"
+              //  onClick={this.setPatientGlobalParameters.bind(this)}
+            />
+            <button
+              onClick={this.renderBackButton.bind(this)}
+              type="button"
+              className="btn btn-outline-secondary btn-sm"
+            >
+              <i className="fas fa-angle-double-left fa-lg" />
+              Back
+            </button>
+          </div>
+          <div className="patientImg">
+            <AlgaehFile
+              name="attach_photo"
+              accept="image/*"
+              textAltMessage={_pat_profile.full_name}
+              showActions={false}
+              serviceParameters={{
+                uniqueID: _pat_profile.patient_code,
+                destinationName: _pat_profile.patient_code,
+                fileType: "Patients"
+              }}
+              forceRefresh={true}
+            />
+          </div>
+          <div className="patientName">
+            <h6>{_pat_profile.full_name}</h6>
+            <p>
+              {_pat_profile.gender} - {_pat_profile.age_in_years}y,
+              {_pat_profile.age_in_months}m, {_pat_profile.age_in_days}d
+            </p>
+          </div>
+          <div className="patientDemographic">
+            <span>
+              DOB:
+              <b>{moment(_pat_profile.date_of_birth).format("DD-MM-YYYY")}</b>
+            </span>
 
-              <span>
-                Nationality:
-                <b patient_nationality="true">{_pat_profile.nationality}</b>
-              </span>
-              <span>
-                Payment:
-                <b>
-                  {_pat_profile.payment_type === "I"
-                    ? "Insurance"
-                    : _pat_profile.payment_type === "S"
-                    ? "Self"
-                    : ""}
-                </b>
-              </span>
+            <span>
+              Nationality:
+              <b patient_nationality="true">{_pat_profile.nationality}</b>
+            </span>
+            <span>
+              Payment:
+              <b>
+                {_pat_profile.payment_type === "I"
+                  ? "Insurance"
+                  : _pat_profile.payment_type === "S"
+                  ? "Self"
+                  : ""}
+              </b>
+            </span>
+          </div>
+          <div className="patientHospitalDetail">
+            <span>
+              MRN: <b>{_pat_profile.patient_code}</b>
+            </span>
+            <span>
+              Encounter:
+              <b>
+                {moment(_pat_profile.Encounter_Date).format(
+                  "DD-MM-YYYY | hh:mm a"
+                )}
+              </b>
+            </span>
+          </div>
+          {_Vitals.length > 0 ? (
+            <div className="patientVital">
+              {_Vitals.map((row, idx) => {
+                if (row.display === "N") {
+                  return null;
+                }
+                return (
+                  <span key={idx}>
+                    {row.vital_short_name}:<b> {row.vital_value} </b>
+                    <small>{row.formula_value}</small>
+                  </span>
+                );
+              })}
             </div>
-            <div className="patientHospitalDetail">
-              <span>
-                MRN: <b>{_pat_profile.patient_code}</b>
-              </span>
-              <span>
-                Encounter:
-                <b>
-                  {moment(_pat_profile.Encounter_Date).format(
-                    "DD-MM-YYYY | hh:mm a"
-                  )}
-                </b>
-              </span>
-            </div>
-            {_Vitals.length > 0 ? (
-              <div className="patientVital">
-                {_Vitals.map((row, idx) => {
-                  if (row.display === "N") {
-                    return null;
-                  }
-                  return (
-                    <span key={idx}>
-                      {row.vital_short_name}:<b> {row.vital_value} </b>
-                      <small>{row.formula_value}</small>
-                    </span>
-                  );
-                })}
-              </div>
-            ) : null}
-            <div className="moreAction">
-              <button
-                type="button"
-                className="btn btn-outline-secondary btn-sm"
-              >
-                <i className="fas fa-caret-square-down fa-lg" />
-                More
-              </button>
-              <ul className="moreActionUl">
-                {/*<li>
+          ) : null}
+          <div className="moreAction">
+            <button type="button" className="btn btn-outline-secondary btn-sm">
+              <i className="fas fa-caret-square-down fa-lg" />
+              More
+            </button>
+            <ul className="moreActionUl">
+              {/*<li>
 
                 <span onClick={this.OpenMrdHandler.bind(this)}>Open MRD</span>
 
               </li> */}
-                <li>
-                  <span onClick={printPrescription.bind(this, this)}>
-                    Prescription
-                  </span>
-                </li>
-                <li>
-                  <span onClick={this.showSickLeave.bind(this)}>
-                    Sick Leave
-                  </span>
-                </li>
-                <li>
-                  <span onClick={this.printGeneralConsentForm.bind(this)}>
-                    General Consent Form
-                  </span>
-                </li>
-                <li>
-                  <span onClick={this.printMedicalConsentForm.bind(this)}>
-                    Medical Consent Form
-                  </span>
-                </li>
-                {/* <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
+              <li>
+                <span onClick={printPrescription.bind(this, this)}>
+                  Prescription
+                </span>
+              </li>
+              <li>
+                <span onClick={this.showSickLeave.bind(this)}>Sick Leave</span>
+              </li>
+              <li>
+                <span onClick={this.printGeneralConsentForm.bind(this)}>
+                  General Consent Form
+                </span>
+              </li>
+              <li>
+                <span onClick={this.printMedicalConsentForm.bind(this)}>
+                  Medical Consent Form
+                </span>
+              </li>
+              {/* <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
                 <span>UCAF Report</span>
               </li>
 
               <li onClick={this.openDCAFReport.bind(this, _pat_profile)}>
                 <span>DCAF Report</span>
               </li> */}
-                {this.state.chart_type === "D" ? (
-                  <li onClick={this.openDCAFReport.bind(this, _pat_profile)}>
-                    <span>DCAF Report</span>
-                  </li>
-                ) : this.state.chart_type === "O" ? (
-                  <li onClick={this.openOCAFReport.bind(this, _pat_profile)}>
-                    <span>OCAF Report</span>
-                  </li>
-                ) : (
-                  <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
-                    <span>UCAF Report</span>
-                  </li>
-                )}
-              </ul>
-            </div>
+              {this.state.chart_type === "D" ? (
+                <li onClick={this.openDCAFReport.bind(this, _pat_profile)}>
+                  <span>DCAF Report</span>
+                </li>
+              ) : this.state.chart_type === "O" ? (
+                <li onClick={this.openOCAFReport.bind(this, _pat_profile)}>
+                  <span>OCAF Report</span>
+                </li>
+              ) : (
+                <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
+                  <span>UCAF Report</span>
+                </li>
+              )}
+            </ul>
           </div>
-          <div className="patientTopNav box-shadow-normal">
-            {
-              <ul className="nav">
-                <li className="nav-item">
-                  <span
-                    onClick={this.changeTabs}
-                    algaehsoap="subjective"
-                    className="nav-link active"
-                  >
-                    Subjective
-                  </span>
-                </li>
-
-                <li className="nav-item">
-                  <span
-                    onClick={this.changeTabs}
-                    algaehsoap="exam_diagram"
-                    className="nav-link"
-                  >
-                    Examination Diagram
-                  </span>
-                </li>
-
-                {this.state.chart_type === "D" ? (
-                  <li className="nav-item">
-                    <span
-                      onClick={this.changeTabs}
-                      algaehsoap="dental"
-                      className="nav-link"
-                    >
-                      Dental
-                    </span>
-                  </li>
-                ) : this.state.chart_type === "O" ? (
-                  <li className="nav-item">
-                    <span
-                      onClick={this.changeTabs}
-                      algaehsoap="eye"
-                      className="nav-link"
-                    >
-                      Optometry
-                    </span>
-                  </li>
-                ) : null}
-
-                <li className="nav-item">
-                  <span
-                    onClick={this.changeTabs}
-                    algaehsoap="summary"
-                    className="nav-link"
-                  >
-                    Summary
-                  </span>
-                </li>
-                <li className="nav-item">
-                  <span
-                    onClick={this.changeTabs} //this.OpenMrdHandler.bind(this)}
-                    algaehsoap="mrd"
-                    className="nav-link"
-                  >
-                    MRD
-                  </span>
-                </li>
-                <ul className="float-right patient-quick-info">
-                  <li>
-                    <i
-                      className={"fas fa-allergies" + this.state.alergyExist}
-                    />
-                    <section>
-                      <span className="top-nav-sec-hdg">Allergies</span>
-                      <div className="listofADDWrapper">
-                        <table className="listofADDTable">
-                          <thead>
-                            <tr>
-                              <th>
-                                <b>Allergy</b>
-                              </th>
-                              <th>
-                                <b>Onset From</b>
-                              </th>
-                              <th>
-                                <b>Severity</b>
-                              </th>
-                              <th>
-                                <b>Comments</b>
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {_patient_allergies.map((data, index) => (
-                              <React.Fragment key={index}>
-                                {data.allergyList.map((allergy, aIndex) => (
-                                  <tr
-                                    key={aIndex}
-                                    className={
-                                      allergy.allergy_inactive === "Y"
-                                        ? "red"
-                                        : ""
-                                    }
-                                  >
-                                    <td>{allergy.allergy_name}</td>
-                                    <td>
-                                      {allergy.onset === "O"
-                                        ? allergy.onset_date
-                                        : allergy.onset === "A"
-                                        ? "Adulthood"
-                                        : allergy.onset === "C"
-                                        ? "Childhood"
-                                        : allergy.onset === "P"
-                                        ? "Pre Terms"
-                                        : allergy.onset === "T"
-                                        ? "Teenage"
-                                        : ""}
-                                    </td>
-                                    <td>
-                                      {allergy.severity === "MO"
-                                        ? "Moderate"
-                                        : allergy.severity === "MI"
-                                        ? "Mild"
-                                        : allergy.severity === "SE"
-                                        ? "Severe"
-                                        : ""}
-                                    </td>
-                                    <td>{allergy.comment}</td>
-                                  </tr>
-                                ))}
-                              </React.Fragment>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </li>
-                  <li>
-                    <i className="fas fa-diagnoses" />
-                    <section>
-                      <span className="top-nav-sec-hdg">Diagnosis</span>
-                      <div className="listofADDWrapper">
-                        <table className="listofADDTable">
-                          <thead>
-                            <tr>
-                              <th>
-                                <b>ICD Code</b>
-                              </th>
-                              <th>
-                                <b>Description</b>
-                              </th>
-                              <th>
-                                <b>Diagnosis Type</b>
-                              </th>
-                              <th>
-                                <b>Diagnosis Level</b>
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {_diagnosis.map((item, index) => (
-                              <tr key={index}>
-                                <td>{item.icd_code}</td>
-                                <td>{item.icd_description}</td>
-                                <td>
-                                  {item.diagnosis_type === "S"
-                                    ? "Secondary"
-                                    : "Primary"}
-                                </td>
-                                <td>
-                                  {item.final_daignosis === "Y"
-                                    ? "Final"
-                                    : "Not Final"}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </li>
-                  <li>
-                    <i className="fas fa-utensils" />
-                    <section>
-                      <span className="top-nav-sec-hdg">Diet</span>
-                      <div className="listofADDWrapper">
-                        <table className="listofADDTable">
-                          <tbody>
-                            {_diet.map((item, index) => {
-                              return (
-                                <tr key={index}>
-                                  <td>{item.hims_d_diet_note}</td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
-                      </div>
-                    </section>
-                  </li>
-                </ul>
-              </ul>
-            }
-          </div>
-          <div className="patientContentArea">
-            {this.state.pageDisplay === "overview" ? (
-              <Overview />
-            ) : this.state.pageDisplay === "subjective" ? (
-              <BasicSubjective
-                vat_applicable={this.vatApplicable()}
-                date_of_birth={_pat_profile.date_of_birth}
-                gender={_pat_profile.gender}
-              />
-            ) : this.state.pageDisplay === "exam_diagram" ? (
-              <Suspense
-                fallback={
-                  <div className="loader-container">
-                    <div className="algaeh-progress float shadow">
-                      <div className="progress__item">loading</div>
-                    </div>
-                  </div>
-                }
-              >
-                <ExamDiagramStandolone />
-              </Suspense>
-            ) : this.state.pageDisplay === "eye" ? (
-              <Eye />
-            ) : this.state.pageDisplay === "dental" ? (
-              <Dental
-                vat_applicable={this.vatApplicable()}
-                age_in_years={_pat_profile.age_in_years}
-              />
-            ) : this.state.pageDisplay === "summary" ? (
-              <Summary />
-            ) : this.state.pageDisplay === "mrd" ? (
-              <PatientMRD fromClinicalDesk={true} />
-            ) : null}
-          </div>
-          {this.renderUCAFReport()}
-          {this.renderDCAFReport()}
-          {this.renderOCAFReport()}
-          <SickLeave
-            openSickLeave={this.state.openSickLeave}
-            onClose={this.showSickLeave.bind(this)}
-          />
         </div>
+        <div className="patientTopNav box-shadow-normal">
+          {
+            <ul className="nav">
+              <li className="nav-item">
+                <span
+                  onClick={this.changeTabs}
+                  algaehsoap="subjective"
+                  className="nav-link active"
+                >
+                  Subjective
+                </span>
+              </li>
+
+              <li className="nav-item">
+                <span
+                  onClick={this.changeTabs}
+                  algaehsoap="exam_diagram"
+                  className="nav-link"
+                >
+                  Examination Diagram
+                </span>
+              </li>
+
+              {this.state.chart_type === "D" ? (
+                <li className="nav-item">
+                  <span
+                    onClick={this.changeTabs}
+                    algaehsoap="dental"
+                    className="nav-link"
+                  >
+                    Dental
+                  </span>
+                </li>
+              ) : this.state.chart_type === "O" ? (
+                <li className="nav-item">
+                  <span
+                    onClick={this.changeTabs}
+                    algaehsoap="eye"
+                    className="nav-link"
+                  >
+                    Optometry
+                  </span>
+                </li>
+              ) : null}
+
+              <li className="nav-item">
+                <span
+                  onClick={this.changeTabs}
+                  algaehsoap="summary"
+                  className="nav-link"
+                >
+                  Summary
+                </span>
+              </li>
+              <li className="nav-item">
+                <span
+                  onClick={this.OpenMrdHandler.bind(this)} //this.OpenMrdHandler.bind(this)}
+                  algaehsoap="mrd"
+                  className="nav-link"
+                >
+                  MRD
+                </span>
+              </li>
+              <ul className="float-right patient-quick-info">
+                <li>
+                  <i className={"fas fa-allergies" + this.state.alergyExist} />
+                  <section>
+                    <span className="top-nav-sec-hdg">Allergies</span>
+                    <div className="listofADDWrapper">
+                      <table className="listofADDTable">
+                        <thead>
+                          <tr>
+                            <th>
+                              <b>Allergy</b>
+                            </th>
+                            <th>
+                              <b>Onset From</b>
+                            </th>
+                            <th>
+                              <b>Severity</b>
+                            </th>
+                            <th>
+                              <b>Comments</b>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {_patient_allergies.map((data, index) => (
+                            <React.Fragment key={index}>
+                              {data.allergyList.map((allergy, aIndex) => (
+                                <tr
+                                  key={aIndex}
+                                  className={
+                                    allergy.allergy_inactive === "Y"
+                                      ? "red"
+                                      : ""
+                                  }
+                                >
+                                  <td>{allergy.allergy_name}</td>
+                                  <td>
+                                    {allergy.onset === "O"
+                                      ? allergy.onset_date
+                                      : allergy.onset === "A"
+                                      ? "Adulthood"
+                                      : allergy.onset === "C"
+                                      ? "Childhood"
+                                      : allergy.onset === "P"
+                                      ? "Pre Terms"
+                                      : allergy.onset === "T"
+                                      ? "Teenage"
+                                      : ""}
+                                  </td>
+                                  <td>
+                                    {allergy.severity === "MO"
+                                      ? "Moderate"
+                                      : allergy.severity === "MI"
+                                      ? "Mild"
+                                      : allergy.severity === "SE"
+                                      ? "Severe"
+                                      : ""}
+                                  </td>
+                                  <td>{allergy.comment}</td>
+                                </tr>
+                              ))}
+                            </React.Fragment>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </section>
+                </li>
+                <li>
+                  <i className="fas fa-diagnoses" />
+                  <section>
+                    <span className="top-nav-sec-hdg">Diagnosis</span>
+                    <div className="listofADDWrapper">
+                      <table className="listofADDTable">
+                        <thead>
+                          <tr>
+                            <th>
+                              <b>ICD Code</b>
+                            </th>
+                            <th>
+                              <b>Description</b>
+                            </th>
+                            <th>
+                              <b>Diagnosis Type</b>
+                            </th>
+                            <th>
+                              <b>Diagnosis Level</b>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {_diagnosis.map((item, index) => (
+                            <tr key={index}>
+                              <td>{item.icd_code}</td>
+                              <td>{item.icd_description}</td>
+                              <td>
+                                {item.diagnosis_type === "S"
+                                  ? "Secondary"
+                                  : "Primary"}
+                              </td>
+                              <td>
+                                {item.final_daignosis === "Y"
+                                  ? "Final"
+                                  : "Not Final"}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </section>
+                </li>
+                <li>
+                  <i className="fas fa-utensils" />
+                  <section>
+                    <span className="top-nav-sec-hdg">Diet</span>
+                    <div className="listofADDWrapper">
+                      <table className="listofADDTable">
+                        <tbody>
+                          {_diet.map((item, index) => {
+                            return (
+                              <tr key={index}>
+                                <td>{item.hims_d_diet_note}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </section>
+                </li>
+              </ul>
+            </ul>
+          }
+        </div>
+        <div className="patientContentArea">
+          {this.state.pageDisplay === "overview" ? (
+            <Overview />
+          ) : this.state.pageDisplay === "subjective" ? (
+            <BasicSubjective
+              vat_applicable={this.vatApplicable()}
+              date_of_birth={_pat_profile.date_of_birth}
+              gender={_pat_profile.gender}
+            />
+          ) : this.state.pageDisplay === "exam_diagram" ? (
+            <Suspense
+              fallback={
+                <div className="loader-container">
+                  <div className="algaeh-progress float shadow">
+                    <div className="progress__item">loading</div>
+                  </div>
+                </div>
+              }
+            >
+              <ExamDiagramStandolone />
+            </Suspense>
+          ) : this.state.pageDisplay === "eye" ? (
+            <Eye />
+          ) : this.state.pageDisplay === "dental" ? (
+            <Dental
+              vat_applicable={this.vatApplicable()}
+              age_in_years={_pat_profile.age_in_years}
+            />
+          ) : this.state.pageDisplay === "summary" ? (
+            <Summary />
+          ) : this.state.pageDisplay === "mrd" ? (
+            <PatientMRD fromClinicalDesk={true} />
+          ) : null}
+        </div>
+        {this.renderUCAFReport()}
+        {this.renderDCAFReport()}
+        {this.renderOCAFReport()}
+        <SickLeave
+          openSickLeave={this.state.openSickLeave}
+          onClose={this.showSickLeave.bind(this)}
+        />
+      </div>
     );
   }
 

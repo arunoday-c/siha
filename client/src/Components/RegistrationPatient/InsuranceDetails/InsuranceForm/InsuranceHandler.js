@@ -190,7 +190,7 @@ const InsuranceDetails = ($this, context, e) => {
     },
     searchName: "insurance",
     uri: "/gloabelSearch/get",
-    inputs: "netoff.hospital_id = " + $this.state.hims_d_hospital_id,
+    inputs: "netoff.hospital_id = " + $this.state.hospital_id,
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },

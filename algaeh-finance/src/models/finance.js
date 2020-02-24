@@ -494,10 +494,11 @@ export default {
           _mysql
             .executeQueryWithTransaction({
               query:
-                "INSERT INTO `finance_account_child` (child_name,ledger_code,head_id,created_from\
-            ,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?,?)",
+                "INSERT INTO `finance_account_child` (child_name, arabic_child_name, ledger_code,head_id,created_from\
+            ,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?,?,?)",
               values: [
                 input.account_name,
+                input.arabic_account_name,
                 input.ledger_code,
                 input.finance_account_head_id,
                 "U",
@@ -635,13 +636,14 @@ export default {
           _mysql
             .executeQuery({
               query:
-                "INSERT INTO `finance_account_head` (account_code,account_name,account_parent,\
+                "INSERT INTO `finance_account_head` (account_code,account_name, arabic_account_name, account_parent,\
                    group_type,account_level,created_from,sort_order,parent_acc_id,hierarchy_path,root_id\
                 ,created_date, created_by, updated_date, updated_by)\
-                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 account_code,
                 input.account_name,
+                input.arabic_account_name,
                 account_parent,
                 group_type,
                 account_level,
@@ -726,7 +728,7 @@ export default {
 
     _mysql
       .executeQuery({
-        query: `select account,child_id,M.head_id,H.account_name,C.child_name from \
+        query: `select account,child_id,M.head_id,H.account_name,C.child_name, C.arabic_child_name from \
           finance_accounts_maping M left join finance_account_head H\
           on M.head_id=H.finance_account_head_id left join finance_account_child C \
           on M.child_id=C.finance_account_child_id  ${str};`,
@@ -1651,13 +1653,13 @@ export default {
                               headRes[0]["amount"]
                             )} where finance_voucher_header_id=${
                               BalanceInvoice[0]["finance_voucher_header_id"]
-                            };`;
+                              };`;
                           } else {
                             updateQry = `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
                               headRes[0]["amount"]
                             )} where finance_voucher_header_id=${
                               BalanceInvoice[0]["finance_voucher_header_id"]
-                            };`;
+                              };`;
                           }
                         }
 
@@ -2224,7 +2226,7 @@ export default {
             union                  
             select H.finance_account_head_id,H.account_code,H.account_name,H.account_parent,H.account_level,
             H.created_from as created_status ,H.sort_order,H.parent_acc_id,H.root_id,
-            C.finance_account_child_id,if (C.ledger_code is null,C.child_name, concat(C.child_name,' (',C.ledger_code,')'))as child_name,C.head_id,C.created_from as child_created_from
+            C.finance_account_child_id,C.arabic_child_name,if (C.ledger_code is null,C.child_name, concat(C.child_name,' (',C.ledger_code,')'))as child_name,C.head_id,C.created_from as child_created_from
             from finance_account_head H left join
             finance_account_child C on C.head_id=H.finance_account_head_id
             inner join cte on H.parent_acc_id = cte.finance_account_head_id   ${unionStr}
@@ -2843,7 +2845,7 @@ function createHierarchy(
     // utilities.logger().log("children:", children);
 
     // function to recursively build the tree
-    let findChildren = function(parent) {
+    let findChildren = function (parent) {
       if (children[parent.finance_account_head_id]) {
         const tempchilds = children[parent.finance_account_head_id];
 
@@ -2917,11 +2919,11 @@ function calcAmount(account_heads, levels, decimal_places) {
 
           item["cred_minus_deb"] = parseFloat(
             parseFloat(item["total_credit_amount"]) -
-              parseFloat(item["total_debit_amount"])
+            parseFloat(item["total_debit_amount"])
           ).toFixed(decimal_places);
           item["deb_minus_cred"] = parseFloat(
             parseFloat(item["total_debit_amount"]) -
-              parseFloat(item["total_credit_amount"])
+            parseFloat(item["total_credit_amount"])
           ).toFixed(decimal_places);
 
           return item;
@@ -3006,7 +3008,7 @@ function createHierarchyForDropdown(arry) {
     }
 
     // function to recursively build the tree
-    let findChildren = function(parent) {
+    let findChildren = function (parent) {
       if (children[parent.finance_account_head_id]) {
         const tempchilds = children[parent.finance_account_head_id];
         parent.children = tempchilds;
@@ -3042,7 +3044,8 @@ function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
 
       _mysql
         .executeQuery({
-          query: `select finance_account_head_id,account_code,account_name,C.ledger_code,account_parent,account_level,
+          query: `select finance_account_head_id,account_code,account_name, arabic_account_name, C.arabic_child_name,\
+          C.ledger_code,account_parent,account_level,
           H.created_from as created_status ,sort_order,parent_acc_id,root_id,
           finance_account_child_id,child_name,head_id,C.created_from as child_created_from
           from finance_account_head H left join 

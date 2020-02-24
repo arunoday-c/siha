@@ -48,6 +48,7 @@ export default memo(function(props) {
   ) : (
     <>
       <AlgaehTable
+        className="treeGridPL"
         columns={columns}
         data={incomeExpenceData}
         hasFooter={true}

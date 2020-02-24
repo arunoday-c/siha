@@ -26,9 +26,9 @@ import AddAdvanceModal from "../Advance/AdvanceModal";
 import AdvanceRefundListModal from "../AdvanceRefundList/AdvanceRefundListModal";
 import {
   imageToByteArray,
-  AlgaehValidation
+  AlgaehValidation,
+  setGlobal
 } from "../../utils/GlobalFunctions";
-import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
 import AlgaehReport from "../Wrapper/printReports";
 import AlgaehLoader from "../Wrapper/fullPageLoader";

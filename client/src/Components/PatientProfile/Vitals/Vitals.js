@@ -45,6 +45,9 @@ class Vitals extends Component {
       recorded_time: moment().format(config.formators.time)
     };
     this.handleClose = this.handleClose.bind(this);
+  }
+
+  componentDidMount() {
     if (
       this.props.department_vitals === undefined ||
       this.props.department_vitals.length === 0
@@ -54,9 +57,7 @@ class Vitals extends Component {
       this.props.patient_vitals === undefined ||
       this.props.patient_vitals.length === 0
     ) {
-      // if (Window.global !== undefined) {
       getVitalHistory(this);
-      //}
     }
   }
 
@@ -140,7 +141,6 @@ class Vitals extends Component {
   addPatientVitals(e) {
     e.preventDefault();
 
-    const that = this;
     AlgaehValidation({
       querySelector: "id='vitals_recording'",
       onSuccess: () => {
