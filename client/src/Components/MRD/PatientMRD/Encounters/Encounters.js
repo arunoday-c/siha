@@ -45,6 +45,21 @@ class Encounters extends Component {
     });
   }
 
+  componentDidMount() {
+    this.getPatientEncounterDetails();
+  }
+
+  componentWillUnmount() {
+    delete Window.global["mrd_patient"];
+    console.log(Window.global);
+  }
+
+  // componentDidUpdate(prevProps) {
+  //   if (this.props.fromClinicalDesk !== prevProps.fromClinicalDesk) {
+  //     this.getPatientEncounterDetails();
+  //   }
+  // }
+
   getEncounterDetails(encounter_id) {
     this.setState(
       {
@@ -257,12 +272,7 @@ class Encounters extends Component {
     });
   }
 
-  componentDidMount() {
-    this.getPatientEncounterDetails();
-  }
-
   generateReport(row, report_type) {
-    
     let tab_name = report_type === "RAD" ? "Radiology Report" : "Lab Report";
     algaehApiCall({
       uri: "/report",

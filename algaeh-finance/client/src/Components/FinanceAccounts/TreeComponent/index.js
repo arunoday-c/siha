@@ -1,4 +1,5 @@
 import React, { useState, useEffect, memo } from "react";
+import "../alice.scss";
 import SortableTree, {
   getNodeAtPath,
   addNodeUnderParent,
@@ -658,16 +659,20 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                         {loadingGridData === true ? (
                           <p>Please wait loading</p>
                         ) : (
-                            <AlgaehTable
-                              columns={[
-                                { fieldName: "child_name", lable: "Ledger Name" },
-                                {
-                                  fieldName: "closing_balance",
-                                  lable: "Closing Balance"
-                                }
-                              ]}
-                              data={gridData}
-                            />
+                            <div className="col-12">
+                              {" "}
+                              <AlgaehTable
+                                className="accountTable"
+                                columns={[
+                                  { fieldName: "child_name", lable: "Ledger Name" },
+                                  {
+                                    fieldName: "closing_balance",
+                                    lable: "Closing Balance"
+                                  }
+                                ]}
+                                data={gridData}
+                              />
+                            </div>
                           )}
                       </div>
                     )}

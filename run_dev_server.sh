@@ -25,13 +25,19 @@ startServer () {
 #   echo "done"
 # }
 
+# installMysql() {
+#   echo "installing"
+#   cp --parents -v $1/build/app.js ./build
+#   echo "done"
+# }
+
   # Core Modules #
   startServer "./algaeh-core" "core"
   startServer "./client" "client"
   startServer "./MasterSettings" "master_settings_server" 
-  startServer "./DocumentManagement" "document_server" 
+  # startServer "./DocumentManagement" "document_server" 
   startServer "./AlgaehReporting" "report_server"
-  startServer "./Sockets" "sockets"
+  # startServer "./Sockets" "sockets"
 
   # HRMS MOdules #
   startServer "./HrManagement" "hr_server"
@@ -40,7 +46,7 @@ startServer () {
    startServer "./FrontDesk" "front_desk_server" 
    startServer "./Billing" "billing_server" 
    startServer "./MRD" "mrd_server" 
-   startServer "./Insurance" "insurance_server" 
+  #  startServer "./Insurance" "insurance_server" 
 
   # Lab MOdules
    startServer "./Laboratory" "lab_server" 
@@ -49,15 +55,15 @@ startServer () {
    startServer "./Radiology" "radiology_server" 
 
   # Pharmacy MOdules # 
-   startServer "./Pharmacy" "pharmacy_server" 
-   startServer "./Procurement" "procurement_server"
+  #  startServer "./Pharmacy" "pharmacy_server" 
+  #  startServer "./Procurement" "procurement_server"
 
   # Inventory MOdules # 
-   startServer "./Inventory" "inventory_server" 
-   startServer "./Sales" "sales"  
+  #  startServer "./Inventory" "inventory_server" 
+  #  startServer "./Sales" "sales"  
 
   # Finance MOdules # 
-   startServer "./algaeh-finance" "finance"  
+  #  startServer "./algaeh-finance" "finance"  
 
 
 
