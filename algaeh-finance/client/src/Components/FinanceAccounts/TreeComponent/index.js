@@ -49,6 +49,9 @@ function TreeComponent({ assetCode, title, inDrawer }) {
   const [layout, setLayout] = useState("tree");
   const [gridData, setGridData] = useState([]);
   const [loadingGridData, setLoadingGridData] = useState(false);
+
+  useEffect(loadAccount, [assetCode]);
+
   const isExpOrInc = assetCode === 4 || assetCode === 5;
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
@@ -239,7 +242,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                   setEditorRecord({});
                 } else {
                   setEditorRecord(rowInfo);
-                  if (!isExpOrInc && node.leafnode === "Y") {
+                  if (node.leafnode === "Y") {
+                    debugger;
                     setShowPopup(true);
                     setNewAccount(false);
                   }
@@ -249,8 +253,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
               {JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
                 <i className="fas fa-times" />
               ) : (
-                  <i className="fas fa-pen" />
-                )}
+                <i className="fas fa-pen" />
+              )}
             </li>
             <li
               label="print"
@@ -305,7 +309,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
       title: (
         <>
           <span>
-            {isExpOrInc || node.leafnode !== "Y" ? (
+            {/* {isExpOrInc || node.leafnode !== "Y" ? (
               JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
                 <Input
                   suffix={
@@ -348,14 +352,27 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                       }}
                     />
                   }
-                  defaultValue={node.title + "/" + node.arabic_child_name + " (" + node.ledger_code + ")"}
+                  defaultValue={
+                    node.title +
+                    "/" +
+                    node.arabic_child_name +
+                    " (" +
+                    node.ledger_code +
+                    ")"
+                  }
                 />
               ) : (
-                  node.title + "/" + node.arabic_child_name
-                )
+                node.title + "/" + node.arabic_child_name
+              )
             ) : (
-                node.title + "/" + node.arabic_child_name + " (" + node.ledger_code + ")"
-              )}
+              node.title +
+              "/" +
+              node.arabic_child_name +
+              " (" +
+              node.ledger_code +
+              ")"
+            )} */}
+            {`${node.title} / ${node.arabic_account_name} (${node.ledger_code})`}
             {node.leafnode === "Y" ? null : (
               <>/{node.children === undefined ? 0 : node.children.length}</>
             )}
@@ -380,8 +397,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
         node.created_status === "S"
           ? "systemGen"
           : node.leafnode === "Y"
-            ? ""
-            : "accGroup"
+          ? ""
+          : "accGroup"
     };
   };
 
@@ -462,7 +479,6 @@ function TreeComponent({ assetCode, title, inDrawer }) {
     }
   }
 
-  useEffect(loadAccount, [assetCode]);
   function expandAllNodes() {
     setTreeData(dtl => {
       return toggleExpandedForAll({
@@ -502,6 +518,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
       });
     }
   }
+
   return (
     <div className="container-fluid assetsModuleScreen">
       {showPopup ? (
@@ -512,6 +529,9 @@ function TreeComponent({ assetCode, title, inDrawer }) {
           onClose={editorRecord.node ? onEditClose : onClose}
           accountName={editorRecord.node ? editorRecord.node.title : ""}
           ledgerCode={editorRecord.node ? editorRecord.node.ledger_code : ""}
+          arabicName={
+            editorRecord.node ? editorRecord.node.arabic_account_name : ""
+          }
           propOnOK={editorRecord.node ? editChild : null}
           okText={editorRecord.node ? "Change" : "Add"}
           accountType={
@@ -558,8 +578,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                   {layout === "tree" ? (
                     <i className="fas fa-tree"></i>
                   ) : (
-                      <i className="fas fa-th-large"></i>
-                    )}
+                    <i className="fas fa-th-large"></i>
+                  )}
                 </button>
                 <button
                   className="btn btn-default btn-circle active"
@@ -602,7 +622,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                     const values =
                       searchFocusIndex !== undefined
                         ? (searchFoundCount + searchFocusIndex - 1) %
-                        searchFoundCount
+                          searchFoundCount
                         : searchFoundCount - 1;
                     setSearchFocusIndex(values);
                   }}
@@ -655,27 +675,27 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                       />
                     </div>
                   ) : (
-                      <div className="row">
-                        {loadingGridData === true ? (
-                          <p>Please wait loading</p>
-                        ) : (
-                            <div className="col-12">
-                              {" "}
-                              <AlgaehTable
-                                className="accountTable"
-                                columns={[
-                                  { fieldName: "child_name", lable: "Ledger Name" },
-                                  {
-                                    fieldName: "closing_balance",
-                                    lable: "Closing Balance"
-                                  }
-                                ]}
-                                data={gridData}
-                              />
-                            </div>
-                          )}
-                      </div>
-                    )}
+                    <div className="row">
+                      {loadingGridData === true ? (
+                        <p>Please wait loading</p>
+                      ) : (
+                        <div className="col-12">
+                          {" "}
+                          <AlgaehTable
+                            className="accountTable"
+                            columns={[
+                              { fieldName: "child_name", lable: "Ledger Name" },
+                              {
+                                fieldName: "closing_balance",
+                                lable: "Closing Balance"
+                              }
+                            ]}
+                            data={gridData}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
