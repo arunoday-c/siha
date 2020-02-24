@@ -4,23 +4,23 @@
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
   // const input = options.args;
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
+      console.log("options", options)
       const header = options.result[0];
       let otherObj = [];
-      // const newMeasurement = options.convertMilimetersToPixel(input.others);
 
       const quantity = parseFloat(header.quantity);
       for (let i = 0; i < quantity; i++) {
         otherObj.push({
           barcode: header.barcode,
-          sales_price: header.sales_price
-          // width: newMeasurement.width,
-          // height: newMeasurement.height
+          sales_price: header.sales_price,
+          item_description: header.item_description,
+          print_barcode: header.barcode,
         });
-        // utilities.logger().log("loop: ", otherObj);
+
       }
-      // utilities.logger().log("otherObj: ", otherObj);
+
       const result = {
         header: otherObj
       };

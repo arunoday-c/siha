@@ -385,7 +385,7 @@ body {
 .barcodeLine img {
   border: 1px dashed #ccc;
   width:100%;
-  height:65px; 
+  height:37px; 
    margin:0;
   padding: 0;
 }
@@ -492,7 +492,7 @@ body {
   padding: 0;
 }
 .tableForPharmacyDiv {
-  padding: 5px 0 0;
+  padding: 15px 0 0;
 }
 .tableForPharmacy {
   width: 100%;

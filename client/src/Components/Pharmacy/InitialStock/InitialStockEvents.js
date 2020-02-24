@@ -401,7 +401,7 @@ const printBarcode = ($this, row) => {
       report: {
         others: {
           width: "50mm",
-          height: "25mm",
+          height: "20mm",
           showHeaderFooter: false
         },
         reportName: "PharmacyBarcode",
