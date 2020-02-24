@@ -26,6 +26,7 @@ export default function AddNewAccount({
   const [lodingAddtoList, setLoadingAddtoList] = useState(false);
   // const [account_code, setAccountCode] = useState("");
   const [account_name, setAccountName] = useState("");
+  const [arabic_account_name, setArabicAccountName] = useState("");
   const [ledger_code, setLedgerCode] = useState("");
   const [account_type, setAccountType] = useState("G");
   const [opening_balance, setOpeningBalance] = useState(0);
@@ -87,7 +88,7 @@ export default function AddNewAccount({
   }
 
   function onOK() {
-    if (ledger_code === "") {
+    if (account_type === "C" && ledger_code === "") {
       AlgaehMessagePop({
         type: "warning",
         display: "Enter Account Code."
@@ -124,6 +125,7 @@ export default function AddNewAccount({
         {
           finance_account_head_id: finance_account_head_id,
           account_name: account_name,
+          arabic_account_name: arabic_account_name,
           account_code: account_code,
           chart_of_account: parent_acc_id,
           leaf_node: account_type === "G" ? "N" : "Y",
@@ -253,6 +255,28 @@ export default function AddNewAccount({
                 id: "name",
                 onChange: e => {
                   setAccountName(e.target.value);
+                },
+                placeholder: " Enter Account Name",
+                autoComplete: false,
+                disabled: isNewAccount === true ? false : selectedNode.node !== undefined && selectedNode.node.created_status === "S" ? true : false
+              }}
+            />
+
+            <AlgaehFormGroup
+              div={{
+                className: "col form-group"
+              }}
+              label={{
+                forceLabel: "Account Name In Arabic",
+                isImp: true
+              }}
+              textBox={{
+                type: "text",
+                value: arabic_account_name,
+                className: "form-control",
+                id: "name",
+                onChange: e => {
+                  setArabicAccountName(e.target.value);
                 },
                 placeholder: " Enter Account Name",
                 autoComplete: false,

@@ -248,8 +248,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
               {JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
                 <i className="fas fa-times" />
               ) : (
-                <i className="fas fa-pen" />
-              )}
+                  <i className="fas fa-pen" />
+                )}
             </li>
             <li
               label="print"
@@ -347,14 +347,14 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                       }}
                     />
                   }
-                  defaultValue={node.title + " (" + node.ledger_code + ")"}
+                  defaultValue={node.title + "/" + node.arabic_child_name + " (" + node.ledger_code + ")"}
                 />
               ) : (
-                node.title
-              )
+                  node.title + "/" + node.arabic_child_name
+                )
             ) : (
-              node.title + " (" + node.ledger_code + ")"
-            )}
+                node.title + "/" + node.arabic_child_name + " (" + node.ledger_code + ")"
+              )}
             {node.leafnode === "Y" ? null : (
               <>/{node.children === undefined ? 0 : node.children.length}</>
             )}
@@ -379,8 +379,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
         node.created_status === "S"
           ? "systemGen"
           : node.leafnode === "Y"
-          ? ""
-          : "accGroup"
+            ? ""
+            : "accGroup"
     };
   };
 
@@ -557,8 +557,8 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                   {layout === "tree" ? (
                     <i className="fas fa-tree"></i>
                   ) : (
-                    <i className="fas fa-th-large"></i>
-                  )}
+                      <i className="fas fa-th-large"></i>
+                    )}
                 </button>
                 <button
                   className="btn btn-default btn-circle active"
@@ -601,7 +601,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                     const values =
                       searchFocusIndex !== undefined
                         ? (searchFoundCount + searchFocusIndex - 1) %
-                          searchFoundCount
+                        searchFoundCount
                         : searchFoundCount - 1;
                     setSearchFocusIndex(values);
                   }}
@@ -654,23 +654,23 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                       />
                     </div>
                   ) : (
-                    <div className="row">
-                      {loadingGridData === true ? (
-                        <p>Please wait loading</p>
-                      ) : (
-                        <AlgaehTable
-                          columns={[
-                            { fieldName: "child_name", lable: "Ledger Name" },
-                            {
-                              fieldName: "closing_balance",
-                              lable: "Closing Balance"
-                            }
-                          ]}
-                          data={gridData}
-                        />
-                      )}
-                    </div>
-                  )}
+                      <div className="row">
+                        {loadingGridData === true ? (
+                          <p>Please wait loading</p>
+                        ) : (
+                            <AlgaehTable
+                              columns={[
+                                { fieldName: "child_name", lable: "Ledger Name" },
+                                {
+                                  fieldName: "closing_balance",
+                                  lable: "Closing Balance"
+                                }
+                              ]}
+                              data={gridData}
+                            />
+                          )}
+                      </div>
+                    )}
                 </div>
               </div>
             </div>
