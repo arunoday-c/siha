@@ -5827,7 +5827,7 @@ export default {
                 E.record_status='A' and E.employee_status<>'I' and (E.exit_date is null or E.exit_date >date(?) )
                 ${strQry}  ; `,
                     values: [from_date, to_date, input.branch_id, from_date],
-                    printQuery: false
+                    printQuery: true
                   })
                   .then(prevResult => {
                     _mysql.releaseConnection();

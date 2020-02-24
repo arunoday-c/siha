@@ -813,7 +813,7 @@ export default {
         left join algaeh_d_app_user U on H.entered_by=U.algaeh_d_app_user_id
         where ${strQry}; `,
 
-        printQuery: true
+        printQuery: false
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -1124,7 +1124,7 @@ export default {
                       select voucher_type,document_number,finance_day_end_header_id,amount,transaction_date,\
                       narration,from_screen,'D' from finance_day_end_header where finance_day_end_header_id in(?) ",
               values: [validDayEndHeaderIds],
-              printQuery: true
+              printQuery: false
             })
             .then(headRes => {
               const insertColumns = [
@@ -1221,7 +1221,7 @@ export default {
           where day_end_header_id in (?)
           group by day_end_header_id) as A where equal='Y';`,
         values: [input.finance_day_end_header_ids],
-        printQuery: true
+        printQuery: false
       })
       .then(result => {
         if (result.length > 0) {
@@ -1243,7 +1243,7 @@ export default {
               left join finance_account_head H  on D.head_id=H.finance_account_head_id\
               where  D.day_end_header_id in (?)",
               values: [validDayEndHeaderIds],
-              printQuery: true
+              printQuery: false
             })
             .then(details => {
               details.forEach(m => {
@@ -1309,7 +1309,7 @@ export default {
                         invoice_no,ref_no,cheque_date,cheque_amount\
                         from finance_day_end_header where finance_day_end_header_id in(?) ",
                   values: [validDayEndHeaderIds],
-                  printQuery: true
+                  printQuery: false
                 })
                 .then(headRes => {
                   const insertColumns = [
@@ -1411,7 +1411,7 @@ export default {
               where day_end_header_id =?
               group by day_end_header_id) as A where equal='Y';`,
         values: [input.finance_day_end_header_id],
-        printQuery: true
+        printQuery: false
       })
       .then(headRes => {
         if (headRes.length > 0) {
@@ -1434,7 +1434,7 @@ export default {
                   inner join finance_account_child C on D.child_id=C.finance_account_child_id\
                   where  D.day_end_header_id =?",
               values: [input.finance_day_end_header_id],
-              printQuery: true
+              printQuery: false
             })
             .then(result => {
               const child_ids = [];
@@ -1653,13 +1653,13 @@ export default {
                               headRes[0]["amount"]
                             )} where finance_voucher_header_id=${
                               BalanceInvoice[0]["finance_voucher_header_id"]
-                              };`;
+                            };`;
                           } else {
                             updateQry = `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
                               headRes[0]["amount"]
                             )} where finance_voucher_header_id=${
                               BalanceInvoice[0]["finance_voucher_header_id"]
-                              };`;
+                            };`;
                           }
                         }
 
@@ -1683,7 +1683,7 @@ export default {
                             invoice_no,ref_no,cheque_date,cheque_amount,due_date\
                             from finance_day_end_header where finance_day_end_header_id=? ",
                       values: [input.finance_day_end_header_id],
-                      printQuery: true
+                      printQuery: false
                     })
                     .then(headRes => {
                       const insertColumns = [
@@ -2233,7 +2233,7 @@ export default {
             )
             select * from cte order by account_level,sort_order;`,
 
-          printQuery: true,
+          printQuery: false,
           values: []
         })
         .then(result => {
@@ -2440,7 +2440,7 @@ export default {
             input.finance_account_child_id,
             input.finance_account_child_id
           ],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           let voucherStr = "";
@@ -2524,7 +2524,7 @@ export default {
                   new Date(),
                   input.finance_account_child_id
                 ],
-                printQuery: true
+                printQuery: false
               })
               .then(result2 => {
                 _mysql.releaseConnection();
@@ -2539,7 +2539,7 @@ export default {
             _mysql
               .executeQuery({
                 query: voucherStr,
-                printQuery: true
+                printQuery: false
               })
               .then(result2 => {
                 _mysql.releaseConnection();
@@ -2569,7 +2569,7 @@ export default {
           query:
             "select created_from from finance_account_head where finance_account_head_id=?;",
           values: [input.finance_account_head_id],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           if (result[0]["created_from"] == "U") {
@@ -2681,7 +2681,7 @@ export default {
           (select finance_account_head_id from finance_account_head where root_id=?))
           group by C.finance_account_child_id with rollup;`,
           values: [input.root_id],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -2769,6 +2769,7 @@ function createHierarchy(
           ledger_code: item.ledger_code,
           title: item.child_name,
           label: item.child_name,
+          arabic_child_name: item.arabic_child_name,
           head_id: item["head_id"],
           disabled: false,
           leafnode: "Y",
@@ -2845,7 +2846,7 @@ function createHierarchy(
     // utilities.logger().log("children:", children);
 
     // function to recursively build the tree
-    let findChildren = function (parent) {
+    let findChildren = function(parent) {
       if (children[parent.finance_account_head_id]) {
         const tempchilds = children[parent.finance_account_head_id];
 
@@ -2919,11 +2920,11 @@ function calcAmount(account_heads, levels, decimal_places) {
 
           item["cred_minus_deb"] = parseFloat(
             parseFloat(item["total_credit_amount"]) -
-            parseFloat(item["total_debit_amount"])
+              parseFloat(item["total_debit_amount"])
           ).toFixed(decimal_places);
           item["deb_minus_cred"] = parseFloat(
             parseFloat(item["total_debit_amount"]) -
-            parseFloat(item["total_credit_amount"])
+              parseFloat(item["total_credit_amount"])
           ).toFixed(decimal_places);
 
           return item;
@@ -3008,7 +3009,7 @@ function createHierarchyForDropdown(arry) {
     }
 
     // function to recursively build the tree
-    let findChildren = function (parent) {
+    let findChildren = function(parent) {
       if (children[parent.finance_account_head_id]) {
         const tempchilds = children[parent.finance_account_head_id];
         parent.children = tempchilds;
@@ -3051,7 +3052,7 @@ function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
           from finance_account_head H left join 
           finance_account_child C on C.head_id=H.finance_account_head_id
            where root_id=? order by account_level,sort_order;           
-           select C.head_id,finance_account_child_id as child_id,child_name,root_id
+           select C.head_id,finance_account_child_id as child_id,child_name,C.arabic_child_name,root_id
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
           ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount, 
           ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
@@ -3076,7 +3077,7 @@ function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
             finance_account_head_id,
             finance_account_head_id
           ],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
