@@ -8467,7 +8467,7 @@ function processBulkAtt_Normal(data) {
                 }
               } else if (
                 AttenResult[i]["status"] == "WO" &&
-                AttenResult[i]["status"] > 0
+                AttenResult[i]["worked_hours"] > 0
               ) {
                 let worked_minutes =
                   parseInt(AttenResult[i]["hours"] * 60) +
@@ -8481,7 +8481,7 @@ function processBulkAtt_Normal(data) {
                   parseInt(Math.abs(worked_minutes)) % parseInt(60);
               } else if (
                 AttenResult[i]["status"] == "HO" &&
-                AttenResult[i]["status"] > 0
+                AttenResult[i]["worked_hours"] > 0
               ) {
                 let worked_minutes =
                   parseInt(AttenResult[i]["hours"] * 60) +
@@ -9869,10 +9869,10 @@ function processBulkAtt_with_cutoff(data) {
                    "DA.employee_id"
                  )}    group by employee_id;
                   
-                 select employee_id,sum(pending_unpaid_leave) as pending_unpaid_leave,COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hours ,
-                 COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_work_hours ,   
-                 COALESCE(sum(ot_weekoff_hours),0)+ COALESCE(concat(floor(sum(ot_weekoff_minutes)/60)  ,'.',sum(ot_weekoff_minutes)%60),0) as ot_weekoff_hours,
-                 COALESCE(sum(ot_holiday_hours),0)+ COALESCE(concat(floor(sum(ot_holiday_minutes)/60)  ,'.',sum(ot_holiday_minutes)%60), 0) as ot_holiday_hours
+                 select employee_id,sum(pending_unpaid_leave) as pending_unpaid_leave,COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as prev_month_shortage_hr ,
+                 COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as prev_month_ot_hr ,   
+                 COALESCE(sum(ot_weekoff_hours),0)+ COALESCE(concat(floor(sum(ot_weekoff_minutes)/60)  ,'.',sum(ot_weekoff_minutes)%60),0) as prev_month_week_off_ot,
+                 COALESCE(sum(ot_holiday_hours),0)+ COALESCE(concat(floor(sum(ot_holiday_minutes)/60)  ,'.',sum(ot_holiday_minutes)%60), 0) as prev_month_holiday_ot
                  from hims_f_daily_attendance DA  inner join hims_d_employee E on DA.employee_id=E.hims_d_employee_id  ${deptStr}
                  where  year=? and month=? and DA.hospital_id=?  and attendance_date between date(?) and date(?) ${strQry} group by employee_id; 
                   
@@ -9891,7 +9891,7 @@ function processBulkAtt_with_cutoff(data) {
                       prev_cutoff_next_day,
                       prev_month_end
                     ],
-                    printQuery: false
+                    printQuery: true
                   })
                   .then(results => {
                     const DilayResult = results[0];
