@@ -14,6 +14,7 @@ import writtenForm from "written-number";
 import cheerio from "cheerio";
 import Excel from "exceljs/modern.browser";
 import utilitites from "algaeh-utilities/utilities";
+import { convertMilimetersToPixel } from "algaeh-utilities/reportConvetions";
 // const chromePath =
 // chrome.default.chromePuppeteer != null ? chrome.default.chromePuppeteer : {};
 
@@ -400,7 +401,7 @@ export default {
                         : []
                     });
                     const page = await browser.newPage();
-                    const _pdfTemplating = {};
+                    let _pdfTemplating = {};
                     if (
                       _data.report_header_file_name != null &&
                       _data.report_header_file_name != ""
@@ -473,17 +474,32 @@ export default {
                         ? { landscape: true }
                         : {};
 
-                    const pageSize =
+                    let pageSize =
                       _inputParam.pageSize == null
                         ? { format: "A4" }
                         : { format: _inputParam.pageSize };
+                    let displayHeaderFooter = true;
+                    const { others } = _inputParam;
+                    if (others !== undefined) {
+                      const existsSize = Object.keys(others).find(
+                        f => f === "width" || f === "height"
+                      );
+
+                      if (existsSize !== undefined) {
+                        pageSize = {};
+                        _pdfTemplating = {};
+                      }
+                      displayHeaderFooter =
+                        others.showHeaderFooter === false ? false : true;
+                    }
                     await page.pdf({
                       path: _outPath,
                       ...pageSize,
                       ...pageOrentation,
                       printBackground: true,
-                      displayHeaderFooter: true,
-                      ..._pdfTemplating
+                      displayHeaderFooter: displayHeaderFooter,
+                      ..._pdfTemplating,
+                      ..._inputParam.others
                       // headerTemplate:
                       //   "<h1>H1 tag</h1><h2>H2 tag</h2><hr style='border-bottom: 2px solid #8c8b8b;' />"
                     });
@@ -570,6 +586,7 @@ export default {
                       mainData: data[1],
                       result: result,
                       writtenForm: writtenForm,
+                      convertMilimetersToPixel: convertMilimetersToPixel,
                       utilitites: () => {
                         return new utilitites();
                       },
