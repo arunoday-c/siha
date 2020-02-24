@@ -450,7 +450,7 @@ export default () => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          result: req.records
+          message: req.records.message
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
