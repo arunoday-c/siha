@@ -273,7 +273,41 @@ class Encounters extends Component {
   }
 
   generateReport(row, report_type) {
-    let tab_name = report_type === "RAD" ? "Radiology Report" : "Lab Report";
+    debugger;
+    let inputObj = {};
+    if (report_type === "RAD") {
+      inputObj = {
+        tab_name: "Radiology Report",
+        reportName: "radiologyReport",
+        data: [
+          {
+            name: "hims_f_rad_order_id",
+            value: row.hims_f_rad_order_id
+          }
+        ]
+      };
+    } else {
+      inputObj = {
+        tab_name: "Lab Report",
+        reportName: "hematologyTestReport",
+        data: [
+          {
+            name: "hims_d_patient_id",
+            value: row.patient_id
+          },
+          {
+            name: "visit_id",
+            value: row.visit_id
+          },
+          {
+            name: "hims_f_lab_order_id",
+            value: row.hims_f_lab_order_id
+          }
+        ]
+      };
+    }
+    // let tab_name = report_type === "RAD" ? "Radiology Report" : "Lab Report";
+    let tab_name = inputObj.tab_name;
     algaehApiCall({
       uri: "/report",
       method: "GET",
@@ -284,26 +318,8 @@ class Encounters extends Component {
       others: { responseType: "blob" },
       data: {
         report: {
-          reportName:
-            report_type === "RAD" ? "radiologyReport" : "haematologyReport",
-          reportParams:
-            report_type === "RAD"
-              ? [
-                  {
-                    name: "hims_f_rad_order_id",
-                    value: row.hims_f_rad_order_id
-                  }
-                ]
-              : [
-                  {
-                    name: "hims_d_patient_id",
-                    value: row.patient_id
-                  },
-                  {
-                    name: "visit_id",
-                    value: row.visit_id
-                  }
-                ],
+          reportName: inputObj.reportName,
+          reportParams: inputObj.data,
           outputFileType: "PDF"
         }
       },
