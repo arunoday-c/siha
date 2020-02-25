@@ -340,50 +340,38 @@ const onconfirm = $this => {
 };
 
 const onReRun = $this => {
-  const { test_analytes, run_type } = $this.state;
-  let currentAnalytes = [...test_analytes];
-  let success = true;
+  swal({
+    title: "Are you sure want to Re-Run?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
+  }).then(willProceed => {
+    if (willProceed.value) {
+      const { test_analytes, run_type } = $this.state;
+      let currentAnalytes = [...test_analytes];
 
-  let runtype = run_type === "N" ? 1 : parseInt(run_type) + 1;
-  if (runtype < 4) {
-    for (let k = 0; k < currentAnalytes.length; k++) {
-      currentAnalytes[k][`run${runtype}`] = currentAnalytes[k].result;
-      //Noor
-      // if (test_analytes[k].run1 === null) {
-      //   test_analytes[k].run1 = test_analytes[k].result;
-      // } else if (test_analytes[k].run2 === null) {
-      //   test_analytes[k].run2 = test_analytes[k].result;
-      // } else if (test_analytes[k].run3 === null) {
-      //   test_analytes[k].run3 = test_analytes[k].result;
-      // }
+      let runtype = run_type === "N" ? 1 : parseInt(run_type) + 1;
 
-      //end noor
-      currentAnalytes[k].result = "";
-      currentAnalytes[k].confirm = "N";
-      currentAnalytes[k].validate = "N";
-      currentAnalytes[k].status = "N";
-      currentAnalytes[k].isre_run = true;
+      for (let k = 0; k < currentAnalytes.length; k++) {
+        currentAnalytes[k][`run${runtype}`] = currentAnalytes[k].result;
 
-      currentAnalytes[k].comments = $this.state.comments;
+        currentAnalytes[k].result = "";
+        currentAnalytes[k].confirm = "N";
+        currentAnalytes[k].validate = "N";
+        currentAnalytes[k].status = "N";
+        currentAnalytes[k].isre_run = true;
+
+        currentAnalytes[k].comments = $this.state.comments;
+      }
+
+      currentAnalytes.push({ runtype });
+
+      UpdateLabOrder($this, currentAnalytes, "N");
     }
-    currentAnalytes.push({ runtype });
-
-    if (success === true) {
-      swal({
-        title: "Are you sure want to Re-Run?",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes",
-        confirmButtonColor: "#44b8bd",
-        cancelButtonColor: "#d33",
-        cancelButtonText: "No"
-      }).then(willProceed => {
-        if (willProceed.value) {
-          UpdateLabOrder($this, currentAnalytes, "N");
-        }
-      });
-    }
-  }
+  });
 };
 
 const onchangegridresult = ($this, row, e) => {
