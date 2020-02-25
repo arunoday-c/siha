@@ -20,7 +20,7 @@ export function convertMilimetersToPixel(options) {
           ? parseFloat(height.replace("mm", "")) * onemm
           : height * onemm
         : null;
-    return { width: wdth + "px", height: hgh + "px" };
+    return { width: wdth, height: hgh };
   } else {
     return {};
   }

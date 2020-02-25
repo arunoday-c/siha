@@ -2516,10 +2516,11 @@ export default {
           if (result[0][0]["created_from"] == "U") {
             _mysql
               .executeQuery({
-                query: `update finance_account_child set  child_name=?,updated_by=?,updated_date=? where\
+                query: `update finance_account_child set  child_name=?,arabic_child_name=?,updated_by=?,updated_date=? where\
                   finance_account_child_id=? and created_from='U'; ${voucherStr};`,
                 values: [
                   input.child_name,
+                  input.arabic_child_name,
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
                   input.finance_account_child_id
@@ -2768,6 +2769,7 @@ function createHierarchy(
           subtitle: amount,
           ledger_code: item.ledger_code,
           title: item.child_name,
+          arabic_account_name: item.arabic_child_name,
           label: item.child_name,
           arabic_child_name: item.arabic_child_name,
           head_id: item["head_id"],

@@ -16,13 +16,14 @@ export default function AddNewAccount({
   okText,
   accountCode,
   accountName,
+  arabicName,
   accountType,
   openingBal,
   propOnOK,
   isNewAccount,
   ledgerCode
 }) {
-  debugger
+  debugger;
   const [lodingAddtoList, setLoadingAddtoList] = useState(false);
   // const [account_code, setAccountCode] = useState("");
   const [account_name, setAccountName] = useState("");
@@ -53,7 +54,7 @@ export default function AddNewAccount({
     if (accountName) {
       setAccountName(accountName);
       setLedgerCode(ledgerCode);
-
+      setArabicAccountName(arabicName);
       // eslint-disable-next-line eqeqeq
       if (accountType !== "G" && !(accountCode === 4 || accountCode === 5)) {
         setLoadingAddtoList(true);
@@ -75,7 +76,14 @@ export default function AddNewAccount({
     if (accountType) {
       setAccountType(accountType);
     }
-  }, [accountName, accountType, openingBal, selectedNode, accountCode, ledgerCode]);
+  }, [
+    accountName,
+    accountType,
+    openingBal,
+    selectedNode,
+    accountCode,
+    ledgerCode
+  ]);
 
   function onCancel() {
     setLoadingAddtoList(false);
@@ -93,7 +101,7 @@ export default function AddNewAccount({
         type: "warning",
         display: "Enter Account Code."
       });
-      return
+      return;
     }
 
     if (account_name === "") {
@@ -101,13 +109,14 @@ export default function AddNewAccount({
         type: "warning",
         display: "Enter Account Name."
       });
-      return
+      return;
     }
 
     setLoadingAddtoList(true);
     if (accountName && propOnOK) {
       const input = {
         child_name: account_name,
+        arabic_child_name: arabic_account_name,
         finance_account_child_id: selectedNode.node.finance_account_child_id,
         leaf_node: account_type === "G" ? "N" : "Y"
       };
@@ -218,7 +227,9 @@ export default function AddNewAccount({
               }}
             />
 
-            {(selectedNode.node !== undefined && selectedNode.node.leafnode === "Y") || account_type === "C" ?
+            {(selectedNode.node !== undefined &&
+              selectedNode.node.leafnode === "Y") ||
+            account_type === "C" ? (
               <AlgaehFormGroup
                 div={{
                   className: "col form-group"
@@ -238,7 +249,8 @@ export default function AddNewAccount({
                   placeholder: " Enter Ledger Code",
                   autoComplete: false
                 }}
-              /> : null}
+              />
+            ) : null}
 
             <AlgaehFormGroup
               div={{
@@ -258,7 +270,13 @@ export default function AddNewAccount({
                 },
                 placeholder: " Enter Account Name",
                 autoComplete: false,
-                disabled: isNewAccount === true ? false : selectedNode.node !== undefined && selectedNode.node.created_status === "S" ? true : false
+                disabled:
+                  isNewAccount === true
+                    ? false
+                    : selectedNode.node !== undefined &&
+                      selectedNode.node.created_status === "S"
+                    ? true
+                    : false
               }}
             />
 
@@ -280,7 +298,13 @@ export default function AddNewAccount({
                 },
                 placeholder: " Enter Account Name",
                 autoComplete: false,
-                disabled: isNewAccount === true ? false : selectedNode.node !== undefined && selectedNode.node.created_status === "S" ? true : false
+                disabled:
+                  isNewAccount === true
+                    ? false
+                    : selectedNode.node !== undefined &&
+                      selectedNode.node.created_status === "S"
+                    ? true
+                    : false
               }}
             />
           </div>

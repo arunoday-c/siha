@@ -31,7 +31,6 @@
     "extend": "^3.0.2",
     "mathjs": "^5.1.2",
     "node-linq": "0.0.5",
-    "semantic-ui-react": "^0.88.1",
     "winston": "^3.1.0",
     "winston-daily-rotate-file": "^3.1.4"
   },

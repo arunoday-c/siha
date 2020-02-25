@@ -86,7 +86,7 @@ function AllAccounts({ title, inDrawer }) {
         setEditorRecord({});
         stopLoad();
         setShowPopup(false);
-        setNewAccount(false)
+        setNewAccount(false);
         AlgaehMessagePop({
           type: "success",
           display: "Renamed successfull"
@@ -97,7 +97,7 @@ function AllAccounts({ title, inDrawer }) {
         console.log("error", error);
         stopLoad();
         setShowPopup(false);
-        setNewAccount(false)
+        setNewAccount(false);
         AlgaehMessagePop({
           type: "error",
           display: error
@@ -159,7 +159,7 @@ function AllAccounts({ title, inDrawer }) {
 
   function onClose(e) {
     setShowPopup(false);
-    setNewAccount(false)
+    setNewAccount(false);
     if (isAccountHead) {
       loadAccount();
       setIsAccountHead(false);
@@ -175,14 +175,23 @@ function AllAccounts({ title, inDrawer }) {
 
   function onEditClose() {
     setShowPopup(false);
-    setNewAccount(false)
+    setNewAccount(false);
     setEditorRecord({});
   }
 
   const searchMethod = ({ node, searchQuery }) => {
+    // return (
+    //   searchQuery &&
+    //   node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1
+    // );
     return (
-      searchQuery &&
-      node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1
+      (searchQuery &&
+        node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1) ||
+      (searchQuery &&
+        node.arabic_account_name !== null &&
+        node.arabic_account_name
+          .toLowerCase()
+          .indexOf(searchQuery.toLowerCase()) > -1)
     );
   };
 
@@ -219,18 +228,18 @@ function AllAccounts({ title, inDrawer }) {
                 } else {
                   setAssetCode(rowInfo.parentNode.root_id);
                   setEditorRecord(rowInfo);
-                  if (!isExpOrInc(rowInfo.parentNode.root_id)) {
-                    setShowPopup(true);
-                    setNewAccount(false)
-                  }
+                  // if (!isExpOrInc(rowInfo.parentNode.root_id)) {
+                  setShowPopup(true);
+                  setNewAccount(false);
+                  // }
                 }
               }}
             >
               {JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
                 <i className="fas fa-times" />
               ) : (
-                  <i className="fas fa-pen" />
-                )}
+                <i className="fas fa-pen" />
+              )}
             </li>
 
             <li
@@ -276,7 +285,7 @@ function AllAccounts({ title, inDrawer }) {
       title: (
         <>
           <span>
-            {isExpOrInc(assetCode) ? (
+            {/* {isExpOrInc(assetCode) ? (
               JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
                 <Input
                   suffix={
@@ -326,7 +335,9 @@ function AllAccounts({ title, inDrawer }) {
                 )
             ) : (
                 node.title
-              )}
+              )} */}
+            {`${node.title} / ${node.arabic_account_name} (${node.ledger_code})`}
+
             {node.leafnode === "Y" ? null : (
               <>/{node.children === undefined ? 0 : node.children.length}</>
             )}
@@ -351,8 +362,8 @@ function AllAccounts({ title, inDrawer }) {
         node.created_status === "S"
           ? "systemGen"
           : node.leafnode === "Y"
-            ? ""
-            : "accGroup"
+          ? ""
+          : "accGroup"
     };
   };
 
@@ -368,6 +379,9 @@ function AllAccounts({ title, inDrawer }) {
         accountName={editorRecord.node ? editorRecord.node.title : ""}
         ledgerCode={editorRecord.node ? editorRecord.node.ledger_code : ""}
         propOnOK={editorRecord.node ? editChild : null}
+        arabicName={
+          editorRecord.node ? editorRecord.node.arabic_account_name : ""
+        }
         okText={editorRecord.node ? "Change" : "Add"}
         accountType={
           editorRecord.node
@@ -434,7 +448,7 @@ function AllAccounts({ title, inDrawer }) {
                     const values =
                       searchFocusIndex !== undefined
                         ? (searchFoundCount + searchFocusIndex - 1) %
-                        searchFoundCount
+                          searchFoundCount
                         : searchFoundCount - 1;
                     setSearchFocusIndex(values);
                   }}

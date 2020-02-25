@@ -269,8 +269,8 @@ hbs.registerHelper("imageUrl", function(
 
 hbs.registerHelper("barcode", function(type, text, includetext) {
   type = type || "code128";
-  includetext = includetext || true;
-  return `http://localhost:3018/barcode?bcid=${type}&text=${text}&includetext=${includetext}&guardwhitespace`;
+  includetext = includetext === undefined ? `&includetext` : ``;
+  return `http://localhost:3018/barcode?bcid=${type}&text=${text}${includetext}&guardwhitespace`;
 });
 
 hbs.registerHelper("commentBreakUp", function(comment_data) {
@@ -466,8 +466,8 @@ export default {
                         reqHeader: _header
                       })
                     );
-                    await page.emulateMedia("screen");
-                    const pageOrentation =
+                    // await page.emulateMedia("screen");
+                    let pageOrentation =
                       _inputParam.pageOrentation == null
                         ? {}
                         : _inputParam.pageOrentation == "landscape"
@@ -488,10 +488,20 @@ export default {
                       if (existsSize !== undefined) {
                         pageSize = {};
                         _pdfTemplating = {};
+                        await page.addStyleTag({
+                          content: "@page:first {margin-top: -8px;}"
+                        });
+                        const sizes = convertMilimetersToPixel(others);
+
+                        await page.setViewport({
+                          width: Math.ceil(sizes.width),
+                          height: Math.ceil(sizes.height)
+                        });
                       }
                       displayHeaderFooter =
                         others.showHeaderFooter === false ? false : true;
                     }
+
                     await page.pdf({
                       path: _outPath,
                       ...pageSize,
@@ -499,10 +509,12 @@ export default {
                       printBackground: true,
                       displayHeaderFooter: displayHeaderFooter,
                       ..._pdfTemplating,
-                      ..._inputParam.others
+                      ...others
+
                       // headerTemplate:
                       //   "<h1>H1 tag</h1><h2>H2 tag</h2><hr style='border-bottom: 2px solid #8c8b8b;' />"
                     });
+
                     await browser.close();
 
                     if (r == _reportCount - 1) {
