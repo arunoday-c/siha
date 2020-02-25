@@ -368,10 +368,10 @@ class PointOfSale extends Component {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col mandatory" }}
+                      div={{ className: "col" }}
                       label={{
                         forceLabel: "Mobile Number",
-                        isImp: true
+                        // isImp: true
                       }}
                       textBox={{
                         number: {

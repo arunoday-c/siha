@@ -488,30 +488,32 @@ const getUnitCost = ($this, context, serviceid, sales_price) => {
   }
 };
 const AddItems = ($this, context) => {
-  if ($this.state.pos_customer_type === "OT") {
-    // if ($this.state.nationality_id === null) {
-    //   swalMessage({
-    //     title: "Select Nationality.",
-    //     type: "warning"
-    //   });
-    //   return;
-    // }
-    //   else if ($this.state.patient_name === null) {
-    //     swalMessage({
-    //       title: "Enter Patient Name.",
-    //       type: "warning"
-    //     });
-    //     return;
-    //   }
-    // }
-    if ($this.state.mobile_number === null) {
-      swalMessage({
-        title: "Enter Mobile Number.",
-        type: "warning"
-      });
-      return;
-    }
-  } else if ($this.state.pos_customer_type === "OP") {
+  // if ($this.state.pos_customer_type === "OT") {
+  //   // if ($this.state.nationality_id === null) {
+  //   //   swalMessage({
+  //   //     title: "Select Nationality.",
+  //   //     type: "warning"
+  //   //   });
+  //   //   return;
+  //   // }
+  //   //   else if ($this.state.patient_name === null) {
+  //   //     swalMessage({
+  //   //       title: "Enter Patient Name.",
+  //   //       type: "warning"
+  //   //     });
+  //   //     return;
+  //   //   }
+  //   // }
+  //   if ($this.state.mobile_number === null) {
+  //     swalMessage({
+  //       title: "Enter Mobile Number.",
+  //       type: "warning"
+  //     });
+  //     return;
+  //   }
+  // } else 
+
+  if ($this.state.pos_customer_type === "OP") {
     if ($this.state.visit_id === null) {
       swalMessage({
         title: "Select the Patient.",
