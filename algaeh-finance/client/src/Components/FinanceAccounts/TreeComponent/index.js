@@ -208,8 +208,13 @@ function TreeComponent({ assetCode, title, inDrawer }) {
 
   const searchMethod = ({ node, searchQuery }) => {
     return (
-      searchQuery &&
-      node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1
+      (searchQuery &&
+        node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1) ||
+      (searchQuery &&
+        node.arabic_account_name !== null &&
+        node.arabic_account_name
+          .toLowerCase()
+          .indexOf(searchQuery.toLowerCase()) > -1)
     );
   };
 
@@ -243,7 +248,6 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                 } else {
                   setEditorRecord(rowInfo);
                   if (node.leafnode === "Y") {
-                    debugger;
                     setShowPopup(true);
                     setNewAccount(false);
                   }

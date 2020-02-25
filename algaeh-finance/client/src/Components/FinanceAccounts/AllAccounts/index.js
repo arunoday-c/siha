@@ -180,9 +180,18 @@ function AllAccounts({ title, inDrawer }) {
   }
 
   const searchMethod = ({ node, searchQuery }) => {
+    // return (
+    //   searchQuery &&
+    //   node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1
+    // );
     return (
-      searchQuery &&
-      node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1
+      (searchQuery &&
+        node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1) ||
+      (searchQuery &&
+        node.arabic_account_name !== null &&
+        node.arabic_account_name
+          .toLowerCase()
+          .indexOf(searchQuery.toLowerCase()) > -1)
     );
   };
 

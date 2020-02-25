@@ -108,10 +108,12 @@ export default {
         inputParam.billdetails == null ||
         inputParam.billdetails.length == 0
       ) {
-        const errorGen = utilities.httpStatus().generateError(
-          httpStatus.badRequest,
-          "Please select atleast one service."
-        );
+        const errorGen = utilities
+          .httpStatus()
+          .generateError(
+            httpStatus.badRequest,
+            "Please select atleast one service."
+          );
         _mysql.rollBackTransaction(() => {
           next(errorGen);
         });
@@ -121,10 +123,12 @@ export default {
         inputParam.sheet_discount_amount != 0 &&
         inputParam.bill_comments == ""
       ) {
-        const errorGene = utilities.httpStatus().generateError(
-          httpStatus.badRequest,
-          "Please enter sheet level discount comments. "
-        );
+        const errorGene = utilities
+          .httpStatus()
+          .generateError(
+            httpStatus.badRequest,
+            "Please enter sheet level discount comments. "
+          );
 
         _mysql.rollBackTransaction(() => {
           next(errorGene);
@@ -376,10 +380,12 @@ export default {
         req.body.intCalculateall == undefined ? req.body.billdetails : req.body;
       if (inputParam.length == 0) {
         next(
-          utilities.httpStatus().generateError(
-            httpStatus.badRequest,
-            "Please select atleast one service"
-          )
+          utilities
+            .httpStatus()
+            .generateError(
+              httpStatus.badRequest,
+              "Please select atleast one service"
+            )
         );
       }
       let sendingObject = {};
@@ -605,10 +611,12 @@ export default {
         inputParam.receiptdetails.length == 0
       ) {
         next(
-          utilities.httpStatus().generateError(
-            httpStatus.badRequest,
-            "Please select atleast one service."
-          )
+          utilities
+            .httpStatus()
+            .generateError(
+              httpStatus.badRequest,
+              "Please select atleast one service."
+            )
         );
       }
       let Module_Name = "";
@@ -625,7 +633,7 @@ export default {
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
           numgen_codes: [Module_Name],
-          table_name: "hims_f_app_numgen",
+          table_name: "hims_f_app_numgen"
         })
         .then(generatedNumbers => {
           req.body["receipt_number"] = generatedNumbers[Module_Name];
@@ -733,7 +741,6 @@ export default {
                             printQuery: true
                           })
                           .then(update_advance => {
-
                             req.records = {
                               receipt_number: generatedNumbers[Module_Name],
                               total_advance_amount: inputParam.advance_amount
@@ -814,7 +821,7 @@ export default {
           internal_error: true,
           message: "No receipt details"
         };
-        _mysql.rollBackTransaction(() => { });
+        _mysql.rollBackTransaction(() => {});
         next();
         return;
       } else if (
@@ -1746,10 +1753,12 @@ export default {
         inputParam.receiptdetails.length == 0
       ) {
         next(
-          utilities.httpStatus().generateError(
-            httpStatus.badRequest,
-            "Please select atleast one service."
-          )
+          utilities
+            .httpStatus()
+            .generateError(
+              httpStatus.badRequest,
+              "Please select atleast one service."
+            )
         );
       }
       let Module_Name = "";
@@ -1764,7 +1773,7 @@ export default {
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
           numgen_codes: [Module_Name],
-          table_name: "hims_f_app_numgen",
+          table_name: "hims_f_app_numgen"
         })
         .then(generatedNumbers => {
           _mysql
@@ -2341,9 +2350,10 @@ export default {
                 let ser_gross_amt = 0;
                 let icd_code = "";
                 let covered = "Y";
-                let billed = servicesDetails.billed == undefined
-                  ? "N"
-                  : servicesDetails.billed;
+                let billed =
+                  servicesDetails.billed == undefined
+                    ? "N"
+                    : servicesDetails.billed;
                 let preapp_limit_amount =
                   servicesDetails.preapp_limit_amount == undefined
                     ? 0
@@ -2366,7 +2376,7 @@ export default {
                     prices = allCompany_price.find(item => {
                       return (
                         item.insurance_id ==
-                        input[i]["primary_insurance_provider_id"] &&
+                          input[i]["primary_insurance_provider_id"] &&
                         item.services_id == input[i]["hims_d_services_id"]
                       );
                     });
@@ -2436,7 +2446,6 @@ export default {
                     }
                   }
 
-
                   // if (conversion_factor != 0) {
                   //   unit_cost = unit_cost * conversion_factor;
                   // }
@@ -2454,12 +2463,13 @@ export default {
                       decimal_places
                     );
                   }
-                  net_amout = parseFloat(gross_amount) - parseFloat(discount_amout);
+                  net_amout =
+                    parseFloat(gross_amount) - parseFloat(discount_amout);
                   net_amout = utilities.decimalPoints(
                     net_amout,
                     decimal_places
                   );
-                  console.log("copay_status", policydtls.copay_status)
+                  console.log("copay_status", policydtls.copay_status);
                   //Patient And Company
                   if (policydtls.copay_status == "Y") {
                     copay_amount = policydtls.copay_amt;
@@ -2554,17 +2564,24 @@ export default {
                       copay_percentage = policydtls.copay_percent;
                     }
 
-                    console.log("deductable_percentage", deductable_percentage)
+                    console.log("deductable_percentage", deductable_percentage);
                     deductable_amount =
-                      deductable_percentage !== null ? (parseFloat(net_amout) * parseFloat(deductable_percentage)) / 100 : 0;
+                      deductable_percentage !== null
+                        ? (parseFloat(net_amout) *
+                            parseFloat(deductable_percentage)) /
+                          100
+                        : 0;
 
                     deductable_amount = utilities.decimalPoints(
                       deductable_amount,
                       decimal_places
                     );
-                    after_dect_amout = parseFloat(net_amout) - parseFloat(deductable_amount);
+                    after_dect_amout =
+                      parseFloat(net_amout) - parseFloat(deductable_amount);
                     copay_amount =
-                      (parseFloat(after_dect_amout) * parseFloat(copay_percentage)) / 100;
+                      (parseFloat(after_dect_amout) *
+                        parseFloat(copay_percentage)) /
+                      100;
                     copay_amount = utilities.decimalPoints(
                       copay_amount,
                       decimal_places
@@ -2583,13 +2600,15 @@ export default {
                   console.log("patient_resp", patient_resp);
                   console.log("copay_amount", copay_amount);
                   console.log("deductable_amount", deductable_amount);
-                  patient_resp = parseFloat(copay_amount) + parseFloat(deductable_amount);
+                  patient_resp =
+                    parseFloat(copay_amount) + parseFloat(deductable_amount);
 
                   utilities
                     .logger()
                     .log("service_type_id: ", typeof patient_resp);
 
-                  comapany_resp = parseFloat(net_amout) - parseFloat(patient_resp);
+                  comapany_resp =
+                    parseFloat(net_amout) - parseFloat(patient_resp);
                   comapany_resp = utilities.decimalPoints(
                     comapany_resp,
                     decimal_places
@@ -2597,7 +2616,9 @@ export default {
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
                     patient_tax =
-                      (parseFloat(patient_resp) * parseFloat(records.vat_percent)) / 100;
+                      (parseFloat(patient_resp) *
+                        parseFloat(records.vat_percent)) /
+                      100;
 
                     patient_tax = utilities.decimalPoints(
                       patient_tax,
@@ -2609,7 +2630,9 @@ export default {
                     .log("vat_applicable: ", records.vat_applicable);
                   if (records.vat_applicable == "Y") {
                     s_patient_tax =
-                      (parseFloat(patient_resp) * parseFloat(records.vat_percent)) / 100;
+                      (parseFloat(patient_resp) *
+                        parseFloat(records.vat_percent)) /
+                      100;
 
                     s_patient_tax = utilities.decimalPoints(
                       patient_tax,
@@ -2619,7 +2642,9 @@ export default {
 
                   if (records.vat_applicable == "Y") {
                     company_tax =
-                      (parseFloat(comapany_resp) * parseFloat(records.vat_percent)) / 100;
+                      (parseFloat(comapany_resp) *
+                        parseFloat(records.vat_percent)) /
+                      100;
                     company_tax = utilities.decimalPoints(
                       company_tax,
                       decimal_places
@@ -2627,14 +2652,19 @@ export default {
                   }
                   total_tax = parseFloat(patient_tax) + parseFloat(company_tax);
                   // total_tax = total_tax.toFixed(decimal_places);
-                  patient_payable = parseFloat(patient_resp) + parseFloat(patient_tax);
+                  patient_payable =
+                    parseFloat(patient_resp) + parseFloat(patient_tax);
                   // patient_payable = patient_payable.toFixed(decimal_places);
 
                   if (approved_amount !== 0 && approved_amount < unit_cost) {
-                    let diff_val = parseFloat(approved_amount) - parseFloat(comapany_resp);
-                    patient_payable = parseFloat(patient_payable) + parseFloat(diff_val);
-                    patient_resp = parseFloat(patient_resp) + parseFloat(diff_val);
-                    comapany_resp = parseFloat(comapany_resp) - parseFloat(diff_val);
+                    let diff_val =
+                      parseFloat(approved_amount) - parseFloat(comapany_resp);
+                    patient_payable =
+                      parseFloat(patient_payable) + parseFloat(diff_val);
+                    patient_resp =
+                      parseFloat(patient_resp) + parseFloat(diff_val);
+                    comapany_resp =
+                      parseFloat(comapany_resp) - parseFloat(diff_val);
 
                     patient_payable = utilities.decimalPoints(
                       patient_payable,
@@ -2650,9 +2680,11 @@ export default {
                     );
                   }
 
-                  company_payble = parseFloat(net_amout) - parseFloat(patient_resp);
+                  company_payble =
+                    parseFloat(net_amout) - parseFloat(patient_resp);
 
-                  company_payble = parseFloat(company_payble) + parseFloat(company_tax);
+                  company_payble =
+                    parseFloat(company_payble) + parseFloat(company_tax);
 
                   company_payble = utilities.decimalPoints(
                     company_payble,
@@ -2667,8 +2699,8 @@ export default {
                         parseFloat(apr_amount_bulk) +
                         parseFloat(company_payble);
 
-                      approval_amt = parseFloat(approval_amt) + parseFloat(apr_amount_bulk);
-
+                      approval_amt =
+                        parseFloat(approval_amt) + parseFloat(apr_amount_bulk);
                     } else {
                       approval_amt =
                         parseFloat(approval_amt) + parseFloat(company_payble);
@@ -2690,8 +2722,8 @@ export default {
                       from_pos == "Y"
                         ? parseFloat(unit_cost)
                         : unit_cost != 0
-                          ? parseFloat(unit_cost)
-                          : parseFloat(records.standard_fee);
+                        ? parseFloat(unit_cost)
+                        : parseFloat(records.standard_fee);
                   }
 
                   // if (conversion_factor != 0) {
@@ -2705,21 +2737,28 @@ export default {
                   );
 
                   if (discount_amout > 0) {
-                    discount_percentage = (parseFloat(discount_amout) / parseFloat(gross_amount)) * 100;
+                    discount_percentage =
+                      (parseFloat(discount_amout) / parseFloat(gross_amount)) *
+                      100;
                   } else if (discount_percentage > 0) {
-                    discount_amout = (parseFloat(gross_amount) * parseFloat(discount_percentage)) / 100;
+                    discount_amout =
+                      (parseFloat(gross_amount) *
+                        parseFloat(discount_percentage)) /
+                      100;
                     discount_amout = utilities.decimalPoints(
                       discount_amout,
                       decimal_places
                     );
                   }
-                  net_amout = parseFloat(gross_amount) - parseFloat(discount_amout);
+                  net_amout =
+                    parseFloat(gross_amount) - parseFloat(discount_amout);
                   patient_resp = parseFloat(net_amout);
-
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
                     patient_tax =
-                      (parseFloat(patient_resp) * parseFloat(records.vat_percent)) / 100;
+                      (parseFloat(patient_resp) *
+                        parseFloat(records.vat_percent)) /
+                      100;
 
                     patient_tax = utilities.decimalPoints(
                       patient_tax,
@@ -2730,7 +2769,9 @@ export default {
 
                   if (records.vat_applicable === "Y") {
                     s_patient_tax =
-                      (parseFloat(patient_resp) * parseFloat(records.vat_percent)) / 100;
+                      (parseFloat(patient_resp) *
+                        parseFloat(records.vat_percent)) /
+                      100;
 
                     s_patient_tax = utilities.decimalPoints(
                       s_patient_tax,
@@ -2738,7 +2779,8 @@ export default {
                     );
                   }
 
-                  patient_payable = parseFloat(patient_resp) + parseFloat(patient_tax);
+                  patient_payable =
+                    parseFloat(patient_resp) + parseFloat(patient_tax);
                 }
 
                 let out = extend(
@@ -2773,7 +2815,7 @@ export default {
                     sec_company_tax: 0,
                     sec_company_paybale: 0,
                     sec_copay_percntage: 0,
-                    sec_copay_amount: 0,
+                    sec_copay_amount: 0
                   },
                   {
                     service_type_id: records.service_type_id,
@@ -2831,21 +2873,25 @@ export default {
                     package_type: servicesDetails.package_type,
                     actual_amount: servicesDetails.actual_amount,
                     pack_expiry_date: servicesDetails.expiry_date,
-                    hims_f_ordered_services_id: servicesDetails.hims_f_ordered_services_id,
+                    hims_f_ordered_services_id:
+                      servicesDetails.hims_f_ordered_services_id,
                     billed: billed
                   }
                 );
 
                 outputArray.push(out);
 
-
                 if (i == input.length - 1) {
-                  let total_approal_amount = _.maxBy(outputArray, f => { return f.approval_amt })
+                  let total_approal_amount = _.maxBy(outputArray, f => {
+                    return f.approval_amt;
+                  });
                   // console.log("total_approal_amount: ", total_approal_amount)
-                  req.records = { billdetails: outputArray, approval_amt: total_approal_amount.approval_amt };
+                  req.records = {
+                    billdetails: outputArray,
+                    approval_amt: total_approal_amount.approval_amt
+                  };
                   next();
                 }
-
               }
             })
             .catch(error => {
@@ -2972,8 +3018,6 @@ export default {
     }
   },
 
-
-
   //created by:IRFAN
   addtoDayEnd_backup_8_feb_2020: (req, res, next) => {
     try {
@@ -2981,7 +3025,6 @@ export default {
 
       const _mysql = new algaehMysql(_options);
       // const utilities = new algaehUtilities();
-
 
       _mysql
         .executeQuery({
@@ -3039,7 +3082,9 @@ export default {
                 if (inputParam.transaction_type == "AD") {
                   voucher_type = "receipt";
 
-                  narration = " Collected Advance From Patient:" + inputParam.patient_code;
+                  narration =
+                    " Collected Advance From Patient:" +
+                    inputParam.patient_code;
 
                   amount = inputParam.total_amount;
 
@@ -3115,8 +3160,10 @@ export default {
 
                   //BOOKING INCOME AND TAX
                   serviceData.forEach(curService => {
-                    narration = narration +
-                      ", Booking Income for " + curService.service_name;
+                    narration =
+                      narration +
+                      ", Booking Income for " +
+                      curService.service_name;
 
                     const bill = inputParam.billdetails.find(f => {
                       if (f.services_id == curService.hims_d_services_id)
@@ -3144,11 +3191,12 @@ export default {
                     });
                   });
 
-
                   //ADJUSTING AMOUNT FROM PRVIOUS ADVANCE
                   if (inputParam.advance_adjust > 0) {
-                    narration = narration +
-                      ", Adjusting Advance  Amount of " + inputParam.advance_adjust;
+                    narration =
+                      narration +
+                      ", Adjusting Advance  Amount of " +
+                      inputParam.advance_adjust;
                     EntriesArray.push({
                       payment_date: new Date(),
                       head_id: OP_DEP.head_id,
@@ -3161,7 +3209,8 @@ export default {
                   }
                   //PROVING OP SERVICE ON CREDIT
                   if (inputParam.credit_amount > 0) {
-                    narration = narration +
+                    narration =
+                      narration +
                       ", Providng OP Service On Credit for Amount " +
                       inputParam.credit_amount;
 
@@ -3175,8 +3224,6 @@ export default {
                       hospital_id: req.userIdentity.hospital_id
                     });
                   }
-
-
 
                   //INCREASING CASH IN CAND AND BANK
                   inputParam.receiptdetails.forEach(m => {
@@ -3207,9 +3254,6 @@ export default {
                   });
                 }
 
-
-
-
                 _mysql
                   .executeQueryWithTransaction({
                     query:
@@ -3226,18 +3270,13 @@ export default {
                       narration,
                       req.userIdentity.algaeh_d_app_user_id,
                       new Date()
-
                     ],
                     printQuery: true
                   })
                   .then(headerDayEnd => {
-
-
-
                     const month = moment().format("M");
                     const year = moment().format("YYYY");
                     const IncludeValuess = [
-
                       "payment_date",
                       "head_id",
                       "child_id",
@@ -3246,8 +3285,6 @@ export default {
                       "credit_amount",
                       "hospital_id"
                     ];
-
-
 
                     _mysql
                       .executeQueryWithTransaction({
@@ -3260,7 +3297,6 @@ export default {
                           year: year,
                           month: month,
                           day_end_header_id: headerDayEnd.insertId
-
                         },
                         printQuery: true
                       })
@@ -3273,18 +3309,12 @@ export default {
                           next(error);
                         });
                       });
-
-
-
-
                   })
                   .catch(error => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
-
-
               })
               .catch(error => {
                 _mysql.rollBackTransaction(() => {
@@ -3314,7 +3344,6 @@ export default {
 
       const _mysql = new algaehMysql(_options);
       // const utilities = new algaehUtilities();
-
 
       _mysql
         .executeQuery({
@@ -3365,7 +3394,6 @@ export default {
                   return f.account == "CARD_SETTL";
                 });
 
-
                 let voucher_type = "";
                 let narration = "";
                 let amount = 0;
@@ -3374,7 +3402,9 @@ export default {
                 if (inputParam.transaction_type == "AD") {
                   voucher_type = "receipt";
 
-                  narration = " Collected Advance From Patient:" + inputParam.patient_code;
+                  narration =
+                    " Collected Advance From Patient:" +
+                    inputParam.patient_code;
 
                   amount = inputParam.total_amount;
 
@@ -3450,8 +3480,10 @@ export default {
 
                   //BOOKING INCOME AND TAX
                   serviceData.forEach(curService => {
-                    narration = narration +
-                      ", Booking Income for " + curService.service_name;
+                    narration =
+                      narration +
+                      ", Booking Income for " +
+                      curService.service_name;
 
                     const bill = inputParam.billdetails.find(f => {
                       if (f.services_id == curService.hims_d_services_id)
@@ -3481,11 +3513,12 @@ export default {
                     }
                   });
 
-
                   //ADJUSTING AMOUNT FROM PRVIOUS ADVANCE
                   if (inputParam.advance_adjust > 0) {
-                    narration = narration +
-                      ", Adjusting Advance  Amount of " + inputParam.advance_adjust;
+                    narration =
+                      narration +
+                      ", Adjusting Advance  Amount of " +
+                      inputParam.advance_adjust;
                     EntriesArray.push({
                       payment_date: new Date(),
                       head_id: OP_DEP.head_id,
@@ -3498,7 +3531,8 @@ export default {
                   }
                   //PROVING OP SERVICE ON CREDIT
                   if (inputParam.credit_amount > 0) {
-                    narration = narration +
+                    narration =
+                      narration +
                       ", Providng OP Service On Credit for Amount " +
                       inputParam.credit_amount;
 
@@ -3512,8 +3546,6 @@ export default {
                       hospital_id: req.userIdentity.hospital_id
                     });
                   }
-
-
 
                   //INCREASING CASH IN CAND AND BANK
                   inputParam.receiptdetails.forEach(m => {
@@ -3546,18 +3578,22 @@ export default {
 
                 let strQuery = "";
 
-                if (Result[2][0].cost_center_required === "Y" && Result[2][0].cost_center_type === "P") {
+                if (
+                  Result[2][0].cost_center_required === "Y" &&
+                  Result[2][0].cost_center_type === "P"
+                ) {
                   strQuery = `select  hims_m_division_project_id, project_id from hims_m_division_project D \
                     inner join hims_d_project P on D.project_id=P.hims_d_project_id \
                     inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id where \
-                    division_id= ${req.userIdentity.hospital_id} limit 1;`
+                    division_id= ${req.userIdentity.hospital_id} limit 1;`;
                 }
                 _mysql
                   .executeQueryWithTransaction({
                     query:
                       "INSERT INTO finance_day_end_header (transaction_date,amount,voucher_type,document_id,\
                   document_number,from_screen,narration,entered_by,entered_date) \
-                  VALUES (?,?,?,?,?,?,?,?,?);"+ strQuery,
+                  VALUES (?,?,?,?,?,?,?,?,?);" +
+                      strQuery,
                     values: [
                       new Date(),
                       amount,
@@ -3568,17 +3604,22 @@ export default {
                       narration,
                       req.userIdentity.algaeh_d_app_user_id,
                       new Date()
-
                     ],
                     printQuery: true
                   })
                   .then(header_result => {
                     let project_id = null;
-                    const headerDayEnd = header_result[0]
-                    if (header_result[1].length > 0) {
-                      project_id = header_result[1][0].project_id
-                    }
 
+                    let headerDayEnd = "";
+
+                    if (strQuery == "") {
+                      headerDayEnd = header_result;
+                    } else {
+                      headerDayEnd = header_result[0];
+                      if (header_result[1].length > 0) {
+                        project_id = header_result[1][0].project_id;
+                      }
+                    }
 
                     const month = moment().format("M");
                     const year = moment().format("YYYY");
@@ -3591,8 +3632,6 @@ export default {
                       "credit_amount",
                       "hospital_id"
                     ];
-
-
 
                     _mysql
                       .executeQueryWithTransaction({
@@ -3619,18 +3658,12 @@ export default {
                           next(error);
                         });
                       });
-
-
-
-
                   })
                   .catch(error => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
-
-
               })
               .catch(error => {
                 _mysql.rollBackTransaction(() => {
@@ -3652,7 +3685,6 @@ export default {
       });
     }
   }
-
 };
 
 //Not in Use
@@ -4129,8 +4161,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                     from_pos == "Y"
                       ? unit_cost
                       : unit_cost != 0
-                        ? unit_cost
-                        : records.standard_fee;
+                      ? unit_cost
+                      : records.standard_fee;
                 }
 
                 // if (conversion_factor != 0) {
@@ -4406,7 +4438,9 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
             })
             .catch(e => {
               _mysql.releaseConnection();
-              next(utilities.httpStatus().generateError(httpStatus.badRequest, e));
+              next(
+                utilities.httpStatus().generateError(httpStatus.badRequest, e)
+              );
             });
         }
       })
@@ -4618,5 +4652,3 @@ function insertOrderServices(options) {
     options.next(e);
   });
 }
-
-

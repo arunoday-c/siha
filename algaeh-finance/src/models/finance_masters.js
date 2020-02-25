@@ -11,7 +11,7 @@ export default {
 
     _mysql
       .executeQuery({
-        query: `select default_cost_center_id,default_branch_id,P.project_desc as default_cost_center_name,third_party_payroll,
+        query: `select default_cost_center_id,default_branch_id,cost_center_required,P.project_desc as default_cost_center_name,third_party_payroll,
        cost_center_type ,start_month,F.start_date,end_month,F.end_date,auth_level,auth1_limit_amount,auth1_limit,hospital_name as default_branch_name
       from finance_options F
       left join hims_d_project P on F.default_cost_center_id=P.hims_d_project_id 
