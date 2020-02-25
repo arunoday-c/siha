@@ -15,7 +15,7 @@ export default {
       recieve_amount: 0,
       year: null,
       period: null,
-      location_id: null,
+      location_id: 1,
       location_type: null,
       sub_total: 0,
       discount_percentage: 0,
