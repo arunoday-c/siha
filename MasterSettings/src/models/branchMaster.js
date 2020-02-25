@@ -380,80 +380,79 @@ export default {
   //created by:irfan
   getDepartmentsChart: (req, res, next) => {
     try {
-      if (req.userIdentity.role_type != "GN") {
-        const _mysql = new algaehMysql();
-        const utilities = new algaehUtilities();
-        _mysql
-          .executeQuery({
-            query:
-              "select hims_d_hospital_id, hospital_code, hospital_name,hims_m_branch_dept_map_id,hims_d_department_id,D.department_code,D.department_name,SD.department_id,\
+      // if (req.userIdentity.role_type != "GN") {
+      const _mysql = new algaehMysql();
+      const utilities = new algaehUtilities();
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_d_hospital_id, hospital_code, hospital_name,hims_m_branch_dept_map_id,hims_d_department_id,D.department_code,D.department_name,SD.department_id,\
               hims_d_sub_department_id,SD.sub_department_code,SD.sub_department_name\
               from hims_m_branch_dept_map B  inner join hims_d_hospital  H on B.hospital_id=H.hims_d_hospital_id \
               inner join hims_d_sub_department  SD \
               on B.sub_department_id=SD.hims_d_sub_department_id \
               inner join hims_d_department D on D.hims_d_department_id=SD.department_id;",
-            printQuery: false
-          })
-          .then(result => {
-            _mysql.releaseConnection();
-            if (result.length > 0) {
-              const branchGroup = _.chain(result)
-                .groupBy(g => g.hims_d_hospital_id)
-                .map(m => m)
+          printQuery: false
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          if (result.length > 0) {
+            const branchGroup = _.chain(result)
+              .groupBy(g => g.hims_d_hospital_id)
+              .map(m => m)
+              .value();
+
+            const outputArray = [];
+
+            for (let i = 0; i < branchGroup.length; i++) {
+              const branch = _.chain(branchGroup[i])
+                .groupBy(g => g.hims_d_department_id)
+                .map(m => {
+                  return {
+                    hims_d_department_id: m[0].hims_d_department_id,
+                    hims_m_branch_dept_map_id: m[0].hims_m_branch_dept_map_id,
+                    department_code: m[0].department_code,
+                    department_name: m[0].department_name,
+                    sub_dept_count: m.length,
+                    subDepts: m.map(item => {
+                      return {
+                        hims_d_sub_department_id: item.hims_d_sub_department_id,
+                        sub_department_code: item.sub_department_code,
+                        sub_department_name: item.sub_department_name,
+                        hims_m_branch_dept_map_id:
+                          item.hims_m_branch_dept_map_id
+                      };
+                    })
+                  };
+                })
                 .value();
 
-              const outputArray = [];
-
-              for (let i = 0; i < branchGroup.length; i++) {
-                const branch = _.chain(branchGroup[i])
-                  .groupBy(g => g.hims_d_department_id)
-                  .map(m => {
-                    return {
-                      hims_d_department_id: m[0].hims_d_department_id,
-                      hims_m_branch_dept_map_id: m[0].hims_m_branch_dept_map_id,
-                      department_code: m[0].department_code,
-                      department_name: m[0].department_name,
-                      sub_dept_count: m.length,
-                      subDepts: m.map(item => {
-                        return {
-                          hims_d_sub_department_id:
-                            item.hims_d_sub_department_id,
-                          sub_department_code: item.sub_department_code,
-                          sub_department_name: item.sub_department_name,
-                          hims_m_branch_dept_map_id:
-                            item.hims_m_branch_dept_map_id
-                        };
-                      })
-                    };
-                  })
-                  .value();
-
-                outputArray.push({
-                  hims_d_hospital_id: branchGroup[i][0].hims_d_hospital_id,
-                  hospital_code: branchGroup[i][0].hospital_code,
-                  hospital_name: branchGroup[i][0].hospital_name,
-                  dept_count: branch.length,
-                  departments: branch
-                });
-              }
-              req.records = outputArray;
-            } else {
-              req.records = result;
+              outputArray.push({
+                hims_d_hospital_id: branchGroup[i][0].hims_d_hospital_id,
+                hospital_code: branchGroup[i][0].hospital_code,
+                hospital_name: branchGroup[i][0].hospital_name,
+                dept_count: branch.length,
+                departments: branch
+              });
             }
+            req.records = outputArray;
+          } else {
+            req.records = result;
+          }
 
-            next();
-          })
-          .catch(error => {
-            _mysql.releaseConnection();
-            next(error);
-          });
-      } else {
-        req.records = {
-          invalid_data: true,
-          message: "You dont have Admin previlege"
-        };
-        next();
-      }
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+      // } else {
+      //   req.records = {
+      //     invalid_data: true,
+      //     message: "You dont have Admin previlege"
+      //   };
+      //   next();
+      // }
     } catch (e) {
       _mysql.releaseConnection();
       next(e);
