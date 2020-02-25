@@ -281,7 +281,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 uom_id: e.sales_uom_id,
                 service_id: e.service_id,
                 item_group_id: e.group_id,
-                quantity: 0,
+                quantity: 1,
                 expiry_date: data.locationResult[0].expirydt,
                 batchno: data.locationResult[0].batchno,
                 grn_no: data.locationResult[0].grnno,
@@ -309,7 +309,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                   uom_id: e.sales_uom_id,
                   service_id: e.service_id,
                   item_group_id: e.group_id,
-                  quantity: 0,
+                  quantity: 1,
 
                   expiry_date: data.locationResult[0].expirydt,
                   batchno: data.locationResult[0].batchno,
@@ -331,6 +331,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                   average_cost: data.locationResult[0].avgcost
                 });
               }
+              document.querySelector("[name='quantity']").focus();
             } else {
               swalMessage({
                 title: "No stock available for selected Item.",
@@ -488,21 +489,24 @@ const getUnitCost = ($this, context, serviceid, sales_price) => {
 };
 const AddItems = ($this, context) => {
   if ($this.state.pos_customer_type === "OT") {
-    if ($this.state.nationality_id === null) {
-      swalMessage({
-        title: "Select Nationality.",
-        type: "warning"
-      });
-      return;
-    } else if ($this.state.mobile_number === null) {
+    // if ($this.state.nationality_id === null) {
+    //   swalMessage({
+    //     title: "Select Nationality.",
+    //     type: "warning"
+    //   });
+    //   return;
+    // }
+    //   else if ($this.state.patient_name === null) {
+    //     swalMessage({
+    //       title: "Enter Patient Name.",
+    //       type: "warning"
+    //     });
+    //     return;
+    //   }
+    // }
+    if ($this.state.mobile_number === null) {
       swalMessage({
         title: "Enter Mobile Number.",
-        type: "warning"
-      });
-      return;
-    } else if ($this.state.patient_name === null) {
-      swalMessage({
-        title: "Enter Patient Name.",
         type: "warning"
       });
       return;
@@ -587,6 +591,7 @@ const AddItems = ($this, context) => {
         }
       ];
 
+      AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/billing/getBillDetails",
         module: "billing",
