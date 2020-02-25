@@ -237,7 +237,7 @@ export default function Filter(props) {
         }}
         showLoading={true}
       />
-      <div className="col mandatory">
+      <div className="col-2 mandatory">
         <label className="style_Label ">
           From Date<span className="imp">&nbsp;*</span>
         </label>
@@ -258,7 +258,7 @@ export default function Filter(props) {
           />
         </div>
       </div>
-      <div className="col mandatory">
+      <div className="col-2 mandatory">
         <label className="style_Label ">
           To Date<span className="imp">&nbsp;*</span>
         </label>
@@ -364,90 +364,14 @@ export default function Filter(props) {
           }
         }}
       />
-      <div className="col-3 globalSearchCntr">
+      <div className="col-2 globalSearchCntr">
         <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
         <h6 onClick={employeeSearch}>
           {fullName ? fullName : "Search Employee"}
           <i className="fas fa-search fa-lg"></i>
         </h6>
       </div>
-      {/* <AlgaehAutoSearch
-        div={{ className: "col" }}
-        label={{ forceLabel: "Employee Search" }}
-        title="Employee Search"
-        name="fullName"
-        columns={spotlightSearch.Employee_details.employee}
-        displayField="full_name"
-        searchName="employee"
-        value={fullName}
-        template={({ full_name, employee_code }) => {
-          return (
-            <div className="row">
-              <div className="col-12 padd-10">
-                <small>{employee_code}</small>
-                <p>{full_name}</p>
-              </div>
-            </div>
-          );
-        }}
-        onClick={item => {
-          setFullName(item.full_name);
-          setEmployeeId(item.hims_d_employee_id);
-        }}
-        onClear={() => {
-          setFullName("");
-          setEmployeeId("");
-        }}
-      /> */}
-      {/* <input
-        type="file"
-        name="manualTimeSheet"
-        value={onlyExcel}
-        onChange={e => {
-          if (e.target.files.length > 0) {
-        if (e.target.files[0].name.indexOf(".xlsx") > -1) {
-        UploadTimesheet(e.target.files, props);
-        } else {
-        setOnlyExcel("");
-        swalMessage({
-        type: "error",
-        title: "Accept only .xlsx files"
-        });
-        }
-          }
-        }}
-      /> */}
-      {/* <div className="col">
-        <input
-          type="radio"
-          id="directEntry"
-          name="previewType"
-          checked={upload === "N" ? true : false}
-          onChange={e => {
-            if (e.target.checked) {
-              setUpload("N");
-            } else {
-              setUpload("Y");
-            }
-          }}
-        />
-        <label htmlFor="directEntry">Direct Entry Preview</label>
-        <input
-          type="radio"
-          id="uploadedPreview"
-          name="previewType"
-          checked={upload === "Y" ? true : false}
-          onChange={e => {
-            if (e.target.checked) {
-              setUpload("Y");
-            } else {
-              setUpload("N");
-            }
-          }}
-        />
-        <label htmlFor="uploadedPreview">Uploaded Preview</label>
-      </div> */}
-      <div className="col-5" style={{ paddingTop: 19 }}>
+      <div className="col" style={{ paddingTop: 19 }}>
         <div className="uploadManualDiv   btn-with-icon">
           <input
             className="inputfile"
