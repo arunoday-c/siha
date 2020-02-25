@@ -89,10 +89,9 @@ class NurseWorkbench extends Component {
     //   getAllChiefComplaints(this);
     // }
     this.isMale = false;
-    
+
     this.complaintType = [];
   }
-
 
   componentDidMount() {
     this.loadListofData();
@@ -110,7 +109,6 @@ class NurseWorkbench extends Component {
       });
     }
   }
-
 
   openTab(e) {
     var element = document.querySelectorAll("[algaehtabs]");
@@ -319,7 +317,7 @@ class NurseWorkbench extends Component {
           },
           onFailure: error => {}
         });
-      } 
+      }
     });
   }
 
@@ -601,7 +599,7 @@ class NurseWorkbench extends Component {
         this.setState({
           patChiefComp: this.state.patChiefComp
         });
-      } 
+      }
     });
   }
 
@@ -2192,78 +2190,81 @@ class NurseWorkbench extends Component {
                 {/* Chief Complaint End */}
                 <hr />
                 <h6>Nurse Order Service</h6>
+                {this.state.patient_id !== null ? (
+                  <div className="row">
+                    <div className="col-12">
+                      <div className="tab-container toggle-section">
+                        <ul className="nav">
+                          <li
+                            algaehtabs={"Orders"}
+                            className={"nav-item tab-button active"}
+                            onClick={this.openTab.bind(this)}
+                          >
+                            {
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Order Investigation"
+                                }}
+                              />
+                            }
+                          </li>
 
-                <div className="row">
-                  <div className="col-12">
-                    <div className="tab-container toggle-section">
-                      <ul className="nav">
-                        <li
-                          algaehtabs={"Orders"}
-                          className={"nav-item tab-button active"}
-                          onClick={this.openTab.bind(this)}
-                        >
-                          {
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Order Investigation"
-                              }}
-                            />
-                          }
-                        </li>
+                          <li
+                            algaehtabs={"OrderConsumable"}
+                            className={"nav-item tab-button"}
+                            onClick={this.openTab.bind(this)}
+                          >
+                            {
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Order Consumable"
+                                }}
+                              />
+                            }
+                          </li>
 
-                        <li
-                          algaehtabs={"OrderConsumable"}
-                          className={"nav-item tab-button"}
-                          onClick={this.openTab.bind(this)}
-                        >
-                          {
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Order Consumable"
-                              }}
-                            />
-                          }
-                        </li>
+                          <li
+                            algaehtabs={"OrderPackage"}
+                            className={"nav-item tab-button"}
+                            onClick={this.openTab.bind(this)}
+                          >
+                            {
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Order Package"
+                                }}
+                              />
+                            }
+                          </li>
+                        </ul>
+                      </div>
 
-                        <li
-                          algaehtabs={"OrderPackage"}
-                          className={"nav-item tab-button"}
-                          onClick={this.openTab.bind(this)}
-                        >
-                          {
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Order Package"
-                              }}
-                            />
-                          }
-                        </li>
-                      </ul>
-                    </div>
-
-                    <div className="grid-section">
-                      {this.state.pageDisplay === "Orders" &&
-                      this.state.patient_id !== null ? (
-                        <OrderedList
-                          vat_applicable={this.props.vat_applicable}
-                          openData="Investigation"
-                        />
-                      ) : this.state.pageDisplay === "OrderConsumable" &&
-                        this.state.patient_id !== null ? (
-                        <OrderedList
-                          vat_applicable={this.props.vat_applicable}
-                          openData="Consumable"
-                        />
-                      ) : this.state.pageDisplay === "OrderPackage" &&
-                        this.state.patient_id !== null ? (
-                        <OrderedList
-                          vat_applicable={this.props.vat_applicable}
-                          openData="Package"
-                        />
-                      ) : null}
+                      <div className="grid-section">
+                        {this.state.pageDisplay === "Orders" ? (
+                          <OrderedList
+                            vat_applicable={this.props.vat_applicable}
+                            openData="Investigation"
+                            key="Investigation"
+                          />
+                        ) : this.state.pageDisplay === "OrderConsumable" ? (
+                          <OrderedList
+                            vat_applicable={this.props.vat_applicable}
+                            openData="Consumable"
+                            key="Consumable"
+                          />
+                        ) : this.state.pageDisplay === "OrderPackage" ? (
+                          <OrderedList
+                            vat_applicable={this.props.vat_applicable}
+                            openData="Package"
+                            key="Package"
+                          />
+                        ) : null}
+                      </div>
                     </div>
                   </div>
-                </div>
+                ) : (
+                  <p>Please select a patient first</p>
+                )}
                 {/* Notes Start */}
                 <hr />
                 <h6>Enter Nurse Notes</h6>
@@ -2341,8 +2342,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(NurseWorkbench)
+  connect(mapStateToProps, mapDispatchToProps)(NurseWorkbench)
 );

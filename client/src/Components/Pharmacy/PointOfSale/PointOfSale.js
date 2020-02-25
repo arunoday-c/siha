@@ -331,10 +331,10 @@ class PointOfSale extends Component {
               ) : (
                   <div className="row">
                     <AlagehFormGroup
-                      div={{ className: "col mandatory" }}
+                      div={{ className: "col" }}
                       label={{
                         forceLabel: "Patient Name",
-                        isImp: true
+                        // isImp: true
                       }}
                       textBox={{
                         className: "txt-fld",
@@ -368,10 +368,10 @@ class PointOfSale extends Component {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col mandatory" }}
+                      div={{ className: "col" }}
                       label={{
                         forceLabel: "Mobile Number",
-                        isImp: true
+                        // isImp: true
                       }}
                       textBox={{
                         number: {
@@ -390,10 +390,10 @@ class PointOfSale extends Component {
                       }}
                     />
                     <AlagehAutoComplete
-                      div={{ className: "col mandatory" }}
+                      div={{ className: "col" }}
                       label={{
                         forceLabel: "Nationality",
-                        isImp: true
+                        // isImp: true
                       }}
                       selector={{
                         name: "nationality_id",

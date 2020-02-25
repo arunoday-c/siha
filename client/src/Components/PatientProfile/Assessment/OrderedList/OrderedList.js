@@ -37,6 +37,81 @@ class OrderedList extends PureComponent {
     };
   }
 
+  componentDidMount() {
+    let prevLang = getCookie("Language");
+
+    this.setState({
+      selectedLang: prevLang
+    });
+
+    if (
+      this.props.servicetype === undefined ||
+      this.props.servicetype.length === 0
+    ) {
+      this.props.getServiceTypes({
+        uri: "/serviceType",
+        module: "masterSettings",
+        method: "GET",
+        redux: {
+          type: "SERVIES_TYPES_GET_DATA",
+          mappingName: "servicetype"
+        }
+      });
+    }
+
+    this.props.getServices({
+      uri: "/serviceType/getService",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "SERVICES_GET_DATA",
+        mappingName: "serviceslist"
+      }
+    });
+    const { visit_id, current_patient } = Window.global;
+    this.props.getOrderList({
+      uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
+      method: "GET",
+      data: {
+        visit_id: visit_id //Window.global["visit_id"]
+      },
+      redux: {
+        type: "ORDER_SERVICES_GET_DATA",
+        mappingName: "orderedList"
+      }
+    });
+
+    this.props.getConsumableOrderList({
+      uri: "/orderAndPreApproval/getVisitConsumable",
+      method: "GET",
+      data: {
+        visit_id: visit_id //Window.global["visit_id"]
+      },
+      redux: {
+        type: "ORDER_SERVICES_GET_DATA",
+        mappingName: "consumableorderedList"
+      }
+    });
+
+    this.props.getPakageList({
+      uri: "/orderAndPreApproval/getPatientPackage",
+      method: "GET",
+      data: {
+        patient_id: current_patient //Window.global["current_patient"]
+      },
+      redux: {
+        type: "PAIENT_PACKAGE_GET_DATA",
+        mappingName: "pakageList"
+      }
+    });
+  }
+
+  // UNSAFE_componentWillReceiveProps(nextProps) {
+  //   if (nextProps.openData !== undefined) {
+  //     this.setState({ openData: nextProps.openData });
+  //   }
+  // }
+
   ShowModel(e) {
     if (this.props.chief_complaint === true) {
       swalMessage({
@@ -368,81 +443,6 @@ class OrderedList extends PureComponent {
     });
   }
 
-  componentDidMount() {
-    let prevLang = getCookie("Language");
-
-    this.setState({
-      selectedLang: prevLang
-    });
-
-    if (
-      this.props.servicetype === undefined ||
-      this.props.servicetype.length === 0
-    ) {
-      this.props.getServiceTypes({
-        uri: "/serviceType",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "servicetype"
-        }
-      });
-    }
-
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      module: "masterSettings",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "serviceslist"
-      }
-    });
-    const { visit_id, current_patient } = Window.global;
-    this.props.getOrderList({
-      uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
-      method: "GET",
-      data: {
-        visit_id: visit_id //Window.global["visit_id"]
-      },
-      redux: {
-        type: "ORDER_SERVICES_GET_DATA",
-        mappingName: "orderedList"
-      }
-    });
-
-    this.props.getConsumableOrderList({
-      uri: "/orderAndPreApproval/getVisitConsumable",
-      method: "GET",
-      data: {
-        visit_id: visit_id //Window.global["visit_id"]
-      },
-      redux: {
-        type: "ORDER_SERVICES_GET_DATA",
-        mappingName: "consumableorderedList"
-      }
-    });
-
-    this.props.getPakageList({
-      uri: "/orderAndPreApproval/getPatientPackage",
-      method: "GET",
-      data: {
-        patient_id: current_patient //Window.global["current_patient"]
-      },
-      redux: {
-        type: "PAIENT_PACKAGE_GET_DATA",
-        mappingName: "pakageList"
-      }
-    });
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.openData !== undefined) {
-      this.setState({ openData: nextProps.openData });
-    }
-  }
-
   dateFormater(value) {
     if (value !== null) {
       return moment(value).format(Options.dateFormat);
@@ -479,10 +479,7 @@ class OrderedList extends PureComponent {
             pre_approval: row.pre_approval
           },
           onSuccess: response => {
-            const {
-              visit_id,
-              current_patient
-            } = Window.global;
+            const { visit_id, current_patient } = Window.global;
             if (response.data.success === true) {
               this.props.getOrderList({
                 uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
@@ -632,14 +629,10 @@ class OrderedList extends PureComponent {
       this.props.patient_profile !== undefined
         ? this.props.patient_profile
         : [];
-    const {
-      current_patient,
-      visit_id,
-      provider_id
-    } = Window.global;
+    const { current_patient, visit_id, provider_id } = Window.global;
     return (
       <div className="hptl-phase1-ordering-services-form">
-        {this.state.openData === "Investigation" ? (
+        {this.props.openData === "Investigation" ? (
           <div>
             <div
               className="col-lg-12"
@@ -857,7 +850,7 @@ class OrderedList extends PureComponent {
               </div>
             </div>
           </div>
-        ) : this.state.openData === "Consumable" ? (
+        ) : this.props.openData === "Consumable" ? (
           <div>
             <div
               className="col-lg-12"
