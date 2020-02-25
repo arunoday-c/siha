@@ -22,8 +22,7 @@ import {
 } from "./JournalVoucher.events";
 import PaymentComponent from "./PaymentComponent";
 import AccountsDrawer from "./AccountDrawer";
-
-import { getCookie } from "../../utils/algaehApiCall";
+import { getCookie, algaehApiCall } from "../../utils/algaehApiCall";
 // let records_av = {};
 let dataPayment = [
   { value: "journal", label: "Journal" },
@@ -60,6 +59,7 @@ export default function JournalVoucher() {
     cheque_date: undefined
   };
   const [drawer, setDrawer] = useState(false);
+  const [finOptions, setFinOptions] = useState(false);
   const [payment, setPayment] = useState(basePayment);
   const [loading, setLoading] = useState(false);
   const [clearLoading, setClearLoading] = useState(false);
@@ -82,6 +82,25 @@ export default function JournalVoucher() {
 
   useEffect(() => {
     if (!drawer) {
+      algaehApiCall({
+        uri: "/finance_masters/getFinanceOption",
+        module: "finance",
+        method: "GET",
+        onSuccess: response => {
+          debugger
+          if (response.data.success === true) {
+
+            setFinOptions(response.data.result[0]);
+          }
+        },
+        onCatch: error => {
+          AlgaehMessagePop({
+            type: "error",
+            display: error.response.data.message
+          });
+        }
+      });
+
       getHeaders({ voucher_type: voucherType })
         .then(result => {
           setAccounts(result);
@@ -244,13 +263,13 @@ export default function JournalVoucher() {
       voucher_type: voucherType,
       invoice_no:
         voucherType === "payment" ||
-        voucherType === "receipt" ||
-        voucherType === "credit_note" ||
-        voucherType === "debit_note"
+          voucherType === "receipt" ||
+          voucherType === "credit_note" ||
+          voucherType === "debit_note"
           ? selInvoice
           : voucherType === "purchase" || voucherType === "sales"
-          ? invoiceNo
-          : null,
+            ? invoiceNo
+            : null,
       // voucher_no: `${voucher_no}`,
       hospital_id: hospital_id,
       cost_center_id: cost_center_id,
@@ -384,28 +403,28 @@ export default function JournalVoucher() {
           voucherType === "receipt" ||
           voucherType === "credit_note" ||
           voucherType === "debit_note" ? (
-          <AlgaehAutoComplete
-            div={{ className: "col-2" }}
-            label={{
-              forceLabel: "Select Invoice No.",
-              isImp: true
-            }}
-            selector={{
-              value: selInvoice,
-              dataSource: {
-                data: invoiceData,
-                valueField: "invoice_no",
-                textField: "invoice_no"
-              },
-              onChange: selected => {
-                setSelInvoice(selected.invoice_no);
-              },
-              onClear: () => {
-                setSelInvoice("");
-              }
-            }}
-          />
-        ) : null}
+              <AlgaehAutoComplete
+                div={{ className: "col-2" }}
+                label={{
+                  forceLabel: "Select Invoice No.",
+                  isImp: true
+                }}
+                selector={{
+                  value: selInvoice,
+                  dataSource: {
+                    data: invoiceData,
+                    valueField: "invoice_no",
+                    textField: "invoice_no"
+                  },
+                  onChange: selected => {
+                    setSelInvoice(selected.invoice_no);
+                  },
+                  onClear: () => {
+                    setSelInvoice("");
+                  }
+                }}
+              />
+            ) : null}
 
         <PaymentComponent
           show={show}
@@ -434,25 +453,27 @@ export default function JournalVoucher() {
           }}
         />
 
-        <AlgaehAutoComplete
-          div={{ className: "col-2" }}
-          label={{ forceLabel: "Select a Cost Center" }}
-          selector={{
-            dataSource: {
-              data: costCenterdata,
-              valueField: "cost_center_id",
-              textField: "cost_center"
-            },
-            value: cost_center_id,
-            onChange: HandleCostCenter,
-            // others: {
-            //   loading: loading
-            // },
-            onClear: () => {
-              setCostCenter(null);
-            }
-          }}
-        />
+        {finOptions.cost_center_required === "Y" ?
+          <AlgaehAutoComplete
+            div={{ className: "col-2" }}
+            label={{ forceLabel: "Select a Cost Center" }}
+            selector={{
+              dataSource: {
+                data: costCenterdata,
+                valueField: "cost_center_id",
+                textField: "cost_center"
+              },
+              value: cost_center_id,
+              onChange: HandleCostCenter,
+              // others: {
+              //   loading: loading
+              // },
+              onClear: () => {
+                setCostCenter(null);
+              }
+            }}
+          /> : null}
+
 
         {/* <CostCenter result={records_av} noborder={false} /> */}
       </div>
