@@ -6,7 +6,6 @@ import { LINQ } from "node-linq";
 //import utilities from "algaeh-utilities";
 import algaehUtilities from "algaeh-utilities/utilities";
 
-
 //import { getMaxAuth } from "../../../src/utils";
 // import Sync from "sync";
 
@@ -258,7 +257,7 @@ export default {
                           .then(salResult => {
                             annual_leave_process_separately =
                               salResult[1][0][
-                              "annual_leave_process_separately"
+                                "annual_leave_process_separately"
                               ];
                             if (
                               salResult[0].length > 0 &&
@@ -314,9 +313,9 @@ export default {
                                         parseFloat(
                                           deductionResult.calculatedLeaveDays
                                         ) <=
-                                        parseFloat(
-                                          leaveData[0]["close_balance"]
-                                        )
+                                          parseFloat(
+                                            leaveData[0]["close_balance"]
+                                          )
                                       ) {
                                         let newCloseBal =
                                           parseFloat(
@@ -384,7 +383,7 @@ export default {
                                         let anualLeave = "";
                                         if (
                                           annual_leave_process_separately ==
-                                          "Y" &&
+                                            "Y" &&
                                           input.leave_category == "A"
                                         ) {
                                           anualLeave = ` insert into hims_f_employee_annual_leave (employee_id,year,month,leave_application_id) VALUE(${input.employee_id},
@@ -418,29 +417,29 @@ export default {
                                           convertToLeave = ` update hims_f_daily_time_sheet set status='${input.leave_type +
                                             "L"}', actual_hours=0,actual_minutes=0 where hospital_id=${
                                             input.hospital_id
-                                            }  and employee_id=${
+                                          }  and employee_id=${
                                             input.employee_id
-                                            } and attendance_date='${
+                                          } and attendance_date='${
                                             input.from_date
-                                            }';
+                                          }';
                                                       update hims_f_daily_attendance set absent_days=0 ,paid_leave=${paid},unpaid_leave=${unpaid} where hospital_id=${
                                             input.hospital_id
-                                            } and employee_id=${
+                                          } and employee_id=${
                                             input.employee_id
-                                            } and attendance_date='${
+                                          } and attendance_date='${
                                             input.from_date
-                                            }';
+                                          }';
                                                       update hims_f_attendance_monthly set absent_days=absent_days-1,total_leave=total_leave+1 ${leave}
                                                       where hospital_id=${
-                                            input.hospital_id
-                                            } and employee_id=${
+                                                        input.hospital_id
+                                                      } and employee_id=${
                                             input.employee_id
-                                            } and year=${
+                                          } and year=${
                                             input.year
-                                            } and month=${month_number};
+                                          } and month=${month_number};
                                                       update hims_f_absent set status='CTL' ,processed='Y' where hims_f_absent_id=${
-                                            input.absent_id
-                                            };`;
+                                                        input.absent_id
+                                                      };`;
                                         }
 
                                         _mysql
@@ -773,7 +772,7 @@ export default {
                           .then(salResult => {
                             annual_leave_process_separately =
                               salResult[1][0][
-                              "annual_leave_process_separately"
+                                "annual_leave_process_separately"
                               ];
                             if (
                               salResult[0].length > 0 &&
@@ -921,7 +920,7 @@ export default {
 
                                         if (
                                           annual_leave_process_separately ==
-                                          "Y" &&
+                                            "Y" &&
                                           input.leave_category == "A"
                                         ) {
                                           anualLeave = ` insert into hims_f_employee_annual_leave (employee_id,year,month,leave_application_id,hospital_id,from_normal_salary) VALUE(${input.employee_id},
@@ -958,29 +957,29 @@ export default {
                                           convertToLeave = ` update hims_f_daily_time_sheet set status='${input.leave_type +
                                             "L"}', actual_hours=0,actual_minutes=0 where hospital_id=${
                                             input.hospital_id
-                                            }  and employee_id=${
+                                          }  and employee_id=${
                                             input.employee_id
-                                            } and attendance_date='${
+                                          } and attendance_date='${
                                             input.from_date
-                                            }';
+                                          }';
                                                         update hims_f_daily_attendance set absent_days=0 ,paid_leave=${paid},unpaid_leave=${unpaid} where hospital_id=${
                                             input.hospital_id
-                                            } and employee_id=${
+                                          } and employee_id=${
                                             input.employee_id
-                                            } and attendance_date='${
+                                          } and attendance_date='${
                                             input.from_date
-                                            }';
+                                          }';
                                                         update hims_f_attendance_monthly set absent_days=absent_days-1,total_leave=total_leave+1 ${leave}
                                                         where hospital_id=${
-                                            input.hospital_id
-                                            } and employee_id=${
+                                                          input.hospital_id
+                                                        } and employee_id=${
                                             input.employee_id
-                                            } and year=${
+                                          } and year=${
                                             input.year
-                                            } and month=${month_number};
+                                          } and month=${month_number};
                                                         update hims_f_absent set status='CTL' ,processed='Y' where hims_f_absent_id=${
-                                            input.absent_id
-                                            };`;
+                                                          input.absent_id
+                                                        };`;
                                         }
 
                                         _mysql
@@ -1035,7 +1034,7 @@ export default {
                                           message: "leave balance is low"
                                         };
 
-                                        _mysql.rollBackTransaction(() => { });
+                                        _mysql.rollBackTransaction(() => {});
                                         next();
                                       }
                                     })
@@ -1185,11 +1184,7 @@ export default {
                                   _mysql.releaseConnection();
                                   req.records = {
                                     invalid_input: true,
-                                    message: `Please Cancel (${
-                                      acrossYearSecondLeave[0][
-                                      "leave_application_code"
-                                      ]
-                                      }) application First `
+                                    message: `Please Cancel (${acrossYearSecondLeave[0]["leave_application_code"]}) application First `
                                   };
                                   next();
                                 } else {
@@ -1250,7 +1245,7 @@ export default {
                                   message: "leave Not found"
                                 };
 
-                                _mysql.rollBackTransaction(() => { });
+                                _mysql.rollBackTransaction(() => {});
                                 next();
                               }
                             } else {
@@ -1261,7 +1256,7 @@ export default {
                                 message: "leave Not found"
                               };
 
-                              _mysql.rollBackTransaction(() => { });
+                              _mysql.rollBackTransaction(() => {});
                               next();
                             }
                           })
@@ -1437,11 +1432,7 @@ export default {
                                         _mysql.releaseConnection();
                                         req.records = {
                                           invalid_input: true,
-                                          message: `Please Cancel (${
-                                            acrossYearSecondLeave[0][
-                                            "leave_application_code"
-                                            ]
-                                            }) application First `
+                                          message: `Please Cancel (${acrossYearSecondLeave[0]["leave_application_code"]}) application First `
                                         };
                                         next();
                                       } else {
@@ -1505,7 +1496,7 @@ export default {
                                         message: "leave Not found"
                                       };
 
-                                      _mysql.rollBackTransaction(() => { });
+                                      _mysql.rollBackTransaction(() => {});
                                       next();
                                     }
                                   } else {
@@ -1516,7 +1507,7 @@ export default {
                                       message: "leave Not found"
                                     };
 
-                                    _mysql.rollBackTransaction(() => { });
+                                    _mysql.rollBackTransaction(() => {});
                                     next();
                                   }
                                 })
@@ -1602,7 +1593,7 @@ export default {
                           .then(salResult => {
                             annual_leave_process_separately =
                               salResult[1][0][
-                              "annual_leave_process_separately"
+                                "annual_leave_process_separately"
                               ];
                             if (
                               salResult[0].length > 0 &&
@@ -1743,7 +1734,7 @@ export default {
                                         message: "leave Not found"
                                       };
 
-                                      _mysql.rollBackTransaction(() => { });
+                                      _mysql.rollBackTransaction(() => {});
                                       next();
                                     }
                                   })
@@ -2014,14 +2005,14 @@ export default {
                           w.holiday == "Y" &&
                           w.holiday_type == "RS" &&
                           w.religion_id == my_religion) ||
-                        ((w.holiday_date == to_date && w.weekoff == "Y") ||
-                          (w.holiday_date == to_date &&
-                            w.holiday == "Y" &&
-                            w.holiday_type == "RE") ||
-                          (w.holiday_date == to_date &&
-                            w.holiday == "Y" &&
-                            w.holiday_type == "RS" &&
-                            w.religion_id == my_religion))
+                        (w.holiday_date == to_date && w.weekoff == "Y") ||
+                        (w.holiday_date == to_date &&
+                          w.holiday == "Y" &&
+                          w.holiday_type == "RE") ||
+                        (w.holiday_date == to_date &&
+                          w.holiday == "Y" &&
+                          w.holiday_type == "RS" &&
+                          w.religion_id == my_religion)
                     )
                     .Select(s => {
                       return {
@@ -2099,7 +2090,7 @@ export default {
                               .Where(
                                 w =>
                                   dateRange[k]["begning_of_leave"] <=
-                                  w.holiday_date &&
+                                    w.holiday_date &&
                                   w.holiday_date <= dateRange[k]["end_of_leave"]
                               )
                               .Count()
@@ -2113,7 +2104,7 @@ export default {
                               .Where(
                                 w =>
                                   dateRange[k]["begning_of_leave"] <=
-                                  w.holiday_date &&
+                                    w.holiday_date &&
                                   w.holiday_date <= dateRange[k]["end_of_leave"]
                               )
                               .Count()
@@ -2733,11 +2724,11 @@ export default {
                                               message:
                                                 "leave is already there between this dates " +
                                                 clashing_from_leave_session[i][
-                                                "from_date"
+                                                  "from_date"
                                                 ] +
                                                 " AND " +
                                                 clashing_from_leave_session[i][
-                                                "to_date"
+                                                  "to_date"
                                                 ]
                                             };
                                             next();
@@ -2747,7 +2738,7 @@ export default {
                                           if (
                                             i ==
                                             clashing_from_leave_session.length -
-                                            1
+                                              1
                                           ) {
                                             // debugLog(
                                             //   "clashing_from_leave_session last iteration:"
@@ -2840,16 +2831,16 @@ export default {
                                             "FH" &&
                                             prev_to_leave_session_SH == "SH" &&
                                             curr_from_session == "FH") ||
-                                          ((prev_to_leave_session_FD == "FD" &&
+                                          (prev_to_leave_session_FD == "FD" &&
                                             curr_from_session == "SH") ||
-                                            (prev_to_leave_session_SH == "SH" &&
-                                              curr_from_session == "SH")) ||
-                                          ((prev_to_leave_session_FH == "FH" &&
+                                          (prev_to_leave_session_SH == "SH" &&
+                                            curr_from_session == "SH") ||
+                                          (prev_to_leave_session_FH == "FH" &&
                                             curr_from_session == "FD") ||
-                                            (prev_to_leave_session_FD == "FD" &&
-                                              curr_from_session == "FD") ||
-                                            (prev_to_leave_session_SH == "SH" &&
-                                              curr_from_session == "FD"))
+                                          (prev_to_leave_session_FD == "FD" &&
+                                            curr_from_session == "FD") ||
+                                          (prev_to_leave_session_SH == "SH" &&
+                                            curr_from_session == "FD")
                                         ) {
                                           // debugLog("rejction_one:");
                                           //clashing only  new from_leave_session  with existing  to_leave_session
@@ -2861,11 +2852,11 @@ export default {
                                             message:
                                               "leave is already there between this dates " +
                                               clashing_to_leave_session[i][
-                                              "from_date"
+                                                "from_date"
                                               ] +
                                               " AND " +
                                               clashing_to_leave_session[i][
-                                              "to_date"
+                                                "to_date"
                                               ]
                                           };
                                           next();
@@ -2949,9 +2940,7 @@ export default {
               } else {
                 req.records = {
                   leave_already_exist: true,
-                  message: ` can't apply leave before joining date, your joining date is: ${
-                    empResult[0]["date_of_joining"]
-                    }   `
+                  message: ` can't apply leave before joining date, your joining date is: ${empResult[0]["date_of_joining"]}   `
                 };
               }
               next();
@@ -3074,7 +3063,7 @@ export default {
                 })
                 .catch(e => {
                   console.log("error back:", e);
-                  _mysql.rollBackTransaction(() => { });
+                  _mysql.rollBackTransaction(() => {});
                   req.records = e;
                   next();
                 });
@@ -3100,9 +3089,7 @@ export default {
               } else {
                 req.records = {
                   leave_already_exist: true,
-                  message: ` can't apply leave before joining date, your joining date is: ${
-                    empResult["date_of_joining"]
-                    }   `
+                  message: ` can't apply leave before joining date, your joining date is: ${empResult["date_of_joining"]}   `
                 };
               }
               next();
@@ -3137,37 +3124,42 @@ export default {
   getEmployeeLeaveData: (req, res, next) => {
     if (req.query.employee_id > 0) {
       const _mysql = new algaehMysql();
-      let strQryAppend = ""
+      let strQryAppend = "";
       console.log("req.query.leave_encash", req.query.leave_encash);
 
-      if (req.query.leave_encash !== null && req.query.leave_encash !== undefined) {
+      if (
+        req.query.leave_encash !== null &&
+        req.query.leave_encash !== undefined
+      ) {
         strQryAppend += ` and leave_encash = '${req.query.leave_encash}' `;
       }
-let year='';
+      let year = "";
 
-
-      _mysql
-      .executeQuery({
-        query:
-          " select attendance_starts,at_end_date from hims_d_hrms_options limit 1; ",
-        printQuery: false
-      })
-      .then(ress => {
-
-       if(req.query.year>0){
-         year=req.query.year;
-       }else{
-         if (ress[0]["attendance_starts"] == "PM" && ress[0]["at_end_date"] < moment().format("D") && moment().format("M") == 12) {
-              year=parseInt(moment().format("YYYY"))+1;
-         } else {         
-          year=moment().format("YYYY")
-            }
-        }
-       
       _mysql
         .executeQuery({
           query:
-            "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, L.leave_code,\
+            " select attendance_starts,at_end_date from hims_d_hrms_options limit 1; ",
+          printQuery: false
+        })
+        .then(ress => {
+          if (req.query.year > 0) {
+            year = req.query.year;
+          } else {
+            if (
+              ress[0]["attendance_starts"] == "PM" &&
+              ress[0]["at_end_date"] < moment().format("D") &&
+              moment().format("M") == 12
+            ) {
+              year = parseInt(moment().format("YYYY")) + 1;
+            } else {
+              year = moment().format("YYYY");
+            }
+          }
+
+          _mysql
+            .executeQuery({
+              query:
+                "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, L.leave_code,\
         L.leave_description,L.leave_type,total_eligible, availed_till_date, close_balance,\
         E.employee_code ,E.full_name as employee_name,\
         LD.hims_d_leave_detail_id,LD.employee_type, LD.eligible_days ,\
@@ -3176,20 +3168,21 @@ let year='';
         inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id  \
         inner join hims_d_employee E on ML.employee_id=E.hims_d_employee_id and E.record_status='A' \
         and L.record_status='A' where ML.year=? and ML.employee_id=?  and  LD.employee_type=E.employee_type and  \
-        (LD.gender=E.sex or LD.gender='BOTH' ) " + strQryAppend +
-          "order by hims_f_employee_monthly_leave_id desc;",
-          values: [year, req.query.employee_id],
-          printQuery: false
-        })
-        .then(result => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
-        })
-        .catch(e => {
-          _mysql.releaseConnection();
-          next(e);
-        });
+        (LD.gender=E.sex or LD.gender='BOTH' ) " +
+                strQryAppend +
+                "order by hims_f_employee_monthly_leave_id desc;",
+              values: [year, req.query.employee_id],
+              printQuery: false
+            })
+            .then(result => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
         })
         .catch(e => {
           _mysql.releaseConnection();
@@ -3774,7 +3767,7 @@ let year='';
                       .Where(
                         w =>
                           w.employee_id ==
-                          AllEmployees[i]["hims_d_employee_id"] &&
+                            AllEmployees[i]["hims_d_employee_id"] &&
                           w.year == year
                       )
                       .Select(s => s.hims_f_employee_yearly_leave_id)
@@ -3794,7 +3787,7 @@ let year='';
                       .Where(
                         w =>
                           w.employee_id ==
-                          AllEmployees[i]["hims_d_employee_id"] &&
+                            AllEmployees[i]["hims_d_employee_id"] &&
                           w.year == year
                       )
                       .Select(s => s.leave_id)
@@ -4795,11 +4788,7 @@ let year='';
                             _mysql.releaseConnection();
                             req.records = {
                               invalid_input: true,
-                              message: `Please Cancel (${
-                                acrossYearSecondLeave[0][
-                                "leave_application_code"
-                                ]
-                                }) application First `
+                              message: `Please Cancel (${acrossYearSecondLeave[0]["leave_application_code"]}) application First `
                             };
                             next();
                           } else {
@@ -4862,7 +4851,7 @@ let year='';
                             message: "leave Not found"
                           };
 
-                          _mysql.rollBackTransaction(() => { });
+                          _mysql.rollBackTransaction(() => {});
                           next();
                         }
                       } else {
@@ -4873,7 +4862,7 @@ let year='';
                           message: "leave Not found"
                         };
 
-                        _mysql.rollBackTransaction(() => { });
+                        _mysql.rollBackTransaction(() => {});
                         next();
                       }
                     })
@@ -5060,7 +5049,7 @@ let year='';
                                             key ==
                                             deductionResult
                                               .monthWiseCalculatedLeaveDeduction[
-                                            i
+                                              i
                                             ]["month_name"]
                                           ) {
                                             updateMonths = {
@@ -5072,7 +5061,7 @@ let year='';
                                                 parseFloat(
                                                   deductionResult
                                                     .monthWiseCalculatedLeaveDeduction[
-                                                  i
+                                                    i
                                                   ]["finalLeave"]
                                                 )
                                             };
@@ -5253,23 +5242,32 @@ let year='';
                 printQuery: false
               })
               .then(leaveResult => {
-                const leaveStaus=leaveResult[0];
-                const attResult=leaveResult[1][0];
+                const leaveStaus = leaveResult[0];
+                const attResult = leaveResult[1][0];
                 if (leaveStaus.length > 0) {
                   if (leaveStaus[0]["status"] == "APR") {
-                    let month_number = '';
+                    let month_number = "";
 
-
-                    if (attResult.attendance_starts == "PM" && attResult.at_end_date > 0) {
-                      if (moment(input.from_date, "YYYY-MM-DD").format("D") > attResult.at_end_date) {
+                    if (
+                      attResult.attendance_starts == "PM" &&
+                      attResult.at_end_date > 0
+                    ) {
+                      if (
+                        moment(input.from_date, "YYYY-MM-DD").format("D") >
+                        attResult.at_end_date
+                      ) {
                         month_number =
-                          parseInt(moment(input.from_date, "YYYY-MM-DD").format("M")) + 1;
-                      }else {
-                        month_number = moment(input.from_date, "YYYY-MM-DD").format("M");
+                          parseInt(
+                            moment(input.from_date, "YYYY-MM-DD").format("M")
+                          ) + 1;
+                      } else {
+                        month_number = moment(
+                          input.from_date,
+                          "YYYY-MM-DD"
+                        ).format("M");
                       }
-                    }else{
+                    } else {
                       month_number = moment(input.from_date).format("M");
-
                     }
 
                     _mysql
@@ -5327,11 +5325,7 @@ let year='';
                                         _mysql.releaseConnection();
                                         req.records = {
                                           invalid_input: true,
-                                          message: `Please Cancel (${
-                                            acrossYearSecondLeave[0][
-                                            "leave_application_code"
-                                            ]
-                                            }) application First `
+                                          message: `Please Cancel (${acrossYearSecondLeave[0]["leave_application_code"]}) application First `
                                         };
                                         next();
                                       } else {
@@ -5429,7 +5423,7 @@ let year='';
                                       message: "leave Not found"
                                     };
 
-                                    _mysql.rollBackTransaction(() => { });
+                                    _mysql.rollBackTransaction(() => {});
                                     next();
                                   }
                                 })
@@ -5454,7 +5448,8 @@ let year='';
                           _mysql.releaseConnection();
                           req.records = {
                             invalid_input: true,
-                            message: "Salary already processed, can’t cancel the leave."
+                            message:
+                              "Salary already processed, can’t cancel the leave."
                           };
                           next();
                           return;
@@ -5651,7 +5646,7 @@ let year='';
       .catch(e => {
         console.log("CATCH:", e);
         if (e.invalid_input == true) {
-          _mysql.rollBackTransaction(() => { });
+          _mysql.rollBackTransaction(() => {});
           req.records = e;
           next();
         } else {
@@ -6022,7 +6017,7 @@ function calc(db, body) {
                             .Where(
                               w =>
                                 dateRange[k]["begning_of_leave"] <=
-                                w.holiday_date &&
+                                  w.holiday_date &&
                                 w.holiday_date <= dateRange[k]["end_of_leave"]
                             )
                             .Count()
@@ -6036,7 +6031,7 @@ function calc(db, body) {
                             .Where(
                               w =>
                                 dateRange[k]["begning_of_leave"] <=
-                                w.holiday_date &&
+                                  w.holiday_date &&
                                 w.holiday_date <= dateRange[k]["end_of_leave"]
                             )
                             .Count()
@@ -6323,9 +6318,9 @@ function saveF(_mysql, req, next, input, msg) {
 
   _mysql
     .generateRunningNumber({
-          user_id: req.userIdentity.algaeh_d_app_user_id,
-          numgen_codes: ["EMPLOYEE_LEAVE"],
-          table_name: "hims_f_hrpayroll_numgen"
+      user_id: req.userIdentity.algaeh_d_app_user_id,
+      numgen_codes: ["EMPLOYEE_LEAVE"],
+      table_name: "hims_f_hrpayroll_numgen"
     })
     .then(generatedNumbers => {
       _mysql
@@ -6986,179 +6981,178 @@ function projectedleaveCalc(input, _mysql) {
     let year = input.year;
 
     return new Promise((resolve, reject) => {
+      if (
+        moment(date_end, "YYYY-MM-DD").format("YYYYMMDD") >=
+        moment(date_start, "YYYY-MM-DD").format("YYYYMMDD")
+      ) {
+        if (attendance_starts == "PM" && at_end_date > 0) {
+          console.log("PM");
 
-    if(moment( date_end, "YYYY-MM-DD").format("YYYYMMDD")>=moment(date_start, "YYYY-MM-DD").format("YYYYMMDD")){
-      if (attendance_starts == "PM" && at_end_date > 0) {
-        console.log("PM");
-
-        let from_month = moment(date_start, "YYYY-MM-DD").format("M");
-        let to_month = moment(date_end, "YYYY-MM-DD").format("M");
-        let from_day = moment(date_start, "YYYY-MM-DD").format("D");
-        let to_day = moment(date_end, "YYYY-MM-DD").format("D");
-        if (from_month == to_month) {
-    
-          let cur_month = "";
-          if (from_day <= at_end_date && to_day <= at_end_date) {
-           
-            temp_number_of_months.push(parseInt(from_month));
-          } else if (from_day <= at_end_date && to_day > at_end_date) {
-            
-            temp_number_of_months.push(from_month);
-            cur_month = parseInt(from_month) + parseInt(1);
-
-            if (cur_month > 12) {
-              cur_month = 1;
-            }
-            temp_number_of_months.push(cur_month);
-          } else if (from_day > at_end_date && to_day > at_end_date) {            
-            cur_month = parseInt(from_month) + parseInt(1);
-
-            if (cur_month > 12) {
-              cur_month = 1;
-            }
-            temp_number_of_months.push(cur_month);
-          }
-        } else {
-          while (
-            moment(date_end, "YYYY-MM-DD").format("YYYYMM") >=
-            moment(date_start, "YYYY-MM-DD").format("YYYYMM")
-          ) {
-            let cur_month = 0;
-            if (from_month == moment(date_start, "YYYY-MM-DD").format("M")) {
-              if (from_day <= at_end_date) {
-                cur_month = parseInt(from_month);
-
-                if (cur_month > 12) {
-                  cur_month = 1;
-
-                  temp_number_of_months.push(cur_month);
-                } else {
-                  temp_number_of_months.push(cur_month);
-                }
-              } else if (from_day > at_end_date) {
-                cur_month = parseInt(from_month) + parseInt(1);
-                if (cur_month > 12) {
-                  cur_month = 1;
-
-                  temp_number_of_months.push(cur_month);
-                } else {
-                  temp_number_of_months.push(cur_month);
-                }
-              }
-
-              date_start.add(1, "M");
-            } else if (
-              to_month == moment(date_start, "YYYY-MM-DD").format("M")
-            ) {
-              if (to_day <= at_end_date) {
-                cur_month = parseInt(
-                  moment(date_start, "YYYY-MM-DD").format("M")
-                );
-
-                if (cur_month > 12) {
-                  cur_month = 1;
-
-                  temp_number_of_months.push(cur_month);
-                } else {
-                  temp_number_of_months.push(cur_month);
-                }
-              } else if (to_day > at_end_date) {
-                cur_month = parseInt(
-                  moment(date_start, "YYYY-MM-DD").format("M")
-                );
-
-                if (cur_month > 12) {
-                  cur_month = 1;
-
-                  temp_number_of_months.push(cur_month);
-                } else {
-                  temp_number_of_months.push(cur_month);
-                }
-
-                cur_month = parseInt(cur_month) + parseInt(1);
-
-                if (cur_month > 12) {
-                  cur_month = 1;
-
-                  temp_number_of_months.push(cur_month);
-                } else {
-                  temp_number_of_months.push(cur_month);
-                }
-              }
-              date_start.add(1, "M");
-            } else {
-              cur_month = parseInt(
-                moment(date_start, "YYYY-MM-DD").format("M")
-              );
+          let from_month = moment(date_start, "YYYY-MM-DD").format("M");
+          let to_month = moment(date_end, "YYYY-MM-DD").format("M");
+          let from_day = moment(date_start, "YYYY-MM-DD").format("D");
+          let to_day = moment(date_end, "YYYY-MM-DD").format("D");
+          if (from_month == to_month) {
+            let cur_month = "";
+            if (from_day <= at_end_date && to_day <= at_end_date) {
+              temp_number_of_months.push(parseInt(from_month));
+            } else if (from_day <= at_end_date && to_day > at_end_date) {
+              temp_number_of_months.push(from_month);
+              cur_month = parseInt(from_month) + parseInt(1);
 
               if (cur_month > 12) {
                 cur_month = 1;
-
-                temp_number_of_months.push(cur_month);
-              } else {
-                temp_number_of_months.push(cur_month);
               }
+              temp_number_of_months.push(cur_month);
+            } else if (from_day > at_end_date && to_day > at_end_date) {
+              cur_month = parseInt(from_month) + parseInt(1);
 
-              date_start.add(1, "M");
+              if (cur_month > 12) {
+                cur_month = 1;
+              }
+              temp_number_of_months.push(cur_month);
             }
-          }
-        }
-      } else {
-        //if attendance month from_date and to_date are normal
-        console.log("AM");
-        let from_month = moment(date_start, "YYYY-MM-DD").format("M");
-        let to_month = moment(date_end, "YYYY-MM-DD").format("M");
-
-        if (from_month == to_month) {
-          if (temp_number_of_months.indexOf(from_month) === -1) {
-            temp_number_of_months.push(from_month);
-          }
-        } else if (parseInt(from_month) < parseInt(to_month)) {
-          while (
-            moment(date_end, "YYYY-MM-DD").format("YYYYMM") >=
-            moment(date_start, "YYYY-MM-DD").format("YYYYMM")
-          ) {
-            let cur_month = 0;
-
-            if (from_month == moment(date_start, "YYYY-MM-DD").format("M")) {
-              cur_month = parseInt(from_month);
-
-              if (temp_number_of_months.indexOf(cur_month) === -1) {
-                temp_number_of_months.push(cur_month);
-              }
-              date_start.add(1, "M");
-            } else if (
-              to_month == moment(date_start, "YYYY-MM-DD").format("M")
+          } else {
+            while (
+              moment(date_end, "YYYY-MM-DD").format("YYYYMM") >=
+              moment(date_start, "YYYY-MM-DD").format("YYYYMM")
             ) {
-              cur_month = parseInt(to_month);
-              if (temp_number_of_months.indexOf(cur_month) === -1) {
-                temp_number_of_months.push(cur_month);
-              }
-              date_start.add(1, "M");
-            } else {
-              cur_month = parseInt(
-                moment(date_start, "YYYY-MM-DD").format("M")
-              );
+              let cur_month = 0;
+              if (from_month == moment(date_start, "YYYY-MM-DD").format("M")) {
+                if (from_day <= at_end_date) {
+                  cur_month = parseInt(from_month);
 
-              if (temp_number_of_months.indexOf(cur_month) === -1) {
-                temp_number_of_months.push(cur_month);
+                  if (cur_month > 12) {
+                    cur_month = 1;
+
+                    temp_number_of_months.push(cur_month);
+                  } else {
+                    temp_number_of_months.push(cur_month);
+                  }
+                } else if (from_day > at_end_date) {
+                  cur_month = parseInt(from_month) + parseInt(1);
+                  if (cur_month > 12) {
+                    cur_month = 1;
+
+                    temp_number_of_months.push(cur_month);
+                  } else {
+                    temp_number_of_months.push(cur_month);
+                  }
+                }
+
+                date_start.add(1, "M");
+              } else if (
+                to_month == moment(date_start, "YYYY-MM-DD").format("M")
+              ) {
+                if (to_day <= at_end_date) {
+                  cur_month = parseInt(
+                    moment(date_start, "YYYY-MM-DD").format("M")
+                  );
+
+                  if (cur_month > 12) {
+                    cur_month = 1;
+
+                    temp_number_of_months.push(cur_month);
+                  } else {
+                    temp_number_of_months.push(cur_month);
+                  }
+                } else if (to_day > at_end_date) {
+                  cur_month = parseInt(
+                    moment(date_start, "YYYY-MM-DD").format("M")
+                  );
+
+                  if (cur_month > 12) {
+                    cur_month = 1;
+
+                    temp_number_of_months.push(cur_month);
+                  } else {
+                    temp_number_of_months.push(cur_month);
+                  }
+
+                  cur_month = parseInt(cur_month) + parseInt(1);
+
+                  if (cur_month > 12) {
+                    cur_month = 1;
+
+                    temp_number_of_months.push(cur_month);
+                  } else {
+                    temp_number_of_months.push(cur_month);
+                  }
+                }
+                date_start.add(1, "M");
+              } else {
+                cur_month = parseInt(
+                  moment(date_start, "YYYY-MM-DD").format("M")
+                );
+
+                if (cur_month > 12) {
+                  cur_month = 1;
+
+                  temp_number_of_months.push(cur_month);
+                } else {
+                  temp_number_of_months.push(cur_month);
+                }
+
+                date_start.add(1, "M");
               }
-              date_start.add(1, "M");
+            }
+          }
+        } else {
+          //if attendance month from_date and to_date are normal
+          console.log("AM");
+          let from_month = moment(date_start, "YYYY-MM-DD").format("M");
+          let to_month = moment(date_end, "YYYY-MM-DD").format("M");
+
+          if (from_month == to_month) {
+            if (temp_number_of_months.indexOf(from_month) === -1) {
+              temp_number_of_months.push(from_month);
+            }
+          } else if (parseInt(from_month) < parseInt(to_month)) {
+            while (
+              moment(date_end, "YYYY-MM-DD").format("YYYYMM") >=
+              moment(date_start, "YYYY-MM-DD").format("YYYYMM")
+            ) {
+              let cur_month = 0;
+
+              if (from_month == moment(date_start, "YYYY-MM-DD").format("M")) {
+                cur_month = parseInt(from_month);
+
+                if (temp_number_of_months.indexOf(cur_month) === -1) {
+                  temp_number_of_months.push(cur_month);
+                }
+                date_start.add(1, "M");
+              } else if (
+                to_month == moment(date_start, "YYYY-MM-DD").format("M")
+              ) {
+                cur_month = parseInt(to_month);
+                if (temp_number_of_months.indexOf(cur_month) === -1) {
+                  temp_number_of_months.push(cur_month);
+                }
+                date_start.add(1, "M");
+              } else {
+                cur_month = parseInt(
+                  moment(date_start, "YYYY-MM-DD").format("M")
+                );
+
+                if (temp_number_of_months.indexOf(cur_month) === -1) {
+                  temp_number_of_months.push(cur_month);
+                }
+                date_start.add(1, "M");
+              }
             }
           }
         }
-      }
-     
-      temp_number_of_months.forEach(item => {
-        if (number_of_months.indexOf(item) === -1) {
-          number_of_months.push(item);
-        }
-      });
 
-      mysql
-        .executeQuery({
-          query:
-            "select hims_f_salary_id,month,year,employee_id\
+        temp_number_of_months.forEach(item => {
+          if (number_of_months.indexOf(item) === -1) {
+            number_of_months.push(item);
+          }
+        });
+
+        mysql
+          .executeQuery({
+            query:
+              "select hims_f_salary_id,month,year,employee_id\
             from hims_f_salary where employee_id=? and month in (?) and year=? and salary_processed='Y' group by month;\
             select hims_d_employee_id,coalesce(monthly_accrual_days,0) monthly_accrual_days  from hims_d_employee E left join \
             hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id \
@@ -7166,64 +7160,61 @@ function projectedleaveCalc(input, _mysql) {
             select hims_f_employee_monthly_leave_id,projected_applied_leaves,close_balance from\
             hims_f_employee_monthly_leave where employee_id=? and leave_id=? and \
             year=?;    ",
-          values: [
-            input.employee_id,
-            number_of_months,
-            year,
-            input.employee_id,
-            input.employee_id,
-            input.leave_id,
-            year
-          ],
-          printQuery: true
-        })
-        .then(result => {
-          // mysql.releaseConnection();
+            values: [
+              input.employee_id,
+              number_of_months,
+              year,
+              input.employee_id,
+              input.employee_id,
+              input.leave_id,
+              year
+            ],
+            printQuery: true
+          })
+          .then(result => {
+            // mysql.releaseConnection();
 
-          if (result[2].length > 0) {
-            if (
-              !parseFloat(result[2][0]["projected_applied_leaves"]) >
-              parseFloat(0)
-            ) {
-              const salary_to_be_months =
-                number_of_months.length - result[0].length;
-              const monthly_accrual_days = result[1][0]["monthly_accrual_days"];
+            if (result[2].length > 0) {
+              if (
+                !parseFloat(result[2][0]["projected_applied_leaves"]) >
+                parseFloat(0)
+              ) {
+                const salary_to_be_months =
+                  number_of_months.length - result[0].length;
+                const monthly_accrual_days =
+                  result[1][0]["monthly_accrual_days"];
 
-              const predicted_leave_days =
-                parseFloat(salary_to_be_months) *
-                parseFloat(monthly_accrual_days);
+                const predicted_leave_days =
+                  parseFloat(salary_to_be_months) *
+                  parseFloat(monthly_accrual_days);
 
-              resolve({
-                predicted_leave_days: predicted_leave_days,
-                monthly_accrual_days: monthly_accrual_days
-              });
-              // next();
+                resolve({
+                  predicted_leave_days: predicted_leave_days,
+                  monthly_accrual_days: monthly_accrual_days
+                });
+                // next();
+              } else {
+                reject({
+                  invalid_input: true,
+                  message: "You already availed projected leaves"
+                });
+              }
             } else {
               reject({
                 invalid_input: true,
-                message: "You already availed projected leaves"
+                message: "You dont have this leave"
               });
-
-           
             }
-          } else {
-           
-            reject({
-              invalid_input: true,
-              message: "You dont have this leave"
-            });
-          }
-        })
-        .catch(e => {
-          console.log("e:", e);
-          next(e);
-        });
-      }else{
+          })
+          .catch(e => {
+            console.log("e:", e);
+            next(e);
+          });
+      } else {
         reject({
           invalid_input: true,
           message: "can't apply Projected leaves for Past Dates"
         });
-
       }
     });
   } catch (e) {
@@ -7341,7 +7332,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
                   ) {
                     m["eligible_days"] = Math.round(
                       (parseFloat(m.eligible_days) / parseFloat(365)) *
-                      parseFloat(AllEmployees[i]["no_days_til_eoy"])
+                        parseFloat(AllEmployees[i]["no_days_til_eoy"])
                     );
                   }
                   return m;
@@ -7364,7 +7355,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
                   const carry_fwd = Math.round(
                     (parseFloat(input.carry_forward) *
                       parseFloat(carry_fwd_leav.carry_forward_percentage)) /
-                    parseFloat(100)
+                      parseFloat(100)
                   );
 
                   update_old_records.push({
@@ -7396,7 +7387,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
                       ((parseFloat(carry_fwd_leav.close_balance) -
                         parseFloat(deduct_close_Balance)) *
                         parseFloat(carry_fwd_leav.carry_forward_percentage)) /
-                      parseFloat(100)
+                        parseFloat(100)
                     );
                     m["close_balance"] = Math.round(
                       parseFloat(oldclosingBal) + parseFloat(m["eligible_days"])
@@ -7475,7 +7466,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
 
               //insertion procces
               new Promise((resolve, reject) => {
-                console.log("insertYearlyleave", insertYearlyleave)
+                console.log("insertYearlyleave", insertYearlyleave);
                 try {
                   if (insertYearlyleave.length > 0) {
                     const insurtColumns = ["employee_id", "year"];
@@ -7568,7 +7559,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
             // };
             // next();
             // return;
-        
+
             reject({
               invalid_input: true,
               message: "No Data found"
@@ -7576,7 +7567,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
           }
         })
         .catch(e => {
-          console.log("erorr2:",e)
+          console.log("erorr2:", e);
           reject(e);
         });
     } else {
@@ -7588,8 +7579,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
   });
 }
 
-function validateLeaveApplictn(inputs, my_sql, req) {
-
+function validateLeaveApplictn_bkp_26_feb_2020(inputs, my_sql, req) {
   return new Promise((resolve, reject) => {
     try {
       const utilities = new algaehUtilities();
@@ -7618,7 +7608,9 @@ function validateLeaveApplictn(inputs, my_sql, req) {
           input["at_st_date"] = authResult[0]["at_st_date"];
 
           if (attendance_starts == "PM" && at_end_date > 0) {
-            const temp_year = moment(input.from_date, "YYYY-MM-DD").format("YYYY");
+            const temp_year = moment(input.from_date, "YYYY-MM-DD").format(
+              "YYYY"
+            );
             const cur_year_max_date = parseInt(temp_year + "12" + at_end_date);
             const from_date_month_n_date = parseInt(
               moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD")
@@ -7710,10 +7702,10 @@ function validateLeaveApplictn(inputs, my_sql, req) {
               ).format("YYYY-MM-DD");
               next_year_from_date = moment(
                 from_year +
-                "-" +
-                12 +
-                "-" +
-                (parseInt(at_end_date) + parseInt(1)),
+                  "-" +
+                  12 +
+                  "-" +
+                  (parseInt(at_end_date) + parseInt(1)),
                 "YYYY-MM-DD"
               ).format("YYYY-MM-DD");
               next_year_to_date = moment(input.to_date, "YYYY-MM-DD").format(
@@ -7748,7 +7740,6 @@ function validateLeaveApplictn(inputs, my_sql, req) {
             //FIRST YEAR CALCULATION
             calculateNoLeaveDays(input, _mysql)
               .then(partA_res => {
-
                 console.log("PART A COMPLETED");
                 if (
                   partA_res.annual_leave == "Y" &&
@@ -7837,97 +7828,161 @@ function validateLeaveApplictn(inputs, my_sql, req) {
                                   resolve(procRes);
                                 })
                                 .catch(e => {
-                                  _mysql.rollBackTransaction(() => { });
+                                  _mysql.rollBackTransaction(() => {});
                                   reject(e);
                                 });
                             }
-                          }).then(leavePresent => {
-                            console.log("PART A DONE");
+                          })
+                            .then(leavePresent => {
+                              console.log("PART A DONE");
 
-                            input["from_date"] = next_year_from_date;
-                            input["to_date"] = next_year_to_date;
-                            input["from_session"] = "FH";
-                            input["to_session"] = actual_to_session;
-                            input["part"] = "B";
+                              input["from_date"] = next_year_from_date;
+                              input["to_date"] = next_year_to_date;
+                              input["from_session"] = "FH";
+                              input["to_session"] = actual_to_session;
+                              input["part"] = "B";
 
-                            calculateNoLeaveDays(input, _mysql)
-                              .then(partB_res => {
-                                const calculatedLeaveDays =
-                                  parseFloat(partA_res.calculatedLeaveDays) +
-                                  parseFloat(partB_res.calculatedLeaveDays);
-                                const leave_applied_days =
-                                  parseFloat(partA_res.leave_applied_days) +
-                                  parseFloat(partB_res.leave_applied_days);
-                                const total_holiday =
-                                  parseFloat(partA_res.total_holiday) +
-                                  parseFloat(partB_res.total_holiday);
-                                const total_weekOff =
-                                  parseFloat(partA_res.total_weekOff) +
-                                  parseFloat(partB_res.total_weekOff);
+                              calculateNoLeaveDays(input, _mysql)
+                                .then(partB_res => {
+                                  const calculatedLeaveDays =
+                                    parseFloat(partA_res.calculatedLeaveDays) +
+                                    parseFloat(partB_res.calculatedLeaveDays);
+                                  const leave_applied_days =
+                                    parseFloat(partA_res.leave_applied_days) +
+                                    parseFloat(partB_res.leave_applied_days);
+                                  const total_holiday =
+                                    parseFloat(partA_res.total_holiday) +
+                                    parseFloat(partB_res.total_holiday);
+                                  const total_weekOff =
+                                    parseFloat(partA_res.total_weekOff) +
+                                    parseFloat(partB_res.total_weekOff);
 
-                                if (input.from_across_anual_leave == "Y") {
-                                  const A_Max =
-                                    parseFloat(
-                                      partA_res["predicted_leave_days"]
-                                    ) +
-                                    parseFloat(partA_res["actualClosingBal"]);
-                                  const B_Max =
-                                    parseFloat(
-                                      partB_res["predicted_leave_days"]
-                                    ) +
-                                    parseFloat(partB_res["actualClosingBal"]);
+                                  if (input.from_across_anual_leave == "Y") {
+                                    const A_Max =
+                                      parseFloat(
+                                        partA_res["predicted_leave_days"]
+                                      ) +
+                                      parseFloat(partA_res["actualClosingBal"]);
+                                    const B_Max =
+                                      parseFloat(
+                                        partB_res["predicted_leave_days"]
+                                      ) +
+                                      parseFloat(partB_res["actualClosingBal"]);
 
-                                  let partA_projected_applied_leaves = 0;
+                                    let partA_projected_applied_leaves = 0;
 
-                                  if (
-                                    parseFloat(partA_res.calculatedLeaveDays) -
-                                    parseFloat(partA_res.actualClosingBal) >
-                                    0
-                                  ) {
-                                    partA_projected_applied_leaves =
+                                    if (
                                       parseFloat(
                                         partA_res.calculatedLeaveDays
                                       ) -
-                                      parseFloat(partA_res.actualClosingBal);
-                                  }
+                                        parseFloat(partA_res.actualClosingBal) >
+                                      0
+                                    ) {
+                                      partA_projected_applied_leaves =
+                                        parseFloat(
+                                          partA_res.calculatedLeaveDays
+                                        ) -
+                                        parseFloat(partA_res.actualClosingBal);
+                                    }
 
-                                  let partB_projected_applied_leaves = 0;
+                                    let partB_projected_applied_leaves = 0;
 
-                                  if (
-                                    parseFloat(
-                                      partB_res["calculatedLeaveDays"]
-                                    ) >
-                                    parseFloat(partB_res.actualClosingBal) &&
-                                    B_Max >=
-                                    parseFloat(partB_res.calculatedLeaveDays)
-                                  ) {
-                                    partB_projected_applied_leaves =
+                                    if (
                                       parseFloat(
-                                        partB_res["predicted_leave_days"]
-                                      ) -
-                                      (parseFloat(B_Max) -
+                                        partB_res["calculatedLeaveDays"]
+                                      ) >
+                                        parseFloat(
+                                          partB_res.actualClosingBal
+                                        ) &&
+                                      B_Max >=
                                         parseFloat(
                                           partB_res.calculatedLeaveDays
-                                        ));
-                                  }
+                                        )
+                                    ) {
+                                      partB_projected_applied_leaves =
+                                        parseFloat(
+                                          partB_res["predicted_leave_days"]
+                                        ) -
+                                        (parseFloat(B_Max) -
+                                          parseFloat(
+                                            partB_res.calculatedLeaveDays
+                                          ));
+                                    }
 
-                                  const projected_applied_leaves =
-                                    parseFloat(partA_projected_applied_leaves) +
-                                    parseFloat(partB_projected_applied_leaves);
+                                    const projected_applied_leaves =
+                                      parseFloat(
+                                        partA_projected_applied_leaves
+                                      ) +
+                                      parseFloat(
+                                        partB_projected_applied_leaves
+                                      );
 
-                                  if (
-                                    A_Max >= partA_res.calculatedLeaveDays &&
-                                    B_Max >= partB_res.calculatedLeaveDays
-                                  ) {
+                                    if (
+                                      A_Max >= partA_res.calculatedLeaveDays &&
+                                      B_Max >= partB_res.calculatedLeaveDays
+                                    ) {
+                                      resolve({
+                                        partA_predicted_leave_days:
+                                          partA_res["predicted_leave_days"],
+                                        partB_projected_applied_leaves: partB_projected_applied_leaves,
+                                        partA_actualClosingBal:
+                                          partA_res.actualClosingBal,
+                                        partB_actualClosingBal:
+                                          partB_res.actualClosingBal,
+                                        projected_applied_leaves: projected_applied_leaves,
+                                        calculatedLeaveDays: calculatedLeaveDays,
+                                        leave_applied_days: leave_applied_days,
+                                        include_holidays:
+                                          partA_res.include_holidays,
+                                        include_week_offs:
+                                          partA_res.include_week_offs,
+                                        total_holiday: total_holiday,
+                                        total_weekOff: total_weekOff,
+                                        is_across_year_leave: "Y",
+                                        is_projected_leave: "Y",
+                                        carry_forward:
+                                          input["carry_forward"] > 0
+                                            ? input["carry_forward"]
+                                            : 0,
+                                        from_year_calculatedLeaveDays:
+                                          partA_res.calculatedLeaveDays,
+                                        to_year_calculatedLeaveDays:
+                                          partB_res.calculatedLeaveDays,
+                                        partA_monthWise:
+                                          partA_res.monthWiseCalculatedLeaveDeduction,
+                                        partB_monthWise:
+                                          partB_res.monthWiseCalculatedLeaveDeduction,
+                                        from_year: from_year,
+                                        to_year: to_year
+                                      });
+                                    } else {
+                                      let max_days;
+                                      let applying_days;
+                                      let calc_year;
+
+                                      if (
+                                        A_Max < partA_res.calculatedLeaveDays
+                                      ) {
+                                        max_days = A_Max;
+                                        applying_days =
+                                          partA_res.calculatedLeaveDays;
+                                        calc_year = from_year;
+                                      } else if (
+                                        B_Max < partB_res.calculatedLeaveDays
+                                      ) {
+                                        max_days = B_Max;
+                                        applying_days =
+                                          partB_res.calculatedLeaveDays;
+                                        calc_year = to_year;
+                                      }
+                                      reject({
+                                        invalid_input: true,
+                                        message: `max available is ${max_days} days in ${calc_year}, you can't apply for  
+                                ${applying_days} days`
+                                      });
+                                    }
+                                  } else {
                                     resolve({
-                                      partA_predicted_leave_days:
-                                        partA_res["predicted_leave_days"],
-                                      partB_projected_applied_leaves: partB_projected_applied_leaves,
-                                      partA_actualClosingBal:
-                                        partA_res.actualClosingBal,
-                                      partB_actualClosingBal:
-                                        partB_res.actualClosingBal,
-                                      projected_applied_leaves: projected_applied_leaves,
                                       calculatedLeaveDays: calculatedLeaveDays,
                                       leave_applied_days: leave_applied_days,
                                       include_holidays:
@@ -7937,11 +7992,7 @@ function validateLeaveApplictn(inputs, my_sql, req) {
                                       total_holiday: total_holiday,
                                       total_weekOff: total_weekOff,
                                       is_across_year_leave: "Y",
-                                      is_projected_leave: "Y",
-                                      carry_forward:
-                                        input["carry_forward"] > 0
-                                          ? input["carry_forward"]
-                                          : 0,
+                                      annual_leave: partA_res.annual_leave,
                                       from_year_calculatedLeaveDays:
                                         partA_res.calculatedLeaveDays,
                                       to_year_calculatedLeaveDays:
@@ -7953,63 +8004,17 @@ function validateLeaveApplictn(inputs, my_sql, req) {
                                       from_year: from_year,
                                       to_year: to_year
                                     });
-                                  } else {
-                                    let max_days;
-                                    let applying_days;
-                                    let calc_year;
-
-                                    if (A_Max < partA_res.calculatedLeaveDays) {
-                                      max_days = A_Max;
-                                      applying_days =
-                                        partA_res.calculatedLeaveDays;
-                                      calc_year = from_year;
-                                    } else if (
-                                      B_Max < partB_res.calculatedLeaveDays
-                                    ) {
-                                      max_days = B_Max;
-                                      applying_days =
-                                        partB_res.calculatedLeaveDays;
-                                      calc_year = to_year;
-                                    }
-                                    reject({
-                                      invalid_input: true,
-                                      message: `max available is ${max_days} days in ${calc_year}, you can't apply for  
-                                ${applying_days} days`
-                                    });
                                   }
-                                } else {
-                                  resolve({
-                                    calculatedLeaveDays: calculatedLeaveDays,
-                                    leave_applied_days: leave_applied_days,
-                                    include_holidays:
-                                      partA_res.include_holidays,
-                                    include_week_offs:
-                                      partA_res.include_week_offs,
-                                    total_holiday: total_holiday,
-                                    total_weekOff: total_weekOff,
-                                    is_across_year_leave: "Y",
-                                    annual_leave: partA_res.annual_leave,
-                                    from_year_calculatedLeaveDays:
-                                      partA_res.calculatedLeaveDays,
-                                    to_year_calculatedLeaveDays:
-                                      partB_res.calculatedLeaveDays,
-                                    partA_monthWise:
-                                      partA_res.monthWiseCalculatedLeaveDeduction,
-                                    partB_monthWise:
-                                      partB_res.monthWiseCalculatedLeaveDeduction,
-                                    from_year: from_year,
-                                    to_year: to_year
-                                  });
-                                }
-                                console.log("PART-B DONE ");
-                              })
-                              .catch(e => {
-                                reject(e);
-                              });
-                          }). catch(e => {
-                            _mysql.rollBackTransaction(() => { });
-                            reject(e);
-                          });
+                                  console.log("PART-B DONE ");
+                                })
+                                .catch(e => {
+                                  reject(e);
+                                });
+                            })
+                            .catch(e => {
+                              _mysql.rollBackTransaction(() => {});
+                              reject(e);
+                            });
                         } else {
                           reject({
                             invalid_input: true,
@@ -8047,6 +8052,383 @@ function validateLeaveApplictn(inputs, my_sql, req) {
           console.log("e79:", e);
           reject(e);
         });
+    } catch (e) {
+      console.log("e76:", e);
+      reject(e);
+    }
+  });
+}
+
+function validateLeaveApplictn(inputs, my_sql, req) {
+  return new Promise((resolve, reject) => {
+    try {
+      const utilities = new algaehUtilities();
+
+      let input = inputs;
+      let _mysql = my_sql;
+
+      const from_year = moment(input.from_date, "YYYY-MM-DD").format("YYYY");
+      const to_year = moment(input.to_date, "YYYY-MM-DD").format("YYYY");
+
+      input["year"] = from_year;
+      //for sinle  year leave
+      if (parseInt(from_year) == parseInt(to_year)) {
+        console.log("OPTION1:");
+
+        calculateNoLeaveDays(input, _mysql)
+          .then(sameYearResult => {
+            if (sameYearResult.is_projected_leave == "Y") {
+              const max_available_leave =
+                parseFloat(sameYearResult["predicted_leave_days"]) +
+                parseFloat(sameYearResult["actualClosingBal"]);
+
+              if (
+                max_available_leave >= sameYearResult.calculatedLeaveDays ||
+                input.cancel == "Y"
+              ) {
+                let projected_applied_leaves =
+                  parseFloat(sameYearResult.calculatedLeaveDays) -
+                  parseFloat(sameYearResult.actualClosingBal);
+
+                resolve({
+                  ...sameYearResult,
+                  from_year: from_year,
+                  to_year: to_year,
+                  projected_applied_leaves: projected_applied_leaves
+                });
+              } else {
+                reject({
+                  invalid_input: true,
+                  message: `max available is ${max_available_leave} days, you can't apply for  
+              ${sameYearResult.calculatedLeaveDays} days`
+                });
+              }
+            } else {
+              resolve({
+                ...sameYearResult,
+                from_year: from_year,
+                to_year: to_year
+              });
+            }
+          })
+          .catch(e => {
+            reject(e);
+          });
+      }
+      // for accross the year leave
+      else if (parseInt(from_year) == parseInt(to_year) - 1) {
+        console.log("OPTION2:");
+
+        const same_year_from_date = moment(
+          input.from_date,
+          "YYYY-MM-DD"
+        ).format("YYYY-MM-DD");
+        const same_year_to_date = moment(
+          from_year + "-" + 12 + "-" + 31,
+          "YYYY-MM-DD"
+        ).format("YYYY-MM-DD");
+        const next_year_from_date = moment(
+          to_year + "-" + 1 + "-" + 1,
+          "YYYY-M-D"
+        ).format("YYYY-MM-DD");
+        const next_year_to_date = moment(input.to_date, "YYYY-MM-DD").format(
+          "YYYY-MM-DD"
+        );
+
+        const actual_to_session = input["to_session"];
+
+        input["from_date"] = same_year_from_date;
+        input["to_date"] = same_year_to_date;
+        input["to_session"] = "FD";
+        input["part"] = "A";
+
+        input["is_across_year_leave"] = "Y";
+
+        //FIRST YEAR CALCULATION
+        calculateNoLeaveDays(input, _mysql)
+          .then(partA_res => {
+            console.log("PART A COMPLETED");
+            if (
+              partA_res.annual_leave == "Y" &&
+              partA_res.is_projected_leave == "Y"
+            ) {
+              input["from_across_anual_leave"] = "Y";
+              const calculatedLeaveDays = partA_res.calculatedLeaveDays;
+              const actualClosingBal = partA_res.actualClosingBal;
+
+              const max_available_leave =
+                parseFloat(partA_res["predicted_leave_days"]) +
+                parseFloat(actualClosingBal);
+
+              if (
+                max_available_leave >= calculatedLeaveDays ||
+                input.cancel == "Y"
+              ) {
+                partA_res["projected_applied_leaves"] =
+                  parseFloat(calculatedLeaveDays) -
+                  parseFloat(actualClosingBal);
+                input["carry_forward"] =
+                  parseFloat(max_available_leave) -
+                  parseFloat(calculatedLeaveDays);
+              } else {
+                reject({
+                  invalid_input: true,
+                  message: `max available is ${max_available_leave} days, you can't apply for  
+                  ${calculatedLeaveDays} days`
+                });
+              }
+            }
+
+            //----------two
+            _mysql
+              .executeQuery({
+                query:
+                  "select hospital_id from hims_d_employee where hims_d_employee_id=?;",
+                values: [input.employee_id],
+
+                printQuery: false
+              })
+              .then(branch => {
+                const hospital_id = branch[0]["hospital_id"];
+                // input["hospital_id"]= branch[0]["hospital_id"];
+                _mysql
+                  .executeQuery({
+                    query:
+                      "select hims_f_employee_monthly_leave_id,employee_id,year,leave_id from\
+                        hims_f_employee_monthly_leave where   year=? and employee_id=? and leave_id=?;\
+                        select hims_d_holiday_id,holiday_date,holiday_description,weekoff,\
+                      holiday,holiday_type,religion_id  from hims_d_holiday  where hospital_id=?\
+                        and  date(holiday_date) between date(?  )  and date(?  ) ;  ",
+                    values: [
+                      to_year,
+                      input.employee_id,
+                      input.leave_id,
+                      hospital_id,
+                      next_year_from_date,
+                      next_year_to_date
+                    ],
+
+                    printQuery: true
+                  })
+                  .then(Result => {
+                    input["year"] = to_year;
+                    if (Result[1].length > 0) {
+                      new Promise((resolve, reject) => {
+                        if (Result[0].length > 0) {
+                          resolve({});
+                          //exist, so call calc function
+                        } else {
+                          //process next year
+
+                          if (input.from_across_anual_leave == "Y") {
+                            input["deduct_close_Balance"] = 0;
+                          } else {
+                            input["deduct_close_Balance"] =
+                              partA_res["calculatedLeaveDays"];
+                          }
+
+                          yearlyLeaveProcess(input, req, _mysql)
+                            .then(procRes => {
+                              resolve(procRes);
+                            })
+                            .catch(e => {
+                              _mysql.rollBackTransaction(() => {});
+                              reject(e);
+                            });
+                        }
+                      })
+                        .then(leavePresent => {
+                          console.log("PART A DONE");
+
+                          input["from_date"] = next_year_from_date;
+                          input["to_date"] = next_year_to_date;
+                          input["from_session"] = "FH";
+                          input["to_session"] = actual_to_session;
+                          input["part"] = "B";
+
+                          calculateNoLeaveDays(input, _mysql)
+                            .then(partB_res => {
+                              const calculatedLeaveDays =
+                                parseFloat(partA_res.calculatedLeaveDays) +
+                                parseFloat(partB_res.calculatedLeaveDays);
+                              const leave_applied_days =
+                                parseFloat(partA_res.leave_applied_days) +
+                                parseFloat(partB_res.leave_applied_days);
+                              const total_holiday =
+                                parseFloat(partA_res.total_holiday) +
+                                parseFloat(partB_res.total_holiday);
+                              const total_weekOff =
+                                parseFloat(partA_res.total_weekOff) +
+                                parseFloat(partB_res.total_weekOff);
+
+                              if (input.from_across_anual_leave == "Y") {
+                                const A_Max =
+                                  parseFloat(
+                                    partA_res["predicted_leave_days"]
+                                  ) + parseFloat(partA_res["actualClosingBal"]);
+                                const B_Max =
+                                  parseFloat(
+                                    partB_res["predicted_leave_days"]
+                                  ) + parseFloat(partB_res["actualClosingBal"]);
+
+                                let partA_projected_applied_leaves = 0;
+
+                                if (
+                                  parseFloat(partA_res.calculatedLeaveDays) -
+                                    parseFloat(partA_res.actualClosingBal) >
+                                  0
+                                ) {
+                                  partA_projected_applied_leaves =
+                                    parseFloat(partA_res.calculatedLeaveDays) -
+                                    parseFloat(partA_res.actualClosingBal);
+                                }
+
+                                let partB_projected_applied_leaves = 0;
+
+                                if (
+                                  parseFloat(partB_res["calculatedLeaveDays"]) >
+                                    parseFloat(partB_res.actualClosingBal) &&
+                                  B_Max >=
+                                    parseFloat(partB_res.calculatedLeaveDays)
+                                ) {
+                                  partB_projected_applied_leaves =
+                                    parseFloat(partB_res.calculatedLeaveDays) -
+                                    parseFloat(
+                                      partB_res["predicted_leave_days"]
+                                    );
+                                }
+
+                                const projected_applied_leaves =
+                                  parseFloat(partA_projected_applied_leaves) +
+                                  parseFloat(partB_projected_applied_leaves);
+
+                                if (
+                                  A_Max >= partA_res.calculatedLeaveDays &&
+                                  B_Max >= partB_res.calculatedLeaveDays
+                                ) {
+                                  resolve({
+                                    partA_predicted_leave_days:
+                                      partA_res["predicted_leave_days"],
+                                    partB_projected_applied_leaves: partB_projected_applied_leaves,
+                                    partA_actualClosingBal:
+                                      partA_res.actualClosingBal,
+                                    partB_actualClosingBal:
+                                      partB_res.actualClosingBal,
+                                    projected_applied_leaves: projected_applied_leaves,
+                                    calculatedLeaveDays: calculatedLeaveDays,
+                                    leave_applied_days: leave_applied_days,
+                                    include_holidays:
+                                      partA_res.include_holidays,
+                                    include_week_offs:
+                                      partA_res.include_week_offs,
+                                    total_holiday: total_holiday,
+                                    total_weekOff: total_weekOff,
+                                    is_across_year_leave: "Y",
+                                    is_projected_leave: "Y",
+                                    carry_forward:
+                                      input["carry_forward"] > 0
+                                        ? input["carry_forward"]
+                                        : 0,
+                                    from_year_calculatedLeaveDays:
+                                      partA_res.calculatedLeaveDays,
+                                    to_year_calculatedLeaveDays:
+                                      partB_res.calculatedLeaveDays,
+                                    partA_monthWise:
+                                      partA_res.monthWiseCalculatedLeaveDeduction,
+                                    partB_monthWise:
+                                      partB_res.monthWiseCalculatedLeaveDeduction,
+                                    from_year: from_year,
+                                    to_year: to_year
+                                  });
+                                } else {
+                                  let max_days;
+                                  let applying_days;
+                                  let calc_year;
+
+                                  if (A_Max < partA_res.calculatedLeaveDays) {
+                                    max_days = A_Max;
+                                    applying_days =
+                                      partA_res.calculatedLeaveDays;
+                                    calc_year = from_year;
+                                  } else if (
+                                    B_Max < partB_res.calculatedLeaveDays
+                                  ) {
+                                    max_days = B_Max;
+                                    applying_days =
+                                      partB_res.calculatedLeaveDays;
+                                    calc_year = to_year;
+                                  }
+                                  reject({
+                                    invalid_input: true,
+                                    message: `max available is ${max_days} days in ${calc_year}, you can't apply for  
+                                ${applying_days} days`
+                                  });
+                                }
+                              } else {
+                                resolve({
+                                  calculatedLeaveDays: calculatedLeaveDays,
+                                  leave_applied_days: leave_applied_days,
+                                  include_holidays: partA_res.include_holidays,
+                                  include_week_offs:
+                                    partA_res.include_week_offs,
+                                  total_holiday: total_holiday,
+                                  total_weekOff: total_weekOff,
+                                  is_across_year_leave: "Y",
+                                  annual_leave: partA_res.annual_leave,
+                                  from_year_calculatedLeaveDays:
+                                    partA_res.calculatedLeaveDays,
+                                  to_year_calculatedLeaveDays:
+                                    partB_res.calculatedLeaveDays,
+                                  partA_monthWise:
+                                    partA_res.monthWiseCalculatedLeaveDeduction,
+                                  partB_monthWise:
+                                    partB_res.monthWiseCalculatedLeaveDeduction,
+                                  from_year: from_year,
+                                  to_year: to_year
+                                });
+                              }
+                              console.log("PART-B DONE ");
+                            })
+                            .catch(e => {
+                              reject(e);
+                            });
+                        })
+                        .catch(e => {
+                          _mysql.rollBackTransaction(() => {});
+                          reject(e);
+                        });
+                    } else {
+                      reject({
+                        invalid_input: true,
+                        message: `Please Notify HR to process weekOff and Holidays for ${to_year}`
+                      });
+                    }
+                  })
+                  .catch(e => {
+                    console.log("e:", e);
+                    _mysql.rollBackTransaction(() => {
+                      reject(e);
+                    });
+                  });
+              })
+              .catch(e => {
+                console.log("e:", e);
+                _mysql.rollBackTransaction(() => {
+                  reject(e);
+                });
+              });
+
+            //----------------two
+          })
+          .catch(e => {
+            reject(e);
+          });
+      } else {
+        reject({
+          invalid_input: true,
+          message: `can't apply leave for this Date range `
+        });
+      }
     } catch (e) {
       console.log("e76:", e);
       reject(e);
@@ -8310,7 +8692,6 @@ function calculateNoLeaveDays(inputs, _mysql) {
                 year,
                 from_month,
                 hospital_id
-
               ],
 
               printQuery: true
@@ -8327,212 +8708,224 @@ function calculateNoLeaveDays(inputs, _mysql) {
                   annual_leave = "Y";
                 }
 
-                if (result[2].length>0&&annual_leave=="Y"){
-
+                if (result[2].length > 0 && annual_leave == "Y") {
                   _mysql.releaseConnection();
                   reject({
                     invalid_input: true,
                     message: `Salary is processed for this month can't apply Annual leave`
                   });
-                }
-                else {
-                if (
-                  allLeaves[0].processed == "Y" &&
-                  input["part"] != "B" &&
-                  input["from_athurization"] != "Y" &&
-                  input["cancel"] != "Y"
-                ) {
-                  _mysql.releaseConnection();
-
-                  reject({
-                    invalid_input: true,
-                    message: `Year ${year} leave has been closed, Apply from Year ${parseInt(
-                      year
-                    ) + 1}`
-                  });
                 } else {
-                  currentClosingBal = allLeaves[0].close_balance;
-                  let isHoliday = [];
+                  if (
+                    allLeaves[0].processed == "Y" &&
+                    input["part"] != "B" &&
+                    input["from_athurization"] != "Y" &&
+                    input["cancel"] != "Y"
+                  ) {
+                    _mysql.releaseConnection();
 
-                  if (check_to_date == "Y") {
-                    isHoliday = new LINQ(allHolidays)
-                      .Where(
-                        w =>
-                          (w.holiday_date == to_date && w.weekoff == "Y") ||
-                          (w.holiday_date == to_date &&
-                            w.holiday == "Y" &&
-                            w.holiday_type == "RE") ||
-                          (w.holiday_date == to_date &&
-                            w.holiday == "Y" &&
-                            w.holiday_type == "RS" &&
-                            w.religion_id == my_religion)
-                      )
-                      .Select(s => {
-                        return {
-                          holiday_date: s.holiday_date,
-                          holiday_description: s.holiday_description
-                        };
-                      })
-                      .ToArray();
-                  } else if (check_from_date == "Y") {
-                    isHoliday = new LINQ(allHolidays)
-                      .Where(
-                        w =>
-                          (w.holiday_date == from_date && w.weekoff == "Y") ||
-                          (w.holiday_date == from_date &&
-                            w.holiday == "Y" &&
-                            w.holiday_type == "RE") ||
-                          (w.holiday_date == from_date &&
-                            w.holiday == "Y" &&
-                            w.holiday_type == "RS" &&
-                            w.religion_id == my_religion)
-                      )
-                      .Select(s => {
-                        return {
-                          holiday_date: s.holiday_date,
-                          holiday_description: s.holiday_description
-                        };
-                      })
-                      .ToArray();
+                    reject({
+                      invalid_input: true,
+                      message: `Year ${year} leave has been closed, Apply from Year ${parseInt(
+                        year
+                      ) + 1}`
+                    });
                   } else {
-                    isHoliday = new LINQ(allHolidays)
-                      .Where(
-                        w =>
-                          (w.holiday_date == from_date && w.weekoff == "Y") ||
-                          (w.holiday_date == from_date &&
-                            w.holiday == "Y" &&
-                            w.holiday_type == "RE") ||
-                          (w.holiday_date == from_date &&
-                            w.holiday == "Y" &&
-                            w.holiday_type == "RS" &&
-                            w.religion_id == my_religion) ||
-                          ((w.holiday_date == to_date && w.weekoff == "Y") ||
+                    currentClosingBal = allLeaves[0].close_balance;
+                    let isHoliday = [];
+
+                    if (check_to_date == "Y") {
+                      isHoliday = new LINQ(allHolidays)
+                        .Where(
+                          w =>
+                            (w.holiday_date == to_date && w.weekoff == "Y") ||
                             (w.holiday_date == to_date &&
                               w.holiday == "Y" &&
                               w.holiday_type == "RE") ||
                             (w.holiday_date == to_date &&
                               w.holiday == "Y" &&
                               w.holiday_type == "RS" &&
-                              w.religion_id == my_religion))
-                      )
+                              w.religion_id == my_religion)
+                        )
+                        .Select(s => {
+                          return {
+                            holiday_date: s.holiday_date,
+                            holiday_description: s.holiday_description
+                          };
+                        })
+                        .ToArray();
+                    } else if (check_from_date == "Y") {
+                      isHoliday = new LINQ(allHolidays)
+                        .Where(
+                          w =>
+                            (w.holiday_date == from_date && w.weekoff == "Y") ||
+                            (w.holiday_date == from_date &&
+                              w.holiday == "Y" &&
+                              w.holiday_type == "RE") ||
+                            (w.holiday_date == from_date &&
+                              w.holiday == "Y" &&
+                              w.holiday_type == "RS" &&
+                              w.religion_id == my_religion)
+                        )
+                        .Select(s => {
+                          return {
+                            holiday_date: s.holiday_date,
+                            holiday_description: s.holiday_description
+                          };
+                        })
+                        .ToArray();
+                    } else {
+                      isHoliday = new LINQ(allHolidays)
+                        .Where(
+                          w =>
+                            (w.holiday_date == from_date && w.weekoff == "Y") ||
+                            (w.holiday_date == from_date &&
+                              w.holiday == "Y" &&
+                              w.holiday_type == "RE") ||
+                            (w.holiday_date == from_date &&
+                              w.holiday == "Y" &&
+                              w.holiday_type == "RS" &&
+                              w.religion_id == my_religion) ||
+                            (w.holiday_date == to_date && w.weekoff == "Y") ||
+                            (w.holiday_date == to_date &&
+                              w.holiday == "Y" &&
+                              w.holiday_type == "RE") ||
+                            (w.holiday_date == to_date &&
+                              w.holiday == "Y" &&
+                              w.holiday_type == "RS" &&
+                              w.religion_id == my_religion)
+                        )
+                        .Select(s => {
+                          return {
+                            holiday_date: s.holiday_date,
+                            holiday_description: s.holiday_description
+                          };
+                        })
+                        .ToArray();
+                    }
+
+                    //s -------START OF--- get count of holidays and weekOffs betwen apllied leave range
+                    let week_off_Data = new LINQ(allHolidays)
                       .Select(s => {
                         return {
+                          hims_d_holiday_id: s.hims_d_holiday_id,
                           holiday_date: s.holiday_date,
-                          holiday_description: s.holiday_description
+                          holiday_description: s.holiday_description,
+                          holiday: s.holiday,
+                          weekoff: s.weekoff,
+                          holiday_type: s.holiday_type,
+                          religion_id: s.religion_id
                         };
                       })
+                      .Where(w => w.weekoff == "Y")
                       .ToArray();
-                  }
+                    let total_weekOff = week_off_Data.length;
 
-                  //s -------START OF--- get count of holidays and weekOffs betwen apllied leave range
-                  let week_off_Data = new LINQ(allHolidays)
-                    .Select(s => {
-                      return {
-                        hims_d_holiday_id: s.hims_d_holiday_id,
-                        holiday_date: s.holiday_date,
-                        holiday_description: s.holiday_description,
-                        holiday: s.holiday,
-                        weekoff: s.weekoff,
-                        holiday_type: s.holiday_type,
-                        religion_id: s.religion_id
-                      };
-                    })
-                    .Where(w => w.weekoff == "Y")
-                    .ToArray();
-                  let total_weekOff = week_off_Data.length;
+                    let holiday_Data = new LINQ(allHolidays)
+                      .Select(s => {
+                        return {
+                          hims_d_holiday_id: s.hims_d_holiday_id,
+                          holiday_date: s.holiday_date,
+                          holiday_description: s.holiday_description,
+                          holiday: s.holiday,
+                          weekoff: s.weekoff,
+                          holiday_type: s.holiday_type,
+                          religion_id: s.religion_id
+                        };
+                      })
+                      .Where(
+                        w =>
+                          (w.holiday == "Y" && w.holiday_type == "RE") ||
+                          (w.holiday == "Y" &&
+                            w.holiday_type == "RS" &&
+                            w.religion_id == my_religion)
+                      )
+                      .ToArray();
 
-                  let holiday_Data = new LINQ(allHolidays)
-                    .Select(s => {
-                      return {
-                        hims_d_holiday_id: s.hims_d_holiday_id,
-                        holiday_date: s.holiday_date,
-                        holiday_description: s.holiday_description,
-                        holiday: s.holiday,
-                        weekoff: s.weekoff,
-                        holiday_type: s.holiday_type,
-                        religion_id: s.religion_id
-                      };
-                    })
-                    .Where(
-                      w =>
-                        (w.holiday == "Y" && w.holiday_type == "RE") ||
-                        (w.holiday == "Y" &&
-                          w.holiday_type == "RS" &&
-                          w.religion_id == my_religion)
-                    )
-                    .ToArray();
+                    let total_holiday = holiday_Data.length;
+                    // -------END OF--- get count of holidays and weekOffs betwen apllied leave range
 
-                  let total_holiday = holiday_Data.length;
-                  // -------END OF--- get count of holidays and weekOffs betwen apllied leave range
+                    if (isHoliday.length > 0) {
+                      _mysql.releaseConnection();
+                      // req.records = {
+                      //   invalid_input: true,
+                      //   message: `you can't apply leave on , ${isHoliday[0].holiday_date} is :( ${isHoliday[0].holiday_description} )`
+                      // };
+                      // next();
+                      // return;
+                      reject({
+                        invalid_input: true,
+                        message: `you can't apply leave on , ${isHoliday[0].holiday_date} is :( ${isHoliday[0].holiday_description} )`
+                      });
+                    } else {
+                      // subtracting  week off or holidays fom LeaveApplied Days
+                      if (
+                        allLeaves[0].include_weekoff == "N" ||
+                        allLeaves[0].include_holiday == "N"
+                      ) {
+                        let total_minus = 0;
+                        for (let k = 0; k < dateRange.length; k++) {
+                          let reduce_days = parseFloat(0);
 
-                  if (isHoliday.length > 0) {
-                    _mysql.releaseConnection();
-                    // req.records = {
-                    //   invalid_input: true,
-                    //   message: `you can't apply leave on , ${isHoliday[0].holiday_date} is :( ${isHoliday[0].holiday_description} )`
-                    // };
-                    // next();
-                    // return;
-                    reject({
-                      invalid_input: true,
-                      message: `you can't apply leave on , ${isHoliday[0].holiday_date} is :( ${isHoliday[0].holiday_description} )`
-                    });
-                  } else {
-                    // subtracting  week off or holidays fom LeaveApplied Days
-                    if (
-                      allLeaves[0].include_weekoff == "N" ||
-                      allLeaves[0].include_holiday == "N"
-                    ) {
-                      let total_minus = 0;
-                      for (let k = 0; k < dateRange.length; k++) {
-                        let reduce_days = parseFloat(0);
+                          //step 1 -------START OF------ getting total week offs and holidays to be subtracted from each month
 
-                        //step 1 -------START OF------ getting total week offs and holidays to be subtracted from each month
+                          //calculating holidays to remove from each month
+                          if (allLeaves[0].include_holiday == "N") {
+                            reduce_days += parseFloat(
+                              new LINQ(holiday_Data)
+                                .Where(
+                                  w =>
+                                    dateRange[k]["begning_of_leave"] <=
+                                      w.holiday_date &&
+                                    w.holiday_date <=
+                                      dateRange[k]["end_of_leave"]
+                                )
+                                .Count()
+                            );
+                          }
 
-                        //calculating holidays to remove from each month
-                        if (allLeaves[0].include_holiday == "N") {
-                          reduce_days += parseFloat(
-                            new LINQ(holiday_Data)
-                              .Where(
-                                w =>
-                                  dateRange[k]["begning_of_leave"] <=
-                                  w.holiday_date &&
-                                  w.holiday_date <= dateRange[k]["end_of_leave"]
-                              )
-                              .Count()
-                          );
-                        }
+                          //calculating week off to remove from each month
+                          if (allLeaves[0].include_weekoff == "N") {
+                            reduce_days += parseFloat(
+                              new LINQ(week_off_Data)
+                                .Where(
+                                  w =>
+                                    dateRange[k]["begning_of_leave"] <=
+                                      w.holiday_date &&
+                                    w.holiday_date <=
+                                      dateRange[k]["end_of_leave"]
+                                )
+                                .Count()
+                            );
+                          }
 
-                        //calculating week off to remove from each month
-                        if (allLeaves[0].include_weekoff == "N") {
-                          reduce_days += parseFloat(
-                            new LINQ(week_off_Data)
-                              .Where(
-                                w =>
-                                  dateRange[k]["begning_of_leave"] <=
-                                  w.holiday_date &&
-                                  w.holiday_date <= dateRange[k]["end_of_leave"]
-                              )
-                              .Count()
-                          );
-                        }
+                          //-------END OF------ getting total week offs and holidays to be subtracted from each month
 
-                        //-------END OF------ getting total week offs and holidays to be subtracted from each month
-
-                        //step 2-------START OF------ session belongs to which month and  subtract session from that month----------
-                        if (input.from_session == "SH" && k == 0) {
-                          if (
-                            from_month === to_month &&
-                            input.to_session == "FH"
+                          //step 2-------START OF------ session belongs to which month and  subtract session from that month----------
+                          if (input.from_session == "SH" && k == 0) {
+                            if (
+                              from_month === to_month &&
+                              input.to_session == "FH"
+                            ) {
+                              leaveDeductionArray.push({
+                                month_name: dateRange[k]["month_name"],
+                                finalLeave:
+                                  parseFloat(dateRange[k]["leaveDays"]) -
+                                  parseFloat(reduce_days) -
+                                  parseFloat(1)
+                              });
+                            } else {
+                              leaveDeductionArray.push({
+                                month_name: dateRange[k]["month_name"],
+                                finalLeave:
+                                  parseFloat(dateRange[k]["leaveDays"]) -
+                                  parseFloat(reduce_days) -
+                                  parseFloat(0.5)
+                              });
+                            }
+                          } else if (
+                            input.to_session == "FH" &&
+                            k == dateRange.length - 1
                           ) {
-                            leaveDeductionArray.push({
-                              month_name: dateRange[k]["month_name"],
-                              finalLeave:
-                                parseFloat(dateRange[k]["leaveDays"]) -
-                                parseFloat(reduce_days) -
-                                parseFloat(1)
-                            });
-                          } else {
                             leaveDeductionArray.push({
                               month_name: dateRange[k]["month_name"],
                               finalLeave:
@@ -8540,299 +8933,288 @@ function calculateNoLeaveDays(inputs, _mysql) {
                                 parseFloat(reduce_days) -
                                 parseFloat(0.5)
                             });
+                          } else {
+                            leaveDeductionArray.push({
+                              month_name: dateRange[k]["month_name"],
+                              finalLeave:
+                                parseFloat(dateRange[k]["leaveDays"]) -
+                                parseFloat(reduce_days)
+                            });
                           }
-                        } else if (
-                          input.to_session == "FH" &&
-                          k == dateRange.length - 1
+                          //------- END OF----session belongs to which month and  subtract session from that month----------
+                          total_minus += parseFloat(reduce_days);
+                        }
+
+                        //step3-------START OF------ finally  subtracting week off and holidays from total Applied days
+
+                        if (allLeaves[0].include_weekoff == "N") {
+                          include_week_offs = "N";
+                          calculatedLeaveDays =
+                            parseFloat(calculatedLeaveDays) -
+                            parseFloat(total_weekOff);
+                        }
+
+                        if (allLeaves[0].include_holiday == "N") {
+                          include_holidays = "N";
+                          calculatedLeaveDays =
+                            parseFloat(calculatedLeaveDays) -
+                            parseFloat(total_holiday);
+                        }
+
+                        calculatedLeaveDays =
+                          parseFloat(calculatedLeaveDays) -
+                          parseFloat(session_diff);
+
+                        //-------END OF------ finally  subtracting week off and holidays from total Applied days
+
+                        if (
+                          input.cancel != "Y" &&
+                          ((currentClosingBal < calculatedLeaveDays &&
+                            annual_leave == "Y") ||
+                            (annual_leave == "Y" &&
+                              input.is_across_year_leave == "Y" &&
+                              moment().format("YYYYMMDD") <
+                                moment(input.to_date, "YYYY-MM-DD").format(
+                                  "YYYYMMDD"
+                                )))
                         ) {
-                          leaveDeductionArray.push({
-                            month_name: dateRange[k]["month_name"],
-                            finalLeave:
-                              parseFloat(dateRange[k]["leaveDays"]) -
-                              parseFloat(reduce_days) -
-                              parseFloat(0.5)
+                          let Pr_from_date = "";
+                          let Pr_to_date = "";
+
+                          if (input.part == "A") {
+                            Pr_from_date = new Date();
+                            Pr_to_date = input.to_date;
+                          } else if (input.part == "B") {
+                            Pr_from_date = input.from_date;
+                            Pr_to_date = input.to_date;
+                          } else {
+                            Pr_from_date = new Date();
+                            Pr_to_date = input.to_date;
+                          }
+
+                          projectedleaveCalc(
+                            {
+                              from_date: Pr_from_date,
+                              to_date: Pr_to_date,
+                              year: year,
+                              attendance_starts:
+                                branch[1][0]["attendance_starts"],
+                              at_end_date: branch[1][0]["at_end_date"],
+                              employee_id: input.employee_id,
+                              leave_id: input.leave_id
+                            },
+                            _mysql
+                          )
+                            .then(anualResult => {
+                              resolve({
+                                ...anualResult,
+                                leave_applied_days: leave_applied_days,
+                                calculatedLeaveDays: calculatedLeaveDays,
+                                monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
+                                include_holidays: include_holidays,
+                                total_holiday: total_holiday,
+                                include_week_offs: include_week_offs,
+                                total_weekOff: total_weekOff,
+
+                                annual_leave: "Y",
+                                is_projected_leave: "Y",
+                                currentClosingBal: 0,
+                                actualClosingBal: currentClosingBal
+                              });
+                            })
+                            .catch(e => {
+                              console.log("e**:", e);
+                              _mysql.releaseConnection();
+                              reject(e);
+                            });
+                        } else if (
+                          currentClosingBal >= calculatedLeaveDays ||
+                          (input.cancel == "Y" &&
+                            input.is_projected_leave != "Y")
+                        ) {
+                          // _mysql.releaseConnection();
+                          resolve({
+                            leave_applied_days: leave_applied_days,
+                            calculatedLeaveDays: calculatedLeaveDays,
+                            monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
+                            include_holidays: include_holidays,
+                            total_holiday: total_holiday,
+                            include_week_offs: include_week_offs,
+                            total_weekOff: total_weekOff
+                          });
+                          // next();
+                          // return;
+                        } else if (
+                          input.cancel == "Y" &&
+                          input.is_projected_leave == "Y"
+                        ) {
+                          resolve({
+                            leave_applied_days: leave_applied_days,
+                            calculatedLeaveDays: calculatedLeaveDays,
+                            monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
+                            include_holidays: include_holidays,
+                            total_holiday: total_holiday,
+                            include_week_offs: include_week_offs,
+                            total_weekOff: total_weekOff,
+                            annual_leave: annual_leave
                           });
                         } else {
-                          leaveDeductionArray.push({
-                            month_name: dateRange[k]["month_name"],
-                            finalLeave:
-                              parseFloat(dateRange[k]["leaveDays"]) -
-                              parseFloat(reduce_days)
+                          _mysql.releaseConnection();
+                          reject({
+                            invalid_input: true,
+                            message: `max available is ${currentClosingBal} days, you can't apply for  
+                        ${calculatedLeaveDays} days`
                           });
                         }
-                        //------- END OF----session belongs to which month and  subtract session from that month----------
-                        total_minus += parseFloat(reduce_days);
-                      }
+                      } else {
+                        for (let k = 0; k < dateRange.length; k++) {
+                          if (input.from_session == "SH" && k == 0) {
+                            if (
+                              from_month === to_month &&
+                              input.to_session == "FH"
+                            ) {
+                              leaveDeductionArray.push({
+                                month_name: dateRange[k]["month_name"],
+                                finalLeave:
+                                  parseFloat(dateRange[k]["leaveDays"]) -
+                                  parseFloat(1)
+                              });
+                            } else {
+                              leaveDeductionArray.push({
+                                month_name: dateRange[k]["month_name"],
+                                finalLeave:
+                                  parseFloat(dateRange[k]["leaveDays"]) -
+                                  parseFloat(0.5)
+                              });
+                            }
+                          } else if (
+                            input.to_session == "FH" &&
+                            k == dateRange.length - 1
+                          ) {
+                            leaveDeductionArray.push({
+                              month_name: dateRange[k]["month_name"],
+                              finalLeave:
+                                parseFloat(dateRange[k]["leaveDays"]) -
+                                parseFloat(0.5)
+                            });
+                          } else {
+                            leaveDeductionArray.push({
+                              month_name: dateRange[k]["month_name"],
+                              finalLeave: parseFloat(dateRange[k]["leaveDays"])
+                            });
+                          }
+                        }
 
-                      //step3-------START OF------ finally  subtracting week off and holidays from total Applied days
-
-                      if (allLeaves[0].include_weekoff == "N") {
-                        include_week_offs = "N";
                         calculatedLeaveDays =
                           parseFloat(calculatedLeaveDays) -
-                          parseFloat(total_weekOff);
-                      }
+                          parseFloat(session_diff);
 
-                      if (allLeaves[0].include_holiday == "N") {
-                        include_holidays = "N";
-                        calculatedLeaveDays =
-                          parseFloat(calculatedLeaveDays) -
-                          parseFloat(total_holiday);
-                      }
-
-                      calculatedLeaveDays =
-                        parseFloat(calculatedLeaveDays) -
-                        parseFloat(session_diff);
-
-                      //-------END OF------ finally  subtracting week off and holidays from total Applied days
-
-                      if (
-                        input.cancel != "Y" &&
-                        ((currentClosingBal < calculatedLeaveDays &&
-                          annual_leave == "Y") ||
+                        if (
+                          (currentClosingBal < calculatedLeaveDays &&
+                            annual_leave == "Y" &&
+                            input.cancel != "Y") ||
                           (annual_leave == "Y" &&
-                            input.is_across_year_leave == "Y"   &&
+                            input.is_across_year_leave == "Y" &&
                             moment().format("YYYYMMDD") <
                               moment(input.to_date, "YYYY-MM-DD").format(
                                 "YYYYMMDD"
-                              )))
-                      ) {
-                        let Pr_from_date = "";
-                        let Pr_to_date = "";
-
-                        if (input.part == "A") {
-                          Pr_from_date = new Date();
-                          Pr_to_date = input.to_date;
-                        } else if (input.part == "B") {
-                          Pr_from_date = input.from_date;
-                          Pr_to_date = input.to_date;
-                        } else {
-                          Pr_from_date = new Date();
-                          Pr_to_date = input.to_date;
-                        }
-
-                        projectedleaveCalc(
-                          {
-                            from_date: Pr_from_date,
-                            to_date: Pr_to_date,
-                            year: year,
-                            attendance_starts:
-                              branch[1][0]["attendance_starts"],
-                            at_end_date: branch[1][0]["at_end_date"],
-                            employee_id: input.employee_id,
-                            leave_id: input.leave_id
-                          },
-                          _mysql
-                        )
-                          .then(anualResult => {
-                            resolve({
-                              ...anualResult,
-                              leave_applied_days: leave_applied_days,
-                              calculatedLeaveDays: calculatedLeaveDays,
-                              monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
-                              include_holidays: include_holidays,
-                              total_holiday: total_holiday,
-                              include_week_offs: include_week_offs,
-                              total_weekOff: total_weekOff,
-
-                              annual_leave: "Y",
-                              is_projected_leave: "Y",
-                              currentClosingBal: 0,
-                              actualClosingBal: currentClosingBal
-                            });
-                          })
-                          .catch(e => {
-                            console.log("e**:", e);
-                            _mysql.releaseConnection();
-                            reject(e);
-                          });
-                      } else if (
-                        currentClosingBal >= calculatedLeaveDays ||
-                        (input.cancel == "Y" && input.is_projected_leave != "Y")
-                      ) {
-                        // _mysql.releaseConnection();
-                        resolve({
-                          leave_applied_days: leave_applied_days,
-                          calculatedLeaveDays: calculatedLeaveDays,
-                          monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
-                          include_holidays: include_holidays,
-                          total_holiday: total_holiday,
-                          include_week_offs: include_week_offs,
-                          total_weekOff: total_weekOff
-                        });
-                        // next();
-                        // return;
-                      } else if (
-                        input.cancel == "Y" &&
-                        input.is_projected_leave == "Y"
-                      ) {
-                        resolve({
-                          leave_applied_days: leave_applied_days,
-                          calculatedLeaveDays: calculatedLeaveDays,
-                          monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
-                          include_holidays: include_holidays,
-                          total_holiday: total_holiday,
-                          include_week_offs: include_week_offs,
-                          total_weekOff: total_weekOff,
-                          annual_leave: annual_leave
-                        });
-                      } else {
-                        _mysql.releaseConnection();
-                        reject({
-                          invalid_input: true,
-                          message: `max available is ${currentClosingBal} days, you can't apply for  
-                        ${calculatedLeaveDays} days`
-                        });
-                      }
-                    } else {
-                      for (let k = 0; k < dateRange.length; k++) {
-                        if (input.from_session == "SH" && k == 0) {
-                          if (
-                            from_month === to_month &&
-                            input.to_session == "FH"
-                          ) {
-                            leaveDeductionArray.push({
-                              month_name: dateRange[k]["month_name"],
-                              finalLeave:
-                                parseFloat(dateRange[k]["leaveDays"]) -
-                                parseFloat(1)
-                            });
-                          } else {
-                            leaveDeductionArray.push({
-                              month_name: dateRange[k]["month_name"],
-                              finalLeave:
-                                parseFloat(dateRange[k]["leaveDays"]) -
-                                parseFloat(0.5)
-                            });
-                          }
-                        } else if (
-                          input.to_session == "FH" &&
-                          k == dateRange.length - 1
+                              ))
                         ) {
-                          leaveDeductionArray.push({
-                            month_name: dateRange[k]["month_name"],
-                            finalLeave:
-                              parseFloat(dateRange[k]["leaveDays"]) -
-                              parseFloat(0.5)
-                          });
-                        } else {
-                          leaveDeductionArray.push({
-                            month_name: dateRange[k]["month_name"],
-                            finalLeave: parseFloat(dateRange[k]["leaveDays"])
-                          });
-                        }
-                      }
+                          let Pr_from_date = "";
+                          let Pr_to_date = "";
 
-                      calculatedLeaveDays =
-                        parseFloat(calculatedLeaveDays) -
-                        parseFloat(session_diff);
+                          if (input.part == "A") {
+                            Pr_from_date = new Date();
+                            Pr_to_date = input.to_date;
+                          } else if (input.part == "B") {
+                            Pr_from_date = input.from_date;
+                            Pr_to_date = input.to_date;
+                          } else {
+                            Pr_from_date = new Date();
+                            Pr_to_date = input.to_date;
+                          }
 
-                      if (
-                        (currentClosingBal < calculatedLeaveDays &&
-                          annual_leave == "Y" &&
-                          input.cancel != "Y") ||
-                        (annual_leave == "Y" &&
-                          input.is_across_year_leave == "Y" &&  moment().format("YYYYMMDD") <
-                          moment(input.to_date, "YYYY-MM-DD").format(
-                            "YYYYMMDD"
-                          ))
-                      ) {
-                        let Pr_from_date = "";
-                        let Pr_to_date = "";
+                          projectedleaveCalc(
+                            {
+                              from_date: Pr_from_date,
+                              to_date: Pr_to_date,
+                              year: year,
+                              attendance_starts:
+                                branch[1][0]["attendance_starts"],
+                              at_end_date: branch[1][0]["at_end_date"],
 
-                        if (input.part == "A") {
-                          Pr_from_date = new Date();
-                          Pr_to_date = input.to_date;
-                        } else if (input.part == "B") {
-                          Pr_from_date = input.from_date;
-                          Pr_to_date = input.to_date;
-                        } else {
-                          Pr_from_date = new Date();
-                          Pr_to_date = input.to_date;
-                        }
+                              employee_id: input.employee_id,
 
-                        projectedleaveCalc(
-                          {
-                            from_date: Pr_from_date,
-                            to_date: Pr_to_date,
-                            year: year,
-                            attendance_starts:
-                              branch[1][0]["attendance_starts"],
-                            at_end_date: branch[1][0]["at_end_date"],
+                              leave_id: input.leave_id
+                            },
+                            _mysql
+                          )
+                            .then(anualResult => {
+                              resolve({
+                                ...anualResult,
+                                leave_applied_days: leave_applied_days,
+                                calculatedLeaveDays: calculatedLeaveDays,
+                                monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
+                                include_holidays: include_holidays,
+                                total_holiday: total_holiday,
+                                include_week_offs: include_week_offs,
+                                total_weekOff: total_weekOff,
 
-                            employee_id: input.employee_id,
-
-                            leave_id: input.leave_id
-                          },
-                          _mysql
-                        )
-                          .then(anualResult => {
-                            resolve({
-                              ...anualResult,
-                              leave_applied_days: leave_applied_days,
-                              calculatedLeaveDays: calculatedLeaveDays,
-                              monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
-                              include_holidays: include_holidays,
-                              total_holiday: total_holiday,
-                              include_week_offs: include_week_offs,
-                              total_weekOff: total_weekOff,
-
-                              annual_leave: "Y",
-                              is_projected_leave: "Y",
-                              currentClosingBal: 0,
-                              actualClosingBal: currentClosingBal
+                                annual_leave: "Y",
+                                is_projected_leave: "Y",
+                                currentClosingBal: 0,
+                                actualClosingBal: currentClosingBal
+                              });
+                            })
+                            .catch(e => {
+                              console.log("e*0*:", e);
+                              _mysql.releaseConnection();
+                              reject(e);
                             });
-                          })
-                          .catch(e => {
-                            console.log("e*0*:", e);
-                            _mysql.releaseConnection();
-                            reject(e);
+                        }
+
+                        //checking if he has enough eligible days
+                        else if (
+                          currentClosingBal >= calculatedLeaveDays ||
+                          (input.cancel == "Y" &&
+                            input.is_projected_leave != "Y")
+                        ) {
+                          // _mysql.releaseConnection();
+                          resolve({
+                            leave_applied_days: leave_applied_days,
+                            calculatedLeaveDays: calculatedLeaveDays,
+                            monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
+                            include_holidays: include_holidays,
+                            total_holiday: total_holiday,
+                            include_week_offs: include_week_offs,
+                            total_weekOff: total_weekOff
                           });
-                      }
+                        } else if (
+                          input.cancel == "Y" &&
+                          input.is_projected_leave == "Y"
+                        ) {
+                          resolve({
+                            leave_applied_days: leave_applied_days,
+                            calculatedLeaveDays: calculatedLeaveDays,
+                            monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
+                            include_holidays: include_holidays,
+                            total_holiday: total_holiday,
+                            include_week_offs: include_week_offs,
+                            total_weekOff: total_weekOff
+                          });
+                        } else {
+                          _mysql.releaseConnection();
 
-                      //checking if he has enough eligible days
-                      else if (
-                        currentClosingBal >= calculatedLeaveDays ||
-                        (input.cancel == "Y" && input.is_projected_leave != "Y")
-                      ) {
-                        // _mysql.releaseConnection();
-                        resolve({
-                          leave_applied_days: leave_applied_days,
-                          calculatedLeaveDays: calculatedLeaveDays,
-                          monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
-                          include_holidays: include_holidays,
-                          total_holiday: total_holiday,
-                          include_week_offs: include_week_offs,
-                          total_weekOff: total_weekOff
-                        });
-                      } else if (
-                        input.cancel == "Y" &&
-                        input.is_projected_leave == "Y"
-                      ) {
-                        resolve({
-                          leave_applied_days: leave_applied_days,
-                          calculatedLeaveDays: calculatedLeaveDays,
-                          monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
-                          include_holidays: include_holidays,
-                          total_holiday: total_holiday,
-                          include_week_offs: include_week_offs,
-                          total_weekOff: total_weekOff
-                        });
-                      } else {
-                        _mysql.releaseConnection();
-
-                        reject({
-                          invalid_input: true,
-                          message: `max available is ${currentClosingBal} days, you can't apply for  
+                          reject({
+                            invalid_input: true,
+                            message: `max available is ${currentClosingBal} days, you can't apply for  
                           ${calculatedLeaveDays} days`
-                        });
+                          });
+                        }
                       }
                     }
                   }
                 }
-
-
-              }
               } else {
                 _mysql.releaseConnection();
                 reject({
@@ -9115,16 +9497,16 @@ function leaveSessionValidate(result, _mysql, req, next, input) {
                   (prev2_from_leave_session_FH == "FH" &&
                     prev_to_leave_session_SH == "SH" &&
                     curr_from_session == "FH") ||
-                  ((prev_to_leave_session_FD == "FD" &&
+                  (prev_to_leave_session_FD == "FD" &&
                     curr_from_session == "SH") ||
-                    (prev_to_leave_session_SH == "SH" &&
-                      curr_from_session == "SH")) ||
-                  ((prev_to_leave_session_FH == "FH" &&
+                  (prev_to_leave_session_SH == "SH" &&
+                    curr_from_session == "SH") ||
+                  (prev_to_leave_session_FH == "FH" &&
                     curr_from_session == "FD") ||
-                    (prev_to_leave_session_FD == "FD" &&
-                      curr_from_session == "FD") ||
-                    (prev_to_leave_session_SH == "SH" &&
-                      curr_from_session == "FD"))
+                  (prev_to_leave_session_FD == "FD" &&
+                    curr_from_session == "FD") ||
+                  (prev_to_leave_session_SH == "SH" &&
+                    curr_from_session == "FD")
                 ) {
                   // debugLog("rejction_one:");
                   //clashing only  new from_leave_session  with existing  to_leave_session
@@ -9238,11 +9620,11 @@ function singleYearAuthorize(
 
           let update_leave_application = ` update hims_f_leave_application set status='APR',
                       approved_by= ${
-            req.userIdentity.algaeh_d_app_user_id
-            },approved_date= '${moment().format("YYYY-MM-DD")}'
+                        req.userIdentity.algaeh_d_app_user_id
+                      },approved_date= '${moment().format("YYYY-MM-DD")}'
                       where record_status='A'  and hims_f_leave_application_id= ${
-            input.hims_f_leave_application_id
-            };`;
+                        input.hims_f_leave_application_id
+                      };`;
 
           //-------------------GGG
 
@@ -9291,24 +9673,24 @@ function singleYearAuthorize(
             convertToLeave = ` update hims_f_daily_time_sheet set status='${input.leave_type +
               "L"}',
                 actual_hours=0,actual_minutes=0 where hospital_id=${
-              input.hospital_id
-              }  and 
+                  input.hospital_id
+                }  and 
                 employee_id=${input.employee_id} and attendance_date='${
               input.from_date
-              }';
+            }';
                 update hims_f_daily_attendance set absent_days=0 ,paid_leave=${paid},unpaid_leave=${unpaid}
                 where hospital_id=${input.hospital_id} and employee_id=${
               input.employee_id
-              }
+            }
                 and attendance_date='${input.from_date}';
                 update hims_f_attendance_monthly set absent_days=absent_days-1,total_leave=total_leave+1 ${leave}
                 where hospital_id=${input.hospital_id} and employee_id=${
               input.employee_id
-              } and 
+            } and 
                 year=${input.year} and month=${month_number};
                 update hims_f_absent set status='CTL' ,processed='Y' where hims_f_absent_id=${
-              input.absent_id
-              };`;
+                  input.absent_id
+                };`;
           }
 
           resolve({
@@ -9362,7 +9744,6 @@ function acrossYearAuthorize(
               parseFloat(cur_year_leaveData[0]["close_balance"]) ||
               deductionResult.is_projected_leave == "Y")
           ) {
-
             let newCloseBal = "";
             let actualClosingBal = 0;
             let projected_applied_leaves = 0;
@@ -9474,23 +9855,23 @@ function acrossYearAuthorize(
                 "L"}',
               actual_hours=0,actual_minutes=0 where hospital_id=${
                 input.hospital_id
-                }  and 
+              }  and 
               employee_id=${input.employee_id} and attendance_date='${
                 input.from_date
-                }';
+              }';
               update hims_f_daily_attendance set absent_days=0 ,paid_leave=${paid},unpaid_leave=${unpaid}
               where hospital_id=${input.hospital_id} and employee_id=${
                 input.employee_id
-                }
+              }
               and attendance_date='${input.from_date}';
               update hims_f_attendance_monthly set absent_days=absent_days-1,total_leave=total_leave+1 ${leave}
               where hospital_id=${input.hospital_id} and employee_id=${
                 input.employee_id
-                } and 
+              } and 
               year=${input.year} and month=${month_number};
               update hims_f_absent set status='CTL' ,processed='Y' where hims_f_absent_id=${
                 input.absent_id
-                };`;
+              };`;
             }
 
             resolve({
@@ -9579,11 +9960,11 @@ function acrossYearAuthorize(
 
               let update_leave_application = ` update hims_f_leave_application set status='APR',
                     approved_by= ${
-                req.userIdentity.algaeh_d_app_user_id
-                },approved_date= '${moment().format("YYYY-MM-DD")}'
+                      req.userIdentity.algaeh_d_app_user_id
+                    },approved_date= '${moment().format("YYYY-MM-DD")}'
                     where record_status='A'  and hims_f_leave_application_id= ${
-                input.hims_f_leave_application_id
-                };`;
+                      input.hims_f_leave_application_id
+                    };`;
 
               resolve({
                 ...resultA,
@@ -9678,11 +10059,11 @@ function singleYearCancel(deductionResult, leaveData, input, req) {
         let update_leave_application = ` update hims_f_leave_application set status='CAN',
         cancelled_by= ${
           req.userIdentity.algaeh_d_app_user_id
-          },cancelled_date= '${moment().format("YYYY-MM-DD")}',
+        },cancelled_date= '${moment().format("YYYY-MM-DD")}',
         cancelled_remarks='${input.cancelled_remarks}'
         where record_status='A'  and hims_f_leave_application_id= ${
           input.hims_f_leave_application_id
-          };`;
+        };`;
 
         let anualLeave = "";
         if (
@@ -9839,12 +10220,12 @@ function acrossYearCancel(
 
               let update_leave_application = ` update hims_f_leave_application set status='CAN',
                     cancelled_by= ${
-                req.userIdentity.algaeh_d_app_user_id
-                },cancelled_date= '${moment().format("YYYY-MM-DD")}',
+                      req.userIdentity.algaeh_d_app_user_id
+                    },cancelled_date= '${moment().format("YYYY-MM-DD")}',
                     cancelled_remarks='${input.cancelled_remarks}'
                     where record_status='A'  and hims_f_leave_application_id= ${
-                input.hims_f_leave_application_id
-                };`;
+                      input.hims_f_leave_application_id
+                    };`;
 
               resolve({
                 ...resultA,
@@ -9916,9 +10297,7 @@ function numberOfMonths(at_end_date, dateStart, dateEnd) {
         moment(date_start, "YYYY-MM-DD").format("YYYYMM")
       ) {
         let cur_month = 0;
-        if (
-          from_month == moment(date_start, "YYYY-MM-DD").format("M")
-        ) {
+        if (from_month == moment(date_start, "YYYY-MM-DD").format("M")) {
           if (from_day <= at_end_date) {
             cur_month = parseInt(from_month);
 
@@ -9941,13 +10320,9 @@ function numberOfMonths(at_end_date, dateStart, dateEnd) {
           }
 
           date_start.add(1, "M");
-        } else if (
-          to_month == moment(date_start, "YYYY-MM-DD").format("M")
-        ) {
+        } else if (to_month == moment(date_start, "YYYY-MM-DD").format("M")) {
           if (to_day <= at_end_date) {
-            cur_month = parseInt(
-              moment(date_start, "YYYY-MM-DD").format("M")
-            );
+            cur_month = parseInt(moment(date_start, "YYYY-MM-DD").format("M"));
 
             if (cur_month > 12) {
               cur_month = 1;
@@ -9957,9 +10332,7 @@ function numberOfMonths(at_end_date, dateStart, dateEnd) {
               temp_number_of_months.push(cur_month);
             }
           } else if (to_day > at_end_date) {
-            cur_month = parseInt(
-              moment(date_start, "YYYY-MM-DD").format("M")
-            );
+            cur_month = parseInt(moment(date_start, "YYYY-MM-DD").format("M"));
 
             if (cur_month > 12) {
               cur_month = 1;
@@ -9981,9 +10354,7 @@ function numberOfMonths(at_end_date, dateStart, dateEnd) {
           }
           date_start.add(1, "M");
         } else {
-          cur_month = parseInt(
-            moment(date_start, "YYYY-MM-DD").format("M")
-          );
+          cur_month = parseInt(moment(date_start, "YYYY-MM-DD").format("M"));
 
           if (cur_month > 12) {
             cur_month = 1;
