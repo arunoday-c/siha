@@ -42,11 +42,7 @@ class PayrollSettings extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <LeaveMasterIndex />
-                </ChildrenItem>
-              ),
+              children: <LeaveMasterIndex />,
               componentCode: "PAY_SET_LEV_MTR"
             },
             {
@@ -57,11 +53,7 @@ class PayrollSettings extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <EarningsDeductions />
-                </ChildrenItem>
-              ),
+              children: <EarningsDeductions />,
               componentCode: "PAY_SET_E&D_MTR"
             },
             {
@@ -72,11 +64,7 @@ class PayrollSettings extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <LoanMaster />
-                </ChildrenItem>
-              ),
+              children: <LoanMaster />,
               componentCode: "PAY_SET_LON"
             },
             {
@@ -87,11 +75,7 @@ class PayrollSettings extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <HolidayMaster />
-                </ChildrenItem>
-              ),
+              children: <HolidayMaster />,
               componentCode: "PAY_SET_HOL_MTR"
             },
             {
@@ -102,107 +86,19 @@ class PayrollSettings extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <OvertimeGroups />
-                </ChildrenItem>
-              ),
+              children: <OvertimeGroups />,
               componentCode: "PAY_SET_OVR_TIM"
             }
           ]}
+          renderClass="payrollSettingsSection"
         />
-
-        {/* <div className="row">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              <li
-                algaehtabs={"LeaveMaster"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Leave Master"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"EarningsDeductions"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Earnings & Deductions"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"LoanMaster"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Loan Master"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"HolidayMaster"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Holiday Master"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"OvertimeGroups"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Overtime Groups"
-                    }}
-                  />
-                }
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="payroll-setion">
-          {this.state.pageDisplay === "EarningsDeductions" ? (
-            <EarningsDeductions />
-          ) : this.state.pageDisplay === "LoanMaster" ? (
-            <LoanMaster />
-          ) : this.state.pageDisplay === "LeaveMaster" ? (
-            <LeaveMasterIndex />
-          ) : this.state.pageDisplay === "HolidayMaster" ? (
-            <HolidayMaster />
-          ) : this.state.pageDisplay === "OvertimeGroups" ? (
-            <OvertimeGroups />
-          ) : null}
-        </div> */}
       </div>
     );
   }
 }
 
-function ChildrenItem({ children }) {
-  return <div className="payroll-settings-section">{children}</div>;
-}
+// function ChildrenItem({ children }) {
+//   return <div className="payroll-settings-section">{children}</div>;
+// }
 
 export default PayrollSettings;

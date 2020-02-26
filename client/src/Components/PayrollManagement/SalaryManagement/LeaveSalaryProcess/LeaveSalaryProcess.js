@@ -39,7 +39,7 @@ class LeaveSalaryProcess extends Component {
       hrms_options: {}
     };
     getEmployeeAnnualLeaveToProcess(this, this);
-    getHrmsOptions(this)
+    getHrmsOptions(this);
   }
 
   UNSAFE_componentWillMount() {
@@ -108,7 +108,7 @@ class LeaveSalaryProcess extends Component {
     return (
       <div className="leave_en_auth row">
         <div className="col-12">
-          <div className="row inner-top-search" style={{ marginTop: 2 }}>
+          <div className="row inner-top-search">
             {/* <div className="col-2 globalSearchCntr">
               <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
               <h6 onClick={employeeSearch.bind(this, this)}>
@@ -163,8 +163,8 @@ class LeaveSalaryProcess extends Component {
               <h6>
                 {this.state.leave_salary_date
                   ? moment(this.state.leave_salary_date).format(
-                    Options.dateFormat
-                  )
+                      Options.dateFormat
+                    )
                   : Options.dateFormat}
               </h6>
             </div>
@@ -248,8 +248,8 @@ class LeaveSalaryProcess extends Component {
                     ) : this.state.status === "CAN" ? (
                       <span className="badge badge-danger">Cancelled</span>
                     ) : (
-                            ""
-                          )}{" "}
+                      ""
+                    )}{" "}
                   </>
                 ) : null}
               </div>

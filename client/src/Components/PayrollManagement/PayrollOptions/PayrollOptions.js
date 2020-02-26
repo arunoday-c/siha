@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./payrollOption.scss";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import AttendanceSettings from "./AttendanceSettings/AttendanceSettings";
 import EndServiceOption from "./EndServiceOption/EndServiceOption";
@@ -39,11 +40,7 @@ class PayrollOptions extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <AttendanceSettings />
-                </ChildrenItem>
-              ),
+              children: <AttendanceSettings />,
               componentCode: "PAY_ATT_SET"
             },
             {
@@ -54,11 +51,7 @@ class PayrollOptions extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <EndServiceOption />
-                </ChildrenItem>
-              ),
+              children: <EndServiceOption />,
               componentCode: "PAY_EOS_SER&D_MTR"
             },
             {
@@ -69,14 +62,11 @@ class PayrollOptions extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <LeaveSalarySetup />
-                </ChildrenItem>
-              ),
+              children: <LeaveSalarySetup />,
               componentCode: "PAY_ANN_LEV_SAL_SET"
             }
           ]}
+          renderClass="payrollOptionSection"
         />
         {/* <div className="row">
           <div className="tabMaster toggle-section">
@@ -135,8 +125,8 @@ class PayrollOptions extends Component {
   }
 }
 
-function ChildrenItem({ children }) {
-  return <div className="payroll-options-section">{children}</div>;
-}
+// function ChildrenItem({ children }) {
+//   return <div className="payroll-options-section">{children}</div>;
+// }
 
 export default PayrollOptions;

@@ -4,6 +4,8 @@ import { EmployeeView, DepartmentView } from ".";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
+import { AlgaehTabs } from "algaeh-react-components";
+
 export default class OrgChart extends Component {
   constructor(props) {
     super(props);
@@ -106,49 +108,40 @@ export default class OrgChart extends Component {
   render() {
     return (
       <div className="orgChartUI">
-        <div className="row">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              <li
-                algaehtabs={"DepartmentView"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Department View"
-                    }}
-                  />
-                }
-              </li>{" "}
-              <li
-                algaehtabs={"EmployeeView"}
-                className={"nav-item tab-button "}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Employee View"
-                    }}
-                  />
-                }
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="orgChart-section">
-          {this.state.pageDisplay === "EmployeeView" ? (
-            <EmployeeView />
-          ) : this.state.pageDisplay === "DepartmentView" ? (
-            <DepartmentView
-              allBranches={this.state.allBranches}
-              reqDepts={this.state.reqDepts}
-              api={this.chartFuncs()}
-            />
-          ) : null}
-        </div>
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Department View"
+                  }}
+                />
+              ),
+              children: (
+                <DepartmentView
+                  allBranches={this.state.allBranches}
+                  reqDepts={this.state.reqDepts}
+                  api={this.chartFuncs()}
+                />
+              ),
+              componentCode: "ORG_DEP_VEW"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Employee View"
+                  }}
+                />
+              ),
+              children: <EmployeeView />,
+              componentCode: "ORG_EMP_VEW"
+            }
+          ]}
+          renderClass="orgChartSection"
+        />
       </div>
     );
   }

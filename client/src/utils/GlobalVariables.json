@@ -2065,6 +2065,10 @@
     {
       "name": "Daily Manual",
       "value": "DM"
+    },
+    {
+      "name": "Daily Manual with Project Roster",
+      "value": "DMP"
     }
   ],
   "ATTN_START_TYPE": [

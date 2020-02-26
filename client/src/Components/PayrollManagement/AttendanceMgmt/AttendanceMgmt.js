@@ -42,11 +42,7 @@ export default class AttendanceMgmt extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <NewMonthlyAttendence />
-                </ChildrenItem>
-              ),
+              children: <NewMonthlyAttendence />,
               componentCode: "ATT_MON_ATT"
             },
             {
@@ -57,11 +53,7 @@ export default class AttendanceMgmt extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <BulkTimeSheet />
-                </ChildrenItem>
-              ),
+              children: <BulkTimeSheet />,
               componentCode: "ATT_MAN_TIM"
             },
             {
@@ -72,11 +64,7 @@ export default class AttendanceMgmt extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <WeeklyAttendance />
-                </ChildrenItem>
-              ),
+              children: <WeeklyAttendance />,
               componentCode: "ATT_BIO_TIM"
             },
             {
@@ -87,11 +75,7 @@ export default class AttendanceMgmt extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <AbsenceManagement />
-                </ChildrenItem>
-              ),
+              children: <AbsenceManagement />,
               componentCode: "ATT_ABS_MGMT"
             },
             {
@@ -102,19 +86,16 @@ export default class AttendanceMgmt extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <OverTimeMgmt />
-                </ChildrenItem>
-              ),
+              children: <OverTimeMgmt />,
               componentCode: "ATT_OVR_TIM"
             }
           ]}
+          renderClass="AttMgmntSection"
         />
       </div>
     );
   }
 }
-function ChildrenItem({ children }) {
-  return <div className="Attendance-Management-section">{children}</div>;
-}
+// function ChildrenItem({ children }) {
+//   return <div className="Attendance-Management-section">{children}</div>;
+// }

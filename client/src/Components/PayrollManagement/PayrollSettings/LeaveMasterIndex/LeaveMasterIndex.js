@@ -112,7 +112,7 @@ export default class LeaveMasterIndex extends Component {
           onClick={this.restoreIndex.bind(this)}
         />
         <div className="col-lg-12">
-          <div className="portlet portlet-bordered margin-bottom-15">
+          <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">Leave Master List</h3>
