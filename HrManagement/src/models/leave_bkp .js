@@ -2006,13 +2006,13 @@ export default {
                           w.holiday_type == "RS" &&
                           w.religion_id == my_religion) ||
                         (w.holiday_date == to_date && w.weekoff == "Y") ||
-                        (w.holiday_date == to_date &&
-                          w.holiday == "Y" &&
-                          w.holiday_type == "RE") ||
-                        (w.holiday_date == to_date &&
-                          w.holiday == "Y" &&
-                          w.holiday_type == "RS" &&
-                          w.religion_id == my_religion)
+                          (w.holiday_date == to_date &&
+                            w.holiday == "Y" &&
+                            w.holiday_type == "RE") ||
+                          (w.holiday_date == to_date &&
+                            w.holiday == "Y" &&
+                            w.holiday_type == "RS" &&
+                            w.religion_id == my_religion)
                     )
                     .Select(s => {
                       return {
@@ -2833,14 +2833,14 @@ export default {
                                             curr_from_session == "FH") ||
                                           (prev_to_leave_session_FD == "FD" &&
                                             curr_from_session == "SH") ||
-                                          (prev_to_leave_session_SH == "SH" &&
-                                            curr_from_session == "SH") ||
+                                            (prev_to_leave_session_SH == "SH" &&
+                                              curr_from_session == "SH") ||
                                           (prev_to_leave_session_FH == "FH" &&
                                             curr_from_session == "FD") ||
-                                          (prev_to_leave_session_FD == "FD" &&
-                                            curr_from_session == "FD") ||
-                                          (prev_to_leave_session_SH == "SH" &&
-                                            curr_from_session == "FD")
+                                            (prev_to_leave_session_FD == "FD" &&
+                                              curr_from_session == "FD") ||
+                                            (prev_to_leave_session_SH == "SH" &&
+                                              curr_from_session == "FD")
                                         ) {
                                           // debugLog("rejction_one:");
                                           //clashing only  new from_leave_session  with existing  to_leave_session
@@ -7579,7 +7579,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
   });
 }
 
-function validateLeaveApplictn_bkp_26_feb_2020(inputs, my_sql, req) {
+function validateLeaveApplictn(inputs, my_sql, req) {
   return new Promise((resolve, reject) => {
     try {
       const utilities = new algaehUtilities();
@@ -8059,383 +8059,6 @@ function validateLeaveApplictn_bkp_26_feb_2020(inputs, my_sql, req) {
   });
 }
 
-function validateLeaveApplictn(inputs, my_sql, req) {
-  return new Promise((resolve, reject) => {
-    try {
-      const utilities = new algaehUtilities();
-
-      let input = inputs;
-      let _mysql = my_sql;
-
-      const from_year = moment(input.from_date, "YYYY-MM-DD").format("YYYY");
-      const to_year = moment(input.to_date, "YYYY-MM-DD").format("YYYY");
-
-      input["year"] = from_year;
-      //for sinle  year leave
-      if (parseInt(from_year) == parseInt(to_year)) {
-        console.log("OPTION1:");
-
-        calculateNoLeaveDays(input, _mysql)
-          .then(sameYearResult => {
-            if (sameYearResult.is_projected_leave == "Y") {
-              const max_available_leave =
-                parseFloat(sameYearResult["predicted_leave_days"]) +
-                parseFloat(sameYearResult["actualClosingBal"]);
-
-              if (
-                max_available_leave >= sameYearResult.calculatedLeaveDays ||
-                input.cancel == "Y"
-              ) {
-                let projected_applied_leaves =
-                  parseFloat(sameYearResult.calculatedLeaveDays) -
-                  parseFloat(sameYearResult.actualClosingBal);
-
-                resolve({
-                  ...sameYearResult,
-                  from_year: from_year,
-                  to_year: to_year,
-                  projected_applied_leaves: projected_applied_leaves
-                });
-              } else {
-                reject({
-                  invalid_input: true,
-                  message: `max available is ${max_available_leave} days, you can't apply for  
-              ${sameYearResult.calculatedLeaveDays} days`
-                });
-              }
-            } else {
-              resolve({
-                ...sameYearResult,
-                from_year: from_year,
-                to_year: to_year
-              });
-            }
-          })
-          .catch(e => {
-            reject(e);
-          });
-      }
-      // for accross the year leave
-      else if (parseInt(from_year) == parseInt(to_year) - 1) {
-        console.log("OPTION2:");
-
-        const same_year_from_date = moment(
-          input.from_date,
-          "YYYY-MM-DD"
-        ).format("YYYY-MM-DD");
-        const same_year_to_date = moment(
-          from_year + "-" + 12 + "-" + 31,
-          "YYYY-MM-DD"
-        ).format("YYYY-MM-DD");
-        const next_year_from_date = moment(
-          to_year + "-" + 1 + "-" + 1,
-          "YYYY-M-D"
-        ).format("YYYY-MM-DD");
-        const next_year_to_date = moment(input.to_date, "YYYY-MM-DD").format(
-          "YYYY-MM-DD"
-        );
-
-        const actual_to_session = input["to_session"];
-
-        input["from_date"] = same_year_from_date;
-        input["to_date"] = same_year_to_date;
-        input["to_session"] = "FD";
-        input["part"] = "A";
-
-        input["is_across_year_leave"] = "Y";
-
-        //FIRST YEAR CALCULATION
-        calculateNoLeaveDays(input, _mysql)
-          .then(partA_res => {
-            console.log("PART A COMPLETED");
-            if (
-              partA_res.annual_leave == "Y" &&
-              partA_res.is_projected_leave == "Y"
-            ) {
-              input["from_across_anual_leave"] = "Y";
-              const calculatedLeaveDays = partA_res.calculatedLeaveDays;
-              const actualClosingBal = partA_res.actualClosingBal;
-
-              const max_available_leave =
-                parseFloat(partA_res["predicted_leave_days"]) +
-                parseFloat(actualClosingBal);
-
-              if (
-                max_available_leave >= calculatedLeaveDays ||
-                input.cancel == "Y"
-              ) {
-                partA_res["projected_applied_leaves"] =
-                  parseFloat(calculatedLeaveDays) -
-                  parseFloat(actualClosingBal);
-                input["carry_forward"] =
-                  parseFloat(max_available_leave) -
-                  parseFloat(calculatedLeaveDays);
-              } else {
-                reject({
-                  invalid_input: true,
-                  message: `max available is ${max_available_leave} days, you can't apply for  
-                  ${calculatedLeaveDays} days`
-                });
-              }
-            }
-
-            //----------two
-            _mysql
-              .executeQuery({
-                query:
-                  "select hospital_id from hims_d_employee where hims_d_employee_id=?;",
-                values: [input.employee_id],
-
-                printQuery: false
-              })
-              .then(branch => {
-                const hospital_id = branch[0]["hospital_id"];
-                // input["hospital_id"]= branch[0]["hospital_id"];
-                _mysql
-                  .executeQuery({
-                    query:
-                      "select hims_f_employee_monthly_leave_id,employee_id,year,leave_id from\
-                        hims_f_employee_monthly_leave where   year=? and employee_id=? and leave_id=?;\
-                        select hims_d_holiday_id,holiday_date,holiday_description,weekoff,\
-                      holiday,holiday_type,religion_id  from hims_d_holiday  where hospital_id=?\
-                        and  date(holiday_date) between date(?  )  and date(?  ) ;  ",
-                    values: [
-                      to_year,
-                      input.employee_id,
-                      input.leave_id,
-                      hospital_id,
-                      next_year_from_date,
-                      next_year_to_date
-                    ],
-
-                    printQuery: true
-                  })
-                  .then(Result => {
-                    input["year"] = to_year;
-                    if (Result[1].length > 0) {
-                      new Promise((resolve, reject) => {
-                        if (Result[0].length > 0) {
-                          resolve({});
-                          //exist, so call calc function
-                        } else {
-                          //process next year
-
-                          if (input.from_across_anual_leave == "Y") {
-                            input["deduct_close_Balance"] = 0;
-                          } else {
-                            input["deduct_close_Balance"] =
-                              partA_res["calculatedLeaveDays"];
-                          }
-
-                          yearlyLeaveProcess(input, req, _mysql)
-                            .then(procRes => {
-                              resolve(procRes);
-                            })
-                            .catch(e => {
-                              _mysql.rollBackTransaction(() => {});
-                              reject(e);
-                            });
-                        }
-                      })
-                        .then(leavePresent => {
-                          console.log("PART A DONE");
-
-                          input["from_date"] = next_year_from_date;
-                          input["to_date"] = next_year_to_date;
-                          input["from_session"] = "FH";
-                          input["to_session"] = actual_to_session;
-                          input["part"] = "B";
-
-                          calculateNoLeaveDays(input, _mysql)
-                            .then(partB_res => {
-                              const calculatedLeaveDays =
-                                parseFloat(partA_res.calculatedLeaveDays) +
-                                parseFloat(partB_res.calculatedLeaveDays);
-                              const leave_applied_days =
-                                parseFloat(partA_res.leave_applied_days) +
-                                parseFloat(partB_res.leave_applied_days);
-                              const total_holiday =
-                                parseFloat(partA_res.total_holiday) +
-                                parseFloat(partB_res.total_holiday);
-                              const total_weekOff =
-                                parseFloat(partA_res.total_weekOff) +
-                                parseFloat(partB_res.total_weekOff);
-
-                              if (input.from_across_anual_leave == "Y") {
-                                const A_Max =
-                                  parseFloat(
-                                    partA_res["predicted_leave_days"]
-                                  ) + parseFloat(partA_res["actualClosingBal"]);
-                                const B_Max =
-                                  parseFloat(
-                                    partB_res["predicted_leave_days"]
-                                  ) + parseFloat(partB_res["actualClosingBal"]);
-
-                                let partA_projected_applied_leaves = 0;
-
-                                if (
-                                  parseFloat(partA_res.calculatedLeaveDays) -
-                                    parseFloat(partA_res.actualClosingBal) >
-                                  0
-                                ) {
-                                  partA_projected_applied_leaves =
-                                    parseFloat(partA_res.calculatedLeaveDays) -
-                                    parseFloat(partA_res.actualClosingBal);
-                                }
-
-                                let partB_projected_applied_leaves = 0;
-
-                                if (
-                                  parseFloat(partB_res["calculatedLeaveDays"]) >
-                                    parseFloat(partB_res.actualClosingBal) &&
-                                  B_Max >=
-                                    parseFloat(partB_res.calculatedLeaveDays)
-                                ) {
-                                  partB_projected_applied_leaves =
-                                    parseFloat(partB_res.calculatedLeaveDays) -
-                                    parseFloat(
-                                      partB_res["predicted_leave_days"]
-                                    );
-                                }
-
-                                const projected_applied_leaves =
-                                  parseFloat(partA_projected_applied_leaves) +
-                                  parseFloat(partB_projected_applied_leaves);
-
-                                if (
-                                  A_Max >= partA_res.calculatedLeaveDays &&
-                                  B_Max >= partB_res.calculatedLeaveDays
-                                ) {
-                                  resolve({
-                                    partA_predicted_leave_days:
-                                      partA_res["predicted_leave_days"],
-                                    partB_projected_applied_leaves: partB_projected_applied_leaves,
-                                    partA_actualClosingBal:
-                                      partA_res.actualClosingBal,
-                                    partB_actualClosingBal:
-                                      partB_res.actualClosingBal,
-                                    projected_applied_leaves: projected_applied_leaves,
-                                    calculatedLeaveDays: calculatedLeaveDays,
-                                    leave_applied_days: leave_applied_days,
-                                    include_holidays:
-                                      partA_res.include_holidays,
-                                    include_week_offs:
-                                      partA_res.include_week_offs,
-                                    total_holiday: total_holiday,
-                                    total_weekOff: total_weekOff,
-                                    is_across_year_leave: "Y",
-                                    is_projected_leave: "Y",
-                                    carry_forward:
-                                      input["carry_forward"] > 0
-                                        ? input["carry_forward"]
-                                        : 0,
-                                    from_year_calculatedLeaveDays:
-                                      partA_res.calculatedLeaveDays,
-                                    to_year_calculatedLeaveDays:
-                                      partB_res.calculatedLeaveDays,
-                                    partA_monthWise:
-                                      partA_res.monthWiseCalculatedLeaveDeduction,
-                                    partB_monthWise:
-                                      partB_res.monthWiseCalculatedLeaveDeduction,
-                                    from_year: from_year,
-                                    to_year: to_year
-                                  });
-                                } else {
-                                  let max_days;
-                                  let applying_days;
-                                  let calc_year;
-
-                                  if (A_Max < partA_res.calculatedLeaveDays) {
-                                    max_days = A_Max;
-                                    applying_days =
-                                      partA_res.calculatedLeaveDays;
-                                    calc_year = from_year;
-                                  } else if (
-                                    B_Max < partB_res.calculatedLeaveDays
-                                  ) {
-                                    max_days = B_Max;
-                                    applying_days =
-                                      partB_res.calculatedLeaveDays;
-                                    calc_year = to_year;
-                                  }
-                                  reject({
-                                    invalid_input: true,
-                                    message: `max available is ${max_days} days in ${calc_year}, you can't apply for  
-                                ${applying_days} days`
-                                  });
-                                }
-                              } else {
-                                resolve({
-                                  calculatedLeaveDays: calculatedLeaveDays,
-                                  leave_applied_days: leave_applied_days,
-                                  include_holidays: partA_res.include_holidays,
-                                  include_week_offs:
-                                    partA_res.include_week_offs,
-                                  total_holiday: total_holiday,
-                                  total_weekOff: total_weekOff,
-                                  is_across_year_leave: "Y",
-                                  annual_leave: partA_res.annual_leave,
-                                  from_year_calculatedLeaveDays:
-                                    partA_res.calculatedLeaveDays,
-                                  to_year_calculatedLeaveDays:
-                                    partB_res.calculatedLeaveDays,
-                                  partA_monthWise:
-                                    partA_res.monthWiseCalculatedLeaveDeduction,
-                                  partB_monthWise:
-                                    partB_res.monthWiseCalculatedLeaveDeduction,
-                                  from_year: from_year,
-                                  to_year: to_year
-                                });
-                              }
-                              console.log("PART-B DONE ");
-                            })
-                            .catch(e => {
-                              reject(e);
-                            });
-                        })
-                        .catch(e => {
-                          _mysql.rollBackTransaction(() => {});
-                          reject(e);
-                        });
-                    } else {
-                      reject({
-                        invalid_input: true,
-                        message: `Please Notify HR to process weekOff and Holidays for ${to_year}`
-                      });
-                    }
-                  })
-                  .catch(e => {
-                    console.log("e:", e);
-                    _mysql.rollBackTransaction(() => {
-                      reject(e);
-                    });
-                  });
-              })
-              .catch(e => {
-                console.log("e:", e);
-                _mysql.rollBackTransaction(() => {
-                  reject(e);
-                });
-              });
-
-            //----------------two
-          })
-          .catch(e => {
-            reject(e);
-          });
-      } else {
-        reject({
-          invalid_input: true,
-          message: `can't apply leave for this Date range `
-        });
-      }
-    } catch (e) {
-      console.log("e76:", e);
-      reject(e);
-    }
-  });
-}
-
 function calculateNoLeaveDays(inputs, _mysql) {
   return new Promise((resolve, reject) => {
     try {
@@ -8786,13 +8409,13 @@ function calculateNoLeaveDays(inputs, _mysql) {
                               w.holiday_type == "RS" &&
                               w.religion_id == my_religion) ||
                             (w.holiday_date == to_date && w.weekoff == "Y") ||
-                            (w.holiday_date == to_date &&
-                              w.holiday == "Y" &&
-                              w.holiday_type == "RE") ||
-                            (w.holiday_date == to_date &&
-                              w.holiday == "Y" &&
-                              w.holiday_type == "RS" &&
-                              w.religion_id == my_religion)
+                              (w.holiday_date == to_date &&
+                                w.holiday == "Y" &&
+                                w.holiday_type == "RE") ||
+                              (w.holiday_date == to_date &&
+                                w.holiday == "Y" &&
+                                w.holiday_type == "RS" &&
+                                w.religion_id == my_religion)
                         )
                         .Select(s => {
                           return {
@@ -9499,14 +9122,14 @@ function leaveSessionValidate(result, _mysql, req, next, input) {
                     curr_from_session == "FH") ||
                   (prev_to_leave_session_FD == "FD" &&
                     curr_from_session == "SH") ||
-                  (prev_to_leave_session_SH == "SH" &&
-                    curr_from_session == "SH") ||
+                    (prev_to_leave_session_SH == "SH" &&
+                      curr_from_session == "SH") ||
                   (prev_to_leave_session_FH == "FH" &&
                     curr_from_session == "FD") ||
-                  (prev_to_leave_session_FD == "FD" &&
-                    curr_from_session == "FD") ||
-                  (prev_to_leave_session_SH == "SH" &&
-                    curr_from_session == "FD")
+                    (prev_to_leave_session_FD == "FD" &&
+                      curr_from_session == "FD") ||
+                    (prev_to_leave_session_SH == "SH" &&
+                      curr_from_session == "FD")
                 ) {
                   // debugLog("rejction_one:");
                   //clashing only  new from_leave_session  with existing  to_leave_session
