@@ -2676,10 +2676,10 @@ export default {
       _mysql
         .executeQuery({
           query: `select finance_account_child_id,ledger_code,child_name ${strQry}
-          from finance_account_child C left join finance_voucher_details VD on
-          C.finance_account_child_id=VD.child_id
-          and C.head_id in  (select finance_account_head_id from finance_account_head where root_id=?)
-          group by C.finance_account_child_id with rollup;`,
+          from finance_account_head H inner join  finance_account_child C
+          on  H.root_id=? and H.finance_account_head_id=C.head_id        
+          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
+          group by C.finance_account_child_id with rollup;;`,
           values: [input.root_id],
           printQuery: false
         })
