@@ -502,10 +502,10 @@ export default class NewMonthlyAttendance extends Component {
                     }
                   },
                   {
-                    fieldName: "prev_month_ot_hr",
+                    fieldName: "prev_month_week_off_ot",
                     label: (
                       <AlgaehLabel
-                        label={{ forceLabel: "Previous  Weekoff OT" }}
+                        label={{ forceLabel: "Previous Month Weekoff OT" }}
                       />
                     ),
                     displayTemplate: row => {
@@ -519,7 +519,7 @@ export default class NewMonthlyAttendance extends Component {
                     }
                   },
                   {
-                    fieldName: "prev_month_ot_hr",
+                    fieldName: "prev_month_holiday_ot",
                     label: (
                       <AlgaehLabel
                         label={{ forceLabel: "Previous Month Holiday OT" }}
