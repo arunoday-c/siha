@@ -9749,20 +9749,22 @@ function processBulkAtt_with_cutoff(data) {
                             ot_holiday_hours: 0,
                             ot_holiday_minutes: 0
                           });
-                        } else if (Day.status == "HO" && Day.worked_hours > 0) {
+                        } else if (Day.status == "HO") {
                           let holiday_ot_min,
                             holiday_ot_hour = 0;
 
-                          let worked_minutes =
-                            parseInt(Day["hours"] * 60) +
-                            parseInt(Day["minutes"]);
+                          if (Day.worked_hours > 0) {
+                            let worked_minutes =
+                              parseInt(Day["hours"] * 60) +
+                              parseInt(Day["minutes"]);
 
-                          //calculating over time
-                          holiday_ot_hour = parseInt(
-                            parseInt(Math.abs(worked_minutes)) / parseInt(60)
-                          );
-                          holiday_ot_min =
-                            parseInt(Math.abs(worked_minutes)) % parseInt(60);
+                            //calculating over time
+                            holiday_ot_hour = parseInt(
+                              parseInt(Math.abs(worked_minutes)) / parseInt(60)
+                            );
+                            holiday_ot_min =
+                              parseInt(Math.abs(worked_minutes)) % parseInt(60);
+                          }
 
                           dailyAttendance.push({
                             employee_id: AttenResult[0]["employee_id"],
@@ -9799,20 +9801,22 @@ function processBulkAtt_with_cutoff(data) {
                             ot_holiday_hours: holiday_ot_hour,
                             ot_holiday_minutes: holiday_ot_min
                           });
-                        } else if (Day.status == "WO" && Day.worked_hours > 0) {
+                        } else if (Day.status == "WO") {
                           let week_off_ot_hour = 0;
                           let week_off_ot_min = 0;
 
-                          let worked_minutes =
-                            parseInt(Day["hours"] * 60) +
-                            parseInt(Day["minutes"]);
+                          if (Day.worked_hours > 0) {
+                            let worked_minutes =
+                              parseInt(Day["hours"] * 60) +
+                              parseInt(Day["minutes"]);
 
-                          //calculating over time
-                          week_off_ot_hour = parseInt(
-                            parseInt(Math.abs(worked_minutes)) / parseInt(60)
-                          );
-                          week_off_ot_min =
-                            parseInt(Math.abs(worked_minutes)) % parseInt(60);
+                            //calculating over time
+                            week_off_ot_hour = parseInt(
+                              parseInt(Math.abs(worked_minutes)) / parseInt(60)
+                            );
+                            week_off_ot_min =
+                              parseInt(Math.abs(worked_minutes)) % parseInt(60);
+                          }
 
                           dailyAttendance.push({
                             employee_id: AttenResult[0]["employee_id"],
