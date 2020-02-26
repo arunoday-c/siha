@@ -14,12 +14,12 @@ import Enumerable from "linq";
 import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class LoanAuthorization extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
       open: false,
       leave_levels: [],
       leave_applns: [],
@@ -42,8 +42,8 @@ class LoanAuthorization extends Component {
           let auth_level =
             res.data.records.auth_levels.length > 0
               ? Enumerable.from(res.data.records.auth_levels).maxBy(
-                w => w.value
-              )
+                  w => w.value
+                )
               : null;
 
           this.setState({
@@ -78,7 +78,7 @@ class LoanAuthorization extends Component {
             employee_name: row.full_name,
             employee_id: row.hims_d_employee_id
           },
-          () => { }
+          () => {}
         );
       }
     });
@@ -136,7 +136,7 @@ class LoanAuthorization extends Component {
         }
       },
 
-      onFailure: err => { }
+      onFailure: err => {}
     });
   }
 
@@ -152,7 +152,7 @@ class LoanAuthorization extends Component {
         }
       },
 
-      onFailure: err => { }
+      onFailure: err => {}
     });
   }
 
@@ -198,7 +198,7 @@ class LoanAuthorization extends Component {
 
     this.setState({
       hospital_id: userToken.hims_d_hospital_id
-    })
+    });
   }
 
   render() {
@@ -217,7 +217,33 @@ class LoanAuthorization extends Component {
         />
         <div className="col-12">
           <div className="row inner-top-search">
-            <AlagehAutoComplete
+            <AlgaehSecurityElement
+              elementCode="PAY_LON_AUT"
+              render={data => {
+                return (
+                  <AlagehAutoComplete
+                    div={{ className: "col-2 form-group mandatory" }}
+                    label={{
+                      forceLabel: "Auth. Level",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "auth_level",
+                      value: this.state.auth_level,
+                      className: "select-fld",
+                      dataSource: {
+                        textField: "text",
+                        valueField: "value",
+                        data: data //this.state.leave_levels
+                      },
+                      onChange: this.dropDownHandler.bind(this)
+                    }}
+                  />
+                );
+              }}
+            />
+
+            {/* <AlagehAutoComplete
               div={{ className: "col-2 form-group mandatory" }}
               label={{
                 forceLabel: "Auth. Level",
@@ -234,7 +260,7 @@ class LoanAuthorization extends Component {
                 },
                 onChange: this.dropDownHandler.bind(this)
               }}
-            />
+            /> */}
 
             <AlgaehDateHandler
               div={{ className: "col-2 form-group mandatory" }}
@@ -337,8 +363,8 @@ class LoanAuthorization extends Component {
                 {!this.state.loading ? (
                   <span>Load</span>
                 ) : (
-                    <i className="fas fa-spinner fa-spin" />
-                  )}
+                  <i className="fas fa-spinner fa-spin" />
+                )}
               </button>{" "}
             </div>
           </div>
@@ -372,17 +398,17 @@ class LoanAuthorization extends Component {
                           return row.loan_authorized === "APR" ? (
                             <i className="fas fa-thumbs-up" />
                           ) : (
-                              <a
-                                onClick={() => {
-                                  this.setState({
-                                    selRow: row,
-                                    openAuth: true
-                                  });
-                                }}
-                              >
-                                <i className="fas fa-file-signature" />
-                              </a>
-                            );
+                            <a
+                              onClick={() => {
+                                this.setState({
+                                  selRow: row,
+                                  openAuth: true
+                                });
+                              }}
+                            >
+                              <i className="fas fa-file-signature" />
+                            </a>
+                          );
                         },
                         others: {
                           filterable: false,
@@ -412,8 +438,8 @@ class LoanAuthorization extends Component {
                                   Issued
                                 </span>
                               ) : (
-                                        "------"
-                                      )}
+                                "------"
+                              )}
                             </span>
                           );
                         }
