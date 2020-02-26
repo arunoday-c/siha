@@ -2176,85 +2176,91 @@ export default {
         strQry += ` and E.employee_group_id=${input.employee_group_id}`;
       }
 
-      let from_date = null;
-      let to_date = null;
+      // let from_date = null;
+      // let to_date = null;
+
+      let from_date = moment(input.yearAndMonth, "YYYY-M-DD")
+        .startOf("month")
+        .format("YYYY-MM-DD");
+      let to_date = moment(input.yearAndMonth, "YYYY-M-DD")
+        .endOf("month")
+        .format("YYYY-MM-DD");
+      // _mysql
+      //   .executeQuery({
+      //     query:
+      //       "select attendance_starts,at_st_date,at_end_date ,attendance_type from hims_d_hrms_options;"
+      //   })
+      //   .then(options => {
+      //     if (options.length > 0) {
+      // if (
+      //   options[0]["attendance_starts"] == "PM" &&
+      //   options[0]["at_st_date"] > 0 &&
+      //   options[0]["at_end_date"] > 0
+      // ) {
+      //   const f_date =
+      //     year + "-" + month_number + "-" + options[0]["at_st_date"];
+      //   const t_date =
+      //     year + "-" + month_number + "-" + options[0]["at_end_date"];
+
+      //   from_date = moment(f_date, "YYYY-M-DD")
+      //     .subtract(1, "months")
+      //     .format("YYYY-MM-DD");
+      //   to_date = moment(t_date, "YYYY-M-DD").format("YYYY-MM-DD");
+      // } else {
+      //   from_date = moment(input.yearAndMonth, "YYYY-M-DD")
+      //     .startOf("month")
+      //     .format("YYYY-MM-DD");
+      //   to_date = moment(input.yearAndMonth, "YYYY-M-DD")
+      //     .endOf("month")
+      //     .format("YYYY-MM-DD");
+      // }
+
+      // let presntdayStr = "";
+      // if (options[0]["attendance_type"] == "D") {
+      //   presntdayStr = " present_days ";
+      // }
 
       _mysql
         .executeQuery({
-          query:
-            "select attendance_starts,at_st_date,at_end_date ,attendance_type from hims_d_hrms_options;"
-        })
-        .then(options => {
-          if (options.length > 0) {
-            if (
-              options[0]["attendance_starts"] == "PM" &&
-              options[0]["at_st_date"] > 0 &&
-              options[0]["at_end_date"] > 0
-            ) {
-              const f_date =
-                year + "-" + month_number + "-" + options[0]["at_st_date"];
-              const t_date =
-                year + "-" + month_number + "-" + options[0]["at_end_date"];
-
-              from_date = moment(f_date, "YYYY-M-DD")
-                .subtract(1, "months")
-                .format("YYYY-MM-DD");
-              to_date = moment(t_date, "YYYY-M-DD").format("YYYY-MM-DD");
-            } else {
-              from_date = moment(input.yearAndMonth, "YYYY-M-DD")
-                .startOf("month")
-                .format("YYYY-MM-DD");
-              to_date = moment(input.yearAndMonth, "YYYY-M-DD")
-                .endOf("month")
-                .format("YYYY-MM-DD");
-            }
-
-            let presntdayStr = "";
-            if (options[0]["attendance_type"] == "D") {
-              presntdayStr = " present_days ";
-            }
-
-            _mysql
-              .executeQuery({
-                query: `select hims_f_attendance_monthly_id,employee_id,E.employee_code,E.full_name as employee_name,\
+          query: `select hims_f_attendance_monthly_id,employee_id,E.employee_code,E.full_name as employee_name,\
 						year,month,AM.hospital_id,AM.sub_department_id,\
-						total_days,${presntdayStr} display_present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,\
+						total_days, display_present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,\
 						total_leave,paid_leave,unpaid_leave,total_paid_days ,pending_unpaid_leave,total_hours,total_working_hours,\
-						shortage_hours,ot_work_hours,ot_weekoff_hours,ot_holiday_hours,prev_month_shortage_hr,prev_month_ot_hr from hims_f_attendance_monthly AM \
+            shortage_hours,ot_work_hours,ot_weekoff_hours,ot_holiday_hours,prev_month_shortage_hr,prev_month_ot_hr,\
+            prev_month_week_off_ot,prev_month_holiday_ot from hims_f_attendance_monthly AM \
             inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
             inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id\
 						where AM.record_status='A' and AM.year= ? and AM.month=? ${strQry} ;`,
-                values: [year, month_number],
-                printQuery: false
-              })
-              .then(result => {
-                _mysql.releaseConnection();
-                req.records = {
-                  attendance: result,
-
-                  from_date: from_date,
-                  to_date: to_date
-                };
-                next();
-              })
-              .catch(e => {
-                _mysql.releaseConnection();
-                next(e);
-              });
-          } else {
-            _mysql.releaseConnection();
-            req.records = {
-              message: "Please define HRMS options",
-              invalid_input: true
-            };
-            next();
-          }
+          values: [year, month_number],
+          printQuery: false
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = {
+            attendance: result,
+            from_date: from_date,
+            to_date: to_date
+          };
+          next();
         })
         .catch(e => {
           _mysql.releaseConnection();
           next(e);
         });
+      //   } else {
+      //     _mysql.releaseConnection();
+      //     req.records = {
+      //       message: "Please define HRMS options",
+      //       invalid_input: true
+      //     };
+      //     next();
+      //   }
+      // })
+      // .catch(e => {
+      //   _mysql.releaseConnection();
+      //   next(e);
+      // });
     } catch (e) {
       next(e);
     }
