@@ -27,7 +27,7 @@ export default class NewMonthlyAttendance extends Component {
       attendance_type: null,
       currMt: {}
     };
-    this.getHrmsOptions()
+    this.getHrmsOptions();
   }
 
   getHrmsOptions() {
@@ -37,7 +37,9 @@ export default class NewMonthlyAttendance extends Component {
       module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
-          this.setState({ attendance_type: res.data.result[0].attendance_type });
+          this.setState({
+            attendance_type: res.data.result[0].attendance_type
+          });
         }
       },
       onFailure: err => {
@@ -47,7 +49,7 @@ export default class NewMonthlyAttendance extends Component {
         });
       }
     });
-  };
+  }
 
   loadAttendance(inputs) {
     this.setState(
@@ -131,7 +133,7 @@ export default class NewMonthlyAttendance extends Component {
     const that = this;
     const _empdtl =
       that.state.inputs.hims_d_employee_id !== null &&
-        that.state.inputs.hims_d_employee_id !== ""
+      that.state.inputs.hims_d_employee_id !== ""
         ? { hims_d_employee_id: that.state.inputs.hims_d_employee_id }
         : {};
 
@@ -487,6 +489,40 @@ export default class NewMonthlyAttendance extends Component {
                     label: (
                       <AlgaehLabel
                         label={{ forceLabel: "Previous Month OT" }}
+                      />
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.prev_month_ot_hr
+                            ? row.prev_month_ot_hr + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "prev_month_ot_hr",
+                    label: (
+                      <AlgaehLabel
+                        label={{ forceLabel: "Previous  Weekoff OT" }}
+                      />
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.prev_month_ot_hr
+                            ? row.prev_month_ot_hr + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "prev_month_ot_hr",
+                    label: (
+                      <AlgaehLabel
+                        label={{ forceLabel: "Previous Month Holiday OT" }}
                       />
                     ),
                     displayTemplate: row => {

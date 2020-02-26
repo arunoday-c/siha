@@ -9,6 +9,7 @@ import LeaveEncashmentProcess from ".././LeaveEncashmentProcess/LeaveEncashmentP
 import ApplyLeaveEncashment from "./ApplyLeaveEncashment/ApplyLeaveEncashment";
 import OpeningBalance from "./OpeningBalance/OpeningBalance";
 import IssueCertificate from "./IssueCertificate/IssueCertificate";
+import { AlgaehTabs } from "algaeh-react-components";
 export default class SelfService extends Component {
   constructor(props) {
     super(props);
@@ -56,155 +57,115 @@ export default class SelfService extends Component {
   render() {
     return (
       <div className="employeeServicesModule">
-        {/* <button
-          className="d-none"
-          id="ep-dl"
-          onClick={this.getEmployeeDetails.bind(this)}
-        /> */}
-        <div className="row EmployeeTopNav box-shadow-normal">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              <li
-                algaehtabs={"ApplyLeave"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-                ref={attlv => {
-                  this.attlv = attlv;
-                }}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Request Leave"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"LoanRequest"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Request Loan"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"AdvanceRequest"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Request Advance"
-                    }}
-                  />
-                }
-              </li>{" "}
-              <li
-                algaehtabs={"ApplyLeaveEncashment"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-                ref={attReg => {
-                  this.attReg = attReg;
-                }}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Request Leave Encashment"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"RejoinFromAnnual"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Employee Rejoin"
-                    }}
-                  />
-                }
-              </li>{" "}
-              <li
-                algaehtabs={"OpeningBalance"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Opening Balance"
-                    }}
-                  />
-                }
-              </li>{" "}
-              <li
-                algaehtabs={"IssueCertificate"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Issue Certificate"
-                    }}
-                  />
-                }
-              </li>
-              {/* <li
-                algaehtabs={"LeaveEncashmentProcess"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-                ref={attReg => {
-                  this.attReg = attReg;
-                }}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Request Leave Encashment OLD"
-                    }}
-                  />
-                }
-              </li> */}
-            </ul>
-          </div>
-        </div>
-        <div className="empService-setion">
-          {this.state.pageDisplay === "ApplyLeave" ? (
-            <ApplyLeave
-              leave={this.state.leave}
-              // empData={this.state.employee_details}
-            />
-          ) : this.state.pageDisplay === "LoanRequest" ? (
-            <LoanRequest
-              type="LO"
-              basic_earning_component={this.state.basic_earning_component}
-            />
-          ) : this.state.pageDisplay === "AdvanceRequest" ? (
-            <LoanRequest type="AD" />
-          ) : this.state.pageDisplay === "RejoinFromAnnual" ? (
-            <RejoinAnnualLeave />
-          ) : this.state.pageDisplay === "LeaveEncashmentProcess" ? (
-            <LeaveEncashmentProcess from_screen="ES" />
-          ) : this.state.pageDisplay === "ApplyLeaveEncashment" ? (
-            <ApplyLeaveEncashment from_screen="ES" />
-          ) : this.state.pageDisplay === "OpeningBalance" ? (
-            <OpeningBalance />
-          ) : this.state.pageDisplay === "IssueCertificate" ? (
-            <IssueCertificate />
-          ) : null}
-        </div>
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Request Leave"
+                  }}
+                />
+              ),
+              children: <ApplyLeave leave={this.state.leave} />,
+              componentCode: "ESS_APP_LEV"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Request Leave Encashment"
+                  }}
+                />
+              ),
+              children: <ApplyLeaveEncashment from_screen="ES" />,
+              componentCode: "ESS_REQ_LEV_ENC"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Request Loan"
+                  }}
+                />
+              ),
+              children: (
+                <LoanRequest
+                  type="LO"
+                  basic_earning_component={this.state.basic_earning_component}
+                />
+              ),
+              componentCode: "ESS_LON_REQ"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Request Advance"
+                  }}
+                />
+              ),
+              children: <LoanRequest type="AD" />,
+              componentCode: "ESS_ADV_REQ"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Employee Rejoin"
+                  }}
+                />
+              ),
+              children: <RejoinAnnualLeave />,
+              componentCode: "ESS_EMP_REJ"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Opening Balance"
+                  }}
+                />
+              ),
+              children: <OpeningBalance />,
+              componentCode: "ESS_OPE_BAL"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Issue Certificate"
+                  }}
+                />
+              ),
+              children: <IssueCertificate />,
+              componentCode: "ESS_ISU_CERT"
+            }
+          ]}
+          renderClass="employeeServiceSection"
+        />
+        {/* <ApplyLeave
+          leave={this.state.leave}
+          // empData={this.state.employee_details}
+        />
+        ) : this.state.pageDisplay === "LoanRequest" ? (
+        <LoanRequest
+          type="LO"
+          basic_earning_component={this.state.basic_earning_component}
+        />
+        ) : this.state.pageDisplay === "AdvanceRequest" ? (
+        <LoanRequest type="AD" />
+        ) : this.state.pageDisplay === "RejoinFromAnnual" ? (
+        <RejoinAnnualLeave />
+        ) : this.state.pageDisplay === "LeaveEncashmentProcess" ? (
+        <LeaveEncashmentProcess from_screen="ES" />
+        ) : this.state.pageDisplay === "ApplyLeaveEncashment" ? (
+        <ApplyLeaveEncashment from_screen="ES" />
+        ) : this.state.pageDisplay === "OpeningBalance" ? (
+        <OpeningBalance />
+        ) : this.state.pageDisplay === "IssueCertificate" ? (
+        <IssueCertificate /> */}
       </div>
     );
   }

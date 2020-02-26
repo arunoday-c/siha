@@ -1,10 +1,13 @@
-.bulkAmountStyle {
-  width: 74%;
-  display: inline-block;
-  margin: 0;
-}
-#MiscEarningsDeductionsGrid_Cntr {
-  .ReactTable {
-    max-height: 58vh !important;
+.misc_earn_dedc {
+  margin-top: 43px;
+  .bulkAmountStyle {
+    width: 74%;
+    display: inline-block;
+    margin: 0;
+  }
+  #MiscEarningsDeductionsGrid_Cntr {
+    .ReactTable {
+      max-height: 58vh !important;
+    }
   }
 }

@@ -16,7 +16,7 @@ import ApplyLeaveEncashment from ".././EmployeeServices/ApplyLeaveEncashment/App
 
 // import employeeProfileImg from "../../../assets/images/employee_profile_img.webp";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-
+import { AlgaehTabs } from "algaeh-react-components";
 export default class SelfService extends Component {
   constructor(props) {
     super(props);
@@ -76,6 +76,7 @@ export default class SelfService extends Component {
         }
       },
       onFailure: err => {
+        this.setState({ loading: false });
         swalMessage({
           title: err.message,
           type: "error"
@@ -84,31 +85,31 @@ export default class SelfService extends Component {
     });
   }
 
-  openTab(e) {
-    var element = document.querySelectorAll("[algaehtabs]");
-    for (var i = 0; i < element.length; i++) {
-      element[i].classList.remove("active");
-    }
-    e.currentTarget.classList.add("active");
-    var specified = e.currentTarget.getAttribute("algaehtabs");
+  // openTab(e) {
+  //   var element = document.querySelectorAll("[algaehtabs]");
+  //   for (var i = 0; i < element.length; i++) {
+  //     element[i].classList.remove("active");
+  //   }
+  //   e.currentTarget.classList.add("active");
+  //   var specified = e.currentTarget.getAttribute("algaehtabs");
 
-    this.setState({
-      pageDisplay: specified
-    });
-  }
+  //   this.setState({
+  //     pageDisplay: specified
+  //   });
+  // }
 
-  ChangeRenderTabs(options) {
-    if (options.pageDisplay === "AttendanceRegularization") {
-      this.attReg.click();
-    } else if (options.pageDisplay === "ApplyLeave") {
-      this.attlv.click();
-    }
+  // ChangeRenderTabs(options) {
+  //   if (options.pageDisplay === "AttendanceRegularization") {
+  //     this.attReg.click();
+  //   } else if (options.pageDisplay === "ApplyLeave") {
+  //     this.attlv.click();
+  //   }
 
-    this.setState({
-      ...this.state,
-      ...options
-    });
-  }
+  //   this.setState({
+  //     ...this.state,
+  //     ...options
+  //   });
+  // }
 
   render() {
     let empDetails =
@@ -120,11 +121,11 @@ export default class SelfService extends Component {
     }
     return (
       <div className="selfServiceModule">
-        <button
+        {/* <button
           className="d-none"
           id="ep-dl"
           onClick={this.getEmployeeDetails.bind(this)}
-        />
+        /> */}
         <div className="row EmployeeProfile">
           <div className="EmployeeInfo-Top box-shadow-normal">
             <div className="EmployeeImg">
@@ -197,158 +198,137 @@ export default class SelfService extends Component {
             </div>
           </div>
         </div>
-        <div className="row EmployeeTopNav box-shadow-normal">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              {/* <li
-                algaehtabs={"ActivityFeed"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Activity Feed"
-                    }}
-                  />
-                }
-              </li> */}
-              {/* <li
-                algaehtabs={"TimeSheetSelf"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Time Sheet"
-                    }}
-                  />
-                }
-              </li> */}
-              {/* <li
-                algaehtabs={"AttendanceRegularization"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-                ref={attReg => {
-                  this.attReg = attReg;
-                }}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Attendance Regularization"
-                    }}
-                  />
-                }
-              </li> */}
-              <li
-                algaehtabs={"ApplyLeave"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-                ref={attlv => {
-                  this.attlv = attlv;
-                }}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Apply Leave"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"LoanRequest"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Loan / Advance Request"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"ApplyLeaveEncashment"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-                // ref={attReg => {
-                //   this.attReg = attReg;
-                // }}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Request Leave Encashment"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"HolidayListSelf"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Holiday List"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"SelfPersonalDetails"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Personal Info"
-                    }}
-                  />
-                }
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="selfService-setion">
-          {this.state.pageDisplay === "ActivityFeed" ? (
-            <ActivityFeed parent={this} empData={this.state.employee_details} />
-          ) : this.state.pageDisplay === "SelfPersonalDetails" ? (
-            <SelfPersonalDetails empData={this.state.employee_details} />
-          ) : this.state.pageDisplay === "AttendanceRegularization" ? (
-            <AttendanceRegularization
-              regularize={this.state.regularize}
-              empData={this.state.employee_details}
-            />
-          ) : this.state.pageDisplay === "ApplyLeave" ? (
-            <ApplyLeave
-              leave={this.state.leave}
-              empData={this.state.employee_details}
-            />
-          ) : this.state.pageDisplay === "LoanRequest" ? (
-            <LoanRequest
-              empData={this.state.employee_details}
-              basic_earning_component={this.state.basic_earning_component}
-            />
-          ) : this.state.pageDisplay === "TimeSheetSelf" ? (
-            <TimeSheetSelf />
-          ) : this.state.pageDisplay === "HolidayListSelf" ? (
-            <HolidayListSelf />
-          ) : this.state.pageDisplay === "LeaveEncashmentProcess" ? (
-            <LeaveEncashmentProcess empData={this.state.employee_details} />
-          ) : this.state.pageDisplay === "ApplyLeaveEncashment" ? (
-            <ApplyLeaveEncashment
-              from_screen="SS"
-              empData={this.state.employee_details}
-            />
-          ) : null}
-        </div>
+        <AlgaehTabs
+          tabClass="EmployeeTopNav"
+          removeCommonSection={true}
+          customRenderTag={() => {}}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Activity Feed"
+                  }}
+                />
+              ),
+              children: (
+                <ActivityFeed
+                  parent={this}
+                  empData={this.state.employee_details}
+                />
+              ),
+              componentCode: "SEL_ACT_FED"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Request Leave"
+                  }}
+                />
+              ),
+              children: (
+                <ApplyLeave
+                  leave={this.state.leave}
+                  empData={this.state.employee_details}
+                />
+              ),
+              componentCode: "SEL_APP_LEV"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Loan/ Advance Request"
+                  }}
+                />
+              ),
+              children: (
+                <LoanRequest
+                  empData={this.state.employee_details}
+                  basic_earning_component={this.state.basic_earning_component}
+                />
+              ),
+              componentCode: "SEL_LON_ADV_REQ"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Leave Encashment Request"
+                  }}
+                />
+              ),
+              children: (
+                <ApplyLeaveEncashment
+                  from_screen="SS"
+                  empData={this.state.employee_details}
+                />
+              ),
+              componentCode: "SEL_LEV_ENC_REQ"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Attendance Regularisation"
+                  }}
+                />
+              ),
+              children: (
+                <AttendanceRegularization
+                  regularize={this.state.regularize}
+                  empData={this.state.employee_details}
+                />
+              ),
+              componentCode: "SEL_ATT_REG"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Personal Info"
+                  }}
+                />
+              ),
+              children: (
+                <>
+                  {console.log(
+                    "this.state.employee_details",
+                    this.state.employee_details
+                  )}
+                  <SelfPersonalDetails empData={this.state.employee_details} />
+                </>
+              ),
+              componentCode: "SEL_PER_INF"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Holiday List"
+                  }}
+                />
+              ),
+              children: (
+                <HolidayListSelf empData={this.state.employee_details} />
+              ),
+              componentCode: "SEL_HOL_LST"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Self Timesheet"
+                  }}
+                />
+              ),
+              children: <TimeSheetSelf />,
+              componentCode: "SEL_TIM_SHE"
+            }
+          ]}
+          renderClass="selfServiceSection"
+        />
       </div>
     );
   }

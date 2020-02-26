@@ -39,7 +39,7 @@ class EmployeePaymentCancel extends Component {
 
     this.setState({
       hospital_id: userToken.hims_d_hospital_id
-    })
+    });
 
     if (
       this.props.organizations === undefined ||
@@ -146,7 +146,7 @@ class EmployeePaymentCancel extends Component {
           </div>
           <div className="row">
             <div className="col-12">
-              <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+              <div className="portlet portlet-bordered ">
                 <div className="portlet-title">
                   <div className="caption">
                     <h3 className="caption-subject">Previous Payment List</h3>
@@ -208,8 +208,8 @@ class EmployeePaymentCancel extends Component {
                               return row.cancel === "N" ? (
                                 <span className="badge badge-warning">No</span>
                               ) : (
-                                  <span className="badge badge-success">Yes</span>
-                                );
+                                <span className="badge badge-success">Yes</span>
+                              );
                             }
                           },
                           // {
@@ -313,8 +313,8 @@ class EmployeePaymentCancel extends Component {
                                 this.props.banks === undefined
                                   ? []
                                   : this.props.banks.filter(
-                                    f => f.hims_d_bank_id === row.bank_id
-                                  );
+                                      f => f.hims_d_bank_id === row.bank_id
+                                    );
 
                               return (
                                 <span>

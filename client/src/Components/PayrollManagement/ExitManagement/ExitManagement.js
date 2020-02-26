@@ -36,7 +36,6 @@ class ExitManagement extends Component {
   render() {
     return (
       <div className="exit_mgmt">
-
         <AlgaehTabs
           removeCommonSection={true}
           content={[
@@ -48,11 +47,7 @@ class ExitManagement extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <GratuityAccrual parent={this} />
-                </ChildrenItem>
-              ),
+              children: <GratuityAccrual parent={this} />,
               componentCode: "EXT_GRT_ACC"
             },
             {
@@ -63,11 +58,7 @@ class ExitManagement extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <EOSGratuity parent={this} />
-                </ChildrenItem>
-              ),
+              children: <EOSGratuity parent={this} />,
               componentCode: "EXT_EOS_GRT"
             },
             {
@@ -78,77 +69,19 @@ class ExitManagement extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <FinalSettlement />
-                </ChildrenItem>
-              ),
+              children: <FinalSettlement />,
               componentCode: "EXT_FIN_STL"
             }
           ]}
+          renderClass="ExitMgmtSection"
         />
-
-        {/* <div className="row">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              <li
-                algaehtabs={"GratuityAccrual"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Gratuity Accrual"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"EOSGratuity"}
-                className={"nav-item tab-button "}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "EOS / Gratuity"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"FinalSettlement"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Final Settlement"
-                    }}
-                  />
-                }
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="payroll-setion">
-          {this.state.pageDisplay === "GratuityAccrual" ? (
-            <GratuityAccrual parent={this} />
-          ) : this.state.pageDisplay === "EOSGratuity" ? (
-            <EOSGratuity parent={this} />
-          ) : this.state.pageDisplay === "FinalSettlement" ? (
-            <FinalSettlement />
-          ) : null}
-        </div> */}
       </div>
     );
   }
 }
 
-function ChildrenItem({ children }) {
-  return <div className="exit-management-section">{children}</div>;
-}
+// function ChildrenItem({ children }) {
+//   return <div className="exit-management-section">{children}</div>;
+// }
 
 export default ExitManagement;

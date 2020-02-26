@@ -5,6 +5,7 @@ import EmployeeGroups from "./EmployeeGroups/EmployeeGroups";
 import EmployeeDesignations from "./EmployeeDesignations/EmployeeDesignations";
 import AuthorizationSetup from "./AuthorizationSetup/AuthorizationSetup";
 import DocumentMaster from "./DocumentMaster/DocumentMaster";
+import { AlgaehTabs } from "algaeh-react-components";
 
 class HRSettings extends Component {
   constructor(props) {
@@ -29,75 +30,56 @@ class HRSettings extends Component {
   render() {
     return (
       <div className="hr_settings">
-        <div className="row">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              <li
-                algaehtabs={"EmployeeGroups"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Group Master"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"EmployeeDesignations"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Designation Master"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"DocMaster"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Document Master"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"AuthorizationSetup"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Authorization Setup"
-                    }}
-                  />
-                }
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="hr-section">
-          {this.state.pageDisplay === "EmployeeGroups" ? (
-            <EmployeeGroups />
-          ) : this.state.pageDisplay === "EmployeeDesignations" ? (
-            <EmployeeDesignations />
-          ) : this.state.pageDisplay === "AuthorizationSetup" ? (
-            <AuthorizationSetup />
-          ) : this.state.pageDisplay === "DocMaster" ? (
-            <DocumentMaster />
-          ) : null}
-        </div>
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Group Master"
+                  }}
+                />
+              ),
+              children: <EmployeeGroups />,
+              componentCode: "HR_SET_GRP_MTR"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Designation Master"
+                  }}
+                />
+              ),
+              children: <EmployeeDesignations />,
+              componentCode: "HR_SET_DES_MTR"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Document Master"
+                  }}
+                />
+              ),
+              children: <AuthorizationSetup />,
+              componentCode: "HR_SET_DOC_MTR"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Authorization Setup"
+                  }}
+                />
+              ),
+              children: <DocumentMaster />,
+              componentCode: "HR_SET_AUT_SET"
+            }
+          ]}
+          renderClass="hrSettingsSection"
+        />
       </div>
     );
   }
