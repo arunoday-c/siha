@@ -2678,8 +2678,7 @@ export default {
           query: `select finance_account_child_id,ledger_code,child_name ${strQry}
           from finance_account_child C left join finance_voucher_details VD on
           C.finance_account_child_id=VD.child_id
-          and VD.child_id in (select finance_account_child_id from finance_account_child where head_id in 
-          (select finance_account_head_id from finance_account_head where root_id=?))
+          and C.head_id in  (select finance_account_head_id from finance_account_head where root_id=?)
           group by C.finance_account_child_id with rollup;`,
           values: [input.root_id],
           printQuery: false
