@@ -1106,7 +1106,7 @@ export default {
       next();
     }
   },
-  authorizeLeave: (req, res, next) => {
+  authorizeLeave_bkp_2020_feb_26: (req, res, next) => {
     const utilities = new algaehUtilities();
     let input = req.body;
     let salary_processed = "N";
@@ -1571,6 +1571,648 @@ export default {
                         "YYYY-MM-DD"
                       ).format("M");
                     }
+
+                    // let id = 0;
+                    //---START OF-------normal authrization
+
+                    new Promise((resolve, reject) => {
+                      try {
+                        _mysql
+                          .executeQuery({
+                            query:
+                              "select hims_f_salary_id ,`month`,`year`,employee_id, salary_processed,salary_paid from \
+                                  hims_f_salary where `month`=? and `year`=? and employee_id=?;\
+                                  SELECT annual_leave_process_separately from hims_d_hrms_options ",
+                            values: [
+                              month_number,
+                              input.year,
+                              input.employee_id
+                            ],
+                            printQuery: false
+                          })
+                          .then(salResult => {
+                            annual_leave_process_separately =
+                              salResult[1][0][
+                                "annual_leave_process_separately"
+                              ];
+                            if (
+                              salResult[0].length > 0 &&
+                              salResult[0][0]["salary_processed"] == "Y"
+                            ) {
+                              salary_processed = "Y";
+                              resolve({ salResult });
+                            } else {
+                              resolve({ salResult });
+                            }
+                          })
+                          .then(pendingUpdaidResult => {
+                            req.body["from_athurization"] = "Y";
+                            validateLeaveApplictn(req.body, _mysql)
+                              .then(deductionResult => {
+                                _mysql
+                                  .executeQuery({
+                                    query: `select * from hims_f_employee_monthly_leave where \
+                                            employee_id=? and year in (?) and leave_id=?;`,
+                                    values: [
+                                      input.employee_id,
+                                      [
+                                        deductionResult.from_year,
+                                        deductionResult.to_year
+                                      ],
+                                      input.leave_id
+                                    ],
+                                    printQuery: false
+                                  })
+                                  .then(leaveData => {
+                                    if (leaveData.length > 0) {
+                                      input[
+                                        "salary_processed"
+                                      ] = salary_processed;
+                                      input[
+                                        "annual_leave_process_separately"
+                                      ] = annual_leave_process_separately;
+
+                                      if (
+                                        deductionResult.is_across_year_leave ==
+                                        "Y"
+                                      ) {
+                                        const cur_year_leaveData = leaveData.filter(
+                                          f =>
+                                            f.year == deductionResult.from_year
+                                        );
+                                        const next_year_leaveData = leaveData.filter(
+                                          f => f.year == deductionResult.to_year
+                                        );
+                                        acrossYearAuthorize(
+                                          month_number,
+                                          deductionResult,
+                                          cur_year_leaveData,
+                                          next_year_leaveData,
+                                          input,
+                                          req
+                                        )
+                                          .then(resu => {
+                                            _mysql
+                                              .executeQueryWithTransaction({
+                                                query:
+                                                  resu.convertToLeave +
+                                                  resu.partA_update_leave_balnce +
+                                                  resu.partB_update_leave_balnce +
+                                                  resu.update_leave_application +
+                                                  resu.insertPendLeave +
+                                                  resu.anualLeave,
+                                                printQuery: false
+                                              })
+                                              .then(finalRes => {
+                                                _mysql.commitTransaction(() => {
+                                                  _mysql.releaseConnection();
+                                                  req.records = finalRes;
+                                                  next();
+                                                });
+                                              })
+                                              .catch(error => {
+                                                console.log("error: ", error);
+                                                _mysql.rollBackTransaction(
+                                                  () => {
+                                                    next(error);
+                                                  }
+                                                );
+                                              });
+                                          })
+                                          .catch(error => {
+                                            console.log("error55: ", error);
+                                            _mysql.releaseConnection();
+                                            req.records = error;
+                                            next(error);
+                                          });
+                                      } else {
+                                        singleYearAuthorize(
+                                          month_number,
+                                          deductionResult,
+                                          leaveData,
+                                          input,
+                                          req
+                                        )
+                                          .then(resul => {
+                                            _mysql
+                                              .executeQueryWithTransaction({
+                                                query:
+                                                  resul.convertToLeave +
+                                                  resul.update_leave_balnce +
+                                                  resul.update_leave_application +
+                                                  resul.insertPendLeave +
+                                                  resul.anualLeave,
+                                                printQuery: false
+                                              })
+                                              .then(finalRes => {
+                                                _mysql.commitTransaction(() => {
+                                                  _mysql.releaseConnection();
+                                                  req.records = finalRes;
+                                                  next();
+                                                });
+                                              })
+                                              .catch(error => {
+                                                console.log("error: ", error);
+                                                _mysql.rollBackTransaction(
+                                                  () => {
+                                                    next(error);
+                                                  }
+                                                );
+                                              });
+                                          })
+                                          .catch(error => {
+                                            console.log("error65: ", error);
+                                            _mysql.releaseConnection();
+                                            req.records = error;
+                                            next(error);
+                                          });
+                                      }
+                                    } else {
+                                      //invalid data
+                                      req.records = {
+                                        invalid_input: true,
+                                        message: "leave Not found"
+                                      };
+
+                                      _mysql.rollBackTransaction(() => {});
+                                      next();
+                                    }
+                                  })
+                                  .catch(error => {
+                                    console.log("error6:", error);
+                                    _mysql.rollBackTransaction(() => {
+                                      next(error);
+                                    });
+                                  });
+                              })
+                              .catch(e => {
+                                _mysql.releaseConnection();
+                                console.log("error25:", e);
+                                req.records = e;
+                                next(e);
+                                return;
+                              });
+                          })
+                          .catch(e => {
+                            console.log("error3:", e);
+                            _mysql.releaseConnection();
+                            req.records = e;
+                            next();
+                            return;
+                          });
+                      } catch (e) {
+                        console.log("error4:", e);
+                        reject(e);
+                      }
+                    });
+
+                    //---END OF-------normal authrization
+                  } else if (authResult[0].affectedRows > 0) {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = authResult;
+                      next();
+                    });
+                  }
+                })
+                .catch(error => {
+                  reject(error);
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            });
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_user: true,
+        message: "you dont have authorization privilege"
+      };
+      next();
+    }
+  },
+  authorizeLeave: (req, res, next) => {
+    const utilities = new algaehUtilities();
+    let input = req.body;
+    let salary_processed = "N";
+    let annual_leave_process_separately = "N";
+    if (req.userIdentity.leave_authorize_privilege != "N") {
+      const _mysql = new algaehMysql();
+      // get highest auth level
+      getMaxAuth({
+        mysql: _mysql
+      })
+        .then(maxAuth => {
+          if (
+            req.userIdentity.leave_authorize_privilege < maxAuth.MaxLeave ||
+            input.auth_level < maxAuth.MaxLeave
+          ) {
+            //for lower level authorize
+            if (input.status == "R") {
+              _mysql
+                .executeQueryWithTransaction({
+                  query:
+                    "update hims_f_leave_application set `status`='REJ' where record_status='A' and `status`='PEN'\
+                            and hims_f_leave_application_id=?\
+                            select hims_f_leave_application_id,employee_id,from_date,to_date,leave_id,is_across_year_leave\
+                            from hims_f_leave_application where  `status`<>'APR' and employee_id=?\
+                            and hims_f_leave_application_id=? ",
+                  values: [
+                    input.hims_f_leave_application_id,
+                    input.employee_id,
+                    input.hims_f_leave_application_id
+                  ]
+                })
+                .then(rejectResult => {
+                  // _mysql.commitTransaction(() => {
+                  //   _mysql.releaseConnection();
+                  //   req.records = rejectResult;
+                  //   next();
+                  // });
+
+                  if (rejectResult[1][0]["is_across_year_leave"] == "Y") {
+                    //YOU CAN CANCEL
+                    input["cancel"] = "Y";
+                    input = { ...input, ...rejectResult[1][0] };
+                    // req.body["leave_id"]=result[0]["leave_id"];
+                    //------------------------------------------------------------------
+                    validateLeaveApplictn(input, _mysql)
+                      .then(deductionResult => {
+                        _mysql
+                          .executeQuery({
+                            query: `select * from hims_f_employee_monthly_leave where employee_id=? and year in (?) and leave_id=?;\
+                          select leave_application_code from hims_f_leave_application where employee_id=? and leave_id=? and (date_format(from_date,'%Y')=? \
+                           or date_format(to_date,'%Y')=? ) and status<>'CAN' and status<>'REJ'    and hims_f_leave_application_id<>?;
+                          `,
+                            values: [
+                              input.employee_id,
+                              [
+                                deductionResult.from_year,
+                                deductionResult.to_year
+                              ],
+                              input.leave_id,
+                              input.employee_id,
+                              input.leave_id,
+                              deductionResult.to_year,
+                              deductionResult.to_year,
+                              input.hims_f_leave_application_id
+                            ],
+                            printQuery: false
+                          })
+                          .then(resdata => {
+                            const leaveData = resdata[0];
+                            const acrossYearSecondLeave = resdata[1];
+
+                            if (leaveData.length > 0) {
+                              if (deductionResult.is_across_year_leave == "Y") {
+                                if (acrossYearSecondLeave.length > 0) {
+                                  _mysql.releaseConnection();
+                                  req.records = {
+                                    invalid_input: true,
+                                    message: `Please Cancel (${acrossYearSecondLeave[0]["leave_application_code"]}) application First `
+                                  };
+                                  next();
+                                } else {
+                                  const cur_year_leaveData = leaveData.filter(
+                                    f => f.year == deductionResult.from_year
+                                  );
+                                  const next_year_leaveData = leaveData.filter(
+                                    f => f.year == deductionResult.to_year
+                                  );
+
+                                  acrossYearCancel(
+                                    deductionResult,
+                                    cur_year_leaveData,
+                                    next_year_leaveData,
+                                    input,
+                                    req
+                                  )
+                                    .then(resu => {
+                                      _mysql
+                                        .executeQueryWithTransaction({
+                                          query:
+                                            resu.delete_partB +
+                                            resu.deletePendingLeave +
+                                            resu.anualLeave +
+                                            "update hims_f_employee_monthly_leave set carry_forward_done='N',carry_forward_leave=0,processed='N' where\
+                              hims_f_employee_monthly_leave_id=?",
+                                          values: [
+                                            resu.hims_f_employee_monthly_leave_id
+                                          ],
+                                          printQuery: false
+                                        })
+                                        .then(finalRes => {
+                                          _mysql.commitTransaction(() => {
+                                            _mysql.releaseConnection();
+                                            req.records = finalRes;
+                                            next();
+                                          });
+                                        })
+                                        .catch(error => {
+                                          console.log("error: ", error);
+                                          _mysql.rollBackTransaction(() => {
+                                            next(error);
+                                          });
+                                        });
+                                    })
+                                    .catch(error => {
+                                      console.log("error55: ", error);
+                                      _mysql.releaseConnection();
+                                      req.records = error;
+                                      next(error);
+                                    });
+                                }
+                              } else {
+                                //invalid data
+                                _mysql.releaseConnection();
+                                req.records = {
+                                  invalid_input: true,
+                                  message: "leave Not found"
+                                };
+
+                                _mysql.rollBackTransaction(() => {});
+                                next();
+                              }
+                            } else {
+                              //invalid data
+                              _mysql.releaseConnection();
+                              req.records = {
+                                invalid_input: true,
+                                message: "leave Not found"
+                              };
+
+                              _mysql.rollBackTransaction(() => {});
+                              next();
+                            }
+                          })
+                          .catch(error => {
+                            console.log("error6:", error);
+                            _mysql.rollBackTransaction(() => {
+                              next(error);
+                            });
+                          });
+                      })
+                      .catch(error => {
+                        console.log("error6:", error);
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  } else {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = rejectResult;
+                      next();
+                    });
+                  }
+                })
+                .catch(error => {
+                  reject(error);
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            } else {
+              req.body["from_athurization"] = "Y";
+              validateLeaveApplictn(req.body, _mysql)
+                .then(deductionResult => {
+                  getLeaveAuthFields(input["auth_level"]).then(authFields => {
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "UPDATE hims_f_leave_application SET " +
+                          authFields +
+                          ", updated_date=?, updated_by=?  WHERE hims_f_leave_application_id=? ",
+                        values: [
+                          "Y",
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                          input.authorized_comment,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                          input.hims_f_leave_application_id
+                        ],
+                        printQuery: false
+                      })
+                      .then(authResult => {
+                        _mysql.releaseConnection();
+                        req.records = authResult;
+                        next();
+                      })
+                      .catch(error => {
+                        _mysql.releaseConnection();
+                        next(error);
+                      });
+                  });
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                  return;
+                });
+            }
+          } else if (
+            req.userIdentity.leave_authorize_privilege >= maxAuth.MaxLeave &&
+            input.auth_level >= maxAuth.MaxLeave
+          ) {
+            // const auth_level=input.auth_level;
+
+            getLeaveAuthFields(input["auth_level"]).then(authFields => {
+              _mysql
+                .executeQueryWithTransaction({
+                  query:
+                    "UPDATE hims_f_leave_application SET " +
+                    authFields +
+                    ", updated_date=?, updated_by=?  WHERE hims_f_leave_application_id=?;    ",
+                  values: [
+                    "Y",
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    input.authorized_comment,
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    input.hims_f_leave_application_id
+                  ],
+                  printQuery: false
+                })
+                .then(authResult => {
+                  if (authResult.affectedRows > 0 && input.status == "R") {
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "update hims_f_leave_application set `status`='REJ' where record_status='A' and `status`='PEN'\
+                                and hims_f_leave_application_id=?;\
+                                select hims_f_leave_application_id,employee_id,from_date,to_date,leave_id,is_across_year_leave\
+                                 from hims_f_leave_application where  `status`<>'APR' and employee_id=?\
+                                 and hims_f_leave_application_id=?",
+                        values: [
+                          input.hims_f_leave_application_id,
+                          input.employee_id,
+                          input.hims_f_leave_application_id
+                        ]
+                      })
+                      .then(rejectResult => {
+                        if (rejectResult[1][0]["is_across_year_leave"] == "Y") {
+                          //YOU CAN CANCEL
+                          input["cancel"] = "Y";
+                          input = { ...input, ...rejectResult[1][0] };
+                          // req.body["leave_id"]=result[0]["leave_id"];
+                          //------------------------------------------------------------------
+                          validateLeaveApplictn(input, _mysql)
+                            .then(deductionResult => {
+                              _mysql
+                                .executeQuery({
+                                  query: `select * from hims_f_employee_monthly_leave where employee_id=? and year in (?) and leave_id=?;\
+                                select leave_application_code from hims_f_leave_application where employee_id=? and leave_id=? and (date_format(from_date,'%Y')=? \
+                                 or date_format(to_date,'%Y')=? ) and status<>'CAN' and status<>'REJ'    and hims_f_leave_application_id<>?;
+                                `,
+                                  values: [
+                                    input.employee_id,
+                                    [
+                                      deductionResult.from_year,
+                                      deductionResult.to_year
+                                    ],
+                                    input.leave_id,
+                                    input.employee_id,
+                                    input.leave_id,
+                                    deductionResult.to_year,
+                                    deductionResult.to_year,
+                                    input.hims_f_leave_application_id
+                                  ],
+                                  printQuery: false
+                                })
+                                .then(resdata => {
+                                  const leaveData = resdata[0];
+                                  const acrossYearSecondLeave = resdata[1];
+
+                                  if (leaveData.length > 0) {
+                                    if (
+                                      deductionResult.is_across_year_leave ==
+                                      "Y"
+                                    ) {
+                                      if (acrossYearSecondLeave.length > 0) {
+                                        _mysql.releaseConnection();
+                                        req.records = {
+                                          invalid_input: true,
+                                          message: `Please Cancel (${acrossYearSecondLeave[0]["leave_application_code"]}) application First `
+                                        };
+                                        next();
+                                      } else {
+                                        const cur_year_leaveData = leaveData.filter(
+                                          f =>
+                                            f.year == deductionResult.from_year
+                                        );
+                                        const next_year_leaveData = leaveData.filter(
+                                          f => f.year == deductionResult.to_year
+                                        );
+
+                                        acrossYearCancel(
+                                          deductionResult,
+                                          cur_year_leaveData,
+                                          next_year_leaveData,
+                                          input,
+                                          req
+                                        )
+                                          .then(resu => {
+                                            _mysql
+                                              .executeQueryWithTransaction({
+                                                query:
+                                                  resu.delete_partB +
+                                                  resu.deletePendingLeave +
+                                                  resu.anualLeave +
+                                                  "update hims_f_employee_monthly_leave set carry_forward_done='N',carry_forward_leave=0,processed='N' where\
+                                    hims_f_employee_monthly_leave_id=?",
+                                                values: [
+                                                  resu.hims_f_employee_monthly_leave_id
+                                                ],
+                                                printQuery: false
+                                              })
+                                              .then(finalRes => {
+                                                _mysql.commitTransaction(() => {
+                                                  _mysql.releaseConnection();
+                                                  req.records = finalRes;
+                                                  next();
+                                                });
+                                              })
+                                              .catch(error => {
+                                                console.log("error: ", error);
+                                                _mysql.rollBackTransaction(
+                                                  () => {
+                                                    next(error);
+                                                  }
+                                                );
+                                              });
+                                          })
+                                          .catch(error => {
+                                            console.log("error55: ", error);
+                                            _mysql.releaseConnection();
+                                            req.records = error;
+                                            next(error);
+                                          });
+                                      }
+                                    } else {
+                                      //invalid data
+                                      _mysql.releaseConnection();
+                                      req.records = {
+                                        invalid_input: true,
+                                        message: "leave Not found"
+                                      };
+
+                                      _mysql.rollBackTransaction(() => {});
+                                      next();
+                                    }
+                                  } else {
+                                    //invalid data
+                                    _mysql.releaseConnection();
+                                    req.records = {
+                                      invalid_input: true,
+                                      message: "leave Not found"
+                                    };
+
+                                    _mysql.rollBackTransaction(() => {});
+                                    next();
+                                  }
+                                })
+                                .catch(error => {
+                                  console.log("error6:", error);
+                                  _mysql.rollBackTransaction(() => {
+                                    next(error);
+                                  });
+                                });
+                            })
+                            .catch(error => {
+                              console.log("error6:", error);
+                              _mysql.rollBackTransaction(() => {
+                                next(error);
+                              });
+                            });
+                        } else {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = rejectResult;
+                            next();
+                          });
+                        }
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  } else if (
+                    authResult.affectedRows > 0 &&
+                    input.status == "A"
+                  ) {
+                    let month_number = moment(
+                      input.from_date,
+                      "YYYY-MM-DD"
+                    ).format("M");
 
                     // let id = 0;
                     //---START OF-------normal authrization
