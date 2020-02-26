@@ -246,7 +246,31 @@ class Dashboard extends Component {
         <div className="row">
           <div className="col-12">
             <div className="row">
-              <div className="col-sm-12 col-md-6 col-lg-6">
+              {" "}
+              <div className="col-sm-12 col-md-4 col-lg-4">
+                <div className="card animated fadeInUp faster">
+                  <h6>No. of Employee by Projects</h6>
+                  <div className="dashboardChartsCntr">
+                    <Bar
+                      data={this.state.Desig_Employee}
+                      legend={LegendOpt}
+                      // options={{
+                      //   scales: {
+                      //     yAxes: [
+                      //       {
+                      //         ticks: {
+                      //           beginAtZero: true,
+                      //           min: 0
+                      //         }
+                      //       }
+                      //     ]
+                      //   }
+                      // }}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-sm-12 col-md-4 col-lg-4">
                 <div className="card animated fadeInUp faster">
                   <h6>No. of Employee by Department</h6>
                   <div className="dashboardChartsCntr">
@@ -269,7 +293,7 @@ class Dashboard extends Component {
                   </div>
                 </div>
               </div>{" "}
-              <div className="col-sm-12 col-md-6 col-lg-6">
+              <div className="col-sm-12 col-md-4 col-lg-4">
                 <div className="card animated fadeInUp faster">
                   <h6>No. of Employee by Designation</h6>
                   <div className="dashboardChartsCntr">

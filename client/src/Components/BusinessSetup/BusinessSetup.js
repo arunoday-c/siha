@@ -167,6 +167,36 @@ class BusinessSetup extends Component {
           </ChildrenItem>
         ),
         componentCode: "BUSS_COMPANY"
+      },
+      {
+        title: (
+          <AlgaehLabel
+            label={{
+              forceLabel: "Project Mapping"
+            }}
+          />
+        ),
+        children: (
+          <ChildrenItem>
+            <ProjectMapping />
+          </ChildrenItem>
+        ),
+        componentCode: "BUSS_PRJ_MAP"
+      },
+      {
+        title: (
+          <AlgaehLabel
+            label={{
+              forceLabel: "Project Master"
+            }}
+          />
+        ),
+        children: (
+          <ChildrenItem>
+            <ProjectMaster />
+          </ChildrenItem>
+        ),
+        componentCode: "BUSS_PRJ_MTR"
       }
     );
     this.setState({
@@ -188,235 +218,13 @@ class BusinessSetup extends Component {
   }
 
   render() {
+    debugger;
     return (
       <div className="business_setup">
         <AlgaehTabs
           removeCommonSection={true}
           content={this.state.screens_data}
         />
-
-        {/* <div className="row">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              <li
-                algaehtabs={"DeptMaster"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "departments"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"BranchMaster"}
-                className={"nav-item tab-button "}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Branch"
-                    }}
-                  />
-                }
-              </li>{" "}
-              <li
-                algaehtabs={"ProjectMaster"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Project Master"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"ProjectMapping"}
-                className={"nav-item tab-button "}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Project Mapping"
-                    }}
-                  />
-                }
-              </li>
-              {/* {this.state.HIMS_Active === true ? (
-                <li
-                  algaehtabs={"Speciality"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "speciality"
-                      }}
-                    />
-                  }
-                </li>
-              ) : null}
-              {this.state.HIMS_Active === true ? (
-                <li
-                  algaehtabs={"Category"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "category"
-                      }}
-                    />
-                  }
-                </li>
-              ) : null}
-              {this.state.HIMS_Active === true ? (
-                <li
-                  algaehtabs={"CategorySpeciality"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "category_speciality_map"
-                      }}
-                    />
-                  }
-                </li>
-              ) : null} 
-              <li
-                algaehtabs={"Shift"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "shift"
-                    }}
-                  />
-                }
-              </li>
-              {this.state.HIMS_Active === true ? (
-                <li
-                  algaehtabs={"UserShiftMapping"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "users_shift"
-                      }}
-                    />
-                  }
-                </li>
-              ) : null}
-              {this.state.HIMS_Active === true ? (
-                <li
-                  algaehtabs={"Counter"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "counter"
-                      }}
-                    />
-                  }
-                </li>
-              ) : null}
-              <li
-                algaehtabs={"Currency"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "currency"
-                    }}
-                  />
-                }
-              </li>
-
-              <li
-                algaehtabs={"BankMaster"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Bank Master"
-                    }}
-                  />
-                }
-              </li>
-
-              <li
-                algaehtabs={"CompanyAccount"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Company Account"
-                    }}
-                  />
-                }
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="business-section">
-          {this.state.pageDisplay === "BranchMaster" ? (
-            <BranchMaster />
-          ) : this.state.pageDisplay === "DeptMaster" ? (
-            <DeptMaster />
-          ) : this.state.pageDisplay === "Holiday" ? (
-            <HolidayList />
-          ) : this.state.pageDisplay === "Counter" ? (
-            <Counter />
-          ) : this.state.pageDisplay === "Shift" ? (
-            <Shift />
-          ) : this.state.pageDisplay === "Transaction" ? (
-            <Transaction />
-          ) : this.state.pageDisplay === "Numbering" ? (
-            <Numbering />
-          ) : this.state.pageDisplay === "UserShiftMapping" ? (
-            <UserShiftMapping />
-          ) : this.state.pageDisplay === "Currency" ? (
-            <Currency />
-          ) : this.state.pageDisplay === "Category" ? (
-            <Category />
-          ) : this.state.pageDisplay === "Speciality" ? (
-            <Speciality />
-          ) : this.state.pageDisplay === "BankMaster" ? (
-            <BankMaster />
-          ) : this.state.pageDisplay === "CompanyAccount" ? (
-            <CompanyAccount />
-          ) : this.state.pageDisplay === "CategorySpeciality" ? (
-            <CategorySpeciality />
-          ) : this.state.pageDisplay === "ProjectMapping" ? (
-            <ProjectMapping />
-          ) : this.state.pageDisplay === "ProjectMaster" ? (
-            <ProjectMaster />
-          ) : null}
-        </div> */}
       </div>
     );
   }

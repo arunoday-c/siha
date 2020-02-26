@@ -45,8 +45,8 @@ class AdminSetup extends Component {
                 <ChildrenItem>
                   <Groups />
                 </ChildrenItem>
-              )
-              // componentCode: "AD_USER_GROUP"
+              ),
+              componentCode: "AD_USER_GROUP"
             },
             {
               title: (
@@ -60,8 +60,8 @@ class AdminSetup extends Component {
                 <ChildrenItem>
                   <Roles />
                 </ChildrenItem>
-              )
-              // componentCode: "AD_USER_ROLES"
+              ),
+              componentCode: "AD_USER_ROLES"
             },
             {
               title: (
@@ -75,8 +75,8 @@ class AdminSetup extends Component {
                 <ChildrenItem>
                   <LoginUsers />
                 </ChildrenItem>
-              )
-              // componentCode: "AD_USER_LOGIN"
+              ),
+              componentCode: "AD_USER_LOGIN"
             },
             {
               title: (
@@ -90,7 +90,8 @@ class AdminSetup extends Component {
                 <ChildrenItem>
                   <ScreenAssignment />
                 </ChildrenItem>
-              )
+              ),
+              componentCode: "AD_SCR_ASSI"
             },
             {
               title: (
@@ -104,7 +105,8 @@ class AdminSetup extends Component {
                 <ChildrenItem>
                   <AuditLog />
                 </ChildrenItem>
-              )
+              ),
+              componentCode: "AD_AUD_LOG"
             }
           ]}
         />
