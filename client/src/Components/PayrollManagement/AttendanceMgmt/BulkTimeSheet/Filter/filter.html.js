@@ -54,36 +54,11 @@ export default function Filter(props) {
   const [toMin, setToMin] = useState(new Date());
   const [toMax, setToMax] = useState(new Date());
   const [loadingPriew, setLoadingPriew] = useState(false);
+  const [atStartType, setATStartType] = useState("");
   const [onlyExcel, setOnlyExcel] = useState("");
   const [upload, setUpload] = useState("Y");
   const [selYear, setSelYear] = useState("");
   const [loadYear, setLoadYear] = useState([]);
-  const dateCalcl = (starttDt, enddtDt, passedYear) => {
-    starttDt = starttDt || startDt;
-    enddtDt = enddtDt || endDt;
-    if (enddtDt === 0) {
-      return;
-    }
-    const year = passedYear || moment().format("YYYY");
-
-    const searchYear =
-      month === "01"
-        ? moment(`01-01-${year}`, "DD-MM-YYYY")
-            .add(-1, "year")
-            .format("YYYY")
-        : year;
-    const maxDate = `${year}-${month}-${enddtDt}`;
-    let prevMonths = moment(maxDate, "YYYY-MM-DD")
-      .add(-1, "months")
-      .format("MM");
-    const minDate = `${searchYear}-${prevMonths}-${starttDt}`;
-    setToMax(maxDate);
-    setFromMin(minDate);
-    setFromMax(maxDate);
-    setToMin(minDate);
-    setFromDate(minDate);
-    setToDate(maxDate);
-  };
 
   useEffect(() => {
     setLoadYear(getYears());
@@ -98,9 +73,10 @@ export default function Filter(props) {
       getAttendanceDates(data => {
         if (data.length > 0) {
           const firstRecord = data[0];
+          setATStartType(firstRecord.attendance_starts);
           setStartDt(firstRecord.at_st_date);
           setEndDt(firstRecord.at_end_date);
-          dateCalcl(firstRecord.at_st_date, firstRecord.at_end_date);
+          // dateCalcl(firstRecord.at_st_date, firstRecord.at_end_date, undefined);
         }
       });
       getDivisionProject({ division_id: hospitalID }, data => {
@@ -116,8 +92,46 @@ export default function Filter(props) {
   }, [hospitalID]);
 
   useEffect(() => {
-    dateCalcl(undefined, undefined, selYear);
-  }, [month]);
+    const dateCalcl = () => {
+      debugger;
+      let maxDate, minDate;
+      if (atStartType === "FE") {
+        const parsedMonth = parseInt(month) - 1;
+        maxDate = moment()
+          .year(selYear)
+          .month(parsedMonth)
+          .endOf("month")
+          .format("YYYY-MM-DD");
+        minDate = moment()
+          .year(selYear)
+          .month(parsedMonth)
+          .startOf("month")
+          .format("YYYY-MM-DD");
+      } else {
+        const searchYear =
+          month === "01"
+            ? moment(`01-01-${selYear}`, "DD-MM-YYYY")
+                .add(-1, "year")
+                .format("YYYY")
+            : selYear;
+        maxDate = `${selYear}-${month}-${endDt}`;
+        let prevMonths = moment(maxDate, "YYYY-MM-DD")
+          .add(-1, "months")
+          .format("MM");
+        minDate = `${searchYear}-${prevMonths}-${startDt}`;
+      }
+      setToMax(maxDate);
+      setFromMin(minDate);
+      setFromMax(maxDate);
+      setToMin(minDate);
+      setFromDate(minDate);
+      setToDate(maxDate);
+    };
+
+    if (selYear && month && atStartType) {
+      dateCalcl();
+    }
+  }, [atStartType, month, selYear, startDt, endDt]);
 
   function employeeSearch() {
     let input_data = " hospital_id=" + hospitalID;
@@ -183,8 +197,11 @@ export default function Filter(props) {
             data: loadYear
           },
           onChange: e => {
+            setMonth("");
+            setFromDate(undefined);
+            setToDate(undefined);
             setSelYear(e.value);
-            dateCalcl(startDt, endDt, e.value);
+            // dateCalcl(startDt, endDt, e.value);
           },
           onClear: () => {
             setSelYear("");
