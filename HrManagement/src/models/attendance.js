@@ -9601,7 +9601,7 @@ function processBulkAtt_with_cutoff(data) {
                             display_present_days: 1,
                             absent_days: 0,
                             total_work_days: 0,
-                            weekoff_days: 1,
+                            weekoff_days: 0,
                             holidays: 0,
                             paid_leave: 0,
 
