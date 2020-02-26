@@ -1,5 +1,5 @@
 export default {
-  inputParam: function () {
+  inputParam: function() {
     var output;
     var CurrentDate = new Date();
     output = {
@@ -89,7 +89,7 @@ export default {
       secondary_sub_insurance_provider_name: null,
       secondary_network_office_id: null,
 
-      Cashchecked: false,
+      Cashchecked: true,
       Cardchecked: false,
       Checkchecked: false,
       billdetail: true,
