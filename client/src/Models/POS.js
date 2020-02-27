@@ -58,6 +58,7 @@ export default {
       insured: "N",
       sec_insured: "N",
       insurance_yesno: "N",
+      posted: "N",
 
       hims_f_receipt_header_id: null,
       receipt_number: null,

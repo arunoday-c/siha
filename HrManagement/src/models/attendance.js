@@ -8177,25 +8177,25 @@ function mergeTimesheetData(input) {
               break;
 
             case "N":
-              insertArray.push({
-                worked_hours: 0,
-                hours: 0,
-                minutes: 0,
-                actual_hours: STDWH,
-                actual_minutes: STDWM,
-                employee_id: day.employee_id,
-                attendance_date: day.attendance_date,
-                status: "AB",
-                sub_department_id: day.sub_department_id,
-                project_id: day.project_id,
-                is_anual_leave: day.leave_category == "A" ? "Y" : "N",
-                month: day.month,
-                year: day.year,
-                hospital_id: hospital_id,
-                created_by: updated_by,
-                updated_by: updated_by,
-                updated_date: new Date()
-              });
+              // insertArray.push({
+              //   worked_hours: 0,
+              //   hours: 0,
+              //   minutes: 0,
+              //   actual_hours: STDWH,
+              //   actual_minutes: STDWM,
+              //   employee_id: day.employee_id,
+              //   attendance_date: day.attendance_date,
+              //   status: "AB",
+              //   sub_department_id: day.sub_department_id,
+              //   project_id: day.project_id,
+              //   is_anual_leave: day.leave_category == "A" ? "Y" : "N",
+              //   month: day.month,
+              //   year: day.year,
+              //   hospital_id: hospital_id,
+              //   created_by: updated_by,
+              //   updated_by: updated_by,
+              //   updated_date: new Date()
+              // });
               break;
 
             default:
