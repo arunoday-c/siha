@@ -4743,7 +4743,7 @@ export default {
                   employee,
                 values: [req.query.hospital_id],
 
-                printQuery: false
+                printQuery: true
               })
               .then(result => {
                 _mysql.releaseConnection();
