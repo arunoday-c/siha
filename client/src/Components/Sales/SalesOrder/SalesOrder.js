@@ -96,9 +96,9 @@ class SalesOrder extends Component {
 
     this.HRMNGMT_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HRMS" ||
-      userToken.product_type === "HRMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP"
+        userToken.product_type === "HRMS" ||
+        userToken.product_type === "HRMS_ERP" ||
+        userToken.product_type === "FINANCE_ERP"
         ? true
         : false;
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
@@ -130,19 +130,19 @@ class SalesOrder extends Component {
       });
     }
 
-    this.props.getDivisionProject({
-      uri: "/projectjobcosting/getDivisionProject",
-      module: "hrManagement",
-      method: "GET",
-      data: {
-        division_id: userToken.hims_d_hospital_id
-      },
-      method: "GET",
-      redux: {
-        type: "PROJECT_GET_DATA",
-        mappingName: "projects"
-      }
-    });
+    // this.props.getDivisionProject({
+    //   uri: "/projectjobcosting/getDivisionProject",
+    //   module: "hrManagement",
+    //   method: "GET",
+    //   data: {
+    //     division_id: userToken.hims_d_hospital_id
+    //   },
+    //   method: "GET",
+    //   redux: {
+    //     type: "PROJECT_GET_DATA",
+    //     mappingName: "projects"
+    //   }
+    // });
 
     getCostCenters(this);
     if (
@@ -212,8 +212,8 @@ class SalesOrder extends Component {
                 <h6>
                   {this.state.sales_order_date
                     ? moment(this.state.sales_order_date).format(
-                        Options.dateFormat
-                      )
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -231,29 +231,29 @@ class SalesOrder extends Component {
                     ) : this.state.authorize1 === "Y" &&
                       this.state.authorize2 === "Y" &&
                       this.state.is_completed === "N" ? (
-                      <span className="badge badge-success">
-                        Authorized / Dispatch Pending
+                          <span className="badge badge-success">
+                            Authorized / Dispatch Pending
                       </span>
-                    ) : this.state.authorize1 === "Y" &&
-                      this.state.authorize2 === "N" ? (
-                      <span className="badge badge-danger">
-                        Authorized 2 Pending
+                        ) : this.state.authorize1 === "Y" &&
+                          this.state.authorize2 === "N" ? (
+                            <span className="badge badge-danger">
+                              Authorized 2 Pending
                       </span>
-                    ) : this.state.authorize1 === "N" &&
-                      this.state.authorize2 === "N" ? (
-                      <span className="badge badge-danger">Pending</span>
-                    ) : this.state.is_completed === "Y" &&
-                      this.state.invoice_generated === "N" ? (
-                      <span className="badge badge-danger">
-                        Invoice Generation Pending
+                          ) : this.state.authorize1 === "N" &&
+                            this.state.authorize2 === "N" ? (
+                              <span className="badge badge-danger">Pending</span>
+                            ) : this.state.is_completed === "Y" &&
+                              this.state.invoice_generated === "N" ? (
+                                <span className="badge badge-danger">
+                                  Invoice Generation Pending
                       </span>
-                    ) : this.state.invoice_generated === "Y" ? (
-                      <span className="badge badge-success">
-                        Invoice Generated
+                              ) : this.state.invoice_generated === "Y" ? (
+                                <span className="badge badge-success">
+                                  Invoice Generated
                       </span>
-                    ) : (
-                      <span className="badge badge-danger">Pending</span>
-                    )}
+                              ) : (
+                                  <span className="badge badge-danger">Pending</span>
+                                )}
                   </h6>
                 </div>
               ) : null}
@@ -262,17 +262,17 @@ class SalesOrder extends Component {
           printArea={
             this.state.sales_order_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Sales Order Report",
-                      events: {
-                        onClick: () => {
-                          generateSalesOrderReport(this.state);
-                        }
+                menuitems: [
+                  {
+                    label: "Sales Order Report",
+                    events: {
+                      onClick: () => {
+                        generateSalesOrderReport(this.state);
                       }
                     }
-                  ]
-                }
+                  }
+                ]
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -399,25 +399,25 @@ class SalesOrder extends Component {
                     </h6>
                   </div>
                 ) : (
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      forceLabel: "Name of Sales Person",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "sales_man",
-                      value: this.state.sales_man,
-                      events: {
-                        onChange: texthandle.bind(this, this)
-                      },
-                      others: {
-                        disabled: this.state.dataExists
-                      }
-                    }}
-                  />
-                )}
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Name of Sales Person",
+                        isImp: false
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "sales_man",
+                        value: this.state.sales_man,
+                        events: {
+                          onChange: texthandle.bind(this, this)
+                        },
+                        others: {
+                          disabled: this.state.dataExists
+                        }
+                      }}
+                    />
+                  )}
               </div>
               <div className="row">
                 <AlgaehDateHandler
@@ -544,11 +544,11 @@ class SalesOrder extends Component {
               {this.state.sales_order_mode === "S" ? (
                 <SalesOrdListService SALESIOputs={this.state} />
               ) : (
-                <SalesOrdListItems
-                  SALESIOputs={this.state}
-                  sales_order_number={this.props.sales_order_number}
-                />
-              )}
+                  <SalesOrdListItems
+                    SALESIOputs={this.state}
+                    sales_order_number={this.props.sales_order_number}
+                  />
+                )}
             </MyContext.Provider>
           </div>
         </div>
@@ -672,8 +672,8 @@ class SalesOrder extends Component {
                           ? true
                           : this.state.authorize1 === "Y" &&
                             this.state.authorize2 === "Y"
-                          ? true
-                          : false
+                            ? true
+                            : false
                       }
                       onClick={AuthorizeOrderEntry.bind(
                         this,
@@ -689,8 +689,8 @@ class SalesOrder extends Component {
                             this.state.authorize1 === "N"
                               ? "Authorize 1"
                               : this.state.sales_order_auth_level === "2"
-                              ? "Authorize 2"
-                              : "Authorize 1",
+                                ? "Authorize 2"
+                                : "Authorize 1",
                           returnText: true
                         }}
                       />
