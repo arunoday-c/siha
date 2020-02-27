@@ -217,7 +217,7 @@ class LoanAuthorization extends Component {
         />
         <div className="col-12">
           <div className="row inner-top-search">
-            <AlgaehSecurityElement
+            {/* <AlgaehSecurityElement
               elementCode="PAY_LON_AUT"
               render={data => {
                 return (
@@ -241,9 +241,9 @@ class LoanAuthorization extends Component {
                   />
                 );
               }}
-            />
+            /> */}
 
-            {/* <AlagehAutoComplete
+            <AlagehAutoComplete
               div={{ className: "col-2 form-group mandatory" }}
               label={{
                 forceLabel: "Auth. Level",
@@ -260,7 +260,7 @@ class LoanAuthorization extends Component {
                 },
                 onChange: this.dropDownHandler.bind(this)
               }}
-            /> */}
+            />
 
             <AlgaehDateHandler
               div={{ className: "col-2 form-group mandatory" }}

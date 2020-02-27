@@ -275,7 +275,7 @@ export default class LeaveAuthorization extends Component {
         />
         <div className="col-12">
           <div className="row inner-top-search">
-            <AlgaehSecurityElement
+            {/* <AlgaehSecurityElement
               elementCode="PAY_LEA_MGMT_AUT_LEV"
               render={data => {
                 return (
@@ -299,8 +299,8 @@ export default class LeaveAuthorization extends Component {
                   />
                 );
               }}
-            />
-            {/* <AlagehAutoComplete
+            /> */}
+            <AlagehAutoComplete
               div={{ className: "col-2 form-group mandatory" }}
               label={{
                 forceLabel: "Auth. Level",
@@ -317,7 +317,7 @@ export default class LeaveAuthorization extends Component {
                 },
                 onChange: this.dropDownHandler.bind(this)
               }}
-            /> */}
+            />
 
             <AlgaehDateHandler
               div={{ className: "col form-group mandatory" }}
