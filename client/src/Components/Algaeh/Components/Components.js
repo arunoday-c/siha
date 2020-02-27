@@ -133,8 +133,31 @@ class Components extends Component {
     row.update();
   }
 
-  deleteComponents() {}
-  updateComponents() {}
+  deleteComponents() { }
+  updateComponents(row) {
+    debugger
+    algaehApiCall({
+      uri: "/algaehMasters/updateAlgaehComponent",
+      method: "PUT",
+      data: row,
+      onSuccess: response => {
+        if (response.data.success) {
+          this.getComponents();
+          this.clearState();
+          swalMessage({
+            title: "Records Updated successfully",
+            type: "success"
+          });
+        }
+      },
+      onCatch: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
 
   render() {
     return (
@@ -248,16 +271,20 @@ class Components extends Component {
                           {
                             fieldName: "screen_name",
                             label: "Screen",
-                            disabled: true
+                            others:
+                              { disabled: true }
                           },
                           {
                             fieldName: "component_code",
-                            label: "Component Code"
+                            label: "Component Code",
+                            others:
+                              { disabled: true }
                           },
                           {
                             fieldName: "component_name",
                             label: "Component Name",
-                            disabled: true
+                            others:
+                              { disabled: true }
                           },
                           {
                             fieldName: "record_status",
@@ -311,7 +338,7 @@ class Components extends Component {
                         }}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
-                          onEdit: () => {},
+                          onEdit: () => { },
                           onDelete: this.deleteComponents.bind(this),
                           onDone: this.updateComponents.bind(this)
                         }}
