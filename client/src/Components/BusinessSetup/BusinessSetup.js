@@ -49,11 +49,7 @@ class BusinessSetup extends Component {
             }}
           />
         ),
-        children: (
-          <ChildrenItem>
-            <DeptMaster />
-          </ChildrenItem>
-        ),
+        children: <DeptMaster />,
         componentCode: "BUSS_DEPT"
       },
       {
@@ -64,11 +60,7 @@ class BusinessSetup extends Component {
             }}
           />
         ),
-        children: (
-          <ChildrenItem>
-            <BranchMaster />
-          </ChildrenItem>
-        ),
+        children: <BranchMaster />,
         componentCode: "BUSS_BRNH"
       }
     ];
@@ -83,11 +75,7 @@ class BusinessSetup extends Component {
               }}
             />
           ),
-          children: (
-            <ChildrenItem>
-              <Shift />
-            </ChildrenItem>
-          ),
+          children: <Shift />,
           componentCode: "BUSS_SHIFT"
         },
         {
@@ -98,11 +86,7 @@ class BusinessSetup extends Component {
               }}
             />
           ),
-          children: (
-            <ChildrenItem>
-              <UserShiftMapping />
-            </ChildrenItem>
-          ),
+          children: <UserShiftMapping />,
           componentCode: "BUSS_USERSHIFT"
         },
         {
@@ -113,11 +97,7 @@ class BusinessSetup extends Component {
               }}
             />
           ),
-          children: (
-            <ChildrenItem>
-              <Counter />
-            </ChildrenItem>
-          ),
+          children: <Counter />,
           componentCode: "BUSS_COUNTER"
         }
       );
@@ -131,11 +111,7 @@ class BusinessSetup extends Component {
             }}
           />
         ),
-        children: (
-          <ChildrenItem>
-            <Currency />
-          </ChildrenItem>
-        ),
+        children: <Currency />,
         componentCode: "BUSS_CURR"
       },
       {
@@ -146,11 +122,7 @@ class BusinessSetup extends Component {
             }}
           />
         ),
-        children: (
-          <ChildrenItem>
-            <BankMaster />
-          </ChildrenItem>
-        ),
+        children: <BankMaster />,
         componentCode: "BUSS_BANK"
       },
       {
@@ -161,11 +133,7 @@ class BusinessSetup extends Component {
             }}
           />
         ),
-        children: (
-          <ChildrenItem>
-            <CompanyAccount />
-          </ChildrenItem>
-        ),
+        children: <CompanyAccount />,
         componentCode: "BUSS_COMPANY"
       },
       {
@@ -176,11 +144,7 @@ class BusinessSetup extends Component {
             }}
           />
         ),
-        children: (
-          <ChildrenItem>
-            <ProjectMapping />
-          </ChildrenItem>
-        ),
+        children: <ProjectMapping />,
         componentCode: "BUSS_PRJ_MAP"
       },
       {
@@ -191,11 +155,7 @@ class BusinessSetup extends Component {
             }}
           />
         ),
-        children: (
-          <ChildrenItem>
-            <ProjectMaster />
-          </ChildrenItem>
-        ),
+        children: <ProjectMaster />,
         componentCode: "BUSS_PRJ_MTR"
       }
     );
@@ -218,20 +178,20 @@ class BusinessSetup extends Component {
   }
 
   render() {
-    debugger;
     return (
       <div className="business_setup">
         <AlgaehTabs
           removeCommonSection={true}
           content={this.state.screens_data}
+          renderClass="BusSetupSection"
         />
       </div>
     );
   }
 }
 
-function ChildrenItem({ children }) {
-  return <div className="bussiness-section">{children}</div>;
-}
+// function ChildrenItem({ children }) {
+//   return <div className="bussiness-section">{children}</div>;
+// }
 
 export default BusinessSetup;

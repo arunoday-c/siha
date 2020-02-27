@@ -115,7 +115,7 @@ class Algaeh extends Component {
           </div>
         </div>
 
-        <div className="">
+        <div className="" style={{ marginTop: 33 }}>
           {this.state.pageDisplay === "Modules" ? (
             <Modules />
           ) : this.state.pageDisplay === "Screens" ? (

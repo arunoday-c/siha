@@ -161,7 +161,6 @@ class LabSetup extends Component {
 
               <li
                 algaehtabs={"Equipment"}
-
                 className={"nav-item tab-button "}
                 onClick={this.openTab.bind(this)}
               >
@@ -173,12 +172,11 @@ class LabSetup extends Component {
                   />
                 }
               </li>
-
             </ul>
           </div>
         </div>
 
-        <div className="common-section">
+        <div className="labSetupSection">
           {/*  {<this.state.pageDisplay />} */}
 
           {this.state.pageDisplay === "LabContainer" ? (
@@ -196,9 +194,6 @@ class LabSetup extends Component {
           ) : this.state.pageDisplay === "Equipment" ? (
             <Equipment />
           ) : null}
-
-
-
 
           {/* : this.state.pageDisplay === "Equipment" ? (
             <Equipment />
@@ -225,8 +220,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(LabSetup)
+  connect(mapStateToProps, mapDispatchToProps)(LabSetup)
 );

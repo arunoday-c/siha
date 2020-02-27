@@ -8,7 +8,7 @@ import "./../../../../styles/site.scss";
 import extend from "extend";
 import {
   AlgaehDataGrid,
-  AlgaehLabel,
+  AlgaehLabel
   // AlagehFormGroup
   //AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
@@ -377,10 +377,10 @@ class AddOPBillingForm extends Component {
                               this.props.servicetype === undefined
                                 ? []
                                 : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                    f =>
+                                      f.hims_d_service_type_id ===
+                                      row.service_type_id
+                                  );
 
                             return (
                               <span>
@@ -404,9 +404,9 @@ class AddOPBillingForm extends Component {
                               this.props.opserviceslist === undefined
                                 ? []
                                 : this.props.opserviceslist.filter(
-                                  f =>
-                                    f.hims_d_services_id === row.services_id
-                                );
+                                    f =>
+                                      f.hims_d_services_id === row.services_id
+                                  );
 
                             return (
                               <span>
@@ -631,7 +631,8 @@ class AddOPBillingForm extends Component {
                             label={{
                               fieldName: "patient_lbl"
                             }}
-                          />
+                          />{" "}
+                          <hr style={{ marginTop: 0, marginBottom: 5 }} />
                           <div className="row insurance-details">
                             <div className="col-5">
                               <AlgaehLabel
@@ -674,7 +675,8 @@ class AddOPBillingForm extends Component {
                             label={{
                               fieldName: "company_lbl"
                             }}
-                          />
+                          />{" "}
+                          <hr style={{ marginTop: 0, marginBottom: 5 }} />
                           <div className="row insurance-details">
                             <div className="col-5">
                               <AlgaehLabel
@@ -955,8 +957,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AddOPBillingForm)
+  connect(mapStateToProps, mapDispatchToProps)(AddOPBillingForm)
 );

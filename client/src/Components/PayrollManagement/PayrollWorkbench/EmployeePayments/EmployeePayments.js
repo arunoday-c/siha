@@ -36,7 +36,7 @@ class EmployeePayment extends Component {
 
     this.FIN_Active = false;
     this.state = {};
-    getFinanceHeaders(this)
+
   }
 
   UNSAFE_componentWillMount() {
@@ -56,6 +56,9 @@ class EmployeePayment extends Component {
         ? true
         : false;
 
+    if (this.FIN_Active === true) {
+      getFinanceHeaders(this)
+    }
     this.setState({
       hospital_id: userToken.hims_d_hospital_id
     })

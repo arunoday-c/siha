@@ -13,10 +13,7 @@ import {
 } from "../../AttendanceMgmt/BulkTimeSheet/Filter/filter.events";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
-import {
-  getYears,
-  GetAmountFormart
-} from "../../../../utils/GlobalFunctions";
+import { getYears, GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import { MainContext } from "algaeh-react-components/context";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
@@ -54,7 +51,7 @@ export default class MiscEarningsDeductionsNew extends Component {
 
     this.setState({
       hospital_id: userToken.hims_d_hospital_id
-    })
+    });
 
     getEmpGroups(data => this.setState({ empGroups: data }));
     getBranchWiseDepartments({ hospital_id: this.state.hospital_id }, data =>
@@ -104,7 +101,7 @@ export default class MiscEarningsDeductionsNew extends Component {
         }
       },
 
-      onFailure: err => { }
+      onFailure: err => {}
     });
   }
 
@@ -327,7 +324,6 @@ export default class MiscEarningsDeductionsNew extends Component {
       employees: this.state.employees
     };
 
-
     //  console.log("Data:", JSON.stringify(sendData));
 
     algaehApiCall({
@@ -364,14 +360,14 @@ export default class MiscEarningsDeductionsNew extends Component {
 
     type === "B"
       ? (data = {
-        component_type: type,
-        component_category: "E",
-        miscellaneous_component: "Y"
-      })
+          component_type: type,
+          component_category: "E",
+          miscellaneous_component: "Y"
+        })
       : (data = {
-        component_category: type,
-        miscellaneous_component: "Y"
-      });
+          component_category: type,
+          miscellaneous_component: "Y"
+        });
 
     algaehApiCall({
       uri: "/payrollSettings/getMiscEarningDeductions",
@@ -434,7 +430,7 @@ export default class MiscEarningsDeductionsNew extends Component {
     let allYears = getYears();
     return (
       <React.Fragment>
-        <div className="misc_earn_dedc" style={{ paddingTop: 15 }}>
+        <div className="misc_earn_dedc">
           <div className="row">
             <div className="col-3">
               <div className="portlet portlet-bordered margin-bottom-15">
@@ -689,8 +685,8 @@ export default class MiscEarningsDeductionsNew extends Component {
                         {!this.state.loading ? (
                           <span>Load</span>
                         ) : (
-                            <i className="fas fa-spinner fa-spin" />
-                          )}
+                          <i className="fas fa-spinner fa-spin" />
+                        )}
                       </button>
                     </div>
                   </div>
@@ -785,10 +781,10 @@ export default class MiscEarningsDeductionsNew extends Component {
                                       Processed
                                     </span>
                                   ) : (
-                                      <span className="badge badge-warning">
-                                        Not Processed
+                                    <span className="badge badge-warning">
+                                      Not Processed
                                     </span>
-                                    )}
+                                  )}
                                 </span>
                               );
                             },
@@ -910,8 +906,8 @@ export default class MiscEarningsDeductionsNew extends Component {
                           allowDelete: false
                         }}
                         events={{
-                          onEdit: () => { },
-                          onDelete: () => { },
+                          onEdit: () => {},
+                          onDelete: () => {},
                           onDone: this.addEarningsForEmployee.bind(this)
                         }}
                       />

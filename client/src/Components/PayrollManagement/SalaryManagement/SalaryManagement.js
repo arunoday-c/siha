@@ -41,12 +41,8 @@ export default class SalaryManagement extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <MiscEarningsDeductions />
-                </ChildrenItem>
-              ),
-              componentCode: "PAY_LEV_AUTH"
+              children: <MiscEarningsDeductions />,
+              componentCode: "SAL_MIS_E&D"
             },
             {
               title: (
@@ -56,12 +52,8 @@ export default class SalaryManagement extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <MiscEarningsDeductionsNew />
-                </ChildrenItem>
-              ),
-              componentCode: "PAY_ENC_AUTH"
+              children: <MiscEarningsDeductionsNew />,
+              componentCode: "SAL_MIS_E&D_BLK"
             },
             {
               title: (
@@ -71,12 +63,8 @@ export default class SalaryManagement extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <NewSalaryProcessing />
-                </ChildrenItem>
-              ),
-              componentCode: "PAY_YEA_LEV_SAL"
+              children: <NewSalaryProcessing />,
+              componentCode: "SAL_NOR_SAL_PRO"
             },
             {
               title: (
@@ -86,89 +74,16 @@ export default class SalaryManagement extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <LeaveSalaryProcess />
-                </ChildrenItem>
-              ),
-              componentCode: "PAY_YEA_LEV_SAL"
+              children: <LeaveSalaryProcess />,
+              componentCode: "SAL_LEV_SAL_PRO"
             }
           ]}
+          renderClass="SalaryMgmntSection"
         />
-
-        {/* <div className="row">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">             
-              <li
-                algaehtabs={"MiscEarningsDeductions"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Miscellaneous E&D"
-                    }}
-                  />
-                }
-              </li>{" "}
-              <li
-                algaehtabs={"MiscEarningsDeductionsNew"}
-                className={"nav-item tab-button "}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Miscellaneous E&D Bulk"
-                    }}
-                  />
-                }
-              </li>{" "}
-              <li
-                algaehtabs={"NewSalaryProcessing"}
-                className={"nav-item tab-button "}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Normal Salary Process"
-                    }}
-                  />
-                }
-              </li>              
-              <li
-                algaehtabs={"LeaveSalaryProcess"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Leave Salary Process"
-                    }}
-                  />
-                }
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="salary-setion">
-          {this.state.pageDisplay === "NewSalaryProcessing" ? (
-            <NewSalaryProcessing />
-          ) : this.state.pageDisplay === "MiscEarningsDeductions" ? (
-            <MiscEarningsDeductions />
-          ) : this.state.pageDisplay === "MiscEarningsDeductionsNew" ? (
-            <MiscEarningsDeductionsNew />
-          ) : this.state.pageDisplay === "LeaveSalaryProcess" ? (
-            <LeaveSalaryProcess />
-          ) : null}
-        </div> */}
       </div>
     );
   }
 }
-function ChildrenItem({ children }) {
-  return <div className="Salary-Management-section">{children}</div>;
-}
+// function ChildrenItem({ children }) {
+//   return <div className="Salary-Management-section">{children}</div>;
+// }

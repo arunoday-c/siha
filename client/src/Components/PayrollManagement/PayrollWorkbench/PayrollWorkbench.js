@@ -94,6 +94,7 @@ class PayrollWorkbench extends Component {
               componentCode: "PAY_EMP_RCP"
             }
           ]}
+          renderClass="PayrollWorkSection"
         />
 
         {/* <div className="row">

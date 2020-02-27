@@ -39,12 +39,8 @@ class LoanManagement extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <LoanAuthorization />
-                </ChildrenItem>
-              ),
-              componentCode: "EXT_GRT_ACC"
+              children: <LoanAuthorization />,
+              componentCode: "LON_LON_AUT"
             },
             {
               title: (
@@ -54,55 +50,12 @@ class LoanManagement extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <LoanAdjustment />
-                </ChildrenItem>
-              ),
-              componentCode: "EXT_EOS_GRT"
+              children: <LoanAdjustment />,
+              componentCode: "LON_LON_ADJ"
             }
           ]}
+          renderClass="LoanMgmtSection"
         />
-
-        {/* <div className="row">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              <li
-                algaehtabs={"LoanAuth"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Loan Authorization"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"LoanAdjustment"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Loan Adjustment"
-                    }}
-                  />
-                }
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="payroll-setion">
-          {this.state.pageDisplay === "LoanAuth" ? (
-            <LoanAuthorization />
-          ) : this.state.pageDisplay === "LoanAdjustment" ? (
-            <LoanAdjustment />
-          ) : null}
-        </div> */}
       </div>
     );
   }
