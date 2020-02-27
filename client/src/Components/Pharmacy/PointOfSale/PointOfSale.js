@@ -63,7 +63,7 @@ class PointOfSale extends Component {
       cheque_amount: 0,
       advance: 0,
       popUpGenereted: false,
-      dataFinder: false,
+      dataFinder: true,
       userToken: {}
     };
     this.onKeyPress = this.onKeyPress.bind(this);

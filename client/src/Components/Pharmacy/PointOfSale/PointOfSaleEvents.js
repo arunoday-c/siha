@@ -81,6 +81,7 @@ const getPosEntry = ($this, pos_number) => {
           data.saveEnable = true;
           data.posCancelled = false;
           data.InvoiceEnable = true;
+          data.dataExitst = true;
         } else if (data.cancelled === "Y") {
           data.postEnable = true;
           data.posCancelled = true;
@@ -94,7 +95,7 @@ const getPosEntry = ($this, pos_number) => {
         if (data.visit_id !== null) {
           data.pos_customer_type = "OP";
         }
-        data.dataExitst = true;
+        data.dataExitst = false;
         data.OTItemAddDis = true;
 
         data.insured = data.insurance_yesno;
@@ -490,6 +491,9 @@ const SavePosEnrty = $this => {
     delete posdata.patInsuranceFrontImg;
     delete posdata.patInsuranceBackImg;
 
+    let location_details = $this.props.poslocations.find(f =>
+      f.hims_d_pharmacy_location_id === $this.state.location_id)
+    posdata.location_type = location_details.location_type
     // debugger
     algaehApiCall({
       uri: callUri,
@@ -625,6 +629,11 @@ const PostPosEntry = $this => {
           $this.state.transaction_id =
             $this.state.hims_f_pharmacy_pos_header_id;
           $this.state.transaction_date = $this.state.pos_date;
+          debugger
+          let location_details = $this.props.poslocations.find(f =>
+            f.hims_d_pharmacy_location_id === $this.state.location_id)
+
+          $this.state.location_type = location_details.location_type
           for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
             $this.state.pharmacy_stock_detail[i].location_id =
               $this.state.location_id;
@@ -642,6 +651,7 @@ const PostPosEntry = $this => {
             $this.state.pharmacy_stock_detail[i].net_total =
               $this.state.pharmacy_stock_detail[i].net_extended_cost;
           }
+          debugger
           let callUri =
             $this.state.hims_f_pharmacy_pos_header_id !== null
               ? "/posEntry/postPosEntry"
