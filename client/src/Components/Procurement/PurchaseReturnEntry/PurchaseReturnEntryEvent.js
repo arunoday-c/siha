@@ -153,6 +153,7 @@ const ReceiptSearch = ($this, e) => {
       callBack(text);
     },
     onRowSelect: row => {
+      AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/PurchaseReturnEntry/getReceiptEntryItems",
         module: "procurement",

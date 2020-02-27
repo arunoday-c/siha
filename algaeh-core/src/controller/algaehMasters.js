@@ -48,7 +48,8 @@ const {
   getCurrentAssignedScreenAndComponent,
   getAllAssignedScrens,
   updateLandingScreen,
-  getScreenElementsRoles
+  getScreenElementsRoles,
+  updateAlgaehComponent
 } = masterModels;
 const { releaseConnection } = utils;
 
@@ -822,6 +823,28 @@ export default ({ config, db }) => {
         .end();
       delete req.records;
     }
+  );
+
+  api.put(
+    "/updateAlgaehComponent",
+    updateAlgaehComponent,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+
+      next();
+    },
+    releaseConnection
   );
   return api;
 };

@@ -653,7 +653,6 @@ const onchangegridcol = ($this, context, row, e) => {
 };
 
 const onchhangegriddiscount = ($this, context, row, e) => {
-
   let extended_cost = 0;
 
   let tax_amount = 0;
@@ -664,22 +663,18 @@ const onchhangegriddiscount = ($this, context, row, e) => {
   let _index = _stock_detail.indexOf(row);
 
   extended_cost =
-    parseFloat(row.return_qty) * parseFloat(row.unit_cost);
+    (parseFloat(row.return_qty) * parseFloat(row.unit_cost)).toFixed($this.state.decimal_places);
 
 
-  tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
-  tax_amount = GetAmountFormart(tax_amount, { appendSymbol: false });
+  tax_amount = ((parseFloat(extended_cost) * parseFloat(row.tax_percentage)) / 100)
+    .toFixed($this.state.decimal_places);
 
-  row["extended_cost"] = GetAmountFormart(extended_cost, {
-    appendSymbol: false
-  });
-  row["tax_amount"] = (extended_cost * parseFloat(row.tax_percentage)) / 100;
+  row["extended_cost"] = parseFloat(extended_cost)
+  row["tax_amount"] = (parseFloat(extended_cost) * parseFloat(row.tax_percentage)) / 100;
   row["total_amount"] = parseFloat(tax_amount) + parseFloat(extended_cost);
 
 
-  row["net_extended_cost"] = GetAmountFormart(extended_cost, {
-    appendSymbol: false
-  });
+  row["net_extended_cost"] = parseFloat(extended_cost)
   _stock_detail[_index] = row;
 
 

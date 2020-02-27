@@ -7,7 +7,6 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import MyContext from "../../../utils/MyContext";
 import {
   AlgaehLabel,
-  AlagehFormGroup,
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
@@ -31,11 +30,14 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import POReturnEntry from "../../../Models/POReturnEntry";
 import Enumerable from "linq";
 import POReturnItemList from "./POReturnItemList/POReturnItemList";
+import { MainContext } from "algaeh-react-components/context";
 
 class PurchaseReturnEntry extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      decimal_places: null
+    };
     getVendorMaster(this, this);
   }
 
@@ -44,13 +46,19 @@ class PurchaseReturnEntry extends Component {
     this.setState(IOputs);
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
     if (
       this.props.purchase_return_number !== undefined &&
       this.props.purchase_return_number.length !== 0
     ) {
       getCtrlCode(this, this.props.purchase_return_number);
     }
+
+    this.setState({
+      decimal_places: userToken.decimal_places
+    });
   }
 
   render() {
@@ -58,15 +66,15 @@ class PurchaseReturnEntry extends Component {
       this.state.po_return_from === null
         ? []
         : Enumerable.from(this.props.polocations)
-            .where(w => w.location_type === "WH")
-            .toArray();
+          .where(w => w.location_type === "WH")
+          .toArray();
 
     const class_finder =
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === false
-        ? ""
-        : " disableFinder";
+          ? ""
+          : " disableFinder";
 
     return (
       <div>
@@ -132,25 +140,25 @@ class PurchaseReturnEntry extends Component {
           printArea={
             this.state.hims_f_procurement_po_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Receipt for Internal",
-                      events: {
-                        onClick: () => {
-                          generatePOReceipt(this.state);
-                        }
-                      }
-                    },
-                    {
-                      label: "Receipt for Vendor",
-                      events: {
-                        onClick: () => {
-                          generatePOReceiptNoPrice(this.state);
-                        }
+                menuitems: [
+                  {
+                    label: "Receipt for Internal",
+                    events: {
+                      onClick: () => {
+                        generatePOReceipt(this.state);
                       }
                     }
-                  ]
-                }
+                  },
+                  {
+                    label: "Receipt for Vendor",
+                    events: {
+                      onClick: () => {
+                        generatePOReceiptNoPrice(this.state);
+                      }
+                    }
+                  }
+                ]
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
