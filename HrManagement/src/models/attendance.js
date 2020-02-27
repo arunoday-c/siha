@@ -8447,7 +8447,7 @@ function processBulkAtt_Normal(data) {
         })
         .then(partialAtt => {
           if (partialAtt.length > 0) {
-            let message = ` <li> Partially uploaded attendance For: </li>`;
+            let message = "";
 
             partialAtt.forEach(emp => {
               message += ` <li> ${emp["employee_code"]} -  ${emp["full_name"]} </li>`;
@@ -9059,7 +9059,7 @@ function processBulkAtt_with_cutoff(data) {
         })
         .then(partialAtt => {
           if (partialAtt.length > 0) {
-            let message = ` <li> Partially uploaded attendance For: </li>`;
+            let message = "";
 
             partialAtt.forEach(emp => {
               message += ` <li> ${emp["employee_code"]} -  ${emp["full_name"]} </li>`;
