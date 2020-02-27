@@ -10019,8 +10019,6 @@ function calculateNoLeaveDays_BKP_2020_feb_26(inputs, _mysql) {
 function calculateNoLeaveDays(inputs, _mysql) {
   return new Promise((resolve, reject) => {
     try {
-      //let _mysql = mysql;
-      const utilities = new algaehUtilities();
       let input = inputs;
       console.log("inside calculateNoLeaveDays:");
       let from_date = moment(input.from_date).format("YYYY-MM-DD");
@@ -10255,9 +10253,9 @@ function calculateNoLeaveDays(inputs, _mysql) {
                     let isHoliday = [];
 
                     if (check_to_date == "Y") {
-                      isHoliday = new LINQ(allHolidays)
-                        .Where(
-                          w =>
+                      isHoliday = allHolidays
+                        .filter(w => {
+                          return (
                             (w.holiday_date == to_date && w.weekoff == "Y") ||
                             (w.holiday_date == to_date &&
                               w.holiday == "Y" &&
@@ -10266,18 +10264,18 @@ function calculateNoLeaveDays(inputs, _mysql) {
                               w.holiday == "Y" &&
                               w.holiday_type == "RS" &&
                               w.religion_id == my_religion)
-                        )
-                        .Select(s => {
+                          );
+                        })
+                        .map(s => {
                           return {
                             holiday_date: s.holiday_date,
                             holiday_description: s.holiday_description
                           };
-                        })
-                        .ToArray();
+                        });
                     } else if (check_from_date == "Y") {
-                      isHoliday = new LINQ(allHolidays)
-                        .Where(
-                          w =>
+                      isHoliday = allHolidays
+                        .filter(w => {
+                          return (
                             (w.holiday_date == from_date && w.weekoff == "Y") ||
                             (w.holiday_date == from_date &&
                               w.holiday == "Y" &&
@@ -10286,18 +10284,18 @@ function calculateNoLeaveDays(inputs, _mysql) {
                               w.holiday == "Y" &&
                               w.holiday_type == "RS" &&
                               w.religion_id == my_religion)
-                        )
-                        .Select(s => {
+                          );
+                        })
+                        .map(s => {
                           return {
                             holiday_date: s.holiday_date,
                             holiday_description: s.holiday_description
                           };
-                        })
-                        .ToArray();
+                        });
                     } else {
-                      isHoliday = new LINQ(allHolidays)
-                        .Where(
-                          w =>
+                      isHoliday = allHolidays
+                        .filter(w => {
+                          return (
                             (w.holiday_date == from_date && w.weekoff == "Y") ||
                             (w.holiday_date == from_date &&
                               w.holiday == "Y" &&
@@ -10314,19 +10312,21 @@ function calculateNoLeaveDays(inputs, _mysql) {
                               w.holiday == "Y" &&
                               w.holiday_type == "RS" &&
                               w.religion_id == my_religion)
-                        )
-                        .Select(s => {
+                          );
+                        })
+                        .map(s => {
                           return {
                             holiday_date: s.holiday_date,
                             holiday_description: s.holiday_description
                           };
-                        })
-                        .ToArray();
+                        });
                     }
 
                     //s -------START OF--- get count of holidays and weekOffs betwen apllied leave range
-                    let week_off_Data = new LINQ(allHolidays)
-                      .Select(s => {
+
+                    let week_off_Data = allHolidays
+                      .filter(w => w.weekoff == "Y")
+                      .map(s => {
                         return {
                           hims_d_holiday_id: s.hims_d_holiday_id,
                           holiday_date: s.holiday_date,
@@ -10336,31 +10336,29 @@ function calculateNoLeaveDays(inputs, _mysql) {
                           holiday_type: s.holiday_type,
                           religion_id: s.religion_id
                         };
-                      })
-                      .Where(w => w.weekoff == "Y")
-                      .ToArray();
+                      });
                     let total_weekOff = week_off_Data.length;
 
-                    let holiday_Data = new LINQ(allHolidays)
-                      .Select(s => {
-                        return {
-                          hims_d_holiday_id: s.hims_d_holiday_id,
-                          holiday_date: s.holiday_date,
-                          holiday_description: s.holiday_description,
-                          holiday: s.holiday,
-                          weekoff: s.weekoff,
-                          holiday_type: s.holiday_type,
-                          religion_id: s.religion_id
-                        };
-                      })
-                      .Where(
-                        w =>
+                    let holiday_Data = allHolidays
+                      .filter(w => {
+                        return (
                           (w.holiday == "Y" && w.holiday_type == "RE") ||
                           (w.holiday == "Y" &&
                             w.holiday_type == "RS" &&
                             w.religion_id == my_religion)
-                      )
-                      .ToArray();
+                        );
+                      })
+                      .map(s => {
+                        return {
+                          hims_d_holiday_id: s.hims_d_holiday_id,
+                          holiday_date: s.holiday_date,
+                          holiday_description: s.holiday_description,
+                          holiday: s.holiday,
+                          weekoff: s.weekoff,
+                          holiday_type: s.holiday_type,
+                          religion_id: s.religion_id
+                        };
+                      });
 
                     let total_holiday = holiday_Data.length;
                     // -------END OF--- get count of holidays and weekOffs betwen apllied leave range
@@ -10392,30 +10390,26 @@ function calculateNoLeaveDays(inputs, _mysql) {
                           //calculating holidays to remove from each month
                           if (allLeaves[0].include_holiday == "N") {
                             reduce_days += parseFloat(
-                              new LINQ(holiday_Data)
-                                .Where(
-                                  w =>
-                                    dateRange[k]["begning_of_leave"] <=
-                                      w.holiday_date &&
-                                    w.holiday_date <=
-                                      dateRange[k]["end_of_leave"]
-                                )
-                                .Count()
+                              holiday_Data.filter(w => {
+                                return (
+                                  dateRange[k]["begning_of_leave"] <=
+                                    w.holiday_date &&
+                                  w.holiday_date <= dateRange[k]["end_of_leave"]
+                                );
+                              }).length
                             );
                           }
 
                           //calculating week off to remove from each month
                           if (allLeaves[0].include_weekoff == "N") {
                             reduce_days += parseFloat(
-                              new LINQ(week_off_Data)
-                                .Where(
-                                  w =>
-                                    dateRange[k]["begning_of_leave"] <=
-                                      w.holiday_date &&
-                                    w.holiday_date <=
-                                      dateRange[k]["end_of_leave"]
-                                )
-                                .Count()
+                              week_off_Data.filter(w => {
+                                return (
+                                  dateRange[k]["begning_of_leave"] <=
+                                    w.holiday_date &&
+                                  w.holiday_date <= dateRange[k]["end_of_leave"]
+                                );
+                              }).length
                             );
                           }
 

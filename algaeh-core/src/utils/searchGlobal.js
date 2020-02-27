@@ -84,8 +84,9 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS PH.*, date(PH.pos_date) as pos_date, V.visit_code, P.patient_code,\
         CASE WHEN PH.pos_customer_type='OP' THEN P.full_name else PH.patient_name END as patient_name, \
-        CASE WHEN PH.pos_customer_type='OP' THEN P.contact_number else PH.mobile_number END as mobile_number \
-        from hims_f_pharmacy_pos_header PH \
+        CASE WHEN PH.pos_customer_type='OP' THEN P.contact_number else PH.mobile_number END as mobile_number, \
+        CASE WHEN PH.posted='Y' THEN 'Yes' else 'No' END as posted, \
+        CASE WHEN PH.cancelled='Y' THEN 'Yes' else 'No' END as cancelled from hims_f_pharmacy_pos_header PH \
         left join hims_f_patient P on PH.patient_id = P.hims_d_patient_id \
         left join hims_f_patient_visit V on PH.visit_id = V.hims_f_patient_visit_id \
         where PH.record_status ='A' and PH.hospital_id=" +

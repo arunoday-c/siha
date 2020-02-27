@@ -346,7 +346,6 @@ export default {
 
     try {
       const utilities = new algaehUtilities();
-      utilities.logger().log("updatePosEntry: ");
       // console.log("req.connection: ", req.connection);
 
       let inputParam = { ...req.body };
@@ -471,12 +470,6 @@ export default {
                   printQuery: true
                 })
                 .then(result => {
-                  utilities
-                    .logger()
-                    .log(
-                      "insert_pharmacy_stock: ",
-                      inputParam.insert_pharmacy_stock.length
-                    );
 
                   if (inputParam.insert_pharmacy_stock.length > 0) {
                     let IncludeValues = [
@@ -527,9 +520,7 @@ export default {
                         printQuery: true
                       })
                       .then(detailResult => {
-                        utilities
-                          .logger()
-                          .log("req.connection: ", req.connection);
+
                         if (req.connection == null) {
                           _mysql.commitTransaction(() => {
                             _mysql.releaseConnection();
@@ -546,17 +537,13 @@ export default {
                         });
                       });
                   } else {
-                    utilities.logger().log("Check: ");
-
                     if (req.connection == null) {
-                      utilities.logger().log("connection: ");
                       _mysql.commitTransaction(() => {
                         _mysql.releaseConnection();
                         req.records = { pos_number: inputParam.pos_number };
                         next();
                       });
                     } else {
-                      utilities.logger().log("connection else: ");
                       next();
                     }
                   }
