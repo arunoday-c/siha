@@ -224,224 +224,258 @@ class IDType extends Component {
   render() {
     return (
       <div className="id_type">
-        <div className="container-fluid">
-          <form>
-            <div className="row">
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "type_code",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "identity_document_code",
-                  value: this.state.identity_document_code,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  },
-                  others: {
-                    tabIndex: "1",
-                    placeholder: this.state.identity_document_code_placeHolder
-                  }
-                }}
-              />
+        <div className="row inner-top-search">
+          <AlagehFormGroup
+            div={{ className: "col-2  form-group mandatory" }}
+            label={{
+              fieldName: "type_code",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "identity_document_code",
+              value: this.state.identity_document_code,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              },
+              others: {
+                tabIndex: "1",
+                placeholder: this.state.identity_document_code_placeHolder
+              }
+            }}
+          />
 
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "type_desc",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "identity_document_name",
-                  value: this.state.identity_document_name,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
+          <AlagehFormGroup
+            div={{ className: "col-3  form-group mandatory" }}
+            label={{
+              fieldName: "type_desc",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "identity_document_name",
+              value: this.state.identity_document_name,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
 
-              <AlagehFormGroup
-                div={{ className: "col-3 arabic-txt-fld" }}
-                label={{
-                  fieldName: "arabic_type_desc",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "arabic_identity_document_name",
-                  value: this.state.arabic_identity_document_name,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
+          <AlagehFormGroup
+            div={{ className: "col-3 form-group mandatory arabic-txt-fld" }}
+            label={{
+              fieldName: "arabic_type_desc",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "arabic_identity_document_name",
+              value: this.state.arabic_identity_document_name,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
 
-              <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
-                <button
-                  onClick={this.addIDType.bind(this)}
-                  className="btn btn-primary"
-                >
-                  Add to List
-                </button>
+          <div className="col" style={{ marginTop: 19 }}>
+            <button
+              onClick={this.addIDType.bind(this)}
+              className="btn btn-primary"
+            >
+              Add to List
+            </button>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col" data-validate="idDiv">
+                    <AlgaehDataGrid
+                      datavalidate="data-validate='idDiv'"
+                      id="identity_grd"
+                      columns={[
+                        {
+                          fieldName: "identity_document_code",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "type_code" }} />
+                          ),
+                          disabled: true
+                        },
+                        {
+                          fieldName: "identity_document_name",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "type_desc" }} />
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.identity_document_name,
+                                  className: "txt-fld",
+                                  name: "identity_document_name",
+                                  events: {
+                                    onChange: this.onchangegridcol.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage: "Name - cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "arabic_identity_document_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "arabic_type_desc" }}
+                            />
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.arabic_identity_document_name,
+                                  className: "txt-fld",
+                                  name: "arabic_identity_document_name",
+                                  events: {
+                                    onChange: this.onchangegridcol.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage:
+                                      "Arabic Name - cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "created_by",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "created_by" }} />
+                          ),
+                          displayTemplate: row => {
+                            let display =
+                              this.props.userdrtails === undefined
+                                ? []
+                                : this.props.userdrtails.filter(
+                                    f =>
+                                      f.algaeh_d_app_user_id === row.created_by
+                                  );
+
+                            return (
+                              <span>
+                                {display !== null && display.length !== 0
+                                  ? display[0].username
+                                  : ""}
+                              </span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            let display =
+                              this.props.userdrtails === undefined
+                                ? []
+                                : this.props.userdrtails.filter(
+                                    f =>
+                                      f.algaeh_d_app_user_id === row.created_by
+                                  );
+
+                            return (
+                              <span>
+                                {display !== null && display.length !== 0
+                                  ? display[0].username
+                                  : ""}
+                              </span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "created_date",
+
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Added Date" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>{this.dateFormater(row.created_date)}</span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <span>{this.dateFormater(row.created_date)}</span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "identity_status",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "status" }} />
+                          ),
+                          displayTemplate: row => {
+                            return row.identity_status === "A"
+                              ? "Active"
+                              : "Inactive";
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{}}
+                                selector={{
+                                  name: "identity_status",
+                                  className: "select-fld",
+                                  value: row.identity_status,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: GlobalVariables.FORMAT_STATUS
+                                  },
+                                  onChange: this.onchangegridcol.bind(
+                                    this,
+                                    row
+                                  ),
+                                  others: {
+                                    errormessage: "Status - cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        }
+                      ]}
+                      keyId="identity_document_code"
+                      dataSource={{
+                        data:
+                          this.props.idtypes === undefined
+                            ? []
+                            : this.props.idtypes
+                      }}
+                      filter={true}
+                      isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{
+                        onDelete: this.deleteIDType.bind(this),
+                        onEdit: row => {},
+                        onDone: this.updateIDtypes.bind(this)
+                      }}
+                    />{" "}
+                  </div>
+                </div>
               </div>
-            </div>
-          </form>
-
-          <div className="row form-details">
-            <div className="col" data-validate="idDiv">
-              <AlgaehDataGrid
-                datavalidate="data-validate='idDiv'"
-                id="identity_grd"
-                columns={[
-                  {
-                    fieldName: "identity_document_code",
-                    label: <AlgaehLabel label={{ fieldName: "type_code" }} />,
-                    disabled: true
-                  },
-                  {
-                    fieldName: "identity_document_name",
-                    label: <AlgaehLabel label={{ fieldName: "type_desc" }} />,
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{}}
-                          textBox={{
-                            value: row.identity_document_name,
-                            className: "txt-fld",
-                            name: "identity_document_name",
-                            events: {
-                              onChange: this.onchangegridcol.bind(this, row)
-                            },
-                            others: {
-                              errormessage: "Name - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "arabic_identity_document_name",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "arabic_type_desc" }} />
-                    ),
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{}}
-                          textBox={{
-                            value: row.arabic_identity_document_name,
-                            className: "txt-fld",
-                            name: "arabic_identity_document_name",
-                            events: {
-                              onChange: this.onchangegridcol.bind(this, row)
-                            },
-                            others: {
-                              errormessage: "Arabic Name - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "created_by",
-                    label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
-                    displayTemplate: row => {
-                      let display =
-                        this.props.userdrtails === undefined
-                          ? []
-                          : this.props.userdrtails.filter(
-                            f => f.algaeh_d_app_user_id === row.created_by
-                          );
-
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].username
-                            : ""}
-                        </span>
-                      );
-                    },
-                    editorTemplate: row => {
-                      let display =
-                        this.props.userdrtails === undefined
-                          ? []
-                          : this.props.userdrtails.filter(
-                            f => f.algaeh_d_app_user_id === row.created_by
-                          );
-
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].username
-                            : ""}
-                        </span>
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "created_date",
-
-                    label: <AlgaehLabel label={{ forceLabel: "Added Date" }} />,
-                    displayTemplate: row => {
-                      return <span>{this.dateFormater(row.created_date)}</span>;
-                    },
-                    editorTemplate: row => {
-                      return <span>{this.dateFormater(row.created_date)}</span>;
-                    }
-                  },
-                  {
-                    fieldName: "identity_status",
-                    label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                    displayTemplate: row => {
-                      return row.identity_status === "A"
-                        ? "Active"
-                        : "Inactive";
-                    },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{}}
-                          selector={{
-                            name: "identity_status",
-                            className: "select-fld",
-                            value: row.identity_status,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_STATUS
-                            },
-                            onChange: this.onchangegridcol.bind(this, row),
-                            others: {
-                              errormessage: "Status - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  }
-                ]}
-                keyId="identity_document_code"
-                dataSource={{
-                  data:
-                    this.props.idtypes === undefined ? [] : this.props.idtypes
-                }}
-                filter={true}
-                isEditable={true}
-                paging={{ page: 0, rowsPerPage: 10 }}
-                events={{
-                  onDelete: this.deleteIDType.bind(this),
-                  onEdit: row => { },
-                  onDone: this.updateIDtypes.bind(this)
-                }}
-              />
             </div>
           </div>
         </div>
@@ -466,9 +500,4 @@ function mapDispatchToProps(dispatch) {
   );
 }
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(IDType)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(IDType));

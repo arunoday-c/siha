@@ -882,6 +882,7 @@ class AddOPBillingForm extends Component {
                               fieldName: "patient_lbl"
                             }}
                           />
+                          <hr style={{ marginTop: 0, marginBottom: 5 }} />
                           <div className="row insurance-details">
                             <div className="col-5">
                               <AlgaehLabel
@@ -924,7 +925,8 @@ class AddOPBillingForm extends Component {
                             label={{
                               fieldName: "company_lbl"
                             }}
-                          />
+                          />{" "}
+                          <hr style={{ marginTop: 0, marginBottom: 5 }} />
                           <div className="row insurance-details">
                             <div className="col-5">
                               <AlgaehLabel

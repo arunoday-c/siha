@@ -41,11 +41,7 @@ class AdminSetup extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <Groups />
-                </ChildrenItem>
-              ),
+              children: <Groups />,
               componentCode: "AD_USER_GROUP"
             },
             {
@@ -56,11 +52,7 @@ class AdminSetup extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <Roles />
-                </ChildrenItem>
-              ),
+              children: <Roles />,
               componentCode: "AD_USER_ROLES"
             },
             {
@@ -71,11 +63,7 @@ class AdminSetup extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <LoginUsers />
-                </ChildrenItem>
-              ),
+              children: <LoginUsers />,
               componentCode: "AD_USER_LOGIN"
             },
             {
@@ -86,11 +74,7 @@ class AdminSetup extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <ScreenAssignment />
-                </ChildrenItem>
-              ),
+              children: <ScreenAssignment />,
               componentCode: "AD_SCR_ASSI"
             },
             {
@@ -101,20 +85,17 @@ class AdminSetup extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <AuditLog />
-                </ChildrenItem>
-              ),
+              children: <AuditLog />,
               componentCode: "AD_AUD_LOG"
             }
           ]}
+          renderClass="adminSettingsSection"
         />
       </div>
     );
   }
 }
-function ChildrenItem({ children }) {
-  return <div className="admin-section">{children}</div>;
-}
+// function ChildrenItem({ children }) {
+//   return <div className="admin-section">{children}</div>;
+// }
 export default AdminSetup;

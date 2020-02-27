@@ -1,13 +1,8 @@
 .sales_setup {
-    // background: #f2f2f2;
-    .sales_section {
-      border: 1px solid #d3d3d3;
-      border-radius: 5px;
-      background: #fff;
-      padding-top: 15px;
-    }
-    .ReactTable {
-      max-height: 80vh !important;
-    }
+  .salesSetupSection {
+    margin-top: 33px;
   }
-  
+  .ReactTable {
+    max-height: 80vh !important;
+  }
+}

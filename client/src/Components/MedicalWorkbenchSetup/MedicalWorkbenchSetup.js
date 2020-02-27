@@ -79,7 +79,7 @@ class MedicalWorkbenchSetup extends Component {
             </ul>
           </div>
         </div>
-        <div className="wb-setup-section">
+        <div className="medicalSetupSection">
           {this.state.pageDisplay === "PhysicalExaminationMaster" ? (
             <PhysicalExamination />
           ) : this.state.pageDisplay === "ReviewofSystems" ? (

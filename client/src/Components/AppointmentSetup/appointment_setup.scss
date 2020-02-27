@@ -1,13 +1,8 @@
 .appointment_setup {
-  .appointment-section {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    border-radius: 5px;
-    border: 1px solid #d3d3d3;
-    background: #ffff;
+  .appoSetupSection {
+    margin-top: 33px;
   }
   #apptStatusDivCntr {
-    margin-top: 5px;
     .ReactTable {
       max-height: 70vh !important;
     }
