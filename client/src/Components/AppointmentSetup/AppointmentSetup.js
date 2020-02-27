@@ -29,7 +29,6 @@ class AppointmentSetup extends Component {
   render() {
     return (
       <div className="appointment_setup">
-
         <AlgaehTabs
           removeCommonSection={true}
           content={[
@@ -41,11 +40,7 @@ class AppointmentSetup extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <AppointmentStatus />
-                </ChildrenItem>
-              ),
+              children: <AppointmentStatus />,
               componentCode: "APP_STATUS"
             },
             {
@@ -56,11 +51,7 @@ class AppointmentSetup extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <AppointmentRooms />
-                </ChildrenItem>
-              ),
+              children: <AppointmentRooms />,
               componentCode: "APP_ROOMS"
             },
             {
@@ -71,76 +62,18 @@ class AppointmentSetup extends Component {
                   }}
                 />
               ),
-              children: (
-                <ChildrenItem>
-                  <AppointmentClinics />
-                </ChildrenItem>
-              ),
+              children: <AppointmentClinics />,
               componentCode: "APP_CLINICS"
             }
           ]}
+          renderClass="appoSetupSection"
         />
-
-        {/* <div className="row">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              <li
-                algaehtabs={"AppointmentStatus"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "appointment_status"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"AppointmentRooms"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "appointment_rooms"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"AppointmentClinics"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "appointment_clinics"
-                    }}
-                  />
-                }
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="appointment-section">
-          {this.state.pageDisplay === "AppointmentStatus" ? (
-            <AppointmentStatus />
-          ) : this.state.pageDisplay === "AppointmentRooms" ? (
-            <AppointmentRooms />
-          ) : this.state.pageDisplay === "AppointmentClinics" ? (
-            <AppointmentClinics />
-          ) : null}
-        </div> */}
       </div>
     );
   }
 }
 
-function ChildrenItem({ children }) {
-  return <div className="appointment-section">{children}</div>;
-}
+// function ChildrenItem({ children }) {
+//   return <div className="appointment-section">{children}</div>;
+// }
 export default AppointmentSetup;
