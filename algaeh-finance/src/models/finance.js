@@ -2675,7 +2675,7 @@ export default {
       }
       _mysql
         .executeQuery({
-          query: `select finance_account_child_id,ledger_code,child_name ${strQry}
+          query: `select finance_account_child_id,ledger_code,arabic_child_name,child_name ${strQry}
           from finance_account_head H inner join  finance_account_child C
           on  H.root_id=? and H.finance_account_head_id=C.head_id        
           left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id

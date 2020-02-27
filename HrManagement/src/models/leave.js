@@ -6280,7 +6280,6 @@ export default {
         });
       })
       .catch(e => {
-        console.log("CATCH:", e);
         if (e.invalid_input == true) {
           _mysql.rollBackTransaction(() => {});
           req.records = e;
@@ -8248,7 +8247,6 @@ function yearlyLeaveProcess(inputs, req, mysql) {
 
               //insertion procces
               new Promise((resolve, reject) => {
-                console.log("insertYearlyleave", insertYearlyleave);
                 try {
                   if (insertYearlyleave.length > 0) {
                     const insurtColumns = ["employee_id", "year"];
@@ -8303,7 +8301,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
                       hospital_id: input.hospital_id
                     },
                     bulkInsertOrUpdate: true,
-                    printQuery: false
+                    printQuery: true
                   })
                   .then(monthResult => {
                     if (updateQry == "") {
@@ -8313,7 +8311,6 @@ function yearlyLeaveProcess(inputs, req, mysql) {
                     }
                   })
                   .catch(e => {
-                    console.log("e:", e);
                     _mysql.rollBackTransaction(() => {
                       reject(e);
                     });
