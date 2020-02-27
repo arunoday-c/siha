@@ -19,6 +19,7 @@ export default class HolidayMaster extends Component {
     this.state = {
       holiday_type: false,
       holidays: [],
+      weekoffs: [],
       monday: false,
       tuesday: false,
       wednesday: false,
@@ -30,18 +31,21 @@ export default class HolidayMaster extends Component {
       year: moment().format("YYYY"),
       hospital_id: null
     };
-
-    this.getHolidayMaster(this.state.hospital_id);
-    this.getReligionsMaster();
-    this.getHospitals();
   }
   static contextType = MainContext;
-  componentDidMount() {
-    const userToken = this.context.userToken;
 
-    this.setState({
-      hospital_id: userToken.hims_d_hospital_id
-    })
+  componentDidMount() {
+    const { userToken } = this.context;
+    this.getReligionsMaster();
+    this.getHospitals();
+    this.setState(
+      {
+        hospital_id: userToken.hims_d_hospital_id
+      },
+      () => {
+        this.getHolidayMaster(this.state.hospital_id);
+      }
+    );
   }
 
   getHospitals() {
@@ -69,7 +73,7 @@ export default class HolidayMaster extends Component {
         }
       },
 
-      onFailure: err => { }
+      onFailure: err => {}
     });
   }
 
@@ -161,10 +165,12 @@ export default class HolidayMaster extends Component {
         if (res.data.success) {
           const { weekoffs, days } = res.data.records;
           const holidays = weekoffs.filter(day => day.weekoff === "N");
+          const weekoffList = weekoffs.filter(day => day.weekoff === "Y");
           const reqdays = days.map(item => item.day.toLowerCase());
           this.setState(
             {
               holidays,
+              weekoffs: weekoffList,
               hospital_id: weekoffs.length !== 0 ? weekoffs[0].hospital_id : id
             },
             () => {
@@ -189,7 +195,7 @@ export default class HolidayMaster extends Component {
           );
         }
       },
-      onFailure: err => { }
+      onFailure: err => {}
     });
   }
 
@@ -259,7 +265,7 @@ export default class HolidayMaster extends Component {
               });
             }
           },
-          onFailure: err => { }
+          onFailure: err => {}
         });
       }
     });
@@ -301,7 +307,7 @@ export default class HolidayMaster extends Component {
               });
             }
           },
-          onFailure: err => { }
+          onFailure: err => {}
         });
       }
     });
@@ -586,26 +592,26 @@ export default class HolidayMaster extends Component {
                     id="HolidayListGrid"
                     data-validate="HolidayListGrid"
                     columns={[
-                      {
-                        fieldName: "actions",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Actions" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <i
-                              onClick={this.deleteHoliday.bind(this, row)}
-                              className="fas fa-trash-alt"
-                            />
-                          );
-                        },
-                        others: {
-                          maxWidth: 65,
-                          resizable: false,
-                          filterable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
+                      // {
+                      //   fieldName: "actions",
+                      //   label: (
+                      //     <AlgaehLabel label={{ forceLabel: "Actions" }} />
+                      //   ),
+                      //   displayTemplate: row => {
+                      //     return (
+                      //       <i
+                      //         onClick={this.deleteHoliday.bind(this, row)}
+                      //         className="fas fa-trash-alt"
+                      //       />
+                      //     );
+                      //   },
+                      //   others: {
+                      //     maxWidth: 65,
+                      //     resizable: false,
+                      //     filterable: false,
+                      //     style: { textAlign: "center" }
+                      //   }
+                      // },
                       {
                         fieldName: "holiday_date",
                         label: (
@@ -627,25 +633,25 @@ export default class HolidayMaster extends Component {
                           />
                         )
                       },
-                      {
-                        fieldName: "holiday",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Holiday / Week Off" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.holiday === "Y"
-                                ? "Holiday"
-                                : row.weekoff === "Y"
-                                  ? "Week Off"
-                                  : "------"}
-                            </span>
-                          );
-                        }
-                      },
+                      // {
+                      //   fieldName: "holiday",
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{ forceLabel: "Holiday / Week Off" }}
+                      //     />
+                      //   ),
+                      //   displayTemplate: row => {
+                      //     return (
+                      //       <span>
+                      //         {row.holiday === "Y"
+                      //           ? "Holiday"
+                      //           : row.weekoff === "Y"
+                      //           ? "Week Off"
+                      //           : "------"}
+                      //       </span>
+                      //     );
+                      //   }
+                      // },
                       {
                         fieldName: "holiday_type",
                         label: (
@@ -657,8 +663,8 @@ export default class HolidayMaster extends Component {
                               {row.holiday_type === "RE"
                                 ? "Regular"
                                 : row.holiday_type === "RS"
-                                  ? "Restricted"
-                                  : "------"}
+                                ? "Restricted"
+                                : "------"}
                             </span>
                           );
                         }
@@ -684,6 +690,48 @@ export default class HolidayMaster extends Component {
                     keyId="hims_d_holiday_id"
                     dataSource={{
                       data: this.state.holidays
+                    }}
+                    isEditable={false}
+                    filter={true}
+                    filterable
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                  />
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div data-validate="HolidayListGrid" id="HolidayListGrid_Cntr">
+                  <AlgaehDataGrid
+                    id="HolidayListGrid"
+                    data-validate="HolidayListGrid"
+                    columns={[
+                      {
+                        fieldName: "holiday_date",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Holiday Date" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {moment(row.holiday_date).format("DD-MM-YYYY")}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "holiday_description",
+                        label: <AlgaehLabel label={{ forceLabel: "Day" }} />,
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {moment(row.holiday_date).format("dddd")}
+                            </span>
+                          );
+                        }
+                      }
+                    ]}
+                    keyId="hims_d_holiday_id"
+                    dataSource={{
+                      data: this.state.weekoffs
                     }}
                     isEditable={false}
                     filter={true}
