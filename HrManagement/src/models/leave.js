@@ -3859,7 +3859,7 @@ export default {
             strQry +
             " order by hims_f_employee_yearly_leave_id desc",
           values: [input.year, input.hospital_id],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -7802,7 +7802,7 @@ function projectedleaveCalc_BKP_2020_feb_26(input, _mysql) {
               input.leave_id,
               year
             ],
-            printQuery: true
+            printQuery: false
           })
           .then(result => {
             // mysql.releaseConnection();
@@ -7950,7 +7950,7 @@ function projectedleaveCalc(input, _mysql) {
               input.leave_id,
               year
             ],
-            printQuery: true
+            printQuery: false
           })
           .then(result => {
             // mysql.releaseConnection();
@@ -8054,8 +8054,8 @@ function yearlyLeaveProcess(inputs, req, mysql) {
             where  year=? and hospital_id=? and record_status='A'  ${yearlyEmployee};
             select hims_f_employee_monthly_leave_id,employee_id,year,leave_id from
             hims_f_employee_monthly_leave where   year=? and hospital_id=? ${strQry} ;
-            select hims_f_employee_monthly_leave_id,close_balance,employee_id,year,leave_id,leave_carry_forward,
-            carry_forward_percentage   from hims_f_employee_monthly_leave ML inner join  hims_d_leave L
+            select hims_f_employee_monthly_leave_id,coalesce(close_balance,0) as close_balance,employee_id,year,leave_id,leave_carry_forward,
+            coalesce(carry_forward_percentage ,0)  as carry_forward_percentage from hims_f_employee_monthly_leave ML inner join  hims_d_leave L
             on ML.leave_id=L.hims_d_leave_id
             where   year=? and hospital_id=? and  ML.processed='N' ${strQry};`,
           values: [
@@ -8068,7 +8068,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
             parseInt(input.year) - 1,
             input.hospital_id
           ],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           const AllEmployees = result[0];
@@ -8170,6 +8170,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
                         parseFloat(carry_fwd_leav.carry_forward_percentage)) /
                         parseFloat(100)
                     );
+
                     m["close_balance"] = Math.round(
                       parseFloat(oldclosingBal) + parseFloat(m["eligible_days"])
                     );
@@ -8244,7 +8245,9 @@ function yearlyLeaveProcess(inputs, req, mysql) {
               update_old_records.forEach(item => {
                 updateQry += `update hims_f_employee_monthly_leave set close_balance= close_balance-${item.reduce_close_Balance},processed='Y',carry_forward_done='${item.carry_forward_done}',carry_forward_leave=${item.carry_forward_leave} where year=${item.year} and leave_id=${item.leave_id} and employee_id=${item.employee_id};\n `;
               });
+              // const utilities = new algaehUtilities();
 
+              // utilities.logger().log(" updateQry:", updateQry);
               //insertion procces
               new Promise((resolve, reject) => {
                 try {
@@ -8301,9 +8304,10 @@ function yearlyLeaveProcess(inputs, req, mysql) {
                       hospital_id: input.hospital_id
                     },
                     bulkInsertOrUpdate: true,
-                    printQuery: true
+                    printQuery: false
                   })
                   .then(monthResult => {
+                    console.log("monthly:", monthResult);
                     if (updateQry == "") {
                       resolve(monthResult);
                     } else {
@@ -8987,7 +8991,7 @@ function validateLeaveApplictn(inputs, my_sql, req) {
                       next_year_to_date
                     ],
 
-                    printQuery: true
+                    printQuery: false
                   })
                   .then(Result => {
                     input["year"] = to_year;
@@ -9473,7 +9477,7 @@ function calculateNoLeaveDays_BKP_2020_feb_26(inputs, _mysql) {
                 hospital_id
               ],
 
-              printQuery: true
+              printQuery: false
             })
             .then(result => {
               allLeaves = result[0];
@@ -10210,7 +10214,7 @@ function calculateNoLeaveDays(inputs, _mysql) {
                 hospital_id
               ],
 
-              printQuery: true
+              printQuery: false
             })
             .then(result => {
               allLeaves = result[0];
