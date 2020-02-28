@@ -3850,8 +3850,7 @@ export default {
     let input = req.query;
     _mysql
       .executeQuery({
-        query:
-          "select attendance_starts,at_st_date,at_end_date ,attendance_type from hims_d_hrms_options;"
+        query: "select   attendance_type from hims_d_hrms_options;"
       })
       .then(options => {
         if (options.length > 0) {
@@ -3864,7 +3863,7 @@ export default {
               query: `select hims_f_daily_attendance_id,employee_id,hospital_id,sub_department_id,year,month,attendance_date,\
           total_days,${presntdayStr} display_present_days,absent_days,total_work_days,weekoff_days,holidays,\
           paid_leave,unpaid_leave,hours,minutes,total_hours,working_hours,shortage_hours,shortage_minutes,\
-          ot_work_hours,ot_minutes,ot_weekoff_hours,ot_weekoff_minutes,ot_holiday_hours,ot_holiday_minutes,project_id\
+          ot_work_hours,ot_minutes,ot_weekoff_hours,ot_weekoff_minutes,ot_holiday_hours,ot_holiday_minutes,pending_unpaid_leave,project_id\
            from hims_f_daily_attendance  where hospital_id=? and year=? and month=? and employee_id=?;`,
               values: [
                 input.hospital_id,
@@ -9094,7 +9093,7 @@ function processBulkAtt_with_cutoff(data) {
           select hims_f_pending_leave_id, hims_f_leave_application_id,P.employee_id,
           leave_application_code,from_leave_session,case L.leave_type when 'P' then 'PL' when 
           'U' then 'UL'  end as leave_type,L.leave_description,from_date,to_leave_session,to_date,
-          holiday_included,weekoff_included,total_applied_days from hims_f_pending_leave  P 
+          holiday_included,weekoff_included,total_applied_days ,leave_category from hims_f_pending_leave  P 
           inner join hims_f_leave_application LA  on P.leave_application_id=LA.hims_f_leave_application_id
           inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id
           where P.year=? and  P.month=?;
@@ -9102,7 +9101,7 @@ function processBulkAtt_with_cutoff(data) {
           select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
           case L.leave_type when 'P' then 'PL' when 'U' then 'UL'  end as leave_type,
           L.leave_description,from_date,to_leave_session,to_date,holiday_included,
-          weekoff_included,total_applied_days from hims_f_leave_application LA 
+          weekoff_included,total_applied_days ,leave_category from hims_f_leave_application LA 
           inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
           inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id ${deptStr}
           where E.hospital_id=? and LA.status='APR' ${strQry} and  
@@ -9142,7 +9141,7 @@ function processBulkAtt_with_cutoff(data) {
                   cutoff_next_day,
                   month_end
                 ],
-                printQuery: false
+                printQuery: true
               })
               .then(result => {
                 const prev_month_timesheet = result[0];
@@ -9374,6 +9373,7 @@ function processBulkAtt_with_cutoff(data) {
                       const empUnpaidPending = pending_leaves.filter(f => {
                         return f.employee_id == AttenResult[0].employee_id;
                       });
+
                       const pendingLen = empUnpaidPending.length;
 
                       const holidayLen = empHolidayweekoff.length;
@@ -9692,10 +9692,13 @@ function processBulkAtt_with_cutoff(data) {
                             leave.holiday_included == "Y") ||
                           (leave != null &&
                             Day.status == "WO" &&
-                            leave.weekoff_included == "Y")
+                            leave.weekoff_included == "Y") ||
+                          (leave != null &&
+                            Day.status != "WO" &&
+                            Day.status != "HO")
                         ) {
-                          let present_days,
-                            display_present_days = 0;
+                          let present_days = 0;
+                          let display_present_days = 0;
 
                           if (leave.status == "HPL" || leave.status == "HUL") {
                             present_days = "0.5";
@@ -9781,7 +9784,7 @@ function processBulkAtt_with_cutoff(data) {
                             absent_days: 0,
                             total_work_days: 1,
                             weekoff_days: 0,
-                            holidays: 0,
+                            holidays: 1,
                             paid_leave: 0,
                             unpaid_leave: 0,
                             pending_unpaid_leave: 0,
@@ -9831,8 +9834,8 @@ function processBulkAtt_with_cutoff(data) {
                             present_days: 0,
                             display_present_days: 1,
                             absent_days: 0,
-                            total_work_days: 1,
-                            weekoff_days: 0,
+                            total_work_days: 0,
+                            weekoff_days: 1,
                             holidays: 0,
                             paid_leave: 0,
                             unpaid_leave: 0,
@@ -10001,7 +10004,7 @@ function processBulkAtt_with_cutoff(data) {
                 year=values(year),month=values(month),attendance_date=values(attendance_date),total_days=values(total_days),\
                 present_days=values(present_days), display_present_days= values(display_present_days),absent_days=values(absent_days),total_work_days=values(total_work_days),\
                 weekoff_days=values(weekoff_days),holidays=values(holidays),paid_leave=values(paid_leave),\
-                unpaid_leave=values(unpaid_leave),pending_unpaid_leave=(pending_unpaid_leave),anual_leave=values(anual_leave), hours=values(hours),minutes=values(minutes),total_hours=values(total_hours),\
+                unpaid_leave=values(unpaid_leave),pending_unpaid_leave=values(pending_unpaid_leave),anual_leave=values(anual_leave), hours=values(hours),minutes=values(minutes),total_hours=values(total_hours),\
                 working_hours=values(working_hours), shortage_hours=values(shortage_hours), shortage_minutes=values(shortage_minutes),\
                 ot_work_hours=values(ot_work_hours), ot_minutes=values(ot_minutes),ot_weekoff_hours=values(ot_weekoff_hours),ot_weekoff_minutes=values(ot_weekoff_minutes),\
                 ot_holiday_hours=values(ot_holiday_hours),ot_holiday_minutes=values(ot_holiday_minutes),project_id=values(project_id)",

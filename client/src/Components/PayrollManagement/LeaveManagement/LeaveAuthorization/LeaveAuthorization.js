@@ -171,7 +171,7 @@ export default class LeaveAuthorization extends Component {
         hospital_id: this.state.hospital_id,
         auth_level:
           this.state.auth_level !== undefined
-            ? this.state.auth_level + 1
+            ? this.state.auth_level
             : this.state.auth_level,
         employee_id: this.state.hims_d_employee_id,
         leave_status: this.state.leave_status,

@@ -511,8 +511,8 @@ export default class NewMonthlyAttendance extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {row.prev_month_ot_hr
-                            ? row.prev_month_ot_hr + " Hrs"
+                          {row.prev_month_week_off_ot
+                            ? row.prev_month_week_off_ot + " Hrs"
                             : "00:00 Hrs"}
                         </span>
                       );
@@ -528,8 +528,8 @@ export default class NewMonthlyAttendance extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {row.prev_month_ot_hr
-                            ? row.prev_month_ot_hr + " Hrs"
+                          {row.prev_month_holiday_ot
+                            ? row.prev_month_holiday_ot + " Hrs"
                             : "00:00 Hrs"}
                         </span>
                       );
