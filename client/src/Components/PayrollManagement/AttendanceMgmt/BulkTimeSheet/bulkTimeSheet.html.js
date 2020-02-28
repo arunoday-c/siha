@@ -297,7 +297,7 @@ function TableCells(props) {
   }, []);
 
   return (
-    <td {...editable}>
+    <td {...editable} className={status}>
       <small>{status}</small>
       <span>{worked_hours}</span>
       <small>{abbreviation}</small>
