@@ -39,30 +39,30 @@ startServer () {
   startServer "./AlgaehReporting" "report_server"
   startServer "./Sockets" "sockets"
 
-  # HRMS MOdules #
+  # HRMS Modules #
   startServer "./HrManagement" "hr_server"
 
-  # HIS MOdules #
+  # HIS Modules #
   #  startServer "./FrontDesk" "front_desk_server" 
   #  startServer "./Billing" "billing_server" 
   #  startServer "./MRD" "mrd_server" 
   #  startServer "./Insurance" "insurance_server" 
 
-  # Lab MOdules
+  # Lab Modules
   #  startServer "./Laboratory" "lab_server" 
 
-  # Rad MOdules #
+  # Rad Modules #
   #  startServer "./Radiology" "radiology_server" 
 
-  # Pharmacy MOdules # 
+  # Pharmacy Modules # 
   #  startServer "./Pharmacy" "pharmacy_server" 
   #  startServer "./Procurement" "procurement_server"
 
-  # Inventory MOdules # 
+  # Inventory Modules # 
   #  startServer "./Inventory" "inventory_server" 
   #  startServer "./Sales" "sales"  
 
-  # Finance MOdules # 
+  # Finance Modules # 
   #  startServer "./algaeh-finance" "finance"  
 
 

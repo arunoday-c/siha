@@ -575,14 +575,14 @@ function TreeComponent({ assetCode, title, inDrawer }) {
               </div>
               <div className="actions">
                 <button
-                  className="btn btn-primary btn-circle active"
+                  className="btn btn-default btn-circle active"
                   onClick={layoutFlip}
                   title="Flip"
                 >
                   {layout === "tree" ? (
-                    <i className="fas fa-tree"></i>
+                    <i className="fas fa-th"></i>
                   ) : (
-                    <i className="fas fa-th-large"></i>
+                    <i className="fas fa-stream"></i>
                   )}
                 </button>
                 <button
@@ -688,13 +688,26 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                           <AlgaehTable
                             className="accountTable"
                             columns={[
+                              {
+                                fieldName: "ledger_code",
+                                lable: "Ledger Code"
+                              },
                               { fieldName: "child_name", lable: "Ledger Name" },
+                              {
+                                fieldName: "arabic_child_name",
+                                lable: "Ledger Arabic"
+                              },
                               {
                                 fieldName: "closing_balance",
                                 lable: "Closing Balance"
                               }
                             ]}
                             data={gridData}
+                            // hasFooter={true}
+                            // isFiltable={true}
+                            // aggregate={field => {
+                            //   return total[field];
+                            // }}
                           />
                         </div>
                       )}
