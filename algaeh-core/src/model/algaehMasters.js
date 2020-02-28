@@ -485,7 +485,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
         role_type === "SU"
           ? ""
           : "where m.access_by <> 'SU' and m.record_status='A' and s.record_status='A'"
-        }`;
+      }`;
     } else {
       strQuery = `select m.algaeh_d_module_id,m.module_code,m.module_name,m.icons,m.display_order,m.other_language,
       s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
@@ -557,7 +557,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
 
         const records = _.chain(result)
           .groupBy(g => g.algaeh_d_module_id)
-          .map(function (detail, key) {
+          .map(function(detail, key) {
             const first = _.head(detail);
             return {
               module_id: key,
@@ -1200,7 +1200,7 @@ let getAlgaehScreens = (req, res, next) => {
       if (req.query.module_id != undefined && req.query.module_id != null) {
         module_id = `${wherecondition === "" ? " where " : ""} module_id=${
           req.query.module_id
-          } `;
+        } `;
       }
       _mysql
         .executeQuery({
@@ -2157,7 +2157,7 @@ let assignScreens = (req, res, next) => {
                     " INSERT IGNORE INTO `algaeh_m_screen_role_privilage_mapping` (module_role_map_id, screen_id, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?); ",
                     [
                       input.update_screens[i][
-                      "algaeh_m_module_role_privilage_mapping_id"
+                        "algaeh_m_module_role_privilage_mapping_id"
                       ],
                       input.update_screens[i]["insert_screens"][k],
                       req.userIdentity.algaeh_d_app_user_id,
@@ -2849,12 +2849,12 @@ const getScreensWithComponents = (req, res, next) => {
                       extraPropsList:
                         extra_props !== null && extra_props !== ""
                           ? extra_props.split(",").map((m, index) => {
-                            return {
-                              label: m,
-                              value: index,
-                              checked: false
-                            };
-                          })
+                              return {
+                                label: m,
+                                value: index,
+                                checked: false
+                              };
+                            })
                           : []
                     };
                   })
@@ -2920,13 +2920,13 @@ const addScreensAndComponents = (req, res, next) => {
 
     let module_role_map_id = input.algaeh_m_module_role_privilage_mapping_id;
 
-    console.log("input.checked", input.checked);
     if (input.checked == false) {
       _mysql
         .executeQuery({
           query: `delete from algaeh_m_module_role_privilage_mapping where 
         algaeh_m_module_role_privilage_mapping_id=?`,
-          values: [input.algaeh_m_module_role_privilage_mapping_id]
+          values: [input.algaeh_m_module_role_privilage_mapping_id],
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -2938,7 +2938,7 @@ const addScreensAndComponents = (req, res, next) => {
           next(error);
         });
     } else {
-      console.log("input.checked", input.checked);
+      // console.log("input.checked", input.checked);
       _mysql
         .executeQueryWithTransaction({
           query:
@@ -2951,11 +2951,10 @@ const addScreensAndComponents = (req, res, next) => {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date()
-          ],
-          printQuery: true
+          ]
+          // printQuery: true
         })
         .then(result => {
-          console.log("result.insertId", result);
           if (result.insertId > 0) {
             module_role_map_id = result.insertId;
           }
@@ -2994,7 +2993,6 @@ const addScreensAndComponents = (req, res, next) => {
               );
             }
           });
-
           const qryStr = `delete from algaeh_m_screen_role_privilage_mapping where 
           algaeh_m_screen_role_privilage_mapping_id  in (${deleteScreenList}); 
           delete from algaeh_m_component_screen_privilage_mapping where 
@@ -3008,8 +3006,6 @@ const addScreensAndComponents = (req, res, next) => {
             "updated_by",
             "updated_date"
           ];
-
-          console.log("screenList", screenList);
 
           _mysql
             .executeQueryWithTransaction({
@@ -3399,7 +3395,7 @@ const getAllAssignedScrens = (req, res, next) => {
   try {
     _mysql
       .executeQuery({
-        query: `select s.algaeh_app_screens_id,s.screen_code,s.screen_name,
+        query: `select distinct s.algaeh_app_screens_id,s.screen_code,s.screen_name,
         default_land_screen_id
          from algaeh_m_screen_role_privilage_mapping as sr inner join 
         algaeh_d_app_screens as s on sr.screen_id = 

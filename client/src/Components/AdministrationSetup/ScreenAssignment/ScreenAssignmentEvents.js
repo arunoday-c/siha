@@ -472,7 +472,7 @@ function getModuleScreenComponent($this, module_id) {
 }
 
 function getAllAssignedScreen($this, role_id) {
-  //getAllAssignedScrens
+  console.log("this", $this);
   algaehApiCall({
     uri: "/algaehMasters/getAllAssignedScrens",
     method: "GET",
@@ -608,7 +608,9 @@ function getRoleActiveModules($this, role_id, module_id) {
                     m.algaeh_d_app_component_id ===
                     screen.algaeh_d_app_component_id
                 );
-                const indexS = ScreenList[index]["componentList"].indexOf(screen);
+                const indexS = ScreenList[index]["componentList"].indexOf(
+                  screen
+                );
                 if (_findComponent !== undefined) {
                   ScreenList[index]["componentList"][indexS] = {
                     ...ScreenList[index]["componentList"][indexS],
@@ -626,7 +628,9 @@ function getRoleActiveModules($this, role_id, module_id) {
             } else {
               if (ScreenList[index]["componentList"].length > 0) {
                 ScreenList[index]["componentList"].map(screen => {
-                  const indexS = ScreenList[index]["componentList"].indexOf(screen);
+                  const indexS = ScreenList[index]["componentList"].indexOf(
+                    screen
+                  );
 
                   ScreenList[index]["componentList"][indexS] = {
                     ...ScreenList[index]["componentList"][indexS],
