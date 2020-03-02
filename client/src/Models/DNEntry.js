@@ -55,6 +55,7 @@ export default {
       vendor_name: null,
       itemEnter: true,
       dataFinder: false,
+      printBarcode: true
     };
     return output;
   }

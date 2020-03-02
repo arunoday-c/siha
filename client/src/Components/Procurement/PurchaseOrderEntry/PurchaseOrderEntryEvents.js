@@ -46,7 +46,6 @@ const vendortexthandle = ($this, e) => {
     [name]: value,
     vendor_name: e.selected.vendor_name,
     payment_terms: e.selected.payment_terms,
-    tax_percentage: e.selected.vat_percentage,
     ReqData: ReqData
   });
 };

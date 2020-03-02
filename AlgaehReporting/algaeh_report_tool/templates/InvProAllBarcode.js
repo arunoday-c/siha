@@ -7,17 +7,20 @@ const executePDF = function executePDFMethod(options) {
   return new Promise(function (resolve, reject) {
     try {
       const { crypto } = input;
-      const header = options.result[0];
+      const header = options.result;
       let otherObj = [];
 
-      const quantity = parseFloat(header.quantity);
-      for (let i = 0; i < quantity; i++) {
-        const s_price = options.currencyFormat(header.sales_price, crypto);
-        otherObj.push({
-          sales_price: s_price,
-          item_description: header.item_description,
-          print_barcode: header.barcode
-        });
+      console.log("header", header)
+      for (let j = 0; j < header.length; j++) {
+        const quantity = parseFloat(header[j].quantity);
+        for (let i = 0; i < quantity; i++) {
+          const s_price = options.currencyFormat(header[j].sales_price, crypto);
+          otherObj.push({
+            sales_price: s_price,
+            item_description: header[j].item_description,
+            print_barcode: header[j].barcode
+          });
+        }
       }
       const result = {
         header: otherObj

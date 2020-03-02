@@ -241,21 +241,11 @@ const onchhangegriddiscount = ($this, row, e) => {
         type: "warning"
       });
     } else {
-      extended_price = parseFloat(row.unit_price) * parseFloat(value);
-      discount_amount = (extended_price * discount_percentage) / 100;
+      extended_price = (parseFloat(row.unit_price) * parseFloat(value)).toFixed($this.state.decimal_places);
+      discount_amount = ((extended_price * discount_percentage) / 100).toFixed($this.state.decimal_places);
 
-      tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
-      extended_cost = extended_price - discount_amount;
-
-      extended_price = parseFloat(
-        GetAmountFormart(extended_price, {
-          appendSymbol: false
-        })
-      );
-      discount_amount = GetAmountFormart(discount_amount, {
-        appendSymbol: false
-      });
-      tax_amount = GetAmountFormart(tax_amount, { appendSymbol: false });
+      extended_cost = (parseFloat(extended_price) - parseFloat(discount_amount)).toFixed($this.state.decimal_places);
+      tax_amount = ((parseFloat(extended_cost) * parseFloat(row.tax_percentage)) / 100).toFixed($this.state.decimal_places);
 
       row["quantity_outstanding"] =
         row.po_quantity - row.quantity_recieved_todate - parseFloat(value);
@@ -351,6 +341,8 @@ const changeDateFormat = date => {
 };
 
 const printBarcode = ($this, row, e) => {
+
+
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -361,7 +353,12 @@ const printBarcode = ($this, row, e) => {
     others: { responseType: "blob" },
     data: {
       report: {
-        reportName: "ProcurementBarcode",
+        others: {
+          width: "50mm",
+          height: "20mm",
+          showHeaderFooter: false
+        },
+        reportName: $this.state.dn_from === "INV" ? "InvProcurementBarcode" : "ProcurementBarcode",
         reportParams: [
           {
             name: "hims_f_procurement_dn_batches_id",
@@ -384,6 +381,40 @@ const printBarcode = ($this, row, e) => {
       myWindow.document.title = "Item Barcode";
     }
   });
+
+  // algaehApiCall({
+  //   uri: "/report",
+  //   method: "GET",
+  //   module: "reports",
+  //   headers: {
+  //     Accept: "blob"
+  //   },
+  //   others: { responseType: "blob" },
+  //   data: {
+  //     report: {
+  //       reportName: "ProcurementBarcode",
+  //       reportParams: [
+  //         {
+  //           name: "hims_f_procurement_dn_batches_id",
+  //           value: row.hims_f_procurement_dn_batches_id
+  //         }
+  //       ],
+  //       outputFileType: "PDF"
+  //     }
+  //   },
+  //   onSuccess: res => {
+  //     const url = URL.createObjectURL(res.data);
+  //     let myWindow = window.open(
+  //       "{{ product.metafields.google.custom_label_0 }}",
+  //       "_blank"
+  //     );
+
+  //     myWindow.document.write(
+  //       "<iframe src= '" + url + "' width='100%' height='100%' />"
+  //     );
+  //     myWindow.document.title = "Item Barcode";
+  //   }
+  // });
 };
 
 const onChangeTextEventHandaler = ($this, context, e) => {
@@ -516,14 +547,10 @@ const OnChangeDeliveryQty = ($this, context, e) => {
 };
 
 const AddtoList = ($this, context) => {
-  let dn_entry_detail = extend([], $this.state.dn_entry_detail);
-  let _dn_entry_detail = extend([], $this.state.dn_entry_detail);
+  debugger
 
   let item_details = extend({}, $this.state.item_details);
-  let _item_details = extend({}, $this.state.item_details);
-  let dn_item_details = extend({}, $this.state.item_details);
 
-  let _po_entry_detail = $this.state.po_entry_detail;
 
   if (
     (parseFloat($this.state.dn_quantity) === 0 ||
@@ -563,6 +590,38 @@ const AddtoList = ($this, context) => {
       type: "warning"
     });
   } else {
+
+    let extended_price =
+      (parseFloat(item_details.unit_price) * parseFloat(item_details.dn_quantity)).toFixed($this.state.decimal_places);
+
+    let discount_amount =
+      ((parseFloat(extended_price) * parseFloat(item_details.discount_percentage)) / 100).toFixed($this.state.decimal_places);
+
+    let extended_cost = parseFloat(extended_price) - parseFloat(discount_amount);
+    let tax_amount =
+      ((parseFloat(extended_cost) * parseFloat(item_details.tax_percentage)) / 100).toFixed($this.state.decimal_places);
+
+    item_details["extended_price"] = parseFloat(extended_price);
+    item_details["extended_cost"] = parseFloat(extended_cost);
+    item_details["unit_cost"] = (
+      parseFloat(extended_cost) / (parseFloat(item_details.dn_quantity) + parseFloat(item_details.free_qty))
+    ).toFixed($this.state.decimal_places);
+
+    item_details["tax_amount"] = parseFloat(tax_amount);
+    item_details["discount_amount"] = parseFloat(discount_amount);
+    item_details["total_amount"] =
+      parseFloat(tax_amount) + parseFloat(extended_cost);
+    item_details["net_extended_cost"] = parseFloat(extended_cost);
+
+    let dn_entry_detail = extend([], $this.state.dn_entry_detail);
+    let _dn_entry_detail = extend([], $this.state.dn_entry_detail);
+
+    // let item_details = extend({}, $this.state.item_details);
+    let _item_details = extend({}, item_details);
+    let dn_item_details = extend({}, item_details);
+
+    let _po_entry_detail = $this.state.po_entry_detail;
+
     _dn_entry_detail.push(_item_details);
     let sub_total = Enumerable.from(_dn_entry_detail).sum(s =>
       parseFloat(s.extended_price)
@@ -626,7 +685,7 @@ const AddtoList = ($this, context) => {
     dn_item_details.total_amount = 0;
     dn_item_details.net_extended_cost = 0;
 
-    
+
     $this.setState({
       dn_entry_detail: dn_entry_detail,
       item_details: dn_item_details,
@@ -654,6 +713,7 @@ const AddtoList = ($this, context) => {
       total_tax: total_tax,
       detail_discount: detail_discount,
       free_qty: null,
+      discount_amount: null,
       saveEnable: false
     });
   }
@@ -706,6 +766,52 @@ const dateValidate = ($this, context, value, event) => {
   }
 };
 
+
+const discounthandle = ($this, context, ctrl, e) => {
+  e = e || ctrl;
+
+  let item_details = extend({}, $this.state.item_details);
+
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  if (parseFloat(value) > 100) {
+    swalMessage({
+      title: "Discount % cannot be greater than 100.",
+      type: "warning"
+    });
+    $this.setState({
+      [name]: 0
+    });
+    return
+  }
+
+  item_details[name] = value === "" ? "" : value;
+
+  $this.setState({
+    item_details: item_details,
+    [name]: value
+  });
+
+  if (context !== null) {
+    context.updateState({
+      item_details: item_details,
+      [name]: value
+    });
+  }
+};
+
+
+const AssignData = $this => {
+  let item_details = extend({}, $this.state.item_details);
+  if ($this.state.discount_percentage === "") {
+    item_details.discount_percentage = 0
+    $this.setState({
+      item_details: item_details
+    });
+  }
+};
+
 export {
   deleteDNDetail,
   updateDNDetail,
@@ -725,5 +831,7 @@ export {
   OnChangeDeliveryQty,
   AddtoList,
   numberEventHandaler,
-  dateValidate
+  dateValidate,
+  discounthandle,
+  AssignData
 };

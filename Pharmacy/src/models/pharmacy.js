@@ -621,7 +621,8 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select * FROM hims_d_item_master where record_status='A'" +
+            "select IM.*, S.vat_percent FROM hims_d_item_master IM inner join hims_d_services S on S.hims_d_services_id = IM.service_id \
+            where IM.record_status='A'" +
             _strQry +
             " order by hims_d_item_master_id desc;",
           values: intValues,

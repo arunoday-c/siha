@@ -12,6 +12,7 @@ import ItemMaster from "./ItemMaster/ItemMaster";
 import { AlgaehActions } from "../../actions/algaehActions";
 // import { getItems, EditItemMaster } from "./ItemSetupEvent";
 import ItemSetupEvent from "./ItemSetupEvent";
+import { MainContext } from "algaeh-react-components/context";
 
 class ItemSetup extends Component {
   constructor(props) {
@@ -19,11 +20,18 @@ class ItemSetup extends Component {
     this.state = {
       isOpen: false,
       itemPop: {},
-      addNew: true
+      addNew: true,
+      decimal_places: 0
     };
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      decimal_places: userToken.decimal_places
+    })
     this.props.getItemCategory({
       uri: "/pharmacy/getItemCategory",
       module: "pharmacy",
@@ -258,7 +266,15 @@ class ItemSetup extends Component {
                       fieldName: "standard_fee",
                       label: (
                         <AlgaehLabel label={{ fieldName: "price" }} />
-                      )
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {row.standard_fee !== null ? (parseFloat(row.standard_fee)).toFixed(this.state.decimal_places) : 0}
+                          </span>
+                        );
+                      }
+
                     },
                     {
                       fieldName: "category_id",

@@ -38,6 +38,7 @@ const discounthandle = ($this, context, ctrl, e) => {
       type: "warning"
     });
   } else {
+    debugger
     let sub_discount_percentage = 0;
     let sub_discount_amount = 0;
     let extended_cost = 0;
@@ -49,8 +50,8 @@ const discounthandle = ($this, context, ctrl, e) => {
       sub_discount_amount =
         value === ""
           ? 0
-          : (parseFloat($this.state.extended_price) * sub_discount_percentage) /
-          100;
+          : ((parseFloat($this.state.extended_price) * sub_discount_percentage) /
+            100).toFixed($this.state.decimal_places);
     } else {
       sub_discount_amount = value === "" ? "" : parseFloat(value);
       sub_discount_percentage =
@@ -59,7 +60,7 @@ const discounthandle = ($this, context, ctrl, e) => {
           : (sub_discount_amount / parseFloat($this.state.extended_price)) *
           100;
 
-      sub_discount_percentage = sub_discount_percentage.toFixed(3);
+      sub_discount_percentage = sub_discount_percentage.toFixed($this.state.decimal_places);
     }
     if (sub_discount_percentage > 100) {
       swalMessage({
@@ -71,20 +72,20 @@ const discounthandle = ($this, context, ctrl, e) => {
       });
     } else {
       extended_cost =
-        parseFloat($this.state.extended_price) - sub_discount_amount;
-      unit_cost = extended_cost / parseFloat($this.state.order_quantity);
+        (parseFloat($this.state.extended_price) - parseFloat(sub_discount_amount)).toFixed($this.state.decimal_places);
+      unit_cost = (parseFloat(extended_cost) / parseFloat($this.state.order_quantity)).toFixed($this.state.decimal_places);
 
       tax_amount =
-        (extended_cost * parseFloat($this.state.tax_percentage)) / 100;
-      total_amount = tax_amount + extended_cost;
+        ((parseFloat(extended_cost) * parseFloat($this.state.tax_percentage)) / 100).toFixed($this.state.decimal_places);
+      total_amount = (parseFloat(tax_amount) + parseFloat(extended_cost)).toFixed($this.state.decimal_places);
 
-      sub_discount_amount = GetAmountFormart(sub_discount_amount, {
-        appendSymbol: false
-      });
-      extended_cost = GetAmountFormart(extended_cost, { appendSymbol: false });
-      unit_cost = GetAmountFormart(unit_cost, { appendSymbol: false });
-      tax_amount = GetAmountFormart(tax_amount, { appendSymbol: false });
-      total_amount = GetAmountFormart(total_amount, { appendSymbol: false });
+      // sub_discount_amount = GetAmountFormart(sub_discount_amount, {
+      //   appendSymbol: false
+      // });
+      // extended_cost = GetAmountFormart(extended_cost, { appendSymbol: false });
+      // unit_cost = GetAmountFormart(unit_cost, { appendSymbol: false });
+      // tax_amount = GetAmountFormart(tax_amount, { appendSymbol: false });
+      // total_amount = GetAmountFormart(total_amount, { appendSymbol: false });
 
       $this.setState({
         sub_discount_percentage: sub_discount_percentage,
@@ -185,7 +186,7 @@ const unitpricenumberchangeTexts = ($this, context, e) => {
     let total_amount = tax_amount + extended_price;
 
     $this.setState({
-      [name]: parseFloat(value).toFixed(6),
+      [name]: parseFloat(value).toFixed($this.state.decimal_places),
       extended_price: extended_price,
       extended_cost: extended_price,
       net_extended_cost: extended_price,
@@ -197,7 +198,7 @@ const unitpricenumberchangeTexts = ($this, context, e) => {
     texthandlerInterval = setInterval(() => {
       if (context !== undefined) {
         context.updateState({
-          [name]: parseFloat(value).toFixed(6),
+          [name]: parseFloat(value).toFixed($this.state.decimal_places),
           extended_price: extended_price,
           extended_cost: extended_price,
           net_extended_cost: extended_price,
@@ -227,23 +228,26 @@ const itemchangeText = ($this, context, e) => {
           pharmacy_uom_id: e.selected.purchase_uom_id,
           phar_item_group: e.selected.group_id,
           unit_price:
-            e.selected.purchase_cost === null
+            e.selected.sales_price === null
               ? 0
-              : parseFloat(e.selected.purchase_cost).toFixed(6),
+              : parseFloat(e.selected.sales_price).toFixed($this.state.decimal_places),
 
-          addItemButton: false
+          addItemButton: false,
+          tax_percentage: e.selected.vat_percent
         });
 
+        debugger
         if (context !== undefined) {
           context.updateState({
             [name]: value,
             phar_item_category: e.selected.category_id,
             pharmacy_uom_id: e.selected.purchase_uom_id,
             phar_item_group: e.selected.group_id,
+            tax_percentage: e.selected.vat_percent,
             unit_price:
               e.selected.purchase_cost === null
                 ? 0
-                : parseFloat(e.selected.purchase_cost).toFixed(6),
+                : parseFloat(e.selected.sales_price).toFixed($this.state.decimal_places),
 
             addItemButton: false,
             order_quantity: 0,
@@ -262,7 +266,7 @@ const itemchangeText = ($this, context, e) => {
           unit_price:
             e.selected.purchase_cost === null
               ? 0
-              : parseFloat(e.selected.purchase_cost).toFixed(6),
+              : parseFloat(e.selected.purchase_cost).toFixed($this.state.decimal_places),
 
           addItemButton: false
         });
@@ -276,7 +280,7 @@ const itemchangeText = ($this, context, e) => {
             unit_price:
               e.selected.purchase_cost === null
                 ? 0
-                : parseFloat(e.selected.purchase_cost).toFixed(6),
+                : parseFloat(e.selected.purchase_cost).toFixed($this.state.decimal_places),
 
             addItemButton: false,
             order_quantity: 0,
@@ -327,6 +331,7 @@ const AddItems = ($this, context) => {
       type: "warning"
     });
   } else {
+    debugger
     let ItemInput = {
       completed: "N",
       phar_item_category: $this.state.phar_item_category,
@@ -770,7 +775,7 @@ const onchhangegriddiscount = ($this, row, e) => {
       sub_discount_amount === null
         ? 0
         : (sub_discount_amount / parseFloat(extended_price)) * 100;
-    sub_discount_percentage = sub_discount_percentage.toFixed(3);
+    sub_discount_percentage = sub_discount_percentage.toFixed($this.state.decimal_places);
 
     if (parseFloat(discount_amount) > parseFloat(extended_price)) {
       swalMessage({
@@ -794,25 +799,21 @@ const onchhangegriddiscount = ($this, row, e) => {
 
   //
 
-  extended_cost = parseFloat(extended_price) - parseFloat(discount_amount);
+  extended_cost = (parseFloat(extended_price) - parseFloat(discount_amount)).toFixed($this.state.decimal_places);
   row["unit_cost"] =
     $this.state.hims_f_procurement_po_header_id !== null
-      ? extended_cost / parseFloat(row.authorize_quantity)
-      : extended_cost / parseFloat(row.total_quantity);
+      ? parseFloat(extended_cost) / parseFloat(row.authorize_quantity)
+      : parseFloat(extended_cost) / parseFloat(row.total_quantity);
 
-  tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
-  tax_amount = GetAmountFormart(tax_amount, { appendSymbol: false });
-  row["extended_cost"] = GetAmountFormart(extended_cost, {
-    appendSymbol: false
-  });
-  row["tax_amount"] = (extended_cost * parseFloat(row.tax_percentage)) / 100;
+  tax_amount = ((parseFloat(extended_cost) * parseFloat(row.tax_percentage)) / 100).toFixed($this.state.decimal_places);
+
+  row["extended_cost"] = extended_cost;
+  row["tax_amount"] = (parseFloat(extended_cost) * parseFloat(row.tax_percentage)) / 100;
   row["total_amount"] = parseFloat(tax_amount) + parseFloat(extended_cost);
 
   row["sub_discount_percentage"] = sub_discount_percentage;
   row["sub_discount_amount"] = sub_discount_amount;
-  row["net_extended_cost"] = GetAmountFormart(extended_cost, {
-    appendSymbol: false
-  });
+  row["net_extended_cost"] = extended_cost;
 
   row.update();
 };

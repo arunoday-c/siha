@@ -152,7 +152,7 @@ const AddItems = $this => {
         $this.setState({
           pharmacy_stock_detail: pharmacy_stock_detail,
 
-          location_id: null,
+          // location_id: null,
           item_category_id: null,
           item_group_id: null,
           item_id: null,
