@@ -409,6 +409,7 @@ const PostInitialStock = $this => {
 };
 
 const printBarcode = ($this, row, e) => {
+
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -419,6 +420,11 @@ const printBarcode = ($this, row, e) => {
     others: { responseType: "blob" },
     data: {
       report: {
+        others: {
+          width: "50mm",
+          height: "20mm",
+          showHeaderFooter: false
+        },
         reportName: "InventoryBarcode",
         reportParams: [
           {
@@ -442,6 +448,40 @@ const printBarcode = ($this, row, e) => {
       myWindow.document.title = "Item Barcode";
     }
   });
+
+  // algaehApiCall({
+  //   uri: "/report",
+  //   method: "GET",
+  //   module: "reports",
+  //   headers: {
+  //     Accept: "blob"
+  //   },
+  //   others: { responseType: "blob" },
+  //   data: {
+  //     report: {
+  //       reportName: "InventoryBarcode",
+  //       reportParams: [
+  //         {
+  //           name: "hims_f_inventory_stock_detail_id",
+  //           value: row.hims_f_inventory_stock_detail_id
+  //         }
+  //       ],
+  //       outputFileType: "PDF"
+  //     }
+  //   },
+  //   onSuccess: res => {
+  //     const url = URL.createObjectURL(res.data);
+  //     let myWindow = window.open(
+  //       "{{ product.metafields.google.custom_label_0 }}",
+  //       "_blank"
+  //     );
+
+  //     myWindow.document.write(
+  //       "<iframe src= '" + url + "' width='100%' height='100%' />"
+  //     );
+  //     myWindow.document.title = "Item Barcode";
+  //   }
+  // });
 };
 const salesPriceEvent = ($this, ctrl, e) => {
   e = e || ctrl;

@@ -228,9 +228,9 @@ const itemchangeText = ($this, context, e) => {
           pharmacy_uom_id: e.selected.purchase_uom_id,
           phar_item_group: e.selected.group_id,
           unit_price:
-            e.selected.sales_price === null
+            e.selected.purchase_cost === null
               ? 0
-              : parseFloat(e.selected.sales_price).toFixed($this.state.decimal_places),
+              : parseFloat(e.selected.purchase_cost).toFixed($this.state.decimal_places),
 
           addItemButton: false,
           tax_percentage: e.selected.vat_percent
@@ -247,7 +247,7 @@ const itemchangeText = ($this, context, e) => {
             unit_price:
               e.selected.purchase_cost === null
                 ? 0
-                : parseFloat(e.selected.sales_price).toFixed($this.state.decimal_places),
+                : parseFloat(e.selected.purchase_cost).toFixed($this.state.decimal_places),
 
             addItemButton: false,
             order_quantity: 0,

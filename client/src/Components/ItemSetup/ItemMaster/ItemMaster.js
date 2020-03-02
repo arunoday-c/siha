@@ -119,10 +119,10 @@ class ItemMaster extends Component {
                   <div className="row">
                     {/* Patient code */}
                     <AlagehFormGroup
-                      div={{ className: "col-3 form-group" }}
+                      div={{ className: "col-3 mandatory form-group" }}
                       label={{
                         fieldName: "item_code",
-                        // isImp: true
+                        isImp: true
                       }}
                       textBox={{
                         className: "txt-fld",
@@ -740,7 +740,7 @@ class ItemMaster extends Component {
                       }}
                     />*/}
 
-                    {/* <AlagehFormGroup
+                    <AlagehFormGroup
                       div={{ className: "col-4 form-group" }}
                       label={{
                         fieldName: "purchase_cost"
@@ -757,12 +757,13 @@ class ItemMaster extends Component {
                           onChange: numberEventHandaler.bind(this, this)
                         }
                       }}
-                    /> */}
+                    />
 
                     <AlagehFormGroup
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
-                        fieldName: "price"
+                        fieldName: "price",
+                        isImp: true
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
