@@ -296,6 +296,7 @@ class InitialStock extends Component {
                               <h4 className="title">
                                 {result.item_description}
                               </h4>
+                              <small>{result.item_code}</small>
                               <small>{result.generic_name}</small>
                               <small>{result.stock_uom_desc}</small>
                             </div>

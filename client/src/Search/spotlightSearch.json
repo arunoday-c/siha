@@ -773,6 +773,10 @@
       {
         "fieldName": "generic_name",
         "label": "Generic Name"
+      },
+      {
+        "fieldName": "item_code",
+        "label": "Item Code"
       }
     ]
   },
