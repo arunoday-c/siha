@@ -199,7 +199,8 @@ module.exports = function(webpackEnv) {
     },
     externals: {
       react: "React",
-      "react-dom": "ReactDOM"
+      "react-dom": "ReactDOM",
+      "react-router-dom": "ReactRouterDOM"
     },
     optimization: {
       minimize: isEnvProduction,
