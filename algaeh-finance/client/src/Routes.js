@@ -14,7 +14,9 @@ const QuickSearchFinance = lazy(() =>
 const CustomerListFinance = lazy(() =>
   import("./Components/CustomerListFinance")
 );
-const CustomerPayment = lazy(() => import("./Components/CustomerPayment"));
+const CustomerPayment = lazy(() =>
+  import("./Components/CustomerListFinance/CustomerPayment")
+);
 const SupplierListFinance = lazy(() =>
   import("./Components/SupplierListFinance")
 );

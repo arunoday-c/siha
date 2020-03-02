@@ -1,20 +1,16 @@
 import React, { memo, useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import "../../infobar.scss";
-import {
-  AlgaehDataGrid,
-  AlgaehMessagePop
-} from "algaeh-react-components";
-import {
-  LoadCustomerReceivables
-} from "./event";
-export default memo(function (props) {
-  const [customer_receivables, setCustomerReceivables] = useState([]);
+import { AlgaehDataGrid, AlgaehMessagePop } from "algaeh-react-components";
+import { LoadCustomerReceivables, getInvoicesForCustomer } from "./event";
+import { Button } from "antd";
 
+function CustomerList(props) {
+  const [customer_receivables, setCustomerReceivables] = useState([]);
+  const history = useHistory();
   useEffect(() => {
-    debugger
     LoadCustomerReceivables()
       .then(result => {
-        debugger
         setCustomerReceivables(result);
       })
       .catch(error => {
@@ -24,7 +20,6 @@ export default memo(function (props) {
         });
       });
   }, []);
-
 
   return (
     <div className="row">
@@ -57,20 +52,21 @@ export default memo(function (props) {
                   <h3 className="caption-subject">Customer List</h3>
                 </div>
                 <div className="actions">
-                  <button className="btn btn-primary">
-
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => {
+                      history.push("CustomerSetup");
+                    }}
+                  >
                     <i className="fas fa-plus"></i>
                   </button>
                   <button className="btn btn-default">
-
                     <i className="fas fa-print"></i>
                   </button>
                   <button className="btn btn-default">
-
                     <i className="fas fa-share-square"></i>
                   </button>
                   <button className="btn btn-default">
-
                     <i className="fas fa-cog"></i>
                   </button>
                 </div>
@@ -83,10 +79,24 @@ export default memo(function (props) {
                         title: "Customer/ Company",
                         sortable: true,
                         fieldName: "child_name",
-                        filtered: true
+                        filtered: true,
+                        displayTemplate: (text, record) => {
+                          return (
+                            <Button
+                              type="link"
+                              onClick={() =>
+                                history.push("/CustomerPayment", {
+                                  data: record
+                                })
+                              }
+                            >
+                              {text}
+                            </Button>
+                          );
+                        }
                       },
                       {
-                        title: "Opening Balance",
+                        title: "Balance",
                         sortable: true,
                         fieldName: "balance_amount",
                         others: {
@@ -115,4 +125,6 @@ export default memo(function (props) {
       </div>
     </div>
   );
-});
+}
+
+export default memo(CustomerList);

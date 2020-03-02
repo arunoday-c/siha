@@ -63,7 +63,7 @@ startServer () {
   #  startServer "./Sales" "sales"  
 
   # Finance Modules # 
-  #  startServer "./algaeh-finance" "finance"  
+   startServer "./algaeh-finance" "finance"  
 
 
 

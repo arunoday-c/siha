@@ -9,7 +9,7 @@ import CostCenterMaster from "./Components/CostCenterMaster";
 import JournalAuthorization from "./Components/JournalAuthorization";
 import QuickSearchFinance from "./Components/QuickSearchFinance";
 import CustomerListFinance from "./Components/CustomerListFinance";
-import CustomerPayment from "./Components/CustomerPayment";
+import CustomerPayment from "./Components/CustomerListFinance/CustomerPayment";
 import SupplierListFinance from "./Components/SupplierListFinance";
 import SupplierPayment from "./Components/SupplierPayment";
 import "react-sortable-tree/style.css";

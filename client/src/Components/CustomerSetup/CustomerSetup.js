@@ -39,6 +39,9 @@ class CustomerSetup extends Component {
       finance_inch_number: null,
       finance_inch_emailid: null
     };
+  }
+
+  componentDidMount() {
     this.getAllCustomers();
     this.getCountries();
   }
@@ -96,6 +99,7 @@ class CustomerSetup extends Component {
       }
     });
   }
+
   getAllCustomers() {
     algaehApiCall({
       uri: "/customer/getCustomerMaster",
@@ -282,7 +286,6 @@ class CustomerSetup extends Component {
           openPopup={this.state.openModal}
         >
           <div className="popupInner">
-            {" "}
             <div className="col-12">
               <div className="row" data-validate="CustomerDiv">
                 <div className="col-8 popLeftDiv">
@@ -893,7 +896,7 @@ class CustomerSetup extends Component {
                               : ""}
                           </span>
                         );
-                      },
+                      }
                     },
 
                     {

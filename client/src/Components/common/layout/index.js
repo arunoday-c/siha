@@ -38,6 +38,7 @@ export default function Layout({ path, noSecurityCheck, children }) {
     }
   }, []);
   function checkHasAccessToPage() {
+    debugger;
     if (noSecurityCheck === true) return true;
     if (selectedMenu === null) return false;
     if (Object.keys(selectedMenu).length === 0) {
