@@ -583,6 +583,7 @@ const getCtrlCode = ($this, docNumber, row) => {
           //   data.vendor_name = row.vendor_name;
           // }
           data.addItemButton = true;
+          data.printBarcode = false;
           $this.setState(data, () => {
             getData($this);
           });
@@ -706,6 +707,52 @@ const getData = $this => {
     });
   }
 };
+
+
+const printBulkBarcode = ($this) => {
+
+
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        others: {
+          width: "50mm",
+          height: "20mm",
+          showHeaderFooter: false
+        },
+        reportName: $this.state.dn_from === "INV" ? "InvProAllBarcode" : "PhrProAllBarcode",
+        reportParams: [
+          {
+            name: "hims_f_procurement_dn_header_id",
+            value: $this.state.hims_f_procurement_dn_header_id
+          }
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = "Item Barcode";
+    }
+  });
+
+
+};
 export {
   texthandle,
   poforhandle,
@@ -719,5 +766,6 @@ export {
   getCtrlCode,
   loctexthandle,
   getPurchaseDetails,
-  generateDeliveryNoteReceipt
+  generateDeliveryNoteReceipt,
+  printBulkBarcode
 };

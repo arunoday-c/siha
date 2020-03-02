@@ -14,7 +14,8 @@ import {
   PurchaseOrderSearch,
   getCtrlCode,
   getPurchaseDetails,
-  generateDeliveryNoteReceipt
+  generateDeliveryNoteReceipt,
+  printBulkBarcode
 } from "./DeliveryNoteEntryEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import DNEntry from "../../../Models/DNEntry";
@@ -139,17 +140,17 @@ class DeliveryNoteEntry extends Component {
           printArea={
             this.state.hims_f_inventory_consumption_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateDeliveryNoteReceipt(this.state);
-                        }
+                menuitems: [
+                  {
+                    label: "Print Receipt",
+                    events: {
+                      onClick: () => {
+                        generateDeliveryNoteReceipt(this.state);
                       }
                     }
-                  ]
-                }
+                  }
+                ]
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -209,7 +210,7 @@ class DeliveryNoteEntry extends Component {
                   />
                 </div> */}
                 <div className="col">
-                  <AlgaehLabel label={{ forceLabel: "Receipt For" }} />
+                  <AlgaehLabel label={{ forceLabel: "Delivery For" }} />
                   <h6>
                     {this.state.dn_from
                       ? this.state.dn_from === "INV"
@@ -268,6 +269,20 @@ class DeliveryNoteEntry extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Save",
+                      returnText: true
+                    }}
+                  />
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={printBulkBarcode.bind(this, this)}
+                  disabled={this.state.printBarcode}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Print All Barcode",
                       returnText: true
                     }}
                   />

@@ -53,26 +53,29 @@ export default class ERPSettings extends Component {
 
     this.PHCY_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "ONLY_PHARMACY"
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "ONLY_PHARMACY" ||
+        userToken.product_type === "HIMS_CLINICAL"
         ? true
         : false;
     this.PROC_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "ONLY_PHARMACY"
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "ONLY_PHARMACY" ||
+        userToken.product_type === "HIMS_CLINICAL"
         ? true
         : false;
     this.INVTRY_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "ONLY_PHARMACY"
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "ONLY_PHARMACY" ||
+        userToken.product_type === "HIMS_CLINICAL"
         ? true
         : false;
     this.SALES_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "ONLY_PHARMACY"
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "ONLY_PHARMACY"
         ? true
         : false;
 

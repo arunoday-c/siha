@@ -98,7 +98,7 @@ class ItemMaster extends Component {
     const userToken = this.context.userToken;
 
     this.setState({
-      hospital_id: userToken.hims_d_hospital_id
+      hospital_id: userToken.hims_d_hospital_id,
     })
   }
 
@@ -741,10 +741,9 @@ class ItemMaster extends Component {
                     />*/}
 
                     <AlagehFormGroup
-                      div={{ className: "col-4 mandatory form-group" }}
+                      div={{ className: "col-4 form-group" }}
                       label={{
-                        fieldName: "purchase_cost",
-                        isImp: true
+                        fieldName: "purchase_cost"
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
@@ -763,7 +762,8 @@ class ItemMaster extends Component {
                     <AlagehFormGroup
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
-                        fieldName: "price"
+                        fieldName: "price",
+                        isImp: true
                       }}
                       textBox={{
                         decimal: { allowNegative: false },

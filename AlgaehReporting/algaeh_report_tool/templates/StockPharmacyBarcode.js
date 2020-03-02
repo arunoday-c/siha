@@ -10,9 +10,9 @@ const executePDF = function executePDFMethod(options) {
       const header = options.result[0];
       let otherObj = [];
 
-      const quantity = parseFloat(header.quantity);
+      const quantity = parseFloat(header.qtyhand);
       for (let i = 0; i < quantity; i++) {
-        const s_price = options.currencyFormat(header.sales_price, crypto);
+        const s_price = options.currencyFormat(header.sale_price, crypto);
         otherObj.push({
           sales_price: s_price,
           item_description: header.item_description,

@@ -15,7 +15,8 @@ import {
   dateFormater,
   updateStockDetils,
   datehandle,
-  texthandle
+  texthandle,
+  printBarcode
 } from "./StockEnquiryEvents";
 import "./StockEnquiry.scss";
 import "../../../styles/site.scss";
@@ -50,6 +51,23 @@ class BatchWiseStock extends Component {
                 <AlgaehDataGrid
                   id="initial_stock"
                   columns={[
+                    {
+                      fieldName: "action",
+                      label: <AlgaehLabel label={{ forceLabel: "Print" }} />,
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            <i
+                              onClick={printBarcode.bind(this, this, row)}
+                              className="fas fa-barcode"
+                            />
+                          </span>
+                        );
+                      },
+                      others: {
+                        filterable: false
+                      }
+                    },
                     {
                       fieldName: "pharmacy_location_id",
                       label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
@@ -213,12 +231,12 @@ class BatchWiseStock extends Component {
                       },
                       others: { filterable: false }
                     },
-                    {
-                      fieldName: "barcode",
-                      label: <AlgaehLabel label={{ forceLabel: "Barcode" }} />,
-                      disabled: true,
-                      others: { filterable: false, minWidth: 150 }
-                    },
+                    // {
+                    //   fieldName: "barcode",
+                    //   label: <AlgaehLabel label={{ forceLabel: "Barcode" }} />,
+                    //   disabled: true,
+                    //   others: { filterable: false, minWidth: 150 }
+                    // },
                     {
                       fieldName: "batchno",
                       label: (

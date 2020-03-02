@@ -29,7 +29,9 @@ import {
   OnChangeDeliveryQty,
   AddtoList,
   numberEventHandaler,
-  dateValidate
+  dateValidate,
+  discounthandle,
+  AssignData
 } from "./DNItemListEvents";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import extend from "extend";
@@ -57,13 +59,13 @@ class DNItemList extends Component {
       parseFloat(item.quantity_recieved_todate);
 
     let extended_price =
-      parseFloat(item_details.unit_price) * parseFloat(dn_quantity);
+      (parseFloat(item_details.unit_price) * parseFloat(dn_quantity)).toFixed(this.state.decimal_places);
     let discount_amount =
-      (extended_price * parseFloat(item_details.discount_percentage)) / 100;
+      ((parseFloat(extended_price) * parseFloat(item_details.discount_percentage)) / 100).toFixed(this.state.decimal_places);
 
-    let extended_cost = extended_price - discount_amount;
+    let extended_cost = parseFloat(extended_price) - parseFloat(discount_amount);
     let tax_amount =
-      (extended_cost * parseFloat(item_details.tax_percentage)) / 100;
+      ((parseFloat(extended_cost) * parseFloat(item_details.tax_percentage)) / 100).toFixed(this.state.decimal_places);
 
     item_details["extended_price"] = parseFloat(extended_price);
     item_details["extended_cost"] = parseFloat(extended_cost);
@@ -80,7 +82,7 @@ class DNItemList extends Component {
 
     item_details.free_qty = 0;
     item_details.dn_quantity = dn_quantity;
-    item_details.unit_price = parseFloat(item_details.unit_price).toFixed(2);
+    item_details.unit_price = parseFloat(item_details.unit_price).toFixed(this.state.decimal_places);
     this.setState({
       selected_row_index: index,
       item_details: item_details,
@@ -135,7 +137,7 @@ class DNItemList extends Component {
           {context => (
             <div className="hims-delivery-note-entry">
               <div className="row">
-                <div className="col-4">
+                <div className="col-3">
                   <h4 style={{ marginBottom: 4 }}>Requested Items</h4>
                   <ul className="reqTransList">
                     {this.state.po_entry_detail.map((item, index) => {
@@ -195,7 +197,7 @@ class DNItemList extends Component {
                     })}
                   </ul>
                 </div>
-                <div className="col-lg-8" style={{ marginBottom: 50 }}>
+                <div className="col-lg-9" style={{ marginBottom: 50 }}>
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="row">
                       <div className="col-5">
@@ -356,11 +358,35 @@ class DNItemList extends Component {
                           }
                         }}
                       />
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Discount %"
+                        }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          value: this.state.item_details === null
+                            ? null
+                            : this.state.item_details.discount_percentage,
+                          className: "txt-fld",
+                          name: "discount_percentage",
+                          events: {
+                            onChange: discounthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled:
+                              this.state.posted === "Y"
+                                ? true
+                                : this.state.itemEnter,
+                            onBlur: AssignData.bind(this, this)
+                          }
+                        }}
+                      />
 
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Free Qty."
+                          forceLabel: "Bonus Qty."
                         }}
                         textBox={{
                           number: {
