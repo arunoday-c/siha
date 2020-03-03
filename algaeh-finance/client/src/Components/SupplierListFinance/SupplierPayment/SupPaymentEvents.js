@@ -1,4 +1,4 @@
-import { algaehApiCall } from "../../utils/algaehApiCall";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
 export function LoadVouchersToAuthorize(input) {
   input = input || {};
   return new Promise((resolve, reject) => {

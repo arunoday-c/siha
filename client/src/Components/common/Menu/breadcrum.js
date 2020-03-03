@@ -19,7 +19,9 @@ export default memo(function({
     ScreenList
   } = selectedMenu;
 
-  const selMenuDetails = userMenu.find(
+  const menuDetails = userMenu === null ? [] : userMenu;
+
+  const selMenuDetails = menuDetails.find(
     f => f.module_code === selectedMenu.module_code
   );
 
@@ -71,7 +73,7 @@ export default memo(function({
         </li>
       </ul>
 
-      {show === true ? (
+      {show === true && selMenuDetails !== undefined ? (
         <div className="dropDownList" style={{ left: `${pos}px` }}>
           <ul>
             {selMenuDetails.ScreenList.map((item, idx) => {

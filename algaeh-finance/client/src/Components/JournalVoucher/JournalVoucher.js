@@ -87,9 +87,8 @@ export default function JournalVoucher() {
         module: "finance",
         method: "GET",
         onSuccess: response => {
-          debugger
+          debugger;
           if (response.data.success === true) {
-
             setFinOptions(response.data.result[0]);
           }
         },
@@ -263,13 +262,13 @@ export default function JournalVoucher() {
       voucher_type: voucherType,
       invoice_no:
         voucherType === "payment" ||
-          voucherType === "receipt" ||
-          voucherType === "credit_note" ||
-          voucherType === "debit_note"
+        voucherType === "receipt" ||
+        voucherType === "credit_note" ||
+        voucherType === "debit_note"
           ? selInvoice
           : voucherType === "purchase" || voucherType === "sales"
-            ? invoiceNo
-            : null,
+          ? invoiceNo
+          : null,
       // voucher_no: `${voucher_no}`,
       hospital_id: hospital_id,
       cost_center_id: cost_center_id,
@@ -346,7 +345,11 @@ export default function JournalVoucher() {
           maxDate={moment().add(1, "days")}
           events={{
             onChange: momentDate => {
-              setVoucherDate(momentDate._d);
+              if (momentDate) {
+                setVoucherDate(momentDate._d);
+              } else {
+                setVoucherDate(undefined);
+              }
             }
           }}
         />
@@ -403,28 +406,28 @@ export default function JournalVoucher() {
           voucherType === "receipt" ||
           voucherType === "credit_note" ||
           voucherType === "debit_note" ? (
-              <AlgaehAutoComplete
-                div={{ className: "col-2" }}
-                label={{
-                  forceLabel: "Select Invoice No.",
-                  isImp: true
-                }}
-                selector={{
-                  value: selInvoice,
-                  dataSource: {
-                    data: invoiceData,
-                    valueField: "invoice_no",
-                    textField: "invoice_no"
-                  },
-                  onChange: selected => {
-                    setSelInvoice(selected.invoice_no);
-                  },
-                  onClear: () => {
-                    setSelInvoice("");
-                  }
-                }}
-              />
-            ) : null}
+          <AlgaehAutoComplete
+            div={{ className: "col-2" }}
+            label={{
+              forceLabel: "Select Invoice No.",
+              isImp: true
+            }}
+            selector={{
+              value: selInvoice,
+              dataSource: {
+                data: invoiceData,
+                valueField: "invoice_no",
+                textField: "invoice_no"
+              },
+              onChange: selected => {
+                setSelInvoice(selected.invoice_no);
+              },
+              onClear: () => {
+                setSelInvoice("");
+              }
+            }}
+          />
+        ) : null}
 
         <PaymentComponent
           show={show}
@@ -453,7 +456,7 @@ export default function JournalVoucher() {
           }}
         />
 
-        {finOptions.cost_center_required === "Y" ?
+        {finOptions.cost_center_required === "Y" ? (
           <AlgaehAutoComplete
             div={{ className: "col-2" }}
             label={{ forceLabel: "Select a Cost Center" }}
@@ -472,8 +475,8 @@ export default function JournalVoucher() {
                 setCostCenter(null);
               }
             }}
-          /> : null}
-
+          />
+        ) : null}
 
         {/* <CostCenter result={records_av} noborder={false} /> */}
       </div>

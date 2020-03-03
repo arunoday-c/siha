@@ -1,5 +1,6 @@
 import React, { memo, useState, useEffect } from "react";
-import { useLocation, useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
+import { Button } from "antd";
 import {
   AlgaehDataGrid,
   AlgaehMessagePop,
@@ -9,13 +10,16 @@ import {
   AlgaehFormGroup,
   AlgaehDateHandler
 } from "algaeh-react-components";
-import { getInvoicesForCustomer } from "./CusPaymentEvents";
-import { Button } from "antd";
-
+import {
+  LoadVouchersToAuthorize,
+  ApproveReject,
+  LoadVoucherDetails
+} from "./SupPaymentEvents";
+let rejectText = "";
+let finance_voucher_header_id = "";
 export default memo(function(props) {
-  const location = useLocation();
   const history = useHistory();
-
+  const location = useLocation();
   const [data, setData] = useState([]);
   const [visible, setVisibale] = useState(false);
   const [rowDetails, setRowDetails] = useState([]);
@@ -23,7 +27,7 @@ export default memo(function(props) {
   const [level, setLevel] = useState(undefined);
   const [rejectVisible, setRejectVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("P");
   const [dates, setDates] = useState(undefined);
   const paymentTemplates = [
     { key: "payment_mode", title: "Payment Mode" },
@@ -32,20 +36,8 @@ export default memo(function(props) {
   ];
 
   useEffect(() => {
-    if (location.state) {
-      const { finance_account_child_id } = location.state.data;
-      getInvoicesForCustomer(finance_account_child_id)
-        .then(res => {
-          if (res.data.success) {
-            setData(res.data.result);
-          }
-        })
-        .catch(e => {
-          AlgaehMessagePop({
-            type: "Error",
-            display: e.message
-          });
-        });
+    if (!location.state) {
+      history.goBack(); // just boilerplate will be replaced
     }
   }, [location.state]);
 
@@ -157,7 +149,7 @@ export default memo(function(props) {
                   <AlgaehDataGrid
                     columns={[
                       {
-                        key: "invoice_date",
+                        key: "",
                         title: "Date",
                         sortable: true
                       },
@@ -171,7 +163,6 @@ export default memo(function(props) {
                         title: "Description"
                       },
                       {
-                        key: "due_date",
                         title: "Due Date",
                         sortable: true
                       },
@@ -181,13 +172,11 @@ export default memo(function(props) {
                         sortable: true
                       },
                       {
-                        key: "invoice_status",
+                        key: "",
                         title: "Status",
-                        displayTemplate: text => text.toUpperCase(),
                         sortable: true
                       },
                       {
-                        key: "last_modified",
                         title: "Last Modified Date",
                         sortable: true
                       },
@@ -200,19 +189,19 @@ export default memo(function(props) {
                               onClick={() =>
                                 history.push("/JournalVoucher", {
                                   data: row,
-                                  type: "customer"
+                                  type: "supplier"
                                 })
                               }
                             >
-                              Receive Payment
+                              Send Payment
                             </Button>
                           );
                         }
                       }
                     ]}
-                    // height="40vh"
+                    height="40vh"
                     rowUnique="finance_voucher_header_id"
-                    dataSource={{ data: data || [] }}
+                    dataSource={{ data: data }}
                   ></AlgaehDataGrid>
                 </div>
               </div>

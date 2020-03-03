@@ -23,7 +23,7 @@ export default {
       net_total: 0,
       copay_amount: 0,
       patient_responsibility: 0,
-      pos_customer_type: "OP",
+      pos_customer_type: "OT",
 
       patient_name: null,
       referal_doctor: null,

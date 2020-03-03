@@ -20,7 +20,9 @@ const CustomerPayment = lazy(() =>
 const SupplierListFinance = lazy(() =>
   import("./Components/SupplierListFinance")
 );
-const SupplierPayment = lazy(() => import("./Components/SupplierPayment"));
+const SupplierPayment = lazy(() =>
+  import("./Components/SupplierListFinance/SupplierPayment")
+);
 
 const JournalAuthorization = lazy(() =>
   import("./Components/JournalAuthorization")
