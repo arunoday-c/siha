@@ -600,7 +600,8 @@ class ApplyLeave extends Component {
       uri: "/employee/get",
       module: "hrManagement",
       data: {
-        hims_d_employee_id: this.state.employee_id
+        hims_d_employee_id: this.state.employee_id,
+        hospital_id: this.state.hospital_id
       },
       method: "GET",
       onSuccess: res => {
@@ -624,7 +625,6 @@ class ApplyLeave extends Component {
   }
 
   searchSelect(data) {
-    console.log(data);
     this.setState(
       {
         employee_id: data.hims_d_employee_id,

@@ -177,8 +177,21 @@ export default memo(function(props) {
                       },
                       {
                         key: "invoice_amount",
-                        title: "Amount",
+                        title: "Invoice Amount",
                         sortable: true
+                      },
+                      {
+                        key: "settled_amount",
+                        title: "Paid Amount",
+                        sortable: true
+                      },
+                      {
+                        key: "",
+                        title: "Balance Amount",
+                        sortable: true,
+                        displayTemplate: (_, row) =>
+                          parseFloat(row["invoice_amount"]) -
+                          parseFloat(row["settled_amount"])
                       },
                       {
                         key: "invoice_status",
