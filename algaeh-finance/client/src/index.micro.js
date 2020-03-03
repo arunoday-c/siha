@@ -11,7 +11,7 @@ import QuickSearchFinance from "./Components/QuickSearchFinance";
 import CustomerListFinance from "./Components/CustomerListFinance";
 import CustomerPayment from "./Components/CustomerListFinance/CustomerPayment";
 import SupplierListFinance from "./Components/SupplierListFinance";
-import SupplierPayment from "./Components/SupplierPayment";
+import SupplierPayment from "./Components/SupplierListFinance/SupplierPayment";
 import "react-sortable-tree/style.css";
 const Pages = {
   Accounts,
