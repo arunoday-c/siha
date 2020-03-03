@@ -625,7 +625,6 @@ class ApplyLeave extends Component {
   }
 
   searchSelect(data) {
-    console.log(data, "data");
     this.setState(
       {
         employee_id: data.hims_d_employee_id,
