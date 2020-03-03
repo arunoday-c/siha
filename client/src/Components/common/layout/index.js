@@ -37,8 +37,8 @@ export default function Layout({ path, noSecurityCheck, children }) {
       });
     }
   }, []);
+
   function checkHasAccessToPage() {
-    debugger;
     if (noSecurityCheck === true) return true;
     if (selectedMenu === null) return false;
     if (Object.keys(selectedMenu).length === 0) {
@@ -61,6 +61,7 @@ export default function Layout({ path, noSecurityCheck, children }) {
       }
     }
   }
+
   return (
     <>
       {pageLoading === true ? (
@@ -74,15 +75,15 @@ export default function Layout({ path, noSecurityCheck, children }) {
             }`}
             id="hisapp"
           >
-            {checkHasAccessToPage() ? (
-              <>{children}</>
-            ) : (
+            {/* {checkHasAccessToPage() ? ( */}
+            <>{children}</>
+            {/* ) : (
               <Result
                 status="403"
                 title="403"
                 subTitle="Sorry, you are not authorized to access this page."
               />
-            )}
+            )} */}
           </main>
         </>
       ) : (

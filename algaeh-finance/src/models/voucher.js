@@ -175,8 +175,9 @@ export default {
                     .executeQueryWithTransaction({
                       query:
                         "INSERT INTO `finance_voucher_header` (payment_mode,ref_no,cheque_date,amount, payment_date, month, year,\
-                       narration, voucher_no, voucher_type,from_screen,invoice_no,posted_from)\
-                       VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                       narration, voucher_no, voucher_type,from_screen,invoice_no,posted_from,\
+                       created_by, updated_by, created_date, update_date)\
+                       VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                       values: [
                         payment_mode,
                         ref_no,
@@ -190,7 +191,11 @@ export default {
                         input.voucher_type,
                         input.from_screen,
                         input.invoice_no,
-                        "V"
+                        "V",
+                        req.userIdentity.algaeh_d_app_user_id,
+                        req.userIdentity.algaeh_d_app_user_id,
+                        new Date(),
+                        new Date()
                       ],
                       printQuery: true
                     })
