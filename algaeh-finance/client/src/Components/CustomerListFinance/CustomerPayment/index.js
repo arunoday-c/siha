@@ -9,7 +9,7 @@ import {
   AlgaehFormGroup,
   AlgaehDateHandler
 } from "algaeh-react-components";
-import { getInvoicesForCustomer } from "./PaymentEvents";
+import { getInvoicesForCustomer } from "./CusPaymentEvents";
 import { Button } from "antd";
 
 export default memo(function(props) {
@@ -157,42 +157,39 @@ export default memo(function(props) {
                   <AlgaehDataGrid
                     columns={[
                       {
-                        key: "",
+                        key: "invoice_date",
                         title: "Date",
                         sortable: true
-                        // displayTemplate: voucherCol,
                       },
                       {
                         key: "invoice_no",
                         title: "Invoice No",
                         sortable: true
-                        // displayTemplate: voucherCol,
                       },
                       {
                         key: "narration",
                         title: "Description"
                       },
                       {
+                        key: "due_date",
                         title: "Due Date",
                         sortable: true
-                        // displayTemplate: voucherCol
                       },
                       {
                         key: "invoice_amount",
                         title: "Amount",
                         sortable: true
-                        // displayTemplate: voucherCol,
                       },
                       {
-                        key: "",
+                        key: "invoice_status",
                         title: "Status",
+                        displayTemplate: text => text.toUpperCase(),
                         sortable: true
-                        // displayTemplate: voucherCol,
                       },
                       {
+                        key: "last_modified",
                         title: "Last Modified Date",
                         sortable: true
-                        // displayTemplate: voucherCol,
                       },
                       {
                         title: "Action",
@@ -201,7 +198,10 @@ export default memo(function(props) {
                             <Button
                               type="link"
                               onClick={() =>
-                                history.push("/JournalVoucher", { data: row })
+                                history.push("/JournalVoucher", {
+                                  data: row,
+                                  type: "customer"
+                                })
                               }
                             >
                               Receive Payment

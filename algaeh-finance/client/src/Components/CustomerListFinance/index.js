@@ -76,7 +76,7 @@ function CustomerList(props) {
                   <AlgaehDataGrid
                     columns={[
                       {
-                        title: "Customer/ Company",
+                        title: "Customer / Company",
                         sortable: true,
                         fieldName: "child_name",
                         filtered: true,
@@ -101,14 +101,6 @@ function CustomerList(props) {
                         fieldName: "balance_amount",
                         others: {
                           width: 200
-                        }
-                      },
-                      {
-                        title: "Action",
-                        sortable: true,
-                        fieldName: "child_name",
-                        others: {
-                          width: 250
                         }
                       }
                     ]}
