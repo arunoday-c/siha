@@ -205,7 +205,7 @@ class PosListItems extends Component {
                                   qtyhand: null,
                                   barcode: null,
                                   ItemUOM: [],
-                                  Batch_Items: null,
+                                  Batch_Items: [],
                                   addItemButton: true,
                                   item_description: null,
                                   sales_uom_id: null,
@@ -364,6 +364,15 @@ class PosListItems extends Component {
                                   : "-----------"}
                               </h6>
                             </div>
+                            {this.state.Batch_Items.length > 1 ?
+                              <div className="col">
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "More than a batch"
+                                  }}
+                                />
+                              </div> : null}
+
                           </div>
                         </div>
                         <div className="row">
