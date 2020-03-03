@@ -44,7 +44,8 @@ export default {
         case when settlement_status='S' then 'closed' 
         when settlement_status='P' and curdate()> due_date then 'over due'
         when settlement_status='P' and settled_amount<1 then 'open' 
-        when settlement_status='P' and settled_amount>0 then 'paid' end as invoice_status
+        when settlement_status='P' and settled_amount>0 then 'paid' end as invoice_status,
+        D.child_id,D.head_id      
        
         from finance_voucher_header H inner join finance_voucher_details D on 
         H.finance_voucher_header_id=D.voucher_header_id 
