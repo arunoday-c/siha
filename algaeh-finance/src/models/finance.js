@@ -2217,23 +2217,25 @@ export default {
 
           query: ` with recursive cte as (
             select finance_account_head_id,account_code,account_name,account_parent,account_level,
-            H.created_from as created_status ,sort_order ${selectStr}
+            H.created_from as created_status ,sort_order ,C.arabic_child_name ${selectStr}
             ,root_id,
-            finance_account_child_id,if (ledger_code is null,child_name, concat(child_name,' (',ledger_code,')'))as child_name,head_id,C.created_from as child_created_from
+            finance_account_child_id,if (ledger_code is null,child_name, 
+              concat(child_name,' (',ledger_code,')'))as child_name,head_id,C.created_from as child_created_from
             from finance_account_head H left join
             finance_account_child C on C.head_id=H.finance_account_head_id and  finance_account_child_id <> 1 ${whereStr}
            
             union                  
             select H.finance_account_head_id,H.account_code,H.account_name,H.account_parent,H.account_level,
-            H.created_from as created_status ,H.sort_order,H.parent_acc_id,H.root_id,
-            C.finance_account_child_id,C.arabic_child_name,if (C.ledger_code is null,C.child_name, concat(C.child_name,' (',C.ledger_code,')'))as child_name,C.head_id,C.created_from as child_created_from
-            from finance_account_head H left join
+            H.created_from as created_status ,H.sort_order,C.arabic_child_name,H.parent_acc_id,H.root_id,
+            C.finance_account_child_id,
+            if (C.ledger_code is null,C.child_name, concat(C.child_name,' (',C.ledger_code,')'))as child_name,
+            C.head_id,C.created_from as child_created_from            from finance_account_head H left join
             finance_account_child C on C.head_id=H.finance_account_head_id
             inner join cte on H.parent_acc_id = cte.finance_account_head_id   ${unionStr}
             )
             select * from cte order by account_level,sort_order;`,
 
-          printQuery: false,
+          printQuery: true,
           values: []
         })
         .then(result => {

@@ -46,7 +46,7 @@ export default {
         when settlement_status='P' and settled_amount>0 then 'paid' end as invoice_status
         from finance_voucher_header H inner join finance_voucher_details D on 
         H.finance_voucher_header_id=D.voucher_header_id 
-        and H.voucher_type='receipt' and H.invoice_no is not null   
+        and H.voucher_type='sales' and H.invoice_no is not null   
         and  D.child_id=?; `,
         values: [req.query.child_id],
         printQuery: true
