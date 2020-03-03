@@ -158,12 +158,12 @@ function Login(props) {
     });
   }
   function setSelectedMenu(records, page_to_redirect) {
+    records = records || [];
     return new Promise(resolve => {
       if (page_to_redirect === null) {
         resolve();
       } else {
         let selectedMenu = {};
-
         for (let i = 0; i < records.length; i++) {
           const { ScreenList } = records[i];
           const selected = ScreenList.find(

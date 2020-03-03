@@ -30,9 +30,9 @@ process.on("unhandledRejection", (reason, promise) => {
   logger.error("Unhandled rejection", { reason: reason, promise: promise });
 });
 
-if (process.env.NODE_ENV == "production") {
-  app.set("view cache", true);
-}
+// if (process.env.NODE_ENV == "production") {
+//   app.set("view cache", true);
+// }
 //Error Handling MiddleWare
 app.use((error, req, res, next) => {
   error.status = error.status || httpStatus.internalServer;
