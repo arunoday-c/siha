@@ -209,7 +209,7 @@ let userCheck = (req, res, next) => {
         query: `select ume.hospital_id,e.full_name,e.arabic_name,
           e.date_of_birth,e.employee_code from algaeh_d_app_user as u inner join 
           hims_m_user_employee as ume  on ume.user_id = u.algaeh_d_app_user_id
-          inner join hims_d_employee as e on e.hims_d_employee_id = ume.employee_id
+          inner join hims_d_employee as e on e.hims_d_employee_id = u.employee_id
           where UCASE(u.username)=UCASE(?) and u.record_status='A' and date(u.effective_start_date) <= date(now()) 
           and date(u.effective_end_date) >= date(now()) and e.employee_status in ('A','R') and u.locked='N' and ume.login_user='Y'; `,
         values: [userId],
