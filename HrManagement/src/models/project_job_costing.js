@@ -1299,6 +1299,63 @@ export default {
       next();
       return;
     }
+  },
+
+  //created by irfan:
+  getNoEmployeesProjectWise: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.query;
+
+    if (input.hospital_id > 0) {
+      _mysql
+        .executeQuery({
+          query: `select count(distinct employee_id) as no_employees,project_id,P.project_desc from 
+        hims_f_project_roster PR left join hims_d_project P on 
+        PR.project_id=P.hims_d_project_id where PR.hospital_id=?  group by project_id;`,
+          values: [input.hospital_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      next(new Error("Please provide valid input"));
+    }
+  },
+
+  //created by irfan:
+  getNoEmployeesDesgnationWise: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.query;
+
+    if (input.project_id > 0 && input.hospital_id > 0) {
+      _mysql
+        .executeQuery({
+          query: `select count(hims_d_employee_id) as no_emp, coalesce(D.designation,'No Designation' ) as designation
+          from hims_d_employee E left join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id
+          where hims_d_employee_id  in(SELECT distinct employee_id FROM  hims_f_project_roster
+          where project_id=? and hospital_id=?) group by E.employee_designation_id;`,
+          values: [input.project_id, input.hospital_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      next(new Error("Please provide valid input"));
+    }
   }
 };
 

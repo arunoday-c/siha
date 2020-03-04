@@ -16,7 +16,9 @@ const {
   getActivity,
   getSubActivity,
   updateActivity,
-  updateSubActivity
+  updateSubActivity,
+  getNoEmployeesProjectWise,
+  getNoEmployeesDesgnationWise
 } = project_job_costing;
 
 export default () => {
@@ -183,6 +185,27 @@ export default () => {
       });
     }
   });
+  api.get(
+    "/getNoEmployeesProjectWise",
+    getNoEmployeesProjectWise,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get(
+    "/getNoEmployeesDesgnationWise",
+    getNoEmployeesDesgnationWise,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
 
   return api;
 };
