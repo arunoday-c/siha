@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Modal } from "antd";
 // import CostCenter from "../costCenterComponent";
 import moment from "moment";
@@ -23,6 +24,7 @@ import {
 import PaymentComponent from "./PaymentComponent";
 import AccountsDrawer from "./AccountDrawer";
 import { getCookie, algaehApiCall } from "../../utils/algaehApiCall";
+import { newAlgaehApi } from "../../hooks";
 // let records_av = {};
 let dataPayment = [
   { value: "journal", label: "Journal" },
@@ -38,6 +40,7 @@ let dataPayment = [
   { value: "debit_note", label: "Debit Note" }
 ];
 export default function JournalVoucher() {
+  const location = useLocation();
   const [voucherDate, setVoucherDate] = useState(moment());
   // const [voucher_no, setVoucherNo] = useState("");
   const [voucherType, setVoucherType] = useState(undefined);
@@ -48,7 +51,7 @@ export default function JournalVoucher() {
   const [selInvoice, setSelInvoice] = useState("");
 
   const [cost_center_id, setCostCenter] = useState(null);
-  const [hospital_id, setHospitakID] = useState(null);
+  const [hospital_id, setHospitalID] = useState(null);
   const [branchData, setbranchData] = useState([]);
   const [costCenterdata, setcostCenterdata] = useState([]);
 
@@ -63,7 +66,7 @@ export default function JournalVoucher() {
   const [payment, setPayment] = useState(basePayment);
   const [loading, setLoading] = useState(false);
   const [clearLoading, setClearLoading] = useState(false);
-  const [journerList, setJournerList] = useState([
+  const baseJournalList = [
     {
       child_id: undefined,
       head_id: undefined,
@@ -78,28 +81,42 @@ export default function JournalVoucher() {
       payment_type: "DR",
       payment_mode: "CA"
     }
-  ]);
+  ];
+  const [journerList, setJournerList] = useState(baseJournalList);
 
   useEffect(() => {
-    if (!drawer) {
+    getCostCentersForVoucher().then(result => {
+      setbranchData(result);
       algaehApiCall({
         uri: "/finance_masters/getFinanceOption",
         module: "finance",
         method: "GET",
         onSuccess: response => {
-          debugger;
           if (response.data.success === true) {
-            setFinOptions(response.data.result[0]);
+            const [options] = response.data.result;
+            setFinOptions(options);
+            setHospitalID(options.default_branch_id.toString());
+            if (options.cost_center_required) {
+              const [center] = result.filter(
+                el => el.hims_d_hospital_id == options.default_branch_id
+              );
+              setcostCenterdata(center.cost_centers);
+              setCostCenter(options.default_cost_center_id.toString());
+            }
           }
         },
         onCatch: error => {
           AlgaehMessagePop({
             type: "error",
-            display: error.response.data.message
+            display: error.message || error.response.data.message
           });
         }
       });
+    });
+  }, []);
 
+  useEffect(() => {
+    if (!drawer) {
       getHeaders({ voucher_type: voucherType })
         .then(result => {
           setAccounts(result);
@@ -118,16 +135,63 @@ export default function JournalVoucher() {
           })
           .catch(e => console.log(e));
       }
-      getCostCentersForVoucher().then(result => {
-        setbranchData(result);
-      });
     }
   }, [voucherType, drawer]);
+
+  // this effect triggers only when coming from payment page
+  useEffect(() => {
+    async function getCashAccount() {
+      const result = await newAlgaehApi({
+        uri: "/finance/getFinanceAccountsMaping",
+        data: { accounts: ["cash"] },
+        module: "finance",
+        method: "GET"
+      });
+      return result;
+    }
+
+    if (location.state) {
+      const { type, data } = location.state;
+      const {
+        voucher_type,
+        invoice_no,
+        balance_amount,
+        head_id,
+        child_id
+      } = data;
+      setVoucherType(voucher_type);
+      setInvoiceNo(invoice_no);
+      getCashAccount()
+        .then(res => {
+          if (res.data.success) {
+            const [defaultAC] = res.data.result;
+            setJournerList(state => {
+              const first = state[0];
+              const second = state[1];
+              first.head_id = defaultAC.head_id;
+              first.child_id = defaultAC.child_id;
+              first.sourceName = `${defaultAC.head_id}-${defaultAC.child_id}`;
+              second.head_id = parseInt(head_id, 10);
+              second.child_id = child_id;
+              second.sourceName = `${head_id}-${child_id}`;
+              if (type === "customer") {
+                first.payment_type = "DR";
+                first.amount = balance_amount;
+                second.payment_type = "CR";
+                second.amount = balance_amount;
+              }
+              return [first, second];
+            });
+          }
+        })
+        .catch(e => console.log(e));
+    }
+  }, [location.state]);
 
   const show = voucherType === "receipt" || voucherType === "payment";
 
   function HandleHospital(details, value) {
-    setHospitakID(value);
+    setHospitalID(value);
     setcostCenterdata(details.cost_centers);
   }
 
@@ -280,7 +344,6 @@ export default function JournalVoucher() {
       narration: narration
     })
       .then(result => {
-        console.log(result, "voucher");
         setLoading(false);
         setClearLoading(true);
         setJournerList([]);
@@ -386,10 +449,7 @@ export default function JournalVoucher() {
             }}
             label={{
               forceLabel: "Invoice No.",
-              isImp:
-                voucherType === "purchase" || voucherType === "sales"
-                  ? true
-                  : false
+              isImp: true
             }}
             textBox={{
               type: "text",
@@ -451,7 +511,7 @@ export default function JournalVoucher() {
             //   loading: loadBranch
             // },
             onClear: () => {
-              setHospitakID(null);
+              setHospitalID(null);
             }
           }}
         />
@@ -548,7 +608,7 @@ export default function JournalVoucher() {
                   },
                   {
                     key: "payment_type",
-                    title: "Account Type ",
+                    title: "Payment Type ",
                     // filtered: true,
                     displayTemplate: (row, record) => {
                       return (
@@ -688,7 +748,7 @@ export default function JournalVoucher() {
                 setVoucherType("");
                 setAccounts([]);
                 setPayment(basePayment);
-                setHospitakID(null);
+                setHospitalID(null);
                 setCostCenter(null);
                 setClearLoading(false);
                 setLoading(false);

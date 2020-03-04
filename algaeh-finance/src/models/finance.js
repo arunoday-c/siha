@@ -723,7 +723,7 @@ export default {
     let str = "";
 
     if (input.accounts != undefined && input.accounts.length > 0) {
-      str = ` where account in (${input.accounts})`;
+      str = ` where account in ('${input.accounts}')`;
     }
 
     _mysql
