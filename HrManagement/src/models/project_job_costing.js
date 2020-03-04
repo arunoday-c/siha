@@ -1299,6 +1299,34 @@ export default {
       next();
       return;
     }
+  },
+
+  //created by irfan:
+  getNoEmployeesProjectWise: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.query;
+
+    if (input.hospital_id > 0) {
+      _mysql
+        .executeQuery({
+          query: `select count(distinct employee_id) as no_employees,project_id,P.project_desc from 
+        hims_f_project_roster PR left join hims_d_project P on 
+        PR.project_id=P.hims_d_project_id where PR.hospital_id=?  group by project_id;`,
+          values: [input.hospital_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      next(new Error("Please provide valid input"));
+    }
   }
 };
 
