@@ -49,11 +49,6 @@ class Encounters extends Component {
     this.getPatientEncounterDetails();
   }
 
-  componentWillUnmount() {
-    delete Window.global["mrd_patient"];
-    console.log(Window.global);
-  }
-
   // componentDidUpdate(prevProps) {
   //   if (this.props.fromClinicalDesk !== prevProps.fromClinicalDesk) {
   //     this.getPatientEncounterDetails();

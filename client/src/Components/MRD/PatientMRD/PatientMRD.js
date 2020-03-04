@@ -55,6 +55,10 @@ class PatientMRD extends Component {
     }
   }
 
+  componentWillUnmount() {
+    delete Window.global["mrd_patient"];
+  }
+
   changeTabs(e) {
     var element = document.querySelectorAll("[algaehmrd]");
     for (var i = 0; i < element.length; i++) {
