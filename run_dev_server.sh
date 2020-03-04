@@ -58,7 +58,7 @@ startServer () {
    startServer "./Pharmacy" "pharmacy_server" 
    startServer "./Procurement" "procurement_server"
 
-  # Inventory Modules # 
+  Inventory Modules # 
    startServer "./Inventory" "inventory_server" 
    startServer "./Sales" "sales"  
 

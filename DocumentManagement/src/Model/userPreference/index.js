@@ -27,7 +27,7 @@ export function setUserPreference(req, res, next) {
         }
       } else {
         newDetails["userID"] = user_id;
-        newDetails[detail["code"]]=
+        // newDetails[detail["code"]]=
         if (detail !== undefined) {
           newDetails["screens"] = detail;
         }
@@ -41,7 +41,6 @@ export function setUserPreference(req, res, next) {
       userPrefernce
         .findOneAndUpdate({ userID: user_id }, newDetails)
         .then(response => {
-           
           res.status(200).json({
             success: true,
             message: "updated success"

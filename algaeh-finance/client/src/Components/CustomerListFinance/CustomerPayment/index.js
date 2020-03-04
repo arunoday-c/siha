@@ -186,12 +186,9 @@ export default memo(function(props) {
                         sortable: true
                       },
                       {
-                        key: "",
+                        key: "balance_amount",
                         title: "Balance Amount",
-                        sortable: true,
-                        displayTemplate: (_, row) =>
-                          parseFloat(row["invoice_amount"]) -
-                          parseFloat(row["settled_amount"])
+                        sortable: true
                       },
                       {
                         key: "invoice_status",
@@ -209,6 +206,7 @@ export default memo(function(props) {
                         displayTemplate: (_, row) => {
                           return (
                             <Button
+                              disabled={row.invoice_status === "closed"}
                               type="link"
                               onClick={() =>
                                 history.push("/JournalVoucher", {
@@ -225,7 +223,7 @@ export default memo(function(props) {
                     ]}
                     // height="40vh"
                     rowUnique="finance_voucher_header_id"
-                    dataSource={{ data: data || [] }}
+                    dataSource={{ data: data }}
                   ></AlgaehDataGrid>
                 </div>
               </div>

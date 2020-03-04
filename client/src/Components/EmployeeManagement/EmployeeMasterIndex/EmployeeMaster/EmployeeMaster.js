@@ -564,14 +564,14 @@ class EmployeeMaster extends Component {
                       <AlgaehLabel label={{ fieldName: "btnCancel" }} />
                     </button>
 
-                    <button
+                    {/* <button
                       onClick={generateEmployeeContract.bind(this, this)}
                       type="button"
                       className="btn btn-other"
                       style={{ float: "left", margin: 0 }}
                     >
                       <AlgaehLabel label={{ forceLabel: "Print Contract" }} />
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>

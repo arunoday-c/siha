@@ -483,8 +483,13 @@ let getRoleBaseActiveModules = (req, res, next) => {
       from algaeh_d_app_module as m inner join algaeh_d_app_screens as s
       on s.module_id = m.algaeh_d_module_id  ${
         role_type === "SU"
-          ? ""
-          : "where m.access_by <> 'SU' and m.record_status='A' and s.record_status='A'"
+          ? `;select '' as algaeh_app_screens_id;SELECT algaeh_d_app_scrn_elements_id,screen_element_code,
+          '' as props_type,'H' as ele_view_previlage FROM algaeh_d_app_scrn_elements
+          where record_status='I';`
+          : ` where m.access_by <> 'SU' and m.record_status='A' and s.record_status='A'; select '' as algaeh_app_screens_id;
+          SELECT algaeh_d_app_scrn_elements_id,screen_element_code,
+'' as props_type,'H' as ele_view_previlage FROM algaeh_d_app_scrn_elements
+where record_status='I';`
       }`;
     } else {
       strQuery = `select m.algaeh_d_module_id,m.module_code,m.module_name,m.icons,m.display_order,m.other_language,
@@ -502,27 +507,35 @@ let getRoleBaseActiveModules = (req, res, next) => {
       left join algaeh_d_app_component as c on c.algaeh_d_app_component_id =cs.component_id
       left join screen_element_scren_module_mapping as se on 
       se.role_id = mr.role_id
-      left join algaeh_d_app_scrn_elements as e on e.algaeh_d_app_scrn_elements_id = se.algaeh_d_app_scrn_elements_id
-      where mr.role_id=${_roleId} and mr.record_status ='A'  and m.access_by <> 'SU';`;
+      left join algaeh_d_app_scrn_elements as e on e.component_id = c.algaeh_d_app_component_id 
+      where mr.role_id=${_roleId} and mr.record_status ='A'  and m.access_by <> 'SU'; select algaeh_d_app_component_id,screen_id as algaeh_app_screens_id,component_code,
+      component_name,'H' as comp_view_previlage,'' as algaeh_m_screen_role_privilage_mapping_id
+      from algaeh_d_app_component where record_status='I';SELECT algaeh_d_app_scrn_elements_id,screen_element_code,
+      '' as props_type,'H' as ele_view_previlage FROM algaeh_d_app_scrn_elements
+      where record_status='I';`;
     }
-
+    //e.algaeh_d_app_scrn_elements_id = se.algaeh_d_app_scrn_elements_id
     _mysql
       .executeQuery({
         query: strQuery,
         printQuery: true
       })
-      .then(result => {
+      .then(responseData => {
         _mysql.releaseConnection();
 
+        const result = responseData[0];
+        const componentsInactiveList = responseData[1];
         if (result.length === 0) {
           req.records = [];
           next();
           return;
         }
-        const elements = _.chain(result)
+        const elementsInactive = responseData[2];
+        let elements = _.chain(result)
           .groupBy(g => g.algaeh_d_app_scrn_elements_id)
           .map(element => {
             const {
+              algaeh_d_app_scrn_elements_id,
               ele_extra_props,
               ele_view_previlage,
               screen_element_code,
@@ -530,6 +543,17 @@ let getRoleBaseActiveModules = (req, res, next) => {
               extra_props
             } = _.head(element);
             let stages = [];
+
+            if (role_type !== "SU") {
+              const elefilters = elementsInactive.find(
+                f =>
+                  f.algaeh_d_app_scrn_elements_id ===
+                  algaeh_d_app_scrn_elements_id
+              );
+              if (elefilters !== undefined) {
+                return { ...elefilters, stages: [] };
+              }
+            }
 
             if (props_type === "S" && ele_view_previlage !== "") {
               const original =
@@ -546,6 +570,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
                 }
               });
             }
+
             return {
               screen_element_code,
               props_type,
@@ -553,6 +578,9 @@ let getRoleBaseActiveModules = (req, res, next) => {
               stages
             };
           })
+          .filter(
+            f => f.screen_element_code !== null && f.screen_element_code !== ""
+          )
           .value();
 
         const records = _.chain(result)
@@ -587,22 +615,8 @@ let getRoleBaseActiveModules = (req, res, next) => {
                     child_pages
                   } = sec;
 
-                  return {
-                    algaeh_d_module_id,
-                    algaeh_m_screen_role_privilage_mapping_id,
-                    algaeh_app_screens_id,
-                    module_code,
-                    module_name,
-                    page_to_redirect,
-                    s_other_language,
-                    screen_code,
-                    screen_name,
-                    screen_id,
-                    redirect_url,
-                    child_pages:
-                      child_pages !== null ? child_pages.split(",") : [],
-                    other_language: sec.s_other_language,
-                    components: _.chain(screens)
+                  const listItems = () => {
+                    return _.chain(screens)
                       .filter(f => f.algaeh_d_app_component_id !== null)
                       .groupBy(c => c.algaeh_d_app_component_id)
                       .map(comp => {
@@ -625,7 +639,37 @@ let getRoleBaseActiveModules = (req, res, next) => {
                           algaeh_d_module_id,
                           algaeh_m_screen_role_privilage_mapping_id
                         };
-                      })
+                      });
+                  };
+
+                  let componentsDetails = [];
+                  if (role_type !== "SU") {
+                    componentsDetails = componentsInactiveList.filter(
+                      f => f.algaeh_app_screens_id === algaeh_app_screens_id
+                    );
+                    if (componentsDetails.length === 0) {
+                      componentsDetails = listItems();
+                    }
+                  } else {
+                    componentsDetails = listItems();
+                  }
+
+                  return {
+                    algaeh_d_module_id,
+                    algaeh_m_screen_role_privilage_mapping_id,
+                    algaeh_app_screens_id,
+                    module_code,
+                    module_name,
+                    page_to_redirect,
+                    s_other_language,
+                    screen_code,
+                    screen_name,
+                    screen_id,
+                    redirect_url,
+                    child_pages:
+                      child_pages !== null ? child_pages.split(",") : [],
+                    other_language: sec.s_other_language,
+                    components: componentsDetails
                   };
                 })
               //   detail.map(m => {
