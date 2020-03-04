@@ -229,9 +229,14 @@ function Login(props) {
           };
         });
         const hostName = window.location.hostname;
+        const port = window.location.port;
 
         setUserImage(
-          `http://${hostName}:3006/api/v1/Document/get?destinationName=${result.employee_code}&fileType=Employees`
+          `http://${hostName}${
+            port ? ":3006" : "/docserver"
+          }/api/v1/Document/get?destinationName=${
+            result.employee_code
+          }&fileType=Employees`
         );
         setShowPassword(true);
         setLoginLoad(false);
