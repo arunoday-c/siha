@@ -1,15 +1,18 @@
 import React, { Component } from "react";
 import "./dashboard.scss";
-import { Bar } from "react-chartjs-2";
+import { Bar, HorizontalBar } from "react-chartjs-2";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { GetAmountFormart } from "../../utils/GlobalFunctions";
-import DashBoardEvents, { LegendOpt } from "./DashBoardEvents";
+import DashBoardEvents, {
+  chartLegends,
+  chartOptions,
+  chartOptionsHorizontal
+} from "./DashBoardEvents";
 import { MainContext } from "algaeh-react-components/context";
 import {
-  AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehLabel,
   AlgaehDataGrid
@@ -256,21 +259,10 @@ class Dashboard extends Component {
                 <div className="card animated fadeInUp faster">
                   <h6>No. of Employee by Projects</h6>
                   <div className="dashboardChartsCntr">
-                    <Bar
+                    <HorizontalBar
                       data={this.state.projectEmployee}
-                      legend={LegendOpt}
-                      // options={{
-                      //   scales: {
-                      //     yAxes: [
-                      //       {
-                      //         ticks: {
-                      //           beginAtZero: true,
-                      //           min: 0
-                      //         }
-                      //       }
-                      //     ]
-                      //   }
-                      // }}
+                      legend={chartLegends}
+                      options={chartOptionsHorizontal}
                     />
                   </div>
                 </div>
@@ -279,21 +271,10 @@ class Dashboard extends Component {
                 <div className="card animated fadeInUp faster">
                   <h6>No. of Employee by Department</h6>
                   <div className="dashboardChartsCntr">
-                    <Bar
+                    <HorizontalBar
                       data={this.state.Dept_Employee}
-                      legend={LegendOpt}
-                      // options={{
-                      //   scales: {
-                      //     yAxes: [
-                      //       {
-                      //         ticks: {
-                      //           beginAtZero: true,
-                      //           min: 0
-                      //         }
-                      //       }
-                      //     ]
-                      //   }
-                      // }}
+                      legend={chartLegends}
+                      options={chartOptionsHorizontal}
                     />
                   </div>
                 </div>
@@ -302,21 +283,10 @@ class Dashboard extends Component {
                 <div className="card animated fadeInUp faster">
                   <h6>No. of Employee by Designation</h6>
                   <div className="dashboardChartsCntr">
-                    <Bar
+                    <HorizontalBar
                       data={this.state.Desig_Employee}
-                      legend={LegendOpt}
-                      // options={{
-                      //   scales: {
-                      //     yAxes: [
-                      //       {
-                      //         ticks: {
-                      //           beginAtZero: true,
-                      //           min: 0
-                      //         }
-                      //       }
-                      //     ]
-                      //   }
-                      // }}
+                      legend={chartLegends}
+                      options={chartOptionsHorizontal}
                     />
                   </div>
                 </div>

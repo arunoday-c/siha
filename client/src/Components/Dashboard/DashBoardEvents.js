@@ -8,11 +8,11 @@ import { getCookie } from "../../utils/algaehApiCall.js";
 let HospitalId =
   getCookie("HospitalId") !== undefined ? getCookie("HospitalId") : "";
 
-export const LegendOpt = {
+export const chartLegends = {
   display: true,
   position: "top",
   align: "center",
-  fullWidth: false,
+  fullWidth: true,
   maintainAspectRatio: true,
   responsive: true,
   legend: {
@@ -21,12 +21,52 @@ export const LegendOpt = {
     labels: {
       boxWidth: 10
     }
-  },
+  }
+};
+
+export const chartOptions = {
   scales: {
     yAxes: [
       {
         ticks: {
-          beginAtZero: true
+          min: 0, // it is for ignoring negative step.
+          beginAtZero: true,
+          callback: function(value, index, values) {
+            if (Math.floor(value) === value) {
+              return value;
+            }
+          }
+        }
+      }
+    ],
+    xAxes: [
+      {
+        gridLines: {
+          display: false
+        }
+      }
+    ]
+  }
+};
+export const chartOptionsHorizontal = {
+  scales: {
+    xAxes: [
+      {
+        ticks: {
+          min: 0, // it is for ignoring negative step.
+          beginAtZero: true,
+          callback: function(value, index, values) {
+            if (Math.floor(value) === value) {
+              return value;
+            }
+          }
+        }
+      }
+    ],
+    yAxes: [
+      {
+        gridLines: {
+          display: false
         }
       }
     ]
@@ -133,7 +173,7 @@ export default function DashBoardEvents() {
             const total_staff_count = _.chain(response.data.records)
               .filter(f => f.employee_group_id === 1)
               .value().length;
-            const total_labor_count = _.chain(response.data.records)
+            const total_labour_count = _.chain(response.data.records)
               .filter(f => f.employee_group_id === 2)
               .value().length;
 
@@ -156,7 +196,7 @@ export default function DashBoardEvents() {
               total_company_salary: total_company_salary,
               no_of_emp_join: no_of_emp_join,
               total_staff_count: total_staff_count,
-              total_labor_count: total_labor_count,
+              total_labour_count: total_labour_count,
               total_localite_count: total_localite_count,
               total_expatriate_count: total_expatriate_count,
               total_staff_salary: total_staff_salary,
