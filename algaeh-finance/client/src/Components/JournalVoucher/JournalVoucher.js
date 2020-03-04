@@ -174,11 +174,15 @@ export default function JournalVoucher() {
               second.head_id = parseInt(head_id, 10);
               second.child_id = child_id;
               second.sourceName = `${head_id}-${child_id}`;
+              first.amount = balance_amount;
+              second.amount = balance_amount;
               if (type === "customer") {
                 first.payment_type = "DR";
-                first.amount = balance_amount;
                 second.payment_type = "CR";
-                second.amount = balance_amount;
+              }
+              if (type === "supplier") {
+                first.payment_type = "CR";
+                second.payment_type = "DR";
               }
               return [first, second];
             });

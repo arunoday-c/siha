@@ -5,7 +5,6 @@ import {
   AlgaehMessagePop,
   AlgaehButton,
   AlgaehAutoComplete,
-  AlgaehModal,
   AlgaehFormGroup,
   AlgaehDateHandler
 } from "algaeh-react-components";
@@ -17,11 +16,7 @@ export default memo(function(props) {
   const history = useHistory();
 
   const [data, setData] = useState([]);
-  const [visible, setVisibale] = useState(false);
-  const [rowDetails, setRowDetails] = useState([]);
-  const [voucherNo, setVoucherNo] = useState("");
   const [level, setLevel] = useState(undefined);
-  const [rejectVisible, setRejectVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
   const [dates, setDates] = useState(undefined);

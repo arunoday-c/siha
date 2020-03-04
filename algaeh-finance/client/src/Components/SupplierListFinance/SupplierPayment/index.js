@@ -1,43 +1,44 @@
 import React, { memo, useState, useEffect } from "react";
-import { useHistory, useLocation } from "react-router-dom";
-import { Button } from "antd";
+import { useLocation, useHistory } from "react-router-dom";
 import {
   AlgaehDataGrid,
   AlgaehMessagePop,
   AlgaehButton,
   AlgaehAutoComplete,
-  AlgaehModal,
   AlgaehFormGroup,
   AlgaehDateHandler
 } from "algaeh-react-components";
-import {
-  LoadVouchersToAuthorize,
-  ApproveReject,
-  LoadVoucherDetails
-} from "./SupPaymentEvents";
-let rejectText = "";
-let finance_voucher_header_id = "";
+import { getInvoicesForSupplier } from "./SupPaymentEvents";
+import { Button } from "antd";
+
 export default memo(function(props) {
-  const history = useHistory();
   const location = useLocation();
+  const history = useHistory();
+
   const [data, setData] = useState([]);
-  const [visible, setVisibale] = useState(false);
-  const [rowDetails, setRowDetails] = useState([]);
-  const [voucherNo, setVoucherNo] = useState("");
   const [level, setLevel] = useState(undefined);
-  const [rejectVisible, setRejectVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState("P");
+  const [status, setStatus] = useState("");
   const [dates, setDates] = useState(undefined);
-  const paymentTemplates = [
-    { key: "payment_mode", title: "Payment Mode" },
-    { key: "ref_no", title: "Reference No" },
-    { key: "cheque_date", title: "Cheque Date" }
-  ];
 
   useEffect(() => {
-    if (!location.state) {
-      history.goBack(); // just boilerplate will be replaced
+    if (location.state) {
+      setLoading(true);
+      const { finance_account_child_id } = location.state.data;
+      getInvoicesForSupplier(finance_account_child_id)
+        .then(res => {
+          if (res.data.success) {
+            setData(res.data.result);
+            setLoading(false);
+          }
+        })
+        .catch(e => {
+          setLoading(false);
+          AlgaehMessagePop({
+            type: "Error",
+            display: e.message
+          });
+        });
     }
   }, [location.state]);
 
@@ -149,7 +150,7 @@ export default memo(function(props) {
                   <AlgaehDataGrid
                     columns={[
                       {
-                        key: "",
+                        key: "invoice_date",
                         title: "Date",
                         sortable: true
                       },
@@ -163,20 +164,33 @@ export default memo(function(props) {
                         title: "Description"
                       },
                       {
+                        key: "due_date",
                         title: "Due Date",
                         sortable: true
                       },
                       {
                         key: "invoice_amount",
-                        title: "Amount",
+                        title: "Invoice Amount",
                         sortable: true
                       },
                       {
-                        key: "",
+                        key: "settled_amount",
+                        title: "Paid Amount",
+                        sortable: true
+                      },
+                      {
+                        key: "balance_amount",
+                        title: "Balance Amount",
+                        sortable: true
+                      },
+                      {
+                        key: "invoice_status",
                         title: "Status",
+                        displayTemplate: text => text.toUpperCase(),
                         sortable: true
                       },
                       {
+                        key: "last_modified",
                         title: "Last Modified Date",
                         sortable: true
                       },
@@ -185,6 +199,7 @@ export default memo(function(props) {
                         displayTemplate: (_, row) => {
                           return (
                             <Button
+                              disabled={row.invoice_status === "closed"}
                               type="link"
                               onClick={() =>
                                 history.push("/JournalVoucher", {
@@ -199,7 +214,7 @@ export default memo(function(props) {
                         }
                       }
                     ]}
-                    height="40vh"
+                    // height="40vh"
                     rowUnique="finance_voucher_header_id"
                     dataSource={{ data: data }}
                   ></AlgaehDataGrid>

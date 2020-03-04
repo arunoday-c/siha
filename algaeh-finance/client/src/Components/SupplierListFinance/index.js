@@ -1,48 +1,31 @@
-import React, { memo, useState } from "react";
+import React, { memo, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { Button } from "antd";
 import "../../infobar.scss";
-import {
-  AlgaehDataGrid,
-  AlgaehMessagePop,
-  AlgaehButton,
-  AlgaehAutoComplete,
-  AlgaehModal,
-  AlgaehFormGroup,
-  AlgaehDateHandler
-} from "algaeh-react-components";
-import Details from "./details";
-import {
-  LoadVouchersToAuthorize,
-  ApproveReject,
-  LoadVoucherDetails
-} from "./event";
-let rejectText = "";
-let finance_voucher_header_id = "";
+import { AlgaehDataGrid, AlgaehMessagePop } from "algaeh-react-components";
+import { LoadSupplierPayable } from "./event";
+import { Button } from "antd";
 
-function SupplierList(props) {
+function CustomerList(props) {
+  const [supplier_payable, setSupplierPayable] = useState([]);
   const history = useHistory();
-
-  const [data, setData] = useState([]);
-  const [visible, setVisibale] = useState(false);
-  const [rowDetails, setRowDetails] = useState([]);
-  const [voucherNo, setVoucherNo] = useState("");
-  const [level, setLevel] = useState(undefined);
-  const [rejectVisible, setRejectVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState("");
-  const [dates, setDates] = useState(undefined);
-  const paymentTemplates = [
-    { key: "payment_mode", title: "Payment Mode" },
-    { key: "ref_no", title: "Reference No" },
-    { key: "cheque_date", title: "Cheque Date" }
-  ];
+  useEffect(() => {
+    LoadSupplierPayable()
+      .then(result => {
+        setSupplierPayable(result);
+      })
+      .catch(error => {
+        AlgaehMessagePop({
+          type: "error",
+          display: error
+        });
+      });
+  }, []);
 
   return (
     <div className="row">
       <div className="col-12">
         <div className="row infoBar">
-          <div className="col">
+          <div className="col danger">
             <div className="text">
               <p>Overdue</p>
               0.00
@@ -66,12 +49,14 @@ function SupplierList(props) {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Supplier List</h3>
+                  <h3 className="caption-subject">Customer List</h3>
                 </div>
                 <div className="actions">
                   <button
                     className="btn btn-primary"
-                    onClick={() => history.push("/CustomerSetup")}
+                    onClick={() => {
+                      history.push("CustomerSetup");
+                    }}
                   >
                     <i className="fas fa-plus"></i>
                   </button>
@@ -91,9 +76,10 @@ function SupplierList(props) {
                   <AlgaehDataGrid
                     columns={[
                       {
-                        key: "",
-                        title: "Customer/ Company",
+                        title: "Supplier / Company",
                         sortable: true,
+                        fieldName: "child_name",
+                        filtered: true,
                         displayTemplate: (text, record) => {
                           return (
                             <Button
@@ -110,17 +96,18 @@ function SupplierList(props) {
                         }
                       },
                       {
-                        key: "",
-                        title: "Opening Balance",
+                        title: "Balance",
                         sortable: true,
+                        fieldName: "balance_amount",
                         others: {
                           width: 200
                         }
                       }
                     ]}
                     height="80vh"
+                    filter={true}
                     rowUnique="finance_voucher_header_id"
-                    dataSource={{ data: data }}
+                    dataSource={{ data: supplier_payable }}
                   ></AlgaehDataGrid>
                 </div>
               </div>
@@ -132,4 +119,4 @@ function SupplierList(props) {
   );
 }
 
-export default memo(SupplierList);
+export default memo(CustomerList);

@@ -1,69 +1,15 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
-export function LoadVouchersToAuthorize(input) {
-  input = input || {};
-  return new Promise((resolve, reject) => {
-    try {
-      algaehApiCall({
-        uri: "/voucher/getVouchersToAuthorize",
-        method: "GET",
-        module: "finance",
-        data: input,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            resolve(response.data.result);
-          }
-        },
-        onCatch: error => {
-          reject(error);
-        }
-      });
-    } catch (error) {
-      reject(error);
-    }
-  });
-}
+import { newAlgaehApi } from "../../../hooks";
 
-export function LoadVoucherDetails(input) {
-  return new Promise((resolve, reject) => {
-    try {
-      algaehApiCall({
-        uri: "/voucher/getVouchersDetailsToAuthorize",
-        method: "GET",
-        module: "finance",
-        data: input,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            resolve(response.data.result);
-          }
-        },
-        onCatch: error => {
-          reject(error);
-        }
-      });
-    } catch (error) {
-      reject(error);
-    }
-  });
-}
-export function ApproveReject(input) {
-  return new Promise((resolve, reject) => {
-    try {
-      algaehApiCall({
-        uri: "/voucher/authorizeVoucher",
-        method: "POST",
-        data: input,
-        module: "finance",
-        onSuccess: response => {
-          if (response.data.success === true) {
-            resolve(response.data.result);
-          }
-        },
-        onCatch: error => {
-          reject(error);
-        }
-      });
-    } catch (error) {
-      reject(error);
-    }
-  });
+export async function getInvoicesForSupplier(child_id) {
+  try {
+    const result = await newAlgaehApi({
+      uri: "/finance_supplier/getSupplierInvoiceDetails",
+      method: "GET",
+      module: "finance",
+      data: { child_id }
+    });
+    return result;
+  } catch (e) {
+    throw new Error(e.message || e.response.data.message);
+  }
 }

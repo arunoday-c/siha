@@ -2,7 +2,7 @@ import React, { memo, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import "../../infobar.scss";
 import { AlgaehDataGrid, AlgaehMessagePop } from "algaeh-react-components";
-import { LoadCustomerReceivables, getInvoicesForCustomer } from "./event";
+import { LoadCustomerReceivables } from "./event";
 import { Button } from "antd";
 
 function CustomerList(props) {
