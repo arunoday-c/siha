@@ -613,15 +613,17 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "insservicemaster",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS service_name,service_type_id,hims_d_services_id,'N' as covered,'N' as pre_approval, IT.service_type\
-            from hims_d_services as S,hims_d_service_type as IT, hims_d_investigation_test TEST where hims_d_services_id not in\
+            from hims_d_services as S inner join hims_d_service_type AS IT on S.service_type_id = IT.hims_d_service_type_id \
+            left join hims_d_investigation_test TEST on TEST.services_id = S.hims_d_services_id\
+            where hims_d_services_id not in\
             (SELECT services_id FROM hims_d_services_insurance as I,hims_d_service_type as T where  \
             insurance_id=? and {mapper} and I.service_type_id = T.hims_d_service_type_id and \
-            I.service_type_id in (2,5,11)) and {mapper} and S.service_type_id = IT.hims_d_service_type_id and TEST.services_id = S.hims_d_services_id \
+            I.service_type_id in (2,5,11)) and {mapper} \
             and S.service_type_id in (2,5,11) \
             union all\
             SELECT service_name,service_type_id,services_id as hims_d_services_id, covered,pre_approval, \
-            T.service_type\
-            FROM hims_d_services_insurance as I,hims_d_service_type as T where  insurance_id=? and {mapper}  and I.service_type_id = T.hims_d_service_type_id and I.service_type_id in (2,5,11)",
+            T.service_type FROM hims_d_services_insurance as I \
+            inner join hims_d_service_type AS T on I.service_type_id = T.hims_d_service_type_id where  insurance_id=? and {mapper} and I.service_type_id in (2,5,11)",
         orderBy: "hims_d_services_id desc",
         inputSequence: ["insurance_id", "insurance_id"]
       },
