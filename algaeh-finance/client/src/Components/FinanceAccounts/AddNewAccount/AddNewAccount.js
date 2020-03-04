@@ -188,6 +188,7 @@ export default function AddNewAccount({
 
   return (
     <AlgaehModal
+      wrapClassName="addAccountModal"
       title="Add/Modify Account"
       visible={showPopup}
       okButtonProps={{
@@ -205,7 +206,7 @@ export default function AddNewAccount({
           <div className="row">
             <AlgaehDropDown
               div={{
-                className: "col form-group"
+                className: "col-12 form-group mandatory"
               }}
               label={{
                 forceLabel: "Select Default Currency",
@@ -226,13 +227,14 @@ export default function AddNewAccount({
                 data: AccountType
               }}
             />
-
+          </div>
+          <div className="row">
             {(selectedNode.node !== undefined &&
               selectedNode.node.leafnode === "Y") ||
             account_type === "C" ? (
               <AlgaehFormGroup
                 div={{
-                  className: "col form-group"
+                  className: "col-12 form-group  mandatory"
                 }}
                 label={{
                   forceLabel: "Ledger Code",
@@ -254,7 +256,7 @@ export default function AddNewAccount({
 
             <AlgaehFormGroup
               div={{
-                className: "col form-group"
+                className: "col-12 form-group  mandatory"
               }}
               label={{
                 forceLabel: "Account Name",
@@ -282,7 +284,7 @@ export default function AddNewAccount({
 
             <AlgaehFormGroup
               div={{
-                className: "col form-group"
+                className: "col-12 form-group  mandatory"
               }}
               label={{
                 forceLabel: "Account Name In Arabic",
@@ -312,9 +314,9 @@ export default function AddNewAccount({
             accountCode !== 4 && accountCode !== 5 ? (
               <div className="row">
                 {accountName ? (
-                  <div className="col">
+                  <div className="col-12 ">
                     <Checkbox
-                      style={{ margin: 16 }}
+                      style={{ marginBottom: 10 }}
                       checked={enableOP}
                       onChange={() => setEnableOP(state => !state)}
                     >
@@ -324,7 +326,7 @@ export default function AddNewAccount({
                 ) : null}
                 <AlgaehFormGroup
                   div={{
-                    className: "form-group algaeh-text-fld col"
+                    className: "col-12 form-group  mandatory"
                   }}
                   label={{
                     forceLabel: "Opening Balance",
