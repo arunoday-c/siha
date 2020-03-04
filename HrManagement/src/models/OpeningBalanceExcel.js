@@ -168,7 +168,7 @@ function excelEmployeeLeaveSalaryOpenBalance(req, res, next) {
           worksheet.addRow(employee);
         }
 
-        worksheet.eachRow(function(row, rowNumber) {
+        worksheet.eachRow(function (row, rowNumber) {
           if (rowNumber === 1) {
             row.protection = { locked: true };
           } else {
@@ -202,7 +202,7 @@ function excelEmployeeLeaveSalaryOpenBalance(req, res, next) {
           "Content-Disposition",
           "attachment; filename=" + "Report.xlsx"
         );
-        workbook.xlsx.write(res).then(function(data) {
+        workbook.xlsx.write(res).then(function (data) {
           res.end();
         });
       })();
@@ -326,7 +326,7 @@ function excelEmployeeGratuityOpenBalance(req, res, next) {
           worksheet.addRow(employee);
         }
 
-        worksheet.eachRow(function(row, rowNumber) {
+        worksheet.eachRow(function (row, rowNumber) {
           if (rowNumber === 1) {
             row.protection = { locked: true };
           } else {
@@ -365,7 +365,7 @@ function excelEmployeeGratuityOpenBalance(req, res, next) {
           "Content-Disposition",
           "attachment; filename=" + "Report.xlsx"
         );
-        workbook.xlsx.write(res).then(function(data) {
+        workbook.xlsx.write(res).then(function (data) {
           res.end();
         });
       })();
@@ -458,7 +458,7 @@ function excelEmployeeLeaveOpenBalance(req, res, next) {
           worksheet.addRow(employee);
         }
 
-        worksheet.eachRow(function(row, rowNumber) {
+        worksheet.eachRow(function (row, rowNumber) {
           if (rowNumber === 1) {
             row.protection = { locked: true };
           } else {
@@ -502,7 +502,7 @@ function excelEmployeeLeaveOpenBalance(req, res, next) {
           "Content-Disposition",
           "attachment; filename=" + "Report.xlsx"
         );
-        workbook.xlsx.write(res).then(function(data) {
+        workbook.xlsx.write(res).then(function (data) {
           res.end();
         });
       })();
@@ -514,8 +514,9 @@ function excelEmployeeLeaveOpenBalance(req, res, next) {
 
 function excelEmployeeOpeningBalanceRead(req, res, next) {
   let buffer = "";
-  const utilities = new algaehUtilities();
-  const leaves_data = JSON.parse(req.headers["x-leaves-data"]);
+  // const utilities = new algaehUtilities();
+  const leaves_data = req.headers["x-leaves-data"] === "" ? "" : JSON.parse(req.headers["x-leaves-data"]);
+
   req.on("data", chunk => {
     buffer += chunk.toString();
   });
@@ -526,6 +527,7 @@ function excelEmployeeOpeningBalanceRead(req, res, next) {
     let filter;
     let excelArray = [];
     let properFile = true;
+
     workbook.xlsx
       .load(buff)
       .then(() => {
@@ -544,7 +546,7 @@ function excelEmployeeOpeningBalanceRead(req, res, next) {
           return;
         }
 
-        worksheet.eachRow(function(row, rowNumber) {
+        worksheet.eachRow(function (row, rowNumber) {
           if (filter === "GR") {
             if (rowNumber === 1) {
               columns = row.values;
