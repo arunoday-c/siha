@@ -1,21 +1,59 @@
 .addnewaccountModuleScreen {
-    .ui.styled.accordion {
-      width: 100vw;
+  .ui.styled.accordion {
+    width: 100vw;
+  }
+}
+.innerContentDiv {
+  float: right;
+  margin-top: -55px;
+  span {
+    margin-left: 10px;
+    float: right;
+    text-align: right;
+    line-height: 17px;
+    font-size: 1.3rem;
+    small {
+      display: block;
+      font-size: 0.9rem;
     }
   }
-  .innerContentDiv {
-    float: right;
-    margin-top: -55px;
-    span {
-      margin-left: 10px;
-      float: right;
-      text-align: right;
-      line-height: 17px;
-      font-size: 1.3rem;
-      small {
-        display: block;
-        font-size: 0.9rem;
+}
+.addAccountModal {
+  .ant-modal {
+    width: 25vw !important;
+    .ant-modal-header {
+      padding: 10px 15px !important;
+    }
+    .ant-modal-body {
+      padding: 10px 15px !important;
+      .form-control {
+        font-size: 0.9rem !important;
+        height: 35px !important;
+      }
+      .mandatory {
+        input {
+          border: 1px solid #ff8787;
+        }
+      }
+
+      input[type="text"]:disabled,
+      input[type="number"]:disabled,
+      input[type="tel"]:disabled,
+      input[type="email"]:disabled,
+      input[type="time"]:disabled,
+      input[type="password"]:disabled,
+      input[type="type"]:disabled {
+        font-weight: normal;
+        opacity: 0.6;
+      }
+    }
+    .ant-modal-footer {
+      padding: 10px 15px !important;
+      .ant-btn-primary {
+        color: #fff;
+        background-color: #00a796;
+        border-color: #007468;
       }
     }
   }
-  
+}
