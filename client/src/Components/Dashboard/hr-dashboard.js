@@ -29,6 +29,9 @@ class Dashboard extends Component {
       total_labour_count: 0,
       total_staff_salary: 0,
       total_labor_salary: 0,
+      total_localite_count: 0,
+      total_expatriate_count: 0,
+      projectEmployee: {},
       Dept_Employee: {},
       Desig_Employee: {},
       no_of_emp_join: [],
@@ -58,6 +61,7 @@ class Dashboard extends Component {
         dashEvents.getEmployeeDepartmentsWise(this);
         dashEvents.getEmployeeDesignationWise(this);
         dashEvents.getProjectList(this);
+        dashEvents.getEmployeeProjectWise(this);
       }
     );
   }
@@ -88,6 +92,7 @@ class Dashboard extends Component {
         dashEvents.getEmployeeDepartmentsWise(this);
         dashEvents.getEmployeeDesignationWise(this);
         dashEvents.getProjectList(this);
+        dashEvents.getEmployeeProjectWise(this);
       }
     );
   }
@@ -184,7 +189,7 @@ class Dashboard extends Component {
                 <div className="col-12">
                   <div className="text">
                     <p>Total Omanis</p>
-                    {this.state.no_of_projects}
+                    {this.state.total_localite_count}
                   </div>
                 </div>
               </div>
@@ -201,7 +206,7 @@ class Dashboard extends Component {
                 <div className="col-12">
                   <div className="text">
                     <p>Total Expat</p>
-                    {this.state.no_of_projects}
+                    {this.state.total_expatriate_count}
                   </div>
                 </div>
               </div>
@@ -252,7 +257,7 @@ class Dashboard extends Component {
                   <h6>No. of Employee by Projects</h6>
                   <div className="dashboardChartsCntr">
                     <Bar
-                      data={this.state.Desig_Employee}
+                      data={this.state.projectEmployee}
                       legend={LegendOpt}
                       // options={{
                       //   scales: {
