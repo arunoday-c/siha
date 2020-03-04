@@ -10,16 +10,26 @@ let HospitalId =
 
 export const LegendOpt = {
   display: true,
-  position: "bottom",
-  fullWidth: true,
-
+  position: "top",
+  align: "center",
+  fullWidth: false,
   maintainAspectRatio: true,
   responsive: true,
   legend: {
     position: "center",
+    fontSize: 12,
     labels: {
-      //boxWidth: 10
+      boxWidth: 10
     }
+  },
+  scales: {
+    yAxes: [
+      {
+        ticks: {
+          beginAtZero: true
+        }
+      }
+    ]
   }
 };
 
@@ -127,15 +137,72 @@ export default function DashBoardEvents() {
               .filter(f => f.employee_group_id === 2)
               .value().length;
 
+            const total_localite_count = _.chain(response.data.records)
+              .filter(
+                f =>
+                  f.nationality === $this.context.userToken.default_nationality
+              )
+              .value().length;
+
+            const total_expatriate_count = _.chain(response.data.records)
+              .filter(
+                f =>
+                  f.nationality !== $this.context.userToken.default_nationality
+              )
+              .value().length;
+
             $this.setState({
               no_of_employees: no_of_employees,
               total_company_salary: total_company_salary,
               no_of_emp_join: no_of_emp_join,
               total_staff_count: total_staff_count,
               total_labor_count: total_labor_count,
+              total_localite_count: total_localite_count,
+              total_expatriate_count: total_expatriate_count,
               total_staff_salary: total_staff_salary,
               total_labor_salary: total_labor_salary,
               avg_salary: avg_salary
+            });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
+    },
+
+    getEmployeeProjectWise: $this => {
+      algaehApiCall({
+        uri: "/projectjobcosting/getNoEmployeesProjectWise",
+        module: "hrManagement",
+        method: "GET",
+        data: { hospital_id: $this.state.hospital_id },
+
+        onSuccess: response => {
+          debugger;
+          if (response.data.success) {
+            const { records } = response.data;
+            let labels = [];
+            let datasets = [
+              {
+                data: [],
+                label: "Employees",
+                backgroundColor: "rgba(255,99,132,0.2)",
+                borderColor: "rgba(255,99,132,1)",
+                borderWidth: 1,
+                hoverBackgroundColor: "rgba(255,99,132,0.4)",
+                hoverBorderColor: "rgba(255,99,132,1)"
+              }
+            ];
+            for (let i = 0; i < records.length; i++) {
+              labels.push(records[i].project_desc);
+              datasets[0].data.push(records[i].no_employees);
+            }
+            $this.setState({
+              projectEmployee: { labels, datasets }
             });
           }
         },
