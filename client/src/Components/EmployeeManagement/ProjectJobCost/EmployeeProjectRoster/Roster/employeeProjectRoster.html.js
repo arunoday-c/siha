@@ -238,9 +238,9 @@ export default function EmpProjectRoster(props) {
             >
               Assign New Project
             </button>
-            <button type="button" className="btn btn-default">
+            {/* <button type="button" className="btn btn-default">
               Download as Excel
-            </button>
+            </button> */}
             <button
               type="button"
               className="btn btn-default"
