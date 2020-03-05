@@ -74,9 +74,13 @@ function NavBars(props) {
   return (
     <>
       <nav className="navbar fixed-top navbar-expand-lg navbar-dark mainTheme">
+        {/* <div className="sideBackButton">
+          <i className="fas fa-angle-double-left  fa-lg" />
+        </div> */}
         <div className="sideMenuBars" onClick={showMenuClick}>
           <i className="fas fa-bars fa-lg" />
         </div>
+
         <div className="navbar-brand appLogoCntr">
           <p className="appLogoHIMSOnly" />
         </div>
