@@ -23,7 +23,6 @@ export default function AddNewAccount({
   isNewAccount,
   ledgerCode
 }) {
-  debugger;
   const [lodingAddtoList, setLoadingAddtoList] = useState(false);
   // const [account_code, setAccountCode] = useState("");
   const [account_name, setAccountName] = useState("");
