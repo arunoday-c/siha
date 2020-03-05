@@ -159,8 +159,15 @@ export default function JournalVoucher() {
         head_id,
         child_id
       } = data;
-      setVoucherType(voucher_type);
-      setInvoiceNo(invoice_no);
+      let currentVoucher =
+        voucher_type === "sales"
+          ? "receipt"
+          : voucher_type === "purchase"
+          ? "payment"
+          : null;
+      setVoucherType(currentVoucher);
+      setSelInvoice(invoice_no);
+      setPayment(state => ({ ...state, payment_mode: "CASH" }));
       getCashAccount()
         .then(res => {
           if (res.data.success) {
