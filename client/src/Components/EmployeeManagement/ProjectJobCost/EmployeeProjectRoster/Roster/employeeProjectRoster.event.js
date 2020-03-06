@@ -93,18 +93,18 @@ export function createReport(input, options) {
         module: "reports",
         method: "POST",
         header: {
-          "content-type": "application/octet-stream",
-          ...settings
+          Accept: "blob"
+        },
+        others: {
+          responseType: "blob"
         },
         onSuccess: response => {
-          console.log("response", response);
+          const url = URL.createObjectURL(response.data);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `newReport${moment().format()}.pdf`;
+          a.click();
           resolve();
-          // const { success, records, message } = response.data;
-          // if (success === true) {
-          //   resolve(records);
-          // } else {
-          //   reject(new Error(message));
-          // }
         },
         onCatch: error => {
           reject(error);

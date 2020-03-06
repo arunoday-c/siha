@@ -1589,8 +1589,8 @@ export default {
           _inputParam.pageSize == null
             ? { format: "A3" }
             : { format: _inputParam.pageSize };
-        await page.pdf({
-          path: _outPath,
+        const result = await page.pdf({
+          // path: _outPath,
           ...pageSize,
           landscape: true,
           printBackground: true,
@@ -1600,21 +1600,23 @@ export default {
           //   "<h1>H1 tag</h1><h2>H2 tag</h2><hr style='border-bottom: 2px solid #8c8b8b;' />"
         });
         await browser.close();
-        fs.exists(_outPath, exists => {
-          if (exists) {
-            res.writeHead(200, {
-              "content-type": "application/pdf",
-              "content-disposition": "attachment;filename=newReport.pdf"
-            });
-            const _fs = fs.createReadStream(_outPath);
-            _fs.on("end", () => {
-              // fs.unlink(_outPath);
-            });
-            _fs.pipe(res);
-          } else {
-            res.status(400).send({ error: "ERROR File does not exist" });
-          }
-        });
+        res.contentType("application/pdf");
+        res.status(200).send(result);
+        // fs.exists(_outPath, exists => {
+        //   if (exists) {
+        //     res.writeHead(200, {
+        //       "content-type": "application/pdf",
+        //       "content-disposition": "attachment;filename=newReport.pdf"
+        //     });
+        //     const _fs = fs.createReadStream(_outPath);
+        //     _fs.on("end", () => {
+        //       // fs.unlink(_outPath);
+        //     });
+        //     _fs.pipe(res);
+        //   } else {
+        //     res.status(400).send({ error: "ERROR File does not exist" });
+        //   }
+        // });
       })();
     });
   }

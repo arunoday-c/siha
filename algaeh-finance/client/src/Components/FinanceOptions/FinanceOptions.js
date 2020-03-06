@@ -12,13 +12,16 @@ export default function FinanceOptions(props) {
     async function initData() {
       try {
         const results = await Promise.all([
-          newAlgaehApi({ uri: "/organization/getOrganization" }),
+          newAlgaehApi({
+            uri: "/finance_masters/getCostCentersForVoucher",
+            module: "finance"
+          }),
           newAlgaehApi({
             uri: "/finance_masters/getFinanceOption",
             module: "finance"
           })
         ]);
-        setOrganization(results[0].data.records);
+        setOrganization(results[0].data.result);
         setFinOptions(results[1].data.result[0]);
       } catch (e) {
         AlgaehMessagePop({
@@ -31,19 +34,13 @@ export default function FinanceOptions(props) {
   }, []);
 
   useEffect(() => {
-    newAlgaehApi({
-      uri: "/finance_masters/getCostCenters",
-      module: "finance",
-      data: { hospital_id: finOptions.default_branch_id }
-    })
-      .then(result => setCostCenters(result.data.result))
-      .catch(e =>
-        AlgaehMessagePop({
-          info: "error",
-          display: e.message || e.response.data.message
-        })
+    if (finOptions.default_branch_id) {
+      const [required] = organization.filter(
+        el => el.hims_d_hospital_id === finOptions.default_branch_id
       );
-  }, [finOptions.default_branch_id]);
+      setCostCenters(required.cost_centers);
+    }
+  }, [finOptions]);
 
   function handleDropDown(_, value, name) {
     setFinOptions(state => {
