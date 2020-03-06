@@ -6,7 +6,7 @@ export function getSalesQuotation(req, res, next) {
   try {
     console.log("getSalesQuotation: ", req.query.HRMNGMT_Active)
     let strQuery = ""
-    if (req.query.HRMNGMT_Active) {
+    if (req.query.HRMNGMT_Active === true) {
       strQuery = "SELECT SQ.*, C.customer_name, E.full_name as employee_name from hims_f_sales_quotation SQ \
       inner join  hims_d_customer C on  SQ.customer_id = C.hims_d_customer_id \
       inner join  hims_d_employee E on  SQ.sales_person_id = E.hims_d_employee_id \

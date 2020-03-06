@@ -8,6 +8,7 @@ import {
   AlgaehFormGroup,
   AlgaehDateHandler
 } from "algaeh-react-components";
+import { InfoBar } from "../../../Wrappers";
 import { getInvoicesForSupplier } from "./SupPaymentEvents";
 import { Button } from "antd";
 
@@ -16,6 +17,11 @@ export default memo(function(props) {
   const history = useHistory();
 
   const [data, setData] = useState([]);
+  const [info, setInfo] = useState({
+    over_due: "0.00",
+    total_receivable: "0.00",
+    last_paid: "0.00"
+  });
   const [level, setLevel] = useState(undefined);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
@@ -28,7 +34,13 @@ export default memo(function(props) {
       getInvoicesForSupplier(finance_account_child_id)
         .then(res => {
           if (res.data.success) {
-            setData(res.data.result);
+            const { result } = res.data;
+            setData(result.result);
+            setInfo(state => ({
+              ...state,
+              over_due: result.over_due,
+              total_receivable: result.total_receivable
+            }));
             setLoading(false);
           }
         })
@@ -45,6 +57,7 @@ export default memo(function(props) {
   return (
     <div className="row">
       <div className="col-12">
+        <InfoBar data={info} />
         <div className="row inner-top-search" style={{ paddingBottom: 10 }}>
           <AlgaehAutoComplete
             div={{
