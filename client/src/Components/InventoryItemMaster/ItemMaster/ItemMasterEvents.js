@@ -28,6 +28,19 @@ const Validations = $this => {
       document.querySelector("[name='conversion_factor']").focus();
     }
   } else {
+
+    // else if (
+    //       $this.state.purchase_cost === null ||
+    //       $this.state.purchase_cost === "" ||
+    //       parseFloat($this.state.purchase_cost) === 0
+    //     ) {
+    //       isError = true;
+    //       swalMessage({
+    //         type: "warning",
+    //         title: "Please Enter Purchase Cost."
+    //       });
+    //       document.querySelector("[name='purchase_cost']").focus();
+    //     }
     AlgaehValidation({
       querySelector: "data-validate='InvItemMaster'", //if require section level
       fetchFromFile: true, //if required arabic error
@@ -48,9 +61,10 @@ const Validations = $this => {
             title: "Item Code Already Exist."
           });
         } else if (
-          $this.state.standard_fee === null ||
-          $this.state.standard_fee === "" ||
-          parseFloat($this.state.standard_fee) === 0
+          ($this.state.standard_fee === null ||
+            $this.state.standard_fee === "" ||
+            parseFloat($this.state.standard_fee) === 0) &&
+          ($this.state.standard_fee === "STK" || $this.state.standard_fee === "OITM")
         ) {
           isError = true;
           swalMessage({
@@ -58,17 +72,6 @@ const Validations = $this => {
             title: "Please Enter the Sales Price."
           });
           document.querySelector("[name='standard_fee']").focus();
-        } else if (
-          $this.state.purchase_cost === null ||
-          $this.state.purchase_cost === "" ||
-          parseFloat($this.state.purchase_cost) === 0
-        ) {
-          isError = true;
-          swalMessage({
-            type: "warning",
-            title: "Please Enter Purchase Cost."
-          });
-          document.querySelector("[name='purchase_cost']").focus();
         } else if (
           $this.state.vat_applicable === "Y" &&
           ($this.state.vat_percent === null ||

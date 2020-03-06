@@ -88,7 +88,13 @@ export default () => {
     });
   });
 
-  api.post("/addItemMaster", addServices, addItemMaster, (req, res, next) => {
+  api.post("/addItemMaster", (req, res, next) => {
+    if (req.body.item_type === "STK" || req.body.item_type === "OITM") {
+      addServices(req, res, next);
+    } else {
+      next();
+    }
+  }, addItemMaster, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records
@@ -164,7 +170,13 @@ export default () => {
 
   api.put(
     "/updateItemMasterAndUom",
-    updateServicesOthrs,
+    (req, res, next) => {
+      if (req.body.item_type === "STK" || req.body.item_type === "OITM") {
+        updateServicesOthrs(req, res, next);
+      } else {
+        next();
+      }
+    },
     updateItemMasterAndUom,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

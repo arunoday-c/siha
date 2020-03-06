@@ -116,6 +116,7 @@ class InventoryItemMaster extends Component {
           purchase_cost: firstRecordSet.purchase_cost,
           addl_information: firstRecordSet.addl_information,
           exp_date_required: firstRecordSet.exp_date_required,
+          sfda_code: firstRecordSet.sfda_code,
           reorder_qty: firstRecordSet.reorder_qty,
           standard_fee: firstRecordSet.sales_price,
           vat_applicable: firstRecordSet.vat_applicable,

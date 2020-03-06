@@ -177,7 +177,7 @@ class InvItemMaster extends Component {
                         onChange: texthandle.bind(this, this)
                       }}
                     />
-                    <div className="col-6">
+                    <div className="col-3">
                       <label>Item Currently </label>
                       <div className="customRadio" style={{ borderBottom: 0 }}>
                         <label className="radio inline">
@@ -212,7 +212,21 @@ class InvItemMaster extends Component {
                         </label>
                       </div>
                     </div>
-                    <div className="col-3">
+                    <AlagehFormGroup
+                      div={{ className: "col-4 form-group" }}
+                      label={{
+                        forceLabel: "SFDA"
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "sfda_code",
+                        value: this.state.sfda_code,
+                        events: {
+                          onChange: texthandle.bind(this, this)
+                        }
+                      }}
+                    />
+                    <div className="col-2">
                       <label>Expiry Date</label>
                       <div
                         className="customCheckbox"
@@ -660,10 +674,9 @@ class InvItemMaster extends Component {
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-4 mandatory form-group" }}
+                      div={{ className: "col-4 form-group" }}
                       label={{
-                        fieldName: "purchase_cost",
-                        isImp: true
+                        fieldName: "purchase_cost"
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
@@ -679,7 +692,8 @@ class InvItemMaster extends Component {
                     <AlagehFormGroup
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
-                        fieldName: "price"
+                        fieldName: "price",
+                        isImp: this.state.item_type === "AST" || this.state.item_type === "NSK" ? false : true
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
