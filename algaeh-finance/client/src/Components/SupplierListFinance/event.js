@@ -8,7 +8,6 @@ export function LoadSupplierPayable() {
         method: "GET",
         module: "finance",
         onSuccess: response => {
-          debugger;
           if (response.data.success === true) {
             resolve(response.data.result);
           }

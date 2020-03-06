@@ -6,12 +6,19 @@ import { LoadCustomerReceivables } from "./event";
 import { Button } from "antd";
 
 function CustomerList(props) {
-  const [customer_receivables, setCustomerReceivables] = useState([]);
   const history = useHistory();
+
+  const [customer_receivables, setCustomerReceivables] = useState([]);
+  const [info, setInfo] = useState({
+    over_due: "0.00",
+    total_receivable: "0.00"
+  });
+
   useEffect(() => {
     LoadCustomerReceivables()
-      .then(result => {
-        setCustomerReceivables(result);
+      .then(data => {
+        setCustomerReceivables(data.result);
+        setInfo({ ...data });
       })
       .catch(error => {
         AlgaehMessagePop({
@@ -28,13 +35,13 @@ function CustomerList(props) {
           <div className="col danger">
             <div className="text">
               <p>Overdue</p>
-              0.00
+              {info.over_due}
             </div>
           </div>
           <div className="col">
             <div className="text">
               <p>Open Invoices</p>
-              0.00
+              {info.total_receivable}
             </div>
           </div>
           <div className="col">
