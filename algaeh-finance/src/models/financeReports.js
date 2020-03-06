@@ -962,9 +962,9 @@ function getAccountHeadsForTrialBalance(
       }
       _mysql
         .executeQuery({
-          query: `select finance_account_head_id,account_code,account_name,account_parent,account_level,
+          query: `select finance_account_head_id,account_code,concat(account_name,' / ',account_code)as account_name,account_parent,account_level,
           H.created_from as created_status ,sort_order,parent_acc_id,root_id,
-          finance_account_child_id,child_name,head_id,C.created_from as child_created_from
+          finance_account_child_id,concat(child_name,' / ',ledger_code) as child_name,head_id,C.created_from as child_created_from
           from finance_account_head H left join 
           finance_account_child C on C.head_id=H.finance_account_head_id ${qrystr}
            where root_id=?  order by account_level,sort_order;   
@@ -1058,13 +1058,14 @@ function getAccountHeadsForReport(
       }
       _mysql
         .executeQuery({
-          query: `select finance_account_head_id,account_code,account_name,account_parent,account_level,
+          query: `select finance_account_head_id,account_code,concat(account_name,' / ',account_code)as account_name,
+           account_parent,account_level,
           H.created_from as created_status ,sort_order,parent_acc_id,root_id,
-          finance_account_child_id,child_name,head_id,C.created_from as child_created_from
+          finance_account_child_id,concat(child_name,' / ',ledger_code) as child_name,head_id,C.created_from as child_created_from
           from finance_account_head H left join 
           finance_account_child C on C.head_id=H.finance_account_head_id 
            where root_id=? order by account_level,sort_order;           
-           select C.head_id,finance_account_child_id as child_id,child_name
+           select C.head_id,finance_account_child_id as child_id
           ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
           ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount, 
           ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
