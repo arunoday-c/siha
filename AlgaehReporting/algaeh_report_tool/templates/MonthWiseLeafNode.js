@@ -47,7 +47,8 @@ const executePDF = function executePDFMethod(options) {
               options.mysql
                 .executeQuery({
                   query: `   select finance_voucher_id,VD.head_id ,VD.child_id,monthname(concat('1999-',month,'-01')) as month_name, 
-                              ROUND(sum(debit_amount),${decimal_places}) as debit_amount,ROUND(sum(credit_amount),${decimal_places})  as credit_amount,C.child_name
+                              ROUND(sum(debit_amount),${decimal_places}) as debit_amount,ROUND(sum(credit_amount),${decimal_places})  as credit_amount,
+                              C.child_name,C.ledger_code
                               from finance_voucher_details VD inner join finance_account_child C on
                               VD.child_id=C.finance_account_child_id where  VD.auth_status='A' and
                               VD.child_id=?  ${strQry}   group by month;      `,

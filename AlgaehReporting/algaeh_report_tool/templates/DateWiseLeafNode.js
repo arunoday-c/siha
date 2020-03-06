@@ -52,7 +52,7 @@ const executePDF = function executePDFMethod(options) {
                 query: `  select finance_voucher_header_id,voucher_type,voucher_no,
                       VD.head_id,VD.payment_date ,VD.child_id, AH.root_id,              
                       ROUND(sum(debit_amount),${decimal_places}) as debit_amount,
-                      ROUND(sum(credit_amount),${decimal_places})  as credit_amount,C.child_name
+                      ROUND(sum(credit_amount),${decimal_places})  as credit_amount,C.child_name,C.ledger_code
                       from finance_voucher_header H inner join finance_voucher_details VD
                       on H.finance_voucher_header_id=VD.voucher_header_id inner join finance_account_child C on
                       VD.child_id=C.finance_account_child_id inner join  finance_account_head AH on
