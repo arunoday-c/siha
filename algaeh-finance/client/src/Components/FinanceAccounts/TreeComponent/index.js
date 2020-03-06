@@ -563,8 +563,9 @@ function TreeComponent({ assetCode, title, inDrawer }) {
       />
 
       <div className="row">
-        <AccountChart />
-        <div className={isExpOrInc && !inDrawer ? "col-8" : "col-12"}>
+        {/* <AccountChart /> */}
+        {/* <div className={isExpOrInc && !inDrawer ? "col-8" : "col-12"}> */}
+        <div className={"col-12"}>
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
