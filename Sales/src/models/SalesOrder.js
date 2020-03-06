@@ -7,7 +7,7 @@ export function getSalesOrder(req, res, next) {
         console.log("getSalesOrder: ")
 
         let strQuery = ""
-        if (req.query.HRMNGMT_Active) {
+        if (req.query.HRMNGMT_Active === true) {
             strQuery = "SELECT SO.*, C.customer_name, E.full_name as employee_name, SQ.sales_quotation_number from hims_f_sales_order SO \
                         left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id \
                         inner join  hims_d_customer C on  SO.customer_id = C.hims_d_customer_id \
@@ -292,7 +292,7 @@ export function getSalesQuotationForOrder(req, res, next) {
     try {
         console.log("getSalesQuotationForOrder: ", req.query.HRMNGMT_Active)
         let strQuery = ""
-        if (req.query.HRMNGMT_Active) {
+        if (req.query.HRMNGMT_Active === true) {
             strQuery = "SELECT SQ.*, C.customer_name, E.full_name as employee_name from hims_f_sales_quotation SQ \
             inner join  hims_d_customer C on  SQ.customer_id = C.hims_d_customer_id \
             inner join  hims_d_employee E on  SQ.sales_person_id = E.hims_d_employee_id \
