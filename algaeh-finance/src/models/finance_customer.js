@@ -59,19 +59,38 @@ export default {
         when settlement_status='P' and curdate()> due_date then 'over due'
         when settlement_status='P' and settled_amount<1 then 'open' 
         when settlement_status='P' and settled_amount>0 then 'paid' end as invoice_status,
-        D.child_id,D.head_id      
-       
+        D.child_id,D.head_id             
         from finance_voucher_header H inner join finance_voucher_details D on 
         H.finance_voucher_header_id=D.voucher_header_id 
         and H.voucher_type='sales' and H.invoice_no is not null   
-        and  D.child_id=?; `,
-        values: [req.query.child_id],
+        and  D.child_id=?; 
+        
+        select round(coalesce(sum(amount)-sum(settled_amount),0),${decimal_places})as over_due 
+        from finance_voucher_header H inner join finance_voucher_details VD
+        on H.finance_voucher_header_id=VD.voucher_header_id and VD.auth_status='A' 
+        where   H.voucher_type='sales' and H.invoice_no is not null and VD.child_id=?
+        and H.settlement_status='P' and curdate()> due_date; 
+
+        select round(coalesce(sum(amount)-sum(settled_amount),0),${decimal_places})as open
+        from finance_voucher_header H inner join finance_voucher_details VD
+        on H.finance_voucher_header_id=VD.voucher_header_id and VD.auth_status='A' 
+        where   H.voucher_type='sales' and H.invoice_no is not null and VD.child_id=?
+        and H.settlement_status='P';
+        
+        `,
+        values: [req.query.child_id, req.query.child_id, req.query.child_id],
         printQuery: true
       })
       .then(result => {
         _mysql.releaseConnection();
 
-        req.records = result;
+        // req.records = result;
+
+        req.records = {
+          result: result[0],
+          over_due: result[1][0]["over_due"],
+          total_receivable: result[2][0]["open"]
+        };
         next();
       })
       .catch(e => {
