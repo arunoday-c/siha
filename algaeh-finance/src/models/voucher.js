@@ -58,6 +58,10 @@ export default {
 
     let voucher_type = "";
 
+    let invoice_ref_no = null;
+
+    let invoice_no = input.invoice_no;
+
     switch (input.voucher_type) {
       case "journal":
         voucher_type = "JOURNAL";
@@ -67,9 +71,13 @@ export default {
         break;
       case "receipt":
         voucher_type = "RECEIPT";
+        invoice_ref_no = input.invoice_no;
+        invoice_no = null;
         break;
       case "payment":
         voucher_type = "PAYMENT";
+        invoice_ref_no = input.invoice_no;
+        invoice_no = null;
         break;
       case "sales":
         voucher_type = "SALES";
@@ -175,9 +183,9 @@ export default {
                     .executeQueryWithTransaction({
                       query:
                         "INSERT INTO `finance_voucher_header` (payment_mode,ref_no,cheque_date,amount, payment_date, month, year,\
-                       narration, voucher_no, voucher_type,from_screen,invoice_no,posted_from,\
+                       narration, voucher_no, voucher_type,from_screen,invoice_no,invoice_ref_no,posted_from,\
                        created_by, updated_by, created_date, update_date)\
-                       VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                       VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                       values: [
                         payment_mode,
                         ref_no,
@@ -190,7 +198,8 @@ export default {
                         numgen[voucher_type],
                         input.voucher_type,
                         input.from_screen,
-                        input.invoice_no,
+                        invoice_no,
+                        invoice_ref_no,
                         "V",
                         req.userIdentity.algaeh_d_app_user_id,
                         req.userIdentity.algaeh_d_app_user_id,
@@ -1082,7 +1091,7 @@ export default {
                 _mysql
                   .executeQuery({
                     query:
-                      "select VD.debit_amount,amount,voucher_type,invoice_no,VD.child_id,VD.credit_amount,VD.payment_type,H.root_id,VD.hospital_id\
+                      "select VD.debit_amount,amount,voucher_type,invoice_ref_no,VD.child_id,VD.credit_amount,VD.payment_type,H.root_id,VD.hospital_id\
                       ,C.child_name from finance_voucher_header VH inner join finance_voucher_details VD on VH.finance_voucher_header_id=VD.voucher_header_id\
                     inner join finance_account_head H on VD.head_id=H.finance_account_head_id\
                     inner join finance_account_child C on VD.child_id=C.finance_account_child_id\
@@ -1283,13 +1292,13 @@ export default {
                         let updateQry = "";
                         new Promise((resolve, reject) => {
                           // PAYMENT AGAINST OLD PENDING VOUCHER
-                          if (result[0]["invoice_no"] != null) {
+                          if (result[0]["invoice_ref_no"] != null) {
                             _mysql
                               .executeQuery({
                                 query:
                                   "select finance_voucher_header_id, voucher_type,amount,settlement_status,settled_amount\
                                 from finance_voucher_header where invoice_no=? and voucher_type in ('purchase' ,'sales') and settlement_status='P';",
-                                values: [result[0]["invoice_no"]],
+                                values: [result[0]["invoice_ref_no"]],
                                 printQuery: true
                               })
                               .then(BalanceInvoice => {

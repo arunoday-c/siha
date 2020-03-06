@@ -12,16 +12,34 @@ export default {
     _mysql
       .executeQuery({
         query: `select C.finance_account_child_id ,C.child_name,
-         ROUND(  (coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount)   ,0.0000)),${decimal_places})
+         ROUND(  coalesce(sum(credit_amount) ,0)- coalesce(sum(debit_amount)   ,0),${decimal_places})
         as balance_amount from finance_account_child C left join finance_voucher_details VD
         on C.finance_account_child_id=VD.child_id and VD.auth_status='A'  where  finance_account_child_id in (
-        select child_id from hims_d_vendor) group by C.finance_account_child_id; `,
+        select child_id from hims_d_vendor) group by C.finance_account_child_id;
+
+        select round(coalesce(sum(amount)-sum(settled_amount),0),2)as over_due 
+        from finance_voucher_header H inner join finance_voucher_details VD
+        on H.finance_voucher_header_id=VD.voucher_header_id and VD.auth_status='A' 
+        where   H.voucher_type='purchase' and H.invoice_no is not null and
+        VD.child_id in ( select child_id from hims_d_vendor) 
+        and H.settlement_status='P' and curdate()> due_date; 
+
+        select round(coalesce(sum(amount)-sum(settled_amount),0),2)as open
+        from finance_voucher_header H inner join finance_voucher_details VD
+        on H.finance_voucher_header_id=VD.voucher_header_id and VD.auth_status='A' 
+        where   H.voucher_type='purchase' and H.invoice_no is not null and 
+        VD.child_id in ( select child_id from hims_d_vendor) 
+        and H.settlement_status='P';  `,
         printQuery: true
       })
       .then(result => {
         _mysql.releaseConnection();
 
-        req.records = result;
+        req.records = {
+          result: result[0],
+          over_due: result[1][0]["over_due"],
+          total_receivable: result[2][0]["open"]
+        };
         next();
       })
       .catch(e => {
