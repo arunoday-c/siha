@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 const userPreferenceSchema = new mongoose.Schema({
-  userID: String,
-  screenID: String,
-  screens: Array,
-  selectedLanguage: String,
-  selectedTheme: String
+  userID: { type: String },
+  preferences: { type: Array },
+  selectedLanguage: { type: String },
+  selectedTheme: { type: String },
+  language: { type: String },
+  theme: { type: String }
 });
-export default mongoose.model("algaeh_user_preference", userPreferenceSchema);
+export default mongoose.model("algaeh_user_preferences", userPreferenceSchema);

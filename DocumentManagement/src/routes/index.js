@@ -7,10 +7,10 @@ initializedDb(db => {
   router.use("/Document", documentManagement(db));
   router.use(
     "/setPreferences",
-    (req, res, next) => {
-      console.log("Here");
-      next();
-    },
+    // (req, res, next) => {
+    //   console.log("Here");
+    //   next();
+    // },
     setUserPreference
   );
 });

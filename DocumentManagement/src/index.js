@@ -35,7 +35,7 @@ process.on("unhandledRejection", (reason, promise) => {
 // }
 //Error Handling MiddleWare
 app.use((error, req, res, next) => {
-  error.status = error.status || httpStatus.internalServer;
+  error.status = error.status || 500;
   if (req.db != null) {
     let connection = req.connection;
     if (connection != null) {

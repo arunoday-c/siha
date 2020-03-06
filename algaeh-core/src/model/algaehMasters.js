@@ -639,7 +639,8 @@ where record_status='I';`
                           algaeh_d_module_id,
                           algaeh_m_screen_role_privilage_mapping_id
                         };
-                      });
+                      })
+                      .value();
                   };
 
                   let componentsDetails = [];
@@ -647,8 +648,14 @@ where record_status='I';`
                     componentsDetails = componentsInactiveList.filter(
                       f => f.algaeh_app_screens_id === algaeh_app_screens_id
                     );
+
                     if (componentsDetails.length === 0) {
                       componentsDetails = listItems();
+                    } else {
+                      const lst = listItems();
+                      for (let l = 0; l < lst.length; l++) {
+                        componentsDetails.push(lst[l]);
+                      }
                     }
                   } else {
                     componentsDetails = listItems();
