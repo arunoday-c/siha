@@ -752,6 +752,7 @@ export default {
     let input = req.query;
 
     let strQry = "";
+    let joinStr = "";
 
     if (input.posted == "Y") {
       strQry += " posted='Y' ";
@@ -762,9 +763,11 @@ export default {
     if (input.module_id > 0) {
       strQry += ` and  S.module_id=${input.module_id}`;
     }
+
     if (input.screen_code !== undefined && input.screen_code != null) {
       strQry += ` and H.from_screen=${input.screen_code}`;
     }
+
     if (
       moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD") > 0 &&
       moment(input.to_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
@@ -774,6 +777,13 @@ export default {
 
     if (input.document_number !== undefined && input.document_number != null) {
       strQry += ` and  H.document_number like '%${input.document_number}%' `;
+    }
+
+    if (input.child_id > 0) {
+      joinStr =
+        "  inner join finance_day_end_sub_detail SD on \
+       H.finance_day_end_header_id=SD.day_end_header_id ";
+      strQry += ` and  SD.child_id=${input.child_id}`;
     }
     // if (
     //   input.transaction_type !== undefined &&
@@ -809,11 +819,12 @@ export default {
         invoice_no, screen_name, ref_no as cheque_no,cheque_date, 
          ROUND( cheque_amount , ${decimal_places}) as  cheque_amount, narration, 
         U.username as entered_by, entered_date from finance_day_end_header H 
+        ${joinStr}
         left join  algaeh_d_app_screens S on H.from_screen=S.screen_code
         left join algaeh_d_app_user U on H.entered_by=U.algaeh_d_app_user_id
         where ${strQry}; `,
 
-        printQuery: false
+        printQuery: true
       })
       .then(result => {
         _mysql.releaseConnection();
