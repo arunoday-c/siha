@@ -1,16 +1,10 @@
 import React, { memo, useState, useEffect } from "react";
 import { useLocation, useHistory } from "react-router-dom";
-import {
-  AlgaehDataGrid,
-  AlgaehMessagePop,
-  AlgaehButton,
-  AlgaehAutoComplete,
-  AlgaehFormGroup,
-  AlgaehDateHandler
-} from "algaeh-react-components";
+import { AlgaehDataGrid, AlgaehMessagePop } from "algaeh-react-components";
 import { InfoBar } from "../../../Wrappers";
+import { FilterComponent } from "../../FilterComponent";
 import { getInvoicesForSupplier } from "./SupPaymentEvents";
-import { Button } from "antd";
+import { Button, Spin } from "antd";
 
 export default memo(function(props) {
   const location = useLocation();
@@ -22,10 +16,8 @@ export default memo(function(props) {
     total_receivable: "0.00",
     last_paid: "0.00"
   });
-  const [level, setLevel] = useState(undefined);
+
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState("");
-  const [dates, setDates] = useState(undefined);
 
   useEffect(() => {
     if (location.state) {
@@ -54,189 +46,104 @@ export default memo(function(props) {
     }
   }, [location.state]);
 
+  const receive = (_, row) => {
+    return (
+      <Button
+        disabled={row.invoice_status === "closed"}
+        type="link"
+        onClick={() =>
+          history.push("/JournalVoucher", {
+            data: row,
+            type: "supplier"
+          })
+        }
+      >
+        Send Payment
+      </Button>
+    );
+  };
+
   return (
-    <div className="row">
-      <div className="col-12">
-        <InfoBar data={info} />
-        <div className="row inner-top-search" style={{ paddingBottom: 10 }}>
-          <AlgaehAutoComplete
-            div={{
-              className: "col-2"
-            }}
-            label={{
-              forceLabel: "Transaction Lines"
-            }}
-            selector={{
-              dataSource: {
-                data: [
-                  { text: "Transaction No.", value: "1" },
-                  { text: "Transaction Date", value: "2" },
-                  { text: "Line Amount", value: "3" },
-                  { text: "Line Description", value: "4" },
-                  { text: "Transaction Date", value: "5" }
-                ],
-                valueField: "value",
-                textField: "text"
-              },
-              value: level,
-              onChange: selected => {
-                setLevel(selected.value);
-              },
-              onClear: () => {
-                setLevel(undefined);
-              }
-            }}
-          />
-          <AlgaehAutoComplete
-            div={{
-              className: "col-2"
-            }}
-            label={{
-              forceLabel: "Filter by"
-            }}
-            selector={{
-              dataSource: {
-                data: [
-                  { text: "Contains", value: "1" },
-                  { text: "Equals", value: "2" },
-                  { text: "ABCD", value: "3" }
-                ],
-                valueField: "value",
-                textField: "text"
-              },
-              value: status,
-              onChange: selected => {
-                setStatus(selected.value);
-              },
-              onClear: () => {
-                setStatus(undefined);
-              }
-            }}
-          />
-          <AlgaehDateHandler
-            div={{ className: "col-3" }}
-            label={{ forceLabel: "Transaction Date" }}
-            //type="date"
-            textBox={{
-              value: dates
-            }}
-            events={{
-              onChange: selected => {
-                setDates(selected);
-              }
-            }}
-          />
-          <AlgaehFormGroup
-            div={{
-              className: "col form-group"
-            }}
-            label={{
-              forceLabel: "Transaction Number",
-              isImp: true
-            }}
-            textBox={{
-              type: "text",
-              value: "",
-              className: "form-control",
-              id: "name",
-              placeholder: " Enter Transaction Name",
-              autoComplete: false
-            }}
-          />
-          <div className="col-2">
-            {" "}
-            <AlgaehButton
-              type="primary"
-              loading={loading}
-              // onClick={loadData}
-              style={{ marginTop: 15 }}
-            >
-              Search
-            </AlgaehButton>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-12">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="row">
-                <div className="col-lg-12 customCheckboxGrid">
-                  <AlgaehDataGrid
-                    columns={[
-                      {
-                        key: "invoice_date",
-                        title: "Date",
-                        sortable: true
-                      },
-                      {
-                        key: "invoice_no",
-                        title: "Invoice No",
-                        sortable: true
-                      },
-                      {
-                        key: "narration",
-                        title: "Description"
-                      },
-                      {
-                        key: "due_date",
-                        title: "Due Date",
-                        sortable: true
-                      },
-                      {
-                        key: "invoice_amount",
-                        title: "Invoice Amount",
-                        sortable: true
-                      },
-                      {
-                        key: "settled_amount",
-                        title: "Paid Amount",
-                        sortable: true
-                      },
-                      {
-                        key: "balance_amount",
-                        title: "Balance Amount",
-                        sortable: true
-                      },
-                      {
-                        key: "invoice_status",
-                        title: "Status",
-                        displayTemplate: text => text.toUpperCase(),
-                        sortable: true
-                      },
-                      {
-                        key: "last_modified",
-                        title: "Last Modified Date",
-                        sortable: true
-                      },
-                      {
-                        title: "Action",
-                        displayTemplate: (_, row) => {
-                          return (
-                            <Button
-                              disabled={row.invoice_status === "closed"}
-                              type="link"
-                              onClick={() =>
-                                history.push("/JournalVoucher", {
-                                  data: row,
-                                  type: "supplier"
-                                })
-                              }
-                            >
-                              Send Payment
-                            </Button>
-                          );
+    <Spin spinning={loading}>
+      <div className="row">
+        <div className="col-12">
+          <InfoBar data={info} />
+          <FilterComponent />
+          <div className="row">
+            <div className="col-12">
+              <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="portlet-title">
+                  <div className="actions">
+                    <button className="btn btn-default">
+                      <i className="fas fa-print"></i>
+                    </button>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-12 customCheckboxGrid">
+                    <AlgaehDataGrid
+                      columns={[
+                        {
+                          key: "invoice_date",
+                          title: "Date",
+                          sortable: true
+                        },
+                        {
+                          key: "invoice_no",
+                          title: "Invoice No",
+                          sortable: true
+                        },
+                        {
+                          key: "narration",
+                          title: "Description"
+                        },
+                        {
+                          key: "due_date",
+                          title: "Due Date",
+                          sortable: true
+                        },
+                        {
+                          key: "invoice_amount",
+                          title: "Invoice Amount",
+                          sortable: true
+                        },
+                        {
+                          key: "settled_amount",
+                          title: "Paid Amount",
+                          sortable: true
+                        },
+                        {
+                          key: "balance_amount",
+                          title: "Balance Amount",
+                          sortable: true
+                        },
+                        {
+                          key: "invoice_status",
+                          title: "Status",
+                          displayTemplate: text => text.toUpperCase(),
+                          sortable: true
+                        },
+                        {
+                          key: "last_modified",
+                          title: "Last Modified Date",
+                          sortable: true
+                        },
+                        {
+                          title: "Action",
+                          displayTemplate: receive
                         }
-                      }
-                    ]}
-                    // height="40vh"
-                    rowUnique="finance_voucher_header_id"
-                    dataSource={{ data: data }}
-                  ></AlgaehDataGrid>
+                      ]}
+                      // height="40vh"
+                      rowUnique="finance_voucher_header_id"
+                      dataSource={{ data: data }}
+                    ></AlgaehDataGrid>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </Spin>
   );
 });

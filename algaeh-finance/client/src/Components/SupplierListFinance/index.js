@@ -1,9 +1,9 @@
 import React, { memo, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import "../../infobar.scss";
+import { Button } from "antd";
 import { AlgaehDataGrid, AlgaehMessagePop } from "algaeh-react-components";
 import { LoadSupplierPayable } from "./event";
-import { Button } from "antd";
+import { InfoBar } from "../../Wrappers";
 
 function CustomerList(props) {
   const [supplier_payable, setSupplierPayable] = useState([]);
@@ -33,26 +33,7 @@ function CustomerList(props) {
   return (
     <div className="row">
       <div className="col-12">
-        <div className="row infoBar">
-          <div className="col danger">
-            <div className="text">
-              <p>Overdue</p>
-              {info.over_due}
-            </div>
-          </div>
-          <div className="col">
-            <div className="text">
-              <p>Open Invoices</p>
-              {info.total_receivable}
-            </div>
-          </div>
-          <div className="col">
-            <div className="text">
-              <p>Paid Last 30 days</p>
-              0.00
-            </div>
-          </div>
-        </div>
+        <InfoBar data={info} />
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
