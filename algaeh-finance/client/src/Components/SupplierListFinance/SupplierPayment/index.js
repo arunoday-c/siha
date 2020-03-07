@@ -85,7 +85,14 @@ export default memo(function(props) {
                     >
                       <i className="fas fa-print"></i>
                     </button>
-                    <button className="btn btn-default">
+                    <button
+                      className="btn btn-default"
+                      onClick={() =>
+                        history.push("/DayEndProcess", {
+                          data: location.state.data
+                        })
+                      }
+                    >
                       <i className="fas fa-share-square"></i>
                     </button>
                   </div>

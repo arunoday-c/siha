@@ -1,10 +1,10 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import "./day_end_prc.scss";
 
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDateHandler,
   AlgaehModalPopUp
@@ -88,6 +88,25 @@ class DayEndProcess extends Component {
     this.selectedDayEndIds = "";
   }
 
+  componentDidMount() {
+    if (this.props.location.state) {
+      algaehApiCall({
+        uri: "/finance/getDayEndData",
+        data: {
+          child_id: this.props.location.state.data.finance_account_child_id
+        },
+        method: "GET",
+        module: "finance",
+        onSuccess: response => {
+          this.setState({ dayEnd: response.data.result });
+        },
+        onCatch: error => {
+          swalMessage({ title: error, type: "error" });
+        }
+      });
+    }
+  }
+
   getDayEndProcess() {
     try {
       let inputObj = { posted: this.state.posted };
@@ -119,6 +138,7 @@ class DayEndProcess extends Component {
       console.error(e);
     }
   }
+
   postDayEndProcess(finance_day_end_header_id) {
     try {
       // if (this.selectedDayEndIds.length === 0) {
@@ -342,36 +362,37 @@ class DayEndProcess extends Component {
             </div>
           </div>
         </AlgaehModalPopUp>
-        <div
-          className="row inner-top-search margin-bottom-15"
-          style={{ paddingBottom: "10px" }}
-        >
-          <div className="col-lg-12">
-            <div className="row">
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{ forceLabel: "Select Module" }}
-                selector={{
-                  name: "module_id",
-                  className: "select-fld",
-                  value: this.state.module_id,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: modules
-                  },
-                  onClear: () => {
-                    this.setState({
-                      module_id: null,
-                      screen_code: null,
-                      trans_type: []
-                    });
-                  },
-                  onChange: this.dropDownHandle.bind(this)
-                }}
-              />
+        {this.props.location.state ? null : (
+          <div
+            className="row inner-top-search margin-bottom-15"
+            style={{ paddingBottom: "10px" }}
+          >
+            <div className="col-lg-12">
+              <div className="row">
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{ forceLabel: "Select Module" }}
+                  selector={{
+                    name: "module_id",
+                    className: "select-fld",
+                    value: this.state.module_id,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: modules
+                    },
+                    onClear: () => {
+                      this.setState({
+                        module_id: null,
+                        screen_code: null,
+                        trans_type: []
+                      });
+                    },
+                    onChange: this.dropDownHandle.bind(this)
+                  }}
+                />
 
-              {/* <AlagehAutoComplete
+                {/* <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{ forceLabel: "Select Screen" }}
                 selector={{
@@ -391,44 +412,44 @@ class DayEndProcess extends Component {
                   }
                 }}
               /> */}
-              <AlgaehDateHandler
-                div={{ className: "col" }}
-                label={{ forceLabel: "From Date" }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "from_date"
-                }}
-                events={{
-                  onChange: selectedDate => {
-                    this.setState({
-                      from_date: selectedDate,
-                      to_date: undefined
-                    });
-                  },
-                  onBlur: this.dateValidate.bind(this)
-                }}
-                value={this.state.from_date}
-              />
+                <AlgaehDateHandler
+                  div={{ className: "col" }}
+                  label={{ forceLabel: "From Date" }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "from_date"
+                  }}
+                  events={{
+                    onChange: selectedDate => {
+                      this.setState({
+                        from_date: selectedDate,
+                        to_date: undefined
+                      });
+                    },
+                    onBlur: this.dateValidate.bind(this)
+                  }}
+                  value={this.state.from_date}
+                />
 
-              <AlgaehDateHandler
-                div={{ className: "col" }}
-                label={{ forceLabel: "To Date" }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "to_date"
-                }}
-                {...(this.state.from_date !== undefined
-                  ? { minDate: new Date(this.state.from_date) }
-                  : {})}
-                events={{
-                  onChange: selectedDate => {
-                    this.setState({ to_date: selectedDate });
-                  },
-                  onBlur: this.dateValidate.bind(this)
-                }}
-                value={this.state.to_date}
-              />
-              {/* <AlagehFormGroup
+                <AlgaehDateHandler
+                  div={{ className: "col" }}
+                  label={{ forceLabel: "To Date" }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "to_date"
+                  }}
+                  {...(this.state.from_date !== undefined
+                    ? { minDate: new Date(this.state.from_date) }
+                    : {})}
+                  events={{
+                    onChange: selectedDate => {
+                      this.setState({ to_date: selectedDate });
+                    },
+                    onBlur: this.dateValidate.bind(this)
+                  }}
+                  value={this.state.to_date}
+                />
+                {/* <AlagehFormGroup
                 div={{ className: "col" }}
                 label={{
                   forceLabel: "Transaction No."
@@ -446,35 +467,37 @@ class DayEndProcess extends Component {
                 }}
               /> */}
 
-              <div
-                className="customCheckbox col"
-                style={{ border: "none", marginTop: "20px" }}
-              >
-                <label className="checkbox" style={{ color: "#212529" }}>
-                  <input
-                    type="checkbox"
-                    name="posted"
-                    checked={this.state.posted === "Y" ? true : false}
-                    onChange={this.checkHandaler.bind(this)}
-                  />
-
-                  <span style={{ fontSize: "0.8rem" }}>Posted Trancation</span>
-                </label>
-              </div>
-
-              <div className="col">
-                <button
-                  className="btn btn-primary"
-                  style={{ marginTop: 19 }}
-                  onClick={this.getDayEndProcess.bind(this)}
+                <div
+                  className="customCheckbox col"
+                  style={{ border: "none", marginTop: "20px" }}
                 >
-                  Preview
-                </button>
+                  <label className="checkbox" style={{ color: "#212529" }}>
+                    <input
+                      type="checkbox"
+                      name="posted"
+                      checked={this.state.posted === "Y" ? true : false}
+                      onChange={this.checkHandaler.bind(this)}
+                    />
+
+                    <span style={{ fontSize: "0.8rem" }}>
+                      Posted Trancation
+                    </span>
+                  </label>
+                </div>
+
+                <div className="col">
+                  <button
+                    className="btn btn-primary"
+                    style={{ marginTop: 19 }}
+                    onClick={this.getDayEndProcess.bind(this)}
+                  >
+                    Preview
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
+        )}
         <div className="row">
           <div className="col-lg-12">
             <div className="portlet portlet-bordered margin-bottom-15">
@@ -641,4 +664,4 @@ class DayEndProcess extends Component {
   }
 }
 
-export default DayEndProcess;
+export default withRouter(DayEndProcess);
