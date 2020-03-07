@@ -553,7 +553,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
         title="Ledger Report"
         visible={reportVisible}
         selectedNode={selectedNode}
-        parentId="1"
+        parentId={assetCode}
         onCancel={() => {
           setReportVisible(false);
         }}

@@ -2,14 +2,14 @@ import React, { memo, useState, useEffect } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { AlgaehDataGrid, AlgaehMessagePop } from "algaeh-react-components";
 import { InfoBar } from "../../../Wrappers";
-import { FilterComponent } from "../../FilterComponent";
+import { FilterComponent, LedgerReport } from "../../InvoiceCommon";
 import { getInvoicesForCustomer } from "./CusPaymentEvents";
 import { Button, Spin } from "antd";
 
 export default memo(function(props) {
   const location = useLocation();
   const history = useHistory();
-
+  const [visible, setvisible] = useState(false);
   const [data, setData] = useState([]);
   const [info, setInfo] = useState({
     over_due: "0.00",
@@ -64,6 +64,11 @@ export default memo(function(props) {
 
   return (
     <Spin spinning={loading} delay={500}>
+      <LedgerReport
+        data={location.state.data}
+        visible={visible}
+        setVisible={setvisible}
+      />
       <div className="row">
         <div className="col-12">
           <InfoBar data={info} />
@@ -73,12 +78,11 @@ export default memo(function(props) {
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
                   <div className="actions">
-                    <button className="btn btn-default">
+                    <button
+                      className="btn btn-default"
+                      onClick={() => setvisible(true)}
+                    >
                       <i className="fas fa-print"></i>
-                    </button>
-
-                    <button className="btn btn-default">
-                      <i className="fas fa-cog"></i>
                     </button>
                   </div>
                 </div>

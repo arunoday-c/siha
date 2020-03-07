@@ -6,7 +6,7 @@ import {
   AlgaehDateHandler
 } from "algaeh-react-components";
 
-export function FilterComponent(props) {
+export default function FilterComponent(props) {
   const [level, setLevel] = useState(undefined);
   const [status, setStatus] = useState("");
   const [dates, setDates] = useState(undefined);
