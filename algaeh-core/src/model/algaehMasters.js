@@ -3515,7 +3515,8 @@ const getScreenElementsRoles = (req, res, next) => {
         left join screen_element_scren_module_mapping as esm
         on esm.algaeh_d_app_scrn_elements_id = se.algaeh_d_app_scrn_elements_id
         where  (esm.role_Id=? or esm.role_Id is null);`,
-        values: [role_id]
+        values: [role_id],
+        printQuery: true
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -3534,12 +3535,14 @@ const getScreenElementsRoles = (req, res, next) => {
                   const {
                     component_name,
                     component_code,
-                    algaeh_app_screens_id
+                    algaeh_app_screens_id,
+                    algaeh_d_app_scrn_elements_id
                   } = comp;
                   return {
                     component_name,
                     component_code,
                     algaeh_app_screens_id,
+                    algaeh_d_app_scrn_elements_id,
                     elements: _.chain(c)
                       .groupBy(g => g.algaeh_d_app_scrn_elements_id)
                       .map(e => {
@@ -3560,14 +3563,22 @@ const getScreenElementsRoles = (req, res, next) => {
                             user_extra_props !== null
                               ? user_extra_props.split(",")
                               : [];
-                          stages = extra_props.split(",").map((s, idx) => {
-                            const finder = userStage.find(f => f === s);
+                          stages = extra_props.split(",").map((item, idx) => {
+                            const hasItem = userStage.find(
+                              f =>
+                                String(f)
+                                  .toLowerCase()
+                                  .trim() ===
+                                String(item)
+                                  .toLowerCase()
+                                  .trim()
+                            );
                             let interner = {
                               checked: true,
-                              value: idx,
-                              text: s
+                              value: idx + 1,
+                              text: item
                             };
-                            if (finder !== undefined) {
+                            if (hasItem !== undefined) {
                               interner["checked"] = false;
                             }
                             return interner;
@@ -3658,6 +3669,7 @@ const updateScreenElementRoles = (req, res, next) => {
         }
       }
     }
+
     const _query = removeItem + accessItem;
     if (_query !== "") {
       _mysql
