@@ -76,9 +76,18 @@ export default {
         on H.finance_voucher_header_id=VD.voucher_header_id and VD.auth_status='A' 
         where   H.voucher_type='sales' and H.invoice_no is not null and VD.child_id=?
         and H.settlement_status='P';
-        
-        `,
-        values: [req.query.child_id, req.query.child_id, req.query.child_id],
+
+        select ROUND( coalesce(sum(credit_amount),0),${decimal_places}) as past_payments
+        from  finance_voucher_header H inner join finance_voucher_details VD
+        on H.finance_voucher_header_id=VD.voucher_header_id and VD.auth_status='A'
+        where  VD.child_id=? and voucher_type='receipt' and 
+        H.payment_date >date_sub(curdate(), INTERVAL 30 DAY);`,
+        values: [
+          req.query.child_id,
+          req.query.child_id,
+          req.query.child_id,
+          req.query.child_id
+        ],
         printQuery: true
       })
       .then(result => {
@@ -89,7 +98,8 @@ export default {
         req.records = {
           result: result[0],
           over_due: result[1][0]["over_due"],
-          total_receivable: result[2][0]["open"]
+          total_receivable: result[2][0]["open"],
+          past_payments: result[3][0]["past_payments"]
         };
         next();
       })
