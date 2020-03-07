@@ -5,7 +5,7 @@ import {
   ApproveReject,
   LoadVoucherDetails
 } from "./event";
-import { FilterComponent } from "../FilterComponent";
+import { FilterComponent } from "../InvoiceCommon";
 let rejectText = "";
 let finance_voucher_header_id = "";
 export default memo(function(props) {

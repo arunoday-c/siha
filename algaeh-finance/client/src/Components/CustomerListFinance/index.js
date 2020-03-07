@@ -48,7 +48,7 @@ function CustomerList(props) {
                   >
                     <i className="fas fa-plus"></i>
                   </button>
-                  <button className="btn btn-default">
+                  {/* <button className="btn btn-default">
                     <i className="fas fa-print"></i>
                   </button>
                   <button className="btn btn-default">
@@ -56,7 +56,7 @@ function CustomerList(props) {
                   </button>
                   <button className="btn btn-default">
                     <i className="fas fa-cog"></i>
-                  </button>
+                  </button> */}
                 </div>
               </div>
               <div className="row">

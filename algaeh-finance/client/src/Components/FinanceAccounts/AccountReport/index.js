@@ -12,12 +12,20 @@ import moment from "moment";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 let resultdata = {};
 export default memo(function Modal(props) {
-  const { selectedNode, title, onCancel, visible, onOk, parentId } = props;
+  const {
+    selectedNode,
+    title,
+    onCancel,
+    visible,
+    onOk,
+    parentId,
+    fromInvoice
+  } = props;
   const [plaseWait, setPleaseWait] = useState(
     "Please wait report is preparing.."
   );
   const [checkedType, setCheckType] = useState(false);
-  const previousMonthDate = [moment().add(-1, "M"), moment().add(-1, "days")];
+  const previousMonthDate = [moment().startOf("month"), moment()];
   const [dateRange, setDateRange] = useState(previousMonthDate);
   const [loading, setLoading] = useState(false);
 
@@ -103,40 +111,6 @@ export default memo(function Modal(props) {
   function generateReport(type, inputdata) {
     return new Promise((resolve, reject) => {
       try {
-        const { node } = selectedNode;
-        const {
-          head_id,
-          finance_account_head_id,
-          finance_account_child_id,
-          leafnode,
-          label
-        } = node;
-
-        const from_date =
-          dateRange.length === 0
-            ? {}
-            : {
-              name: "from_date",
-              value: moment(dateRange[0]).format("YYYY-MM-DD")
-            };
-        const to_date =
-          dateRange.length === 0
-            ? {}
-            : {
-              name: "to_date",
-              value: moment(dateRange[1]).format("YYYY-MM-DD")
-            };
-        // const monthwise =
-        //   dateRange.length === 0
-        //     ? {}
-        //     : { name: "monthwise", value: checkedType ? "Y" : "N" };
-
-        let reportName = "";
-        if (leafnode === "N") {
-          reportName = checkedType ? "MonthWiseGroupNode" : "DateWiseGroupNode";
-        } else {
-          reportName = checkedType ? "MonthWiseLeafNode" : "DateWiseLeafNode";
-        }
         let outcomeDataHospital = {};
         let outcomeDataCostCenter = {};
         if (inputdata !== undefined && Object.keys(inputdata).length > 0) {
@@ -153,45 +127,109 @@ export default memo(function Modal(props) {
             labelValue: inputdata["cost_center_id_label"]
           };
         }
+        const from_date =
+          dateRange.length === 0
+            ? {}
+            : {
+                name: "from_date",
+                value: moment(dateRange[0]).format("YYYY-MM-DD")
+              };
+        const to_date =
+          dateRange.length === 0
+            ? {}
+            : {
+                name: "to_date",
+                value: moment(dateRange[1]).format("YYYY-MM-DD")
+              };
+        let data;
+        if (fromInvoice) {
+          data = {
+            report: {
+              displayName: "Ledger Report - Date Wise",
+              reportName: "DateWiseLeafNode",
+              template_name: null,
+              reportQuery: null,
+              pageSize: "A4",
+              pageOrentation: "portrait",
+              reportParams: [
+                {
+                  name: "child_id",
+                  value: selectedNode.finance_account_child_id,
+                  label: "Child",
+                  labelValue: selectedNode.child_name
+                },
+                { name: "leafnode", value: "Y" },
+                from_date,
+                to_date,
+                outcomeDataHospital,
+                outcomeDataCostCenter
+                // monthwise
+              ]
+            }
+          };
+        } else {
+          const { node } = selectedNode;
+          const {
+            head_id,
+            finance_account_head_id,
+            finance_account_child_id,
+            leafnode,
+            label
+          } = node;
 
-        const data = {
-          report: {
-            displayName: "Ledger Report - Date Wise",
-            reportName: reportName, //"ledgerDateReport",
-            template_name: null,
-            reportQuery: null,
-            pageSize: "A4",
-            pageOrentation: "portrait",
-            reportParams: [
-              {
-                name: "head_id",
-                value:
-                  head_id === undefined ? finance_account_head_id : head_id,
-                label: "Head",
-                labelValue: label
-              },
-              {
-                name: "child_id",
-                value: finance_account_child_id,
-                label: "Child",
-                labelValue: label
-              },
-              {
-                name: "child_id",
-                value: finance_account_child_id,
-                label: "Child",
-                labelValue: label
-              },
-              { name: "leafnode", value: leafnode },
-              { name: "parent_id", value: parentId },
-              from_date,
-              to_date,
-              outcomeDataHospital,
-              outcomeDataCostCenter
-              // monthwise
-            ]
+          // const monthwise =
+          //   dateRange.length === 0
+          //     ? {}
+          //     : { name: "monthwise", value: checkedType ? "Y" : "N" };
+
+          let reportName = "";
+          if (leafnode === "N") {
+            reportName = checkedType
+              ? "MonthWiseGroupNode"
+              : "DateWiseGroupNode";
+          } else {
+            reportName = checkedType ? "MonthWiseLeafNode" : "DateWiseLeafNode";
           }
-        };
+
+          data = {
+            report: {
+              displayName: "Ledger Report - Date Wise",
+              reportName: reportName, //"ledgerDateReport",
+              template_name: null,
+              reportQuery: null,
+              pageSize: "A4",
+              pageOrentation: "portrait",
+              reportParams: [
+                {
+                  name: "head_id",
+                  value:
+                    head_id === undefined ? finance_account_head_id : head_id,
+                  label: "Head",
+                  labelValue: label
+                },
+                {
+                  name: "child_id",
+                  value: finance_account_child_id,
+                  label: "Child",
+                  labelValue: label
+                },
+                {
+                  name: "child_id",
+                  value: finance_account_child_id,
+                  label: "Child",
+                  labelValue: label
+                },
+                { name: "leafnode", value: leafnode },
+                { name: "parent_id", value: parentId },
+                from_date,
+                to_date,
+                outcomeDataHospital,
+                outcomeDataCostCenter
+                // monthwise
+              ]
+            }
+          };
+        }
         algaehApiCall({
           cancelRequestId: "accountReport",
           uri: type === "excel" ? "/excelReport" : "/report",
@@ -262,31 +300,33 @@ export default memo(function Modal(props) {
     >
       <Spin tip={plaseWait} spinning={loading}>
         <div className="row">
-          <div className="col form-group">
-            <label className="style_Label">View By</label>
-            <label className="radio-inline">
-              <input
-                type="radio"
-                name="d_m_wise"
-                onChange={check => {
-                  setCheckType(!check);
-                }}
-                checked={!checkedType}
-              />
-              Date Wise
-            </label>
-            <label className="radio-inline">
-              <input
-                type="radio"
-                name="d_m_wise"
-                onChange={check => {
-                  setCheckType(check);
-                }}
-                checked={checkedType}
-              />
-              Month Wise
-            </label>
-          </div>
+          {fromInvoice ? null : (
+            <div className="col form-group">
+              <label className="style_Label">View By</label>
+              <label className="radio-inline">
+                <input
+                  type="radio"
+                  name="d_m_wise"
+                  onChange={check => {
+                    setCheckType(!check);
+                  }}
+                  checked={!checkedType}
+                />
+                Date Wise
+              </label>
+              <label className="radio-inline">
+                <input
+                  type="radio"
+                  name="d_m_wise"
+                  onChange={check => {
+                    setCheckType(check);
+                  }}
+                  checked={checkedType}
+                />
+                Month Wise
+              </label>
+            </div>
+          )}
           {/* <CostCenter result={resultdata} /> */}
           <AlgaehDateHandler
             type={"range"}
