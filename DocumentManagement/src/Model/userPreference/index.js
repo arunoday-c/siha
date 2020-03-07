@@ -18,11 +18,12 @@ export function setUserPreference(req, res, next) {
       if (result !== null && Object.keys(result).length > 0) {
         let details = result["preferences"];
         const screens = details.find(f => f.screenCode === screenCode);
-        const indexS = screens.indexOf(screens);
+        const indexS = details.indexOf(screens);
         if (screens !== undefined) {
           const preference = screens["preference"].find(
             f => f.controlName === controlName
           );
+
           if (preference !== undefined) {
             const index = screens["preference"].indexOf(preference);
             screens["preference"][index] = {
@@ -42,8 +43,12 @@ export function setUserPreference(req, res, next) {
             preference: [{ controlName, controlValue }]
           });
         }
-
-        newDetails = { ...result, preferences: details };
+        newDetails = {
+          userID: result.userID,
+          language: result.language,
+          theme: result.theme,
+          preferences: details
+        };
       } else {
         newDetails["preferences"] = [
           {
@@ -55,7 +60,6 @@ export function setUserPreference(req, res, next) {
       const _lan = language !== undefined ? { language: language } : {};
       const _theme = theme !== undefined ? { theme: theme } : {};
       newDetails = { ...newDetails, ..._lan, ..._theme };
-      console.log("newDetails", JSON.stringify(newDetails));
       userPrefernce
         .findOneAndUpdate({ userID: newDetails.userID }, newDetails, {
           upsert: true,
@@ -73,5 +77,22 @@ export function setUserPreference(req, res, next) {
     })
     .catch(error => {
       res.status(400).json({ success: false, message: error });
+    });
+}
+export function getUserPreferences(req, res, next) {
+  const { user_id } = req.body;
+  userPrefernce
+    .find({ userID: user_id })
+    .then(result => {
+      res.status(200).json({
+        success: true,
+        records: result
+      });
+    })
+    .catch(error => {
+      res.status(400).json({
+        success: false,
+        message: error
+      });
     });
 }
