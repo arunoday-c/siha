@@ -4,7 +4,6 @@ import {
     AlgaehValidation
 } from "../../../utils/GlobalFunctions";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-import _ from "lodash";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 

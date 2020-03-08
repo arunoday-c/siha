@@ -8,9 +8,8 @@ import { AlgaehModalPopUp, AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import "./../../../styles/site.scss";
 import "./PreApprovalStatus.scss";
 import MyContext from "../../../utils/MyContext.js";
-import { UpdatePreApproval, texthandle } from "./PreApprovalStatusEvent";
+import { UpdatePreApproval } from "./PreApprovalStatusEvent";
 import _ from "lodash";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Options from "../../../Options.json";
 import moment from "moment";
 

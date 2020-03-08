@@ -4,7 +4,6 @@ import "./PosListItems.scss";
 import "./../../../../styles/site.scss";
 import {
   AlgaehLabel,
-  AlagehFormGroup,
   AlgaehModalPopUp
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";

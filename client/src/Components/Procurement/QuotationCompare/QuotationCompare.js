@@ -4,15 +4,11 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import "./QuotationCompare.scss";
 import {
-  AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
-  texthandle,
   QuotationSearch,
-  generateVendorQuotation,
   getVendorMaster
 } from "./QuotationCompareEvents";
 

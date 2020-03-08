@@ -2,7 +2,6 @@ import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import extend from "extend";
-import Enumerable from "linq";
 import _ from "lodash";
 
 //Text Handaler Change
@@ -35,8 +34,7 @@ const selectItemHandeler = ($this, e) => {
 };
 
 //Process and gets selectd service data with all calculation
-{
-  /*const ProcessService = ($this, e) => {
+{/*const ProcessService = ($this, e) => {
   if ($this.state.inventory_item_id !== null) {
     let preserviceInput = $this.state.preserviceInput || [];
     let serviceInput = [
@@ -350,8 +348,7 @@ const selectItemHandeler = ($this, e) => {
       type: "warning"
     });
   }
-};*/
-}
+};*/}
 
 const ProcessService = ($this, e) => {
 

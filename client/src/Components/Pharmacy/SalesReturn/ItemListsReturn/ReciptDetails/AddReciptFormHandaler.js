@@ -129,45 +129,6 @@ const cardtexthandle = ($this, context, ctrl, e) => {
   }
 };
 
-const chequetexthandle = ($this, context, ctrl, e) => {
-  e = e || ctrl;
-
-  let cash_amount = parseFloat($this.state.cash_amount);
-  let card_amount = parseFloat($this.state.card_amount);
-  let cheque_amount = parseFloat(e.target.value);
-  let receiveable_amount = parseFloat($this.state.receiveable_amount);
-
-  if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
-    successfulMessage({
-      message: "Sum of all amount to be equal to Receivable.",
-      title: "Warning",
-      icon: "warning"
-    });
-    $this.setState(
-      {
-        [e.target.name]: 0,
-        errorInCheck: true
-      },
-      () => {
-        $this.setState({ errorInCheck: false });
-      }
-    );
-  } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        calculateRecipt($this, context);
-      }
-    );
-
-    if (context !== null) {
-      context.updateState({ [e.target.name]: e.target.value });
-    }
-  }
-};
-
 const datehandle = ($this, context, ctrl, e) => {
   $this.setState({
     [e]: moment(ctrl)._d
@@ -226,39 +187,11 @@ const checkcardhandaler = ($this, context, e) => {
   }, 500);
 };
 
-const checkcheckhandaler = ($this, context, e) => {
-  $this.setState(
-    {
-      Checkchecked: e.target.checked,
-      cheque_amount: 0,
-      cheque_number: null,
-      cheque_date: null
-    },
-    () => {
-      calculateRecipt($this, context);
-    }
-  );
-
-  clearInterval(texthandlerInterval);
-  texthandlerInterval = setInterval(() => {
-    if (context !== undefined) {
-      context.updateState({
-        cheque_amount: 0,
-        cheque_number: null,
-        cheque_date: null
-      });
-    }
-    clearInterval(texthandlerInterval);
-  }, 500);
-};
-
 export {
   texthandle,
   cashtexthandle,
   datehandle,
   cardtexthandle,
-  chequetexthandle,
   checkcashhandaler,
-  checkcardhandaler,
-  checkcheckhandaler
+  checkcardhandaler
 };

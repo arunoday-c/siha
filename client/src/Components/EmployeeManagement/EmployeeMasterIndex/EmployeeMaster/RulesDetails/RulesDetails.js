@@ -1,9 +1,6 @@
 import React, { PureComponent } from "react";
 import "./RulesDetails.scss";
-import {
-  AlgaehLabel,
-  AlagehFormGroup
-} from "../../../../Wrapper/algaehWrapper";
+import { AlgaehLabel } from "../../../../Wrapper/algaehWrapper";
 import { changeChecks } from "./RulesDetailsEvent.js";
 
 class RulesDetails extends PureComponent {

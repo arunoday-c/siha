@@ -1,13 +1,12 @@
 import moment from "moment";
 import {
   algaehApiCall,
-  swalMessage,
-  getCookie
+  swalMessage
 } from "../../utils/algaehApiCall.js";
 import _ from "lodash";
 export const getAdvanceRefundList = $this => {
-  let year = moment().format("YYYY");
-  let month = moment().format("MM");
+  // let year = moment().format("YYYY");
+  // let month = moment().format("MM");
 
   algaehApiCall({
     uri: "/patientRegistration/getPatientAdvaceAndRefund",

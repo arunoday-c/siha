@@ -6,7 +6,6 @@ import { bindActionCreators } from "redux";
 import "./LabInvestigation.scss";
 import "./../../../styles/site.scss";
 import {
-  AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete
@@ -244,10 +243,10 @@ class LabInvestigation extends Component {
                               this.props.labanalytes === undefined
                                 ? []
                                 : this.props.labanalytes.filter(
-                                    f =>
-                                      f.hims_d_lab_analytes_id ===
-                                      row.analyte_id
-                                  );
+                                  f =>
+                                    f.hims_d_lab_analytes_id ===
+                                    row.analyte_id
+                                );
 
                             return (
                               <span>
@@ -262,10 +261,10 @@ class LabInvestigation extends Component {
                               this.props.labanalytes === undefined
                                 ? []
                                 : this.props.labanalytes.filter(
-                                    f =>
-                                      f.hims_d_lab_analytes_id ===
-                                      row.analyte_id
-                                  );
+                                  f =>
+                                    f.hims_d_lab_analytes_id ===
+                                    row.analyte_id
+                                );
 
                             return (
                               <span>
@@ -285,7 +284,7 @@ class LabInvestigation extends Component {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: this.deleteLabAnalyte,
-                        onEdit: row => {},
+                        onEdit: row => { },
                         onDone: this.updateLabInvestigation
                       }}
                     />
