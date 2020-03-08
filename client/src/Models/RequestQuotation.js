@@ -30,6 +30,7 @@ export default {
             addItemButton: true,
             ReqData: true,
             saveEnable: true,
+            itm_notes: null
         };
         return output;
     }

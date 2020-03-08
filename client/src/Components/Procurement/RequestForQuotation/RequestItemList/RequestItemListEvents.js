@@ -1,8 +1,20 @@
 import { swalMessage } from "../../../../utils/algaehApiCall";
-import Enumerable from "linq";
 
-let texthandlerInterval = null;
 
+const texthandle = ($this, context, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value,
+  });
+  if (context !== undefined) {
+    context.updateState({
+      [name]: value,
+    });
+  }
+
+};
 
 const numberchangeTexts = ($this, context, e) => {
   let name = e.name || e.target.name;
@@ -89,7 +101,8 @@ const AddItems = ($this, context) => {
       inv_item_id: $this.state.inv_item_id,
       pharmacy_uom_id: $this.state.pharmacy_uom_id,
       inventory_uom_id: $this.state.inventory_uom_id,
-      quantity: $this.state.quantity
+      quantity: $this.state.quantity,
+      itm_notes: $this.state.itm_notes
     };
     let quotation_detail = $this.state.quotation_detail;
     quotation_detail.push(ItemInput);
@@ -162,7 +175,8 @@ const clearItemData = ($this, context) => {
     pharmacy_uom_id: null,
     inventory_uom_id: null,
     quantity: 0,
-    addItemButton: true
+    addItemButton: true,
+    itm_notes: null
   });
   if (context !== undefined) {
     context.updateState({
@@ -175,7 +189,8 @@ const clearItemData = ($this, context) => {
       pharmacy_uom_id: null,
       inventory_uom_id: null,
       quantity: 0,
-      addItemButton: true
+      addItemButton: true,
+      itm_notes: null
     });
   }
 }
@@ -186,5 +201,6 @@ export {
   numberchangeTexts,
   AddItems,
   deleteQuotationDetail,
-  gridNumHandler
+  gridNumHandler,
+  texthandle
 };

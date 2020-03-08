@@ -7,7 +7,6 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import MyContext from "../../../utils/MyContext";
 import {
   AlgaehLabel,
-  AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
@@ -46,12 +45,21 @@ class VendorsQuotation extends Component {
       quotation_detail: [],
       dataExitst: false,
       ReqData: true,
-      saveEnable: true
+      saveEnable: true,
+      decimal_place: 0
     };
     this.baseState = this.state;
     getVendorMaster(this, this);
   }
 
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      decimal_place: userToken.decimal_places,
+    })
+  }
   render() {
     const class_finder =
       this.state.dataExitst === true

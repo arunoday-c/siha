@@ -87,6 +87,38 @@ const onchhangeNumber = ($this, context, row, e) => {
   }
 };
 
+
+const totalAmountChange = ($this, context, row, e) => {
+  let quotation_detail = $this.state.quotation_detail;
+  let _index = quotation_detail.indexOf(row)
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  row[name] = value;
+  row.unit_price = parseFloat(value) / parseFloat(row.quantity).toFixed(
+    $this.state.decimal_place
+  );;
+
+  row.extended_price = (parseFloat(row.quantity) * parseFloat(row.unit_price)).toFixed($this.state.decimal_places)
+
+  row.net_extended_cost = row.discount_amount === undefined ?
+    parseFloat(row.extended_price).toFixed($this.state.decimal_places)
+    : (parseFloat(row.extended_price) - parseFloat(row.discount_amount)).toFixed($this.state.decimal_places);
+
+
+  quotation_detail[_index] = row
+  $this.setState({
+    quotation_detail: quotation_detail
+  })
+
+  if (context !== undefined) {
+    context.updateState({
+      quotation_detail: quotation_detail
+    });
+  }
+};
+
 export {
-  onchhangeNumber
+  onchhangeNumber,
+  totalAmountChange
 };

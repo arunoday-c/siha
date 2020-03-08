@@ -13,6 +13,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
 
 import {
+  texthandle,
   itemchangeText,
   numberchangeTexts,
   AddItems,
@@ -174,6 +175,22 @@ class RequestItemList extends Component {
                           },
                           others: {
                             disabled: this.state.dataExitst
+                          }
+                        }}
+                      />
+                    </div>
+                    <div className="row">
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Notes"
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "itm_notes",
+                          value: this.state.itm_notes,
+                          events: {
+                            onChange: texthandle.bind(this, this, context)
                           }
                         }}
                       />
@@ -386,6 +403,17 @@ class RequestItemList extends Component {
                                 return (
                                   <span> {row.quantity} </span>
                                 );
+                              }
+                            },
+                            {
+                              fieldName: "itm_notes",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Notes" }}
+                                />
+                              ),
+                              others: {
+                                minWidth: 200
                               }
                             },
                           ]}
