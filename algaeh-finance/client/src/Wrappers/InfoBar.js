@@ -2,7 +2,7 @@ import React from "react";
 import "./infobar.scss";
 
 export default function InfoBar({ data }) {
-  const { over_due, total_receivable, last_paid } = data;
+  const { over_due, total_receivable, past_payments } = data;
   if (data) {
     return (
       <div className="row infoBar">
@@ -24,11 +24,11 @@ export default function InfoBar({ data }) {
           </div>
         ) : null}
 
-        {last_paid ? (
+        {past_payments ? (
           <div className="col">
             <div className="text">
               <p>Paid Last 30 days</p>
-              {last_paid}
+              {past_payments}
             </div>
           </div>
         ) : null}

@@ -228,30 +228,30 @@ export default function AddNewAccount({
             />
           </div>
           <div className="row">
-            {(selectedNode.node !== undefined &&
+            {/* {(selectedNode.node !== undefined &&
               selectedNode.node.leafnode === "Y") ||
-            account_type === "C" ? (
-              <AlgaehFormGroup
-                div={{
-                  className: "col-12 form-group  mandatory"
-                }}
-                label={{
-                  forceLabel: "Ledger Code",
-                  isImp: true
-                }}
-                textBox={{
-                  type: "text",
-                  value: ledger_code,
-                  className: "form-control",
-                  id: "name",
-                  onChange: e => {
-                    setLedgerCode(e.target.value);
-                  },
-                  placeholder: " Enter Ledger Code",
-                  autoComplete: false
-                }}
-              />
-            ) : null}
+            account_type === "C" ? ( */}
+            <AlgaehFormGroup
+              div={{
+                className: "col-12 form-group  mandatory"
+              }}
+              label={{
+                forceLabel: "Ledger Code",
+                isImp: true
+              }}
+              textBox={{
+                type: "text",
+                value: ledger_code,
+                className: "form-control",
+                id: "name",
+                onChange: e => {
+                  setLedgerCode(e.target.value);
+                },
+                placeholder: " Enter Ledger Code",
+                autoComplete: false
+              }}
+            />
+            {/* ) : null} */}
 
             <AlgaehFormGroup
               div={{
