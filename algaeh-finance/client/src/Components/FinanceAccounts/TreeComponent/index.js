@@ -10,20 +10,20 @@ import AddNewAccount from "../AddNewAccount/AddNewAccount";
 import {
   AlgaehConfirm,
   AlgaehMessagePop,
-  Input,
-  Icon,
-  DatePicker,
+  // Input,
+  // Icon,
+  // DatePicker,
   AlgaehTable
 } from "algaeh-react-components";
 import ReportLauncher from "../AccountReport";
-import Charts from "../Charts";
-import moment from "moment";
+// import Charts from "../Charts";
+// import moment from "moment";
 import {
   getAccounts,
   removeAccount,
   isPositive,
   renameAccount,
-  getChartData,
+  // getChartData,
   getGridChildNodes
 } from ".././FinanceAccountEvent";
 
@@ -42,9 +42,9 @@ function TreeComponent({ assetCode, title, inDrawer }) {
   const [isNewAccount, setNewAccount] = useState(false);
   const [reportVisible, setReportVisible] = useState(false);
   const [editorRecord, setEditorRecord] = useState({});
-  const [period, setPeriod] = useState("4");
-  const [accountChart, setAccountChart] = useState([]);
-  const [year, setYear] = useState(moment());
+  // const [period, setPeriod] = useState("4");
+  // const [accountChart, setAccountChart] = useState([]);
+  // const [year, setYear] = useState(moment());
   const [expandAll, setExpandAll] = useState(false);
   const [layout, setLayout] = useState("tree");
   const [gridData, setGridData] = useState([]);
@@ -52,7 +52,7 @@ function TreeComponent({ assetCode, title, inDrawer }) {
 
   useEffect(loadAccount, [assetCode]);
 
-  const isExpOrInc = assetCode === 4 || assetCode === 5;
+  // const isExpOrInc = assetCode === 4 || assetCode === 5;
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
       try {
@@ -162,9 +162,9 @@ function TreeComponent({ assetCode, title, inDrawer }) {
           setGridData(() => {
             return [...[]];
           });
-          if (isExpOrInc) {
-            loadChartData(firstData.finance_account_head_id);
-          }
+          // if (isExpOrInc) {
+          //   loadChartData(firstData.finance_account_head_id);
+          // }
         } else {
           setTreeData([]);
           setLayout("tree");
@@ -313,73 +313,10 @@ function TreeComponent({ assetCode, title, inDrawer }) {
       title: (
         <>
           <span>
-            {/* {isExpOrInc || node.leafnode !== "Y" ? (
-              JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
-                <Input
-                  suffix={
-                    <Icon
-                      type="save"
-                      onClick={e => {
-                        const editedValue =
-                          e.currentTarget.offsetParent.previousElementSibling
-                            .value;
-
-                        const rowNode = rowInfo.node;
-                        let input = {
-                          leaf_node: rowNode.leafnode
-                        };
-                        if (rowNode.leafnode === "Y") {
-                          input["child_name"] = editedValue;
-                          input["finance_account_child_id"] =
-                            rowNode.finance_account_child_id;
-                        } else {
-                          input["account_name"] = editedValue;
-                          input["finance_account_head_id"] =
-                            rowNode.finance_account_head_id;
-                        }
-                        renameAccount(input)
-                          .then(() => {
-                            node["title"] = editedValue;
-                            setEditorRecord({});
-                            AlgaehMessagePop({
-                              type: "success",
-                              display: "Renamed successfully"
-                            });
-                          })
-                          .catch(error => {
-                            console.log("error", error);
-                            AlgaehMessagePop({
-                              type: "error",
-                              display: error
-                            });
-                          });
-                      }}
-                    />
-                  }
-                  defaultValue={
-                    node.title +
-                    "/" +
-                    node.arabic_child_name +
-                    " (" +
-                    node.ledger_code +
-                    ")"
-                  }
-                />
-              ) : (
-                node.title + "/" + node.arabic_child_name
-              )
-            ) : (
-              node.title +
-              "/" +
-              node.arabic_child_name +
-              " (" +
-              node.ledger_code +
-              ")"
+            {node.full_name}
+            {/* {node.leafnode === "Y" ? null : (
+              <> /{node.children === undefined ? 0 : node.children.length}</>
             )} */}
-            {`${node.title} / ${node.arabic_account_name} (${node.ledger_code})`}
-            {node.leafnode === "Y" ? null : (
-              <>/{node.children === undefined ? 0 : node.children.length}</>
-            )}
           </span>
         </>
       ),
@@ -406,82 +343,82 @@ function TreeComponent({ assetCode, title, inDrawer }) {
     };
   };
 
-  function loadChartData(finheadId) {
-    if (isExpOrInc) {
-      getChartData({
-        finance_account_head_id:
-          finheadId === undefined ? financeHeadId : finheadId,
-        period: period,
-        year: moment(year).format("YYYY")
-      })
-        .then(result => {
-          setAccountChart(result);
-        })
-        .catch(error => {
-          AlgaehMessagePop({ type: "error", display: error });
-        });
-    }
-  }
+  // function loadChartData(finheadId) {
+  //   if (isExpOrInc) {
+  //     getChartData({
+  //       finance_account_head_id:
+  //         finheadId === undefined ? financeHeadId : finheadId,
+  //       period: period,
+  //       year: moment(year).format("YYYY")
+  //     })
+  //       .then(result => {
+  //         setAccountChart(result);
+  //       })
+  //       .catch(error => {
+  //         AlgaehMessagePop({ type: "error", display: error });
+  //       });
+  //   }
+  // }
 
-  function AccountChart() {
-    if (isExpOrInc && !inDrawer) {
-      return (
-        <div className="col-4">
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">{`${title}`}</h3>
-                <div className="actions">
-                  <select
-                    value={period}
-                    onChange={e => {
-                      setPeriod(e.target.value);
-                    }}
-                  >
-                    <option value="1">Jan - Mar</option>
-                    <option value="2">Apr - Jun</option>
-                    <option value="3">Jul - Sep</option>
-                    <option value="4">Oct - Dec</option>
-                    <option value="5">By Year</option>
-                  </select>
-                  <DatePicker
-                    mode="year"
-                    size="small"
-                    value={year}
-                    format="YYYY"
-                    onPanelChange={selectedDate => {
-                      setYear(selectedDate);
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="portlet-body">
-                <Charts
-                  data={accountChart}
-                  xAxis={"month_name"}
-                  yAxisBar={"amount"}
-                  yAxisLine={"growth_percent"}
-                />
-              </div>
-            </div>
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">{`${title}`}</h3>
-                </div>
-                <div className="actions"></div>
-              </div>
-              <div className="portlet-body">
-                <Charts data={[]} xAxis={""} yAxisBar={""} yAxisLine={""} />
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    } else {
-      return null;
-    }
-  }
+  // function AccountChart() {
+  //   if (isExpOrInc && !inDrawer) {
+  //     return (
+  //       <div className="col-4">
+  //         <div className="portlet portlet-bordered margin-bottom-15">
+  //           <div className="portlet-title">
+  //             <div className="caption">
+  //               <h3 className="caption-subject">{`${title}`}</h3>
+  //               <div className="actions">
+  //                 <select
+  //                   value={period}
+  //                   onChange={e => {
+  //                     setPeriod(e.target.value);
+  //                   }}
+  //                 >
+  //                   <option value="1">Jan - Mar</option>
+  //                   <option value="2">Apr - Jun</option>
+  //                   <option value="3">Jul - Sep</option>
+  //                   <option value="4">Oct - Dec</option>
+  //                   <option value="5">By Year</option>
+  //                 </select>
+  //                 <DatePicker
+  //                   mode="year"
+  //                   size="small"
+  //                   value={year}
+  //                   format="YYYY"
+  //                   onPanelChange={selectedDate => {
+  //                     setYear(selectedDate);
+  //                   }}
+  //                 />
+  //               </div>
+  //             </div>
+  //             <div className="portlet-body">
+  //               <Charts
+  //                 data={accountChart}
+  //                 xAxis={"month_name"}
+  //                 yAxisBar={"amount"}
+  //                 yAxisLine={"growth_percent"}
+  //               />
+  //             </div>
+  //           </div>
+  //           <div className="portlet portlet-bordered margin-bottom-15">
+  //             <div className="portlet-title">
+  //               <div className="caption">
+  //                 <h3 className="caption-subject">{`${title}`}</h3>
+  //               </div>
+  //               <div className="actions"></div>
+  //             </div>
+  //             <div className="portlet-body">
+  //               <Charts data={[]} xAxis={""} yAxisBar={""} yAxisLine={""} />
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     );
+  //   } else {
+  //     return null;
+  //   }
+  // }
 
   function expandAllNodes() {
     setTreeData(dtl => {
