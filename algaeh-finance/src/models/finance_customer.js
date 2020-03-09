@@ -54,7 +54,7 @@ export default {
         round(amount-settled_amount,${decimal_places})as balance_amount,
         round(settled_amount,${decimal_places}) as settled_amount,
         invoice_no ,voucher_type,narration,H.payment_date as invoice_date,
-        due_date, update_date as last_modified,
+        due_date, updated_date as last_modified,
         case when settlement_status='S' then 'closed' 
         when settlement_status='P' and curdate()> due_date then 'over due'
         when settlement_status='P' and settled_amount<1 then 'open' 
