@@ -370,7 +370,7 @@ function AllAccounts({ title, inDrawer }) {
   useEffect(loadAccount, []);
 
   return (
-    <div className="container-fluid assetsModuleScreen">
+    <div className="container-fluid">
       <AddNewAccount
         showPopup={showPopup}
         selectedNode={editorRecord.node ? editorRecord : selectedNode}
@@ -408,16 +408,16 @@ function AllAccounts({ title, inDrawer }) {
 
       <div className="row">
         {/* <AccountChart /> */}
-        <div className={"col-12"}>
-          <div className="portlet portlet-bordered margin-bottom-15">
+        <div className={"col-12"} style={{ padding: 0 }}>
+          <div className="portlet portlet-bordered">
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">{`${title}`}</h3>
               </div>
               <div className="actions">
-                <button className="btn btn-default btn-circle active">
+                {/* <button className="btn btn-default btn-circle active">
                   <i className="fas fa-print" />
-                </button>
+                </button> */}
                 {/* <button
                   className="btn btn-primary btn-circle active"
                   onClick={() => {

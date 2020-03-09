@@ -559,13 +559,15 @@ export default function JournalVoucher() {
                 <h3 className="caption-subject">Journal Voucher List </h3>
               </div>
               <div className="actions">
-                <AlgaehButton
-                  type="primary"
-                  icon="play-circle"
+                {/* <AlgaehButton type="primary" icon="play-circle" /> */}
+                <button
+                  className="btn btn-default"
                   onClick={() => {
                     setDrawer(true);
                   }}
-                />
+                >
+                  Add New Account
+                </button>
               </div>
             </div>
             <div className="portlet-body" id="JLVoucherListGrid">
