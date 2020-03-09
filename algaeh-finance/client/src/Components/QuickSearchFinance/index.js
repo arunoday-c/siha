@@ -1,90 +1,105 @@
 import React, { memo, useState } from "react";
-import { AlgaehDataGrid, AlgaehMessagePop } from "algaeh-react-components";
-import {
-  LoadVouchersToAuthorize,
-  ApproveReject,
-  LoadVoucherDetails
-} from "./event";
-import { FilterComponent } from "../InvoiceCommon";
-let rejectText = "";
-let finance_voucher_header_id = "";
+import { AlgaehDataGrid } from "algaeh-react-components";
+import { Spin, Button } from "antd";
+import FilterComponent from "./FilterComponent";
+import VoucherDetails from "./VoucherDetails";
+
 export default memo(function(props) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selected, setSelected] = useState(null);
+  const [visible, setVisible] = useState(false);
+
+  function onSelect(row) {
+    setVisible(true);
+    setSelected(row);
+  }
+
+  function onClose() {
+    setSelected(null);
+    setVisible(false);
+  }
+
+  const linkCol = (text, row) => {
+    return (
+      <Button type="link" onClick={() => onSelect(row)}>
+        {text}
+      </Button>
+    );
+  };
 
   return (
-    <div className="row">
-      <div className="col-12">
-        <div className="row inner-top-search" style={{ paddingBottom: 10 }}>
-          <div className="col-12 inner-top-search-hdg">
-            <h3>Quick Search</h3>
-          </div>
-        </div>
-        <FilterComponent />
-        <div className="row">
-          <div className="col-12">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="row">
-                <div className="col-lg-12 customCheckboxGrid">
-                  <AlgaehDataGrid
-                    columns={[
-                      {
-                        key: "",
-                        title: "Date",
-                        sortable: true,
-                        others: {
-                          width: 130
-                        }
-                      },
-                      {
-                        key: "",
-                        title: "Type",
-                        sortable: true,
-                        others: {
-                          width: 130
-                        }
-                      },
-                      {
-                        key: "",
-                        title: "Number",
-                        sortable: true,
-                        others: {
-                          width: 130
-                        }
-                      },
-                      {
-                        key: "",
-                        title: "Contact",
-                        sortable: true
-                      },
-                      {
-                        key: "",
-                        title: "Amount",
-                        sortable: true,
-
-                        others: {
-                          width: 130
-                        }
-                      },
-                      {
-                        key: "",
-                        title: "Last Modified Date",
-                        sortable: true,
-                        others: {
-                          width: 180
-                        }
-                      }
-                    ]}
-                    height="40vh"
-                    rowUnique="finance_voucher_header_id"
-                    dataSource={{ data: data }}
-                  ></AlgaehDataGrid>
+    <>
+      <VoucherDetails visible={visible} data={selected} onClose={onClose} />
+      <div className="row">
+        <div className="col-12">
+          <FilterComponent
+            setData={setData}
+            loading={loading}
+            setLoading={setLoading}
+          />
+          <Spin spinning={loading}>
+            <div className="row">
+              <div className="col-12">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="row">
+                    <div className="col-lg-12 customCheckboxGrid">
+                      <AlgaehDataGrid
+                        columns={[
+                          {
+                            key: "invoice_date",
+                            title: "Date",
+                            sortable: true
+                          },
+                          {
+                            key: "voucher_type",
+                            title: "Type",
+                            sortable: true,
+                            filterable: true
+                          },
+                          {
+                            key: "voucher_no",
+                            title: "Voucher No",
+                            sortable: true,
+                            filterable: true,
+                            displayTemplate: linkCol
+                          },
+                          {
+                            key: "narration",
+                            title: "Description",
+                            sortable: true,
+                            filterable: true
+                          },
+                          {
+                            key: "invoice_no",
+                            title: "Invoice No",
+                            sortable: true,
+                            filterable: true
+                          },
+                          {
+                            key: "amount",
+                            title: "Amount",
+                            sortable: true,
+                            filterable: true
+                          },
+                          {
+                            key: "updated_date",
+                            title: "Last Modified Date",
+                            sortable: true
+                          }
+                        ]}
+                        // height="40vh"
+                        rowUnique="finance_voucher_header_id"
+                        dataSource={{ data: data }}
+                      ></AlgaehDataGrid>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </Spin>
         </div>
       </div>
-    </div>
+    </>
   );
 });
