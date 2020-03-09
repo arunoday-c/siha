@@ -74,7 +74,6 @@ export default memo(function(props) {
       <div className="row">
         <div className="col-12">
           <InfoBar data={info} />
-          {/* <FilterComponent /> */}
           <div className="row">
             <div className="col-12">
               <div className="portlet portlet-bordered margin-bottom-15">
