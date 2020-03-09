@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { withRouter } from "react-router-dom";
-import { Spin } from "algaeh-react-components";
+import { Spin, getPreferences } from "algaeh-react-components";
 import { MainContext } from "algaeh-react-components/context";
 import { setItem, clearItem } from "algaeh-react-components/storage";
 import Swal from "sweetalert2";
@@ -50,7 +50,9 @@ function Login(props) {
   const [showPassword, setShowPassword] = useState(false);
   let userRef = useRef(undefined);
   let passwordRef = useRef(undefined);
-  const { clearAll, setSelectedMenuItem } = useContext(MainContext);
+  const { clearAll, setSelectedMenuItem, setUserPreferencesData } = useContext(
+    MainContext
+  );
   useEffect(() => {
     clearItem();
     clearAll();
@@ -116,21 +118,57 @@ function Login(props) {
             method: "POST",
             onSuccess: response => {
               const { success, records, message } = response.data;
-
               if (success === true) {
+                const redirect = redPage => {
+                  setLoginLoad(false);
+                  setCookie("ScreenName", redPage);
+                  history.push(`/${redPage}`);
+                };
                 setItem("token", records.token).then(() => {
                   getActiveModulesForUser()
                     .then(userMenu => {
                       setSelectedMenu(userMenu, records.page_to_redirect).then(
                         () => {
-                          setLoginLoad(false);
-                          setItem("userName", records.user_display_name);
-                          const redPage =
-                            records.page_to_redirect === null
-                              ? "NoDashboard"
-                              : records.page_to_redirect.replace(/\s/g, "");
-                          setCookie("ScreenName", redPage);
-                          history.replace(`/${redPage}`);
+                          getUserPrefrencesDetails({
+                            user_id: records.keyData.user_id
+                          })
+                            .then(userPreference => {
+                              setUserPreferencesData(userPreference);
+                              setItem("userPreferences", userPreference);
+                              getPreferences(
+                                { userPreferences: userPreference },
+                                "landing_page"
+                              ).then(result => {
+                                let redPage =
+                                  records.page_to_redirect === null
+                                    ? "NoDashboard"
+                                    : records.page_to_redirect.replace(
+                                        /\s/g,
+                                        ""
+                                      );
+                                if (result !== undefined) {
+                                  const resource = result["preference"].find(
+                                    f => f.controlName === "page"
+                                  );
+                                  if (resource !== undefined)
+                                    redPage = resource.controlValue;
+                                }
+                                redirect(redPage);
+                              });
+                            })
+                            .catch(() => {
+                              const redPage =
+                                records.page_to_redirect === null
+                                  ? "NoDashboard"
+                                  : records.page_to_redirect.replace(/\s/g, "");
+                              redirect(redPage);
+                            });
+                          // const redPage =
+                          //   records.page_to_redirect === null
+                          //     ? "NoDashboard"
+                          //     : records.page_to_redirect.replace(/\s/g, "");
+
+                          // redirect(redPage);
                         }
                       );
                     })
@@ -140,6 +178,7 @@ function Login(props) {
                         type: "error",
                         title: error
                       });
+                      logout();
                     });
                 });
               } else {
@@ -207,6 +246,28 @@ function Login(props) {
     e.target.onerror = null;
     e.target.src = noUserImg;
   }
+  function getUserPrefrencesDetails(input) {
+    return new Promise((resolve, reject) => {
+      try {
+        algaehApiCall({
+          uri: "/getPreferences/",
+          method: "POST",
+          data: input,
+          module: "documentManagement",
+          onSuccess: response => {
+            const { data } = response;
+            resolve(data.records);
+          },
+          onCatch: error => {
+            reject(error);
+          }
+        });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
   function logout() {
     algaehApiCall({
       uri: "/apiAuth/logout",
@@ -257,13 +318,41 @@ function Login(props) {
           getActiveModulesForUser()
             .then(userMenu => {
               setSelectedMenu(userMenu, records.page_to_redirect).then(() => {
-                setLoginLoad(false);
-                const redPage =
-                  records.page_to_redirect === null
-                    ? "NoDashboard"
-                    : records.page_to_redirect.replace(/\s/g, "");
-                setCookie("ScreenName", redPage);
-                history.replace(`/${redPage}`);
+                const redirect = redPage => {
+                  setLoginLoad(false);
+                  setCookie("ScreenName", redPage);
+                  history.push(`/${redPage}`);
+                };
+                getUserPrefrencesDetails({ user_id: records.keyData.user_id })
+                  .then(userPreference => {
+                    setItem("userPreferences", userPreference);
+                    setUserPreferencesData(userPreference);
+                    getPreferences(
+                      { userPreferences: userPreference },
+                      "landing_page"
+                    ).then(result => {
+                      let redPage =
+                        records.page_to_redirect === null
+                          ? "NoDashboard"
+                          : records.page_to_redirect.replace(/\s/g, "");
+
+                      if (result !== undefined) {
+                        const resource = result["preference"].find(
+                          f => f.controlName === "page"
+                        );
+                        if (resource !== undefined)
+                          redPage = resource.controlValue;
+                      }
+                      redirect(redPage);
+                    });
+                  })
+                  .catch(error => {
+                    const redPage =
+                      records.page_to_redirect === null
+                        ? "NoDashboard"
+                        : records.page_to_redirect.replace(/\s/g, "");
+                    redirect(redPage);
+                  });
               });
             })
             .catch(error => {

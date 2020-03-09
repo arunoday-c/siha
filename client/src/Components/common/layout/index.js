@@ -12,7 +12,8 @@ export default function Layout({ path, noSecurityCheck, children }) {
     setUserToken,
     setElementsItems,
     setSelectedMenuItem,
-    selectedMenu
+    selectedMenu,
+    setUserPreferencesData
   } = useContext(MainContext);
   const [pageLoading, setPageLoading] = useState(false);
   const [text, setText] = useState("Please wait configure is in process");
@@ -33,6 +34,9 @@ export default function Layout({ path, noSecurityCheck, children }) {
         });
         getItem("userSelectedMenu").then(result => {
           setSelectedMenuItem(result);
+        });
+        getItem("userPreferences").then(result => {
+          setUserPreferencesData(result);
         });
       });
     }
