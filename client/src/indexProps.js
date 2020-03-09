@@ -7,6 +7,7 @@ export default function(props) {
   const [token, setToken] = useState({});
   const [elements, setElements] = useState([]);
   const [selectedMenu, setSelectedMenu] = useState({});
+  const [userPreferences, setUserPreferences] = useState([]);
 
   function setUserMenu(data) {
     setMenu(data);
@@ -27,12 +28,16 @@ export default function(props) {
   function setElementsItems(data) {
     setElements(data);
   }
+  function setUserPreferencesData(data) {
+    setUserPreferences(data);
+  }
   function clearAll() {
     setLanguage("en");
     setToken("");
     setMenu([]);
     setElements([]);
     setSelectedMenu({});
+    setUserPreferences([]);
   }
 
   return (
@@ -43,11 +48,13 @@ export default function(props) {
         userToken: token,
         selectedMenu: selectedMenu,
         selectElement: elements,
+        userPreferences: userPreferences,
         setSelectedMenuItem,
         setUserMenu,
         setUserLanguage,
         setUserToken,
         setElementsItems,
+        setUserPreferencesData,
         clearAll
       }}
     >
