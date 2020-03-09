@@ -2786,6 +2786,7 @@ function createHierarchy(
           arabic_child_name: item.arabic_child_name,
           head_id: item["head_id"],
           disabled: false,
+          full_name: item.child_full_name,
           leafnode: "Y",
           root_id: root_id,
           created_status: item["child_created_from"]
@@ -2821,6 +2822,7 @@ function createHierarchy(
             subtitle: amount,
             title: item.account_name,
             label: item.account_name,
+            full_name: item.group_full_name,
             disabled: true,
             leafnode: "N"
           });
@@ -2850,6 +2852,7 @@ function createHierarchy(
           subtitle: amount,
           title: item.account_name,
           label: item.account_name,
+          full_name: item.group_full_name,
           disabled: true,
           leafnode: "N"
         });
@@ -3062,7 +3065,11 @@ function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
           query: `select finance_account_head_id,account_code,account_name, arabic_account_name, C.arabic_child_name,\
           C.ledger_code,account_parent,account_level,
           H.created_from as created_status ,sort_order,parent_acc_id,root_id,
-          finance_account_child_id,child_name,head_id,C.created_from as child_created_from
+          finance_account_child_id,child_name,head_id,C.created_from as child_created_from,
+          concat(account_name,' / ',account_code,
+          case when arabic_account_name is null then ''  else  concat(' / ',arabic_account_name)end ) as group_full_name,
+          concat(child_name,' / ',ledger_code,case when arabic_child_name is null then '' 
+          else  concat(' / ',arabic_child_name)end ) as child_full_name
           from finance_account_head H left join 
           finance_account_child C on C.head_id=H.finance_account_head_id
            where root_id=? order by account_level,sort_order;           
