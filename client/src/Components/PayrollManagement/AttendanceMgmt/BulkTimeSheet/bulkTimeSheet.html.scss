@@ -45,8 +45,8 @@
       display: block;
       overflow: auto;
       width: 100%;
-      min-height: 41vh;
-      max-height: 41vh;
+      min-height: 39vh;
+      max-height: 39vh;
       tr {
         &:nth-child(even) {
           td {
@@ -139,6 +139,35 @@
     width: 35vw;
     .popupInner {
       min-height: 50vh;
+    }
+  }
+}
+.errorCntrDiv {
+  padding-left: 0;
+  .portlet {
+    border: 2px solid red;
+    background-color: #fff2f1;
+  }
+  .errorListUI {
+    border: 1px solid #d6d6d6;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: hidden;
+    min-height: 42vh;
+    max-height: 42vh;
+
+    li {
+      border-bottom: 1px solid #d6d6d6;
+      margin: 0;
+      padding: 3px 5px;
+      list-style: none;
+      &:nth-child(odd) {
+        background-color: white;
+      }
+      &:nth-child(even) {
+        background-color: rgb(231, 231, 231);
+      }
     }
   }
 }
