@@ -98,5 +98,32 @@ export default {
         _mysql.releaseConnection();
         next(e);
       });
+  },
+  //created by irfan:
+  getSearchDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const decimal_places = req.userIdentity.decimal_places;
+    const input = req.query;
+
+    _mysql
+      .executeQuery({
+        query: `select finance_voucher_id,ROUND( debit_amount,${decimal_places}) as debit_amount,
+            ROUND( credit_amount,${decimal_places}) as credit_amount,
+            concat(H.account_name,'->',C.child_name) as ledger_name,C.ledger_code\
+            from finance_voucher_details VD \
+            left join finance_account_head H on VD.head_id=H.finance_account_head_id\
+            left join finance_account_child C on VD.child_id=C.finance_account_child_id\
+            where VD.voucher_header_id=?; `,
+        values: [input.finance_voucher_header_id]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };
