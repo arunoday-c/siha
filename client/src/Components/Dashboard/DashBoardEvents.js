@@ -3,10 +3,10 @@ import moment from "moment";
 import Options from "../../Options.json";
 import Enumerable from "linq";
 import _ from "lodash";
-import { getCookie } from "../../utils/algaehApiCall.js";
+// import { getCookie } from "../../utils/algaehApiCall.js";
 
-let HospitalId =
-  getCookie("HospitalId") !== undefined ? getCookie("HospitalId") : "";
+// let HospitalId =
+//   getCookie("HospitalId") !== undefined ? getCookie("HospitalId") : "";
 
 export const chartLegends = {
   display: true,
@@ -31,7 +31,7 @@ export const chartOptions = {
         ticks: {
           min: 0, // it is for ignoring negative step.
           beginAtZero: true,
-          callback: function(value, index, values) {
+          callback: function (value, index, values) {
             if (Math.floor(value) === value) {
               return value;
             }
@@ -55,7 +55,7 @@ export const chartOptionsHorizontal = {
         ticks: {
           min: 0, // it is for ignoring negative step.
           beginAtZero: true,
-          callback: function(value, index, values) {
+          callback: function (value, index, values) {
             if (Math.floor(value) === value) {
               return value;
             }
@@ -135,7 +135,7 @@ export default function DashBoardEvents() {
           if (response.data.success) {
             let no_of_employees = response.data.records.length;
 
-            let no_of_emp_join = _.filter(response.data.records, function(
+            let no_of_emp_join = _.filter(response.data.records, function (
               item
             ) {
               return _.every([

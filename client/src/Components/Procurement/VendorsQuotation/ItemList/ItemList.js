@@ -12,7 +12,8 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
 
 import {
-  onchhangeNumber
+  onchhangeNumber,
+  totalAmountChange
 } from "./ItemListEvents";
 
 class ItemList extends Component {
@@ -243,10 +244,7 @@ class ItemList extends Component {
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
-                                      number: {
-                                        allowNegative: false,
-                                        thousandSeparator: ","
-                                      },
+                                      decimal: { allowNegative: false },
                                       value: row.unit_price,
                                       className: "txt-fld",
                                       name: "unit_price",
@@ -383,7 +381,29 @@ class ItemList extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "Total Amount" }}
                                 />
-                              )
+                              ),
+
+                              displayTemplate: row => {
+                                return this.state.dataExitst === true ? row.total_amount : (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      decimal: { allowNegative: false },
+                                      value: row.total_amount,
+                                      className: "txt-fld",
+                                      name: "total_amount",
+                                      events: {
+                                        onChange: totalAmountChange.bind(
+                                          this,
+                                          this,
+                                          context,
+                                          row
+                                        )
+                                      }
+                                    }}
+                                  />
+                                );
+                              }
                             }
                           ]}
                           keyId="hims_f_procurement_vendor_quotation_detail_id"

@@ -479,6 +479,7 @@ export default function Filter(props) {
             setEmployeeId("");
             setEmpGroupId("");
             setSubDepartments([]);
+            if (typeof props.clear === "function") props.clear();
           }}
           style={{ marginLeft: 10, float: "right" }}
           className="btn btn-default  btn-with-icon"

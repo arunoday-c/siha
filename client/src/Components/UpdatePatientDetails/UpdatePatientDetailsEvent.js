@@ -2,7 +2,6 @@
 import PatRegIOputs from "../../Models/RegistrationPatient";
 import {
   algaehApiCall,
-  swalMessage,
   getCookie
 } from "../../utils/algaehApiCall.js";
 

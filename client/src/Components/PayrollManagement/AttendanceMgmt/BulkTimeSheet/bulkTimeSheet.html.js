@@ -21,6 +21,7 @@ function BulkTimeSheet(props) {
   const [dates, setDates] = useState([]);
   const [message, setMessage] = useState("");
   const [process, setProcess] = useState(true);
+  const [errorHtml, setErrorHtml] = useState("");
   const [loadingProcess, setLoadingProcess] = useState(false);
   const base_state = {
     project_id: null,
@@ -105,6 +106,7 @@ function BulkTimeSheet(props) {
           });
           setData(data);
           setProcess(false);
+          setErrorHtml("");
         }}
         uploadErrors={message => {
           setMessage(message);
@@ -138,6 +140,10 @@ function BulkTimeSheet(props) {
           });
           setData(data);
           setProcess(false);
+          setErrorHtml("");
+        }}
+        clear={() => {
+          setErrorHtml("");
         }}
       />
 
@@ -165,59 +171,87 @@ function BulkTimeSheet(props) {
           });
         }}
       />
-      <div className="portlet portlet-bordered margin-top-15">
-        <div className="portlet-title">
-          <div className="caption">
-            <h3 className="caption-subject">Total Employees : {data.length}</h3>
-          </div>
-          <div className="actions" />
-        </div>
-        <div className="portlet-body bulkTimeSheetPreviewCntr">
-          {message !== "" ? (
-            <div className="bulkUploadErrorMessage">
-              <h5>Please validate below details in excel template</h5>
-              <ol dangerouslySetInnerHTML={{ __html: message }} />
+      <div className="row">
+        <div className={errorHtml !== "" ? "col-9" : "col"}>
+          <div className="portlet portlet-bordered margin-top-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">
+                  Total Employees : {data.length}
+                </h3>
+              </div>
+              <div className="actions" />
             </div>
-          ) : (
-            <table id="bulkTimeSheetPreview">
-              <thead>
-                <tr>
-                  <th>Emp Name & Code</th>
-                  {dates.map((item, index) => (
-                    <th key={item}>
-                      <span>{moment(item, "YYYY-MM-DD").format("ddd")}</span>
-                      <br />
-                      <span>{moment(item, "YYYY-MM-DD").format("DD/MMM")}</span>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((item, index) => (
-                  <tr key={item.employee_id}>
-                    <td>
-                      <span>{item.employee_name}</span>
-                      <small>{item.employee_code}</small>
-                    </td>
-                    {item.roster.map((itm, indx) => {
-                      return (
-                        <TableCells
-                          itm={itm}
-                          indx={indx}
-                          key={`${item.employee_id}_${itm.attendance_date}`}
-                          employee_name={item.employee_name}
-                          editingProjectRoster={editingProjectRoster}
-                          setSelectedTD={selectedITD}
-                        />
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+            <div className="portlet-body bulkTimeSheetPreviewCntr">
+              {message !== "" ? (
+                <div className="bulkUploadErrorMessage">
+                  <h5>Please validate below details in excel template</h5>
+                  <ol dangerouslySetInnerHTML={{ __html: message }} />
+                </div>
+              ) : (
+                <table id="bulkTimeSheetPreview">
+                  <thead>
+                    <tr>
+                      <th>Emp Name & Code</th>
+                      {dates.map((item, index) => (
+                        <th key={item}>
+                          <span>
+                            {moment(item, "YYYY-MM-DD").format("ddd")}
+                          </span>
+                          <br />
+                          <span>
+                            {moment(item, "YYYY-MM-DD").format("DD/MMM")}
+                          </span>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.map((item, index) => (
+                      <tr key={item.employee_id}>
+                        <td>
+                          <span>{item.employee_name}</span>
+                          <small>{item.employee_code}</small>
+                        </td>
+                        {item.roster.map((itm, indx) => {
+                          return (
+                            <TableCells
+                              itm={itm}
+                              indx={indx}
+                              key={`${item.employee_id}_${itm.attendance_date}`}
+                              employee_name={item.employee_name}
+                              editingProjectRoster={editingProjectRoster}
+                              setSelectedTD={selectedITD}
+                            />
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </div>
         </div>
+        {errorHtml !== "" ? (
+          <div className="col-3 errorCntrDiv">
+            <div className="portlet portlet-bordered margin-top-15 ">
+              <div className="portlet-body">
+                <h6>Attention!</h6>
+                <p>
+                  Project not assigned or attendance not uploaded. Please
+                  resolve the error and then Process Attendance.
+                </p>
+                <ul
+                  className="errorListUI"
+                  dangerouslySetInnerHTML={{ __html: errorHtml }}
+                ></ul>
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
+
       <div className="hptl-phase1-footer">
         <div className="row">
           <div className="col-lg-12">
@@ -232,10 +266,21 @@ function BulkTimeSheet(props) {
                   errorMessage => {
                     setProcess(true);
                     setLoadingProcess(false);
-                    swalMessage({
-                      type: "error",
-                      title: errorMessage
-                    });
+
+                    if (errorMessage.response !== undefined) {
+                      debugger;
+                      const hasLi = errorMessage.response.data.message.includes(
+                        "<li>"
+                      );
+                      if (hasLi) {
+                        setErrorHtml(errorMessage.response.data.message);
+                      } else {
+                        swalMessage({
+                          type: "error",
+                          title: errorMessage
+                        });
+                      }
+                    }
                   },
                   result => {
                     setLoadingProcess(false);

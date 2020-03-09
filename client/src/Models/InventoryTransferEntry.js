@@ -1,5 +1,5 @@
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
@@ -43,13 +43,11 @@ export default {
       expiry_date: null,
       quantity_required: 0,
       unit_cost: 0,
-      Batch_Items: [],
       service_id: null,
       conversion_factor: 1,
       grn_no: null,
       item_group_id: null,
       item_category: null,
-      barcode: null,
       dataExitst: false,
 
       batch_detail_view: false,

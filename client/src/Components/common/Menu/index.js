@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import "./menu.scss";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { getItem, tokenDecode } from "algaeh-react-components/storage";
 import { MainContext } from "algaeh-react-components/context";
 import PasswordChange from "../passwordChange";
@@ -8,6 +8,7 @@ import { Notifications } from "../Notifications";
 import Items from "./item";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import BreadCrum from "./breadcrum";
+
 function NavBars(props) {
   const {
     userLanguage,
@@ -19,6 +20,7 @@ function NavBars(props) {
     userMenu
   } = useContext(MainContext);
   const history = useHistory();
+  const location = useLocation();
   // const [title, setTitle] = useState("");
   const [showPasswordChange, setShowPasswordChange] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -74,12 +76,21 @@ function NavBars(props) {
   return (
     <>
       <nav className="navbar fixed-top navbar-expand-lg navbar-dark mainTheme">
-        {/* <div className="sideBackButton">
-          <i className="fas fa-angle-double-left  fa-lg" />
-        </div> */}
-        <div className="sideMenuBars" onClick={showMenuClick}>
-          <i className="fas fa-bars fa-lg" />
-        </div>
+        {location.state ? (
+          <div
+            className="sideBackButton"
+            onClick={() => {
+              location.state = null;
+              history.goBack();
+            }}
+          >
+            <i className="fas fa-angle-double-left  fa-lg" />
+          </div>
+        ) : (
+          <div className="sideMenuBars" onClick={showMenuClick}>
+            <i className="fas fa-bars fa-lg" />
+          </div>
+        )}
 
         <div className="navbar-brand appLogoCntr">
           <p className="appLogoHIMSOnly" />

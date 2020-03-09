@@ -8430,13 +8430,14 @@ function processBulkAtt_Normal(data) {
         from hims_f_daily_time_sheet TS inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id and E.suspend_salary <>'Y' \
         inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\          
          left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
-        S.year=? and S.month=? where   ( S.salary_processed is null or  S.salary_processed='N')  and TS.hospital_id=? and TS.year=? and TS.month=?    ${strQry.replace(
+        S.year=? and S.month=? where  E.date_of_joining<= date(?) ( S.salary_processed is null or  S.salary_processed='N')  and TS.hospital_id=? and TS.year=? and TS.month=?    ${strQry.replace(
           /employee_id/gi,
           "TS.employee_id"
         )} group by TS.employee_id having count(*)< ?; ;`,
           values: [
             input.year,
             input.month,
+            month_start,
             input.hospital_id,
             input.year,
             input.month,
@@ -9039,7 +9040,7 @@ function processBulkAtt_with_cutoff(data) {
    select E.employee_code,E.full_name
   from hims_f_daily_time_sheet TS inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id 
   and E.suspend_salary <>'Y'  ${deptStr}  left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
-  S.year=? and S.month=? where  ( S.salary_processed is null or  S.salary_processed='N')   and 
+  S.year=? and S.month=? where E.date_of_joining<= date(?) ( S.salary_processed is null or  S.salary_processed='N')   and 
   TS.hospital_id=? and attendance_date between
   date(?) and date(?)   ${strQry.replace(
     /employee_id/gi,
@@ -9049,6 +9050,7 @@ function processBulkAtt_with_cutoff(data) {
           values: [
             year,
             month,
+            prev_cutoff_next_day,
             input.hospital_id,
             prev_cutoff_next_day,
             cutoff_day,

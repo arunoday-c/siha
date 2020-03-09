@@ -5,7 +5,7 @@ import ApplyLeave from "./ApplyLeave/ApplyLeave";
 import LoanRequest from "./LoanRequest/LoanRequest";
 import RejoinAnnualLeave from "./RejoinAnnualLeave/RejoinAnnualLeave";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import LeaveEncashmentProcess from ".././LeaveEncashmentProcess/LeaveEncashmentProcess";
+// import LeaveEncashmentProcess from ".././LeaveEncashmentProcess/LeaveEncashmentProcess";
 import ApplyLeaveEncashment from "./ApplyLeaveEncashment/ApplyLeaveEncashment";
 import OpeningBalance from "./OpeningBalance/OpeningBalance";
 import IssueCertificate from "./IssueCertificate/IssueCertificate";

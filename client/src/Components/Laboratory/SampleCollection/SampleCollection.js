@@ -2,14 +2,11 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 
 import "./SampleCollection.scss";
 import "./../../../styles/site.scss";
 
 import {
-  texthandle,
-  PatientSearch,
   datehandle,
   getSampleCollectionDetails,
   Refresh
@@ -18,15 +15,8 @@ import {
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
-
-import {
-  FORMAT_PRIORITY,
-  FORMAT_TEST_STATUS
-} from "../../../utils/GlobalVariables.json";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
@@ -417,10 +407,10 @@ class SampleCollection extends Component {
                           return row.test_type === "S" ? (
                             <span className="badge badge-danger">Stat</span>
                           ) : (
-                            <span className="badge badge-secondary">
-                              Routine
+                              <span className="badge badge-secondary">
+                                Routine
                             </span>
-                          );
+                            );
                         },
                         disabled: true,
                         others: {
@@ -483,10 +473,10 @@ class SampleCollection extends Component {
                               Confirmed
                             </span>
                           ) : (
-                            <span className="badge badge-success">
-                              Validated
+                                    <span className="badge badge-success">
+                                      Validated
                             </span>
-                          );
+                                  );
                         },
                         disabled: true,
                         others: {

@@ -25,8 +25,7 @@ export default function FilterComponent(props) {
               { text: "Transaction No.", value: "1" },
               { text: "Transaction Date", value: "2" },
               { text: "Line Amount", value: "3" },
-              { text: "Line Description", value: "4" },
-              { text: "Transaction Date", value: "5" }
+              { text: "Line Description", value: "4" }
             ],
             valueField: "value",
             textField: "text"
@@ -51,7 +50,9 @@ export default function FilterComponent(props) {
           dataSource: {
             data: [
               { text: "Contains", value: "1" },
-              { text: "Equals", value: "2" }
+              { text: "Equals", value: "2" },
+              { text: "Greater than", value: "3" },
+              { text: "Less than", value: "4" }
             ],
             valueField: "value",
             textField: "text"
@@ -65,36 +66,40 @@ export default function FilterComponent(props) {
           }
         }}
       />
-      <AlgaehDateHandler
-        div={{ className: "col-3" }}
-        label={{ forceLabel: "Transaction Date" }}
-        //type="date"
-        textBox={{
-          value: dates
-        }}
-        events={{
-          onChange: selected => {
-            setDates(selected);
-          }
-        }}
-      />
-      <AlgaehFormGroup
-        div={{
-          className: "col form-group"
-        }}
-        label={{
-          forceLabel: "Transaction Number",
-          isImp: true
-        }}
-        textBox={{
-          type: "text",
-          value: "",
-          className: "form-control",
-          id: "name",
-          placeholder: " Enter Transaction Name",
-          autoComplete: false
-        }}
-      />
+      {level !== 3 ? (
+        <AlgaehFormGroup
+          div={{
+            className: "col form-group"
+          }}
+          label={{
+            forceLabel: "",
+            isImp: true
+          }}
+          textBox={{
+            type: "text",
+            value: "",
+            className: "form-control",
+            id: "name",
+            placeholder: "",
+            autoComplete: false
+          }}
+        />
+      ) : (
+        <AlgaehDateHandler
+          div={{ className: "col-3" }}
+          label={{ forceLabel: "Transaction Date" }}
+          //type="date"
+          textBox={{
+            value: dates
+          }}
+          events={{
+            onChange: selected => {
+              setDates(selected);
+            }
+          }}
+        />
+      )}
+
       <div className="col-2">
         {" "}
         <AlgaehButton

@@ -8,10 +8,8 @@ import {
   datehandle,
   cashtexthandle,
   cardtexthandle,
-  chequetexthandle,
   checkcashhandaler,
-  checkcardhandaler,
-  checkcheckhandaler
+  checkcardhandaler
 } from "./AddReciptFormHandaler";
 import {
   AlgaehDateHandler,

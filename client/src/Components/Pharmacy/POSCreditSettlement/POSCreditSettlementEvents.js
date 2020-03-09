@@ -85,7 +85,7 @@ const getPatientDetails = $this => {
 
 const ClearData = ($this, e) => {
   let _screenName = getCookie("ScreenName").replace("/", "");
-  let counter_id = 0;
+  // let counter_id = 0;
   algaehApiCall({
     uri: "/userPreferences/get",
     data: {
@@ -94,7 +94,7 @@ const ClearData = ($this, e) => {
     },
     method: "GET",
     onSuccess: response => {
-      counter_id = response.data.records.selectedValue;
+      // counter_id = response.data.records.selectedValue;
 
       let IOputs = extend(SettlementIOputs.inputParam());
 

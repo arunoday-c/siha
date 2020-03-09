@@ -39,12 +39,15 @@ const QuotationSearch = ($this, e) => {
                         for (let i = 0; i < data.quotation_detail.length; i++) {
                             data.quotation_detail[i].unit_price = 0
                             data.quotation_detail[i].extend_cost = 0
+                            data.quotation_detail[i].extended_price = 0
                             data.quotation_detail[i].discount_percentage = 0
                             data.quotation_detail[i].discount_amount = 0
                             data.quotation_detail[i].tax_percentage = 0
                             data.quotation_detail[i].tax_amount = 0
                             data.quotation_detail[i].net_extend_amount = 0
+                            data.quotation_detail[i].net_extended_cost = 0
                             data.quotation_detail[i].net_total = 0
+                            data.quotation_detail[i].total_amount = 0
                         }
                         getData($this, data.quotation_for);
                         data.saveEnable = false;

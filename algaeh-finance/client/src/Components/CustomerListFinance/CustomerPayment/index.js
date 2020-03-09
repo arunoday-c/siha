@@ -2,7 +2,7 @@ import React, { memo, useState, useEffect } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { AlgaehDataGrid, AlgaehMessagePop } from "algaeh-react-components";
 import { InfoBar } from "../../../Wrappers";
-import { FilterComponent, LedgerReport } from "../../InvoiceCommon";
+import { LedgerReport } from "../../InvoiceCommon";
 import { getInvoicesForCustomer } from "./CusPaymentEvents";
 import { Button, Spin } from "antd";
 
@@ -14,7 +14,7 @@ export default memo(function(props) {
   const [info, setInfo] = useState({
     over_due: "0.00",
     total_receivable: "0.00",
-    last_paid: "0.00"
+    past_payments: "0.00"
   });
   const [loading, setLoading] = useState(false);
 
@@ -30,7 +30,7 @@ export default memo(function(props) {
             setInfo({
               over_due: result.over_due,
               total_receivable: result.total_receivable,
-              last_paid: "0.00"
+              past_payments: result.past_payments
             });
             setLoading(false);
           }
@@ -72,7 +72,7 @@ export default memo(function(props) {
       <div className="row">
         <div className="col-12">
           <InfoBar data={info} />
-          <FilterComponent />
+          {/* <FilterComponent /> */}
           <div className="row">
             <div className="col-12">
               <div className="portlet portlet-bordered margin-bottom-15">

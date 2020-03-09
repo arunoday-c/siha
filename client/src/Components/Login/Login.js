@@ -25,8 +25,8 @@ import {
 } from "../../utils/GlobalFunctions";
 import connecting from "../../assets/svg/connecting.svg";
 import "./Login.scss";
-import sockets from "../../sockets";
-import { from } from "linq";
+// import sockets from "../../sockets";
+// import { from } from "linq";
 import noUserImg from "../../assets/images/nobody_m.original.webp";
 function Login(props) {
   const { history } = props;
@@ -318,6 +318,7 @@ function Login(props) {
           getActiveModulesForUser()
             .then(userMenu => {
               setSelectedMenu(userMenu, records.page_to_redirect).then(() => {
+<<<<<<< HEAD
                 const redirect = redPage => {
                   setLoginLoad(false);
                   setCookie("ScreenName", redPage);
@@ -353,6 +354,15 @@ function Login(props) {
                         : records.page_to_redirect.replace(/\s/g, "");
                     redirect(redPage);
                   });
+=======
+                setLoginLoad(false);
+                const redPage =
+                  records.page_to_redirect === null
+                    ? "NoDashboard"
+                    : records.page_to_redirect.replace(/\s/g, "");
+                setCookie("ScreenName", redPage);
+                history.replace(`/${redPage}`);
+>>>>>>> 4001aab6f0e440c5cf64d568c95c229b9a2386b6
               });
             })
             .catch(error => {

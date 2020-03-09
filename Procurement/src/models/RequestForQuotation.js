@@ -120,7 +120,8 @@ export default {
                                 "inv_item_id",
                                 "pharmacy_uom_id",
                                 "inventory_uom_id",
-                                "quantity"
+                                "quantity",
+                                "itm_notes"
                             ];
 
                             _mysql

@@ -53,6 +53,9 @@ export function processDetails(data, error, result) {
       } else {
         error(res.data.result.message);
       }
+    },
+    onCatch: err => {
+      error(err);
     }
   });
 }

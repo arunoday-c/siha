@@ -62,7 +62,7 @@ const SelectVisitToClose = ($this, row, e) => {
   visitDetails[row.rowIdx] = row;
 
   let check_visit = _.filter(visitDetails, f => {
-    return f.select == "Y";
+    return f.select === "Y";
   });
 
   if (check_visit.length > 0) {

@@ -5,8 +5,6 @@ import {
   swalMessage
 } from "../../../utils/algaehApiCall";
 
-import _ from "lodash";
-
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -110,16 +108,12 @@ const ClearData = ($this) => {
     location_id: null,
     adjustment_number: null,
     adjustment_date: new Date(),
-    addItemButton: true,
-    Batch_Items: [],
     adjust_qty: 0,
     adjust_amount: 0,
     uom_description: null,
-    item_description: null,
 
     item_id: null,
     item_category_id: null,
-    uom_id: null,
     item_group_id: null,
     addItemButton: true,
     Batch_Items: [],
@@ -265,8 +259,7 @@ const itemchangeText = ($this, e, ctrl) => {
               item_group_id: e.group_id,
               Batch_Items: data.locationResult,
               addItemButton: false,
-              item_description: e.item_description,
-              addItemButton: false
+              item_description: e.item_description
             });
           } else {
             swalMessage({
@@ -382,7 +375,6 @@ const AddItemtoList = ($this) => {
         adjust_amount: 0,
         item_id: null,
         item_category_id: null,
-        uom_id: null,
         item_group_id: null,
         addItemButton: true,
         Batch_Items: [],
